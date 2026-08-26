@@ -1,0 +1,187 @@
+{
+ "note": "Every case Abdullah reported by eye, with what it turned out to be and where it stands. Keep appending; do not rewrite history.",
+ "session": "2026-08-26",
+ "items": [
+  {
+   "id": 1,
+   "page": 350,
+   "words": [
+    "24:3:8 وَٱلزَّانِيَةُ",
+    "24:3:7 مُشْرِكَةًۭ",
+    "24:4:3 ٱلْمُحْصَنَـٰتِ"
+   ],
+   "reported": "floating harakat far from the text; each word took diacritics from words far away",
+   "cause": "ownership, not naming — a mark filed under a word whose ink is elsewhere",
+   "status": "fixed",
+   "detail": "The floating-diacritic pass resolved most of the line, and ٱلْمُحْصَنَـٰتِ's missing fatha was found by the label-vs-kind rule: two elements the shape classifier had already named `fatha`, the right size for one, in a word short of one. The word is now exact."
+  },
+  {
+   "id": 2,
+   "page": 367,
+   "words": [
+    "26:14:5 أَن",
+    "26:14:6 يَقْتُلُونِ"
+   ],
+   "reported": "يقتلون stole a fatha from أن",
+   "cause": "same floating-mark family",
+   "status": "fixed",
+   "detail": "Both words now match their spelling exactly."
+  },
+  {
+   "id": 3,
+   "page": 591,
+   "words": [
+    "86:1:1 وَٱلسَّمَآءِ",
+    "86:1:2 وَٱلطَّارِقِ",
+    "86:11:1 وَٱلسَّمَآءِ"
+   ],
+   "reported": "السماء has an extra fatha and lost the kasra sitting directly under its hamza; the kasra leaked to the next word and was named fatha",
+   "cause": "a mutual exchange across a word boundary. Both halves had to move together, but the reverse half was never proposed: the guard skipped any mark whose `line` TAG differed from its word's, and this kasra hangs low enough to be tagged to the next line while being drawn inside its own line's band.",
+   "status": "fixed",
+   "detail": "The guard now tests POSITION against the line's measured y band (±10u, from a 160x cliff in the distribution) instead of the tag. 86:1:1 fatha 3/3 kasra 1/1, 86:1:2 fatha 2/2 kasra 2/2, 86:11:1 fatha 3/3 kasra 1/1, none floating."
+  },
+  {
+   "id": 4,
+   "page": null,
+   "words": [],
+   "reported": "do you audit the expected number of hamzas per word?",
+   "cause": "the acceptance test counted marks per GROUP, so a fatha and a kasra could cancel",
+   "status": "fixed",
+   "detail": "Counting is per FAMILY now, which is what exposes an exchange."
+  },
+  {
+   "id": 5,
+   "page": null,
+   "words": [],
+   "reported": "'a mutual swap' — I challenge that; compare to the expected number of fathas, kasras etc",
+   "cause": "correct challenge; the counts balanced only through two compensating mislabels",
+   "status": "fixed",
+   "detail": "Per-family budgets, plus re-deriving a moved mark's name from where it lands."
+  },
+  {
+   "id": 6,
+   "page": 350,
+   "words": [
+    "24:3:9 لَا",
+    "24:4:2 يَرْمُونَ"
+   ],
+   "reported": "the distance between diacritics and their words makes no sense",
+   "cause": "17 marks mushaf-wide sit 280-308u from their word — a full line width. The last word of a line and the first of the next are neighbours in READING order and a page apart on the paper.",
+   "status": "fixed",
+   "detail": "QSVG_STRAY. The gap distribution is empty between 40 and 150 units, so distance is a proof. All 17 hand off to their reading-order neighbour."
+  },
+  {
+   "id": 7,
+   "page": null,
+   "words": [],
+   "reported": "is the 'worse' actually worse, or were they false positives?",
+   "cause": "both, in different cases",
+   "status": "answered",
+   "detail": "Of 9 pages reported worse: 2 were improvements (traded 1 mark flag for 3 interval flags; cmp_full counted mark flags only — fixed), 7 were the QPC text asking for a waqf sign the artwork does not draw. None was a real regression."
+  },
+  {
+   "id": 8,
+   "page": null,
+   "words": [],
+   "reported": "collect a sample of the waqf disagreements and decide which text version to use; test quranpedia mushaf 2, quran.com, QUL",
+   "cause": "n/a",
+   "status": "answered",
+   "detail": "Measured against MushafDatabase's labels over 77,082 words: uthmani+KFGQPC-waqf 99.974%, text_uthmani 99.729%, text_qpc_hafs 91.303%, quranpedia m2 86.545%, imlaei 65.100%, indopak 32.705%. No single source is right; the split the pipeline uses is. QUL's bulk downloads need a sign-in."
+  },
+  {
+   "id": 9,
+   "page": 371,
+   "words": [
+    "26:97:3 كُنَّا",
+    "26:97:4 لَفِى",
+    "26:97:5 ضَلَـٰلٍۢ",
+    "26:97:6 مُّبِينٍ"
+   ],
+   "reported": "كنا took a fatha and dot from لفي; لفي took marks from ضلال which is not on the same line; ضلال stole the whole word مبين; مبين holds only one mark",
+   "cause": "ضَلَـٰلٍۢ held both words' letter ink. مُّبِينٍ was one of only 4 body-less words in the mushaf.",
+   "status": "mostly fixed",
+   "detail": "Split at the body boundary (QCF widths said 0.54, the gap gave 0.55) and recorded as 8 geometry-keyed overrides. مُّبِينٍ and كُنَّا are now exact; ضَلَـٰلٍۢ still lacks its kasratan, whose two strokes sit in لَفِى and need the tanween pairing logic."
+  },
+  {
+   "id": 10,
+   "page": 589,
+   "words": [
+    "84:3:3 مُدَّتْ",
+    "84:6:1 يَـٰٓأَيُّهَا"
+   ],
+   "reported": "are those flagged and fixed?",
+   "cause": "one defect, not two: مُدَّتْ's ت (11.2 x 7.1 units) was read as a fatha and given to يَـٰٓأَيُّهَا on the line below. مُدَّتْ then measures 63% of its expected width and يَـٰٓأَيُّهَا counts 3 pieces where 2 are allowed.",
+   "status": "fixed",
+   "detail": "One exchange, resolved in both directions. The 80-unit blob is مُدَّتْ's ت — too big to be a fatha (median 25.1), drawn in line 5's band, touching a word there short of exactly one joining piece: three proofs agreeing. Giving it back took مُدَّتْ from 14.1 units to 25.8 against 22.3 expected. يَـٰٓأَيُّهَا then took back its own third fatha, a 12.6-unit element the classifier had named `fatha` but kept as a letter. Both words now exact. Three sibling pages (p467, p529, p576) carry the identical defect and are corrected by the same rule."
+  },
+  {
+   "id": 11,
+   "page": 590,
+   "words": [
+    "84:25:5 ٱلصَّـٰلِحَـٰتِ"
+   ],
+   "reported": "الصالحات stole a dot from the ayah mark below it",
+   "cause": "correct — a 2.13 x 2.07 blob labelled kasra, sitting 38 units below the word's letters, where its two real kasras are 7.0 and 7.8 wide",
+   "status": "fixed",
+   "detail": "Confirmed exactly as reported. The blob is 2.13x2.07 — area 4.4 against a kasra median of 21.2 — and falls in NO line's band at all, sitting in the gap between lines where the ayah marker is. Too small to be the mark it is called and in no word's territory, so it is no longer counted. The word's real missing fatha came back through the label-vs-kind rule. ٱلصَّـٰلِحَـٰتِ is now exact."
+  },
+  {
+   "id": 12,
+   "page": null,
+   "words": [],
+   "reported": "make sure the cache is cleared, and add a link so I can clear it myself",
+   "cause": "the server serves a cached SVG per page, so a pipeline change looks like it did nothing",
+   "status": "fixed",
+   "detail": "GET /api/refresh[?page=N], plus 'Rebuild this page' and 'Rebuild all' in the review nav on every screen."
+  },
+  {
+   "id": 13,
+   "page": 591,
+   "words": [
+    "86:1:1 وَٱلسَّمَآءِ"
+   ],
+   "reported": "we didn't fix the p591 issue — reading the output, the ligature holds the hamza as a body, and the kasra was leaked to the next word and named fatha",
+   "cause": "my own guard. The orphan pass skipped any mark whose `line` TAG differed from its word's, and this kasra hangs low enough to be tagged to the next line while being drawn inside its own line's band. Only one half of the exchange was ever proposed, so the pair could never resolve.",
+   "status": "fixed",
+   "detail": "The guard now tests POSITION against the line's measured y band (±10u, from a 160x cliff in the distribution) instead of the tag. Also fixed 86:11:1, the second instance on the same page, and took the interval audit from 112 flags to 105."
+  },
+  {
+   "id": 14,
+   "page": null,
+   "words": [],
+   "reported": "many diacritics show as (unlabeled) now; fixing those is a priority that could fix many issues",
+   "cause": "a display bug in the review platform, not a defect in the decomposition. It counted `path[data-kind=\"mark\"]:not([data-mark])` as unlabeled, but a composite mark is labelled ONCE on its master and its other pieces carry `data-mark-part` instead.",
+   "status": "fixed",
+   "detail": "14,855 welded pieces were being shown in red as needing an answer. By the pipeline's own reckoning only 22 marks in the whole mushaf are genuinely unnamed — 0.005% of 436,743. The platform now colours a piece like its master at 55% opacity and stops asking for it."
+  },
+  {
+   "id": 15,
+   "page": null,
+   "words": [],
+   "reported": "many three-dots hold the visual of two dots and the third dot above is unlabeled; same for fathatan/kasratan; same for pause ج, which doesn't have its dot in the same group",
+   "cause": "all three are the same display bug as #14 — the second stroke of a tanween, the third blob of a three-dots and the dot inside a ج are all welded pieces carrying `data-mark-part`",
+   "status": "fixed",
+   "detail": "The grouping itself was verified correct: every one of 32 pause masters sampled has all its welded pieces in the SAME ligature group. Nothing had to move; the platform had to stop misreporting them."
+  },
+  {
+   "id": 16,
+   "page": null,
+   "words": [],
+   "reported": "did we audit our ligature tags and find where we have issues?",
+   "cause": "n/a",
+   "status": "answered",
+   "detail": "Built: `tools/audit_ligatures.py`, over 159,327 groups in 77,429 words. count 2,455 (a word emits a different number of groups than the joining rules allow) | empty 732 (names letters, holds no ink) | misplaced 1,220 (a mark on another group's letters) | order 79. Of the 732 empty, 521 name a lone `ا`, which this art may legitimately draw inside the preceding ligature — those are the joining model disagreeing with the drawing, not lost ink. 56 name a multi-letter piece and 18 name a `ء`: those are real. A detector only; no corrector yet."
+  },
+  {
+   "id": 17,
+   "page": 591,
+   "words": [
+    "86:1:1 وَٱلسَّمَآءِ"
+   ],
+   "reported": "the kasra is under the tag data-text=\"وا\" not \"لسما\", and that group now holds لسماء not لسما — either move the kasra and rename, or give the hamza its own group with its kasra. How many similar cases are in the data?",
+   "cause": "two separate faults. The first is mine: the four passes I added this session appended a moved mark to `at[0]`, the word's FIRST ligature group, instead of the group whose ink it sits over — `_omove`, which every older mover uses, picks the nearest atom. The second predates them: `segment_word` cuts وَٱلسَّمَآءِ into ['و','ا','لسما','ء'] and the hamza's ink is emitted inside the `لسما` group, leaving `ء` empty.",
+   "status": "partly fixed",
+   "detail": "Routing fixed — all four passes now call `put_in_ligature()`, the same nearest-atom rule, so the kasra lands with the hamza. The empty `ء` group is a real defect and 18 words share it; the audit that finds them is now `tools/audit_ligatures.py`. Correcting it is not written."
+  }
+ ]
+}

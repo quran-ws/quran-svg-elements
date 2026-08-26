@@ -14,14 +14,33 @@ of play and the things that will waste your time if you do not know them.
 Branch `feat/line-structure-on-main`, cut from `origin/main` (f8ea2002).
 **Nothing has ever been committed to `main`.**
 
-| | at session start | now |
+| | pinned baseline | now |
 |---|---|---|
-| Flagged words (mark audit) | 991 | **667** |
-| Interval-audit flags | 308 | 293 |
-| Pages fully clean | 153 | **238** of 604 |
+| Flagged words (mark audit) | 559 | **294** |
+| Interval-audit flags | 172 | **105** |
+| Pages fully clean | 276 | **388** of 604 |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
-| Letters filed under the wrong line | 161 | 49 |
-| Bench | SCORE 77, no failures, pixelfail 0 | same |
+| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 76, same |
+
+Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
+old figures in this table were taken with a pause budget that has since been corrected,
+so they are not comparable to today's.
+
+### Against MushafDatabase, on evidence outside both decompositions
+
+`tools/score_both.py` scores BOTH sides against QCF advance widths, the Arabic joining
+rules and the text. Over 77,331 words scored on both sides:
+
+| | ours | theirs |
+|---|---|---|
+| width off by more than 1.5x | 1.549% | 1.543% |
+| width off by more than 2x | **0.181%** | 0.182% |
+| more pieces than the spelling allows | 1 word | 0 |
+| dot count disagrees with the text | 24 words | 0 |
+
+**25 words separate us.** Do not quote the adjudicator's OURS/THEIRS counts as an
+accuracy comparison — it only examines disagreements, so it cannot say anything about
+the 88% of words where the two agree.
 
 Line placement agrees with an independent decomposition
 (MushafDatabase) on **67,761 of 67,765** comparable words — 99.994%.
@@ -56,8 +75,18 @@ After anything touching the artwork or the line cut, also run
 | `tools/audit_width.py` | a word the wrong SIZE for its share of the line | a word that swaps one letter for another |
 | `tools/audit_crossline.py` | ink held by a word but drawn in another line's territory | — |
 | `tools/audit_reference.py` | disagreement with an outside decomposition | words the two sources split differently (~12%) |
-| `tools/audit_split.py` | a word emitted as more than one group | — |
 | `tools/audit_lines.py` | a contour tagged to a line it is not drawn in | — |
+| `tools/audit_marksize.py` | a mark the wrong SIZE for what it is called, both tails | a mark of the right size in the wrong place |
+| `tools/audit_strayink.py` | a mark a line's width from its own word, horizontally | anything within 40u |
+| `tools/audit_crossband.py` | a mark drawn in another line's band | anything within 10u of the band |
+| `tools/audit_bodyless.py` | a word holding no letter ink at all | a word holding SOME of its letters |
+| `tools/audit_ligatures.py` | whether each `<g class="ligature">` holds the ink its `data-text` names | whether the CUT itself is right |
+| `tools/score_both.py` | how we compare to MushafDatabase on outside evidence | anything both get wrong |
+| `tools/score_confidence.py` | ALL of the above in one pass, combined into a per-mark/word/page P(defect): proof-class violations (empty bands, arithmetic) ⇒ CERTAIN, soft priors noisy-OR'd ⇒ HIGH/REVIEW. Ranked output `docs/defects/confidence.html`, per-page JSON `.cache/confidence/pages/` | anything every input metric is blind to; line placement only via `--ref` |
+| `tools/text_source.py` | which published text this print was set from | — |
+
+`tools/audit_split.py` is named above in older notes but **does not exist in the repo**.
+`audit_lines.py` and `verify_render.py` do.
 
 **The trap that cost the most:** for most of the session every gate counted
 marks per word. A word can lose a letter, or shrink to 19% of its width, with
@@ -83,6 +112,21 @@ of that and must be part of the gate.
   split words from 1158 to 0 with pixelfail 0.
 - **An outside opinion.** MushafDatabase found real defects nothing internal
   could see, and confirmed 99.994% agreement on line placement.
+- **Measuring a quantity mushaf-wide before writing any rule about it.** Where the
+  distribution has an EMPTY BAND, the outlier is a proof and needs no second signal —
+  the same standing as `segment_word()`'s piece count. Three paid off in one session:
+
+  | quantity | the empty band | what it caught |
+  |---|---|---|
+  | mark to its own word's letters, horizontally | nothing at all between 40u and 150u | 17 marks a full line width from their word |
+  | mark outside its word's line band, vertically | 4,203 within 10u, then 26 in 10-15u | the p591 exchange, once the guard tested position instead of the `line` tag |
+  | drawn AREA per mark family | for most families p99 EQUALS the median | 9 letters read as marks, 11 degenerate contours counted as dots |
+
+  Write the histogram into the code comment: it is what justifies the threshold, and the
+  first thing to recheck when the corrector misbehaves. Put the threshold inside the
+  band, not at its edge.
+- **Reading the emitted SVG, not just the audit.** Abdullah found the p591 exchange by
+  reading `data-eid`/`data-kind` in the output. Three audits called that line clean.
 
 ## What did not work — do not retry these
 
@@ -145,11 +189,32 @@ that do not make things worse — it found the one bad entry out of 18.
   from `assignment`, not `wrec`.
 - **Never name a script `bisect.py`** — it shadows the stdlib module `urllib`
   imports.
+- **Moving a mark between words is not enough — it must land in the right LIGATURE.**
+  A word is emitted as one `<g class="ligature">` per piece the joining rules allow, and
+  appending to `at[0]` puts the mark in the word's FIRST group whatever it is drawn over.
+  Every older mover goes through `_omove`, which picks the nearest atom; four passes
+  added in one session did not, and p591's kasra landed in `data-text="وا"` at the far
+  end of the word from the hamza it sits under. Use `put_in_ligature()`.
+- **`segment_word()`'s cut and the emitted groups can disagree** — 2,455 words emit a
+  different number of groups than the rules allow. Anything that pairs group *i* with
+  segment *i* is meaningless for those words; check the counts match first, or you
+  manufacture defects (343 of them, in the first run of `audit_ligatures.py`).
 
 Env switches for A/B: `QSVG_WDECIDE` (width carries a body move, default off),
 `QSVG_NB` (neighbour transfer), `QSVG_SUP` (superscript recovery),
 `QSVG_HZA`/`QSVG_HZB` (hamza demote/promote), `QSVG_PIPE` (which build an audit
 loads), `QSVG_OUT` (sweep output dir).
+
+Newer passes, all on by default, all late in `assign_page` and all measured:
+
+| switch | what it does | scope |
+|---|---|---|
+| `QSVG_ORPHAN` | a mark sitting on no letter of its own word goes to the neighbour it sits over, a line at a time | 178 marks |
+| `QSVG_STRAY` | a mark 60u+ clear of its word's ink goes to the word on its own line that it is drawn on | 17 marks |
+| `QSVG_SUFFIX` | the `ۥ`/`ۦ` of a pronominal suffix left as a LETTER becomes a mark | 10 elements |
+| `QSVG_NULLMARK` | a degenerate contour (area < 0.5, draws nothing) stops being counted as a mark | 11 elements |
+| `QSVG_RENAME` | re-derive every slash name before planning — **off, measured worse** | — |
+| `QSVG_ODBG` | print every orphan-pass proposal and the accept/reject decision | debug |
 
 ---
 
@@ -202,26 +267,49 @@ lines in juz 30, so the text lines per page and the band geometry differ —
 compare band heights and the line-mapping stage's behaviour on those pages
 against a normal page.
 
-### 2. Four confirmed line errors
+### 2. What is left between us and MushafDatabase — 25 words
+
+`python3 scratchpad/gapwords.py 1 604 8 out.json` (in the scratchpad) lists them exactly.
+
+- **1 piece surplus**: p157 `ٱلْعَـٰلَمِينَ` and p451 `إِلْ يَاسِينَ` draw one run more
+  than the joining rules allow. Neither is the `ۥ`/`ۦ` family the suffix pass fixed.
+- **24 dot words**, and they are NOT transfers — every one has neighbours at exactly
+  their budget, so no adjacent word holds the missing or extra ink. They split into
+  words missing a whole cluster (`تَتَّقُونَ` p4 holds 5 of 7 with every element the
+  right size) and words holding none at all (`حَرْثِهِۦ` p485 holds 0 of 3).
+
+Two families are diagnosed and NOT yet corrected, both found by making the mark-size
+test two-sided:
+
+- **9 letters read as marks** (area more than 3x the family median). Five are fathas of
+  area ~80.4 against a median of 25.1, all near the left margin at a line end: p467,
+  p529, p576, p588, p589. On p589 this is one defect wearing two faces — `مُدَّتْ` loses
+  its `ت` and measures 63% of its width, while `يَـٰٓأَيُّهَا` counts 3 pieces where 2
+  are allowed.
+- **4 marks too small to be one** (under a third of the family median), e.g. p590
+  `ٱلصَّـٰلِحَـٰتِ` holding a 2.13x2.07 blob called a kasra, 38 units below its letters,
+  where its two real kasras are 7.0 and 7.8 wide. Abdullah spotted this one by eye.
+
+### 3. Four confirmed line errors
 Reference and QCF layout both disagree with us; all four are words at a line
 edge pulled to the neighbouring line, and the layout stage was given the
 correct boundary in every case, so a later stage moves them.
 `docs/defects/reference_confirmed.json` — p131 `رُسُلٌ`, p341 `لَهُۥ`,
 p543 `بِمَا`, p599 `لَهَا`.
 
-### 3. Open queue
+### 4. Open queue
 `python3 tools/make_queue.py <sweep-dir> --sig-flags <sig_flags.json>` →
 `docs/defects/queue.json`. Currently ~948 auto (mine), 9 label, 40 judge.
 Largest families: pause 200, mark-steal 171, dots 148, fatha 134,
 body-steal 85, ligatures 76.
 
-### 4. Reviewer notes not yet acted on
+### 5. Reviewer notes not yet acted on
 `docs/defects/shape_notes.json` — 20 observations from Abdullah. Themes: ه/ة/و
 stolen across lines, kasratan strokes not being paired (6 shapes), the sajdah
 line needing to group with the word below, and signature `9514d0381190`
 covering both 2 dots and 3 dots (an outline that does not discriminate).
 
-### 5. Known open regressions
+### 6. Known open regressions
 p368 `بِشَىْءٍۢ` (kasratan read as fatha) and p122 `مِّنْ` (ligature surplus).
 Both +1 versus the session baseline; neither is explained.
 
@@ -230,9 +318,15 @@ Both +1 versus the session baseline; neither is explained.
 ## Reviewing with a human
 
 - Review platform: `python3 tools/review_server.py` → `http://127.0.0.1:8777/?page=N&step=audit&user=NAME`.
-  **Restart it and clear `.cache/words-svg/hafs-kfqc` after every pipeline
-  change** — it imports the pipeline once at startup and will otherwise serve
-  a stale build. This has caused false "you broke it" reports.
+  It serves a CACHED SVG per page, so after a pipeline change it keeps serving the
+  previous build — which reads as the change having done nothing. The nav now carries
+  **Rebuild this page** and **Rebuild all** (`GET /api/refresh[?page=N]`); use them, or
+  clear `.cache/words-svg/hafs-kfqc`. It regenerates through a subprocess, so nothing in
+  the server process needs reloading.
+- **Everything Abdullah reports by eye goes in `docs/defects/reported.json`** with what
+  it turned out to be and whether it is fixed — appended, never rewritten.
+  `docs/defects/reported.html` renders it. Two of the twelve entries there opened defect
+  families that reach across the whole mushaf.
 - Shape decisions: `tools/label_sheet.py` builds a sheet showing each shape in
   place, several times, with a note box; `tools/apply_labels.py` folds answers
   into the global table (backs up first, refuses composite collapse).
@@ -244,7 +338,16 @@ Both +1 versus the session baseline; neither is explained.
 ## Ground rules
 
 - Never hand-type Quranic text. Word text comes only from the verified cached
-  sources.
+  sources. **Which source, measured 2026-08-26** against MushafDatabase's own labelling
+  of the same artwork over 77,082 words: quran.com's `text_uthmani` is EXACTLY right on
+  14 of 16 diacritic families and wrong only on 3 maddah, 3 hamza and **203 waqf**; the
+  KFGQPC text (`qpc_uthmani_hafs`) gets waqf right (14 wrong) and is worse everywhere
+  else. Uthmani alone scores 99.729%, KFGQPC alone 91.303%, quranpedia mushaf-2 86.545%,
+  imlaei 65.100%, indopak 32.705% — and **uthmani + KFGQPC waqf 99.974%**, which is what
+  the pipeline uses. Do not migrate the other families to QPC; it was measured and it is
+  worse. Compare after normalising code points to families, or you measure encoding
+  rather than content (KFGQPC writes sukun U+06E1 and the silent circle U+0652 where
+  uthmani writes U+0652 and U+06DF).
 - Human input is captured as DATA — shapes to `labels.json`, places to
   `overrides.json` — never as a code edit.
 - Every hard-won fix should become a bench case, or it comes back.
