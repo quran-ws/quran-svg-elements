@@ -148,13 +148,31 @@ def scan(pg):
         if dots != dw:
             bad.append(("dots", dots, dw))
         bods = [e for e in els if e["kind"] == "body"]
-        eff = []
-        for b in bods:      # a stroke drawn over a wider sibling is not a piece
+        # Two counting rules, both about ink that is ONE piece drawn as two:
+        #  - a stroke drawn over a wider sibling (the ك armature) is not a piece
+        #  - pieces whose boxes OVERLAP end-to-end are one stroke thinned to a
+        #    pen-lift (p203 صَـٰلِحًۭا, p219 نُنَجِّيكَ, p189 وَأَنفُسِهِمْ —
+        #    all visually verified correct, overlaps 1.4-4.7u). Genuinely
+        #    foreign pieces have POSITIVE gaps (p451 إِلْ يَاسِينَ: +1.0 to
+        #    +3.3u) — the empty band between the two cases is the rule.
+        parent = list(range(len(bods)))
+        def _find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for i, b in enumerate(bods):
             wb = b["x2"] - b["x1"]
-            if not any(o is not b
-                       and min(o["x2"], b["x2"]) - max(o["x1"], b["x1"]) >= 0.6 * wb
-                       and (o["x2"] - o["x1"]) > wb for o in bods):
-                eff.append(b)
+            for j, o in enumerate(bods):
+                if o is b:
+                    continue
+                xov = min(o["x2"], b["x2"]) - max(o["x1"], b["x1"])
+                yov = min(o["y2"], b["y2"]) - max(o["y1"], b["y1"])
+                wider = (xov >= 0.6 * wb and (o["x2"] - o["x1"]) > wb)
+                joint = (xov > 0.5 and yov > 3.0)
+                if wider or joint:
+                    parent[_find(i)] = _find(j)
+        eff = {_find(i) for i in range(len(bods))}
         nseg = max(1, len(aw.segment_word(txt)))
         # a deficit is dominated by the art joining letters and goes to the
         # visual review sheet; a SURPLUS is unambiguous stolen ink

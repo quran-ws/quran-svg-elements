@@ -1,0 +1,154 @@
+{
+ "note": "Decisions that need Abdullah's eye — each item shows the evidence, the proposed action, and the alternatives. Reviewed at http://127.0.0.1:8777/proposals; decisions are copied back to Claude and become data (overrides / labels / policy), never code special-cases. Append rounds; never rewrite.",
+ "items": [
+  {
+   "id": "P1",
+   "page": 350,
+   "key": "24:3:8",
+   "focus_x": 14.9,
+   "focus_y": 197.8,
+   "title": "The stroke at x=15 that no budget wants",
+   "evidence": "A fatha-sized stroke (6.9x3.6u) sits over وَٱلزَّانِيَةُ's ة beside its two-dots, at the same height. Every word's slash budget on lines 6-7 is satisfied without it; it currently sits (wrongly) in لَا's count, 300u away.",
+   "proposal": "Reassign to وَٱلزَّانِيَةُ as LETTER ink (part of the ة region), i.e. it is not a diacritic at all.",
+   "alternatives": [
+    "it IS a mark of وَٱلزَّانِيَةُ (which one?)",
+    "it belongs to مُشْرِكَةًۭ's tanween pair",
+    "leave with لَا (surely wrong)"
+   ]
+  },
+  {
+   "id": "P2",
+   "page": 437,
+   "key": "35:27:17",
+   "focus_x": 301.4,
+   "focus_y": 336.3,
+   "title": "Two م-shaped glyphs at the جُدَدٌۢ/بِيضٌۭ boundary",
+   "evidence": "Two small م glyphs sit side by side: x304-309 (claimed by جُدَدٌۢ as its iqlab meem) and x301-305 (left in بِيضٌۭ as a surplus letter piece). بِيضٌۭ's iqlab is the low ۭ form, which usually draws no separate glyph.",
+   "proposal": "The x301-305 glyph is بِيضٌۭ's own iqlab م drawn high (the ۭ DOES leave a glyph here): convert it to بِيضٌۭ's meem-iqlab mark.",
+   "alternatives": [
+    "it is جُدَدٌۢ's م and جُدَدٌۢ claimed the wrong one",
+    "it is letter ink of بِيضٌۭ's ب"
+   ]
+  },
+  {
+   "id": "P3",
+   "page": 254,
+   "key": "13:37:7",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "أَهْوَآءَهُم label confusion (your '3 fathas, 1 sukun' note)",
+   "evidence": "After the بَعْدَ مَا line is repaired, this word's own marks need re-naming: the audit counted 5 fathas + 2 sukuns + 1 dot; your eye counted 3 fathas + 1 sukun and no dot. The extras are بعد's marks; what remains may still carry wrong names.",
+   "proposal": "Defer until the line fix lands, then re-audit; if names still disagree with your count, label the specific blobs on a label sheet.",
+   "alternatives": [
+    "adjudicate now from the preview"
+   ]
+  },
+  {
+   "id": "P4",
+   "page": 599,
+   "key": "98:6:13",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "أُوْلَـٰٓئِكَ 'missing fatha at the end' — print fact or pipeline loss?",
+   "evidence": "Your note says the final fatha is missing. If the INK truly lacks it, that is a fact about the 1421H print (like إِلْ يَاسِينَ's extra piece) and becomes a recorded exception; if the stroke exists nearby, some word stole it.",
+   "proposal": "You look at the printed page: is there a fatha drawn at the word's end anywhere? If absent → record as print-fact exception. If present → tell me which word holds it.",
+   "alternatives": []
+  },
+  {
+   "id": "P5",
+   "page": 272,
+   "key": "16:48:10",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "Sajdah-line policy (also p589 يَسْجُدُونَ ۩)",
+   "evidence": "Your shape-note: the sajdah overline should group with the word below it. Currently it is classified ad hoc; p272 ظِلَـٰلُهُۥ has the sajdah line beneath it interfering with its ink.",
+   "proposal": "Adopt the policy: the sajdah overline is a STANDALONE sign attached to the sajdah word's group (like hizb/rub signs), never counted as a mark or letter of any word. Applied mushaf-wide (15 sajdah sites).",
+   "alternatives": [
+    "attach as a non-counting mark of the word below",
+    "leave per-site"
+   ]
+  },
+  {
+   "id": "P6",
+   "page": 596,
+   "key": "92:14:1",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "Body steal: فَأَنذَرْتُكُمْ / نَارًۭا",
+   "evidence": "Your verdicts: فَأَنذَرْتُكُمْ is missing a large part of تكم; نَارًۭا stole a large part from the word before it. A letter-ink move between the two would fix both.",
+   "proposal": "Move the surplus body piece(s) of نَارًۭا back to فَأَنذَرْتُكُمْ, guarded by the joining-rule piece budgets of both words (deficit == surplus, pieces adjacent).",
+   "alternatives": [
+    "geometry override from the review platform instead of a pass"
+   ]
+  },
+  {
+   "id": "P7",
+   "page": 59,
+   "key": "3:75:19",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "Body steal: مَا swallowed by يُؤَدِّهِۦٓ (3:75:8)",
+   "evidence": "Your verdict: bodyless مَا; 3:75:8 holds it. Same shape as P6.",
+   "proposal": "Same mechanism as P6: piece-budget-guarded return of the مَا ink.",
+   "alternatives": []
+  },
+  {
+   "id": "P8",
+   "page": 535,
+   "key": "56:44:2",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "Body steal: بَارِدٍۢ swallowed لَّا with its diacritics",
+   "evidence": "Your verdict: بَارِدٍۢ holds the previous word لَّا entirely (its shadda surplus is لَّا's). لَّا (56:44:1) shows shadda 0/1.",
+   "proposal": "Same mechanism as P6: return لَّا's body + its marks together, guarded by both words' budgets.",
+   "alternatives": []
+  },
+  {
+   "id": "P9",
+   "page": 341,
+   "key": "22:73:18",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "PRE-APPROVED: the p341 chain (اجتمعوا ← له ← وإن, + منه's ۥ)",
+   "evidence": "Abdullah's screenshots: اجتمعوا holds [اجتمعوا + له + ۖ + damma]; له holds only the و of وإن; وإن lacks its و; منه (22:73:25) holds له's small waw. One chained repair returns each piece one step right.",
+   "proposal": "Execute the chain: له's body+pause+damma back from اجتمعوا; the و back from له to وإن; the ۥ back from منه to له. Guarded by each word's piece and mark budgets.",
+   "alternatives": []
+  }
+ ],
+ "decisions": {
+  "date": "2026-08-26",
+  "by": "Abdullah",
+  "items": {
+   "P1": {
+    "decision": "belongs to مُشْرِكَةًۭ's tanween pair",
+    "note": "one belongs to مُشْرِكَةًۭ's tanween at top, the other is kasrah under مشركة ر",
+    "resolution": "SCOPE EXPANDED by Abdullah's color-coded rendering of p350 line 6: the mark ownership is rotated across the whole tail (إلا زانيةً أو مشركةً والزانية) — marks of each word sitting over the neighbour's letters. Not a two-stroke override: this is the LINE-SET repair (re-own all marks of a line against all budgets simultaneously, minimum total displacement), same mechanism the xband agent recommended for the refused chains (p267, p371, p535, p599 chain from P4). p350 line 6 is the canonical test case."
+   },
+   "P2": {
+    "decision": "it is جُدَدٌۢ's م and جُدَدٌۢ claimed the wrong one",
+    "resolution": "x301-305 = جدد's iqlab م (mark); x304-309 = جدد's second د (letter body)"
+   },
+   "P3": {
+    "decision": "approved — defer until line fix"
+   },
+   "P4": {
+    "decision": "chain: أولئك's fatha stolen by شر; شر's fatha stolen by البرية (p599)"
+   },
+   "P5": {
+    "decision": "approved — sajdah sign is standalone, groups with the sajdah word on the line BELOW"
+   },
+   "P6": {
+    "decision": "approved"
+   },
+   "P7": {
+    "decision": "confirmed: 3:75:8 stole the ما"
+   },
+   "P8": {
+    "decision": "approved"
+   },
+   "P9": {
+    "decision": "approved — show the result after"
+   }
+  }
+ }
+}

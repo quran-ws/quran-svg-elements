@@ -55,6 +55,16 @@ CASES = {
     # the letter meem must stay letter ink, not the iqlab sign (p307 cascade)
     (307, (19, 33, 5)): ("wa-yawma 3 bodies", lambda e: nbody(e) == 3),
     (307, (19, 34, 3)): ("ibna 2 bodies", lambda e: nbody(e) == 2),
+    # iqlab is ONE haraka + small م in this print (docs/defects/iqlab_notation.md):
+    # the م must be a MARK, not a fourth letter piece
+    (143, (6, 124, 26)): ("shadid iqlab: 2 bodies + meem mark",
+        lambda e: nbody(e) == 2
+        and any(x.get("mark") == "meem-iqlab" for x in e)),
+    # 4 raw bodies is CORRECT here: the restored ك stroke is letter ink riding
+    # over the wider ك, so the audit's effective piece count is 3
+    (222, (11, 12, 2)): ("tarik iqlab: 4 bodies + meem mark",
+        lambda e: nbody(e) == 4
+        and any(x.get("mark") == "meem-iqlab" for x in e)),
 }
 
 def budget_mismatches(words):
@@ -78,7 +88,7 @@ def budget_mismatches(words):
 
 q = json.load(open(ROOT + "/.cache/qcf_widths.json"))
 case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
-for pg in (1, 2, 3, 7, 133, 200, 202, 307, 453, 454):
+for pg in (1, 2, 3, 7, 133, 143, 200, 202, 222, 307, 453, 454):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     except Exception as e:

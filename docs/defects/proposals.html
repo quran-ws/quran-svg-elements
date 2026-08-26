@@ -1,0 +1,131 @@
+<!doctype html><html><head><meta charset="utf-8">
+<title>proposals — decisions needed</title><style>
+@font-face{font-family:"QPC Hafs";src:url("/assets/UthmanicHafs_V22.ttf");font-display:swap}
+body{font:14px system-ui;margin:0;background:#f7f5ef;color:#231f20}
+header{position:sticky;top:0;background:#fffdf8;border-bottom:1px solid #ddd7c6;
+  padding:10px 18px;display:flex;gap:16px;align-items:center;z-index:5}
+header h1{font-size:16px;margin:0}
+header button{font:inherit;padding:6px 14px;border:1px solid #999;border-radius:6px;
+  background:#fff;cursor:pointer}
+header button:hover{border-color:#245a9e;color:#245a9e}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(430px,1fr));
+  gap:14px;padding:16px}
+.card{border:1px solid #ddd7c6;border-radius:8px;background:#fff;padding:12px 14px}
+.card.decided{box-shadow:0 0 0 2px #245a9e;border-color:#245a9e}
+.card h3{margin:0 0 6px;font-size:14.5px}
+.card h3 a{color:#245a9e}
+.ink{min-height:90px;display:flex;align-items:center;justify-content:center;
+  background:#fffdf8;border-radius:4px;margin-bottom:6px}
+.ink svg{max-width:100%;max-height:120px}
+.wait{color:#8a8577}
+.ev{font-size:13px;color:#555;margin:6px 0}
+.prop{font-size:13.5px;margin:6px 0}
+.choices{display:flex;flex-direction:column;gap:4px;font-size:13px;margin:8px 0}
+.note{width:100%;box-sizing:border-box;border:1px solid #e4dfd2;border-radius:4px;
+  font:12.5px system-ui;padding:4px 6px;min-height:26px;background:#fffdf8}
+</style></head><body>
+<header><h1>Decisions needed</h1>
+<span><b id="ndec">0</b>/9 decided</span>
+<button id="copyBtn">Copy decisions</button>
+</header>
+<div class="grid" id="grid"><div class="card" data-id="P1" data-page="350" data-s="24" data-a="3" data-w="8"><h3>The stroke at x=15 that no budget wants — <a href="/?page=350&step=audit&word=24:3:8" target=_blank>p350 24:3:8</a></h3><div class="ink"><span class="wait">…</span></div><p class="ev">A fatha-sized stroke (6.9x3.6u) sits over وَٱلزَّانِيَةُ&#x27;s ة beside its two-dots, at the same height. Every word&#x27;s slash budget on lines 6-7 is satisfied without it; it currently sits (wrongly) in لَا&#x27;s count, 300u away.</p><p class="prop"><b>Proposal:</b> Reassign to وَٱلزَّانِيَةُ as LETTER ink (part of the ة region), i.e. it is not a diacritic at all.</p><div class="choices"><label><input type="radio" name="d-P1" value="approve"> ✓ approve the proposal</label><label><input type="radio" name="d-P1" value="alt0"> it IS a mark of وَٱلزَّانِيَةُ (which one?)</label><label><input type="radio" name="d-P1" value="alt1"> it belongs to مُشْرِكَةًۭ&#x27;s tanween pair</label><label><input type="radio" name="d-P1" value="alt2"> leave with لَا (surely wrong)</label><label><input type="radio" name="d-P1" value="reject"> ✗ reject — leave as is</label></div><textarea class="note" dir="auto" placeholder="comment…"></textarea></div>
+<div class="card" data-id="P2" data-page="437" data-s="35" data-a="27" data-w="17"><h3>Two م-shaped glyphs at the جُدَدٌۢ/بِيضٌۭ boundary — <a href="/?page=437&step=audit&word=35:27:17" target=_blank>p437 35:27:17</a></h3><div class="ink"><span class="wait">…</span></div><p class="ev">Two small م glyphs sit side by side: x304-309 (claimed by جُدَدٌۢ as its iqlab meem) and x301-305 (left in بِيضٌۭ as a surplus letter piece). بِيضٌۭ&#x27;s iqlab is the low ۭ form, which usually draws no separate glyph.</p><p class="prop"><b>Proposal:</b> The x301-305 glyph is بِيضٌۭ&#x27;s own iqlab م drawn high (the ۭ DOES leave a glyph here): convert it to بِيضٌۭ&#x27;s meem-iqlab mark.</p><div class="choices"><label><input type="radio" name="d-P2" value="approve"> ✓ approve the proposal</label><label><input type="radio" name="d-P2" value="alt0"> it is جُدَدٌۢ&#x27;s م and جُدَدٌۢ claimed the wrong one</label><label><input type="radio" name="d-P2" value="alt1"> it is letter ink of بِيضٌۭ&#x27;s ب</label><label><input type="radio" name="d-P2" value="reject"> ✗ reject — leave as is</label></div><textarea class="note" dir="auto" placeholder="comment…"></textarea></div>
+<div class="card" data-id="P3" data-page="254" data-s="13" data-a="37" data-w="7"><h3>أَهْوَآءَهُم label confusion (your &#x27;3 fathas, 1 sukun&#x27; note) — <a href="/?page=254&step=audit&word=13:37:7" target=_blank>p254 13:37:7</a></h3><div class="ink"><span class="wait">…</span></div><p class="ev">After the بَعْدَ مَا line is repaired, this word&#x27;s own marks need re-naming: the audit counted 5 fathas + 2 sukuns + 1 dot; your eye counted 3 fathas + 1 sukun and no dot. The extras are بعد&#x27;s marks; what remains may still carry wrong names.</p><p class="prop"><b>Proposal:</b> Defer until the line fix lands, then re-audit; if names still disagree with your count, label the specific blobs on a label sheet.</p><div class="choices"><label><input type="radio" name="d-P3" value="approve"> ✓ approve the proposal</label><label><input type="radio" name="d-P3" value="alt0"> adjudicate now from the preview</label><label><input type="radio" name="d-P3" value="reject"> ✗ reject — leave as is</label></div><textarea class="note" dir="auto" placeholder="comment…"></textarea></div>
+<div class="card" data-id="P4" data-page="599" data-s="98" data-a="6" data-w="13"><h3>أُوْلَـٰٓئِكَ &#x27;missing fatha at the end&#x27; — print fact or pipeline loss? — <a href="/?page=599&step=audit&word=98:6:13" target=_blank>p599 98:6:13</a></h3><div class="ink"><span class="wait">…</span></div><p class="ev">Your note says the final fatha is missing. If the INK truly lacks it, that is a fact about the 1421H print (like إِلْ يَاسِينَ&#x27;s extra piece) and becomes a recorded exception; if the stroke exists nearby, some word stole it.</p><p class="prop"><b>Proposal:</b> You look at the printed page: is there a fatha drawn at the word&#x27;s end anywhere? If absent → record as print-fact exception. If present → tell me which word holds it.</p><div class="choices"><label><input type="radio" name="d-P4" value="approve"> ✓ approve the proposal</label><label><input type="radio" name="d-P4" value="reject"> ✗ reject — leave as is</label></div><textarea class="note" dir="auto" placeholder="comment…"></textarea></div>
+<div class="card" data-id="P5" data-page="272" data-s="16" data-a="48" data-w="10"><h3>Sajdah-line policy (also p589 يَسْجُدُونَ ۩) — <a href="/?page=272&step=audit&word=16:48:10" target=_blank>p272 16:48:10</a></h3><div class="ink"><span class="wait">…</span></div><p class="ev">Your shape-note: the sajdah overline should group with the word below it. Currently it is classified ad hoc; p272 ظِلَـٰلُهُۥ has the sajdah line beneath it interfering with its ink.</p><p class="prop"><b>Proposal:</b> Adopt the policy: the sajdah overline is a STANDALONE sign attached to the sajdah word&#x27;s group (like hizb/rub signs), never counted as a mark or letter of any word. Applied mushaf-wide (15 sajdah sites).</p><div class="choices"><label><input type="radio" name="d-P5" value="approve"> ✓ approve the proposal</label><label><input type="radio" name="d-P5" value="alt0"> attach as a non-counting mark of the word below</label><label><input type="radio" name="d-P5" value="alt1"> leave per-site</label><label><input type="radio" name="d-P5" value="reject"> ✗ reject — leave as is</label></div><textarea class="note" dir="auto" placeholder="comment…"></textarea></div>
+<div class="card" data-id="P6" data-page="596" data-s="92" data-a="14" data-w="1"><h3>Body steal: فَأَنذَرْتُكُمْ / نَارًۭا — <a href="/?page=596&step=audit&word=92:14:1" target=_blank>p596 92:14:1</a></h3><div class="ink"><span class="wait">…</span></div><p class="ev">Your verdicts: فَأَنذَرْتُكُمْ is missing a large part of تكم; نَارًۭا stole a large part from the word before it. A letter-ink move between the two would fix both.</p><p class="prop"><b>Proposal:</b> Move the surplus body piece(s) of نَارًۭا back to فَأَنذَرْتُكُمْ, guarded by the joining-rule piece budgets of both words (deficit == surplus, pieces adjacent).</p><div class="choices"><label><input type="radio" name="d-P6" value="approve"> ✓ approve the proposal</label><label><input type="radio" name="d-P6" value="alt0"> geometry override from the review platform instead of a pass</label><label><input type="radio" name="d-P6" value="reject"> ✗ reject — leave as is</label></div><textarea class="note" dir="auto" placeholder="comment…"></textarea></div>
+<div class="card" data-id="P7" data-page="59" data-s="3" data-a="75" data-w="19"><h3>Body steal: مَا swallowed by يُؤَدِّهِۦٓ (3:75:8) — <a href="/?page=59&step=audit&word=3:75:19" target=_blank>p59 3:75:19</a></h3><div class="ink"><span class="wait">…</span></div><p class="ev">Your verdict: bodyless مَا; 3:75:8 holds it. Same shape as P6.</p><p class="prop"><b>Proposal:</b> Same mechanism as P6: piece-budget-guarded return of the مَا ink.</p><div class="choices"><label><input type="radio" name="d-P7" value="approve"> ✓ approve the proposal</label><label><input type="radio" name="d-P7" value="reject"> ✗ reject — leave as is</label></div><textarea class="note" dir="auto" placeholder="comment…"></textarea></div>
+<div class="card" data-id="P8" data-page="535" data-s="56" data-a="44" data-w="2"><h3>Body steal: بَارِدٍۢ swallowed لَّا with its diacritics — <a href="/?page=535&step=audit&word=56:44:2" target=_blank>p535 56:44:2</a></h3><div class="ink"><span class="wait">…</span></div><p class="ev">Your verdict: بَارِدٍۢ holds the previous word لَّا entirely (its shadda surplus is لَّا&#x27;s). لَّا (56:44:1) shows shadda 0/1.</p><p class="prop"><b>Proposal:</b> Same mechanism as P6: return لَّا&#x27;s body + its marks together, guarded by both words&#x27; budgets.</p><div class="choices"><label><input type="radio" name="d-P8" value="approve"> ✓ approve the proposal</label><label><input type="radio" name="d-P8" value="reject"> ✗ reject — leave as is</label></div><textarea class="note" dir="auto" placeholder="comment…"></textarea></div>
+<div class="card" data-id="P9" data-page="341" data-s="22" data-a="73" data-w="18"><h3>PRE-APPROVED: the p341 chain (اجتمعوا ← له ← وإن, + منه&#x27;s ۥ) — <a href="/?page=341&step=audit&word=22:73:18" target=_blank>p341 22:73:18</a></h3><div class="ink"><span class="wait">…</span></div><p class="ev">Abdullah&#x27;s screenshots: اجتمعوا holds [اجتمعوا + له + ۖ + damma]; له holds only the و of وإن; وإن lacks its و; منه (22:73:25) holds له&#x27;s small waw. One chained repair returns each piece one step right.</p><p class="prop"><b>Proposal:</b> Execute the chain: له&#x27;s body+pause+damma back from اجتمعوا; the و back from له to وإن; the ۥ back from منه to له. Guarded by each word&#x27;s piece and mark budgets.</p><div class="choices"><label><input type="radio" name="d-P9" value="approve"> ✓ approve the proposal</label><label><input type="radio" name="d-P9" value="reject"> ✗ reject — leave as is</label></div><textarea class="note" dir="auto" placeholder="comment…"></textarea></div></div>
+<script>
+const cards = [...document.querySelectorAll(".card")];
+const KEY = "proposal-decisions";
+let dec = JSON.parse(localStorage.getItem(KEY) || "{}");
+function sync(){
+  cards.forEach(c => {
+    const d = dec[c.dataset.id];
+    c.classList.toggle("decided", !!(d && (d.choice || (d.note||"").trim())));
+    if (d && d.choice) {
+      const r = c.querySelector(`input[value="${d.choice}"]`);
+      if (r) r.checked = true;
+    }
+    // never rewrite a focused textarea (it eats the space you just typed)
+    const ta = c.querySelector(".note");
+    if (d && d.note !== undefined && document.activeElement !== ta)
+      ta.value = d.note;
+  });
+  document.getElementById("ndec").textContent =
+    Object.values(dec).filter(d => d.choice || (d.note||"").trim()).length;
+  localStorage.setItem(KEY, JSON.stringify(dec));
+}
+cards.forEach(c => {
+  const id = c.dataset.id;
+  c.querySelectorAll("input[type=radio]").forEach(r =>
+    r.addEventListener("change", () => {
+      dec[id] = dec[id] || {};
+      dec[id].choice = r.value;
+      dec[id].label = r.parentElement.textContent.trim();
+      sync();
+    }));
+  c.querySelector(".note").addEventListener("input", e => {
+    dec[id] = dec[id] || {};
+    dec[id].note = e.target.value;   // trim only at copy time
+    sync();
+  });
+});
+document.getElementById("copyBtn").onclick = () => {
+  const out = cards.map(c => {
+    const d = dec[c.dataset.id];
+    if (!d || (!d.choice && !d.note)) return null;
+    return {id: c.dataset.id, page: +c.dataset.page,
+            key: `${c.dataset.s}:${c.dataset.a}:${c.dataset.w}`,
+            decision: d.label || d.choice || "", note: d.note || ""};
+  }).filter(Boolean);
+  navigator.clipboard.writeText(JSON.stringify(out, null, 1));
+};
+sync();
+/* ink previews — same machinery as the confidence page */
+const pageCache = new Map();
+function pageHolder(pg){
+  if (!pageCache.has(pg))
+    pageCache.set(pg, fetch("/api/page/" + pg).then(r => r.json()).then(d => {
+      const h = document.createElement("div");
+      h.style.cssText = "position:absolute;left:-100000px;top:0;width:900px";
+      document.body.appendChild(h); h.innerHTML = d.svg; return h;
+    }));
+  return pageCache.get(pg);
+}
+const NS = "http://www.w3.org/2000/svg";
+async function renderInk(c){
+  const holder = await pageHolder(+c.dataset.page);
+  const svg = holder.querySelector("svg");
+  const sel = `g.word[data-surah="${c.dataset.s}"][data-ayah="${c.dataset.a}"]` +
+              `[data-word="${c.dataset.w}"]`;
+  const gs = [...svg.querySelectorAll(sel)];
+  const box = c.querySelector(".ink");
+  if (!gs.length) { box.innerHTML = "<span class=wait>not in build</span>"; return; }
+  let X1=1e9,Y1=1e9,X2=-1e9,Y2=-1e9; const clones=[];
+  for (const g of gs) {
+    let bb; try { bb = g.getBBox(); } catch(e){ continue; }
+    const m = g.getCTM();
+    for (const [px,py] of [[bb.x,bb.y],[bb.x+bb.width,bb.y],
+                           [bb.x,bb.y+bb.height],[bb.x+bb.width,bb.y+bb.height]]) {
+      const x = m.a*px+m.c*py+m.e, y = m.b*px+m.d*py+m.f;
+      X1=Math.min(X1,x); Y1=Math.min(Y1,y); X2=Math.max(X2,x); Y2=Math.max(Y2,y);
+    }
+    const wrap = document.createElementNS(NS,"g");
+    wrap.setAttribute("transform",`matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f})`);
+    wrap.appendChild(g.cloneNode(true)); clones.push(wrap);
+  }
+  const mini = document.createElementNS(NS,"svg");
+  mini.setAttribute("viewBox",`${X1-4} ${Y1-4} ${X2-X1+8} ${Y2-Y1+8}`);
+  clones.forEach(cl => mini.appendChild(cl));
+  box.innerHTML = ""; box.appendChild(mini);
+}
+const io = new IntersectionObserver(es => {
+  for (const en of es) if (en.isIntersecting) {
+    io.unobserve(en.target); renderInk(en.target).catch(()=>{});
+  }
+}, {rootMargin: "300px"});
+cards.forEach(c => io.observe(c));
+</script></body></html>
