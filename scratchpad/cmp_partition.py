@@ -1,6 +1,6 @@
 """Word spans on one page/line, under two builds, side by side."""
 import importlib.util, io, contextlib, os, sys
-ROOT="/Users/abdullah/Documents/Github/quran-svg"
+ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT+"/tools")
 def run(pipe, pg):
     spec=importlib.util.spec_from_file_location("assign_words", pipe)

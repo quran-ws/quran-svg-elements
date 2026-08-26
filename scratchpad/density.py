@@ -1,7 +1,7 @@
 """Is the text denser where the defects are?"""
 import importlib.util, io, contextlib, json, os, sys
 from collections import defaultdict
-ROOT="/Users/abdullah/Documents/Github/quran-svg"
+ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT+"/tools")
 spec=importlib.util.spec_from_file_location("assign_words", ROOT+"/tools/assign_words.py")
 aw=importlib.util.module_from_spec(spec); sys.modules["assign_words"]=aw

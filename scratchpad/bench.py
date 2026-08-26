@@ -8,7 +8,7 @@ Usage: python3 bench.py [path-to-candidate]
 """
 import importlib.util, json, math, os, subprocess, sys
 
-ROOT = "/Users/abdullah/Documents/Github/quran-svg"
+ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 S = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT + "/tools")
 path = sys.argv[1] if len(sys.argv) > 1 else ROOT + "/tools/assign_words.py"

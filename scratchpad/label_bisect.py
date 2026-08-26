@@ -1,6 +1,6 @@
 """Which of the confirmed labels actually help, measured one at a time."""
 import json, os, shutil, sys
-ROOT="/Users/abdullah/Documents/Github/quran-svg"
+ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 S=os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0,S)
 TAB=ROOT+"/.cache/marks/labels.json"

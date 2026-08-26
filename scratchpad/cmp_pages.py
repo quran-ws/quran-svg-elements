@@ -1,8 +1,13 @@
 import json, os, sys
-S="/private/tmp/claude-501/-Users-abdullah-Documents-Github-quran-svg/e2b2f3f9-54a9-433b-9cdb-4a0da8c551b9/scratchpad"
-sys.path.insert(0,S)
+S = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(S)
+# Sweep results are bulk generated data: one JSON per page, per build. They live
+# outside git but must outlive a session, because the pinned "before" build is
+# compared against for every change.
+SWEEPS = os.environ.get("QSVG_SWEEPS", os.path.join(ROOT, ".cache", "sweeps"))
+sys.path.insert(0, S)
 from audit_marks import scan
-BASE=S+"/baseline/pages"
+BASE = os.environ.get("QSVG_BASE_DIR", SWEEPS + "/baseline/pages")
 def base_n(pg):
     r=json.load(open("%s/%03d.json"%(BASE,pg)))
     return len(r.get("marks",[]))

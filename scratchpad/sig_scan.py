@@ -13,7 +13,7 @@ S = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, S)
 import audit_marks as AM
 
-LAB = json.load(open("/Users/abdullah/Documents/Github/quran-svg/.cache/marks/labels.json"))
+LAB = json.load(open(AM.ROOT + "/.cache/marks/labels.json"))
 
 
 def scan(pg):
@@ -26,7 +26,7 @@ def scan(pg):
     aw.rewrite = spy
     try:
         with contextlib.redirect_stdout(io.StringIO()):
-            aw.assign_page("hafs/kfqc", pg, "/Users/abdullah/Documents/Github/quran-svg/.cache/words")
+            aw.assign_page("hafs/kfqc", pg, AM.ROOT + "/.cache/words")
     except Exception as e:
         return pg, []
     _, rows = AM.scan(pg)

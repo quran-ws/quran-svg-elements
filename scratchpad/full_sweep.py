@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """Full-mushaf baseline: both audits per page, resumable, one JSON per page."""
 import json, os, sys, time
-S = "/private/tmp/claude-501/-Users-abdullah-Documents-Github-quran-svg/e2b2f3f9-54a9-433b-9cdb-4a0da8c551b9/scratchpad"
+S = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(S)
+# Sweep results are bulk generated data: one JSON per page, per build. They live
+# outside git but must outlive a session, because the pinned "before" build is
+# compared against for every change.
+SWEEPS = os.environ.get("QSVG_SWEEPS", os.path.join(ROOT, ".cache", "sweeps"))
 sys.path.insert(0, S)
-OUT = os.environ.get("QSVG_OUT", S + "/baseline/pages")
+OUT = os.environ.get("QSVG_OUT", SWEEPS + "/baseline/pages")
+os.makedirs(OUT, exist_ok=True)
 
 def one(pg):
     import audit_marks, audit_intervals
@@ -28,7 +34,7 @@ if __name__ == "__main__":
     print("todo %d pages" % len(todo), flush=True)
     from multiprocessing import Pool
     t0 = time.time()
-    with Pool(2, maxtasksperchild=6) as pool:
+    with Pool(int(os.environ.get("QSVG_JOBS", "2")), maxtasksperchild=6) as pool:
         for i, (pg, rec) in enumerate(pool.imap_unordered(one, todo), 1):
             json.dump(rec, open("%s/%03d.json" % (OUT, pg), "w"), ensure_ascii=False)
             el = time.time() - t0
