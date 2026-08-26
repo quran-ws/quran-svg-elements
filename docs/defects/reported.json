@@ -251,6 +251,27 @@
    "reported": "agent-discovered while executing Abdullah's mark-type validation brief",
    "cause": "SECOND iqlab-notation finding, bigger than item 18: quran.com uthmani writes tanween+ۢ/ۭ at IDGHAM/IKHFA positions too; the QPC text writes open tanween (ٖ ٗ ٞ) with NO meem there, and the print draws a stroke PAIR with no م. _IQTAN keys on uthmani, so at 926 words it names the pair's second stroke (or welded outline) 'meem-iqlab'. Count-audits blind (meem-iqlab never demanded). Same mechanism produces the لأيات name-crossing (10 words) and most half-pair flags. The QPC encoding IS the drawing convention. Full rule table: docs/defects/marktype_rules.md; audit: tools/audit_marktype.py; trial fix QSVG_MTYPE default OFF pending full-mushaf gate.",
    "status": "trial built, gate pending (waiting for label-table stability)"
+  },
+  {
+   "id": 24,
+   "page": null,
+   "words": [
+    "~900 words mushaf-wide (R7 family)"
+   ],
+   "reported": "Abdullah's challenge-all-agent-work rule, applied: blind verification of the mark-type rules agent",
+   "cause": "Verifier (external arbitration vs MushafDatabase + blind judging with disguised controls, 28/30 controls passed): R7 DETECTION is right (60/60 flagged words draw no meem; 20/20 true iqlabs confirmed) but the proposed CORRECTION was WRONG — the flagged ink is the word's final LETTER (58/60 bbox-identical to MDB letter text), not a tanween stroke. The corrector branch (b) would have converted ~900 letters into marks with bench/pixel/audit_marks all green. Correct fix: restore to BODY per word, text+reference-witnessed — which the visual labeler's 111 'letter' signature labels already begin to do. Also: this is a real ~900-word semantic divergence from MushafDatabase that the '25 words separate us' figure never counted. Full verdict table: docs/defects/marktype_verification.md. R1's blanket rename also refuted; R2(a) confirmed; detectors R4/R9/R10/R11 confirmed with listed exclusions. Caution recorded: true low ۭ meems reach 9.6u — the iqlab/idgham split must stay text-driven, never geometric.",
+   "status": "QSVG_MTYPE stays OFF permanently as-built; detection rules adopted as AUDIT ONLY; the letter-restoration fix goes through the label channel + a body-restore pass to be built and gated separately"
+  },
+  {
+   "id": 25,
+   "page": null,
+   "words": [
+    "p589 84:13:1/2 (إِنَّهُۥ ۥ→كَانَ)",
+    "p600 100:6:3 interval"
+   ],
+   "reported": "gate exceptions accepted while adopting the visual labeler's 271 labels",
+   "cause": "mushaf-wide gate: MARK 236→212, clean 409→421, intervals +1, two pages worse: p589 +2 is ONE defect (the newly-labeled small-waw ۥ moved into mark reconciliation and attached to the neighbour — the label is right, the attachment pass is the weakness), p600 +1 interval on a juz-30 page. Accepted: 24 flags removed vs 2 new NON-SILENT ones, both in families the correctors already target.",
+   "status": "open, queued for the neighbour-transfer/line-set repairs"
   }
  ]
 }

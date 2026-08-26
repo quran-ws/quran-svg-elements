@@ -1,0 +1,701 @@
+[
+ {
+  "page": 456,
+  "key": "38:51:6",
+  "text": "كَثِيرَةٍۢ",
+  "cls": "LETTER",
+  "letters": [
+   "كثير",
+   "ة"
+  ],
+  "dist_to_tanween": 1.1,
+  "w": 4.4
+ },
+ {
+  "page": 102,
+  "key": "4:152:16",
+  "text": "غَفُورًۭا",
+  "cls": "LETTER",
+  "letters": [
+   "غفو",
+   "ر",
+   "ا"
+  ],
+  "dist_to_tanween": 5.9,
+  "w": 9.2
+ },
+ {
+  "page": 26,
+  "key": "2:173:18",
+  "text": "عَادٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "عا",
+   "د"
+  ],
+  "dist_to_tanween": 0.7,
+  "w": 5.4
+ },
+ {
+  "page": 522,
+  "key": "51:32:5",
+  "text": "قَوْمٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "قو",
+   "م"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 11.0
+ },
+ {
+  "page": 228,
+  "key": "11:54:14",
+  "text": "بَرِىٓءٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 2.2,
+  "w": 5.3
+ },
+ {
+  "page": 204,
+  "key": "9:109:17",
+  "text": "هَارٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "ر"
+  ],
+  "dist_to_tanween": 0.4,
+  "w": 9.3
+ },
+ {
+  "page": 187,
+  "key": "9:3:1",
+  "text": "وَأَذَٰنٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ن"
+  ],
+  "dist_to_tanween": 4.7,
+  "w": 9.6
+ },
+ {
+  "page": 124,
+  "key": "5:103:5",
+  "text": "بَحِيرَةٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "بحير",
+   "ة"
+  ],
+  "dist_to_tanween": 0.6,
+  "w": 4.6
+ },
+ {
+  "page": 520,
+  "key": "50:41:6",
+  "text": "مَّكَانٍۢ",
+  "cls": "LETTER",
+  "letters": [
+   "ن"
+  ],
+  "dist_to_tanween": 1.1,
+  "w": 9.7
+ },
+ {
+  "page": 92,
+  "key": "4:89:7",
+  "text": "سَوَآءًۭ ۖ",
+  "cls": "LETTER",
+  "letters": [
+   "سو",
+   "ا",
+   "ء"
+  ],
+  "dist_to_tanween": 3.9,
+  "w": 5.9
+ },
+ {
+  "page": 480,
+  "key": "41:32:3",
+  "text": "غَفُورٍۢ",
+  "cls": "LETTER",
+  "letters": [
+   "غفو",
+   "ر"
+  ],
+  "dist_to_tanween": 1.6,
+  "w": 9.3
+ },
+ {
+  "page": 521,
+  "key": "51:29:4",
+  "text": "صَرَّةٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "صر",
+   "ة"
+  ],
+  "dist_to_tanween": 0.7,
+  "w": 4.5
+ },
+ {
+  "page": 591,
+  "key": "86:8:4",
+  "text": "لَقَادِرٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ر"
+  ],
+  "dist_to_tanween": 2.6,
+  "w": 9.3
+ },
+ {
+  "page": 400,
+  "key": "29:35:6",
+  "text": "لِّقَوْمٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "لقو",
+   "م"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 11.0
+ },
+ {
+  "page": 78,
+  "key": "4:10:11",
+  "text": "نَارًۭا ۖ",
+  "cls": "LETTER",
+  "letters": [
+   "ر",
+   "ا"
+  ],
+  "dist_to_tanween": 6.8,
+  "w": 9.3
+ },
+ {
+  "page": 430,
+  "key": "34:21:16",
+  "text": "شَكٍّۢ ۗ",
+  "cls": "LETTER",
+  "letters": [
+   "شك"
+  ],
+  "dist_to_tanween": 5.4,
+  "w": 4.7
+ },
+ {
+  "page": 303,
+  "key": "18:90:9",
+  "text": "قَوْمٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "قو",
+   "م"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 11.0
+ },
+ {
+  "page": 31,
+  "key": "2:199:11",
+  "text": "غَفُورٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "غفو",
+   "ر"
+  ],
+  "dist_to_tanween": 3.1,
+  "w": 9.2
+ },
+ {
+  "page": 30,
+  "key": "2:196:50",
+  "text": "أَيَّامٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "م"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 11.0
+ },
+ {
+  "page": 82,
+  "key": "4:25:34",
+  "text": "أَخْدَانٍۢ ۚ",
+  "cls": "BOTH",
+  "letters": [
+   "ا",
+   "ن"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 9.7
+ },
+ {
+  "page": 185,
+  "key": "8:69:10",
+  "text": "غَفُورٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "غفو",
+   "ر"
+  ],
+  "dist_to_tanween": 2.4,
+  "w": 9.3
+ },
+ {
+  "page": 192,
+  "key": "9:36:18",
+  "text": "حُرُمٌۭ ۚ",
+  "cls": "LETTER",
+  "letters": [
+   "حر",
+   "م"
+  ],
+  "dist_to_tanween": 2.0,
+  "w": 11.0
+ },
+ {
+  "page": 368,
+  "key": "26:32:5",
+  "text": "ثُعْبَانٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ن"
+  ],
+  "dist_to_tanween": 4.2,
+  "w": 9.7
+ },
+ {
+  "page": 435,
+  "key": "35:7:11",
+  "text": "مَّغْفِرَةٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "مغفر",
+   "ة"
+  ],
+  "dist_to_tanween": 5.9,
+  "w": 4.5
+ },
+ {
+  "page": 27,
+  "key": "2:178:20",
+  "text": "شَىْءٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 3.9,
+  "w": 5.4
+ },
+ {
+  "page": 414,
+  "key": "31:32:22",
+  "text": "كَفُورٍۢ",
+  "cls": "LETTER",
+  "letters": [
+   "كفو",
+   "ر"
+  ],
+  "dist_to_tanween": 1.2,
+  "w": 10.1
+ },
+ {
+  "page": 168,
+  "key": "7:145:7",
+  "text": "شَىْءٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 0.2,
+  "w": 5.3
+ },
+ {
+  "page": 506,
+  "key": "46:33:21",
+  "text": "شَىْءٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 5.3
+ },
+ {
+  "page": 463,
+  "key": "39:42:25",
+  "text": "لِّقَوْمٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "لقو",
+   "م"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 11.0
+ },
+ {
+  "page": 497,
+  "key": "44:25:5",
+  "text": "وَعُيُونٍۢ",
+  "cls": "LETTER",
+  "letters": [
+   "عيو",
+   "ن"
+  ],
+  "dist_to_tanween": 1.3,
+  "w": 9.6
+ },
+ {
+  "page": 300,
+  "key": "18:56:18",
+  "text": "هُزُوًۭا",
+  "cls": "LETTER",
+  "letters": [
+   "هز",
+   "و",
+   "ا"
+  ],
+  "dist_to_tanween": 5.6,
+  "w": 9.9
+ },
+ {
+  "page": 186,
+  "key": "8:73:12",
+  "text": "وَفَسَادٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "د"
+  ],
+  "dist_to_tanween": 3.8,
+  "w": 5.4
+ },
+ {
+  "page": 335,
+  "key": "22:28:8",
+  "text": "أَيَّامٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "م"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 10.9
+ },
+ {
+  "page": 430,
+  "key": "34:19:19",
+  "text": "شَكُورٍۢ",
+  "cls": "LETTER",
+  "letters": [
+   "شكو",
+   "ر"
+  ],
+  "dist_to_tanween": 1.1,
+  "w": 9.3
+ },
+ {
+  "page": 228,
+  "key": "11:59:2",
+  "text": "عَادٌۭ ۖ",
+  "cls": "LETTER",
+  "letters": [
+   "د"
+  ],
+  "dist_to_tanween": 2.0,
+  "w": 5.4
+ },
+ {
+  "page": 549,
+  "key": "60:2:5",
+  "text": "أَعْدَآءًۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ا",
+   "ء"
+  ],
+  "dist_to_tanween": 3.7,
+  "w": 5.3
+ },
+ {
+  "page": 582,
+  "key": "78:24:4",
+  "text": "بَرْدًۭا",
+  "cls": "LETTER",
+  "letters": [
+   "بر",
+   "د"
+  ],
+  "dist_to_tanween": 4.6,
+  "w": 5.7
+ },
+ {
+  "page": 9,
+  "key": "2:61:7",
+  "text": "طَعَامٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "م"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 11.0
+ },
+ {
+  "page": 530,
+  "key": "54:28:7",
+  "text": "شِرْبٍۢ",
+  "cls": "LETTER",
+  "letters": [
+   "شر",
+   "ب"
+  ],
+  "dist_to_tanween": 5.1,
+  "w": 11.8
+ },
+ {
+  "page": 547,
+  "key": "59:13:10",
+  "text": "قَوْمٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "قو",
+   "م"
+  ],
+  "dist_to_tanween": 3.6,
+  "w": 11.0
+ },
+ {
+  "page": 140,
+  "key": "6:101:14",
+  "text": "شَىْءٍۢ ۖ",
+  "cls": "BOTH",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 0.2,
+  "w": 5.4
+ },
+ {
+  "page": 494,
+  "key": "43:73:4",
+  "text": "كَثِيرَةٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "كثير",
+   "ة"
+  ],
+  "dist_to_tanween": 6.3,
+  "w": 4.4
+ },
+ {
+  "page": 260,
+  "key": "14:34:15",
+  "text": "كَفَّارٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ر"
+  ],
+  "dist_to_tanween": 3.3,
+  "w": 9.3
+ },
+ {
+  "page": 139,
+  "key": "6:91:23",
+  "text": "نُورًۭا",
+  "cls": "LETTER",
+  "letters": [
+   "نو",
+   "ر",
+   "ا"
+  ],
+  "dist_to_tanween": 5.8,
+  "w": 9.3
+ },
+ {
+  "page": 184,
+  "key": "8:60:25",
+  "text": "شَىْءٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 0.2,
+  "w": 5.3
+ },
+ {
+  "page": 531,
+  "key": "54:52:2",
+  "text": "شَىْءٍۢ",
+  "cls": "BOTH",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 0.2,
+  "w": 5.3
+ },
+ {
+  "page": 259,
+  "key": "14:30:3",
+  "text": "أَندَادًۭا",
+  "cls": "LETTER",
+  "letters": [
+   "د"
+  ],
+  "dist_to_tanween": 5.5,
+  "w": 5.4
+ },
+ {
+  "page": 81,
+  "key": "4:23:53",
+  "text": "غَفُورًۭا",
+  "cls": "LETTER",
+  "letters": [
+   "غفو",
+   "ر",
+   "ا"
+  ],
+  "dist_to_tanween": 5.7,
+  "w": 9.2
+ },
+ {
+  "page": 280,
+  "key": "16:115:18",
+  "text": "عَادٍۢ",
+  "cls": "LETTER",
+  "letters": [
+   "د"
+  ],
+  "dist_to_tanween": 1.6,
+  "w": 5.4
+ },
+ {
+  "page": 85,
+  "key": "4:43:37",
+  "text": "مَآءًۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ما",
+   "ء"
+  ],
+  "dist_to_tanween": 4.1,
+  "w": 5.3
+ },
+ {
+  "page": 267,
+  "key": "16:5:5",
+  "text": "دِفْءٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 4.1,
+  "w": 5.3
+ },
+ {
+  "page": 577,
+  "key": "74:54:3",
+  "text": "تَذْكِرَةٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "كر",
+   "ة"
+  ],
+  "dist_to_tanween": 6.2,
+  "w": 4.5
+ },
+ {
+  "page": 261,
+  "key": "14:50:3",
+  "text": "قَطِرَانٍۢ",
+  "cls": "LETTER",
+  "letters": [
+   "قطر",
+   "ا",
+   "ن"
+  ],
+  "dist_to_tanween": 0.9,
+  "w": 9.7
+ },
+ {
+  "page": 436,
+  "key": "35:18:14",
+  "text": "شَىْءٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 1.6,
+  "w": 5.3
+ },
+ {
+  "page": 220,
+  "key": "10:104:7",
+  "text": "شَكٍّۢ",
+  "cls": "LETTER",
+  "letters": [
+   "شك"
+  ],
+  "dist_to_tanween": 5.7,
+  "w": 4.8
+ },
+ {
+  "page": 547,
+  "key": "59:14:14",
+  "text": "شَدِيدٌۭ ۚ",
+  "cls": "LETTER",
+  "letters": [
+   "يد"
+  ],
+  "dist_to_tanween": 1.3,
+  "w": 11.4
+ },
+ {
+  "page": 43,
+  "key": "2:259:31",
+  "text": "يَوْمٍۢ ۖ",
+  "cls": "BOTH",
+  "letters": [
+   "يو",
+   "م"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 11.0
+ },
+ {
+  "page": 518,
+  "key": "50:13:1",
+  "text": "وَعَادٌۭ",
+  "cls": "LETTER",
+  "letters": [
+   "د"
+  ],
+  "dist_to_tanween": 2.0,
+  "w": 5.4
+ },
+ {
+  "page": 344,
+  "key": "23:41:5",
+  "text": "غُثَآءًۭ ۚ",
+  "cls": "LETTER",
+  "letters": [
+   "غثا",
+   "ء"
+  ],
+  "dist_to_tanween": 4.5,
+  "w": 5.4
+ },
+ {
+  "page": 385,
+  "key": "27:91:12",
+  "text": "شَىْءٍۢ ۖ",
+  "cls": "BOTH",
+  "letters": [
+   "ء"
+  ],
+  "dist_to_tanween": 0.0,
+  "w": 5.3
+ }
+]
