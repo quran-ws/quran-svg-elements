@@ -286,6 +286,17 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/" or path == "/index.html":
                 return self.send_file(os.path.join(PLATFORM, "index.html"),
                                       "text/html; charset=utf-8")
+            if path == "/confidence":
+                # score_confidence.py --html writes this; serving it same-origin
+                # lets it fetch /api/page/N for the inline word previews
+                return self.send_file(
+                    os.path.join(ROOT, "docs", "defects", "confidence.html"),
+                    "text/html; charset=utf-8")
+            if path == "/proposals":
+                # build_proposals_page.py writes this — decisions needing a human
+                return self.send_file(
+                    os.path.join(ROOT, "docs", "defects", "proposals.html"),
+                    "text/html; charset=utf-8")
             m = re.match(r"^/api/page/(\d+)$", path)
             if m:
                 return self.api_page(int(m.group(1)))

@@ -2,7 +2,11 @@
 
 Semantic decomposition of the KFGQPC Madani mushaf: every page SVG broken into
 ayah → word → ligature → element → labelled mark, pixel-identical to the
-original artwork.
+original artwork. **The artwork is the KFGQPC V2 1421H print (the edition
+Digital Khatt models)** — confirmed by Abdullah 2026-08-26. When a text source
+or reference disagrees with the ink, the 1421H print is what the ink IS; judge
+sources against it, not it against sources (the waqf and iqlab notation
+differences in this file all trace to that edition).
 
 **Start here:** `docs/PROCESS.md` is the working loop. This file is the state
 of play and the things that will waste your time if you do not know them.
@@ -20,15 +24,26 @@ is never committed anywhere.
 
 | | pinned baseline | now |
 |---|---|---|
-| Flagged words (mark audit) | 559 | **263** |
-| Interval-audit flags | 172 | **106** |
-| Pages fully clean | 276 | **407** of 604 |
+| Flagged words (mark audit) | 559 | **236** |
+| Interval-audit flags | 172 | **136** |
+| Pages fully clean | 276 | **409** of 604 |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
-| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 76, same |
+| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 79 over 12 pages, no failures, pixelfail 0 |
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's.
+so they are not comparable to today's. Current sweep: `.cache/sweeps/xband`
+(dk_lines validated over all 604 pages: -8 marks, -2 intervals, +4 clean, zero
+pages worse vs `.cache/sweeps/iqlab-fix`).
+
+Two figures need context. **Bench** now covers 12 pages (143 and 222 were added as
+iqlab cases); on the previous 10-page set the score is still 76, and the +3 is one
+pre-existing budget flag on the added pages. **Intervals rose 106 → 138 while mark
+flags FELL** because the iqlab fix names previously-anonymous tanween+م ink: the
+interval audit only examines named marks, so tightly-kerned word-final iqlab pairs it
+had always ignored became visible (mark budgets on every affected page are clean —
+p414, p63, p490 — the ownership did not change, its visibility did). Verify a few by
+eye before treating them as regressions.
 
 ### Against MushafDatabase, on evidence outside both decompositions
 
@@ -178,6 +193,14 @@ mushaf-wide, so a wrong entry costs hundreds of flags at once.
    `letter`/`letter-part` everywhere and is never counted; `hamza` is a
    diacritic that is. One entry changed from `letter-hamza` to `hamza` cost
    ~+527 flags mushaf-wide.
+4. **Iqlab is ONE haraka + small meem in this print, not tanween + meem.**
+   uthmani writes `ٌ`+`ۢ`; the KFGQPC text and the INK have a single stroke plus
+   a small م (the high `ۢ` a separate glyph, the low `ۭ` often fused). Every
+   pass that assumes a tanween is a stroke PAIR, and every budget read from
+   uthmani, is exposed at iqlab positions — full site survey in
+   `docs/defects/iqlab_notation.md`. The 12 CERTAIN ligature-surplus words are
+   `assign_words.py:4917` exiting early ("already named") before rescuing the
+   meem, which stays counted as a letter piece.
 
 **Always measure a label change.** `scratchpad/label_bisect.py` applies
 confirmed labels one at a time against an 11-page sample and keeps only those
@@ -274,12 +297,30 @@ Two candidate explanations were tested and both are dead:
   bias — an absolute-error floor (`MIN_OFF`) is now applied — but immaterial:
   1658 flagged words became 1643 and juz 30 stayed at **2.7x** (6.8 vs 2.6).
 
-So juz 30 is genuinely worse, it tracks ayahs per page rather than word
-density, and **the mechanism is still unidentified**. Next thing to try: what
-else scales with ayah count on a page? Surah headers and basmalas take whole
-lines in juz 30, so the text lines per page and the band geometry differ —
-compare band heights and the line-mapping stage's behaviour on those pages
-against a normal page.
+**MECHANISM FOUND 2026-08-26 (reported.json item 21): the word source lies
+about page boundaries on 25 pages.** quran.com's mushaf-2 layout disagrees with
+the print about WHICH WORDS ARE ON THE PAGE at p121-123, p145, p532-534, and
+18 pages of juz 29-30 (565, 568, 570, 576, 584, 586, 588-600) — p599 is off by
+two whole ayahs. Adjudicated three ways: DigitalKhatt's layout DB (an exact
+model of this 1421H print, `.cache/digitalkhatt/digital-khatt-15-lines.db` +
+`digital-khatt-v2.db`, word-id joined) and MushafDatabase agree EXACTLY on
+every disputed page; quran.com stands alone. The pipeline has been cramming a
+wrong word list into the right ink on those pages — hence defects tracking
+ayahs/page, "gaps 62% wider", and p589/p590's width chaos (quran.com puts
+84:25 on p589; the print draws it on p590, and 84:25's words are our worst
+width defects). The DigitalKhatt DBs also carry the print's true segmentation
+(بعد/ما as TWO words — the p254 wreck, item 20) and its orthography (open
+tanween U+08F0-08F2). **Adoption, measured 2026-08-26:** wholesale word-source
+replacement is WORSE (22→64 flags on the target pages) because the
+polygon/ayah_stream layer already repairs page membership from the artwork's
+own markers — a naive swap double-corrects. What works is the surgical form:
+`.cache/dk_lines.json` (built by `tools/build_dk_words.py` + the DBs) now
+replaces `qcf_lines.json` as the line table (`QSVG_DKLINES=0` reverts) —
+target-page mark flags 22→17, zero regressions, bench clean, and the
+misleading monotonic fallback retires. The juz-30 WIDTH clusters (p592-600)
+are NOT fixed by this; they are the line-partition work in
+`docs/superpowers/plans/2026-08-26-certain-defect-fixes.md`. The variable font
+(`DigitalKhattV2.otf`, same dir) is stored for a future width-metric phase.
 
 ### 2. What is left between us and MushafDatabase — 25 words
 

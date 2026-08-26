@@ -157,14 +157,27 @@ def scan_page(pg):
     out = []
     for x in W:
         txt, els, bods = x["t"], x["els"], x["b"]
-        # effective pieces: a stroke drawn over a wider sibling is not a piece
-        eff = []
-        for b in bods:
+        # effective pieces: a stroke over a wider sibling is not a piece, and
+        # pieces whose boxes overlap end-to-end are ONE stroke thinned to a
+        # pen-lift (visually verified on p203/p219/p189; genuinely foreign
+        # pieces have positive gaps — p451). Mirrors audit_marks exactly.
+        parent = list(range(len(bods)))
+        def _find(i):
+            while parent[i] != i:
+                parent[i] = parent[parent[i]]
+                i = parent[i]
+            return i
+        for i, b in enumerate(bods):
             wb = b["x2"] - b["x1"]
-            if not any(o is not b
-                       and min(o["x2"], b["x2"]) - max(o["x1"], b["x1"]) >= 0.6 * wb
-                       and (o["x2"] - o["x1"]) > wb for o in bods):
-                eff.append(b)
+            for j, o in enumerate(bods):
+                if o is b:
+                    continue
+                xov = min(o["x2"], b["x2"]) - max(o["x1"], b["x1"])
+                yov = min(o["y2"], b["y2"]) - max(o["y1"], b["y1"])
+                if (xov >= 0.6 * wb and (o["x2"] - o["x1"]) > wb) \
+                        or (xov > 0.5 and yov > 3.0):
+                    parent[_find(i)] = _find(j)
+        eff = {_find(i) for i in range(len(bods))}
         have, dots = Counter(), 0
         marks = []
         for e in els:
@@ -406,7 +419,14 @@ def score_word(word, med, ref_keys=()):
         elif mk["P"] >= FOLD_MIN:
             soft.append(("mark:" + mk["mark"], mk["P"]))
     P = 1.0 if proofs else noisy_or([p for _, p in soft])
-    return {"key": word["key"], "text": word["text"], "line": word["line"],
+    # Measured against 94 human verdicts (visual_verdicts.json round 3): a
+    # width flag with NO companion signal is a false positive far more often
+    # than not — justified stretch, the م glyph-shape mismatch, or collateral
+    # of a single neighbour's defect. Width alone points, it does not convict.
+    if not proofs and soft and all(n.startswith("width") for n, _ in soft):
+        P = min(P, 0.45)
+    return {"key": word["key"], "text": word["text"], "qpc": word.get("qpc"),
+            "line": word["line"],
             "P": round(P, 3), "tier": tier(P, bool(proofs)),
             "proofs": proofs,
             "metrics": {k: round(v, 3) for k, v in soft},
@@ -487,6 +507,15 @@ def main():
             raws[pg] = json.load(open(f))
     med = family_medians(raws)
     ref = load_ref_lines(args.ref)
+    # human visual verdicts (docs/defects/visual_verdicts.json): a no-issue
+    # verdict is a human who looked at the ink — it outranks every metric and
+    # removes the word from the report; a confirmed verdict is annotated
+    verd = {}
+    vp = os.path.join(ROOT, "docs", "defects", "visual_verdicts.json")
+    if os.path.exists(vp):
+        for rnd in json.load(open(vp)).get("rounds", []):
+            for v in rnd.get("verdicts", []):
+                verd[(v["page"], v["key"])] = (v["status"], v.get("note", ""))
 
     tiers, worst, fam_agg = Counter(), [], Counter()
     for pg, rec in sorted(raws.items()):
@@ -494,6 +523,14 @@ def main():
             tiers["page-error"] += 1
             continue
         rows = [score_word(w, med, ref.get(pg, ())) for w in rec["words"]]
+        for r in rows:
+            st = verd.get((pg, r["key"]))
+            if not st:
+                continue
+            r["human"], r["human_note"] = st
+            if st[0] == "no-issue" and r["tier"] != "clean":
+                r["tier"], r["P"] = "clean", 0.0
+                r["proofs"] = []
         page_rec = {"page": pg, "poly_suspect": pg in POLY_SUSPECT,
                     "tiers": dict(Counter(r["tier"] for r in rows)),
                     "words": rows}
@@ -525,27 +562,287 @@ def main():
 
 
 def write_html(worst, path):
-    C = {"certain": "#b3261e", "high": "#c77700", "review": "#946f00"}
-    rows = []
+    """Interactive visual review page. Serve it THROUGH the review server
+    (http://127.0.0.1:8777/confidence) so it can fetch /api/page/N same-origin
+    and render each word's actual ink beside its evidence. Cards start
+    inactive; a click marks a word as a visually-confirmed defect (persisted
+    in localStorage); the toolbar copies the active list to share."""
+    import html as _html
+    cards = []
     for pg, r in worst:
         why = "; ".join(r["proofs"]) if r["proofs"] else \
               "; ".join("%s %.2f" % kv for kv in
                         sorted(r["metrics"].items(), key=lambda kv: -kv[1]))
-        rows.append(
-            "<tr><td>%d</td><td>%s</td><td class=ar>%s</td>"
-            "<td style='color:%s;font-weight:600'>%s</td><td>%.2f</td><td>%s</td></tr>"
-            % (pg, r["key"], r["text"], C.get(r["tier"], "#333"), r["tier"],
-               r["P"], why))
-    open(path, "w").write(
-        "<!doctype html><meta charset=utf-8><title>confidence</title><style>"
-        "body{font:14px system-ui;margin:24px}table{border-collapse:collapse}"
-        "td,th{border-bottom:1px solid #ddd;padding:4px 10px;text-align:left}"
-        ".ar{font-size:20px}</style><h2>Words ranked by defect confidence</h2>"
-        "<p>certain = a proof-class violation (see score_confidence.py docstring); "
-        "high/review = combined soft evidence.</p><table><tr><th>page</th>"
-        "<th>word</th><th>text</th><th>tier</th><th>P</th><th>evidence</th></tr>"
-        + "".join(rows) + "</table>")
-    print("wrote", path)
+        s, a, w = r["key"].split(":")
+        # coarse evidence types for the header filter
+        types = set()
+        for pr in r["proofs"]:
+            p0 = pr.split(" ")[0].split(":")[0]
+            types.add({"ligature": "ligature-surplus", "mark": None,
+                       "rtl-order": "rtl-order", "bodyless": "bodyless"}
+                      .get(p0, p0) or "")
+            if "outside its line band" in pr:
+                types.add("band")
+            if "stray" in pr:
+                types.add("stray")
+            if "size" in pr:
+                types.add("size")
+        for name, _ in r["metrics"].items():
+            n0 = name.split(" ")[0].split(":")[0]
+            types.add({"width": "width", "dots": "dots", "mark": "mark-metrics",
+                       "ref-line": "ref-line"}.get(n0, "family:" + n0))
+        types.discard("")
+        # the KFGQPC text of THIS print under the printed ink, never the other
+        # edition (the two disagree at 424 waqf positions)
+        shown = r.get("qpc") or r["text"]
+        cards.append(
+            '<div class="card" data-page="%d" data-s="%s" data-a="%s" data-w="%s"'
+            ' data-tier="%s" data-p="%.2f" data-flags="%s" data-why="%s">'
+            '<button class="xbtn" title="no issue — false positive">✗</button>'
+            '<div class="ink"><span class="wait">…</span></div>'
+            '<div class="artxt" dir="rtl">%s</div>'
+            '<div class="meta"><span class="tier t-%s">%s</span> P=%.2f · '
+            '<a href="/?page=%d&step=audit&word=%s" target=_blank>p%d %s</a></div>'
+            '<div class="why">%s</div>'
+            '<textarea class="note" dir="auto" placeholder="comment…"></textarea>'
+            '</div>'
+            % (pg, s, a, w, r["tier"], r["P"], " ".join(sorted(types)),
+               _html.escape(why, quote=True),
+               _html.escape(shown), r["tier"], r["tier"], r["P"],
+               pg, r["key"], pg, r["key"], _html.escape(why)))
+    doc = _CONF_TMPL.replace("__CARDS__", "\n".join(cards)) \
+                    .replace("__N__", str(len(worst)))
+    open(path, "w").write(doc)
+    print("wrote %s (%d cards) — open http://127.0.0.1:8777/confidence"
+          % (path, len(worst)))
+
+
+_CONF_TMPL = r"""<!doctype html><html><head><meta charset="utf-8">
+<title>defect confidence — visual review</title><style>
+@font-face{font-family:"QPC Hafs";
+  src:url("/assets/UthmanicHafs_V22.ttf") format("truetype");
+  font-display:swap}
+:root{--certain:#b3261e;--high:#c77700;--review:#946f00;--muted:#8a8577}
+body{font:14px system-ui;margin:0;background:#f7f5ef;color:#231f20}
+header{position:sticky;top:0;background:#fffdf8;border-bottom:1px solid #ddd7c6;
+  padding:10px 18px;display:flex;gap:16px;align-items:center;z-index:5;flex-wrap:wrap}
+header h1{font-size:16px;margin:0}
+header .count{color:var(--muted)}
+header button{font:inherit;padding:6px 14px;border:1px solid #999;border-radius:6px;
+  background:#fff;cursor:pointer}
+header button:hover{border-color:#245a9e;color:#245a9e}
+#banner{background:#fbeeec;color:#b3261e;padding:8px 18px;display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
+  gap:12px;padding:16px}
+.card{border:1px solid #ddd7c6;border-radius:8px;background:#fff;padding:8px;
+  cursor:pointer;opacity:.55;transition:opacity .15s, box-shadow .15s;
+  position:relative}
+.card:hover{opacity:.85}
+.card.active{opacity:1;box-shadow:0 0 0 2px #245a9e;border-color:#245a9e}
+.card.active::after{content:"✓ confirmed";color:#245a9e;font-weight:600;font-size:12px}
+.card.rejected{opacity:.9;box-shadow:0 0 0 2px #8a8577;border-color:#8a8577;
+  background:#f3f1ea}
+.card.rejected::after{content:"✗ no issue";color:#6c675d;font-weight:600;font-size:12px}
+.card.rejected .ink,.card.rejected .artxt{opacity:.45}
+.xbtn{position:absolute;top:6px;left:6px;z-index:2;width:24px;height:24px;
+  border:1px solid #c9c3b2;border-radius:50%;background:#fff;color:#6c675d;
+  font:14px/1 system-ui;cursor:pointer;opacity:0;transition:opacity .15s}
+.card:hover .xbtn{opacity:1}
+.card.rejected .xbtn{opacity:1;background:#6c675d;color:#fff;border-color:#6c675d}
+.xbtn:hover{border-color:#8d3b2f;color:#8d3b2f}
+.card.rejected .xbtn:hover{color:#fff}
+.ink{height:110px;display:flex;align-items:center;justify-content:center;
+  background:#fffdf8;border-radius:4px}
+.ink svg{max-width:100%;max-height:106px}
+.wait{color:var(--muted)}
+.artxt{font-family:"QPC Hafs",serif;font-size:26px;text-align:center;margin:4px 0}
+.note{width:100%;box-sizing:border-box;margin-top:6px;border:1px solid #e4dfd2;
+  border-radius:4px;font:12.5px system-ui;padding:4px 6px;resize:vertical;
+  min-height:26px;height:26px;background:#fffdf8;display:block}
+.note:focus{height:56px;border-color:#245a9e;outline:none}
+.card.noted .note{border-color:#946f00;background:#fdf8ec}
+.meta{font-size:12.5px}
+.tier{font-weight:700;text-transform:uppercase;font-size:11px}
+.t-certain{color:var(--certain)}.t-high{color:var(--high)}.t-review{color:var(--review)}
+.why{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.35}
+.meta a{color:#245a9e}
+</style></head><body>
+<header><h1>Defect confidence — visual review</h1>
+<span class="count"><b id="nact">0</b> confirmed · <b id="nrej">0</b> no-issue of __N__</span>
+<button id="copyBtn">Copy confirmed list</button>
+<button id="copyJson">Copy as JSON</button>
+<button id="clearBtn">Clear all</button>
+<label><input type="checkbox" id="onlyCertain"> certain only</label>
+<select id="flagSel"><option value="">all evidence types</option></select>
+</header>
+<div id="banner">Open this page through the review server —
+<code>http://127.0.0.1:8777/confidence</code> — so word previews can load.</div>
+<div class="grid" id="grid">__CARDS__</div>
+<script>
+const grid = document.getElementById("grid");
+const cards = [...grid.querySelectorAll(".card")];
+const KEY = "confidence-active", RKEY = "confidence-rejected";
+let active = new Set(JSON.parse(localStorage.getItem(KEY) || "[]"));
+let rejected = new Set(JSON.parse(localStorage.getItem(RKEY) || "[]"));
+const widOf = c => `${c.dataset.page}:${c.dataset.s}:${c.dataset.a}:${c.dataset.w}`;
+function sync(){
+  cards.forEach(c => {
+    const k = widOf(c);
+    c.classList.toggle("active", active.has(k));
+    c.classList.toggle("rejected", rejected.has(k));
+  });
+  document.getElementById("nact").textContent = active.size;
+  document.getElementById("nrej").textContent = rejected.size;
+  localStorage.setItem(KEY, JSON.stringify([...active]));
+  localStorage.setItem(RKEY, JSON.stringify([...rejected]));
+}
+cards.forEach(c => c.onclick = e => {
+  if (e.target.closest("a") || e.target.closest(".note")) return;
+  const k = widOf(c);
+  if (e.target.closest(".xbtn")) {          // ✗ = false positive, no issue
+    rejected.has(k) ? rejected.delete(k) : (rejected.add(k), active.delete(k));
+  } else {
+    active.has(k) ? active.delete(k) : (active.add(k), rejected.delete(k));
+  }
+  sync();
+});
+
+/* ---- per-word comments, persisted like the active set ---- */
+const NKEY = "confidence-notes";
+let notes = JSON.parse(localStorage.getItem(NKEY) || "{}");
+cards.forEach(c => {
+  const ta = c.querySelector(".note");
+  const k = widOf(c);
+  if (notes[k]) { ta.value = notes[k]; c.classList.add("noted"); }
+  ta.addEventListener("input", () => {
+    if (ta.value.trim()) notes[k] = ta.value.trim();
+    else delete notes[k];
+    c.classList.toggle("noted", !!notes[k]);
+    localStorage.setItem(NKEY, JSON.stringify(notes));
+  });
+});
+document.getElementById("clearBtn").onclick = () => {
+  active.clear(); rejected.clear(); sync();
+};
+/* evidence-type filter: options built from what the cards actually carry */
+const flagSel = document.getElementById("flagSel");
+{
+  const all = new Set();
+  cards.forEach(c => (c.dataset.flags || "").split(" ").forEach(t => t && all.add(t)));
+  [...all].sort().forEach(t => {
+    const n = cards.filter(c => (" "+c.dataset.flags+" ").includes(" "+t+" ")).length;
+    const o = document.createElement("option");
+    o.value = t; o.textContent = `${t} (${n})`;
+    flagSel.appendChild(o);
+  });
+}
+function applyFilters(){
+  const certOnly = document.getElementById("onlyCertain").checked;
+  const t = flagSel.value;
+  cards.forEach(c => {
+    const okTier = !certOnly || c.dataset.tier === "certain";
+    const okFlag = !t || (" "+c.dataset.flags+" ").includes(" "+t+" ");
+    c.style.display = (okTier && okFlag) ? "" : "none";
+  });
+}
+document.getElementById("onlyCertain").onchange = applyFilters;
+flagSel.onchange = applyFilters;
+function statusOf(k){
+  return active.has(k) ? "CONFIRMED" : rejected.has(k) ? "NO-ISSUE"
+                       : "commented";
+}
+function lineOf(c){
+  const k = widOf(c);
+  return `p${c.dataset.page} ${c.dataset.s}:${c.dataset.a}:${c.dataset.w} ` +
+         `${c.querySelector(".artxt").textContent.trim()} [${statusOf(k)} ` +
+         `${c.dataset.tier} P=${c.dataset.p}] ${c.dataset.why}` +
+         (notes[k] ? `\n    note: ${notes[k]}` : "");
+}
+/* the shareable set: confirmed + rejected + commented */
+function pickedCards(){
+  return cards.filter(c => active.has(widOf(c)) || rejected.has(widOf(c))
+                           || notes[widOf(c)]);
+}
+document.getElementById("copyBtn").onclick = () => {
+  const picked = pickedCards();
+  const t = `VISUAL REVIEW (${picked.length} words: ${active.size} confirmed, ` +
+            `${rejected.size} no-issue, ${Object.keys(notes).length} with notes)\n` +
+            picked.map(lineOf).join("\n");
+  navigator.clipboard.writeText(t);
+};
+document.getElementById("copyJson").onclick = () => {
+  const t = JSON.stringify(pickedCards().map(c => ({
+    page: +c.dataset.page, key: `${c.dataset.s}:${c.dataset.a}:${c.dataset.w}`,
+    text: c.querySelector(".artxt").textContent.trim(),
+    tier: c.dataset.tier, P: +c.dataset.p, evidence: c.dataset.why,
+    status: statusOf(widOf(c)).toLowerCase(),
+    note: notes[widOf(c)] || ""})), null, 1);
+  navigator.clipboard.writeText(t);
+};
+sync();
+
+/* ---- lazy ink previews, one /api/page fetch per page ---- */
+const pageCache = new Map();          // page -> Promise<holder div>
+function pageHolder(pg){
+  if (!pageCache.has(pg)) {
+    pageCache.set(pg, fetch("/api/page/" + pg).then(r => {
+      if (!r.ok) throw new Error(r.status);
+      return r.json();
+    }).then(d => {
+      const h = document.createElement("div");
+      h.style.cssText = "position:absolute;left:-100000px;top:0;width:900px";
+      document.body.appendChild(h);
+      h.innerHTML = d.svg;
+      return h;
+    }).catch(e => {
+      document.getElementById("banner").style.display = "block";
+      throw e;
+    }));
+  }
+  return pageCache.get(pg);
+}
+const NS = "http://www.w3.org/2000/svg";
+async function renderInk(c){
+  const holder = await pageHolder(+c.dataset.page);
+  const svg = holder.querySelector("svg");
+  const sel = `g.word[data-surah="${c.dataset.s}"][data-ayah="${c.dataset.a}"]` +
+              `[data-word="${c.dataset.w}"]`;
+  const gs = [...svg.querySelectorAll(sel)];
+  const box = c.querySelector(".ink");
+  if (!gs.length) { box.innerHTML = "<span class=wait>not in build</span>"; return; }
+  let X1=1e9, Y1=1e9, X2=-1e9, Y2=-1e9; const clones=[];
+  for (const g of gs) {
+    let bb; try { bb = g.getBBox(); } catch(e){ continue; }
+    if (!bb.width && !bb.height) continue;
+    const m = g.getCTM();
+    for (const [px,py] of [[bb.x,bb.y],[bb.x+bb.width,bb.y],
+                           [bb.x,bb.y+bb.height],[bb.x+bb.width,bb.y+bb.height]]) {
+      const x = m.a*px + m.c*py + m.e, y = m.b*px + m.d*py + m.f;
+      X1=Math.min(X1,x); Y1=Math.min(Y1,y); X2=Math.max(X2,x); Y2=Math.max(Y2,y);
+    }
+    const wrap = document.createElementNS(NS, "g");
+    wrap.setAttribute("transform",
+      `matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f})`);
+    wrap.appendChild(g.cloneNode(true));
+    clones.push(wrap);
+  }
+  if (!clones.length) { box.innerHTML = "<span class=wait>empty</span>"; return; }
+  const mini = document.createElementNS(NS, "svg");
+  const pad = 3;
+  mini.setAttribute("viewBox",
+    `${X1-pad} ${Y1-pad} ${X2-X1+2*pad} ${Y2-Y1+2*pad}`);
+  clones.forEach(cl => mini.appendChild(cl));
+  box.innerHTML = ""; box.appendChild(mini);
+}
+const io = new IntersectionObserver(entries => {
+  for (const en of entries) if (en.isIntersecting) {
+    io.unobserve(en.target);
+    renderInk(en.target).catch(() => {});
+  }
+}, {rootMargin: "300px"});
+cards.forEach(c => io.observe(c));
+</script></body></html>
+"""
 
 
 if __name__ == "__main__":

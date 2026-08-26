@@ -144,7 +144,15 @@ _QCF_WARN = set()
 def _qcf_lines():
     global _QCF_LINES
     if _QCF_LINES is None:
-        p = os.path.join(ROOT, ".cache", "qcf_lines.json")
+        # The DigitalKhatt layout DB is an exact model of THIS print (KFGQPC V2
+        # 1421H) and, unlike quran.com's mushaf-2 layout, is right about which
+        # words are on the page for all 604 pages (25 pages differ, 18 in juz
+        # 29-30 — reported.json item 21, adjudicated against MushafDatabase).
+        # tools/build_dk_words.py --lines writes it in this table's format.
+        # QSVG_DKLINES=0 falls back to the QCF v2 font layout for A/B.
+        p = os.path.join(ROOT, ".cache", "dk_lines.json")
+        if os.environ.get("QSVG_DKLINES", "1") != "1" or not os.path.exists(p):
+            p = os.path.join(ROOT, ".cache", "qcf_lines.json")
         _QCF_LINES = json.load(open(p)) if os.path.exists(p) else {}
     return _QCF_LINES
 
@@ -4932,29 +4940,35 @@ def assign_page(edition, page_no, cache_dir):
         if rx1 is None:
             continue
         for tan, base, plain_ch in want:
-            if any(e.get("mark") == tan and not e.get("mkpart") for e in els):
-                continue                  # already named
-            if base == "damma":
-                pool = [e for e in els if e.get("mark") == "damma"
-                        and not e.get("mkpart") and not e.get("mkmembers")]
-                spare = len(pool) - txt.count(plain_ch)
-            else:
-                # the table names every slash by position alone, so a lone
-                # kasratan stroke can arrive called "fatha": pool both.
-                pool = [e for e in els if e.get("mark") in ("fatha", "kasra")
-                        and not e.get("mkpart") and not e.get("mkmembers")]
-                spare = len(pool) - txt.count("\u064e") - txt.count("\u0650")
-            if spare <= 0 or not pool:
-                continue                  # no stroke to spare: nothing to name
-            bods = [e for e in els if e["kind"] == "body"]
-            mid = ((min(e["y1"] for e in bods) + max(e["y2"] for e in bods)) / 2
-                   if bods else 0.0)
-            below = tan == "kasratan"
-            zone = [e for e in pool
-                    if ((e["y1"] + e["y2"]) / 2 > mid) == below] or pool
-            # the tanween sits at the END of the word — nearest its left edge
-            mv = min(zone, key=lambda e: abs((e["x1"] + e["x2"]) / 2 - rx1))
-            mv["mark"] = tan
+            # The stroke may ALREADY carry the tanween name (a single-outline
+            # dammatan glyph labels straight from the shape table). That must
+            # not skip the meem rescue below: this print draws iqlab as ONE
+            # haraka plus a small م (docs/defects/iqlab_notation.md), and an
+            # early exit here left the م counted as a letter piece in 12 words.
+            mv = next((e for e in els
+                       if e.get("mark") == tan and not e.get("mkpart")), None)
+            if mv is None:
+                if base == "damma":
+                    pool = [e for e in els if e.get("mark") == "damma"
+                            and not e.get("mkpart") and not e.get("mkmembers")]
+                    spare = len(pool) - txt.count(plain_ch)
+                else:
+                    # the table names every slash by position alone, so a lone
+                    # kasratan stroke can arrive called "fatha": pool both.
+                    pool = [e for e in els if e.get("mark") in ("fatha", "kasra")
+                            and not e.get("mkpart") and not e.get("mkmembers")]
+                    spare = len(pool) - txt.count("\u064e") - txt.count("\u0650")
+                if spare <= 0 or not pool:
+                    continue                  # no stroke to spare: nothing to name
+                bods = [e for e in els if e["kind"] == "body"]
+                mid = ((min(e["y1"] for e in bods) + max(e["y2"] for e in bods)) / 2
+                       if bods else 0.0)
+                below = tan == "kasratan"
+                zone = [e for e in pool
+                        if ((e["y1"] + e["y2"]) / 2 > mid) == below] or pool
+                # the tanween sits at the END of the word — nearest its left edge
+                mv = min(zone, key=lambda e: abs((e["x1"] + e["x2"]) / 2 - rx1))
+                mv["mark"] = tan
             # ... and its meem rides just beside it, usually filed as letter ink
             if any(e.get("mark") == "meem-iqlab" and not e.get("mkpart")
                    for e in els):
@@ -5430,7 +5444,11 @@ def assign_page(edition, page_no, cache_dir):
         rx1, rx2 = _ospan(r)
         best = None
         for v in owords:
-            if v is r or v["ln"] is None or r["ln"] is None \
+            # v is r is allowed: the small م can already be OWNED by the word,
+            # drawn as one of its body pieces (p136 أَلِيمٌۢ) — the deficit and
+            # the donor-need guard below make self-claiming safe: the word must
+            # still keep enough bodies for its letter segments.
+            if v["ln"] is None or r["ln"] is None \
                     or abs(v["ln"] - r["ln"]) > 1:
                 continue
             for a in v["at"]:
@@ -7070,6 +7088,433 @@ def assign_page(edition, page_no, cache_dir):
     # so position alone would take real iqlabs away; and the text alone cannot say which
     # piece of ink is meant. Together they are exact — the same two-signals rule that
     # governs every other transfer here.
+    # Late iqlab-meem self-rescue. By now every mover has run, and a word's own
+    # small م can have ARRIVED as one of its body pieces after both early
+    # recoveries already passed (p136 أَلِيمٌۢ receives it from بِمَا
+    # mid-pipeline, where the next-word claim rightly refused a donor it would
+    # have left bodyless). Same evidence as the early passes: the text's ۢ/ۭ
+    # budget, a م-sized piece at the word's left edge, and the joining rules —
+    # it only ever runs on a PIECE SURPLUS, so it can never eat a real letter.
+    if os.environ.get("QSVG_IQLATE", "1") == "1":
+        for _wq, _atq in assignment:
+            if not _wq:
+                continue
+            _txt = _wq["uthmani"] or ""
+            _wantm = _txt.count("ۢ") + _txt.count("ۭ")
+            if not _wantm:
+                continue
+            _els = [e for a in _atq for e in a["els"]]
+            _bod = [e for e in _els if e["kind"] == "body"]
+            if not _bod:
+                continue
+            _y1 = min(e["y1"] for e in _bod)
+            _y2 = max(e["y2"] for e in _bod)
+            _mks = [e for e in _els if e.get("mark") == "meem-iqlab"
+                    and not e.get("mkpart")]
+
+            # ۢ is a SUPERSCRIPT م and rides high beside its tanween; a
+            # "meem-iqlab" sitting in the lower half of the word's band is a
+            # letter stroke mislabeled (p222 تَارِكٌۢ carved it out of the ك)
+            # and does not satisfy the budget
+            def _high(e):
+                return ((e["y1"] + e["y2"]) / 2 - _y1) / max(1e-6,
+                                                             _y2 - _y1) <= 0.5
+            _good = [e for e in _mks if _high(e)] if "ۢ" in _txt else _mks
+            if len(_good) >= _wantm:
+                continue
+            _nseg = max(1, len(segment_word(_txt)))
+            if len(_bod) <= _nseg:
+                continue              # no surplus piece: nothing to rescue
+            # SECOND SIGNAL, same as _IQTAN's rescue: the true م rides beside
+            # the word's OWN iqlab tanween stroke. Anchoring on the left edge
+            # alone misfired at consecutive-iqlab boundaries (p414 صَبَّارٍۢ
+            # beside شَكُورٍۢ), naming the neighbour's pieces.
+            _anchor = [e for e in _els
+                       if e.get("mark") in ("fathatan", "kasratan", "dammatan",
+                                            "fatha", "kasra", "damma")
+                       and not e.get("mkpart")]
+            if not _anchor:
+                continue
+            _an = min(_anchor, key=lambda e: e["x1"])   # word-final tanween
+            _ax = (_an["x1"] + _an["x2"]) / 2
+            _ay = (_an["y1"] + _an["y2"]) / 2
+            _rx1 = min(e["x1"] for e in _bod)
+            _cand = [e for e in _bod
+                     if 2.0 <= e["x2"] - e["x1"] <= 6.0
+                     and 5.0 <= e["y2"] - e["y1"] <= 12.0
+                     and (e["x1"] + e["x2"]) / 2 - _rx1 <= 8.0
+                     and abs((e["x1"] + e["x2"]) / 2 - _ax)
+                     + abs((e["y1"] + e["y2"]) / 2 - _ay) <= 14.0]
+            if not _cand:
+                continue
+            _e = min(_cand, key=lambda e: e["x1"])
+            _e["kind"] = "mark"
+            _e["mark"] = "meem-iqlab"
+            _e.pop("lab", None)
+            # the true م found: a low impostor goes back to the letter it was
+            # carved from
+            for _m in _mks:
+                if not _high(_m):
+                    _m["kind"] = "body"
+                    _m.pop("mark", None)
+
+    # Cross-LINE band steal repair. Validated over all 604 pages 2026-08-26:
+    # -10 mark flags, intervals flat, +5 clean pages, zero pages worse
+    # (.cache/sweeps/xband vs dk-lines). QSVG_XBAND=0 reverts.
+    #
+    # A word can hold a mark drawn in the ADJACENT line's band — stolen from the
+    # word directly above or below it on the page. The orphan pass deliberately
+    # refuses these (its band guard stops at +/-10u), and the stray pass only ever
+    # hands ink to a word on the mark's own tagged line, so the family survives
+    # both. The measured empty band is the proof (CLAUDE.md): 4,203 marks sit
+    # <=10u outside their line band, 26 in 10-15u, and nothing legitimate at
+    # 15u or beyond; horizontally nothing at all sits 40-150u from its word.
+    #
+    # Two signals, or no move: the position proof (>=15u outside the band, or a
+    # >=40u horizontal gap) AND the receiving word — the word whose band the ink
+    # is actually drawn in, whose letters sit under/over it — must have text-budget
+    # capacity for the mark's family AFTER position-aware renaming (a "fatha"
+    # descending to the word below becomes that word's kasra candidate, _POS_SWAP).
+    # A move that would leave the DONOR below its own budget is refused. Slash
+    # families are normally forbidden from cross-word transfer; here the budget
+    # gate is the same test the exception demands (receiver group deficit AND
+    # donor group surplus), so no slash moves without both.
+    #
+    # QSVG_XBDBG=1 prints every candidate and the decision; QSVG_XBOUT=<file>
+    # appends one JSON line per candidate for the trial report.
+    if os.environ.get("QSVG_XBAND", "1") == "1":
+        _XB_FAMS = {"pause", "meem-iqlab", "hamza", "small-waw", "small-ya",
+                    "maddah", "small-alef", "sukun", "shadda", "small-circle",
+                    "fatha", "kasra", "fathatan", "kasratan", "damma",
+                    "dammatan"}
+        _XB_SLASH = {"fatha", "kasra", "fathatan", "kasratan"}
+        _XB_DAMMA = {"damma", "dammatan"}
+        _XB_SLASH_CH = "ًࣰٍࣲَِ"
+        _XB_DAMMA_CH = "ٌࣱُ"
+        _XB_CH = {
+            "sukun": "ْۡ", "shadda": "ّ",
+            "maddah": "ٓۤ", "small-alef": "ٰ",
+            "small-waw": "ۥ", "small-ya": "ۦۧ",
+            "small-circle": "۟۠",
+            "hamza": "أإؤئٕٔ",
+            "meem-iqlab": "ۭۢ",
+            "pause": "ۖۗۘۙۚۛۜ",
+        }
+
+        def _xb_txt(w, fam):
+            t = w["uthmani"] or ""
+            if fam == "pause":
+                # the waqf budget comes from the KFGQPC text of THIS print
+                t = w.get("qpc") or t
+            if fam in _XB_SLASH:
+                return sum(t.count(c) for c in _XB_SLASH_CH)
+            if fam in _XB_DAMMA:
+                return sum(t.count(c) for c in _XB_DAMMA_CH)
+            return sum(t.count(c) for c in _XB_CH[fam])
+
+        def _xb_held(rec, fam):
+            fams = (_XB_SLASH if fam in _XB_SLASH
+                    else _XB_DAMMA if fam in _XB_DAMMA else (fam,))
+            return sum(1 for e in rec["els"]
+                       if e.get("mark") in fams and not e.get("mkpart")
+                       and not e.get("standalone"))
+
+        _xrec = []
+        for _wx, _atx in assignment:
+            if not _wx:
+                continue
+            _ex = [e for a in _atx for e in a["els"]]
+            _bx = [e for e in _ex if e["kind"] == "body"]
+            if not _bx:
+                continue
+            _lx = [e.get("line") for e in _bx if e.get("line")]
+            _xrec.append({"w": _wx, "at": _atx, "els": _ex, "b": _bx,
+                          "ln": max(set(_lx), key=_lx.count) if _lx else 0})
+        # line bands from BODY ink, never the `line` tag — the tag is wrong
+        # exactly at line edges (the crossband audit's lesson)
+        _xband = {}
+        for _rx in _xrec:
+            _lo0, _hi0 = _xband.get(_rx["ln"], (1e9, -1e9))
+            _xband[_rx["ln"]] = (min(_lo0, min(b["y1"] for b in _rx["b"])),
+                                 max(_hi0, max(b["y2"] for b in _rx["b"])))
+        _xbyln = {}
+        for _rx in _xrec:
+            _xbyln.setdefault(_rx["ln"], []).append(_rx)
+
+        def _xovl(bs, e):
+            return max((min(b["x2"], e["x2"]) - max(b["x1"], e["x1"]))
+                       for b in bs) if bs else -9e9
+
+        _xb_page = int(os.path.splitext(page.name)[0].split("-")[0]
+                       .lstrip("0") or 0)
+        _xb_out = os.environ.get("QSVG_XBOUT")
+        _xb_dbg = os.environ.get("QSVG_XBDBG")
+
+        def _xb_log(rec):
+            if _xb_dbg:
+                sys.stderr.write("XBAND %s\n" % json.dumps(rec, ensure_ascii=False))
+            if _xb_out:
+                with open(_xb_out, "a", encoding="utf-8") as fh:
+                    fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+        def _xb_move(src, dst, e, name):
+            """The one way ink changes hands here: atoms via put_in_ligature."""
+            for _a in src["at"]:
+                if e in _a["els"]:
+                    _a["els"].remove(e)
+                    for _m in e.get("mkmembers", []):
+                        if _m in _a["els"]:
+                            _a["els"].remove(_m)
+                    break
+            if e in src["els"]:
+                src["els"].remove(e)
+            for _m in e.get("mkmembers", []):
+                if _m in src["els"]:
+                    src["els"].remove(_m)
+            put_in_ligature(dst["at"], e)
+            dst["els"].append(e)
+            dst["els"].extend(e.get("mkmembers", []))
+            # the ink is drawn in the receiver's band — retag it there, or the
+            # audits that key on the tag put the receiving WORD on the old line
+            if dst.get("ln"):
+                e["line"] = dst["ln"]
+                for _m in e.get("mkmembers", []):
+                    _m["line"] = dst["ln"]
+            if name and name != e.get("mark"):
+                e["mark"] = name
+                for _m in e.get("mkmembers", []):
+                    _m["mark"] = name
+
+        def _xb_side(t, e):
+            _u = [b for b in t["b"]
+                  if min(b["x2"], e["x2"]) - max(b["x1"], e["x1"]) > -0.6] \
+                 or t["b"]
+            _mid = (min(b["y1"] for b in _u) + max(b["y2"] for b in _u)) / 2
+            return "a" if (e["y1"] + e["y2"]) / 2 < _mid else "b"
+
+        def _xb_nearln(cy):
+            _tl, _td = None, 1e9
+            for _l2, (_l1, _h1) in _xband.items():
+                _d2 = max(_l1 - cy, cy - _h1, 0.0)
+                if _d2 < _td:
+                    _td, _tl = _d2, _l2
+            return _tl
+
+        # first sweep: every mark carrying the position proof
+        _xcands = []
+        for _rx in _xrec:
+            for _e in _rx["els"]:
+                if _e["kind"] == "body" or _e.get("mkpart") \
+                        or _e.get("standalone"):
+                    continue
+                _fam = _e.get("mark")
+                if _fam not in _XB_FAMS:
+                    continue
+                _lo, _hi = _xband.get(_rx["ln"], (-1e9, 1e9))
+                _cy = (_e["y1"] + _e["y2"]) / 2
+                _out = max(_lo - _cy, _cy - _hi, 0.0)
+                _gap = -_xovl(_rx["b"], _e)
+                if _out < 15.0 and _gap < 40.0:
+                    continue          # inside both measured bands: legitimate
+                # which line's band the ink is actually drawn in — own line
+                # allowed only for the horizontal (gap) proof
+                _tl = _xb_nearln(_cy)
+                if _tl is None or abs(_tl - _rx["ln"]) > 1:
+                    continue          # only the adjacent line: a mark drifts
+                                      # to a neighbour, it does not cross a page
+                if _tl == _rx["ln"] and _gap < 40.0:
+                    continue
+                _xcands.append((_rx, _e, _fam, _out, _gap, _tl, _cy))
+
+        _xdone = set()
+        for _rx, _e, _fam, _out, _gap, _tl, _cy in _xcands:
+            if id(_e) in _xdone:
+                continue
+            _cands = [t for t in _xbyln.get(_tl, ()) if t is not _rx]
+            _t = max(_cands, key=lambda t: _xovl(t["b"], _e), default=None)
+            _rec = {"page": _xb_page,
+                    "holder": "%d:%d:%d" % (_rx["w"]["surah"],
+                                            _rx["w"]["ayah"],
+                                            _rx["w"]["pos"]),
+                    "holder_text": _rx["w"]["uthmani"],
+                    "mark": _fam,
+                    "x": round((_e["x1"] + _e["x2"]) / 2, 1),
+                    "y": round(_cy, 1),
+                    "band_out": round(_out, 1), "gap": round(_gap, 1),
+                    "holder_line": _rx["ln"], "ink_line": _tl}
+            if _t is None or _xovl(_t["b"], _e) < -2.0:
+                _rec["decision"] = "refused: no word drawn under the mark"
+                _xb_log(_rec)
+                continue
+            # position-aware rename against the RECEIVER's letters
+            _nm = _fam
+            if _fam in _POS_SWAP_FAM:
+                _nm = _POS_SWAP.get((_fam, _xb_side(_t, _e)), _fam)
+            _rec.update({
+                "receiver": "%d:%d:%d" % (_t["w"]["surah"],
+                                          _t["w"]["ayah"], _t["w"]["pos"]),
+                "receiver_text": _t["w"]["uthmani"],
+                "new_name": _nm,
+                "recv_have": _xb_held(_t, _nm),
+                "recv_want": _xb_txt(_t["w"], _nm),
+                "donor_have": _xb_held(_rx, _fam),
+                "donor_want": _xb_txt(_rx["w"], _fam)})
+
+            # A standalone ء is a LETTER wearing the hamza outline. Where the
+            # receiver under the ink spells one and holds none, the stolen
+            # "hamza" mark is that letter: it moves and is demoted the same way
+            # the late hamza pass demotes an in-word ء (kind body, letter-hamza).
+            # p222 كَنزٌ and p260 لِى both hold the ء of a شَىْءٍۢ on the line
+            # they poke into.
+            if _fam == "hamza" and "ء" in (_t["w"]["uthmani"] or ""):
+                _lh_want = _t["w"]["uthmani"].count("ء")
+                _lh_have = sum(1 for x in _t["els"]
+                               if x.get("lab") == "letter-hamza")
+                if _lh_have < _lh_want \
+                        and _rec["donor_have"] - 1 >= _rec["donor_want"]:
+                    _rec["new_name"] = "letter-hamza"
+                    _rec["decision"] = "moved as the receiver's letter ء"
+                    _xb_log(_rec)
+                    # anything welded to the ء (p260: the ٍ pair of شَىْءٍۢ)
+                    # was stolen with it and moves with it — but a LETTER
+                    # cannot speak for a mark's count, so the twins re-master
+                    # on their own, first stroke counting, the rest welded
+                    _mem = list(_e.get("mkmembers") or [])
+                    _xb_move(_rx, _t, _e, None)
+                    _e["kind"] = "body"
+                    _e["mark"] = None
+                    _e["lab"] = "letter-hamza"
+                    _e["mkmembers"] = []
+                    if _mem:
+                        _mem[0]["mkpart"] = False
+                        _mem[0]["mkmembers"] = _mem[1:]
+                        for _m in _mem[1:]:
+                            _m["mkpart"] = True
+                    _xdone.add(id(_e))
+                    continue
+
+            # Two slash strokes side by side are ONE tanween. Where the donor
+            # holds a proved PAIR (both carry the position proof, drawn within
+            # 8u of each other over the same receiver) and the receiver is
+            # missing exactly its tanween, the pair moves as one welded sign —
+            # p535 وَلَا holds مَقْطُوعَةٍۢ's kasratan as two stray "fathas".
+            _mate = None
+            if _fam in _XB_SLASH:
+                for _rx2, _e2, _f2, _o2, _g2, _tl2, _cy2 in _xcands:
+                    if _e2 is _e or id(_e2) in _xdone or _rx2 is not _rx:
+                        continue
+                    if _f2 not in _XB_SLASH or _tl2 != _tl:
+                        continue
+                    if abs((_e2["x1"] + _e2["x2"]) / 2
+                           - (_e["x1"] + _e["x2"]) / 2) \
+                            + abs(_cy2 - _cy) <= 8.0:
+                        _mate = _e2
+                        break
+            if _mate is not None:
+                _tn = "fathatan" if _xb_side(_t, _e) == "a" else "kasratan"
+                _tn_ch = {"fathatan": "ًࣰ", "kasratan": "ٍࣲ"}[_tn]
+                _tn_want = sum((_t["w"]["uthmani"] or "").count(c)
+                               for c in _tn_ch)
+                _tn_have = sum(1 for x in _t["els"]
+                               if x.get("mark") == _tn and not x.get("mkpart"))
+                if _tn_have < _tn_want \
+                        and _rec["donor_have"] - 2 >= _rec["donor_want"]:
+                    _rec.update({"new_name": _tn,
+                                 "decision": "moved as a welded %s pair" % _tn})
+                    _xb_log(_rec)
+                    _xb_move(_rx, _t, _e, _tn)
+                    _xb_move(_rx, _t, _mate, _tn)
+                    _mate["mkpart"] = True
+                    _e.setdefault("mkmembers", []).append(_mate)
+                    _xdone.add(id(_e))
+                    _xdone.add(id(_mate))
+                    continue
+
+            _recv_ok = _rec["recv_have"] < _rec["recv_want"]
+            _don_ok = _rec["donor_have"] - 1 >= _rec["donor_want"]
+            # A slash or damma family is counted as a GROUP (the stroke is one
+            # and the name positional), but a group test alone let p371 install
+            # a surplus fatha on a word missing its kasratan — group balanced,
+            # family worse. The move must also improve BOTH families it touches:
+            # receiver short of the arriving NAME, donor long of the leaving one.
+            if _fam in _XB_SLASH or _fam in _XB_DAMMA:
+                _fch = {"fatha": "َ", "kasra": "ِ", "fathatan": "ًࣰ",
+                        "kasratan": "ٍࣲ", "damma": "ُ", "dammatan": "ٌࣱ"}
+
+                def _heldf(rec, f):
+                    return sum(1 for x in rec["els"]
+                               if x.get("mark") == f and not x.get("mkpart")
+                               and not x.get("standalone"))
+
+                def _wantf(w, f):
+                    return sum((w["uthmani"] or "").count(c) for c in _fch[f])
+
+                _recv_ok = _recv_ok and _heldf(_t, _nm) < _wantf(_t["w"], _nm)
+                _don_ok = _don_ok and _heldf(_rx, _fam) > _wantf(_rx["w"], _fam)
+            if _recv_ok and _don_ok:
+                _rec["decision"] = "moved"
+                _xb_log(_rec)
+                _xb_move(_rx, _t, _e, _nm)
+                _xdone.add(id(_e))
+                continue
+
+            # A full receiver can be the other half of an EXCHANGE: it holds a
+            # mark of the same group that is itself out of ITS band, drawn over
+            # the donor's letters (p577 إِلَّآ / يَخَافُونَ, p599, p439). The
+            # 10u threshold is the crossband histogram's edge — the partner is
+            # corroborated by the proved mark pointing the other way, so the
+            # 10-15u zone (26 marks mushaf-wide) is admissible for it. A swap
+            # is budget-neutral, so no count can break.
+            if not _recv_ok:
+                _grp = (_XB_SLASH if _fam in _XB_SLASH
+                        else _XB_DAMMA if _fam in _XB_DAMMA else {_fam})
+                _tlo, _thi = _xband.get(_t["ln"], (-1e9, 1e9))
+                _back = None
+                for _e2 in _t["els"]:
+                    if _e2["kind"] == "body" or _e2.get("mkpart") \
+                            or _e2.get("standalone") or id(_e2) in _xdone:
+                        continue
+                    if _e2.get("mark") not in _grp:
+                        continue
+                    _cy2 = (_e2["y1"] + _e2["y2"]) / 2
+                    if max(_tlo - _cy2, _cy2 - _thi, 0.0) < 10.0:
+                        continue
+                    if _xb_nearln(_cy2) != _rx["ln"]:
+                        continue
+                    # the give-back mark must be drawn over the donor's own
+                    # letters. Relaxing this to -6u admits p577's إِلَّآ /
+                    # يَخَافُونَ exchange, but the returned fatha lands in
+                    # يَذْكُرُونَ's exclusive core (+1 interval flag): the
+                    # mark most probably belongs to يذكرون, a three-way chain
+                    # a pairwise swap cannot settle. Strict, measured.
+                    if _xovl(_rx["b"], _e2) < -2.0:
+                        continue
+                    _back = _e2
+                    break
+                if _back is not None:
+                    _nm2 = _back.get("mark")
+                    if _nm2 in _POS_SWAP_FAM:
+                        _nm2 = _POS_SWAP.get((_nm2, _xb_side(_rx, _back)),
+                                             _nm2)
+                    _rec.update({"decision": "exchanged",
+                                 "back_mark": _back.get("mark"),
+                                 "back_new_name": _nm2,
+                                 "back_x": round((_back["x1"]
+                                                  + _back["x2"]) / 2, 1),
+                                 "back_y": round((_back["y1"]
+                                                  + _back["y2"]) / 2, 1)})
+                    _xb_log(_rec)
+                    _xb_move(_rx, _t, _e, _nm)
+                    _xb_move(_t, _rx, _back, _nm2)
+                    _xdone.add(id(_e))
+                    _xdone.add(id(_back))
+                    continue
+
+            _rec["decision"] = ("refused: " +
+                                ("receiver full" if not _recv_ok
+                                 else "donor would go below budget"))
+            _xb_log(_rec)
+
     if os.environ.get("QSVG_IQFIX", "1") == "1":
         for _wq, _atq in assignment:
             if not _wq:

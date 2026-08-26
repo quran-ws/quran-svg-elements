@@ -101,6 +101,7 @@ kbd{background:#eee9dc;border:1px solid var(--line);border-radius:3px;
   display:flex;flex-direction:column;align-items:center;gap:4px}
 .audcard:hover{border-color:var(--accent)}
 .audcard.mismatch{border-color:#c2452e;background:#fbeeec;box-shadow:0 0 0 1px #c2452e}
+.audcard.focus{border-color:#245a9e;box-shadow:0 0 0 2px #245a9e}
 .aud-ink{height:52px;max-width:200px;display:block}
 .aud-word{font-size:26px;line-height:1.5;font-family:"QPC Hafs",
   "KFGQPC Uthmanic Script HAFS","KFGQPC HAFS Uthmanic Script","Amiri Quran",
@@ -214,6 +215,7 @@ const withUser = extra => {
 document.getElementById("nav").innerHTML =
   `<a href="${withUser({})}">Dashboard</a> &nbsp;·&nbsp; ` +
   `<a href="${withUser({queue: 1})}">Approval queue</a> &nbsp;·&nbsp; ` +
+  `<a href="/confidence">Confidence</a> &nbsp;·&nbsp; ` +
   `<a href="#" id="rebuild-page">Rebuild this page</a> &nbsp;·&nbsp; ` +
   `<a href="#" id="rebuild-all">Rebuild all</a>`;
 
@@ -342,6 +344,7 @@ async function renderAudit(page) {
 
     const g0 = gs[0];
     const card = el("div", {class: "audcard" + (flagged.has(wid) ? " mismatch" : "")});
+    card.dataset.wid = wid;
     card.appendChild(mini);
     // The King Fahd Complex's own text of this print, not quran.com's uthmani: the two
     // are different editions and disagree about the waqf sign at 424 positions. Showing
@@ -367,6 +370,15 @@ async function renderAudit(page) {
     grid.appendChild(card);
   }
   holder.remove();
+  // ?word=S:A:P deep-links one card (confidence.html rows use this)
+  const focus = qs.get("word");
+  if (focus) {
+    const card = grid.querySelector(`.audcard[data-wid="${CSS.escape(focus)}"]`);
+    if (card) {
+      card.classList.add("focus");
+      card.scrollIntoView({behavior: "smooth", block: "center"});
+    }
+  }
 }
 
 /* ============================ dashboard ============================ */
