@@ -26,7 +26,16 @@ is never committed anywhere.
 |---|---|---|
 | Flagged words (mark audit) | 559 | **236** |
 | Interval-audit flags | 172 | **136** |
-| Pages fully clean | 276 | **409** of 604 |
+| Pages clean (marks+intervals) | 276 | **409** of 604 |
+| Pages clean incl. mark-TYPE audit | — | **108** of 604 |
+
+**"Clean" is always relative to the audits that exist** (Abdullah, 2026-08-26,
+after budget-neutral thefts and the R7 family were found living on "clean"
+pages). 301 of the 409 marks+intervals-clean pages carry `audit_marktype.py`
+flags — 619 of its 1,093, dominated by the R7 false-meem family whose one fix
+(QSVG_MTYPE, gate pending) collapses most of them. Quote BOTH numbers, always
+say which criterion, and when a new audit dimension lands, re-state the table
+under it rather than letting the old figure stand as truth.
 | Words emitted as two `<g class="word">` | 1158 | **0** |
 | Bench | SCORE 77, no failures, pixelfail 0 | SCORE 79 over 12 pages, no failures, pixelfail 0 |
 

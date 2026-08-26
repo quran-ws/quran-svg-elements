@@ -113,6 +113,91 @@
    "evidence": "Abdullah's screenshots: اجتمعوا holds [اجتمعوا + له + ۖ + damma]; له holds only the و of وإن; وإن lacks its و; منه (22:73:25) holds له's small waw. One chained repair returns each piece one step right.",
    "proposal": "Execute the chain: له's body+pause+damma back from اجتمعوا; the و back from له to وإن; the ۥ back from منه to له. Guarded by each word's piece and mark budgets.",
    "alternatives": []
+  },
+  {
+   "id": "P10",
+   "page": 540,
+   "key": "57:22:12",
+   "focus_x": 34.5,
+   "focus_y": 396.4,
+   "title": "كِتَـٰبٍۢ — is the 'dot' the kasratan's twin stroke?",
+   "evidence": "kasratan single at (34.5,396.4); a 'dot' at (35.8,393.3) beside it. Either the twin stroke misnamed, or بٍ's letter dot.",
+   "proposal": "The 'dot' is the kasratan's twin: weld as the pair.",
+   "alternatives": [
+    "it is بِ's letter dot — twin genuinely lost"
+   ]
+  },
+  {
+   "id": "P11",
+   "page": 568,
+   "key": "70:4:6",
+   "focus_x": 319.8,
+   "focus_y": 461.3,
+   "title": "يَوْمٍۢ — kasratan twin absent from the word",
+   "evidence": "kasratan single; no twin anywhere in the word. Neighbour or print-fact.",
+   "proposal": "You look: is the second stroke drawn nearby (which word holds it)?",
+   "alternatives": [
+    "print draws a single stroke here (record as convention)"
+   ]
+  },
+  {
+   "id": "P12",
+   "page": 582,
+   "key": "78:26:1",
+   "focus_x": 139.1,
+   "focus_y": 448.5,
+   "title": "جَزَآءًۭ — weld the adjacent 'fatha' as the fathatan pair?",
+   "evidence": "fathatan at (139.1,448.5) + a 'fatha' at (146.0,448.6), 7u apart.",
+   "proposal": "They are one open-tanween pair: weld and name fathatan.",
+   "alternatives": [
+    "the fatha belongs to the ء"
+   ]
+  },
+  {
+   "id": "P13",
+   "page": 508,
+   "key": "47:15:10",
+   "focus_x": 146.9,
+   "focus_y": null,
+   "title": "غَيْرِ — kasra 2.3u ABOVE the band top",
+   "evidence": "a 'kasra' above the word: swapped name or stolen from above?",
+   "proposal": "You look and say which word/side it belongs to.",
+   "alternatives": []
+  },
+  {
+   "id": "P14",
+   "page": 350,
+   "key": "24:3:14",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "مُشْرِكٌۭ — confirm the R7 meem→tanween-stroke rename here",
+   "evidence": "R7 says its 'meem-iqlab' is the tanween's second stroke (8.8u from its twin). The word audits clean otherwise.",
+   "proposal": "Approve the rename (part of the 926-word R7 family).",
+   "alternatives": []
+  },
+  {
+   "id": "P15",
+   "page": 399,
+   "key": "29:26:3",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "Rare stop shapes ۘ ۜ — do their outlines exist in the label table at all?",
+   "evidence": "p399 لُوطٌۘ and p525's small-seen ۜ can never be marked if their signatures are absent from labels.json — structurally unreachable by any pass.",
+   "proposal": "Label-sheet item: confirm the drawn shapes and label their signatures (visual agent may resolve part of this).",
+   "alternatives": []
+  },
+  {
+   "id": "P16",
+   "page": 0,
+   "key": "0:0:0",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "R7 mushaf-wide: rename 926 false meem-iqlab marks to tanween strokes",
+   "evidence": "quran.com writes tanween+ۢ at idgham/ikhfa where the print has NO م (QPC open-tanween encoding is the drawing convention). Trial pass QSVG_MTYPE is count-neutral, bench-identical, 97→10 on sample pages.",
+   "proposal": "Adopt QSVG_MTYPE after the full-mushaf gate passes (pre-approve to proceed overnight).",
+   "alternatives": [
+    "hold for morning review"
+   ]
   }
  ],
  "decisions": {
