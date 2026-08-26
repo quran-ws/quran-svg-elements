@@ -8,10 +8,9 @@ Writes marks_pages/NNN.json per page (resumable) and marks_report.txt.
 import io, contextlib, json, os, sys
 from collections import Counter, defaultdict
 
-sys.path.insert(0, "/Users/abdullah/Documents/Github/quran-svg/tools")
-PIPE = os.environ.get("QSVG_PIPE",
-    "/Users/abdullah/Documents/Github/quran-svg/tools/assign_words.py")
-ROOT = "/Users/abdullah/Documents/Github/quran-svg"
+ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT + "/tools")
+PIPE = os.environ.get("QSVG_PIPE", ROOT + "/tools/assign_words.py")
 S = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(S, "marks_pages")
 
@@ -44,8 +43,14 @@ def dot_want(txt, aw):
     for i, (ch, seat) in enumerate(sk):
         if seat or ch not in aw.DOTS:
             continue
-        if ch == "ي" and i == len(sk) - 1:
-            continue                  # a final ya is drawn undotted here
+        if ch == "ي" and (i == len(sk) - 1
+                          or (i + 1 < len(sk) and sk[i + 1][0] == "ء")):
+            # A final ya is drawn undotted here, and so is a ya carrying a following
+            # hamza: شَيۡءٖ is drawn with three dots, not five. Ours and MushafDatabase's
+            # decompositions independently agree on three, against a budget counting the
+            # ya's two — and every one of the 21 words where the two decompositions
+            # agreed and the budget did not was شيء or بشيء.
+            continue
         n += _DOTU.get(aw.DOTS[ch][0], 0)
     return n
 
@@ -108,9 +113,35 @@ def scan(pg):
                     dots += _DOTU[part]
                 elif part:
                     have[part] += 1
+        # The waqf budget comes from the King Fahd Complex's own text of THIS print, not
+        # from quran.com's uthmani. The two are different editions: they disagree about
+        # the waqf sign at 424 of 4,416 positions — 87 of them where the text says قلى
+        # and the page draws ج — and taking the expectation from the wrong edition
+        # reported 181 of 202 `pause` defects that were not defects at all. Every other
+        # family still reads uthmani, whose spelling conventions the rest of this table
+        # and segment_word() are built around.
+        wtxt = w.get("qpc") or txt
         bad = []
         for fam, chars in TEXT_WANT.items():
-            want = sum(txt.count(c) for c in chars)
+            if fam == "pause" and wtxt is not txt:
+                # Where the two editions disagree about a waqf sign, neither one can be
+                # quoted as the expectation, so the budget becomes a RANGE and the audit
+                # says nothing. Measured over all 77,429 words the sources differ at only
+                # 190 — 0.245% — and the drawn ink follows the KFGQPC text at 164 of them,
+                # quran.com's uthmani at 9, and neither at 17. Those 9 are what a
+                # single-source budget gets wrong: `بَعْدِى` (p20), `ٱلْخَيْرَٰتِ` (p64),
+                # `كَذَٰلِكَ` (p303) and four more were each reported missing a صلى that
+                # the page does not draw and that the other edition does not ask for.
+                # Widening the budget costs nothing real — in the 164 the ink matches the
+                # KFGQPC text, so it was already inside the range and already silent —
+                # and it keeps the audit from convicting us of an editorial difference.
+                lo, hi = sorted((sum(txt.count(c) for c in chars),
+                                 sum(wtxt.count(c) for c in chars)))
+                if not (lo <= have.get(fam, 0) <= hi):
+                    bad.append((fam, have.get(fam, 0), hi))
+                continue
+            src = wtxt if fam == "pause" else txt
+            want = sum(src.count(c) for c in chars)
             if want != have.get(fam, 0):
                 bad.append((fam, have.get(fam, 0), want))
         dw = dot_want(txt, aw)
