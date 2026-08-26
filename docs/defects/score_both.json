@@ -1,0 +1,14 @@
+{
+ "totals": {
+  "words": 77384,
+  "width_words": 77331,
+  "piece_words": 77384,
+  "dot_words": 77384,
+  "our_w50": 1196,
+  "ref_w50": 1193,
+  "our_w100": 140,
+  "ref_w100": 141,
+  "our_dot_off": 1
+ },
+ "not_scored": []
+}
