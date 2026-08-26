@@ -195,6 +195,7 @@ def scan(pg):
         ref_exp.update(_expect(ws, qw))
 
     st = Counter()
+    _W50 = []
     ologs, rlogs = [], []
     for k in both:
         st["words"] += 1
@@ -210,6 +211,14 @@ def scan(pg):
                     st[tag + "_w50"] += 1
                 if v > math.log(2.0):
                     st[tag + "_w100"] += 1
+            # the words that separate the two totals, so a gap of three can be read
+            # rather than guessed at
+            if (abs(lo) > math.log(1.5)) != (abs(lr) > math.log(1.5)):
+                _W50.append((pg, "%d:%d:%d" % k, mine[k]["text"],
+                             "ours" if abs(lo) > abs(lr) else "theirs",
+                             round(abs(lo), 3), round(abs(lr), 3),
+                             round(ourw[k], 1), round(our_exp[k], 1),
+                             round(refw[k], 1), round(ref_exp[k], 1)))
         # --- PIECES: more than the joining rules permit is impossible ----------
         ns = mine[k]["nseg"]
         st["piece_words"] += 1
@@ -227,7 +236,7 @@ def scan(pg):
             st["our_dot_off"] += 1
         if rd != want:
             st["ref_dot_off"] += 1
-    return pg, (st, ologs, rlogs), None
+    return pg, (st, ologs, rlogs, _W50), None
 
 
 def main(argv=None):
@@ -245,16 +254,18 @@ def main(argv=None):
     from multiprocessing import Pool
     tot = Counter()
     O, R = [], []
+    W50 = []
     bad = []
     with Pool(args.jobs, maxtasksperchild=6) as pool:
         for pg, res, err in pool.imap_unordered(scan, range(args.first, args.last + 1)):
             if err:
                 bad.append((pg, err))
                 continue
-            st, o, r = res
+            st, o, r, w50 = res
             tot.update(st)
             O += o
             R += r
+            W50 += w50
     O.sort()
     R.sort()
 
@@ -289,8 +300,17 @@ def main(argv=None):
         v = "OURS BETTER" if a < b else ("EQUAL" if a == b else "reference better")
         print("   %-22s ours %6.3f%%   theirs %6.3f%%   %s"
               % (name, 100.0 * a / n, 100.0 * b / n, v))
+    if W50:
+        print("\nthe %d word(s) where only ONE side is beyond 1.5x "
+              "(ours worse %d, theirs worse %d):"
+              % (len(W50), sum(1 for r in W50 if r[3] == "ours"),
+                 sum(1 for r in W50 if r[3] == "theirs")))
+        for r in sorted(W50, key=lambda r: -max(r[4], r[5]))[:24]:
+            print("   p%-4d %-11s %-18s %-6s ours %.2f (%.1f of %.1f)  "
+                  "theirs %.2f (%.1f of %.1f)"
+                  % (r[0], r[1], r[2], r[3], r[4], r[6], r[7], r[5], r[8], r[9]))
     with open(args.out, "w", encoding="utf-8") as fh:
-        json.dump({"totals": dict(tot), "not_scored": bad}, fh, ensure_ascii=False, indent=1)
+        json.dump({"totals": dict(tot), "not_scored": bad, "w50_split": W50}, fh, ensure_ascii=False, indent=1)
     print("\nwrote %s" % args.out)
     return 0
 
