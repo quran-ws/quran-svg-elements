@@ -13,7 +13,13 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);
   font:14px/1.5 -apple-system,"Segoe UI",Helvetica,Arial,sans-serif}
-.arab{font-family:"Amiri Quran","Amiri","Scheherazade New",serif;direction:rtl}
+@font-face{font-family:"QPC Hafs";
+  src:url("/assets/UthmanicHafs_V22.ttf") format("truetype");
+  font-display:swap}
+/* The print's own face. quranpedia serves it with the QPC Hafs text (mushaf 2), and it
+   is the only face that draws what this artwork draws — a substitute renders ٱ as ا and
+   ۡ as ْ, which is exactly the difference a reviewer is being asked to judge. */
+.arab{font-family:"QPC Hafs","Amiri Quran","Amiri","Scheherazade New",serif;direction:rtl}
 header{display:flex;align-items:center;gap:16px;padding:10px 18px;
   background:var(--panel);border-bottom:1px solid var(--line);
   position:sticky;top:0;z-index:20}
@@ -96,8 +102,9 @@ kbd{background:#eee9dc;border:1px solid var(--line);border-radius:3px;
 .audcard:hover{border-color:var(--accent)}
 .audcard.mismatch{border-color:#c2452e;background:#fbeeec;box-shadow:0 0 0 1px #c2452e}
 .aud-ink{height:52px;max-width:200px;display:block}
-.aud-word{font-size:26px;line-height:1.5;font-family:"KFGQPC Uthmanic Script HAFS",
-  "KFGQPC HAFS Uthmanic Script","Amiri Quran","Scheherazade New",serif}
+.aud-word{font-size:26px;line-height:1.5;font-family:"QPC Hafs",
+  "KFGQPC Uthmanic Script HAFS","KFGQPC HAFS Uthmanic Script","Amiri Quran",
+  "Scheherazade New",serif}
 .aud-id{font-size:10px;color:var(--muted);direction:ltr}
 .delbtn{border:none;background:none;color:#c2452e;font-size:12px;float:right;
   padding:0 4px;cursor:pointer}
@@ -206,7 +213,32 @@ const withUser = extra => {
 };
 document.getElementById("nav").innerHTML =
   `<a href="${withUser({})}">Dashboard</a> &nbsp;·&nbsp; ` +
-  `<a href="${withUser({queue: 1})}">Approval queue</a>`;
+  `<a href="${withUser({queue: 1})}">Approval queue</a> &nbsp;·&nbsp; ` +
+  `<a href="#" id="rebuild-page">Rebuild this page</a> &nbsp;·&nbsp; ` +
+  `<a href="#" id="rebuild-all">Rebuild all</a>`;
+
+/* The server hands out a cached SVG per page, so after a pipeline change it keeps
+   serving the previous build — which looks exactly like the change having done
+   nothing. These drop the cache; the next request regenerates from the current
+   pipeline. "This page" is the one you are looking at and takes a second; "all" drops
+   all 604 and each rebuilds as you open it. */
+const rebuild = async (pageOnly) => {
+  const pg = +qs.get("page") || 0;
+  const q = pageOnly && pg ? `?page=${pg}` : "";
+  const el = document.getElementById(pageOnly ? "rebuild-page" : "rebuild-all");
+  const was = el.textContent;
+  el.textContent = "clearing…";
+  try {
+    const r = await api(`/api/refresh${q}`);
+    el.textContent = `cleared ${r.cleared} file(s)`;
+    setTimeout(() => location.reload(), 400);
+  } catch (e) {
+    el.textContent = was;
+    alert("could not clear the cache: " + e.message);
+  }
+};
+document.getElementById("rebuild-page").onclick = e => { e.preventDefault(); rebuild(true); };
+document.getElementById("rebuild-all").onclick = e => { e.preventDefault(); rebuild(false); };
 
 const KIND_DESC = e => {
   const p = e.payload || {};
@@ -311,8 +343,12 @@ async function renderAudit(page) {
     const g0 = gs[0];
     const card = el("div", {class: "audcard" + (flagged.has(wid) ? " mismatch" : "")});
     card.appendChild(mini);
+    // The King Fahd Complex's own text of this print, not quran.com's uthmani: the two
+    // are different editions and disagree about the waqf sign at 424 positions. Showing
+    // the wrong one under the printed ink is asking the reviewer to judge a mismatch we
+    // introduced ourselves.
     card.appendChild(el("div", {class: "aud-word", dir: "rtl"},
-                        g0.dataset.uthmani || ""));
+                        g0.dataset.qpc || g0.dataset.uthmani || ""));
     card.appendChild(el("div", {class: "aud-id"}, wid));
     card.onclick = async () => {
       try {
@@ -600,7 +636,7 @@ async function renderPage(page, step) {
     svg.addEventListener("mousemove", ev => {
       const {w} = pickTarget(ev);
       if (!w) return;
-      $("#hoverword").textContent = w.dataset.uthmani || "";
+      $("#hoverword").textContent = w.dataset.qpc || w.dataset.uthmani || "";
       $("#hovermeta").textContent = `${wid(w)} — imlaei: ${w.dataset.imlaei || "?"}`;
     });
     document.addEventListener("keydown", ev => {
@@ -705,10 +741,18 @@ async function renderPage(page, step) {
   const hiddenLabels = new Set();
   function colorMarks() {
     svg.querySelectorAll('path[data-kind="mark"]').forEach(p => {
+      /* A composite mark is drawn as more than one path and labelled ONCE, on the
+         master; the other pieces carry data-mark-part instead. They are not unlabeled —
+         they are that same mark. Reading only data-mark showed 14,855 of them in red as
+         needing an answer: the third blob of a three-dots, the second stroke of a
+         fathatan or kasratan, the dot inside a ج. */
       const l = p.getAttribute("data-mark");
+      const part = p.getAttribute("data-mark-part");
       if (l) { p.style.fill = labelColor(l); p.style.animation = "none"; }
+      else if (part) { p.style.fill = labelColor(part); p.style.opacity = "0.55";
+                       p.style.animation = "none"; }
       else { p.style.fill = ""; p.style.animation = ""; }
-      const key = l || "(unlabeled)";
+      const key = l || (part ? part : "(unlabeled)");
       p.style.display = hiddenLabels.has(key) ? "none" : "";
     });
     buildLegend();
@@ -717,7 +761,8 @@ async function renderPage(page, step) {
   function buildLegend() {
     const present = new Map(); // label -> count
     svg.querySelectorAll('path[data-kind="mark"]').forEach(p => {
-      const key = p.getAttribute("data-mark") || "(unlabeled)";
+      const key = p.getAttribute("data-mark") || p.getAttribute("data-mark-part")
+                  || "(unlabeled)";
       present.set(key, (present.get(key) || 0) + 1);
     });
     const lg = $("#legend");
@@ -741,7 +786,9 @@ async function renderPage(page, step) {
   }
 
   function unlabeledPaths() {
-    return [...svg.querySelectorAll('path[data-kind="mark"]:not([data-mark])')];
+    /* a piece of a composite is already answered through its master */
+    return [...svg.querySelectorAll(
+      'path[data-kind="mark"]:not([data-mark]):not([data-mark-part])')];
   }
   function unresolvedUnlabeled() {
     const covered = new Set();
@@ -887,7 +934,7 @@ async function renderPage(page, step) {
         ` (${path.getAttribute("data-mark") || "UNLABELED"})` +
         (w ? ` in <b>${wid(w)}</b>` : "");
       if (w) {
-        $("#hoverword").textContent = w.dataset.uthmani || "";
+        $("#hoverword").textContent = w.dataset.qpc || w.dataset.uthmani || "";
         $("#hovermeta").textContent = wid(w);
       }
       showPicker(path, ev.clientX + 8, ev.clientY + 8);
@@ -895,7 +942,7 @@ async function renderPage(page, step) {
     svg.addEventListener("mousemove", ev => {
       const {w} = pickTarget(ev);
       if (!w) return;
-      $("#hoverword").textContent = w.dataset.uthmani || "";
+      $("#hoverword").textContent = w.dataset.qpc || w.dataset.uthmani || "";
       $("#hovermeta").textContent = wid(w);
     });
   }

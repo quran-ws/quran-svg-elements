@@ -83,6 +83,36 @@ def ensure_page(page):
     return svg_path, rep_path
 
 
+def clear_cache(page=None):
+    """Drop generated page SVGs so the next request rebuilds them.
+
+    Every pipeline change leaves this cache holding the previous build, and the server
+    hands it out unchanged — which reads as "your fix did nothing", or worse, as a
+    regression that was really a stale file. `ensure_page` regenerates through a
+    subprocess, so deleting the files is the whole of it; nothing in this process needs
+    reloading.
+
+    Only the two names this server generates are removed, and only from the edition
+    directory, so a stray file someone put there is left alone.
+    """
+    d = edition_dir()
+    if not os.path.isdir(d):
+        return 0
+    pages = [page] if page else range(1, NUM_PAGES + 1)
+    n = 0
+    with _gen_lock:
+        for pg in pages:
+            for name in ("%03d.svg" % pg, "%03d.report.json" % pg):
+                f = os.path.join(d, name)
+                if os.path.exists(f):
+                    try:
+                        os.remove(f)
+                        n += 1
+                    except OSError:
+                        pass
+    return n
+
+
 def read_jsonl(path):
     out = []
     if os.path.exists(path):
@@ -265,12 +295,32 @@ class Handler(BaseHTTPRequestHandler):
                 return self.api_queue()
             if path == "/api/export":
                 return self.api_export()
+            if path == "/api/refresh":
+                q = parse_qs(parsed.query)
+                pg = q.get("page", [None])[0]
+                pg = int(pg) if pg and pg.isdigit() else None
+                n = clear_cache(pg)
+                return self.send_json({"cleared": n,
+                                       "scope": ("page %d" % pg) if pg else "all pages"})
             if path == "/api/overview":
                 return self.api_overview()
             m = re.match(r"^/svg/(\d+)\.svg$", path)
             if m:
                 svg_path, _ = ensure_page(int(m.group(1)))
                 return self.send_file(svg_path, "image/svg+xml; charset=utf-8")
+            # Static assets, chiefly the QPC Hafs font. Reviewing a word against the
+            # printed page in a substitute face is guesswork: Amiri draws a sukun the
+            # print does not use and joins letters the print keeps apart, so the text
+            # under a card and the ink above it cannot be compared stroke for stroke.
+            m = re.match(r"^/assets/([A-Za-z0-9._-]+)$", path)
+            if m:
+                name = m.group(1)
+                ext = os.path.splitext(name)[1].lower()
+                ctype = {".ttf": "font/ttf", ".otf": "font/otf", ".woff": "font/woff",
+                         ".woff2": "font/woff2", ".css": "text/css; charset=utf-8",
+                         ".js": "text/javascript; charset=utf-8"}.get(ext,
+                                                                     "application/octet-stream")
+                return self.send_file(os.path.join(PLATFORM, "assets", name), ctype)
             return self.send_json({"error": "not found"}, 404)
         except Exception as exc:  # keep the server alive, report the error
             return self.send_json({"error": str(exc)}, 500)
