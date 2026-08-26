@@ -7616,6 +7616,10 @@ def assign_page(edition, page_no, cache_dir):
     #     mushaf-wide). Renamed to the word's tanween as a welded part —
     #     meem-iqlab is never counted and the tanween master count is
     #     unchanged, so no budget moves.
+    # REFUTED by blind verification (docs/defects/marktype_verification.md,
+    # reported.json item 24): branch (b) renames what is actually the word's
+    # FINAL LETTER (~900 words, MDB-arbitrated 58/60) into a mark. Do NOT
+    # enable as built; the letter-restore fix ships separately.
     if os.environ.get("QSVG_MTYPE", "0") == "1":
         for _wm, _atm in assignment:
             if not _wm:
