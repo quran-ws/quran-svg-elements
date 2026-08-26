@@ -1,0 +1,1606 @@
+{
+ "note": "Line-set solver (QSVG_LSOLVE) proposal records — components where the optimum was not strictly better than the current assignment, i.e. chains the budgets cannot close without a human verdict. Uniqueness-or-eyes: nothing here was moved. Generated 2026-08-27 over the 5 gate pages + 33 known-defect pages; a full-mushaf run will extend this list. 'entities' lists each contested mark with its holder and the candidate owners the solver weighed.",
+ "applied_for_reference": [
+  {
+   "page": 350,
+   "lines": [
+    6,
+    7,
+    8
+   ],
+   "V": [
+    4,
+    1
+   ],
+   "cost": 0.0,
+   "moves": [
+    {
+     "mark": "kasra",
+     "x": 47.5,
+     "y": 201.8,
+     "from": "24:3:7 مُشْرِكَةًۭ",
+     "to": "24:3:8 وَٱلزَّانِيَةُ"
+    },
+    {
+     "mark": "fatha",
+     "x": 62.4,
+     "y": 193.8,
+     "from": "24:3:8 وَٱلزَّانِيَةُ",
+     "to": "24:3:7 مُشْرِكَةًۭ"
+    },
+    {
+     "mark": "kasra",
+     "x": 66.9,
+     "y": 219.4,
+     "from": "24:3:8 وَٱلزَّانِيَةُ",
+     "to": "24:3:7 مُشْرِكَةًۭ"
+    },
+    {
+     "mark": "fathatan",
+     "x": 101.6,
+     "y": 194.4,
+     "from": "24:3:7 مُشْرِكَةًۭ",
+     "to": "24:3:5 زَانِيَةً"
+    }
+   ],
+   "decision": "applied"
+  },
+  {
+   "page": 350,
+   "lines": [
+    6,
+    7,
+    8
+   ],
+   "V": [
+    4,
+    2
+   ],
+   "cost": 0.0,
+   "moves": [
+    {
+     "mark": "fatha",
+     "x": 304.9,
+     "y": 270.3,
+     "from": "24:4:3 ٱلْمُحْصَنَـٰتِ",
+     "to": "24:4:2 يَرْمُونَ"
+    },
+    {
+     "mark": "fatha",
+     "x": 331.3,
+     "y": 228.3,
+     "from": "24:3:10 يَنكِحُهَآ",
+     "to": "24:3:9 لَا"
+    }
+   ],
+   "decision": "applied"
+  },
+  {
+   "page": 371,
+   "lines": [
+    7,
+    8
+   ],
+   "V": [
+    5,
+    0
+   ],
+   "cost": 6.0,
+   "moves": [
+    {
+     "mark": "kasra",
+     "x": 305.6,
+     "y": 289.9,
+     "from": "26:97:4 لَفِى",
+     "to": "26:97:5 ضَلَـٰلٍۢ"
+    },
+    {
+     "mark": "kasra",
+     "x": 324.0,
+     "y": 269.5,
+     "from": "26:97:4 لَفِى",
+     "to": "26:97:5 ضَلَـٰلٍۢ"
+    }
+   ],
+   "decision": "applied"
+  },
+  {
+   "page": 535,
+   "lines": [
+    7,
+    8
+   ],
+   "V": [
+    5,
+    2
+   ],
+   "cost": 19.9,
+   "moves": [
+    {
+     "mark": "fatha",
+     "x": 8.3,
+     "y": 251.4,
+     "from": "56:33:3 وَلَا",
+     "to": "56:33:2 مَقْطُوعَةٍۢ"
+    },
+    {
+     "mark": "fatha",
+     "x": 11.3,
+     "y": 248.1,
+     "from": "56:33:3 وَلَا",
+     "to": "56:33:2 مَقْطُوعَةٍۢ"
+    }
+   ],
+   "decision": "applied"
+  },
+  {
+   "page": 599,
+   "lines": [
+    1,
+    2,
+    4
+   ],
+   "V": [
+    4,
+    1
+   ],
+   "cost": 16.9,
+   "moves": [
+    {
+     "mark": "fatha",
+     "x": 36.2,
+     "y": 60.3,
+     "from": "98:7:2 ٱلَّذِينَ",
+     "to": "98:7:3 ءَامَنُوا۟"
+    },
+    {
+     "mark": "fatha",
+     "x": 45.7,
+     "y": 39.7,
+     "from": "98:7:3 ءَامَنُوا۟",
+     "to": "98:6:9 نَارِ"
+    },
+    {
+     "mark": "kasra",
+     "x": 68.6,
+     "y": 38.8,
+     "from": "98:6:9 نَارِ",
+     "to": "98:7:2 ٱلَّذِينَ"
+    }
+   ],
+   "decision": "applied"
+  },
+  {
+   "page": 599,
+   "lines": [
+    1,
+    2,
+    4
+   ],
+   "V": [
+    3,
+    1
+   ],
+   "cost": 8.6,
+   "moves": [
+    {
+     "mark": "fatha",
+     "x": 187.4,
+     "y": 53.2,
+     "from": "98:6:16 ٱلْبَرِيَّةِ",
+     "to": "98:6:15 شَرُّ"
+    },
+    {
+     "mark": "fatha",
+     "x": 221.2,
+     "y": 53.3,
+     "from": "98:6:15 شَرُّ",
+     "to": "98:6:13 أُو۟لَـٰٓئِكَ"
+    }
+   ],
+   "decision": "applied"
+  },
+  {
+   "page": 446,
+   "lines": [
+    3,
+    4,
+    6,
+    7
+   ],
+   "V": [
+    2,
+    1
+   ],
+   "cost": 2.7,
+   "moves": [
+    {
+     "mark": "fatha",
+     "x": 195.9,
+     "y": 106.5,
+     "from": "37:5:3 وَٱلْأَرْضِ",
+     "to": "37:2:1 فَٱلزَّٰجِرَٰتِ"
+    }
+   ],
+   "decision": "applied"
+  },
+  {
+   "page": 526,
+   "lines": [
+    14
+   ],
+   "V": [
+    3,
+    2
+   ],
+   "cost": 5.3,
+   "moves": [
+    {
+     "mark": "kasra",
+     "x": 68.2,
+     "y": 502.4,
+     "from": "53:26:5 ٱلسَّمَـٰوَٰتِ",
+     "to": "53:26:4 فِى"
+    }
+   ],
+   "decision": "applied"
+  },
+  {
+   "page": 543,
+   "lines": [
+    3
+   ],
+   "V": [
+    2,
+    1
+   ],
+   "cost": 0.0,
+   "moves": [
+    {
+     "mark": "kasra",
+     "x": 19.9,
+     "y": 109.9,
+     "from": "58:7:38 يُنَبِّئُهُم",
+     "to": "58:7:39 بِمَا"
+    }
+   ],
+   "decision": "applied"
+  },
+  {
+   "page": 576,
+   "lines": [
+    5,
+    6,
+    8,
+    9
+   ],
+   "V": [
+    3,
+    2
+   ],
+   "cost": 40.6,
+   "moves": [
+    {
+     "mark": "kasra",
+     "x": 172.5,
+     "y": 267.5,
+     "from": "74:31:37 بِهَـٰذَا",
+     "to": "74:31:38 مَثَلًۭا ۚ"
+    },
+    {
+     "mark": "fatha",
+     "x": 208.0,
+     "y": 286.6,
+     "from": "74:31:48 يَعْلَمُ",
+     "to": "74:31:37 بِهَـٰذَا"
+    }
+   ],
+   "decision": "applied"
+  }
+ ],
+ "proposals": [
+  {
+   "page": 267,
+   "lines": [
+    10,
+    11,
+    12
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    2,
+    2
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 276.6,
+     "holder": "عِبَادِهِۦٓ",
+     "cands": [
+      "عِبَادِهِۦٓ",
+      "ٱلْمَلَـٰٓئِكَةَ",
+      "أَنْ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 281.1,
+     "holder": "أَنْ",
+     "cands": [
+      "أَنْ",
+      "ٱلسَّمَـٰوَٰتِ",
+      "ٱلْإِنسَـٰنَ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 303.0,
+     "holder": "عِبَادِهِۦٓ",
+     "cands": [
+      "عِبَادِهِۦٓ",
+      "ٱلسَّمَـٰوَٰتِ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 315.5,
+     "holder": "عِبَادِهِۦٓ",
+     "cands": [
+      "عِبَادِهِۦٓ",
+      "ٱلسَّمَـٰوَٰتِ",
+      "يُنَزِّلُ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 327.4,
+     "holder": "عِبَادِهِۦٓ",
+     "cands": [
+      "عِبَادِهِۦٓ",
+      "ٱلسَّمَـٰوَٰتِ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 535,
+   "lines": [
+    1
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    3,
+    3
+   ],
+   "entities": [
+    {
+     "mark": "kasratan",
+     "x": 19.7,
+     "holder": "وَكَأْسٍۢ",
+     "cands": [
+      "وَكَأْسٍۢ",
+      "مِّمَّا"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 60.6,
+     "holder": "وَكَأْسٍۢ",
+     "cands": [
+      "وَكَأْسٍۢ",
+      "وَأَبَارِيقَ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 85.3,
+     "holder": "وَأَبَارِيقَ",
+     "cands": [
+      "وَأَبَارِيقَ",
+      "وَفَـٰكِهَةٍۢ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 95.4,
+     "holder": "وَأَبَارِيقَ",
+     "cands": [
+      "وَأَبَارِيقَ",
+      "بِأَكْوَابٍۢ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 99.2,
+     "holder": "وَأَبَارِيقَ",
+     "cands": [
+      "وَأَبَارِيقَ",
+      "بِأَكْوَابٍۢ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 108.2,
+     "holder": "وَأَبَارِيقَ",
+     "cands": [
+      "وَأَبَارِيقَ",
+      "بِأَكْوَابٍۢ"
+     ]
+    },
+    {
+     "mark": "kasratan",
+     "x": 122.0,
+     "holder": "بِأَكْوَابٍۢ",
+     "cands": [
+      "بِأَكْوَابٍۢ",
+      "يُنزِفُونَ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 151.6,
+     "holder": "بِأَكْوَابٍۢ",
+     "cands": [
+      "بِأَكْوَابٍۢ",
+      "وَلَا"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 4,
+   "lines": [
+    8,
+    10
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fathatan",
+     "x": 53.7,
+     "holder": "مَآءًۭ",
+     "cands": [
+      "مَآءًۭ",
+      "فَأَخْرَجَ"
+     ]
+    }
+   ],
+   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+  },
+  {
+   "page": 4,
+   "lines": [
+    8,
+    10
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fathatan",
+     "x": 177.3,
+     "holder": "بِنَآءًۭ",
+     "cands": [
+      "بِنَآءًۭ",
+      "وَأَنزَلَ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 199.5,
+     "holder": "بِنَآءًۭ",
+     "cands": [
+      "بِنَآءًۭ",
+      "وَٱلسَّمَآءَ",
+      "لَّكُمْ ۖ"
+     ]
+    }
+   ],
+   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+  },
+  {
+   "page": 4,
+   "lines": [
+    8,
+    10
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "kasratan",
+     "x": 271.4,
+     "holder": "شَىْءٍۢ",
+     "cands": [
+      "شَىْءٍۢ",
+      "وَٱلَّذِينَ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 289.6,
+     "holder": "شَىْءٍۢ",
+     "cands": [
+      "شَىْءٍۢ",
+      "وَلَوْ",
+      "شَآءَ"
+     ]
+    }
+   ],
+   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+  },
+  {
+   "page": 63,
+   "lines": [
+    5
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fathatan",
+     "x": 128.8,
+     "holder": "أَعْدَآءًۭ",
+     "cands": [
+      "أَعْدَآءًۭ",
+      "فَأَلَّفَ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 161.8,
+     "holder": "أَعْدَآءًۭ",
+     "cands": [
+      "أَعْدَآءًۭ",
+      "كُنتُمْ",
+      "ٱللَّهِ"
+     ]
+    }
+   ],
+   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+  },
+  {
+   "page": 64,
+   "lines": [
+    9,
+    11
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fathatan",
+     "x": 305.0,
+     "holder": "سَوَآءًۭ ۗ",
+     "cands": [
+      "سَوَآءًۭ ۗ",
+      "مِّنْ"
+     ]
+    }
+   ],
+   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+  },
+  {
+   "page": 129,
+   "lines": [
+    14,
+    15
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "kasratan",
+     "x": 56.5,
+     "holder": "شَىْءٍۢ",
+     "cands": [
+      "شَىْءٍۢ",
+      "قَدِيرٌۭ",
+      "ٱلْخَبِيرُ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 74.0,
+     "holder": "شَىْءٍۢ",
+     "cands": [
+      "شَىْءٍۢ",
+      "بِضُرٍّۢ"
+     ]
+    }
+   ],
+   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+  },
+  {
+   "page": 129,
+   "lines": [
+    14,
+    15
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    4,
+    4
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 156.6,
+     "holder": "بِخَيْرٍۢ",
+     "cands": [
+      "بِخَيْرٍۢ",
+      "فَهُوَ",
+      "يَمْسَسْكَ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 165.6,
+     "holder": "بِخَيْرٍۢ",
+     "cands": [
+      "بِخَيْرٍۢ",
+      "فَهُوَ",
+      "وَهُوَ"
+     ]
+    },
+    {
+     "mark": "kasratan",
+     "x": 181.3,
+     "holder": "بِخَيْرٍۢ",
+     "cands": [
+      "بِخَيْرٍۢ",
+      "عِبَادِهِۦ ۚ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 188.3,
+     "holder": "بِخَيْرٍۢ",
+     "cands": [
+      "بِخَيْرٍۢ",
+      "يَمْسَسْكَ",
+      "عِبَادِهِۦ ۚ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 247.4,
+     "holder": "فَوْقَ",
+     "cands": [
+      "فَوْقَ",
+      "ٱلْقَاهِرُ",
+      "يَمْسَسْكَ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 222,
+   "lines": [
+    7
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 251.8,
+     "holder": "عَنْهُمْ",
+     "cands": [
+      "عَنْهُمْ",
+      "وَحَاقَ"
+     ]
+    },
+    {
+     "mark": "damma",
+     "x": 263.3,
+     "holder": "عَنْهُمْ",
+     "cands": [
+      "عَنْهُمْ",
+      "مَّعْدُودَةٍۢ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 276.1,
+     "holder": "عَنْهُمْ",
+     "cands": [
+      "عَنْهُمْ",
+      "مَّعْدُودَةٍۢ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 301.3,
+     "holder": "مَّعْدُودَةٍۢ",
+     "cands": [
+      "مَّعْدُودَةٍۢ",
+      "هَـٰذَآ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 254,
+   "lines": [
+    7
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "kasratan",
+     "x": 77.9,
+     "holder": "وَاقٍۢ",
+     "cands": [
+      "وَاقٍۢ",
+      "وَذُرِّيَّةًۭ ۚ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 90.2,
+     "holder": "وَاقٍۢ",
+     "cands": [
+      "وَاقٍۢ",
+      "وَلَا"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 254,
+   "lines": [
+    7
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    2,
+    2
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 291.4,
+     "holder": "جَآءَكَ",
+     "cands": [
+      "جَآءَكَ",
+      "وَكَذَٰلِكَ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 302.2,
+     "holder": "جَآءَكَ",
+     "cands": [
+      "جَآءَكَ",
+      "بَعْدَ مَا"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 260,
+   "lines": [
+    10
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "kasratan",
+     "x": 290.3,
+     "holder": "شَىْءٍۢ",
+     "cands": [
+      "شَىْءٍۢ",
+      "لِى",
+      "عَلَى"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 307.3,
+     "holder": "شَىْءٍۢ",
+     "cands": [
+      "شَىْءٍۢ",
+      "رَبَّنَآ",
+      "إِنَّكَ"
+     ]
+    }
+   ],
+   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+  },
+  {
+   "page": 368,
+   "lines": [
+    10
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "dammatan",
+     "x": 68.8,
+     "holder": "ثُعْبَانٌۭ",
+     "cands": [
+      "ثُعْبَانٌۭ",
+      "إِن"
+     ]
+    },
+    {
+     "mark": "damma",
+     "x": 99.7,
+     "holder": "ثُعْبَانٌۭ",
+     "cands": [
+      "ثُعْبَانٌۭ",
+      "فَأْتِ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 415,
+   "lines": [
+    6,
+    8
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "kasratan",
+     "x": 92.8,
+     "holder": "أَيَّامٍۢ",
+     "cands": [
+      "أَيَّامٍۢ",
+      "أَفَلَا"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 415,
+   "lines": [
+    6,
+    8
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 258.9,
+     "holder": "مِنَ",
+     "cands": [
+      "مِنَ",
+      "ٱلسَّمَآءِ",
+      "مِّن"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 276.9,
+     "holder": "مِنَ",
+     "cands": [
+      "مِنَ",
+      "ٱلْأَمْرَ",
+      "لَكُم"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 415,
+   "lines": [
+    13
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 283.6,
+     "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
+     "cands": [
+      "وَٱلْأَفْـِٔدَةَ ۚ",
+      "وَنَفَخَ",
+      "سَوَّىٰهُ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 292.4,
+     "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
+     "cands": [
+      "وَٱلْأَفْـِٔدَةَ ۚ",
+      "سَوَّىٰهُ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 301.1,
+     "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
+     "cands": [
+      "وَٱلْأَفْـِٔدَةَ ۚ",
+      "لَفِى"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 307.6,
+     "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
+     "cands": [
+      "وَٱلْأَفْـِٔدَةَ ۚ",
+      "سَوَّىٰهُ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 329.3,
+     "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
+     "cands": [
+      "وَٱلْأَفْـِٔدَةَ ۚ",
+      "ثُمَّ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 446,
+   "lines": [
+    3,
+    4,
+    6,
+    7
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 270.1,
+     "holder": "إِلَى",
+     "cands": [
+      "إِلَى",
+      "ٱلدُّنْيَا",
+      "بِزِينَةٍ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 281.3,
+     "holder": "إِلَى",
+     "cands": [
+      "إِلَى",
+      "يَسَّمَّعُونَ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 322.1,
+     "holder": "عَذَابٌۭ",
+     "cands": [
+      "عَذَابٌۭ",
+      "يَسَّمَّعُونَ",
+      "لَّا"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 507,
+   "lines": [
+    7,
+    8,
+    9,
+    11,
+    12
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    2,
+    2
+   ],
+   "entities": [
+    {
+     "mark": "damma",
+     "x": 71.0,
+     "holder": "سَبِيلِ",
+     "cands": [
+      "سَبِيلِ",
+      "يَشَآءُ",
+      "ٱللَّهُ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 75.5,
+     "holder": "سَبِيلِ",
+     "cands": [
+      "سَبِيلِ",
+      "ٱلْجَنَّةَ",
+      "عَرَّفَهَا"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 90.4,
+     "holder": "سَبِيلِ",
+     "cands": [
+      "سَبِيلِ",
+      "ٱلْجَنَّةَ",
+      "وَيُدْخِلُهُمُ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 95.7,
+     "holder": "سَبِيلِ",
+     "cands": [
+      "سَبِيلِ",
+      "وَلَوْ",
+      "يَشَآءُ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 507,
+   "lines": [
+    7,
+    8,
+    9,
+    11,
+    12
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    3,
+    3
+   ],
+   "entities": [
+    {
+     "mark": "damma",
+     "x": 243.2,
+     "holder": "ءَامَنُوٓا۟",
+     "cands": [
+      "ءَامَنُوٓا۟",
+      "سَيَهْدِيهِمْ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 250.1,
+     "holder": "ءَامَنُوٓا۟",
+     "cands": [
+      "ءَامَنُوٓا۟",
+      "سَيَهْدِيهِمْ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 258.9,
+     "holder": "فَتَعْسًۭا",
+     "cands": [
+      "فَتَعْسًۭا",
+      "ءَامَنُوٓا۟"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 260.8,
+     "holder": "ءَامَنُوٓا۟",
+     "cands": [
+      "ءَامَنُوٓا۟",
+      "سَيَهْدِيهِمْ"
+     ]
+    },
+    {
+     "mark": "damma",
+     "x": 261.8,
+     "holder": "فَتَعْسًۭا",
+     "cands": [
+      "فَتَعْسًۭا",
+      "ءَامَنُوٓا۟"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 265.0,
+     "holder": "فَتَعْسًۭا",
+     "cands": [
+      "فَتَعْسًۭا",
+      "كَفَرُوا۟",
+      "ٱلَّذِينَ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 507,
+   "lines": [
+    7,
+    8,
+    9,
+    11,
+    12
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 254.7,
+     "holder": "كَفَرُوا۟",
+     "cands": [
+      "كَفَرُوا۟",
+      "فِدَآءً",
+      "حَتَّىٰ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 257.5,
+     "holder": "كَفَرُوا۟",
+     "cands": [
+      "كَفَرُوا۟",
+      "ٱتَّبَعُوا۟"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 526,
+   "lines": [
+    14
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 177.2,
+     "holder": "وَٱلْأُولَىٰ",
+     "cands": [
+      "وَٱلْأُولَىٰ",
+      "جَآءَهُم"
+     ]
+    },
+    {
+     "mark": "damma",
+     "x": 187.8,
+     "holder": "وَٱلْأُولَىٰ",
+     "cands": [
+      "وَٱلْأُولَىٰ",
+      "جَآءَهُم",
+      "وَلَقَدْ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 207.3,
+     "holder": "وَٱلْأُولَىٰ",
+     "cands": [
+      "وَٱلْأُولَىٰ",
+      "ٱلْـَٔاخِرَةُ",
+      "وَلَقَدْ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 529,
+   "lines": [
+    6
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    2,
+    2
+   ],
+   "entities": [
+    {
+     "mark": "fathatan",
+     "x": 54.1,
+     "holder": "جَزَآءًۭ",
+     "cands": [
+      "جَزَآءًۭ",
+      "لِّمَن"
+     ]
+    },
+    {
+     "mark": "kasratan",
+     "x": 80.8,
+     "holder": "أَمْرٍۢ",
+     "cands": [
+      "أَمْرٍۢ",
+      "قَدْ",
+      "جَزَآءًۭ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 84.5,
+     "holder": "أَمْرٍۢ",
+     "cands": [
+      "أَمْرٍۢ",
+      "بِأَعْيُنِنَا",
+      "جَزَآءًۭ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 567,
+   "lines": [
+    1,
+    2
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 176.6,
+     "holder": "وَٱلْمُؤْتَفِكَـٰتُ",
+     "cands": [
+      "وَٱلْمُؤْتَفِكَـٰتُ",
+      "رَّابِيَةً"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 210.9,
+     "holder": "وَٱلْمُؤْتَفِكَـٰتُ",
+     "cands": [
+      "وَٱلْمُؤْتَفِكَـٰتُ",
+      "أَخْذَةًۭ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 567,
+   "lines": [
+    1,
+    2
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    2,
+    2
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 308.7,
+     "holder": "وَجَآءَ",
+     "cands": [
+      "وَجَآءَ",
+      "فِرْعَوْنُ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 576,
+   "lines": [
+    5,
+    6,
+    8,
+    9
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    2,
+    2
+   ],
+   "entities": [
+    {
+     "mark": "fatha",
+     "x": 23.7,
+     "holder": "يَرْتَابَ",
+     "cands": [
+      "يَرْتَابَ",
+      "كَفَرُوا۟"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 31.5,
+     "holder": "يَرْتَابَ",
+     "cands": [
+      "يَرْتَابَ",
+      "وَلَا",
+      "كَفَرُوا۟"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 34.4,
+     "holder": "وَلَا",
+     "cands": [
+      "وَلَا",
+      "كَفَرُوا۟",
+      "لِّلَّذِينَ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 43.7,
+     "holder": "يَرْتَابَ",
+     "cands": [
+      "يَرْتَابَ",
+      "وَلَا",
+      "لِّلَّذِينَ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 49.4,
+     "holder": "وَلَا",
+     "cands": [
+      "وَلَا",
+      "إِيمَـٰنًۭا ۙ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 577,
+   "lines": [
+    4,
+    5
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "kasra",
+     "x": 280.2,
+     "holder": "إِلَّآ",
+     "cands": [
+      "إِلَّآ",
+      "يَخَافُونَ",
+      "ٱلْـَٔاخِرَةَ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 283.7,
+     "holder": "إِلَّآ",
+     "cands": [
+      "إِلَّآ",
+      "يَخَافُونَ",
+      "ٱلْـَٔاخِرَةَ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 590,
+   "lines": [
+    15
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "dammatan",
+     "x": 166.3,
+     "holder": "قُرْءَانٌۭ",
+     "cands": [
+      "قُرْءَانٌۭ",
+      "ٱلَّذِينَ"
+     ]
+    },
+    {
+     "mark": "damma",
+     "x": 187.4,
+     "holder": "قُرْءَانٌۭ",
+     "cands": [
+      "قُرْءَانٌۭ",
+      "هُوَ",
+      "بَلِ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 591,
+   "lines": [
+    6
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "dammatan",
+     "x": 245.2,
+     "holder": "لَقَادِرٌۭ",
+     "cands": [
+      "لَقَادِرٌۭ",
+      "دَافِقٍۢ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 261.2,
+     "holder": "لَقَادِرٌۭ",
+     "cands": [
+      "لَقَادِرٌۭ",
+      "دَافِقٍۢ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 266.8,
+     "holder": "لَقَادِرٌۭ",
+     "cands": [
+      "لَقَادِرٌۭ",
+      "دَافِقٍۢ",
+      "مَّآءٍۢ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 591,
+   "lines": [
+    15
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "kasra",
+     "x": 217.6,
+     "holder": "إِن",
+     "cands": [
+      "إِن",
+      "فَذَكِّرْ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  },
+  {
+   "page": 600,
+   "lines": [
+    1
+   ],
+   "decision": "kept: no improvement",
+   "V": [
+    1,
+    1
+   ],
+   "entities": [
+    {
+     "mark": "kasra",
+     "x": 253.7,
+     "holder": "لِرَبِّهِۦ",
+     "cands": [
+      "لِرَبِّهِۦ",
+      "لَكَنُودٌۭ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 258.9,
+     "holder": "لِرَبِّهِۦ",
+     "cands": [
+      "لِرَبِّهِۦ",
+      "لَكَنُودٌۭ",
+      "لَشَدِيدٌ"
+     ]
+    },
+    {
+     "mark": "fatha",
+     "x": 265.9,
+     "holder": "لِرَبِّهِۦ",
+     "cands": [
+      "لِرَبِّهِۦ",
+      "لَكَنُودٌۭ"
+     ]
+    },
+    {
+     "mark": "kasra",
+     "x": 270.0,
+     "holder": "لِرَبِّهِۦ",
+     "cands": [
+      "لِرَبِّهِۦ",
+      "ٱلْإِنسَـٰنَ",
+      "لَشَدِيدٌ"
+     ]
+    }
+   ],
+   "class": "unresolved chain: kept, needs eyes"
+  }
+ ]
+}

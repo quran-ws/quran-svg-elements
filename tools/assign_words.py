@@ -7722,6 +7722,555 @@ def assign_page(edition, page_no, cache_dir):
                     _e["mkpart"] = True
                     _t.setdefault("mkmembers", []).append(_e)
 
+    # ------------------------------------------------------------------
+    # LINE-SET SOLVER (trial, DEFAULT OFF — QSVG_LSOLVE=1 to enable).
+    #
+    # The ownership rule (Abdullah, 2026-08-26): POSITION OWNS a mark — it
+    # belongs to the word whose letter ink it is drawn over, measured against
+    # ink and bands, never a stage's `line` tag. THE TEXT CONSTRAINS — each
+    # word's per-family counts equal its budget. NAMES FOLLOW POSITION — slash
+    # names derive relative to the OWNER (_POS_SWAP), renaming is part of
+    # reassignment. RESOLVE GLOBALLY — pairwise transfers are what created the
+    # rotations (p350's tail, p599's أولئك←شر←البرية chain), so on any
+    # violation the whole line-set's mark→word assignment is re-solved at
+    # once, minimum total displacement subject to the budgets. UNIQUENESS OR
+    # EYES — a unique optimum differing from the current assignment is
+    # applied (put_in_ligature only); ties within 10% become a proposal
+    # record (QSVG_LSOLVE_OUT), never a move.
+    #
+    # Scope is deliberately narrow: the six slash/damma families only — the
+    # ones whose name is positional and whose rotations pairwise passes
+    # cannot settle. Everything else (pause, meem-iqlab, hamza, small-waw…)
+    # already has a measured pass with its own proof band. small-waw/small-ya
+    # are NEVER entities here: a trailing ۥ/ۦ legitimately sits x-clear of
+    # its word (direction beats distance, ~2000 suffixes).
+    #
+    # Runs LAST, after the overrides, because a human's placement is an input
+    # it must respect: an element whose geometry key is in overrides.json
+    # never moves, and an element already on the proposals page
+    # (docs/defects/proposals.json, e.g. p350's x14.9 stroke, P1) is under
+    # adjudication — it neither moves nor testifies in any budget.
+    if os.environ.get("QSVG_LSOLVE", "1") == "1":
+        _LS_SLASH = ("fatha", "kasra", "fathatan", "kasratan")
+        _LS_FAMS = _LS_SLASH + ("damma", "dammatan")
+        _LS_CH = {"fatha": "َ", "kasra": "ِ",
+                  "fathatan": "ًࣰ", "kasratan": "ٍࣲ",
+                  "damma": "ُ", "dammatan": "ٌࣱ"}
+        _LS_GAP = 0.6          # the orphan pass's measured overlap tolerance
+        _LS_BAND = 15.0        # the crossband empty band (26 marks in 10-15u)
+        _LS_NEAR = 3.0         # a candidate's ink must be under the mark
+        _LS_PAIR = 8.0         # two strokes this close are ONE tanween
+        _LS_TIE = 0.10         # ties within 10% go to eyes, not to a move
+        _LS_CAP = 20000        # combinatorial ceiling; beyond it, propose
+
+        _ls_dbg = os.environ.get("QSVG_LSDBG")
+        _ls_out = os.environ.get("QSVG_LSOLVE_OUT")
+        _ls_page = int(os.path.splitext(page.name)[0].split("-")[0]
+                       .lstrip("0") or 0)
+
+        def _ls_log(rec):
+            if _ls_dbg:
+                sys.stderr.write("LSOLVE %s\n" % json.dumps(rec, ensure_ascii=False))
+            if _ls_out:
+                with open(_ls_out, "a", encoding="utf-8") as fh:
+                    fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+        # -- human decisions are inputs -----------------------------------
+        _ls_skip = set()          # geometry keys that must not move
+        try:
+            for _k in json.load(open(os.path.join(
+                    ROOT, ".cache", "review", "overrides.json"))).get(
+                        str(_ls_page), {}):
+                _ls_skip.add(_k)
+        except Exception:
+            pass
+        _ls_pending = []          # (x1, y1) of elements queued for eyes
+        try:
+            for _it in json.load(open(os.path.join(
+                    ROOT, "docs", "defects", "proposals.json"))).get("items", []):
+                if _it.get("page") == _ls_page and "focus_x" in _it:
+                    _ls_pending.append((float(_it["focus_x"]),
+                                        float(_it["focus_y"])))
+        except Exception:
+            pass
+
+        def _ls_key(e):
+            return "%.1f,%.1f,%.1f,%.1f" % (e["x1"], e["y1"], e["x2"], e["y2"])
+
+        def _ls_is_pending(e):
+            return any(abs(e["x1"] - px) < 1.5 and abs(e["y1"] - py) < 1.5
+                       for px, py in _ls_pending)
+
+        _lrec = []
+        for _wl, _atl in assignment:
+            if not _wl:
+                continue
+            _el = [e for a in _atl for e in a["els"]]
+            _bl = [e for e in _el if e["kind"] == "body"]
+            if not _bl:
+                continue
+            _ll = [e.get("line") for e in _bl if e.get("line")]
+            _lrec.append({"w": _wl, "at": _atl, "els": _el, "b": _bl,
+                          "ln": max(set(_ll), key=_ll.count) if _ll else 0})
+        _lband = {}
+        for _r in _lrec:
+            _lo0, _hi0 = _lband.get(_r["ln"], (1e9, -1e9))
+            _lband[_r["ln"]] = (min(_lo0, min(b["y1"] for b in _r["b"])),
+                                max(_hi0, max(b["y2"] for b in _r["b"])))
+
+        def _ls_ovl(bs, e):
+            return max((min(b["x2"], e["x2"]) - max(b["x1"], e["x1"]))
+                       for b in bs) if bs else -9e9
+
+        def _ls_out_of(ln, cy):
+            _lo, _hi = _lband.get(ln, (-1e9, 1e9))
+            return max(_lo - cy, cy - _hi, 0.0)
+
+        def _ls_nearln(cy):
+            _tl, _td = None, 1e9
+            for _l2, (_l1, _h1) in _lband.items():
+                _d2 = max(_l1 - cy, cy - _h1, 0.0)
+                if _d2 < _td:
+                    _td, _tl = _d2, _l2
+            return _tl
+
+        def _ls_cost(r, e):
+            _cy = (e["y1"] + e["y2"]) / 2
+            return (max(0.0, -_ls_ovl(r["b"], e))
+                    + _ls_out_of(r["ln"], _cy))
+
+        def _ls_viol(r, e):
+            _cy = (e["y1"] + e["y2"]) / 2
+            return (-_ls_ovl(r["b"], e) > _LS_GAP
+                    or _ls_out_of(r["ln"], _cy) >= _LS_BAND)
+
+        def _ls_movable(e):
+            return (e["kind"] != "body" and not e.get("mkpart")
+                    and not e.get("standalone")
+                    and e.get("mark") in _LS_FAMS
+                    and _ls_key(e) not in _ls_skip
+                    and not _ls_is_pending(e))
+
+        # -- violations, and the line-sets they trigger -------------------
+        _viols = []               # (holder rec, element)
+        for _r in _lrec:
+            for _e in _r["els"]:
+                if _ls_movable(_e) and _ls_viol(_r, _e):
+                    _viols.append((_r, _e))
+
+        def _ls_count(r, marks_named):
+            """Per-family |held-want| over the six families.
+
+            marks_named: list of (element, name). Pending-adjudication
+            elements are excluded — a disputed identity cannot testify.
+            """
+            _have = {f: 0 for f in _LS_FAMS}
+            for _e, _nm in marks_named:
+                if _nm in _have:
+                    _have[_nm] += 1
+            _t = r["w"]["uthmani"] or ""
+            return sum(abs(_have[f] - sum(_t.count(c) for c in _LS_CH[f]))
+                       for f in _LS_FAMS)
+
+        def _ls_sitting(r):
+            """The word's countable slash/damma marks as (element, name)."""
+            return [(e, e["mark"]) for e in r["els"]
+                    if e["kind"] != "body" and not e.get("mkpart")
+                    and not e.get("standalone")
+                    and e.get("mark") in _LS_FAMS
+                    and not _ls_is_pending(e)]
+
+        # Triggered lines come from POSITIONAL violations only: a bare count
+        # violation has no displaced ink for this solver to re-own, and it
+        # was pulling whole extra lines into one solve (p350's first run
+        # merged lines 6-8 into a 3^17 product). A count-bad word still
+        # constrains — and is repaired by — any solve whose line-set it
+        # falls in.
+        _trig = set()
+        for _r, _e in _viols:
+            _trig.add(_r["ln"])
+            _dl = _ls_nearln((_e["y1"] + _e["y2"]) / 2)
+            if _dl is not None:
+                _trig.add(_dl)
+
+        # merge triggered lines whose ±1 word sets would overlap
+        _groups = []
+        for _ln in sorted(_trig):
+            if _groups and _ln - _groups[-1][-1] <= 2:
+                _groups[-1].append(_ln)
+            else:
+                _groups.append([_ln])
+
+        def _ls_side(r, e):
+            """'a' above the letters under the mark, 'b' below — orphan rule."""
+            _u = [b for b in r["b"]
+                  if min(b["x2"], e["x2"]) - max(b["x1"], e["x1"]) > -0.6] \
+                 or r["b"]
+            _mid = (min(b["y1"] for b in _u) + max(b["y2"] for b in _u)) / 2
+            return "a" if (e["y1"] + e["y2"]) / 2 < _mid else "b"
+
+        def _ls_name_word(r, final):
+            """Re-derive a TOUCHED word's slash names from position, then weld
+            arriving pairs. Returns ([(element, name)], [(master, part, name)]).
+
+            The whole-word re-derivation is the orphan pass's precedent: a
+            mark that changed hands carries a name earned over someone else's
+            letters, and its arrival re-opens the naming of the word it joins.
+            Two single strokes within 8u, at least one of them newly arrived,
+            are one tanween named by the side the pair sits on ("two side by
+            side = tanween" — the derived-family rule).
+            """
+            named, welds = [], []
+            for _e, _arr in final:
+                _nm = _e["mark"]
+                if _nm in _LS_SLASH:
+                    _nm = _POS_SWAP.get((_nm, _ls_side(r, _e)), _nm)
+                named.append([_e, _nm])
+            singles = [it for it in named
+                       if it[1] in _LS_SLASH and not it[0].get("mkmembers")]
+            singles.sort(key=lambda it: (it[0]["x1"], it[0]["y1"]))
+            used = set()
+            arrived = {id(e) for e, a in final if a}
+            for i in range(len(singles)):
+                if id(singles[i][0]) in used:
+                    continue
+                for j in range(i + 1, len(singles)):
+                    _a, _b = singles[i][0], singles[j][0]
+                    if id(_b) in used:
+                        continue
+                    if id(_a) not in arrived and id(_b) not in arrived:
+                        continue
+                    _d = (abs((_a["x1"] + _a["x2"]) - (_b["x1"] + _b["x2"])) / 2
+                          + abs((_a["y1"] + _a["y2"]) - (_b["y1"] + _b["y2"])) / 2)
+                    if _d > _LS_PAIR:
+                        continue
+                    _me = {"x1": min(_a["x1"], _b["x1"]),
+                           "x2": max(_a["x2"], _b["x2"]),
+                           "y1": min(_a["y1"], _b["y1"]),
+                           "y2": max(_a["y2"], _b["y2"])}
+                    _tn = ("fathatan" if _ls_side(r, _me) == "a"
+                           else "kasratan")
+                    # two signals: proximity says pair, the TEXT must say the
+                    # word owns that tanween and is still short of it —
+                    # without this, two of يُنزِفُونَ's plain fathas welded
+                    # into a fathatan it does not spell (p535 line 1)
+                    _tw = sum((r["w"]["uthmani"] or "").count(c)
+                              for c in _LS_CH[_tn])
+                    _th = (sum(1 for it in named if it[1] == _tn
+                               and id(it[0]) not in (id(_a), id(_b)))
+                           - sum(1 for m, p, n in welds if n == _tn))
+                    if _th >= _tw:
+                        continue
+                    singles[i][1] = _tn
+                    singles[j][1] = _tn
+                    used.add(id(_a))
+                    used.add(id(_b))
+                    welds.append((_a, _b, _tn))
+                    break
+            # a welded part stops counting: drop it from the named list
+            _parts = {id(p) for m, p, n in welds}
+            named = [it for it in named if id(it[0]) not in _parts]
+            # The iqlab convention, TEXT-driven (reported.json items 18/23):
+            # this print draws iqlab as ONE haraka + small م, so a word whose
+            # text carries ۢ/ۭ owns its tanween as a single stroke. Where such
+            # a word is short its tanween and long its same-side base after
+            # the side naming, the LEFTMOST base stroke (word-final position)
+            # is the tanween. Never geometric, never on a non-iqlab word.
+            _t = r["w"]["uthmani"] or ""
+            if "ۢ" in _t or "ۭ" in _t:
+                for _base, _tn in (("fatha", "fathatan"),
+                                   ("kasra", "kasratan")):
+                    _wb = sum(_t.count(c) for c in _LS_CH[_base])
+                    _wt = sum(_t.count(c) for c in _LS_CH[_tn])
+                    _hb = [it for it in named if it[1] == _base]
+                    _ht = sum(1 for it in named if it[1] == _tn)
+                    while _ht < _wt and len(_hb) > _wb:
+                        _hb.sort(key=lambda it: it[0]["x1"])
+                        _hb[0][1] = _tn
+                        _hb = _hb[1:]
+                        _ht += 1
+            return named, welds
+
+        for _lines in _groups:
+            _set = [r for r in _lrec
+                    if _lines[0] - 1 <= r["ln"] <= _lines[-1] + 1]
+            if len(_set) < 2:
+                continue
+            _byid = {id(r): r for r in _set}
+            # entities: violating marks, plus same-group marks a contested
+            # word holds that overlap another word of the set (the p350
+            # fatha-at-50.7 kind — never itself orphaned, but the rotation
+            # cannot close without it)
+            _vset = {id(e) for r, e in _viols if id(r) in _byid}
+            _vwords = {id(r) for r, e in _viols if id(r) in _byid}
+            for _r in _set:
+                if _ls_count(_r, _ls_sitting(_r)):
+                    _vwords.add(id(_r))
+            _ents = []
+            for _r in _set:
+                for _e in _r["els"]:
+                    if not _ls_movable(_e):
+                        continue
+                    if id(_e) in _vset:
+                        _ents.append((_r, _e))
+                    elif id(_r) in _vwords:
+                        # near-boundary mark of a contested word
+                        _sh = [t for t in _set if t is not _r
+                               and _ls_ovl(t["b"], _e) > -_LS_NEAR
+                               and abs(t["ln"] - _r["ln"]) <= 1]
+                        if _sh:
+                            _ents.append((_r, _e))
+            if not _vset:
+                continue          # count trigger alone, nothing displaced
+            _ents.sort(key=lambda t: (t[1]["x1"], t[1]["y1"]))
+
+            # candidates per entity: words whose body ink is under the mark,
+            # on the line the mark is drawn in or the one beside it
+            _cands = []
+            for _r, _e in _ents:
+                _cy = (_e["y1"] + _e["y2"]) / 2
+                _dl = _ls_nearln(_cy)
+                _cs = [_r]
+                for _t in _set:
+                    if _t is _r or _ls_ovl(_t["b"], _e) <= -_LS_NEAR:
+                        continue
+                    if _dl is not None and abs(_t["ln"] - _dl) > 1:
+                        continue
+                    if _ls_out_of(_t["ln"], _cy) >= _LS_BAND:
+                        continue      # would be a violation there too
+                    _cs.append(_t)
+                # nearest-fitting alternatives by GEOMETRY (gap + band), not
+                # by raw x-overlap: vertically adjacent words always overlap
+                # in x, and ranking by overlap dropped p350's لَا behind the
+                # line above and the line below
+                _cs = [_cs[0]] + sorted(
+                    _cs[1:], key=lambda t: (_ls_cost(t, _e),
+                                            -_ls_ovl(t["b"], _e)))[:2]
+                _cands.append(_cs)
+
+            # entities with nowhere else to go are constants of the solve
+            _mob = [i for i in range(len(_ents)) if len(_cands[i]) > 1]
+            if not _mob:
+                continue
+            # Independent contests factor: two entities interact only when
+            # their candidate-word sets share a word (directly or through a
+            # chain). Each connected component is its own exact solve — the
+            # p350 tail rotation and the لَا/يَنكِحُهَآ exchange are separate
+            # components of the same line-set and multiply to nothing.
+            _parent = list(range(len(_ents)))
+
+            def _find(i):
+                while _parent[i] != i:
+                    _parent[i] = _parent[_parent[i]]
+                    i = _parent[i]
+                return i
+
+            for i in _mob:
+                for j in _mob:
+                    if j <= i:
+                        continue
+                    if set(id(w) for w in _cands[i]) \
+                            & set(id(w) for w in _cands[j]):
+                        _parent[_find(i)] = _find(j)
+            _comps = {}
+            for i in _mob:
+                _comps.setdefault(_find(i), []).append(i)
+
+            if _ls_dbg:
+                _ls_log({"page": _ls_page, "lines": _lines, "debug": "group",
+                         "entities": [{"mark": e.get("mark"),
+                                       "x": round((e["x1"] + e["x2"]) / 2, 1),
+                                       "holder": r["w"]["uthmani"],
+                                       "cands": ["%s ln%d ovl%.1f c%.1f"
+                                                 % (t["w"]["uthmani"], t["ln"],
+                                                    _ls_ovl(t["b"], e),
+                                                    _ls_cost(t, e))
+                                                 for t in _cands[k]]}
+                                      for k, (r, e) in enumerate(_ents)],
+                         "components": len(_comps)})
+            import itertools as _it
+            for _ck in sorted(_comps, key=lambda k: min(_comps[k])):
+                _idx = sorted(_comps[_ck])
+                _np = 1
+                for i in _idx:
+                    _np *= len(_cands[i])
+                if _np > _LS_CAP or len(_idx) > 12:
+                    _ls_log({"page": _ls_page, "lines": _lines,
+                             "decision": "skipped: component too large",
+                             "entities": len(_idx), "combos": _np})
+                    continue
+                # only this component's words can gain or lose anything
+                _wids = set()
+                for i in _idx:
+                    _wids.add(id(_ents[i][0]))
+                    for _t in _cands[i]:
+                        _wids.add(id(_t))
+                _cset = [r for r in _set if id(r) in _wids]
+
+                def _eval(choice, _idx=_idx, _cset=_cset):
+                    """(violations, cost) for one component assignment."""
+                    _own = {}
+                    for k, i in enumerate(_idx):
+                        _own[id(_ents[i][1])] = choice[k]
+                    _touched = set()
+                    for k, i in enumerate(_idx):
+                        _r, _e = _ents[i]
+                        if choice[k] is not _r:
+                            _touched.add(id(_r))
+                            _touched.add(id(choice[k]))
+                    _V = 0
+                    _C = 0.0
+                    for k, i in enumerate(_idx):
+                        _r, _e = _ents[i]
+                        _t = choice[k]
+                        _C += _ls_cost(_t, _e)
+                        if _ls_viol(_t, _e):
+                            _V += 1
+                    for _r in _cset:
+                        _final = []
+                        for _e2, _nm in _ls_sitting(_r):
+                            _o = _own.get(id(_e2))
+                            if _o is None or _o is _r:
+                                _final.append((_e2, False))
+                        for k, i in enumerate(_idx):
+                            _r2, _e2 = _ents[i]
+                            if _own[id(_e2)] is _r and _r2 is not _r:
+                                _final.append((_e2, True))
+                        if id(_r) in _touched:
+                            _named, _ = _ls_name_word(_r, _final)
+                        else:
+                            _named = [(e, e["mark"]) for e, _a in _final]
+                        _V += _ls_count(_r, _named)
+                        # HARD receiver-room: an arriving mark may fill a
+                        # deficit, never create a surplus — the two-signals
+                        # rule every adopted pass obeys. Without it p535's
+                        # line 1 parked a kasratan on يُنزِفُونَ, a word that
+                        # spells no tanween at all, because the ledger still
+                        # improved.
+                        _arrN = {}
+                        for _fi, (_e3, _a3) in enumerate(_final):
+                            if not _a3:
+                                continue
+                            _nm3 = next((n for e4, n in _named
+                                         if e4 is _e3), None)
+                            if _nm3 is not None:
+                                _arrN[_nm3] = 1
+                        for _nm3 in _arrN:
+                            _t3 = _r["w"]["uthmani"] or ""
+                            _hl = sum(1 for e4, n in _named if n == _nm3)
+                            if _hl > sum(_t3.count(c)
+                                         for c in _LS_CH.get(_nm3, "")):
+                                _V += 50
+                    return _V, _C
+
+                _cur = tuple(0 for i in _idx)      # slot 0 is the holder
+                # exhaustive, deterministic
+                _best, _second = None, None
+                for _ch in _it.product(*[range(len(_cands[i]))
+                                         for i in _idx]):
+                    _sc = _eval(tuple(_cands[_idx[k]][c]
+                                      for k, c in enumerate(_ch)))
+                    _row = (_sc[0], _sc[1], _ch)
+                    if _best is None or _row < _best:
+                        _second = _best
+                        _best = _row
+                    elif _second is None or _row < _second:
+                        _second = _row
+                _curV, _curC = _eval(tuple(_cands[_idx[k]][c]
+                                           for k, c in enumerate(_cur)))
+                _bV, _bC, _bch = _best
+                if _bch == _cur or _bV >= _curV:
+                    # a component that keeps its violations is a chain the
+                    # budgets cannot close — exactly what the proposals page
+                    # is for ("uniqueness or eyes")
+                    if _ls_dbg or (_ls_out and _curV > 0):
+                        _ls_log({"page": _ls_page, "lines": _lines,
+                                 "decision": "kept: no improvement",
+                                 "V": [_curV, _bV],
+                                 "entities": [
+                                     {"mark": _ents[i][1].get("mark"),
+                                      "x": round((_ents[i][1]["x1"]
+                                                  + _ents[i][1]["x2"]) / 2, 1),
+                                      "holder": _ents[i][0]["w"]["uthmani"],
+                                      "cands": [t["w"]["uthmani"]
+                                                for t in _cands[i]]}
+                                     for i in _idx]})
+                    continue      # nothing strictly better than what stands
+                _tie = (_second is not None and _second[0] == _bV
+                        and _second[1] <= _bC * (1.0 + _LS_TIE)
+                        and _second[2] != _cur)
+                _moves = []
+                for k, i in enumerate(_idx):
+                    _r, _e = _ents[i]
+                    _t = _cands[i][_bch[k]]
+                    if _t is not _r:
+                        _moves.append((_r, _t, _e))
+                _rec = {"page": _ls_page, "lines": _lines,
+                        "V": [_curV, _bV], "cost": round(_bC, 1),
+                        "moves": [{"mark": e.get("mark"),
+                                   "x": round((e["x1"] + e["x2"]) / 2, 1),
+                                   "y": round((e["y1"] + e["y2"]) / 2, 1),
+                                   "from": "%d:%d:%d %s" % (r["w"]["surah"],
+                                                            r["w"]["ayah"],
+                                                            r["w"]["pos"],
+                                                            r["w"]["uthmani"]),
+                                   "to": "%d:%d:%d %s" % (t["w"]["surah"],
+                                                          t["w"]["ayah"],
+                                                          t["w"]["pos"],
+                                                          t["w"]["uthmani"])}
+                                  for r, t, e in _moves]}
+                if _tie:
+                    _rec["decision"] = "tie: proposal, no change"
+                    _rec["second"] = {"V": _second[0],
+                                      "cost": round(_second[1], 1)}
+                    _ls_log(_rec)
+                    continue
+                _rec["decision"] = "applied"
+                _ls_log(_rec)
+                # apply: atoms via put_in_ligature, the one lawful hand-off
+                _touched = set()
+                _arrived_ids = {id(e) for _r0, _t0, e in _moves}
+                for _r, _t, _e in _moves:
+                    for _a in _r["at"]:
+                        if _e in _a["els"]:
+                            _a["els"].remove(_e)
+                            for _m in _e.get("mkmembers", []):
+                                if _m in _a["els"]:
+                                    _a["els"].remove(_m)
+                            break
+                    if _e in _r["els"]:
+                        _r["els"].remove(_e)
+                    for _m in _e.get("mkmembers", []):
+                        if _m in _r["els"]:
+                            _r["els"].remove(_m)
+                    put_in_ligature(_t["at"], _e)
+                    _t["els"].append(_e)
+                    _t["els"].extend(_e.get("mkmembers", []))
+                    if _t.get("ln"):
+                        _e["line"] = _t["ln"]
+                        for _m in _e.get("mkmembers", []):
+                            _m["line"] = _t["ln"]
+                    _touched.add(id(_r))
+                    _touched.add(id(_t))
+                # names follow position, welds included — same code the
+                # evaluation ran, now committed
+                for _r in _cset:
+                    if id(_r) not in _touched:
+                        continue
+                    _final = [(e, id(e) in _arrived_ids)
+                              for e, _nm in _ls_sitting(_r)]
+                    _named, _welds = _ls_name_word(_r, _final)
+                    for _e2, _nm in _named:
+                        if _nm != _e2["mark"]:
+                            _e2["mark"] = _nm
+                            for _m in _e2.get("mkmembers", []):
+                                _m["mark"] = _nm
+                    for _mst, _prt, _tn in _welds:
+                        _mst["mark"] = _tn
+                        _prt["mark"] = _tn
+                        _prt["mkpart"] = True
+                        _mst.setdefault("mkmembers", []).append(_prt)
+
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)
