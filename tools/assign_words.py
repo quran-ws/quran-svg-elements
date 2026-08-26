@@ -6115,8 +6115,38 @@ def assign_page(edition, page_no, cache_dir):
                         for _m9 in _e9.get("mkmembers", []):
                             if _m9 in _a9["els"]:
                                 _a9["els"].remove(_m9)
-                        _dat[0]["els"].append(_e9)
-                        _dat[0]["els"].extend(_e9.get("mkmembers", []))
+                        # Nearest ligature group, not blindly the first one —
+                        # the same rule every mover follows (see
+                        # put_in_ligature's docstring: appending to atoms[0]
+                        # put p591's kasra in the group at the far end of its
+                        # word). put_in_ligature also carries mkmembers.
+                        if os.environ.get("QSVG_OVRLIG", "1") == "1":
+                            put_in_ligature(_dat, _e9)
+                        else:
+                            _dat[0]["els"].append(_e9)
+                            _dat[0]["els"].extend(_e9.get("mkmembers", []))
+                        # A mover may have retagged the piece's line to keep
+                        # its old word together (the cross-line repair does:
+                        # e5["line"] = dst5["ln"]), and a stale tag makes the
+                        # returned word register on the wrong line — p59's
+                        # مَا read as line 9 ink and tripped rtl-order. The
+                        # band its centre is drawn in is the truth, same rule
+                        # as the body re-liner above.
+                        # Bodies only: "geometry is the truth for bodies", but
+                        # a mark belongs to its LETTER and may legitimately sit
+                        # in the neighbouring band (a deep kasra), so marks
+                        # keep the tag their letter gave them — the same split
+                        # the two re-liners above this stage make.
+                        if _e9["kind"] != "body" or os.environ.get("QSVG_OVRLN", "1") != "1":
+                            continue
+                        _cy9 = (_e9["y1"] + _e9["y2"]) / 2
+                        for _li9 in lines_info:
+                            if _li9["top"] <= _cy9 <= _li9["bottom"]:
+                                if _e9.get("line") != _li9["lineNumber"]:
+                                    _e9["line"] = _li9["lineNumber"]
+                                    for _m9 in _e9.get("mkmembers", []):
+                                        _m9["line"] = _li9["lineNumber"]
+                                break
 
     # Ink held in the right word but read as a mark where it is a letter. Adjudicated,
     # geometry-keyed, written by tools/ref_kinds.py — see there for why these are facts
