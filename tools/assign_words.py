@@ -54,6 +54,7 @@ def page_words(page_no, cache_dir):
     # line-for-line; quran.com's own line numbers drift from it on some pages
     # (p4: end-of-line word wrapped). Prefer the QCF layout when we have it.
     qcf_lines = _qcf_lines().get(str(page_no), {})
+    qpc = qpc_words(page_no)
 
     # The QCF layout is normally the better of the two, but on a few pages it
     # is self-contradictory: p599 puts 100:6 on line 1 while surah 100 does not
@@ -95,8 +96,43 @@ def page_words(page_no, cache_dir):
             lines.setdefault(ln, []).append({
                 "surah": int(surah), "ayah": int(ayah), "pos": w["position"],
                 "uthmani": w["text_uthmani"], "imlaei": w["text_imlaei"],
+                "qpc": qpc.get("%s:%s" % (verse["verse_key"], w["position"]), ""),
             })
     return lines
+
+
+_QPC = {}
+
+
+def qpc_words(page_no):
+    """The King Fahd Complex's own word text for a page, keyed surah:ayah:position.
+
+    `text_uthmani` from quran.com is a different edition from the print this pipeline
+    decomposes. Their waqf systems disagree at 424 of 4,416 positions — the text puts a
+    قلى on 2:61 where the page draws ج, and 87 more like it — so anything that takes the
+    printed page's marks from `text_uthmani` is checking the artwork against the wrong
+    book. `qpc_uthmani_hafs` is the Printing Complex's text of this print, and it is also
+    the text MushafDatabase labels its words with, so the three sources finally agree on
+    what the page says.
+
+    Cached under .cache/words-qpc/ by scratchpad/warm_qpc.py. Absent, everything falls
+    back to `text_uthmani` exactly as before.
+    """
+    if page_no in _QPC:
+        return _QPC[page_no]
+    f = os.path.join(ROOT, ".cache", "words-qpc", "page-%03d.json" % page_no)
+    out = {}
+    if os.path.exists(f):
+        try:
+            for v in json.load(open(f, encoding="utf-8"))["verses"]:
+                for w in v["words"]:
+                    t = w.get("qpc_uthmani_hafs")
+                    if t:
+                        out["%s:%s" % (v["verse_key"], w["position"])] = t
+        except Exception:
+            out = {}
+    _QPC[page_no] = out
+    return out
 
 
 _QCF_LINES = None
@@ -269,6 +305,10 @@ def composite_marks(elements, part_key=None, known=None):
     def label_of(e):
         return known.get(part_key(e)) if part_key is not None else None
 
+    def waqf_of(e):
+        """Which pause sign this is — ج, صلى, قلى — from the shape, not the text."""
+        return waqf_types().get(part_key(e)) if part_key is not None else None
+
     for ln in {e["line"] for e in elements}:
         marks = [e for e in elements
                  if e["line"] == ln and e["kind"] == "mark"]
@@ -374,7 +414,15 @@ def composite_marks(elements, part_key=None, known=None):
                     dx = abs((a["x1"] + a["x2"]) / 2 - (b["x1"] + b["x2"]) / 2)
                     tight = dx < 2.5 and vgap <= 0.6
                     dots_pair = la in DOTFAM and lb in DOTFAM and tight
-                    # a waqf letter owns its dot: ج = pause curl + nested dot
+                    # A waqf letter owns its dot: ج = pause curl + nested dot.
+                    #
+                    # Restricting this to ج was tried, on the reasoning that صلى and قلى
+                    # have no dot below them and so must be swallowing a letter's dot —
+                    # `بِٱلۡمَعۡرُوفِ` on p27 does exactly that. Measured, it is wrong:
+                    # dot disagreements went from 66 over the whole mushaf to 150 over
+                    # the first 120 pages. Un-welding turns a sign's own dot into an
+                    # extra dot unit far more often than it recovers a letter's. p27 is
+                    # a real defect but not this rule's fault.
                     waqf_dot = (nested_dot and "pause" in (la, lb)
                                 and (la in DOTFAM or lb in DOTFAM))
                     pause_pair = la == lb == "pause" and vgap <= 2.2
@@ -444,6 +492,71 @@ def letter_width(text):
 
 
 _QCF = None
+
+
+_WAQF = None
+
+
+def waqf_types():
+    """{signature: waqf name} — evidence, built by tools/waqf_table.py, applied as data.
+
+    Additive only: the element keeps its `pause` label, so nothing that counts marks
+    changes behaviour. Missing file means no `data-waqf` is emitted and everything
+    behaves exactly as before.
+    """
+    global _WAQF
+    if _WAQF is None:
+        p = os.path.join(ROOT, ".cache", "marks", "waqf_types.json")
+        try:
+            _WAQF = {k: v["waqf"] for k, v in json.load(open(p, encoding="utf-8")).items()}
+        except Exception:
+            _WAQF = {}
+    return _WAQF
+
+
+_MARKS = None
+
+
+def _mark_table():
+    """{page: {geometry: label}} — dot labels settled per place. Data, not a rule."""
+    global _MARKS
+    if _MARKS is None:
+        p = os.path.join(ROOT, ".cache", "review", "marks.json")
+        try:
+            _MARKS = json.load(open(p, encoding="utf-8"))
+        except Exception:
+            _MARKS = {}
+    return _MARKS
+
+
+_KINDS = None
+
+
+def _kind_table():
+    """{page: {geometry: "body"}} — ink we call a mark that is a letter. Data, not a rule."""
+    global _KINDS
+    if _KINDS is None:
+        p = os.path.join(ROOT, ".cache", "review", "kinds.json")
+        try:
+            _KINDS = json.load(open(p, encoding="utf-8"))
+        except Exception:
+            _KINDS = {}
+    return _KINDS
+
+
+_WAQF_PLACES = None
+
+
+def waqf_places():
+    """{page: {geometry: waqf name}} for signs no signature of ours corresponds to."""
+    global _WAQF_PLACES
+    if _WAQF_PLACES is None:
+        p = os.path.join(ROOT, ".cache", "marks", "waqf_places.json")
+        try:
+            _WAQF_PLACES = json.load(open(p, encoding="utf-8"))
+        except Exception:
+            _WAQF_PLACES = {}
+    return _WAQF_PLACES
 
 
 def qcf_widths():
@@ -1096,6 +1209,25 @@ def align_segs_atoms(atoms, segs, alpha=None):
     return groups, dp[n][m] / max(mean_seg, 1e-9) / max(1, len(groups))
 
 
+def put_in_ligature(atoms, e):
+    """Place `e` in the ligature group of `atoms` whose ink it actually sits over.
+
+    A word is emitted as one `<g class="ligature">` per piece the joining rules allow, so
+    appending to `atoms[0]` puts the mark in the word's FIRST group whatever it is drawn
+    over. Abdullah caught this on p591: `ٱلسَّمَآءِ`'s final kasra was moved into the
+    right word and landed in `data-text="وا"`, the group holding the initial و at the
+    other end of the word, instead of the group holding the hamza it sits under.
+
+    Same rule `_omove` uses for every one of the older movers — nearest by centre x.
+    """
+    tgt = min(atoms, key=lambda a: min(
+        (abs((x["x1"] + x["x2"]) / 2 - (e["x1"] + e["x2"]) / 2) for x in a["els"]),
+        default=1e9))
+    tgt["els"].append(e)
+    tgt["els"].extend(e.get("mkmembers", []))
+    return tgt
+
+
 def mark_pos(e, baseline, body):
     """'a' above the line's writing level, 'b' below — fatha vs kasra territory."""
     cy = (e["y1"] + e["y2"]) / 2
@@ -1145,6 +1277,8 @@ def rewrite(page, assignment):
     or ligature whose elements span several source <path> wrappers is emitted once per
     wrapper with the same metadata.
     """
+    # For waqf signs recorded by place rather than by shape — see waqf_places().
+    _page_no = str(int(os.path.splitext(page.name)[0].split("-")[0].lstrip("0") or 0))
     from add_line_structure import build_d
 
     # A word is one thing on the page, but its ink can straddle the boundary
@@ -1198,6 +1332,22 @@ def rewrite(page, assignment):
                           else 'data-mark="%s" ') % e["mark"]
             if e.get("sig"):
                 extra += 'data-sig="%s" ' % e["sig"]
+                # Which pause sign this is. Every waqf comes out of this pipeline
+                # labelled `pause`, so a ۚ (ج) and a ۗ (قلى) are indistinguishable in the
+                # output — and the text cannot tell them apart either, since quran.com's
+                # uthmani and this print disagree about the sign at 424 of 4,416
+                # positions. The shapes are distinct outlines, so the signature settles
+                # it from the ink: `.cache/marks/waqf_types.json` records what
+                # MushafDatabase calls each one, with the count and purity behind it.
+                wq = waqf_types().get(e["sig"])
+                if not wq:
+                    # The muʿānaqah has no signature of ours: we see its triangle of
+                    # three dots as a `two-dots` and a `dot`, so it is recorded by place.
+                    _rec = waqf_places().get(_page_no, {}).get(
+                        "%.1f,%.1f,%.1f,%.1f" % (e["x1"], e["y1"], e["x2"], e["y2"]))
+                    wq = _rec.get("waqf") if isinstance(_rec, dict) else _rec
+                if wq:
+                    extra += 'data-waqf="%s" ' % wq
             if e.get("fused"):
                 extra += 'data-fused="1" '
             if e.get("standalone"):
@@ -1248,10 +1398,16 @@ def rewrite(page, assignment):
                                    % akey)
                         open_ayah = akey
                 if word:
+                    # data-qpc is the King Fahd Complex's own text of THIS print, which
+                    # is not the same edition as quran.com's uthmani — see qpc_words().
+                    # Emitted alongside rather than instead of, so nothing downstream
+                    # that reads data-uthmani changes behaviour.
                     out.append('<g class="word" data-surah="%d" data-ayah="%d" '
-                               'data-word="%d" data-uthmani="%s" data-imlaei="%s">'
+                               'data-word="%d" data-uthmani="%s" data-imlaei="%s"%s>'
                                % (word["surah"], word["ayah"], word["pos"],
-                                  esc(word["uthmani"]), esc(word["imlaei"])))
+                                  esc(word["uthmani"]), esc(word["imlaei"]),
+                                  (' data-qpc="%s"' % esc(word["qpc"]))
+                                  if word.get("qpc") else ""))
                     open_word = wkey
             if word and lig_key != open_lig:
                 if open_lig is not None:
@@ -1345,6 +1501,30 @@ def shape_labels():
 
 # The same stroke is a fatha above the letter and a kasra below it; the shape table
 # stores one name, the drawn position picks the final label.
+_DOTU_F = {"dot": 1, "two-dots": 2, "three-dots": 3}
+
+
+def dot_budget(txt):
+    """Dot units a word's letters own, by the rule audit_marks.dot_want uses.
+
+    A final ya is drawn undotted here, and so is a ya carrying a following hamza —
+    شَيۡءٖ is three dots, not five, which our decomposition and MushafDatabase's agree on
+    independently.
+    """
+    raw = _LETTER.findall(txt)
+    sk = [(HAMZA_MAP[c][0] if c in HAMZA_MAP else c, c in HAMZA_MAP) for c in raw]
+    n = 0
+    for i, (ch, seat) in enumerate(sk):
+        if seat or ch not in DOTS:
+            continue
+        if ch == "\u064a" and (i == len(sk) - 1
+                                or (i + 1 < len(sk) and sk[i + 1][0] == "\u0621")):
+            continue
+        n += _DOTU_F.get(DOTS[ch][0], 0)
+    return n
+
+
+_POS_SWAP_FAM = ("fatha", "kasra", "fathatan", "kasratan")
 _POS_SWAP = {("fatha", "b"): "kasra", ("kasra", "a"): "fatha",
              ("fathatan", "b"): "kasratan", ("kasratan", "a"): "fathatan"}
 
@@ -3764,8 +3944,12 @@ def assign_page(edition, page_no, cache_dir):
         # QSVG_TRACE=<x1> prints every hand-off of one piece of ink, which is
         # how a word that ends up with the wrong letter gets traced back to
         # the pass that took it.
-        if _TRACE and any(abs(e["x1"] - float(_t)) < 0.5
-                          for _t in _TRACE.split(",")):
+        # QSVG_TRACE=all traces every hand-off on the page, which is how a whole
+        # sweep is attributed to the passes that cause it rather than one word at
+        # a time.
+        if _TRACE and (_TRACE == "all"
+                       or any(abs(e["x1"] - float(_t)) < 0.5
+                              for _t in _TRACE.split(","))):
             import traceback as _tb
             _fr = _tb.extract_stack()[-2]
             sys.stderr.write("MOVE line%-5d %-6s x %.1f-%.1f  %s -> %s\n"
@@ -5821,6 +6005,71 @@ def assign_page(edition, page_no, cache_dir):
     # said which word owns this piece of ink; no inference outranks that. They
     # are keyed by geometry, not by element id, so they survive pipeline
     # changes — and each one is also a standing regression test.
+    # A waqf sign recorded by place is a waqf sign, not letter dots. The muʿānaqah is
+    # drawn as three dots in a triangle, and this pipeline sees three dots: on p112 the
+    # `ٱلْقَوْمِ` under one of them came out holding five dot units where its spelling
+    # allows two. Welding the pieces of one occurrence into a single `pause` makes the
+    # count agree with both the spelling and the reference — the text does ask for a
+    # pause there, since the QPC text carries the `ۛ`.
+    _places = waqf_places().get(
+        str(int(os.path.splitext(page.name)[0].split("-")[0].lstrip("0") or 0)), {})
+    if _places:
+        for _wp, _atp in assignment:
+            if not _wp:
+                continue
+            _byocc = {}
+            for _a in _atp:
+                for _e in _a["els"]:
+                    _r = _places.get("%.1f,%.1f,%.1f,%.1f"
+                                     % (_e["x1"], _e["y1"], _e["x2"], _e["y2"]))
+                    if isinstance(_r, dict):
+                        _byocc.setdefault(_r["occ"], []).append(_e)
+            for _grp in _byocc.values():
+                _grp.sort(key=lambda e: -(e["x2"] - e["x1"]) * (e["y2"] - e["y1"]))
+                _grp[0]["mark"] = "pause"
+                _grp[0]["mkmembers"] = _grp[1:]
+                _grp[0].pop("mkpart", None)
+                for _m in _grp[1:]:
+                    _m["mark"] = "pause"
+                    _m["mkpart"] = True
+
+    # A dot label names how many dots the CLUSTER stands for, and the art draws dots at
+    # one fixed size — measured over six pages, every `dot` is 2.38 units wide, every
+    # `two-dots` between 4.43 and 4.72, and every welded twin 2.38. So a piece of ink
+    # says how many blobs it holds: its width divided by a single dot's.
+    #
+    # `three-dots` masters are the bimodal case, and the reason a word can be credited
+    # with ink the page does not draw. Some are 4.55 wide — two blobs, plus a 2.38 twin
+    # makes three, and the label is right. Others are 2.38, one blob, and with a 2.38
+    # twin the cluster is only two: `شَىْءٍۢ` on p142 draws the ش as three separate blobs
+    # held as a `dot` plus such a pair, and the word counts four where three are drawn.
+    #
+    # Only ever narrowed to the blobs measured, never widened; nothing moves.
+    #
+    # Two earlier rewrites of this rested on false premises and the gate caught both:
+    # renaming by contour count took mark flags 659 -> 32,772 (every dot element has
+    # exactly one contour, `two-dots` included), and renaming by welded-member count
+    # took dot errors 13 -> 9,705 (a `two-dots` has no members at all).
+    if os.environ.get("QSVG_DOTLBL", "1") == "1":
+        _DOT_W = 2.38                      # one drawn dot, in page units
+        _BYN = {1: "dot", 2: "two-dots", 3: "three-dots"}
+        _VAL = {"dot": 1, "two-dots": 2, "three-dots": 3}
+
+        def _blobs(e):
+            return max(1, int(round((e["x2"] - e["x1"]) / _DOT_W)))
+
+        for _wl, _atl in assignment:
+            if not _wl:
+                continue
+            for _al in _atl:
+                for _el in _al["els"]:
+                    if (_el.get("mark") or "") not in _VAL or _el.get("mkpart"):
+                        continue
+                    _n = _blobs(_el) + sum(_blobs(_m) for _m in (_el.get("mkmembers") or [])
+                                           if (_m.get("mark") or "") in _VAL)
+                    if _n < _VAL[_el["mark"]] and _n in _BYN:
+                        _el["mark"] = _BYN[_n]
+
     _ovr_path = os.path.join(ROOT, ".cache", "review", "overrides.json")
     if os.path.exists(_ovr_path):
         try:
@@ -5850,6 +6099,1055 @@ def assign_page(edition, page_no, cache_dir):
                                 _a9["els"].remove(_m9)
                         _dat[0]["els"].append(_e9)
                         _dat[0]["els"].extend(_e9.get("mkmembers", []))
+
+    # Ink held in the right word but read as a mark where it is a letter. Adjudicated,
+    # geometry-keyed, written by tools/ref_kinds.py — see there for why these are facts
+    # about places rather than a rule.
+    _kinds = _kind_table().get(
+        str(int(os.path.splitext(page.name)[0].split("-")[0].lstrip("0") or 0)), {})
+    if _kinds:
+        for _wk, _atk in assignment:
+            if not _wk:
+                continue
+            for _ak in _atk:
+                for _ek in _ak["els"]:
+                    _kk = _kinds.get("%.1f,%.1f,%.1f,%.1f"
+                                     % (_ek["x1"], _ek["y1"], _ek["x2"], _ek["y2"]))
+                    if _kk == "body":
+                        _ek["kind"] = "body"
+                        _ek.pop("mark", None)
+                        _ek.pop("mkpart", None)
+
+    # Dot clusters whose label overstates the ink they cover — the residue the measured
+    # blob width cannot separate. Adjudicated, geometry-keyed; see tools/ref_marks.py.
+    _mk = _mark_table().get(
+        str(int(os.path.splitext(page.name)[0].split("-")[0].lstrip("0") or 0)), {})
+    if _mk:
+        for _wm, _atm in assignment:
+            if not _wm:
+                continue
+            for _am in _atm:
+                for _em in _am["els"]:
+                    _nn = _mk.get("%.1f,%.1f,%.1f,%.1f"
+                                  % (_em["x1"], _em["y1"], _em["x2"], _em["y2"]))
+                    if _nn:
+                        _em["mark"] = _nn
+
+    # A diacritic sits ON a letter. If none of its word's letters overlaps it
+    # horizontally, it is not sitting on anything that word owns — it is floating above a
+    # neighbour's letters. Abdullah found this on p590, where `وَعَمِلُوا۟` had lost a
+    # fatha and a kasra to `ٱلصَّٰلِحَٰتِ`, which had lost two of its own to `لَهُمْ`.
+    # Mushaf-wide the test finds 178 such marks, 140 of them invisible to the
+    # MushafDatabase comparison, which reads letter extents and dot counts only.
+    #
+    # Geometry proposes; the text budget disposes — but a line at a time, not a mark at a
+    # time. p590 is a CHAIN: the middle word balances, because the two marks it is owed
+    # and the two it wrongly holds cancel in the count. Judged one move at a time both
+    # transfers are refused (donor not over budget, receiver has no room) and the chain
+    # survives; applied together they resolve. So every floating mark on a line is moved
+    # to the neighbour whose ink it sits over, and the line is kept only if it ends with
+    # fewer words whose marks disagree with their spelling than it started with.
+    #
+    # Counted per FAMILY GROUP, never per family: fatha and kasra are one stroke named
+    # afterwards from which side of the letter it lands on, so a word can be short a
+    # kasra and long a fatha and be wrong in neither column. Same for damma/dammatan.
+    #
+    # Only the immediate neighbour, because a diacritic drifts onto the word beside it and
+    # does not cross the page: without that, a word which is itself on the wrong line has
+    # all of its marks look orphaned — its letters sit at the far end of the line — and
+    # they get handed to whatever happens to lie under them. On p526 that turned one flag
+    # into five. A misplaced word is a line defect and belongs to the line audits.
+    if os.environ.get("QSVG_ORPHAN", "1") == "1":
+        _GRP = {"fatha": "slash", "kasra": "slash",
+                "fathatan": "slash", "kasratan": "slash",
+                "damma": "damma", "dammatan": "damma",
+                "dot": "dots", "two-dots": "dots", "three-dots": "dots"}
+        _UNITS = {"dot": 1, "two-dots": 2, "three-dots": 3}
+        _CHARS = {"slash": "\u064e\u0650\u064b\u064d\u08f0\u08f2",
+                  "damma": "\u064f\u064c\u08f1"}
+
+        def _held(els, grp):
+            n = 0
+            for e in els:
+                if e.get("mkpart") or _GRP.get(e.get("mark")) != grp:
+                    continue
+                n += _UNITS.get(e["mark"], 1)
+            return n
+
+        def _want(w, grp):
+            if grp == "dots":
+                return dot_budget(w["uthmani"])
+            return sum(w["uthmani"].count(c) for c in _CHARS[grp])
+
+        def _rename(rec):
+            """Re-derive every slash name in this word from the side of the letter it sits on."""
+            for e in rec["els"]:
+                if e.get("mark") not in _POS_SWAP_FAM or e.get("mkpart"):
+                    continue
+                u = [b for b in rec["b"]
+                     if min(b["x2"], e["x2"]) - max(b["x1"], e["x1"]) > -0.6] or rec["b"]
+                mid = (min(b["y1"] for b in u) + max(b["y2"] for b in u)) / 2
+                side = "a" if (e["y1"] + e["y2"]) / 2 < mid else "b"
+                nm = _POS_SWAP.get((e["mark"], side), e["mark"])
+                if nm != e["mark"]:
+                    e["mark"] = nm
+                    for m in e.get("mkmembers", []):
+                        m["mark"] = nm
+
+        def _rename1(rec, e):
+            """Re-derive ONE mark's name from the letters it now sits on.
+
+            The whole-word version is right for the orphan pass, where both words are
+            neighbours and every name is in play. It is wrong across a page: on p371 it
+            renamed `ضَلَـٰلٍۢ`'s own correct fatha to a kasra while installing the mark
+            that arrived — fatha 1/2 became fatha 0/2, kasra 2/0. Only the arriving mark
+            carries a name earned over someone else's letters; the marks already there
+            earned theirs where they sit.
+            """
+            if e.get("mark") not in _POS_SWAP_FAM or e.get("mkpart"):
+                return
+            u = [b for b in rec["b"]
+                 if min(b["x2"], e["x2"]) - max(b["x1"], e["x1"]) > -0.6] or rec["b"]
+            mid = (min(b["y1"] for b in u) + max(b["y2"] for b in u)) / 2
+            side = "a" if (e["y1"] + e["y2"]) / 2 < mid else "b"
+            nm = _POS_SWAP.get((e["mark"], side), e["mark"])
+            if nm != e["mark"]:
+                e["mark"] = nm
+                for m in e.get("mkmembers", []):
+                    m["mark"] = nm
+
+        _FAMCH = {"fatha": "\u064e", "kasra": "\u0650",
+                  "fathatan": "\u064b", "kasratan": "\u064d",
+                  "damma": "\u064f", "dammatan": "\u064c"}
+
+        def _off(rec):
+            """How many ways this word's marks disagree with its spelling.
+
+            Counted per FAMILY — fatha against fatha, kasra against kasra — not per
+            group. Abdullah's point, and it is what exposes an exchange: on p591
+            `وَٱلسَّمَآءِ` and `وَٱلطَّارِقِ` each hold one of the other's marks, so every
+            group total stays right and the line looks untouched. Per family it does not.
+            This is only sound because the names are re-derived from position after each
+            move; before that, a slash carried across a word keeps a name earned on the
+            other side of a letter and the family counts are meaningless.
+            """
+            n = 0
+            for fam, ch in _FAMCH.items():
+                if sum(1 for e in rec["els"]
+                       if e.get("mark") == fam and not e.get("mkpart")) \
+                        != rec["w"]["uthmani"].count(ch):
+                    n += 1
+            if _held(rec["els"], "dots") != _want(rec["w"], "dots"):
+                n += 1
+            return n
+
+        _recs = []
+        for _wo, _ato in assignment:
+            if not _wo:
+                continue
+            _e2 = [e for a in _ato for e in a["els"]]
+            _b2 = [e for e in _e2 if e["kind"] == "body"]
+            if not _b2:
+                continue
+            _l2 = [e.get("line") for e in _b2 if e.get("line")]
+            _recs.append({"w": _wo, "at": _ato, "els": _e2, "b": _b2,
+                          "ln": max(set(_l2), key=_l2.count) if _l2 else 0})
+
+        def _ovl(bs, e):
+            return max((min(b["x2"], e["x2"]) - max(b["x1"], e["x1"])) for b in bs) if bs else -9e9
+
+        # the y extent of each line's letters, used to tell a mark that merely hangs low
+        # from one drawn in the next line's band
+        _band = {}
+        for _rb in _recs:
+            _lo0, _hi0 = _band.get(_rb["ln"], (1e9, -1e9))
+            _band[_rb["ln"]] = (min(_lo0, min(b["y1"] for b in _rb["b"])),
+                                max(_hi0, max(b["y2"] for b in _rb["b"])))
+
+        for _ln in {r["ln"] for r in _recs}:
+            _line = sorted([r for r in _recs if r["ln"] == _ln],
+                           key=lambda x: -max(b["x2"] for b in x["b"]))
+            if len(_line) < 2:
+                continue
+            # Settle the naming first, then look for moves. A slash's name is derived from
+            # the side of the letter it sits on, so a wrongly-owned mark can carry a name
+            # earned over someone else's letters — and two such names can cancel, leaving
+            # every count correct while the ink is plainly misplaced. p591's
+            # `وَٱلسَّمَآءِ`/`وَٱلطَّارِقِ` sit in exactly that hole: nothing is out of
+            # balance, so no move can improve anything, and the pair is frozen. Naming
+            # every mark from where it actually sits first is what makes the counts mean
+            # something before they are used to judge a transfer.
+            # OFF by default: measured, it makes things worse. Naming every mark from the
+            # box midpoint of the letters under it is cruder than the pipeline's own
+            # local_pos(), which uses the letters' actual contour points — so a blanket
+            # re-derivation overwrites good names with worse ones. p591 went from two
+            # balanced words to two mismatched, p350 from three right to one. The naming
+            # after a MOVE still happens, because there the old name was earned over
+            # another word's letters and is worthless; it is the untouched marks that
+            # must be left alone.
+            if os.environ.get("QSVG_RENAME", "0") == "1":
+                for _r in _line:
+                    _rename(_r)
+            _plan = []
+            for _i, _r in enumerate(_line):
+                for _e in _r["els"]:
+                    if _e["kind"] == "body" or _e.get("mkpart") or _e.get("mark") not in _GRP:
+                        continue
+                    if _ovl(_r["b"], _e) > -0.6:
+                        continue
+                    # Ink drawn in ANOTHER LINE'S BAND is a vertical defect and belongs
+                    # to audit_crossline.py, not here; letting it in poisoned p350, where
+                    # `لَا` holds a fatha drawn a line above its own letters.
+                    #
+                    # Tested by POSITION, not by the element's `line` tag. The tag is
+                    # wrong exactly where this matters: on p591 `وَٱلطَّارِقِ` holds the
+                    # kasra belonging under `ٱلسَّمَآءِ`'s hamza, drawn at y 103.7-107.0
+                    # squarely inside line 3's band of 88-108, and tagged line 4 because
+                    # it hangs low. The tag test skipped it, so only one half of the
+                    # exchange was ever proposed and the pair could never resolve — the
+                    # defect Abdullah reported three times. Same at 86:11:1.
+                    #
+                    # 10 units is measured: across all 604 pages 4,203 marks sit between
+                    # 5 and 10 units outside their word's band and only 26 between 10 and
+                    # 15, a 160x cliff, so the band plus ten units is the whole of what a
+                    # mark legitimately does vertically.
+                    _lo, _hi = _band.get(_r["ln"], (-1e9, 1e9))
+                    _cy = (_e["y1"] + _e["y2"]) / 2
+                    if _cy < _lo - 10.0 or _cy > _hi + 10.0:
+                        continue
+                    _best, _bo = None, -0.6
+                    for _j in (_i - 1, _i + 1):
+                        if not (0 <= _j < len(_line)):
+                            continue
+                        _o = _ovl(_line[_j]["b"], _e)
+                        if _o > _bo:
+                            _bo, _best = _o, _line[_j]
+                    if _best is not None:
+                        _plan.append((_r, _best, _e))
+            if not _plan:
+                continue
+            # Accept when the line does not get WORSE, not only when it gets better.
+            # Requiring improvement cannot pass a mutual exchange: on p591 `وَٱلسَّمَآءِ`
+            # and `وَٱلطَّارِقِ` each hold one of the other's marks, so every count stays
+            # exactly right and the line never improves — while the ink is plainly in the
+            # wrong word, the kasra sitting under `ٱلسَّمَآءِ`'s hamza and the fatha over
+            # `ٱلطَّارِقِ`'s letters. Geometry justifies each move on its own; the budget's
+            # job here is only to veto a move that breaks a count.
+            #
+            # The whole line's set is tried first, because an exchange only works applied
+            # together — moving half of it leaves one word short and the other long, and a
+            # move-by-move test would reject the first and never reach the second. Only if
+            # the set as a whole makes things worse is it retried one move at a time, so a
+            # single bad proposal costs its own move rather than the whole line's.
+            def _apply(mv):
+                _was = [(e, e.get("mark")) for r, t, e in mv]
+                for _r, _t, _e in mv:
+                    _r["els"].remove(_e)
+                    _t["els"].append(_e)
+                _touched = {id(x): x for m in mv for x in (m[0], m[1])}
+                _snap = [(e, e.get("mark")) for x in _touched.values() for e in x["els"]]
+                for x in _touched.values():
+                    _rename(x)
+                return _snap + _was
+
+            def _undo(mv, snap):
+                for _r, _t, _e in mv:
+                    _t["els"].remove(_e)
+                    _r["els"].append(_e)
+                for e, nm in snap:
+                    if nm is None:
+                        e.pop("mark", None)
+                    else:
+                        e["mark"] = nm
+
+            _before = sum(_off(r) for r in _line)
+            if os.environ.get("QSVG_ODBG"):
+                sys.stderr.write("ODBG line %s: %d proposal(s), line off=%d\n"
+                                 % (_ln, len(_plan), _before))
+                for _r0, _t0, _e0 in _plan:
+                    sys.stderr.write("   %-16s -> %-16s %-10s x %.1f-%.1f  (off %d -> ?)\n"
+                                     % (_r0["w"]["uthmani"], _t0["w"]["uthmani"],
+                                        _e0.get("mark"), _e0["x1"], _e0["x2"], _off(_r0)))
+            _snap = _apply(_plan)
+            if os.environ.get("QSVG_ODBG"):
+                sys.stderr.write("   after the whole set: line off=%d %s\n"
+                                 % (sum(_off(r) for r in _line),
+                                    "ACCEPT" if sum(_off(r) for r in _line) <= _before else "REJECT"))
+                for _r0, _t0, _e0 in _plan:
+                    sys.stderr.write("      %-16s off=%d   %-16s off=%d\n"
+                                     % (_r0["w"]["uthmani"], _off(_r0),
+                                        _t0["w"]["uthmani"], _off(_t0)))
+            if sum(_off(r) for r in _line) > _before:
+                _undo(_plan, _snap)
+                _kept = []
+                for _mv in _plan:
+                    _b1 = sum(_off(r) for r in _line)
+                    _s1 = _apply([_mv])
+                    if sum(_off(r) for r in _line) > _b1:
+                        _undo([_mv], _s1)
+                    else:
+                        _kept.append(_mv)
+                _plan = _kept
+            if not _plan:
+                continue
+            for _r, _t, _e in _plan:              # commit to the atoms, and rename
+                for _a in _r["at"]:
+                    if _e in _a["els"]:
+                        _a["els"].remove(_e)
+                        for _m in _e.get("mkmembers", []):
+                            if _m in _a["els"]:
+                                _a["els"].remove(_m)
+                        break
+                put_in_ligature(_t["at"], _e)
+
+        # ---- ink stranded a line's width from the word holding it --------------
+        #
+        # The orphan pass above deliberately walks past these: it only ever hands a mark
+        # to the word immediately beside it, because a word that is itself on the wrong
+        # line has all of its marks look orphaned. What it leaves behind is a much smaller
+        # and much louder defect, and one that can be proved rather than argued.
+        #
+        # Measured across all 604 pages, the distance from a mark to the nearest letter of
+        # the word holding it is bimodal with an EMPTY BAND:
+        #
+        #     0-2u    2735    2-5u  112    5-10u  30    10-20u  8    20-40u  2
+        #     40-150u    0
+        #     150-308u  17
+        #
+        # Nothing in the mushaf sits between 40 and 150 units from its word, and the two
+        # widest legitimate gaps are 20-40. So a mark 60 units clear is not a mark that
+        # drifted — it is a mark filed under the wrong word, and the distance says so
+        # without needing the text to agree.
+        #
+        # All 17 are one defect. In every case the holder is the word at one END of a line
+        # and the mark is drawn at the opposite end, in the band of the line above or
+        # below: p350 `لَا` is the first word of line 7 and holds a fatha at x18 tagged
+        # line 6; p543 `بِمَا` is the last word of line 3 and holds two marks at x322-325
+        # tagged line 4. The last word of a line and the first word of the next are
+        # neighbours in READING order and a page apart on the paper, and the ownership has
+        # followed the text. The element's own `line` tag is already correct — only the
+        # word is wrong — so the tag is what says where to put it back.
+        #
+        # Two of the four line errors the outside reference confirmed, p543 `بِمَا` and
+        # p599 `لَهَا`, are in this set: same cause, and the note that "the layout stage
+        # was given the correct boundary in every case, so a later stage moves them" is
+        # this wrap.
+        if os.environ.get("QSVG_STRAY", "1") != "0":
+            _STRAY_GAP = 60.0                 # inside the empty band, far from both modes
+            _STRAY_REACH = 20.0               # a target must actually be under the ink
+            _byln = {}
+            for _r in _recs:
+                _byln.setdefault(_r["ln"], []).append(_r)
+            for _r in _recs:
+                for _e in list(_r["els"]):
+                    if _e["kind"] == "body" or _e.get("mkpart"):
+                        continue
+                    if _e.get("mark") not in _GRP or _e.get("standalone"):
+                        continue
+                    if _ovl(_r["b"], _e) > -_STRAY_GAP:
+                        continue
+                    _cands = [t for t in _byln.get(_e.get("line") or _r["ln"], ())
+                              if t is not _r]
+                    if not _cands:
+                        continue
+                    _t = max(_cands, key=lambda t: _ovl(t["b"], _e))
+                    if _ovl(_t["b"], _e) < -_STRAY_REACH:
+                        continue
+                    # The move is justified by the distance alone. The budget's only job
+                    # is to veto one that breaks a count — the same division of labour as
+                    # the orphan pass, where geometry proposes and the text disposes.
+                    _b0 = _off(_r) + _off(_t)
+                    _snap = [(x, x.get("mark")) for x in _r["els"] + _t["els"]]
+                    _r["els"].remove(_e)
+                    _t["els"].append(_e)
+                    _rename1(_t, _e)
+                    if _off(_r) + _off(_t) > _b0 and \
+                            os.environ.get("QSVG_STRAY") != "2":
+                        _t["els"].remove(_e)
+                        _r["els"].append(_e)
+                        for _x, _nm in _snap:
+                            if _nm is None:
+                                _x.pop("mark", None)
+                            else:
+                                _x["mark"] = _nm
+                        continue
+                    for _a in _r["at"]:
+                        if _e in _a["els"]:
+                            _a["els"].remove(_e)
+                            for _m in _e.get("mkmembers", []):
+                                if _m in _a["els"]:
+                                    _a["els"].remove(_m)
+                            break
+                    put_in_ligature(_t["at"], _e)
+
+    # Ink that draws nothing, counted as a mark.
+    #
+    # A drawn dot in this art is 2.38 units wide and 5.6 square units in area; measured
+    # over all 604 pages the width distribution is
+    #
+    #     0.0-0.5u  17    0.5-1.5u  0    1.5-2.0u  57    2.0-2.5u  68128    4.5-6.0u  39914
+    #
+    # so there is nothing at all between half a unit and one and a half. The seventeen
+    # below half a unit are degenerate contours — 0.02 wide, enclosing no area, drawing
+    # no ink on the page — and eleven of them carry a mark label. Ten are `dot`s, and
+    # every one of those ten sits in a word holding exactly ONE dot more than its
+    # spelling allows: `مَا` on p536 spells no dot at all and is credited with one.
+    # The other is a `small-alef` on p2. The remaining six are welded twins, counted
+    # through their master, so they were already harmless.
+    #
+    # Nothing moves and nothing is deleted — the element stays exactly where it is and
+    # keeps drawing exactly what it drew, which is nothing. Only the claim that it is a
+    # mark is withdrawn, so the counts stop including ink the page does not have.
+    if os.environ.get("QSVG_NULLMARK", "1") != "0":
+        _NULL_AREA = 0.5          # inside the empty band; the smallest real mark is ~2.0
+        for _wz, _atz in assignment:
+            if not _wz:
+                continue
+            for _az in _atz:
+                for _ez in _az["els"]:
+                    if not _ez.get("mark") or _ez["kind"] == "body":
+                        continue
+                    if (_ez["x2"] - _ez["x1"]) * (_ez["y2"] - _ez["y1"]) >= _NULL_AREA:
+                        continue
+                    _ez.pop("mark", None)
+                    _ez.pop("mkmembers", None)
+                    _ez["mkpart"] = True      # never counted, never a transfer candidate
+
+    # An iqlab meem drawn between two lines and filed with the wrong one.
+    #
+    # `ٍۭ` at the end of a line puts the tanween on the last letter and the little meem
+    # BELOW it, in the gap between that line and the next — closer to the line below than
+    # to the word it belongs to. Abdullah found it on p313, where `نَفْسٍۭ` ends line 3
+    # and its meem is held by `هَوَىٰهُ` on line 4, as a letter.
+    #
+    # This art normally fuses the meem into the tanween glyph — a measured finding of this
+    # project, and why audit_marks never asks for one — so almost every word spelling `ۭ`
+    # rightly holds no separate meem. That is what makes the exception safe to act on:
+    #
+    #     words spelling an iqlab meem                        7,248
+    #        already hold a separate one                        445
+    #        hold none                                        6,664
+    #           ... and a meem-sized body sits directly under
+    #               the tanween, in the ADJACENT line            29   <- the defect
+    #
+    # Twenty-nine, and 28 of them are the same 31.1-unit glyph. Text says the word owns a
+    # meem, geometry says which piece of ink it is, and the line gap says why it went
+    # astray — the three signals this project asks for before anything moves.
+    if os.environ.get("QSVG_IQLINE", "1") != "0":
+        _IQ_TAN = ("kasratan", "fathatan", "dammatan")
+        _iqw = []
+        for _wi2, _ati2 in assignment:
+            if not _wi2:
+                continue
+            _eli = [e for a in _ati2 for e in a["els"]]
+            _bli = [e for e in _eli if e["kind"] == "body"]
+            if not _bli:
+                continue
+            _lni = [e.get("line") for e in _bli if e.get("line")]
+            _iqw.append({"w": _wi2, "at": _ati2, "els": _eli,
+                         "ln": max(set(_lni), key=_lni.count) if _lni else 0})
+        for _src in _iqw:
+            _ti = _src["w"]["uthmani"]
+            if not any(c in _ti for c in "\u06ed\u06e2"):
+                continue
+            if any((e.get("mark") or "") == "meem-iqlab" for e in _src["els"]):
+                continue
+            for _tan in [e for e in _src["els"]
+                         if e.get("mark") in _IQ_TAN and not e.get("mkpart")]:
+                _tcx = (_tan["x1"] + _tan["x2"]) / 2
+                for _oth in _iqw:
+                    if _oth is _src or abs(_oth["ln"] - _src["ln"]) != 1:
+                        continue
+                    for _ei in list(_oth["els"]):
+                        if _ei["kind"] != "body" or _ei.get("mkpart"):
+                            continue
+                        _ari = (_ei["x2"] - _ei["x1"]) * (_ei["y2"] - _ei["y1"])
+                        if not (18.0 <= _ari <= 45.0):
+                            continue
+                        if abs((_ei["x1"] + _ei["x2"]) / 2 - _tcx) > 3.5:
+                            continue
+                        if not (_tan["y2"] - 1.0 <= _ei["y1"] <= _tan["y2"] + 6.0):
+                            continue
+                        for _ai in _oth["at"]:
+                            if _ei in _ai["els"]:
+                                _ai["els"].remove(_ei)
+                                break
+                        _oth["els"] = [x for x in _oth["els"] if x is not _ei]
+                        put_in_ligature(_src["at"], _ei)
+                        _src["els"].append(_ei)
+                        _ei["kind"] = "mark"
+                        _ei["mark"] = "meem-iqlab"
+                        break
+
+    # A letter's dots welded into the waqf sign above them.
+    #
+    # The same mistake as the tanween weld, in the other composer: a stop sign takes in
+    # the blobs beneath it, and beneath a stop sign at the end of a word are that word's
+    # last letter's dots. `حَرْثِهِۦ ۖ` on p485 ends holding NO dots at all where its
+    # spelling asks for three — the ث's dot and two-dots are both inside the صلى.
+    #
+    # A sign really is drawn in several pieces, so most welds are right; what separates
+    # them is that a piece of the SIGN overlaps the sign vertically, while a letter's
+    # dots sit clear of it, towards the letters. Usually those letters are the sign's own
+    # word; on p556 they are not — `صُوَرَكُمْ ۖ` on line 6 holds `بَصِيرٌ`'s ب dot, drawn
+    # ABOVE its own sign and inside `بَصِيرٌ`'s letters on line 5 — so the blob is offered
+    # to the sign's word first and, if that word's dots are already right, to the word
+    # whose letters it is actually drawn among. With the text as the third signal:
+    #
+    #     overlaps the sign                            2,598   leave alone
+    #     clear of it, dot-sized, word's dots are right   13    leave alone
+    #     clear of it, dot-sized, word SHORT of dots        8   <- the defect
+    #
+    # Eight pieces, seven words. How many dots each stands for comes from its width, the
+    # measured 2.38 units per blob, and only widths that land squarely on a whole number
+    # of blobs are taken.
+    if os.environ.get("QSVG_PAUSEDOT", "1") != "0":
+        _PD_BYN = {1: "dot", 2: "two-dots", 3: "three-dots"}
+        _pdw = []
+        for _w0, _a0 in assignment:
+            if not _w0:
+                continue
+            _e0 = [e for a in _a0 for e in a["els"]]
+            _b0 = [e for e in _e0 if e["kind"] == "body"]
+            if not _b0:
+                continue
+            _pdw.append({"w": _w0, "at": _a0, "els": _e0,
+                         "x1": min(e["x1"] for e in _b0), "x2": max(e["x2"] for e in _b0),
+                         "y1": min(e["y1"] for e in _b0), "y2": max(e["y2"] for e in _b0)})
+
+        def _pd_short(rec):
+            return dot_budget(rec["w"]["uthmani"]) - sum(
+                {"dot": 1, "two-dots": 2, "three-dots": 3}.get(e.get("mark") or "", 0)
+                for e in rec["els"] if not e.get("mkpart"))
+
+        for _host in _pdw:
+            for _mp in list(_host["els"]):
+                if (_mp.get("mark") or "") != "pause" or _mp.get("mkpart"):
+                    continue
+                for _mem in list(_mp.get("mkmembers") or []):
+                    if not (_mem["y1"] > _mp["y2"] + 0.05 or _mem["y2"] < _mp["y1"] - 0.05):
+                        continue              # a piece of the sign itself
+                    _bl = (_mem["x2"] - _mem["x1"]) / 2.38
+                    _np = int(round(_bl))
+                    if _np not in _PD_BYN or abs(_bl - _np) >= 0.28:
+                        continue              # not a whole number of drawn dots
+                    # whose dots are they: the sign's own word if it is short, else the
+                    # word whose LETTERS the blob is drawn among
+                    _own = _host if _pd_short(_host) > 0 else None
+                    if _own is None:
+                        _cx = (_mem["x1"] + _mem["x2"]) / 2
+                        _cy = (_mem["y1"] + _mem["y2"]) / 2
+                        for _cand in _pdw:
+                            if _cand is _host or _pd_short(_cand) <= 0:
+                                continue
+                            if not (_cand["x1"] - 1.0 <= _cx <= _cand["x2"] + 1.0):
+                                continue
+                            if not (_cand["y1"] - 2.0 <= _cy <= _cand["y2"] + 2.0):
+                                continue
+                            _own = _cand
+                            break
+                    if _own is None:
+                        continue
+                    _mem["mark"] = _PD_BYN[_np]
+                    _mem.pop("mkpart", None)
+                    _mp["mkmembers"] = [x for x in _mp["mkmembers"] if x is not _mem]
+                    if _own is not _host:
+                        for _a2 in _host["at"]:
+                            if _mem in _a2["els"]:
+                                _a2["els"].remove(_mem)
+                                break
+                        _host["els"] = [x for x in _host["els"] if x is not _mem]
+                        put_in_ligature(_own["at"], _mem)
+                        _own["els"].append(_mem)
+
+    # A letter's dots welded into the mark above them.
+    #
+    # `compose_tanween` joins a vowel to the stroke below it, which is right when the word
+    # spells a tanween and wrong when what is below is simply the dots of the letter the
+    # vowel sits on. Registering MushafDatabase's decomposition on p210 makes it
+    # unmistakable: their `two dots` for `تُتْلَىٰ` is at 300.88..305.24 / 19.54..22.11 and
+    # our welded `damma` twin is at 300.88..305.23 / 19.53..22.11 — the same ink to a
+    # hundredth of a unit, one of us calling it dots and the other half a dammatan.
+    #
+    # It happens under other marks too: a dot under a shadda on p117, under a kasra on
+    # p216, under a small-circle on p519. So the host is not the signal. Two things are:
+    # the twin's SHAPE — a whole number of 2.38-unit blobs, area 3 to 18, where a
+    # tanween's second stroke is 26 to 35 — and whether the word is SHORT of dots. Over
+    # 604 pages that pair is exact:
+    #
+    #     dot-shaped twin, word's dots already right   5,766   leave alone
+    #     dot-shaped twin, word SHORT of dots              9   <- the defect
+    #
+    # The word's own spelling is deliberately NOT used to veto: `قُرْبَةٌۭ` on p202 does
+    # spell a dammatan, and holds a real one (areas 30.5 and 26.8) somewhere else; the
+    # 13.8-unit blob welded to its damma is the ة's two dots. Testing "does the word spell
+    # a tanween" kept that one broken.
+    if os.environ.get("QSVG_UNWELD", "1") != "0":
+        _UW_BYN = {1: "dot", 2: "two-dots", 3: "three-dots"}
+        # One drawn dot, measured on THIS page. 2.38 units is the mushaf-wide figure and
+        # it is wrong on the pages that are set at their own scale: p2 draws its dots
+        # 1.70 wide and its two-dots 3.64, so a constant threshold reads every blob there
+        # as a fraction of a dot and the rule silently skips the page. `يُنفِقُونَ`
+        # stayed two dots short for exactly that reason.
+        _pdots = sorted((e["x2"] - e["x1"])
+                        for _w0, _a0 in assignment if _w0
+                        for _a1 in _a0 for e in _a1["els"]
+                        if (e.get("mark") or "") == "dot" and not e.get("mkpart"))
+        _DW = _pdots[len(_pdots) // 2] if _pdots else 2.38
+        _ASCALE = (_DW / 2.38) ** 2
+        for _wu, _atu in assignment:
+            if not _wu:
+                continue
+            _elu = [e for a in _atu for e in a["els"]]
+            if sum({"dot": 1, "two-dots": 2, "three-dots": 3}.get(e.get("mark") or "", 0)
+                   for e in _elu if not e.get("mkpart")) >= dot_budget(_wu["uthmani"]):
+                continue                      # not short: nothing to recover
+            for _mu in _elu:
+                if _mu.get("mkpart") or (_mu.get("mark") or "") in (
+                        "", "pause", "dot", "two-dots", "three-dots"):
+                    # A waqf sign is QSVG_PAUSEDOT's business. A DOT cluster is nobody's:
+                    # its label already says how many blobs it stands for, so its welded
+                    # twin is counted through the master and unwelding it counts the same
+                    # ink twice. `حَيْثُ`'s ث is drawn as a two-dots and a dot welded
+                    # together; separating them credited the word with four where three
+                    # are drawn. Six words went wrong that way before this line existed.
+                    continue
+                for _eu in list(_mu.get("mkmembers") or []):
+                    _wdu = _eu["x2"] - _eu["x1"]
+                    _aru = _wdu * (_eu["y2"] - _eu["y1"])
+                    _bl = _wdu / _DW
+                    _nu = int(round(_bl))
+                    if _nu not in _UW_BYN or abs(_bl - _nu) >= 0.28:
+                        continue              # not a whole number of drawn dots
+                    if not (3.0 * _ASCALE <= _aru <= 18.0 * _ASCALE):
+                        continue              # a tanween's second stroke is 26-35
+                    _eu["mark"] = _UW_BYN[_nu]
+                    _eu.pop("mkpart", None)
+                    _mu["mkmembers"] = [x for x in _mu["mkmembers"] if x is not _eu]
+
+    # The rare stop marks, read as letter dots.
+    #
+    # `۪` `۫` `۬` are small round stops that look like a dot and are drawn about twice the
+    # size of one — a dot in this art is 2.38 x 2.36, area 5.6, everywhere. Over all 604
+    # pages exactly THREE `dot` elements exceed twice that area, and all three sit in a
+    # word whose spelling carries one of these characters; the other 64,586 dots are
+    # normal size, including the 70 that share a word with one of these stops and really
+    # are the word's own dots. Size and spelling agree, with nothing in between.
+    #
+    # They are labelled `pause`, which is what audit_marks already calls them: its
+    # TEXT_WANT["pause"] lists `۬ ۪ ۫ ۣ` beside the waqf signs. So one correction settles
+    # both counts — the word stops being credited with a dot it does not have and starts
+    # holding the stop its spelling asks for.
+    if os.environ.get("QSVG_RARESTOP", "1") != "0":
+        _RARE_CH = "\u06ea\u06eb\u06ec\u06e3"
+        _DOT_AREA = 5.6
+        for _wr, _atr in assignment:
+            if not _wr or not any(c in _wr["uthmani"] for c in _RARE_CH):
+                continue
+            for _ar in _atr:
+                for _er in _ar["els"]:
+                    if (_er.get("mark") or "") != "dot" or _er.get("mkpart"):
+                        continue
+                    if (_er["x2"] - _er["x1"]) * (_er["y2"] - _er["y1"]) <= 2.0 * _DOT_AREA:
+                        continue
+                    _er["mark"] = "pause"
+                    for _mr in _er.get("mkmembers", []):
+                        _mr["mark"] = "pause"
+
+    # A mark the wrong SIZE for what it is called, drawn in another line's band.
+    #
+    # The art draws one glyph per mark, so a family's drawn area is a point rather than a
+    # range — measured over all 604 pages, sukun is 13.0 at both the median and the 99th
+    # percentile, damma 35.4/35.4, wasla 22.6/22.6, fatha 25.1/32.8. Only 46 elements in
+    # the whole mushaf fall outside a third to three times their family's median, and
+    # once the fused iqlab meem and the muʿānaqah are set aside, exactly FIVE of those are
+    # also drawn outside their own word's line band. Two independent impossibilities on
+    # the same element.
+    #
+    # Four are the same defect: a fatha of area ~80.4 against a median of 25.1, sitting in
+    # the band of the line above or below, touching a word there that is short of exactly
+    # one letter piece by the joining rules — p467 `وَٱلْأَحْزَابُ` 5 of 6, p576
+    # `يَرْتَابَ` 2 of 3, p529 `ٱلْكَذَّابُ` 3 of 4, p589 `مُدَّتْ` 1 of 2. The blob is
+    # that word's missing letter. On p589 it is one defect wearing two faces: `مُدَّتْ`
+    # measures 63% of its share of the line while `يَـٰٓأَيُّهَا`, holding its `ت`, counts
+    # three pieces where two are allowed.
+    #
+    # The fifth is the opposite tail. Abdullah found `ٱلصَّـٰلِحَـٰتِ` on p590 holding a
+    # "kasra" of area 4.4 where its own two kasras are 21 — a dot, 37 units below the
+    # word, in the gap BETWEEN two lines where the ayah marker sits. There is no word to
+    # give it to, so the only correction is to stop counting it.
+    if os.environ.get("QSVG_MISCLASS", "1") != "0":
+        # measured medians, in square page units
+        _MED = {"fatha": 25.1, "kasra": 21.2, "damma": 35.4, "sukun": 13.0,
+                "shadda": 14.0, "hamza": 15.6, "wasla": 22.6, "small-alef": 12.5,
+                "maddah": 21.0, "small-circle": 13.0, "fathatan": 17.5,
+                "kasratan": 17.5, "dammatan": 30.4, "small-waw": 31.7,
+                "small-ya": 29.8, "dot": 5.6, "two-dots": 12.4, "three-dots": 12.4}
+        _BAND_PAD = 10.0          # from the 160x cliff at 10 units
+
+        _mrecs = []
+        for _wm2, _atm2 in assignment:
+            if not _wm2:
+                continue
+            _em2 = [e for a in _atm2 for e in a["els"]]
+            _bm2 = [e for e in _em2 if e["kind"] == "body"]
+            if not _bm2:
+                continue
+            _lm2 = [e.get("line") for e in _bm2 if e.get("line")]
+            _mrecs.append({"w": _wm2, "at": _atm2, "els": _em2, "b": _bm2,
+                           "ln": max(set(_lm2), key=_lm2.count) if _lm2 else 0})
+        _mband = {}
+        for _r2 in _mrecs:
+            _lo2, _hi2 = _mband.get(_r2["ln"], (1e9, -1e9))
+            _mband[_r2["ln"]] = (min(_lo2, min(b["y1"] for b in _r2["b"])),
+                                 max(_hi2, max(b["y2"] for b in _r2["b"])))
+
+        def _runs(bods):
+            """Connected runs of ink, the same count score_both and the audits use."""
+            sp2 = sorted((b["x1"], b["x2"]) for b in bods)
+            if not sp2:
+                return 0
+            n2, cur2 = 1, sp2[0][1]
+            for a2, b2 in sp2[1:]:
+                if a2 <= cur2 + 0.4:
+                    cur2 = max(cur2, b2)
+                else:
+                    n2 += 1
+                    cur2 = b2
+            return n2
+
+        for _r2 in _mrecs:
+            for _e2 in list(_r2["els"]):
+                _fam2 = _e2.get("mark")
+                if _e2["kind"] == "body" or _e2.get("mkpart") or _fam2 not in _MED:
+                    continue
+                _ar2 = (_e2["x2"] - _e2["x1"]) * (_e2["y2"] - _e2["y1"])
+                _big = _ar2 > 3.0 * _MED[_fam2]
+                _small = _ar2 < _MED[_fam2] / 3.0
+                if not (_big or _small):
+                    continue
+                _lo2, _hi2 = _mband.get(_r2["ln"], (-1e9, 1e9))
+                _cy2 = (_e2["y1"] + _e2["y2"]) / 2
+                if _lo2 - _BAND_PAD <= _cy2 <= _hi2 + _BAND_PAD:
+                    # Inside its own line, so nothing about its PLACE is wrong — but a
+                    # blob three times too big for the mark it is called, in a word that
+                    # draws fewer connected runs of ink than the joining rules allow, is
+                    # that word's missing letter. Over 604 pages only four marks exceed
+                    # three times their family's median at all, and two of them are in a
+                    # word short of pieces: `فَٱلزَّٰجِرَٰتِ` on p446, whose 82.8-unit
+                    # "kasra" is the ت (MushafDatabase draws `text ت` at the same
+                    # 189.24..201.14), and `يُكَذِّبُ` on p588. Nothing moves; only the
+                    # claim that it is a mark is withdrawn, which also restores the word's
+                    # letter extent so its own dots can be found around it.
+                    if _big and _runs(_r2["b"]) < max(1, len(segment_word(
+                            _r2["w"]["uthmani"]))):
+                        _e2["kind"] = "body"
+                        _e2.pop("mark", None)
+                        _r2["b"].append(_e2)
+                        for _m3 in _e2.get("mkmembers", []):
+                            _m3["kind"] = "body"
+                            _m3.pop("mark", None)
+                    continue                  # right size question, wrong place to ask it
+                _home = [L for L, (lo, hi) in _mband.items()
+                         if lo - _BAND_PAD <= _cy2 <= hi + _BAND_PAD]
+                if _big and _home:
+                    # a letter: give it to the word it touches on the band it is drawn
+                    # in, and only if that word is SHORT of pieces — the third signal
+                    _cand = None
+                    for _L in _home:
+                        for _t2 in _mrecs:
+                            if _t2["ln"] != _L or _t2 is _r2:
+                                continue
+                            _ov2 = max(min(b["x2"], _e2["x2"]) - max(b["x1"], _e2["x1"])
+                                       for b in _t2["b"])
+                            if _ov2 < -2.0:
+                                continue
+                            if _runs(_t2["b"]) >= max(1, len(segment_word(
+                                    _t2["w"]["uthmani"]))):
+                                continue      # it already has every piece it may have
+                            if _cand is None or _ov2 > _cand[1]:
+                                _cand = (_t2, _ov2)
+                    if _cand is None:
+                        continue
+                    for _a2 in _r2["at"]:
+                        if _e2 in _a2["els"]:
+                            _a2["els"].remove(_e2)
+                            for _m2 in _e2.get("mkmembers", []):
+                                if _m2 in _a2["els"]:
+                                    _a2["els"].remove(_m2)
+                            break
+                    put_in_ligature(_cand[0]["at"], _e2)
+                    _e2["kind"] = "body"
+                    _e2.pop("mark", None)
+                    for _m2 in _e2.get("mkmembers", []):
+                        _m2["kind"] = "body"
+                        _m2.pop("mark", None)
+                elif _small and not _home:
+                    # too small for what it is called and in no line's band at all: it is
+                    # ornament, not this word's diacritic. Nothing moves; it stops being
+                    # counted.
+                    _e2.pop("mark", None)
+                    _e2.pop("mkmembers", None)
+                    _e2["mkpart"] = True
+
+    # The mirror image: a MARK the classifier already named, kept as a letter.
+    #
+    # `apply_shape_labels` writes `lab` on every element from its outline, whatever the
+    # baseline test decided the element was. Where the two disagree the label is often
+    # right and the kind wrong, and the disagreement is settled by two further facts that
+    # are already to hand: whether the blob is the right SIZE for the mark it is called,
+    # and whether the word's spelling still asks for one.
+    #
+    # All three together are decisive. Over 604 pages there are 105 bodies the classifier
+    # called a fatha that are the right size for one, and of those only 15 sit in a word
+    # short of a fatha; a further 701 are the wrong size and are left alone. Those 15 are
+    # the other half of the exchange the size rule above uncovers — on p589
+    # `يَـٰٓأَيُّهَا` gives up an 80-unit blob that is `مُدَّتْ`'s missing `ت` and takes
+    # back a 12.6-unit blob that is its own third fatha — and they also close
+    # `ٱلْمُحْصَنَـٰتِ` on p350 and `ٱلصَّـٰلِحَـٰتِ` on p590, both reported by eye.
+    #
+    # Runs AFTER the size rule, so a blob demoted to a letter there is not promoted
+    # straight back; it cannot be, since it fails the size test that sent it there.
+    if os.environ.get("QSVG_LABKIND", "1") != "0":
+        _LK_MED = {"fatha": 25.1, "kasra": 21.2, "damma": 35.4, "sukun": 13.0,
+                   "shadda": 14.0, "small-alef": 12.5, "maddah": 21.0,
+                   "fathatan": 17.5, "kasratan": 17.5, "dammatan": 30.4,
+                   "small-waw": 31.7, "small-ya": 29.8, "two-dots": 12.4}
+        _LK_CH = {"fatha": "\u064e", "kasra": "\u0650", "damma": "\u064f",
+                  "sukun": "\u0652", "shadda": "\u0651", "small-alef": "\u0670",
+                  "maddah": "\u0653", "fathatan": "\u064b", "kasratan": "\u064d",
+                  "dammatan": "\u064c", "small-waw": "\u06e5", "small-ya": "\u06e6"}
+        for _wk, _atk in assignment:
+            if not _wk:
+                continue
+            _elk = [e for a in _atk for e in a["els"]]
+            for _ek in _elk:
+                if _ek["kind"] != "body" or _ek.get("mkpart"):
+                    continue
+                _lk = _ek.get("lab")
+                if _lk not in _LK_MED or _lk not in _LK_CH:
+                    continue
+                _ark = (_ek["x2"] - _ek["x1"]) * (_ek["y2"] - _ek["y1"])
+                _mk2 = _LK_MED[_lk]
+                if not (_mk2 / 3.0 <= _ark <= 3.0 * _mk2):
+                    continue
+                _need = _wk["uthmani"].count(_LK_CH[_lk]) - sum(
+                    1 for x in _elk if x.get("mark") == _lk and not x.get("mkpart"))
+                if _need <= 0:
+                    continue
+                _ek["kind"] = "mark"
+                _ek["mark"] = _lk
+
+    # The small waw `ۥ` and small ya `ۦ` of a pronominal suffix, left as LETTERS.
+    #
+    # These are the marks CLAUDE.md records as the session's biggest single win — read
+    # from the text because nothing in the ink says "mark". Ten of them the recovery
+    # never reached, and they are still classified as body, which is why the words
+    # holding them draw more connected runs of ink than the Arabic joining rules allow:
+    # `كِتَـٰبَهُۥ` is one piece `كتبه` and comes out as two. Six of the eight words in the
+    # whole mushaf with a piece surplus are this, and the piece surplus is one of the two
+    # measures where MushafDatabase is still ahead of us.
+    #
+    # Three outline signatures carry it, and they are exact: over all 604 pages they
+    # appear on ten elements, every one a body, and nine sit in a word whose spelling has
+    # a `ۥ` or a `ۦ` and which holds no such mark. The tenth is `كَانَ` on p589, which
+    # spells neither and stands next to `إِنَّهُۥ`, which spells one and has none — so the
+    # shape says what the ink is and the text says whose it is, the two signals this
+    # project requires before anything moves.
+    #
+    # The label comes from the OWNER'S SPELLING, not from the signature: a shape table
+    # that names the mark would be a third thing to keep right, and the text already
+    # knows which of the two it is.
+    if os.environ.get("QSVG_SUFFIX", "1") != "0":
+        _SUF_SIG = ("3678ca350617", "bc4bcbe3ab5b", "232f8e292d3e")
+        _swords = [(w, at) for w, at in assignment if w]
+
+        def _suf_need(w, els, fam):
+            ch = "\u06e5" if fam == "small-waw" else "\u06e6"
+            alt = "" if fam == "small-waw" else "\u06e7"
+            n = w["uthmani"].count(ch) + (w["uthmani"].count(alt) if alt else 0)
+            held = sum(1 for e in els
+                       if e.get("mark") == fam and not e.get("mkpart"))
+            return n - held
+
+        for _i, (_w, _at) in enumerate(_swords):
+            for _e in [x for a in _at for x in a["els"]]:
+                if _e["kind"] != "body" or (_e.get("sig") or "")[:12] not in _SUF_SIG:
+                    continue
+                # whose is it: this word, else the neighbour in reading order
+                _tgt = None
+                for _j in (_i, _i - 1, _i + 1):
+                    if not (0 <= _j < len(_swords)):
+                        continue
+                    _w2, _at2 = _swords[_j]
+                    _els2 = [x for a in _at2 for x in a["els"]]
+                    for _fam in ("small-waw", "small-ya"):
+                        if _suf_need(_w2, _els2, _fam) > 0:
+                            _tgt = (_j, _fam)
+                            break
+                    if _tgt:
+                        break
+                if not _tgt:
+                    continue                  # already accounted for; leave it alone
+                _j, _fam = _tgt
+                if _j != _i:
+                    for _a in _at:
+                        if _e in _a["els"]:
+                            _a["els"].remove(_e)
+                            break
+                    put_in_ligature(_swords[_j][1], _e)
+                _e["kind"] = "mark"
+                _e["mark"] = _fam
+                for _m in _e.get("mkmembers", []):
+                    _m["kind"] = "mark"
+                    _m["mark"] = _fam
+
+    # A mark belonging to no word at all, drawn among a word's letters.
+    #
+    # 3,396 marks end up owned by nothing, and almost all of them are page furniture with
+    # no word's letters anywhere near. A handful are not: the ت's two dots in
+    # `فَٱلزَّٰجِرَٰتِ` on p446 sit at 192.69..197.24, squarely inside that word, and the
+    # word is short by exactly two dot units.
+    #
+    # It runs after the size rule above, and has to: the word's letter extent only reaches
+    # those dots once its ت has stopped being called a kasra. Before that the dots fall
+    # two units outside the word and nothing claims them.
+    if os.environ.get("QSVG_ADOPT", "1") != "0":
+        _ad_orph, _ad_w, _ad_seen = [], [], set()
+        for _wa, _ata in assignment:
+            _ela = [e for a in _ata for e in a["els"]]
+            if _wa is None:
+                for _ea in _ela:
+                    _sg = (round(_ea["x1"], 2), round(_ea["y1"], 2), _ea["kind"])
+                    if _sg not in _ad_seen:
+                        _ad_seen.add(_sg)
+                        _ad_orph.append((_ea, _ata))
+                continue
+            _ba = [e for e in _ela if e["kind"] == "body"]
+            if _ba:
+                _ad_w.append({"w": _wa, "at": _ata, "els": _ela,
+                              "x1": min(e["x1"] for e in _ba), "x2": max(e["x2"] for e in _ba),
+                              "y1": min(e["y1"] for e in _ba), "y2": max(e["y2"] for e in _ba)})
+        for _ea, _ata in _ad_orph:
+            _u = {"dot": 1, "two-dots": 2, "three-dots": 3}.get(_ea.get("mark") or "", 0)
+            if not _u or _ea["kind"] == "body" or _ea.get("mkpart") or _ea.get("standalone"):
+                continue
+            _cxa = (_ea["x1"] + _ea["x2"]) / 2
+            _cya = (_ea["y1"] + _ea["y2"]) / 2
+            for _ha in _ad_w:
+                if not (_ha["x1"] - 1.0 <= _cxa <= _ha["x2"] + 1.0):
+                    continue
+                if not (_ha["y1"] - 9.0 <= _cya <= _ha["y2"] + 9.0):
+                    continue
+                if dot_budget(_ha["w"]["uthmani"]) - sum(
+                        {"dot": 1, "two-dots": 2, "three-dots": 3}.get(x.get("mark") or "", 0)
+                        for x in _ha["els"] if not x.get("mkpart")) != _u:
+                    continue              # only if it accounts for the whole shortfall
+                for _aa in _ata:
+                    if _ea in _aa["els"]:
+                        _aa["els"].remove(_ea)
+                        break
+                put_in_ligature(_ha["at"], _ea)
+                _ha["els"].append(_ea)
+                break
+
+    # These three corrections run AFTER the overrides, because they read the finished
+    # assignment. Placed before it they saw the wrong owner: on p27 the iqlab meem that
+    # `ذَٰلِكَ` ends up holding is still inside `بِإِحْسَـٰنٍۢ` at that point — a word
+    # that really does spell one — so the rule correctly skipped it and the defect
+    # survived. None of the three moves ink between words, so running them last cannot
+    # override a human's or the adjudicator's placement.
+    # An iqlab meem the word does not spell, sitting on the baseline, is a LETTER.
+    #
+    # `ۢ` is a superscript meem: it rides above the letters. Measured over every seventh
+    # page, all 62 iqlab marks in words that spell one sit at a median of 0.09 of the
+    # body's height — near its top — while the only two in words that spell none sit at
+    # 0.70 and 0.77, down among the letters. Both are `ذَٰلِكَ`, whose `ذ` is read as an
+    # iqlab meem and so drops out of the word's letter ink: the word measures two thirds
+    # of its share of the line, four times over in the width audit.
+    #
+    # Both signals are needed. Seven of the 62 genuine marks also sit below the middle,
+    # so position alone would take real iqlabs away; and the text alone cannot say which
+    # piece of ink is meant. Together they are exact — the same two-signals rule that
+    # governs every other transfer here.
+    if os.environ.get("QSVG_IQFIX", "1") == "1":
+        for _wq, _atq in assignment:
+            if not _wq:
+                continue
+            _txt = (_wq["uthmani"] or "") + (_wq.get("qpc") or "")
+            if any(_c in _txt for _c in "\u06e2\u06ed"):
+                continue                      # the word really does carry one
+            _els = [e for a in _atq for e in a["els"]]
+            _bod = [e for e in _els if e["kind"] == "body"]
+            if not _bod:
+                continue
+            _top = min(e["y1"] for e in _bod)
+            _bot = max(e["y2"] for e in _bod)
+            for _e in _els:
+                if _e.get("mark") != "meem-iqlab":
+                    continue
+                _f = ((_e["y1"] + _e["y2"]) / 2 - _top) / max(1e-6, _bot - _top)
+                if _f > 0.5:
+                    _e["kind"] = "body"
+                    _e.pop("mark", None)
+                    _e.pop("mkpart", None)
+
+    # Dot budgets, settled from the text where the ink is already in the right word.
+    #
+    # A dot welded into a neighbouring glyph's group stops being counted: the master's
+    # label speaks for the whole group. Most of those welds are right — a ج really does
+    # own the dot below its curl — but a صلى does not, and when one absorbs the dot of
+    # the ف beside it (p27 `بِٱلۡمَعۡرُوفِ`) the word comes out holding one dot where its
+    # spelling and MushafDatabase both read two.
+    #
+    # Un-welding every non-ج pause was tried and is much worse: dot disagreements went
+    # from 66 over the mushaf to 150 over the first 120 pages, because the weld is
+    # usually correct and breaking it invents a dot. What separates the two cases is not
+    # in the ink at all — it is the spelling. So the count comes from the text and the
+    # position from the ink, the same way the waqf signs and small waws were recovered:
+    # a word the text says is SHORT of dots, holding exactly that many welded dot twins,
+    # gets them back. It can never invent a dot, because it only ever runs on a deficit.
+    if os.environ.get("QSVG_DOTFIX", "1") == "1":
+
+        for _wd, _atd in assignment:
+            if not _wd:
+                continue
+            _els = [e for a in _atd for e in a["els"]]
+            _have = sum(_DOTU_F.get(e.get("mark") or "", 0)
+                        for e in _els if not e.get("mkpart"))
+            _want = dot_budget(_wd["uthmani"])
+            if _have >= _want:
+                continue
+            _twins = [e for e in _els
+                      if e.get("mkpart") and (e.get("mark") or "") in _DOTU_F]
+            if not _twins:
+                continue
+            # The deficit is in UNITS, and a twin inherits its master's label rather
+            # than describing itself: the third dot of the `ث` in `فَبَعَثَ` is welded
+            # to a `two-dots` master and carries that name, so releasing it at face
+            # value adds two where one is owed. Where the twin is narrower than its
+            # master it is plainly the smaller mark, and it is renamed down to exactly
+            # the units still owed — never up, and never past the deficit.
+            _need = _want - _have
+            _twins.sort(key=lambda e: _DOTU_F[e["mark"]])
+            for _t in _twins:
+                if _need <= 0:
+                    break
+                _u = _DOTU_F[_t["mark"]]
+                if _u > _need:
+                    _mst = next((m for m in _els if _t in (m.get("mkmembers") or [])), None)
+                    if _mst is None or (_t["x2"] - _t["x1"]) >= (_mst["x2"] - _mst["x1"]):
+                        continue     # not obviously the smaller of the pair: leave it
+                    _name = {1: "dot", 2: "two-dots", 3: "three-dots"}.get(_need)
+                    if not _name:
+                        continue
+                    _t["mark"] = _name
+                    _u = _need
+                _t.pop("mkpart", None)
+                for _m in _els:
+                    if _t in (_m.get("mkmembers") or []):
+                        _m["mkmembers"] = [x for x in _m["mkmembers"] if x is not _t]
+                _need -= _u
 
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
