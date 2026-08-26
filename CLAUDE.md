@@ -16,9 +16,9 @@ Branch `feat/line-structure-on-main`, cut from `origin/main` (f8ea2002).
 
 | | pinned baseline | now |
 |---|---|---|
-| Flagged words (mark audit) | 559 | **294** |
-| Interval-audit flags | 172 | **105** |
-| Pages fully clean | 276 | **388** of 604 |
+| Flagged words (mark audit) | 559 | **263** |
+| Interval-audit flags | 172 | **106** |
+| Pages fully clean | 276 | **407** of 604 |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
 | Bench | SCORE 77, no failures, pixelfail 0 | SCORE 76, same |
 
@@ -31,16 +31,26 @@ so they are not comparable to today's.
 `tools/score_both.py` scores BOTH sides against QCF advance widths, the Arabic joining
 rules and the text. Over 77,331 words scored on both sides:
 
-| | ours | theirs |
-|---|---|---|
-| width off by more than 1.5x | 1.549% | 1.543% |
-| width off by more than 2x | **0.181%** | 0.182% |
-| more pieces than the spelling allows | 1 word | 0 |
-| dot count disagrees with the text | 24 words | 0 |
+| | ours | theirs | |
+|---|---|---|---|
+| more pieces than the spelling allows | **0** | 0 | EQUAL |
+| dot count disagrees with the text | **0** | 0 | EQUAL |
+| width off by more than 2x | **140** | 141 | ours better |
+| width off by more than 1.5x | 1196 | 1193 | 3 words behind |
 
-**25 words separate us.** Do not quote the adjudicator's OURS/THEIRS counts as an
-accuracy comparison — it only examines disagreements, so it cannot say anything about
-the 88% of words where the two agree.
+Equal or better on three of the four. Do not quote the adjudicator's OURS/THEIRS counts
+as an accuracy comparison — it only examines disagreements, so it cannot say anything
+about the 88% of words where the two agree.
+
+**The last three width words are not worth chasing.** `score_both.py --out` now dumps
+every word where only one side is past 1.5x: nineteen of them, eleven ours and eight
+theirs. Eight sit within 0.002 of log(1.5) — a knife edge, not a defect. The six real
+ones (`وَمَآ` p546, `يَدَهُۥ` p164, `فَوْقَ` p129, `قَالُوا۟` p549, `بَعْدِهِۦ` p71,
+`يَحْزُنكَ` p413) are all the same thing: a word-BOUNDARY placed a dozen units off, so
+the word draws half its share and its neighbour draws more. All six are adjudicated OURS
+on WIDTH ALONE, and 108 of the 159 OURS verdicts are. Acting on that is the move this
+project already measured and rejected — see `QSVG_WDECIDE`, off by default because the
+width prior carrying a body move "buys nothing, breaks words visibly".
 
 Line placement agrees with an independent decomposition
 (MushafDatabase) on **67,761 of 67,765** comparable words — 99.994%.
