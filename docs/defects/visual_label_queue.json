@@ -1,0 +1,2376 @@
+{
+ "built": "2026-08-26",
+ "by": "visual label agent",
+ "note": "Unlabeled mark signatures whose label needs Abdullah: section B = strong guess but a rule forbids auto-applying; section C = genuinely unclear. See docs/defects/visual_labels_report.md. Rendered evidence: contact sheets in .cache/review/visual-labels/sheets, per-exemplar PNGs in .cache/review/visual-labels/png (also mirrored in the session scratchpad).",
+ "items": [
+  {
+   "sig": "f0bd6b45e7fdf5ce",
+   "count": 73,
+   "current_pipeline_names": [
+    "",
+    "meem-iqlab"
+   ],
+   "area_range": [
+    21.27,
+    99.99
+   ],
+   "exemplars": [
+    {
+     "page": 329,
+     "key": "21:88:7",
+     "text": "نُـۨجِى",
+     "bbox": [
+      194.77,
+      382.53,
+      199.23,
+      387.3
+     ]
+    },
+    {
+     "page": 196,
+     "key": "9:61:7",
+     "text": "أُذُنٌۭ ۚ",
+     "bbox": [
+      174.03,
+      455.42,
+      183.69,
+      465.75
+     ]
+    },
+    {
+     "page": 496,
+     "key": "44:10:5",
+     "text": "بِدُخَانٍۢ",
+     "bbox": [
+      138.9,
+      310.86,
+      148.56,
+      321.19
+     ]
+    },
+    {
+     "page": 190,
+     "key": "9:21:5",
+     "text": "وَرِضْوَٰنٍۢ",
+     "bbox": [
+      113.61,
+      24.44,
+      123.27,
+      34.77
+     ]
+    }
+   ],
+   "options": [
+    "letter",
+    "small-noon",
+    "(needs a size-gated rule instead of a label)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "One signature, two meanings: 72 occurrences are the full-size final ن (area ~100) of words ending نٌۭ/نٍۢ, and 1 occurrence (p329 21:88:7 نُـۨجِى, area 21) is the small high noon ۨ. A single table label cannot serve both; small-noon is not in _DUAL_SIZE_CAP, so even the size-gate mechanism cannot carry it today. Recommend: letter + a rule-side size cap, decided by Abdullah/the rules agent.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/f0bd6b45e7fdf5ce_190_9-21-5_1136.png",
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/f0bd6b45e7fdf5ce_329_21-88-7_1947.png",
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/f0bd6b45e7fdf5ce_532_55-26-4_928.png"
+   ],
+   "mushafdatabase_calls_it": "text/ن (n=2010, purity 100%)"
+  },
+  {
+   "sig": "725bf6c3424444ac",
+   "count": 6,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    9.66,
+    9.69
+   ],
+   "exemplars": [
+    {
+     "page": 128,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      157.51,
+      13.32,
+      160.51,
+      16.54
+     ]
+    },
+    {
+     "page": 128,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      157.51,
+      13.32,
+      160.51,
+      16.54
+     ]
+    },
+    {
+     "page": 177,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      158.62,
+      13.54,
+      161.62,
+      16.76
+     ]
+    },
+    {
+     "page": 177,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      158.62,
+      13.54,
+      161.62,
+      16.76
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/725bf6c3424444ac_128_-_1575.png",
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/725bf6c3424444ac_177_-_1586.png",
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/725bf6c3424444ac_418_-_1599.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "82c409aeebbdbd12",
+   "count": 6,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.28,
+    15.32
+   ],
+   "exemplars": [
+    {
+     "page": 393,
+     "key": "28:63:10",
+     "text": "أَغْوَيْنَـٰهُمْ",
+     "bbox": [
+      212.72,
+      192.55,
+      216.72,
+      196.37
+     ]
+    },
+    {
+     "page": 325,
+     "key": "21:44:11",
+     "text": "أَنَّا",
+     "bbox": [
+      49.94,
+      479.87,
+      53.94,
+      483.7
+     ]
+    },
+    {
+     "page": 397,
+     "key": "29:13:3",
+     "text": "وَأَثْقَالًۭا",
+     "bbox": [
+      50.51,
+      405.88,
+      54.51,
+      409.71
+     ]
+    },
+    {
+     "page": 162,
+     "key": "7:88:19",
+     "text": "أَوَلَوْ",
+     "bbox": [
+      26.01,
+      48.34,
+      30.01,
+      52.17
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/82c409aeebbdbd12_162_7-88-19_260.png",
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/82c409aeebbdbd12_393_28-63-10_2127.png",
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/82c409aeebbdbd12_549_60-1-8_975.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=3, purity 100%)"
+  },
+  {
+   "sig": "448337c0c4b14f73",
+   "count": 3,
+   "current_pipeline_names": [
+    "",
+    "pause"
+   ],
+   "area_range": [
+    1.43,
+    1.55
+   ],
+   "exemplars": [
+    {
+     "page": 101,
+     "key": "4:141:29",
+     "text": "ٱلْقِيَـٰمَةِ ۗ",
+     "bbox": [
+      223.46,
+      120.02,
+      224.66,
+      121.21
+     ]
+    },
+    {
+     "page": 68,
+     "key": "3:144:24",
+     "text": "شَيْـًۭٔا ۗ",
+     "bbox": [
+      281.84,
+      225.3,
+      283.05,
+      226.49
+     ]
+    },
+    {
+     "page": 329,
+     "key": "21:88:7",
+     "text": "نُـۨجِى",
+     "bbox": [
+      196.0,
+      381.15,
+      197.25,
+      382.39
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: a tiny dot appearing both beside a ۗ sign (4:141) and inside نُـۨجِى (21:88) — mixed contexts.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/448337c0c4b14f73_101_4-141-29_2234.png",
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/448337c0c4b14f73_329_21-88-7_1960.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "9c598c7381df35fa",
+   "count": 2,
+   "current_pipeline_names": [
+    "",
+    "meem-iqlab"
+   ],
+   "area_range": [
+    32.6,
+    32.6
+   ],
+   "exemplars": [
+    {
+     "page": 591,
+     "key": "86:6:3",
+     "text": "مَّآءٍۢ",
+     "bbox": [
+      267.7,
+      169.83,
+      273.44,
+      175.51
+     ]
+    },
+    {
+     "page": 591,
+     "key": "86:8:4",
+     "text": "لَقَادِرٌۭ",
+     "bbox": [
+      234.54,
+      241.45,
+      240.28,
+      247.13
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline (the spelled ء of شىء/سوء/ماء/قرءان) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/9c598c7381df35fa_591_86-6-3_2677.png"
+   ],
+   "mushafdatabase_calls_it": "text/ء (n=5, purity 100%)"
+  },
+  {
+   "sig": "6c43bc2832fa02df",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    21.83,
+    21.83
+   ],
+   "exemplars": [
+    {
+     "page": 77,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      136.76,
+      26.88,
+      141.27,
+      31.72
+     ]
+    },
+    {
+     "page": 77,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      136.76,
+      26.88,
+      141.27,
+      31.72
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/6c43bc2832fa02df_077_-_1367.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "1cc257d93bf79599",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    11.11,
+    11.11
+   ],
+   "exemplars": [
+    {
+     "page": 77,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      137.4,
+      32.44,
+      142.07,
+      34.82
+     ]
+    },
+    {
+     "page": 77,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      137.4,
+      32.44,
+      142.07,
+      34.82
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/1cc257d93bf79599_077_-_1374.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "363b4d12c06677d6",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    24.84,
+    24.84
+   ],
+   "exemplars": [
+    {
+     "page": 128,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      154.5,
+      10.75,
+      160.87,
+      14.65
+     ]
+    },
+    {
+     "page": 128,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      154.5,
+      10.75,
+      160.87,
+      14.65
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/363b4d12c06677d6_128_-_1545.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "016b1e0c0d2962ad",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    9.45,
+    9.45
+   ],
+   "exemplars": [
+    {
+     "page": 151,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      157.97,
+      13.75,
+      160.96,
+      16.91
+     ]
+    },
+    {
+     "page": 151,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      157.97,
+      13.75,
+      160.96,
+      16.91
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/016b1e0c0d2962ad_151_-_1579.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "89e2b8d21cbd89ff",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    8.16,
+    8.16
+   ],
+   "exemplars": [
+    {
+     "page": 255,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      172.77,
+      107.75,
+      176.81,
+      109.77
+     ]
+    },
+    {
+     "page": 255,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      172.77,
+      107.75,
+      176.81,
+      109.77
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/89e2b8d21cbd89ff_255_-_1727.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "79f80025a7bac5ee",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    10.26,
+    10.26
+   ],
+   "exemplars": [
+    {
+     "page": 322,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      159.24,
+      13.64,
+      162.36,
+      16.93
+     ]
+    },
+    {
+     "page": 322,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      159.24,
+      13.64,
+      162.36,
+      16.93
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/79f80025a7bac5ee_322_-_1592.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "cce48203ae4539ec",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    11.96,
+    11.96
+   ],
+   "exemplars": [
+    {
+     "page": 367,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      133.35,
+      29.45,
+      137.88,
+      32.09
+     ]
+    },
+    {
+     "page": 367,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      133.35,
+      29.45,
+      137.88,
+      32.09
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/cce48203ae4539ec_367_-_1333.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "52d78b2f4f1e887a",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    26.33,
+    26.33
+   ],
+   "exemplars": [
+    {
+     "page": 418,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      156.71,
+      10.75,
+      163.75,
+      14.49
+     ]
+    },
+    {
+     "page": 418,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      156.71,
+      10.75,
+      163.75,
+      14.49
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/52d78b2f4f1e887a_418_-_1567.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "fcdef4823e3a24c8",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    19.57,
+    19.57
+   ],
+   "exemplars": [
+    {
+     "page": 483,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      151.29,
+      20.42,
+      155.81,
+      24.75
+     ]
+    },
+    {
+     "page": 483,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      151.29,
+      20.42,
+      155.81,
+      24.75
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/fcdef4823e3a24c8_483_-_1512.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "71b9efe1459feed4",
+   "count": 2,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    7.45,
+    7.45
+   ],
+   "exemplars": [
+    {
+     "page": 578,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      170.04,
+      358.44,
+      173.73,
+      360.46
+     ]
+    },
+    {
+     "page": 578,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      170.04,
+      358.44,
+      173.73,
+      360.46
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/71b9efe1459feed4_578_-_1700.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "57e3842c28106e30",
+   "count": 2,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.56,
+    15.6
+   ],
+   "exemplars": [
+    {
+     "page": 457,
+     "key": "38:79:3",
+     "text": "فَأَنظِرْنِىٓ",
+     "bbox": [
+      231.96,
+      441.03,
+      235.97,
+      444.91
+     ]
+    },
+    {
+     "page": 144,
+     "key": "6:128:28",
+     "text": "إِلَّا",
+     "bbox": [
+      328.11,
+      355.38,
+      332.12,
+      359.27
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/57e3842c28106e30_457_38-79-3_2319.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=2, purity 100%)"
+  },
+  {
+   "sig": "46fa70949be2ca41",
+   "count": 2,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    16.08,
+    16.08
+   ],
+   "exemplars": [
+    {
+     "page": 276,
+     "key": "16:87:2",
+     "text": "إِلَى",
+     "bbox": [
+      30.94,
+      497.0,
+      34.96,
+      501.0
+     ]
+    },
+    {
+     "page": 565,
+     "key": "68:41:6",
+     "text": "إِن",
+     "bbox": [
+      124.69,
+      492.42,
+      128.71,
+      496.42
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/46fa70949be2ca41_276_16-87-2_309.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=2, purity 100%)"
+  },
+  {
+   "sig": "8abe218cb6c018d0",
+   "count": 2,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    12.94,
+    12.94
+   ],
+   "exemplars": [
+    {
+     "page": 282,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      136.65,
+      28.47,
+      140.88,
+      31.53
+     ]
+    },
+    {
+     "page": 282,
+     "key": "-",
+     "text": "",
+     "bbox": [
+      136.65,
+      28.47,
+      140.88,
+      31.53
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/8abe218cb6c018d0_282_-_1366.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "f01e236eb613884d",
+   "count": 2,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.28,
+    15.32
+   ],
+   "exemplars": [
+    {
+     "page": 375,
+     "key": "26:205:2",
+     "text": "إِن",
+     "bbox": [
+      326.73,
+      533.31,
+      330.73,
+      537.13
+     ]
+    },
+    {
+     "page": 295,
+     "key": "18:19:13",
+     "text": "أَوْ",
+     "bbox": [
+      299.31,
+      368.48,
+      303.31,
+      372.31
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/f01e236eb613884d_375_26-205-2_3267.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=2, purity 100%)"
+  },
+  {
+   "sig": "fec4e33ad260f82a",
+   "count": 2,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.37,
+    15.37
+   ],
+   "exemplars": [
+    {
+     "page": 567,
+     "key": "69:25:1",
+     "text": "وَأَمَّا",
+     "bbox": [
+      321.13,
+      368.24,
+      325.08,
+      372.13
+     ]
+    },
+    {
+     "page": 367,
+     "key": "26:10:1",
+     "text": "وَإِذْ",
+     "bbox": [
+      268.48,
+      315.02,
+      272.43,
+      318.91
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/fec4e33ad260f82a_567_69-25-1_3211.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=2, purity 100%)"
+  },
+  {
+   "sig": "14c09cb852c4068f",
+   "count": 1,
+   "current_pipeline_names": [
+    "meem-iqlab"
+   ],
+   "area_range": [
+    32.35,
+    32.35
+   ],
+   "exemplars": [
+    {
+     "page": 303,
+     "key": "18:84:9",
+     "text": "شَىْءٍۢ",
+     "bbox": [
+      86.08,
+      26.54,
+      91.41,
+      32.61
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline (the spelled ء of شىء/سوء/ماء/قرءان) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/14c09cb852c4068f_303_18-84-9_860.png"
+   ],
+   "mushafdatabase_calls_it": "text/ء (n=1, purity 100%)"
+  },
+  {
+   "sig": "d6c97b5d3d42cb36",
+   "count": 1,
+   "current_pipeline_names": [
+    "meem-iqlab"
+   ],
+   "area_range": [
+    32.09,
+    32.09
+   ],
+   "exemplars": [
+    {
+     "page": 307,
+     "key": "19:28:7",
+     "text": "سَوْءٍۢ",
+     "bbox": [
+      86.85,
+      131.7,
+      92.18,
+      137.72
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline (the spelled ء of شىء/سوء/ماء/قرءان) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/d6c97b5d3d42cb36_307_19-28-7_868.png"
+   ],
+   "mushafdatabase_calls_it": "text/ء (n=4, purity 100%)"
+  },
+  {
+   "sig": "f5662d69238b800b",
+   "count": 1,
+   "current_pipeline_names": [
+    "meem-iqlab"
+   ],
+   "area_range": [
+    32.26,
+    32.26
+   ],
+   "exemplars": [
+    {
+     "page": 377,
+     "key": "27:11:8",
+     "text": "سُوٓءٍۢ",
+     "bbox": [
+      251.54,
+      454.83,
+      256.82,
+      460.94
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline (the spelled ء of شىء/سوء/ماء/قرءان) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/f5662d69238b800b_377_27-11-8_2515.png"
+   ],
+   "mushafdatabase_calls_it": "text/ء (n=3, purity 100%)"
+  },
+  {
+   "sig": "eb79ed47a924f140",
+   "count": 1,
+   "current_pipeline_names": [
+    "meem-iqlab"
+   ],
+   "area_range": [
+    40.43,
+    40.43
+   ],
+   "exemplars": [
+    {
+     "page": 582,
+     "key": "78:14:4",
+     "text": "مَآءًۭ",
+     "bbox": [
+      254.85,
+      276.24,
+      261.07,
+      282.74
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline (the spelled ء of شىء/سوء/ماء/قرءان) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/eb79ed47a924f140_582_78-14-4_2548.png"
+   ],
+   "mushafdatabase_calls_it": "text/ء (n=2, purity 100%)"
+  },
+  {
+   "sig": "017177baf5342fae",
+   "count": 1,
+   "current_pipeline_names": [
+    "meem-iqlab"
+   ],
+   "area_range": [
+    39.43,
+    39.43
+   ],
+   "exemplars": [
+    {
+     "page": 590,
+     "key": "85:9:9",
+     "text": "شَىْءٍۢ",
+     "bbox": [
+      130.37,
+      274.56,
+      136.54,
+      280.95
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline (the spelled ء of شىء/سوء/ماء/قرءان) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/017177baf5342fae_590_85-9-9_1303.png"
+   ],
+   "mushafdatabase_calls_it": "text/ء (n=1, purity 100%)"
+  },
+  {
+   "sig": "d3ef647249414bef",
+   "count": 1,
+   "current_pipeline_names": [
+    "meem-iqlab"
+   ],
+   "area_range": [
+    33.41,
+    33.41
+   ],
+   "exemplars": [
+    {
+     "page": 215,
+     "key": "10:61:9",
+     "text": "قُرْءَانٍۢ",
+     "bbox": [
+      21.74,
+      419.44,
+      27.5,
+      425.24
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline (the spelled ء of شىء/سوء/ماء/قرءان) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/d3ef647249414bef_215_10-61-9_217.png"
+   ],
+   "mushafdatabase_calls_it": "text/ء (n=1, purity 100%)"
+  },
+  {
+   "sig": "d3fddfa7a740f3b9",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 263,
+     "key": "15:22:3",
+     "text": "لَوَٰقِحَ",
+     "bbox": [
+      292.46,
+      228.4,
+      292.49,
+      228.42
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: bbox degenerate (area 0.0) yet a piece renders — needs a closer look at لَوَٰقِحَ p263.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/d3fddfa7a740f3b9_263_15-22-3_2924.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "7e8b5a322f567f14",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 233,
+     "key": "11:101:18",
+     "text": "جَآءَ",
+     "bbox": [
+      223.68,
+      196.56,
+      223.7,
+      196.59
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/7e8b5a322f567f14_233_11-101-18_2236.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "1d0eb0fdc2217098",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    39.87,
+    39.87
+   ],
+   "exemplars": [
+    {
+     "page": 582,
+     "key": "78:27:2",
+     "text": "كَانُوا۟",
+     "bbox": [
+      8.77,
+      492.26,
+      14.99,
+      498.67
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline in a surah-header title (atop/below the alef of الأنفال/الأعراف/إبراهيم or the ء of النساء/الشعراء) — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/1d0eb0fdc2217098_582_78-27-2_87.png"
+   ],
+   "mushafdatabase_calls_it": "text/ء (n=1, purity 100%)"
+  },
+  {
+   "sig": "6a025720b9a38dfa",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 262,
+     "key": "15:4:6",
+     "text": "وَلَهَا",
+     "bbox": [
+      244.95,
+      194.24,
+      244.98,
+      194.26
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/6a025720b9a38dfa_262_15-4-6_2449.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "58479c4cb8f9c0c4",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 346,
+     "key": "23:61:6",
+     "text": "لَهَا",
+     "bbox": [
+      155.43,
+      51.9,
+      155.46,
+      51.92
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/58479c4cb8f9c0c4_346_23-61-6_1554.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "5e3072c168f5aa06",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 346,
+     "key": "23:63:13",
+     "text": "لَهَا",
+     "bbox": [
+      315.05,
+      158.07,
+      315.08,
+      158.08
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/5e3072c168f5aa06_346_23-63-13_3150.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "4fa102d4d8466bf3",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 350,
+     "key": "24:2:26",
+     "text": "ٱلْمُؤْمِنِينَ",
+     "bbox": [
+      276.12,
+      195.06,
+      276.15,
+      195.09
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/4fa102d4d8466bf3_350_24-2-26_2761.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "2d2575c85ad2b7ae",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 370,
+     "key": "26:71:5",
+     "text": "لَهَا",
+     "bbox": [
+      170.88,
+      267.13,
+      170.91,
+      267.14
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/2d2575c85ad2b7ae_370_26-71-5_1708.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "4bce971866bcd297",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 437,
+     "key": "35:24:3",
+     "text": "بِٱلْحَقِّ",
+     "bbox": [
+      68.4,
+      122.78,
+      68.43,
+      122.8
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/4bce971866bcd297_437_35-24-3_684.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "3e54d0d060541c86",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 453,
+     "key": "38:15:8",
+     "text": "لَهَا",
+     "bbox": [
+      317.95,
+      516.86,
+      317.98,
+      516.88
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/3e54d0d060541c86_453_38-15-8_3179.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "5ea400f4888e086d",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 519,
+     "key": "50:26:5",
+     "text": "إِلَـٰهًا",
+     "bbox": [
+      65.32,
+      267.96,
+      65.35,
+      267.98
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/5ea400f4888e086d_519_50-26-5_653.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "5e468c388a190b7d",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 523,
+     "key": "51:52:2",
+     "text": "مَآ",
+     "bbox": [
+      265.12,
+      16.31,
+      265.14,
+      16.34
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/5e468c388a190b7d_523_51-52-2_2651.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "5e2573a020369bdc",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 529,
+     "key": "54:27:6",
+     "text": "فَٱرْتَقِبْهُمْ",
+     "bbox": [
+      134.41,
+      519.09,
+      134.43,
+      519.12
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/5e2573a020369bdc_529_54-27-6_1344.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "d50d5aab27472231",
+   "count": 1,
+   "current_pipeline_names": [
+    ""
+   ],
+   "area_range": [
+    0.0,
+    0.0
+   ],
+   "exemplars": [
+    {
+     "page": 590,
+     "key": "85:11:6",
+     "text": "لَهُمْ",
+     "bbox": [
+      28.87,
+      336.12,
+      28.9,
+      336.14
+     ]
+    }
+   ],
+   "options": [
+    "(unreadable in render — needs re-inspection)"
+   ],
+   "agent_guess": null,
+   "agent_reasoning": "Rendered evidence: the highlighted piece was not visibly distinct in the rendered window (tiny sliver or occluded) — needs a closer look.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/d50d5aab27472231_590_85-11-6_288.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "f321c7f285ee653e",
+   "count": 1,
+   "current_pipeline_names": [
+    "pause"
+   ],
+   "area_range": [
+    1.97,
+    1.97
+   ],
+   "exemplars": [
+    {
+     "page": 507,
+     "key": "47:4:30",
+     "text": "بِبَعْضٍۢ ۗ",
+     "bbox": [
+      177.51,
+      297.1,
+      179.33,
+      298.18
+     ]
+    }
+   ],
+   "options": [
+    "pause",
+    "ignore"
+   ],
+   "agent_guess": "pause",
+   "agent_reasoning": "Rendered evidence: a piece of the قلى sign at 47:4:30 (same spot as 433cf5b5) but not visibly distinct in the render — near-certain pause, confirm.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/f321c7f285ee653e_507_47-4-30_1775.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "a4591229873032ab",
+   "count": 1,
+   "current_pipeline_names": [
+    "damma"
+   ],
+   "area_range": [
+    17.89,
+    17.89
+   ],
+   "exemplars": [
+    {
+     "page": 159,
+     "key": "7:71:14",
+     "text": "وَءَابَآؤُكُم",
+     "bbox": [
+      44.98,
+      271.42,
+      49.2,
+      275.66
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline atop the و seat of ءَابَآؤُكُم — hamza family, cannot label from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/a4591229873032ab_159_7-71-14_449.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "066486bc38b725fe",
+   "count": 1,
+   "current_pipeline_names": [
+    "damma"
+   ],
+   "area_range": [
+    35.43,
+    35.43
+   ],
+   "exemplars": [
+    {
+     "page": 342,
+     "key": "23:7:5",
+     "text": "فَأُو۟لَـٰٓئِكَ",
+     "bbox": [
+      261.14,
+      219.35,
+      266.46,
+      226.01
+     ]
+    }
+   ],
+   "options": [
+    "damma",
+    "hamza"
+   ],
+   "agent_guess": "damma",
+   "agent_reasoning": "Rendered evidence: a damma-shaped curl above أُ of أُو۟لَـٰٓئِكَ / أُوتِيَ — text wants damma, but damma/hamza-curl lookalikes need a human. Text budget wants a damma at this spot; the drawn curl is a damma to the eye, but damma/hamza-curl lookalikes are reserved for a human.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/066486bc38b725fe_342_23-7-5_2611.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "7f62ddef9e4deb24",
+   "count": 1,
+   "current_pipeline_names": [
+    "damma"
+   ],
+   "area_range": [
+    34.9,
+    34.9
+   ],
+   "exemplars": [
+    {
+     "page": 567,
+     "key": "69:25:3",
+     "text": "أُوتِىَ",
+     "bbox": [
+      285.88,
+      361.9,
+      291.12,
+      368.56
+     ]
+    }
+   ],
+   "options": [
+    "damma",
+    "hamza"
+   ],
+   "agent_guess": "damma",
+   "agent_reasoning": "Rendered evidence: a damma-shaped curl above أُ of أُو۟لَـٰٓئِكَ / أُوتِيَ — text wants damma, but damma/hamza-curl lookalikes need a human. Text budget wants a damma at this spot; the drawn curl is a damma to the eye, but damma/hamza-curl lookalikes are reserved for a human.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/7f62ddef9e4deb24_567_69-25-3_2858.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "7958f348d6513fd7",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.23,
+    15.23
+   ],
+   "exemplars": [
+    {
+     "page": 92,
+     "key": "4:90:29",
+     "text": "إِلَيْكُمُ",
+     "bbox": [
+      294.78,
+      390.66,
+      299.17,
+      394.13
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/7958f348d6513fd7_092_4-90-29_2947.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "da84703607315d34",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    14.69,
+    14.69
+   ],
+   "exemplars": [
+    {
+     "page": 260,
+     "key": "14:34:6",
+     "text": "وَإِن",
+     "bbox": [
+      124.85,
+      27.72,
+      128.83,
+      31.41
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/da84703607315d34_260_14-34-6_1248.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "8e26ff526443c953",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.8,
+    15.8
+   ],
+   "exemplars": [
+    {
+     "page": 265,
+     "key": "15:64:3",
+     "text": "وَإِنَّا",
+     "bbox": [
+      138.6,
+      350.96,
+      142.62,
+      354.89
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/8e26ff526443c953_265_15-64-3_1386.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "b19402f391b74aaa",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.48,
+    15.48
+   ],
+   "exemplars": [
+    {
+     "page": 319,
+     "key": "20:100:2",
+     "text": "أَعْرَضَ",
+     "bbox": [
+      246.59,
+      48.7,
+      250.6,
+      52.56
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/b19402f391b74aaa_319_20-100-2_2465.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "9dcf9ca6b74cffee",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    16.0,
+    16.0
+   ],
+   "exemplars": [
+    {
+     "page": 323,
+     "key": "21:13:4",
+     "text": "إِلَىٰ",
+     "bbox": [
+      220.63,
+      102.02,
+      224.65,
+      106.0
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/9dcf9ca6b74cffee_323_21-13-4_2206.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "4c71c4c79444b117",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    17.18,
+    17.18
+   ],
+   "exemplars": [
+    {
+     "page": 327,
+     "key": "21:58:7",
+     "text": "إِلَيْهِ",
+     "bbox": [
+      97.43,
+      30.96,
+      101.6,
+      35.08
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/4c71c4c79444b117_327_21-58-7_974.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "b04c23233cc9af73",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    18.83,
+    18.83
+   ],
+   "exemplars": [
+    {
+     "page": 327,
+     "key": "21:68:5",
+     "text": "إِن",
+     "bbox": [
+      48.06,
+      390.59,
+      52.46,
+      394.87
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/b04c23233cc9af73_327_21-68-5_480.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "ddb859b599d1d6f0",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    16.36,
+    16.36
+   ],
+   "exemplars": [
+    {
+     "page": 345,
+     "key": "23:53:2",
+     "text": "أَمْرَهُم",
+     "bbox": [
+      209.94,
+      371.15,
+      213.95,
+      375.23
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/ddb859b599d1d6f0_345_23-53-2_2099.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "2d58f24dccb47721",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.29,
+    15.29
+   ],
+   "exemplars": [
+    {
+     "page": 350,
+     "key": "24:3:11",
+     "text": "إِلَّا",
+     "bbox": [
+      276.16,
+      248.65,
+      280.09,
+      252.54
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/2d58f24dccb47721_350_24-3-11_2761.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "82e8b81a30ce5334",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.33,
+    15.33
+   ],
+   "exemplars": [
+    {
+     "page": 367,
+     "key": "26:10:5",
+     "text": "أَنِ",
+     "bbox": [
+      175.88,
+      298.96,
+      179.82,
+      302.85
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/82e8b81a30ce5334_367_26-10-5_1758.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "312d286ce1c8d395",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.32,
+    15.32
+   ],
+   "exemplars": [
+    {
+     "page": 371,
+     "key": "26:95:3",
+     "text": "أَجْمَعُونَ",
+     "bbox": [
+      287.6,
+      226.96,
+      291.6,
+      230.79
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/312d286ce1c8d395_371_26-95-3_2876.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "59b22ba90abd91ec",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.4,
+    15.4
+   ],
+   "exemplars": [
+    {
+     "page": 377,
+     "key": "27:6:1",
+     "text": "وَإِنَّكَ",
+     "bbox": [
+      242.47,
+      243.74,
+      246.42,
+      247.64
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/59b22ba90abd91ec_377_27-6-1_2424.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "f69525f74d786600",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    13.92,
+    13.92
+   ],
+   "exemplars": [
+    {
+     "page": 431,
+     "key": "34:23:17",
+     "text": "رَبُّكُمْ ۖ",
+     "bbox": [
+      188.48,
+      35.73,
+      193.56,
+      38.47
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/f69525f74d786600_431_34-23-17_1884.png"
+   ],
+   "mushafdatabase_calls_it": "no overlapping piece"
+  },
+  {
+   "sig": "3e08397a46167956",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.52,
+    15.52
+   ],
+   "exemplars": [
+    {
+     "page": 457,
+     "key": "38:76:2",
+     "text": "أَنَا۠",
+     "bbox": [
+      222.57,
+      369.83,
+      226.58,
+      373.7
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/3e08397a46167956_457_38-76-2_2225.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "c8ec13f842cdc88e",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    19.18,
+    19.18
+   ],
+   "exemplars": [
+    {
+     "page": 481,
+     "key": "41:39:3",
+     "text": "أَنَّكَ",
+     "bbox": [
+      256.66,
+      12.74,
+      260.95,
+      17.21
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/c8ec13f842cdc88e_481_41-39-3_2566.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "aec07d89759fe3bc",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.41,
+    15.41
+   ],
+   "exemplars": [
+    {
+     "page": 567,
+     "key": "69:17:3",
+     "text": "أَرْجَآئِهَا ۚ",
+     "bbox": [
+      186.79,
+      209.85,
+      190.74,
+      213.75
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/aec07d89759fe3bc_567_69-17-3_1867.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  },
+  {
+   "sig": "f574573f9b426d1a",
+   "count": 1,
+   "current_pipeline_names": [
+    "hamza"
+   ],
+   "area_range": [
+    15.37,
+    15.37
+   ],
+   "exemplars": [
+    {
+     "page": 567,
+     "key": "69:19:1",
+     "text": "فَأَمَّا",
+     "bbox": [
+      59.29,
+      225.12,
+      63.24,
+      229.01
+     ]
+    }
+   ],
+   "options": [
+    "hamza",
+    "letter-hamza"
+   ],
+   "agent_guess": "letter-hamza",
+   "agent_reasoning": "Rendered evidence: a hamza outline, nearly always seated on/under an alef the text spells with أ/إ — hamza vs letter-hamza cannot be chosen from ink. The outline is a hamza; hamza vs letter-hamza is identical ink and one wrong entry cost +527 flags before, so the agent may not choose. In every exemplar the text spells the hamza as part of a letter seat or a spelled ء, so letter-hamza is the agent's best guess.",
+   "png_paths": [
+    "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work/.cache/review/visual-labels/png/f574573f9b426d1a_567_69-19-1_592.png"
+   ],
+   "mushafdatabase_calls_it": "diacritic/hamza (n=1, purity 100%)"
+  }
+ ]
+}

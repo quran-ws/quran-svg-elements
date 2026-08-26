@@ -1,0 +1,394 @@
+{
+ "q01": [
+  "DEFECT",
+  "kasratan pair below the word misnamed fatha (open-tanween pair under the taa)"
+ ],
+ "q02": [
+  "OK",
+  "fathatan stroke in plausible position; pairing not assessable"
+ ],
+ "q03": [
+  "OK",
+  "normal fatha over kaaf"
+ ],
+ "q04": [
+  "DEFECT",
+  "stroke sits under the UPPER line's naar-i — it is that word's kasra, stolen"
+ ],
+ "q05": [
+  "OK",
+  "open kasratan pair correctly below"
+ ],
+ "q06": [
+  "OK",
+  "open kasratan pair correctly below"
+ ],
+ "q07": [
+  "OK",
+  "pause jeem rides high over the word end — normal convention"
+ ],
+ "q08": [
+  "DEFECT",
+  "the red ink is the letter raa of fakhoor, named meem-iqlab"
+ ],
+ "q09": [
+  "UNCERTAIN",
+  "single stroke mid-word; possible half-pair, twin may be welded black"
+ ],
+ "q10": [
+  "OK",
+  "open kasratan pair correct"
+ ],
+ "q11": [
+  "DEFECT",
+  "stroke ABOVE the word named kasra — it is a fatha (true kasra sits below)"
+ ],
+ "q12": [
+  "OK",
+  "pause rides high, normal"
+ ],
+ "q13": [
+  "OK",
+  "normal kasra"
+ ],
+ "q14": [
+  "DEFECT",
+  "fatha drawn over a word on the line above — stolen across lines"
+ ],
+ "q15": [
+  "OK",
+  "open fathatan pair correct"
+ ],
+ "q16": [
+  "OK",
+  "true iqlab: single fatha + genuine small meem glyph"
+ ],
+ "q17": [
+  "OK",
+  "normal fatha"
+ ],
+ "q18": [
+  "DEFECT",
+  "the red ink is the letter raa of qintaar, named meem-iqlab"
+ ],
+ "q19": [
+  "OK",
+  "kasratan below; pair present in ink"
+ ],
+ "q20": [
+  "OK",
+  "fatha plausible over haa/qaaf"
+ ],
+ "q21": [
+  "DEFECT",
+  "stray fatha floating between lines, belongs to the upper line"
+ ],
+ "q22": [
+  "DEFECT",
+  "the red ink is the letter raa of nadhr, named meem-iqlab"
+ ],
+ "q23": [
+  "UNCERTAIN",
+  "dots over thaa look like 3; cluster split odd but ink plausibly complete"
+ ],
+ "q24": [
+  "DEFECT",
+  "the red ink is the letter taa-marbuta of maghfirah, named meem-iqlab"
+ ],
+ "q25": [
+  "OK",
+  "three-dots pyramid correct"
+ ],
+ "q26": [
+  "DEFECT",
+  "kasratan pair below misnamed fatha (laayaat pattern)"
+ ],
+ "q27": [
+  "DEFECT",
+  "the red ink is the spelled letter hamza of shay', named meem-iqlab"
+ ],
+ "q28": [
+  "DEFECT",
+  "two strokes ABOVE the word named kasratan — they are the word's two fathas"
+ ],
+ "q29": [
+  "UNCERTAIN",
+  "dot cluster complete in ink; master split bookkeeping odd, benign"
+ ],
+ "q30": [
+  "OK",
+  "normal kasra"
+ ],
+ "q31": [
+  "OK",
+  "open fathatan pair correct"
+ ],
+ "q32": [
+  "OK",
+  "normal kasra"
+ ],
+ "q33": [
+  "UNCERTAIN",
+  "marks sit correctly over mathalan; the word's recorded band is a different line — word-level ownership/band defect, not this mark"
+ ],
+ "q34": [
+  "DEFECT",
+  "marks ~20u above own band under the upper line — ownership wrong; identity unclear"
+ ],
+ "q35": [
+  "OK",
+  "kasratan pair below taa-marbuta correct"
+ ],
+ "q36": [
+  "OK",
+  "two dots under yaa correct"
+ ],
+ "q37": [
+  "OK",
+  "normal damma"
+ ],
+ "q38": [
+  "UNCERTAIN",
+  "shin cluster appears to hold 4+ blobs where 3 expected; needs eyes"
+ ],
+ "q39": [
+  "OK",
+  "open kasratan pair correct"
+ ],
+ "q40": [
+  "OK",
+  "damma correct"
+ ],
+ "q41": [
+  "OK",
+  "kasratan below kitaab; pair present"
+ ],
+ "q42": [
+  "DEFECT",
+  "the red ink is the letter hamza of jazaa', named meem-iqlab"
+ ],
+ "q43": [
+  "SUSPECT",
+  "three-dots over thaa shows only ~2 blobs; weak"
+ ],
+ "q44": [
+  "DEFECT",
+  "the red ink is the letter raa of mastooran, named meem-iqlab"
+ ],
+ "q46": [
+  "DEFECT",
+  "element 25u below its band is next line's haa/small-ya piece of 'ibaadihi, held by bikhayr as meem-iqlab"
+ ],
+ "q45": [
+  "OK",
+  "open kasratan pair correct"
+ ],
+ "q47": [
+  "DEFECT",
+  "stroke above the line named kasra of fee — it is a fatha of the previous word"
+ ],
+ "q48": [
+  "DEFECT",
+  "fatha drawn over yartaab on the line BELOW, held by kafaroo"
+ ],
+ "q49": [
+  "OK",
+  "pause rides high; legitimate convention"
+ ],
+ "q50": [
+  "OK",
+  "normal fatha"
+ ],
+ "q51": [
+  "OK",
+  "damma in the waw row, correct"
+ ],
+ "q52": [
+  "OK",
+  "true low-form iqlab meem hanging below ahlaam"
+ ],
+ "q53": [
+  "OK",
+  "damma rides high, normal"
+ ],
+ "q54": [
+  "OK",
+  "true high-form iqlab meem over yu'min"
+ ],
+ "q55": [
+  "DEFECT",
+  "the red ink is the spelled letter hamza of shay', named meem-iqlab"
+ ],
+ "q56": [
+  "DEFECT",
+  "stroke below band named fatha — it is a kasra-family stroke of bikhayr's tanween or a kasra; wrong name and likely owner"
+ ],
+ "q57": [
+  "DEFECT",
+  "below-band stroke named fatha — it is one of the open kasratan pair"
+ ],
+ "q58": [
+  "DEFECT",
+  "the pause jeem belongs to kaydahunna (its QPC carries it), held by innahu"
+ ],
+ "q59": [
+  "DEFECT",
+  "the red ink is the letter raa of ghafoor, named meem-iqlab"
+ ],
+ "q60": [
+  "DEFECT",
+  "below-band stroke named fatha — it is a kasra (likely of al-aakhir's raa)"
+ ],
+ "q61": [
+  "OK",
+  "fatha in normal position between maa and 'ayn"
+ ],
+ "q62": [
+  "DEFECT",
+  "strokes above the band named kasratan — they are fathas; true kasratan sits below the taa-marbuta"
+ ],
+ "q63": [
+  "UNCERTAIN",
+  "stroke ~10u above band; likely upper line's — lean defect"
+ ],
+ "q64": [
+  "DEFECT",
+  "laayaat pattern: fathas above named kasratan"
+ ],
+ "q65": [
+  "OK",
+  "sala pause sign rides high, normal"
+ ],
+ "q66": [
+  "OK",
+  "qala + small seen stacked between lines — the text's own two signs"
+ ],
+ "q67": [
+  "DEFECT",
+  "kasra of the upper line's arji' held as fatha of adhillah"
+ ],
+ "q68": [
+  "UNCERTAIN",
+  "same shin cluster as q38; blob count unclear"
+ ],
+ "q69": [
+  "OK",
+  "fatha over hamza-alef area looks normal"
+ ],
+ "q70": [
+  "OK",
+  "damma correct"
+ ],
+ "q71": [
+  "DEFECT",
+  "stroke over 'ayn at fatha height named kasratan — it is a fatha"
+ ],
+ "q72": [
+  "DEFECT",
+  "the red ink is the letter raa of ghafoor, named meem-iqlab"
+ ],
+ "q73": [
+  "DEFECT",
+  "kasratan pair below misnamed fatha (laayaat pattern, complement of q64)"
+ ],
+ "q74": [
+  "OK",
+  "damma + dammatan waw row plausible"
+ ],
+ "q75": [
+  "DEFECT",
+  "laayaat pattern: fathas above named kasratan"
+ ],
+ "q76": [
+  "OK",
+  "kull dammatan drawn as double waw + shadda; no meem visible"
+ ],
+ "q77": [
+  "OK",
+  "damma correct"
+ ],
+ "q78": [
+  "OK",
+  "fatha correct"
+ ],
+ "q79": [
+  "DEFECT",
+  "fatha over najwaa on the next line, held by alam"
+ ],
+ "q80": [
+  "DEFECT",
+  "stroke 33u below band on the next line under 'ibaadi — wrong owner"
+ ],
+ "q81": [
+  "OK",
+  "kull dammatan double waw; no meem visible"
+ ],
+ "q82": [
+  "OK",
+  "pause rides high, normal"
+ ],
+ "q83": [
+  "DEFECT",
+  "the small seen of al-musaytiroon held by mustami'uhum"
+ ],
+ "q84": [
+  "OK",
+  "true high-form iqlab meem over min"
+ ],
+ "q85": [
+  "UNCERTAIN",
+  "fatha + curl over ayyu; possible fused fatha+damma; unclear"
+ ],
+ "q86": [
+  "OK",
+  "fatha correct"
+ ],
+ "q87": [
+  "OK",
+  "kasra correct"
+ ],
+ "q88": [
+  "DEFECT",
+  "laayaat pattern: fathas above named kasratan"
+ ],
+ "q89": [
+  "DEFECT",
+  "fatha of the next line's wa-an held by watattaqoo"
+ ],
+ "q90": [
+  "OK",
+  "open fathatan pair correct"
+ ],
+ "q91": [
+  "OK",
+  "kull dammatan double waw"
+ ],
+ "q92": [
+  "UNCERTAIN",
+  "target sukun itself correct; the word's pause sits high-left possibly owned elsewhere"
+ ],
+ "q93": [
+  "OK",
+  "kull dammatan double waw"
+ ],
+ "q94": [
+  "UNCERTAIN",
+  "three small dots below al-qawm called pause; could be the muanaqah-style sign or stray letter dots"
+ ],
+ "q95": [
+  "DEFECT",
+  "the letter meem of the UPPER line's qawm, held by hasanan as meem-iqlab"
+ ],
+ "q96": [
+  "OK",
+  "fatha correct"
+ ],
+ "q97": [
+  "DEFECT",
+  "stroke above the word named kasra — it is the fatha (with shadda) of laam"
+ ],
+ "q98": [
+  "DEFECT",
+  "stroke above the word named kasra — it is the fatha of laam"
+ ]
+}
