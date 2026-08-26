@@ -24,9 +24,9 @@ is never committed anywhere.
 
 | | pinned baseline | now |
 |---|---|---|
-| Flagged words (mark audit) | 559 | **212** |
-| Interval-audit flags | 172 | **137** |
-| Pages clean (marks+intervals) | 276 | **421** of 604 |
+| Flagged words (mark audit) | 559 | **203** |
+| Interval-audit flags | 172 | **113** |
+| Pages clean (marks+intervals) | 276 | **424** of 604 |
 | Pages clean incl. mark-TYPE audit | — | **108** of 604 |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
 | Bench | SCORE 77, no failures, pixelfail 0 | SCORE 79 over 12 pages, no failures, pixelfail 0 |
@@ -42,7 +42,7 @@ the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's. Current sweep: `.cache/sweeps/vlabels`
+so they are not comparable to today's. Current sweep: `.cache/sweeps/lsolve`
 (dk_lines validated over all 604 pages: -8 marks, -2 intervals, +4 clean, zero
 pages worse vs `.cache/sweeps/iqlab-fix`).
 

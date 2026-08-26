@@ -272,6 +272,16 @@
    "reported": "gate exceptions accepted while adopting the visual labeler's 271 labels",
    "cause": "mushaf-wide gate: MARK 236→212, clean 409→421, intervals +1, two pages worse: p589 +2 is ONE defect (the newly-labeled small-waw ۥ moved into mark reconciliation and attached to the neighbour — the label is right, the attachment pass is the weakness), p600 +1 interval on a juz-30 page. Accepted: 24 flags removed vs 2 new NON-SILENT ones, both in families the correctors already target.",
    "status": "open, queued for the neighbour-transfer/line-set repairs"
+  },
+  {
+   "id": 26,
+   "page": null,
+   "words": [
+    "line-set solver: p350/p371/p599/p535 rotations + bonus 446/526/543/576"
+   ],
+   "reported": "Abdullah's ownership rule implemented as the line-set solver (QSVG_LSOLVE)",
+   "cause": "exact per-line-set re-solve of mark ownership (position owns, text constrains, names follow position, global resolve, ties->proposals). Gated on the color-rotation line and the confirmed chains; controls byte-identical. Full-mushaf: marks -9, intervals -24, clean 421->424, one documented visibility exception (p418). 31 chain proposals in lsolve_proposals.json for review; بِمَا p543 (confirmed line error) fixed as a bonus.",
+   "status": "adopted default-ON 2026-08-27"
   }
  ]
 }
