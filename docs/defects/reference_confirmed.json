@@ -4,27 +4,63 @@
   "key": "6:34:3",
   "word": "رُسُلٞ",
   "ref_line": 11,
-  "our_line": 10
+  "our_line": 10,
+  "human_verdict": "no-issue",
+  "verdict_note": "Abdullah 2026-08-26: our line is right; the reference is wrong here"
  },
  {
   "page": 341,
   "key": "22:73:18",
   "word": "لَهُۥ",
   "ref_line": 2,
-  "our_line": 3
+  "our_line": 3,
+  "human_verdict": "confirmed",
+  "verdict_note": "part of the p341 chain (P9, pre-approved)"
  },
  {
   "page": 543,
   "key": "58:7:39",
   "word": "بِمَا",
   "ref_line": 3,
-  "our_line": 4
+  "our_line": 4,
+  "human_verdict": "confirmed",
+  "verdict_note": "re-confirmed by eye 2026-08-26"
  },
  {
   "page": 599,
   "key": "99:5:4",
   "word": "لَهَا",
   "ref_line": 9,
-  "our_line": 10
+  "our_line": 10,
+  "human_verdict": "no-issue",
+  "verdict_note": "Abdullah 2026-08-26: our line is right; the reference is wrong here"
+ },
+ {
+  "page": 228,
+  "key": "11:56:8",
+  "word": "مِن",
+  "human_verdict": "confirmed",
+  "verdict_note": "Abdullah round 6"
+ },
+ {
+  "page": 350,
+  "key": "24:4:2",
+  "word": "يَرْمُونَ",
+  "human_verdict": "confirmed",
+  "verdict_note": "Abdullah round 6"
+ },
+ {
+  "page": 526,
+  "key": "53:26:6",
+  "word": "لَا",
+  "human_verdict": "confirmed",
+  "verdict_note": "Abdullah round 6"
+ },
+ {
+  "page": 535,
+  "key": "56:44:1",
+  "word": "لَّا",
+  "human_verdict": "confirmed",
+  "verdict_note": "Abdullah round 6; tied to the بارد swallow (P8)"
  }
 ]

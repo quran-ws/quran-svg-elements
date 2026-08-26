@@ -523,6 +523,63 @@ def main():
             tiers["page-error"] += 1
             continue
         rows = [score_word(w, med, ref.get(pg, ())) for w in rec["words"]]
+        # Every steal is a PAIR (Abdullah): a family SURPLUS in one word has a
+        # matching DEFICIT nearby — flag BOTH sides and cross-link them, so the
+        # victim never audits clean while the thief is flagged.
+        deltas = {}
+        for r, w0 in zip(rows, rec["words"]):
+            have = Counter(w0["have"])
+            for fam, (lo, hi) in fam_want(w0).items():
+                h = have.get(fam, 0)
+                if h > hi:
+                    deltas.setdefault(fam, {"sur": [], "def": []})["sur"].append(r)
+                elif h < lo:
+                    deltas.setdefault(fam, {"sur": [], "def": []})["def"].append(r)
+        # rank candidates the way steals actually happen (Abdullah): the word
+        # BEFORE/AFTER on the same line first, then ABOVE/BELOW with x-overlap;
+        # one counterpart per surplus, nearest rank wins
+        order = {r["key"]: i for i, r in enumerate(rows)}
+        def _xspan(r):
+            xs = [m["x"] for m in r.get("marks", [])]
+            return (min(xs), max(xs)) if xs else None
+        def _rank(rs, rd):
+            if rs.get("line") is None or rd.get("line") is None:
+                return None
+            dl = abs(rs["line"] - rd["line"])
+            di = abs(order[rs["key"]] - order[rd["key"]])
+            if dl == 0 and di == 1:
+                return (0, di)                        # before/after
+            if dl == 1 and di == 1:
+                return (1, di)                        # across the line break
+                                                      # (the 280-308u family)
+            if dl == 1:
+                a, b = _xspan(rs), _xspan(rd)
+                if a and b and min(a[1], b[1]) - max(a[0], b[0]) > -3.0:
+                    return (2, di)                    # above/below, overlapping
+            if dl == 0:
+                return (3, di)                        # same line, further away
+            return None
+        for fam, dd in deltas.items():
+            for rs in dd["sur"]:
+                best = None
+                for rd in dd["def"]:
+                    if rs is rd:
+                        continue
+                    rk = _rank(rs, rd)
+                    if rk is not None and (best is None or rk < best[0]):
+                        best = (rk, rd)
+                if best is None:
+                    continue
+                rd = best[1]
+                rs.setdefault("counterparts", []).append(
+                    {"key": rd["key"], "fam": fam, "role": "deficit"})
+                rd.setdefault("counterparts", []).append(
+                    {"key": rs["key"], "fam": fam, "role": "surplus"})
+                for x in (rs, rd):
+                    if x["tier"] == "clean" and x.get("human") != "no-issue":
+                        x["tier"] = "review"
+                        x["P"] = max(x["P"], 0.25)
+                        x["metrics"]["pair:" + fam] = 0.25
         for r in rows:
             st = verd.get((pg, r["key"]))
             if not st:
@@ -544,6 +601,16 @@ def main():
                     fam_agg[name.split(" ")[0].split(":")[0]] += 1
                 for pr in r["proofs"]:
                     fam_agg["PROOF:" + pr.split(" ")[0].split(":")[0]] += 1
+            elif r.get("human") == "confirmed":
+                # a word the reviewer CONFIRMED as defective that now scores
+                # clean was FIXED — keep it on the page (green) so the fix can
+                # be verified by eye instead of silently vanishing
+                r2 = dict(r)
+                r2["tier"] = "fixed"
+                r2["metrics"] = {"was: " + (r.get("human_note")
+                                            or "confirmed defect"): 0.0}
+                worst.append((pg, r2))
+                tiers["fixed"] += 1
 
     total = sum(v for k, v in tiers.items() if k != "page-error")
     print("\nwords %d | certain %d | high %d | review %d | clean %d"
@@ -573,6 +640,8 @@ def write_html(worst, path):
         why = "; ".join(r["proofs"]) if r["proofs"] else \
               "; ".join("%s %.2f" % kv for kv in
                         sorted(r["metrics"].items(), key=lambda kv: -kv[1]))
+        for cp in r.get("counterparts", []):
+            why += " ↔ %s of %s (%s)" % (cp["role"], cp["key"], cp["fam"])
         s, a, w = r["key"].split(":")
         # coarse evidence types for the header filter
         types = set()
@@ -588,6 +657,9 @@ def write_html(worst, path):
             if "size" in pr:
                 types.add("size")
         for name, _ in r["metrics"].items():
+            if name.startswith("was:"):
+                types.add("fixed")
+                continue
             n0 = name.split(" ")[0].split(":")[0]
             types.add({"width": "width", "dots": "dots", "mark": "mark-metrics",
                        "ref-line": "ref-line"}.get(n0, "family:" + n0))
@@ -664,6 +736,9 @@ header button:hover{border-color:#245a9e;color:#245a9e}
 .meta{font-size:12.5px}
 .tier{font-weight:700;text-transform:uppercase;font-size:11px}
 .t-certain{color:var(--certain)}.t-high{color:var(--high)}.t-review{color:var(--review)}
+.t-fixed{color:#1a7a3a}
+.card[data-tier="fixed"]{opacity:.85;border-color:#bcd8c4}
+.card[data-tier="fixed"] .ink{background:#f2f8f3}
 .why{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.35}
 .meta a{color:#245a9e}
 </style></head><body>

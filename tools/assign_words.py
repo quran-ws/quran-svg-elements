@@ -7594,6 +7594,100 @@ def assign_page(edition, page_no, cache_dir):
                         _m["mkmembers"] = [x for x in _m["mkmembers"] if x is not _t]
                 _need -= _u
 
+    # Mark-TYPE repair (trial, DEFAULT OFF — QSVG_MTYPE=1 to enable).
+    # Renames and regroups only; never moves ink between words, never touches
+    # atoms, zero pixel change, zero count change. Two families, each with an
+    # empty-band proof AND a text confirmation (tools/audit_marktype.py,
+    # docs/defects/marktype_rules.md):
+    #
+    # (a) The لأيات name-crossing. A kasratan can NEVER sit above its word's
+    #     band top — clean-subset sabove is empty from -4 to +1 (n=2,585) and
+    #     the only 10 above are this pattern: the word's two stacked fathas
+    #     welded as a "kasratan pair" at the top, while its true kasratan pair
+    #     (QPC open tanween ٖ, drawn as two strokes BELOW) is named
+    #     fatha+fatha. Both budgets stay exactly satisfied after the swap, so
+    #     the repair is a pure re-labeling.
+    #
+    # (b) A "meem-iqlab" in a word whose QPC text draws NO meem (open-tanween
+    #     encoding ٖ/ٗ/ٞ — uthmani writes the small meem at every non-izhar
+    #     tanween, the print draws it only at iqlab). The element is the
+    #     tanween's second stroke or its welded outline: QPC-confirmed meems
+    #     measure a uniform 3.2x9.5 glyph, these measure w 4.5-11 (926
+    #     mushaf-wide). Renamed to the word's tanween as a welded part —
+    #     meem-iqlab is never counted and the tanween master count is
+    #     unchanged, so no budget moves.
+    if os.environ.get("QSVG_MTYPE", "0") == "1":
+        for _wm, _atm in assignment:
+            if not _wm:
+                continue
+            _els = [e for a in _atm for e in a["els"]]
+            _bod = [e for e in _els if e["kind"] == "body"]
+            if not _bod:
+                continue
+            _u = _wm["uthmani"] or ""
+            _q = _wm.get("qpc") or ""
+            _top = min(e["y1"] for e in _bod)
+            _bot = max(e["y2"] for e in _bod)
+
+            # (a) kasratan welded pair above the band top
+            _kt = next((e for e in _els
+                        if e.get("mark") == "kasratan" and not e.get("mkpart")
+                        and any(m.get("mark") == "kasratan"
+                                for m in e.get("mkmembers", []))
+                        and _top - (e["y1"] + e["y2"]) / 2 > 0.0), None)
+            if _kt is not None:
+                _fw = _u.count("َ")
+                _fh = [e for e in _els if e.get("mark") == "fatha"
+                       and not e.get("mkpart") and not e.get("mkmembers")]
+                _low = sorted([e for e in _fh
+                               if (e["y1"] + e["y2"]) / 2 - _bot > 1.5],
+                              key=lambda e: (e["y1"] + e["y2"]))
+                if len(_fh) == _fw and len(_low) >= 2:
+                    _a2, _b2 = _low[0], _low[1]
+                    if abs((_a2["x1"] + _a2["x2"]) / 2
+                           - (_b2["x1"] + _b2["x2"]) / 2) < 8.0 \
+                            and abs((_a2["y1"] + _a2["y2"]) / 2
+                                    - (_b2["y1"] + _b2["y2"]) / 2) < 8.0:
+                        # top pair -> the word's two fathas
+                        for _m in list(_kt.get("mkmembers", [])):
+                            if _m.get("mark") == "kasratan":
+                                _m["mark"] = "fatha"
+                                _m.pop("mkpart", None)
+                                _kt["mkmembers"].remove(_m)
+                        if not _kt["mkmembers"]:
+                            _kt.pop("mkmembers", None)
+                        _kt["mark"] = "fatha"
+                        # bottom two strokes -> the kasratan pair
+                        _a2["mark"] = _b2["mark"] = "kasratan"
+                        _b2["mkpart"] = True
+                        _a2["mkmembers"] = _a2.get("mkmembers", []) + [_b2]
+
+            # (b) meem-iqlab at a QPC-meemless word -> tanween part
+            if _q and not any(c in _q for c in "ۭۢ"):
+                for _e in _els:
+                    if _e.get("mark") != "meem-iqlab" or _e.get("mkpart"):
+                        continue
+                    _tans = [t for t in _els
+                             if t.get("mark") in ("fathatan", "kasratan",
+                                                  "dammatan")
+                             and not t.get("mkpart") and t is not _e]
+                    if not _tans:
+                        continue
+                    _t = min(_tans, key=lambda t:
+                             abs((t["x1"] + t["x2"]) / 2
+                                 - (_e["x1"] + _e["x2"]) / 2)
+                             + abs((t["y1"] + t["y2"]) / 2
+                                   - (_e["y1"] + _e["y2"]) / 2))
+                    _d = (abs((_t["x1"] + _t["x2"]) / 2
+                              - (_e["x1"] + _e["x2"]) / 2)
+                          + abs((_t["y1"] + _t["y2"]) / 2
+                                - (_e["y1"] + _e["y2"]) / 2))
+                    if _d > 16.0:
+                        continue      # p95 of measured distances is 13.6
+                    _e["mark"] = _t["mark"]
+                    _e["mkpart"] = True
+                    _t.setdefault("mkmembers", []).append(_e)
+
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)

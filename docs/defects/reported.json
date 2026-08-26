@@ -241,6 +241,16 @@
    "reported": "cross-line steals: a word holds a mark drawn in the adjacent line's band, stolen from the word above/below (14 visually confirmed with direction)",
    "cause": "fixed by the QSVG_XBAND pass (agent-built, two-signals: band proof >=15u/stray >=40u + receiver budget after _POS_SWAP rename, donor keeps budget, put_in_ligature). Validated mushaf-wide: -10 mark flags, intervals flat, +5 clean pages (409), zero worse; now DEFAULT ON. 7 refusals are chains/word-line errors, queued for the line-set solver (the ownership rule, see plan) and the body-steal batch. Full table: docs/defects/xband_proposals.md",
    "status": "adopted 2026-08-26"
+  },
+  {
+   "id": 23,
+   "page": null,
+   "words": [
+    "926 words mushaf-wide (R7), e.g. كُلٌّۭ family"
+   ],
+   "reported": "agent-discovered while executing Abdullah's mark-type validation brief",
+   "cause": "SECOND iqlab-notation finding, bigger than item 18: quran.com uthmani writes tanween+ۢ/ۭ at IDGHAM/IKHFA positions too; the QPC text writes open tanween (ٖ ٗ ٞ) with NO meem there, and the print draws a stroke PAIR with no م. _IQTAN keys on uthmani, so at 926 words it names the pair's second stroke (or welded outline) 'meem-iqlab'. Count-audits blind (meem-iqlab never demanded). Same mechanism produces the لأيات name-crossing (10 words) and most half-pair flags. The QPC encoding IS the drawing convention. Full rule table: docs/defects/marktype_rules.md; audit: tools/audit_marktype.py; trial fix QSVG_MTYPE default OFF pending full-mushaf gate.",
+   "status": "trial built, gate pending (waiting for label-table stability)"
   }
  ]
 }

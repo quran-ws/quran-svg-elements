@@ -1133,6 +1133,882 @@
      "note": "stole the small waw ۥ from له"
     }
    ]
+  },
+  {
+   "date": "2026-08-26",
+   "reviewer": "Abdullah",
+   "scope": "round 5: full CERTAIN re-confirmation + the single-surplus-mark family",
+   "verdicts": [
+    {
+     "page": 59,
+     "key": "3:75:19",
+     "text": "مَا",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "bodyless",
+     "note": "also affect 3:75:8 stole the ما"
+    },
+    {
+     "page": 63,
+     "key": "3:108:6",
+     "text": "بِٱلۡحَقِّۗ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark pause: 41u outside its line band",
+     "note": "stole صلى pause from the word above it"
+    },
+    {
+     "page": 64,
+     "key": "3:115:6",
+     "text": "يُكۡفَرُوهُۗ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark pause: 37u outside its line band",
+     "note": "stole صلى pause from the word above it"
+    },
+    {
+     "page": 71,
+     "key": "3:161:6",
+     "text": "وَمَن",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: 18u outside its line band",
+     "note": "extra fataha or kasrah at top stolen from the word above"
+    },
+    {
+     "page": 129,
+     "key": "6:17:12",
+     "text": "بِخَيۡرٖ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark meem-iqlab: 26u outside its line band; mark kasratan: 32u outside its line band",
+     "note": "extra fatat after it ( or kasra from the word above ) + stole haa letter and a kasra below it from the word below"
+    },
+    {
+     "page": 222,
+     "key": "11:12:15",
+     "text": "كَنزٌ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark hamza: 27u outside its line band",
+     "note": "stole hamza from the word below"
+    },
+    {
+     "page": 231,
+     "key": "11:88:13",
+     "text": "حَسَنٗاۚ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark meem-iqlab: 22u outside its line band",
+     "note": "stole meem from a word above it"
+    },
+    {
+     "page": 234,
+     "key": "11:116:25",
+     "text": "وَكَانُواْ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: 34u outside its line band",
+     "note": "stole kasra from the word below it"
+    },
+    {
+     "page": 254,
+     "key": "13:37:8",
+     "text": "بَعۡدَ مَا",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "ligature surplus 3/2",
+     "note": ""
+    },
+    {
+     "page": 260,
+     "key": "14:39:5",
+     "text": "لِي",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark hamza: 19u outside its line band",
+     "note": "stole hamza+kasrateen from the word above"
+    },
+    {
+     "page": 267,
+     "key": "16:2:11",
+     "text": "أَنۡ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: 35u outside its line band",
+     "note": "stole kasra from the word below it"
+    },
+    {
+     "page": 341,
+     "key": "22:73:25",
+     "text": "مِنۡهُۚ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark small-waw: 18u outside its line band",
+     "note": "stole waw or small waw from the word above"
+    },
+    {
+     "page": 350,
+     "key": "24:3:9",
+     "text": "لَا",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "rtl-order; mark fatha: stray 300u from its word",
+     "note": "stole a far away fatha"
+    },
+    {
+     "page": 371,
+     "key": "26:97:4",
+     "text": "لَفِي",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark kasra: stray 303u from its word; mark kasra: stray 286u from its word",
+     "note": "stole a ksra far far away"
+    },
+    {
+     "page": 415,
+     "key": "32:10:8",
+     "text": "خَلۡقٖ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark meem-iqlab: 17u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 418,
+     "key": "33:3:4",
+     "text": "وَكَفَىٰ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: stray 290u from its word; mark fatha: stray 281u from its word",
+     "note": ""
+    },
+    {
+     "page": 436,
+     "key": "35:13:20",
+     "text": "ٱلۡمُلۡكُۚ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark pause: 38u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 437,
+     "key": "35:27:17",
+     "text": "بِيضٞ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "ligature surplus 2/1",
+     "note": ""
+    },
+    {
+     "page": 439,
+     "key": "35:42:6",
+     "text": "جَآءَهُمۡ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark maddah: 24u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 446,
+     "key": "37:5:3",
+     "text": "وَٱلۡأَرۡضِ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: 17u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 507,
+     "key": "47:4:4",
+     "text": "كَفَرُواْ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: 20u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 507,
+     "key": "47:4:34",
+     "text": "سَبِيلِ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark damma: 23u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 507,
+     "key": "47:8:3",
+     "text": "فَتَعۡسٗا",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark damma: 17u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 535,
+     "key": "56:33:3",
+     "text": "وَلَا",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: stray 299u from its word; mark fatha: stray 302u from its word",
+     "note": ""
+    },
+    {
+     "page": 549,
+     "key": "60:4:22",
+     "text": "بِكُمۡ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "bodyless",
+     "note": ""
+    },
+    {
+     "page": 567,
+     "key": "69:9:5",
+     "text": "وَٱلۡمُؤۡتَفِكَٰتُ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark kasra: 16u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 576,
+     "key": "74:31:22",
+     "text": "وَلَا",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: 34u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 576,
+     "key": "74:31:51",
+     "text": "إِلَّا",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: 36u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 577,
+     "key": "74:53:1",
+     "text": "كـَلَّاۖ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "bodyless",
+     "note": ""
+    },
+    {
+     "page": 577,
+     "key": "74:56:3",
+     "text": "إِلَّآ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark fatha: 26u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 599,
+     "key": "98:6:2",
+     "text": "ٱلَّذِينَ",
+     "tier": "certain",
+     "status": "confirmed",
+     "evidence": "mark kasra: 16u outside its line band",
+     "note": ""
+    },
+    {
+     "page": 535,
+     "key": "56:35:2",
+     "text": "أَنشَأۡنَٰهُنَّ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "width 0.50x 0.85; fatha 5/4 0.55",
+     "note": "stole kasrah from the word above it"
+    },
+    {
+     "page": 341,
+     "key": "22:73:17",
+     "text": "ٱجۡتَمَعُواْ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 3/2; damma 2/1; pause 1/0",
+     "note": ""
+    },
+    {
+     "page": 90,
+     "key": "4:78:20",
+     "text": "سَيِّئَةٞ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 4/2",
+     "note": ""
+    },
+    {
+     "page": 341,
+     "key": "22:73:18",
+     "text": "لَهُۥۖ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "ref-line; damma 0/1; small-waw 0/1; pause 0/1; width 0.55x",
+     "note": "the word before it stole له with the pause and diacrtics, and here it shows the waw and its fatha from the following word"
+    },
+    {
+     "page": 239,
+     "key": "12:34:7",
+     "text": "إِنَّهُۥ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "shadda 2/1; pause 1/0",
+     "note": ""
+    },
+    {
+     "page": 418,
+     "key": "33:3:2",
+     "text": "عَلَى",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "width 2.69x",
+     "note": "missing its 2 fathas stonlen two form prev word"
+    },
+    {
+     "page": 361,
+     "key": "25:18:15",
+     "text": "وَءَابَآءَهُمۡ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 5/4",
+     "note": ""
+    },
+    {
+     "page": 576,
+     "key": "74:31:48",
+     "text": "يَعۡلَمُ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 3/2",
+     "note": ""
+    },
+    {
+     "page": 272,
+     "key": "16:48:10",
+     "text": "ظِلَٰلُهُۥ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 2/1; width 1.81x",
+     "note": "has below it a lign that is a sajdah line above the word below it"
+    },
+    {
+     "page": 355,
+     "key": "24:39:6",
+     "text": "يَحۡسَبُهُ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 3/2",
+     "note": ""
+    },
+    {
+     "page": 254,
+     "key": "13:37:19",
+     "text": "وَاقٖ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "width 0.47x; meem-iqlab",
+     "note": ""
+    },
+    {
+     "page": 254,
+     "key": "13:37:9",
+     "text": "جَآءَكَ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "width 0.47x; fatha 2/3",
+     "note": "missing حا shape ( the dot is not missing )"
+    },
+    {
+     "page": 239,
+     "key": "12:34:6",
+     "text": "كَيۡدَهُنَّۚ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "kasra 1/0; shadda 0/1; pause 0/1",
+     "note": ""
+    },
+    {
+     "page": 599,
+     "key": "98:6:11",
+     "text": "خَٰلِدِينَ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "width 2.75x",
+     "note": "stole kasrah from the word above it"
+    },
+    {
+     "page": 323,
+     "key": "21:16:4",
+     "text": "وَٱلۡأَرۡضَ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 4/3",
+     "note": ""
+    },
+    {
+     "page": 599,
+     "key": "98:6:13",
+     "text": "أُوْلَٰٓئِكَ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "width 3.62x; fatha 1/2",
+     "note": "missing fatha at the end"
+    },
+    {
+     "page": 129,
+     "key": "6:13:3",
+     "text": "سَكَنَ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 4/3",
+     "note": ""
+    },
+    {
+     "page": 222,
+     "key": "11:8:16",
+     "text": "عَنۡهُمۡ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 2/1",
+     "note": ""
+    },
+    {
+     "page": 59,
+     "key": "3:75:8",
+     "text": "يُؤَدِّهِۦٓ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 2/1; kasra 1/2",
+     "note": ""
+    },
+    {
+     "page": 499,
+     "key": "45:8:10",
+     "text": "لَّمۡ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 2/1; width 1.86x",
+     "note": "extra fatha at the end"
+    },
+    {
+     "page": 486,
+     "key": "42:23:12",
+     "text": "أَسۡـَٔلُكُمۡ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 3/2",
+     "note": ""
+    },
+    {
+     "page": 543,
+     "key": "58:7:1",
+     "text": "أَلَمۡ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 3/2",
+     "note": ""
+    },
+    {
+     "page": 51,
+     "key": "3:14:18",
+     "text": "مَتَٰعُ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 3/2",
+     "note": ""
+    },
+    {
+     "page": 100,
+     "key": "4:137:16",
+     "text": "لِيَغۡفِرَ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 3/2",
+     "note": ""
+    },
+    {
+     "page": 228,
+     "key": "11:56:6",
+     "text": "وَرَبِّكُمۚ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 3/2",
+     "note": ""
+    },
+    {
+     "page": 319,
+     "key": "20:103:2",
+     "text": "بَيۡنَهُمۡ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 3/2",
+     "note": ""
+    },
+    {
+     "page": 525,
+     "key": "52:38:7",
+     "text": "مُسۡتَمِعُهُم",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "pause 1/0",
+     "note": ""
+    },
+    {
+     "page": 535,
+     "key": "56:44:3",
+     "text": "وَلَا",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "width 2.02x",
+     "note": "stole directicts from the left ( same line or the line below )"
+    },
+    {
+     "page": 535,
+     "key": "56:44:4",
+     "text": "كَرِيمٍ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 2/1",
+     "note": ""
+    },
+    {
+     "page": 526,
+     "key": "53:26:5",
+     "text": "ٱلسَّمَٰوَٰتِ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "kasra 2/1",
+     "note": ""
+    },
+    {
+     "page": 585,
+     "key": "80:12:3",
+     "text": "ذَكَرَهُۥ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "damma 2/1",
+     "note": ""
+    },
+    {
+     "page": 44,
+     "key": "2:262:15",
+     "text": "لَّهُمۡ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "fatha 2/1",
+     "note": ""
+    },
+    {
+     "page": 535,
+     "key": "56:44:2",
+     "text": "بَارِدٖ",
+     "tier": "high",
+     "status": "confirmed",
+     "evidence": "shadda 1/0",
+     "note": "stole the word before it with its diarctics لا"
+    },
+    {
+     "page": 122,
+     "key": "5:89:21",
+     "text": "أَوۡ",
+     "tier": "review",
+     "status": "confirmed",
+     "evidence": "width 2.88x",
+     "note": "stole kasra from next word"
+    },
+    {
+     "page": 123,
+     "key": "5:95:27",
+     "text": "أَوۡ",
+     "tier": "review",
+     "status": "confirmed",
+     "evidence": "width 2.87x",
+     "note": "stole kasra from prev word"
+    },
+    {
+     "page": 133,
+     "key": "6:47:8",
+     "text": "أَوۡ",
+     "tier": "review",
+     "status": "confirmed",
+     "evidence": "width 2.20x",
+     "note": "stole fatha from prev word"
+    },
+    {
+     "page": 145,
+     "key": "6:131:4",
+     "text": "يَكُن",
+     "tier": "review",
+     "status": "confirmed",
+     "evidence": "width 2.66x",
+     "note": ""
+    },
+    {
+     "page": 596,
+     "key": "92:14:1",
+     "text": "فَأَنذَرۡتُكُمۡ",
+     "tier": "review",
+     "status": "commented",
+     "evidence": "width 2.60x",
+     "note": "missin a large part of تكم"
+    },
+    {
+     "page": 596,
+     "key": "92:14:2",
+     "text": "نَارٗا",
+     "tier": "review",
+     "status": "confirmed",
+     "evidence": "width 0.48x",
+     "note": "stole a large part from the word before it"
+    },
+    {
+     "page": 350,
+     "key": "24:3:10",
+     "text": "يَنكِحُهَآ",
+     "tier": "review",
+     "status": "confirmed",
+     "evidence": "width 0.66x",
+     "note": "extra fataha stolen from the prev word"
+    }
+   ]
+  },
+  {
+   "date": "2026-08-26",
+   "reviewer": "Abdullah",
+   "scope": "round 6: ref-line adjudications (p131+p599 lahā overturned to no-issue) + additions",
+   "verdicts": [
+    {
+     "page": 131,
+     "key": "6:34:3",
+     "text": "رُسُلٞ",
+     "tier": "high",
+     "evidence": "ref-line; damma 3/2; dammatan 0/1",
+     "status": "no-issue",
+     "note": "overturns the old reference-confirmed line error"
+    },
+    {
+     "page": 207,
+     "key": "9:126:12",
+     "text": "لَا",
+     "tier": "high",
+     "evidence": "ref-line",
+     "status": "no-issue",
+     "note": ""
+    },
+    {
+     "page": 367,
+     "key": "26:14:5",
+     "text": "أَن",
+     "tier": "high",
+     "evidence": "ref-line",
+     "status": "no-issue",
+     "note": ""
+    },
+    {
+     "page": 548,
+     "key": "59:19:4",
+     "text": "نَسُواْ",
+     "tier": "high",
+     "evidence": "ref-line",
+     "status": "no-issue",
+     "note": ""
+    },
+    {
+     "page": 586,
+     "key": "81:21:2",
+     "text": "ثَمَّ",
+     "tier": "high",
+     "evidence": "ref-line",
+     "status": "no-issue",
+     "note": ""
+    },
+    {
+     "page": 599,
+     "key": "99:5:4",
+     "text": "لَهَا",
+     "tier": "high",
+     "evidence": "ref-line",
+     "status": "no-issue",
+     "note": "overturns the old reference-confirmed line error"
+    },
+    {
+     "page": 526,
+     "key": "53:26:6",
+     "text": "لَا",
+     "tier": "high",
+     "evidence": "ref-line",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 228,
+     "key": "11:56:8",
+     "text": "مِن",
+     "tier": "high",
+     "evidence": "ref-line; kasra 0/1",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 350,
+     "key": "24:4:2",
+     "text": "يَرۡمُونَ",
+     "tier": "high",
+     "evidence": "ref-line; fatha 1/2",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 535,
+     "key": "56:44:1",
+     "text": "لَّا",
+     "tier": "high",
+     "evidence": "ref-line; shadda 0/1",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 543,
+     "key": "58:7:39",
+     "text": "بِمَا",
+     "tier": "high",
+     "evidence": "ref-line; kasra 0/1",
+     "status": "confirmed",
+     "note": "one of the four reference-confirmed line errors — re-confirmed"
+    },
+    {
+     "page": 543,
+     "key": "58:7:1",
+     "text": "أَلَمۡ",
+     "tier": "high",
+     "evidence": "fatha 3/2",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 599,
+     "key": "98:6:2",
+     "text": "ٱلَّذِينَ",
+     "tier": "review",
+     "evidence": "width 1.80x",
+     "status": "confirmed",
+     "note": "still defective after the band fix — width now"
+    }
+   ]
+  },
+  {
+   "date": "2026-08-26",
+   "reviewer": "Abdullah",
+   "scope": "round 7: the pause family — signs drawn but not marked, or marked but not drawn",
+   "verdicts": [
+    {
+     "page": 114,
+     "key": "5:41:16",
+     "text": "قُلُوبُهُمْۛ",
+     "tier": "high",
+     "evidence": "pause 2/1",
+     "status": "confirmed",
+     "note": "pause exist visual but not marked"
+    },
+    {
+     "page": 112,
+     "key": "5:25:12",
+     "text": "ٱلْقَوْمِ",
+     "tier": "high",
+     "evidence": "pause 1/0",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 42,
+     "key": "2:255:32",
+     "text": "خَلْفَهُمْۖ",
+     "tier": "high",
+     "evidence": "pause 0/1",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 49,
+     "key": "2:285:23",
+     "text": "وَأَطَعْنَاۖ",
+     "tier": "high",
+     "evidence": "pause 0/1",
+     "status": "confirmed",
+     "note": "pause exist visual but not marked"
+    },
+    {
+     "page": 91,
+     "key": "4:81:12",
+     "text": "تَقُولُۖ",
+     "tier": "high",
+     "evidence": "pause 0/1",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 112,
+     "key": "5:26:6",
+     "text": "سَنَةًۛ",
+     "tier": "high",
+     "evidence": "pause 0/1",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 171,
+     "key": "7:160:32",
+     "text": "وَٱلسَّلْوَىٰۖ",
+     "tier": "high",
+     "evidence": "pause 0/1",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 399,
+     "key": "29:26:3",
+     "text": "لُوطٌۘ",
+     "tier": "high",
+     "evidence": "pause 0/1",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 503,
+     "key": "46:8:22",
+     "text": "وَبَيْنَكُمْۖ",
+     "tier": "high",
+     "evidence": "pause 0/1",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 504,
+     "key": "46:19:4",
+     "text": "عَمِلُوا۟ۖ",
+     "tier": "high",
+     "evidence": "pause 0/1",
+     "status": "confirmed",
+     "note": ""
+    },
+    {
+     "page": 525,
+     "key": "52:37:7",
+     "text": "ٱلْمُصَۜيْطِرُونَ",
+     "tier": "high",
+     "evidence": "pause 0/1",
+     "status": "confirmed",
+     "note": "missing small seen below it"
+    }
+   ]
   }
  ]
 }
