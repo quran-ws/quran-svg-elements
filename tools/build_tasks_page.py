@@ -54,9 +54,17 @@ def main():
             rows.append((3, p.get("page", 0), p.get("id", "?"), p.get("title", "")[:40],
                          "Decide this proposal: " + (p.get("ask") or p.get("summary")
                                                      or p.get("title") or "")[:120]))
+    # standing manual tasks that live outside the two boards
+    rows.append((4, 0, "labels", "61 shapes",
+                 "Name each shape on the label sheet (hamza sections)."))
+    rows.append((4, 27, "2:181", "بَعْدَ مَا",
+                 "One glance: are the two words on the right lines? (line 15)"))
+    rows.append((4, 177, "8:6", "بَعْدَ مَا",
+                 "One glance: are the two words on the right lines? (line 12)"))
     rows.sort()
     order = {0: "CERTAIN — do these first", 1: "CHANGED — review again",
-             2: "LIKELY — one look each", 3: "DECISIONS"}
+             2: "LIKELY — one look each", 3: "DECISIONS",
+             4: "QUICK CHECKS"}
     out = ["""<!doctype html><html dir="ltr"><head><meta charset="utf-8">
 <title>Your tasks</title><style>
 body{font-family:system-ui;margin:20px auto;max-width:900px;background:#fafafa}
@@ -78,6 +86,9 @@ text-decoration:none;font-size:13px;white-space:nowrap}
             cur = grp
         if grp == 3:
             link = "/proposals"
+        elif grp == 4:
+            link = ("/docs/defects/label_sheet.html" if key == "labels"
+                    else "/?page=%d&step=audit&user=abdullah" % pg)
         else:
             link = "/confidence?focus=%s" % key
         out.append(
