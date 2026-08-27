@@ -6300,6 +6300,17 @@ def assign_page(edition, page_no, cache_dir):
                         _ek["kind"] = "body"
                         _ek.pop("mark", None)
                         _ek.pop("mkpart", None)
+                    # The inverse fact, same table: ink read as a LETTER where a human
+                    # confirmed it is a mark (round-7 pause verdicts, R11 damma blobs —
+                    # a ۖ or a slightly clipped damma outline the classifier called
+                    # letter ink). The value names the mark. Two signals stand behind
+                    # every entry: the word's text budget is short exactly this family,
+                    # and the drawn blob was identified by eye (and for the waqf signs
+                    # by its signature in waqf_types.json).
+                    elif _kk in _MARKFAM and os.environ.get("QSVG_KINDMK", "1") == "1":
+                        _ek["kind"] = "mark"
+                        _ek["mark"] = _kk
+                        _ek.pop("mkpart", None)
 
     # Dot clusters whose label overstates the ink they cover — the residue the measured
     # blob width cannot separate. Adjudicated, geometry-keyed; see tools/ref_marks.py.
@@ -7858,6 +7869,36 @@ def assign_page(edition, page_no, cache_dir):
                     _t.setdefault("mkmembers", []).append(_e)
 
     # ------------------------------------------------------------------
+    # The muʿānaqah weld, second pass. The weld above (see waqf_places()) runs
+    # before the movers and the reviewer overrides, and either can deliver a
+    # straggler dot of an occurrence to the owning word AFTER the weld ran:
+    # p114's قُلُوبُهُمْۛ ended holding its triangle as a master+part PLUS one
+    # loose `pause` dot that a later mover brought home — counted as pause 2/1.
+    # Re-normalize: within one word, all recorded pieces of one occurrence are
+    # one master and parts. Nothing moves between words here.
+    if _places and os.environ.get("QSVG_WPL2", "1") == "1":
+        for _wp, _atp in assignment:
+            if not _wp:
+                continue
+            _byocc = {}
+            for _a in _atp:
+                for _e in _a["els"]:
+                    _r = _places.get("%.1f,%.1f,%.1f,%.1f"
+                                     % (_e["x1"], _e["y1"], _e["x2"], _e["y2"]))
+                    if isinstance(_r, dict):
+                        _byocc.setdefault(_r["occ"], []).append(_e)
+            for _grp in _byocc.values():
+                if len(_grp) < 2:
+                    continue
+                _grp.sort(key=lambda e: -(e["x2"] - e["x1"]) * (e["y2"] - e["y1"]))
+                _grp[0]["mark"] = "pause"
+                _grp[0]["mkmembers"] = _grp[1:]
+                _grp[0].pop("mkpart", None)
+                for _m in _grp[1:]:
+                    _m["mark"] = "pause"
+                    _m["mkpart"] = True
+                    _m.pop("mkmembers", None)
+
     # LINE-SET SOLVER (trial, DEFAULT OFF — QSVG_LSOLVE=1 to enable).
     #
     # The ownership rule (Abdullah, 2026-08-26): POSITION OWNS a mark — it
@@ -8028,6 +8069,31 @@ def assign_page(edition, page_no, cache_dir):
             if _dl is not None:
                 _trig.add(_dl)
 
+        # COUNT-PAIR TRIGGER (trial, DEFAULT OFF — QSVG_LSCNT=1 to enable).
+        # A surplus mark drawn over the boundary sits comfortably inside its
+        # holder's ink, so it is never a positional violation — yet rounds 5-6
+        # confirmed a whole family of `fatha 3/2` words whose neighbour is
+        # short the same stroke (p44 2:262:15/16, p51, p100, p319, p361,
+        # p486, p543 …). The two signals here: BOTH words' counts disagree
+        # with their spelling, AND a movable mark of one overlaps the other's
+        # letter ink. Only such pairs trigger; a lone count-bad word still
+        # cannot (nothing displaced, and it merged whole extra lines on
+        # p350's first run). The solve itself is unchanged — receiver-room
+        # guarded, applied only on a strict, unique improvement.
+        if os.environ.get("QSVG_LSCNT", "0") == "1":
+            _cbad = {id(r): r for r in _lrec
+                     if _ls_count(r, _ls_sitting(r))}
+            for _r in _cbad.values():
+                for _e in _r["els"]:
+                    if not _ls_movable(_e):
+                        continue
+                    for _t in _cbad.values():
+                        if _t is _r or abs(_t["ln"] - _r["ln"]) > 1:
+                            continue
+                        if _ls_ovl(_t["b"], _e) > -_LS_NEAR:
+                            _trig.add(_r["ln"])
+                            _trig.add(_t["ln"])
+
         # merge triggered lines whose ±1 word sets would overlap
         _groups = []
         for _ln in sorted(_trig):
@@ -8155,7 +8221,8 @@ def assign_page(edition, page_no, cache_dir):
                                and abs(t["ln"] - _r["ln"]) <= 1]
                         if _sh:
                             _ents.append((_r, _e))
-            if not _vset:
+            if not _vset and not (os.environ.get("QSVG_LSCNT", "0") == "1"
+                                  and _ents):
                 continue          # count trigger alone, nothing displaced
             _ents.sort(key=lambda t: (t[1]["x1"], t[1]["y1"]))
 
