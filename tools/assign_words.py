@@ -9211,6 +9211,47 @@ def assign_page(edition, page_no, cache_dir):
                         for _m in _eu.get("mkmembers", []):
                             _m["line"] = _r["ln"]
 
+    # A pause sign always carries its own dots (Abdullah 2026-08-27): the ج
+    # has one, the قلى has the two of its ق. Measured mushaf-wide: 96 pause
+    # signs had their dots as loose separate elements. Adopt a dot-family
+    # element as mark-part of the sign only when its CENTER lies inside the
+    # sign's box (a ث's three dots beside a ج stay letter dots — sali and
+    # lazim signs have no dots at all and adopt nothing).
+    if os.environ.get("QSVG_PAUSEDOTS", "1") == "1":
+        _wtypes = waqf_types()
+        _CAP = {"waqf jaiz": ("dot",), "waqf qila": ("dot", "two-dots")}
+        _allat = [(a, e) for _w9, _at9 in assignment for a in _at9
+                  for e in a["els"]]
+        for _pa, _pe in _allat:
+            if _pe.get("mark") != "pause" or _pe.get("mkpart"):
+                continue
+            _typ = _wtypes.get(_pe.get("sig"))
+            _ok = _CAP.get(_typ if isinstance(_typ, str) else
+                           (_typ or {}).get("waqf") if isinstance(_typ, dict)
+                           else None)
+            if not _ok:
+                continue
+            _room = 2 if "two-dots" in _ok else 1
+            for _da, _de in _allat:
+                if _room <= 0:
+                    break
+                if _de.get("mark") not in _ok or _de.get("mkpart") or _de is _pe:
+                    continue
+                _cx = (_de["x1"] + _de["x2"]) / 2
+                _cy = (_de["y1"] + _de["y2"]) / 2
+                if not (_pe["x1"] - 1 <= _cx <= _pe["x2"] + 1
+                        and _pe["y1"] - 1 <= _cy <= _pe["y2"] + 1):
+                    continue
+                _de["mkpart"] = True
+                _de["mark"] = "pause"
+                _pe.setdefault("mkmembers", []).append(_de)
+                if _da is not _pa:
+                    if _de in _da["els"]:
+                        _da["els"].remove(_de)
+                    _pa["els"].append(_de)
+                    _de["line"] = _pe.get("line")
+                _room -= 2 if _de.get("mark") == "two-dots" else 1
+
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)
