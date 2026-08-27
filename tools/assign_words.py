@@ -9564,6 +9564,28 @@ def assign_page(edition, page_no, cache_dir):
                             e["mark"] = "hamza"
                             e["lab"] = "hamza"
                             _haveh += 1
+            # (c) كُلࣱّ family (item 37, 11 flags): the word's own damma
+            # welded into the dammatan stack as a third curl. When the text
+            # wants a plain damma AND a dammatan, and a dammatan master
+            # carries two welded twins (3 curls), one twin is the damma —
+            # peel the bottom-most (nearest the letters) back out.
+            _wantd = _txt8.count("\u064f")
+            _haved = sum(1 for e in _els8 if e.get("mark") == "damma"
+                         and not e.get("mkpart"))
+            if _wantd > _haved and any(c in _txt8 for c in "\u064c\u08f1"):
+                for e in _els8:
+                    if _haved >= _wantd:
+                        break
+                    if (e.get("mark") == "dammatan" and not e.get("mkpart")
+                            and len(e.get("mkmembers", [])) >= 2):
+                        mem = sorted(e["mkmembers"],
+                                     key=lambda m: -(m["y1"] + m["y2"]))[0]
+                        e["mkmembers"] = [m for m in e["mkmembers"]
+                                          if m is not mem]
+                        mem["mkpart"] = False
+                        mem["mark"] = "damma"
+                        mem["lab"] = "damma"
+                        _haved += 1
             # (b) missing slash mark, its ink demoted to body
             for fam, chs in _SLASH8.items():
                 _want = sum(_txt8.count(c) for c in chs)
