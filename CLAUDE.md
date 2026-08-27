@@ -84,7 +84,10 @@ eye before treating them as regressions.
 ### Against MushafDatabase, on evidence outside both decompositions
 
 `tools/score_both.py` scores BOTH sides against QCF advance widths, the Arabic joining
-rules and the text. Over 77,331 words scored on both sides:
+rules and the text. Re-measured 2026-08-28 over 77,422 words (DK keying): width>1.5x
+ours 1211 vs theirs 1210, width>2x ours 150 vs theirs 147, dots EQUAL, piece surplus
+ours 1 — statistically even on every axis (docs/defects/score_both.json). The table
+below is the older 77,331-word run kept for history:
 
 | | ours | theirs | |
 |---|---|---|---|
