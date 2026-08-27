@@ -412,7 +412,15 @@ Both +1 versus the session baseline; neither is explained.
   the pipeline uses. Do not migrate the other families to QPC; it was measured and it is
   worse. Compare after normalising code points to families, or you measure encoding
   rather than content (KFGQPC writes sukun U+06E1 and the silent circle U+0652 where
-  uthmani writes U+0652 and U+06DF).
+  uthmani writes U+0652 and U+06DF). **The DigitalKhatt TEXT, measured 2026-08-27**
+  (same contest, snapshot = `tools/texts/qc/` symlinks into `.cache/words`): 99.543%
+  raw — but 335 of its 352 differs are the 339 iqlab sites where DK writes the print's
+  single haraka + small م and the reference follows uthmani's tanween. Net of that
+  convention (which the pipeline already expresses once, as the print-gated meem rule)
+  DK is 17 differs vs the composite's 20 — a tie, from one source instead of two. Not
+  adopted for budgets: swapping would re-key every tanween count for zero measured gain.
+  DK is canonical for SEGMENTATION/LAYOUT/KEYS (QSVG_DKSEG, dk_lines); text stays
+  uthmani + KFGQPC waqf.
 - Human input is captured as DATA — shapes to `labels.json`, places to
   `overrides.json` — never as a code edit.
 - Every hard-won fix should become a bench case, or it comes back.
