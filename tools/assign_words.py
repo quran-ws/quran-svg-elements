@@ -4405,8 +4405,14 @@ def assign_page(edition, page_no, cache_dir):
     # the ink. (Left as a mark it may re-line onto a neighbouring line — the
     # م of يَوْمَ landing on ٱبْنُ below it, and the hole it leaves pulling a
     # piece off each following word.)
+    # THE PRINT's text decides, not uthmani: quran.com writes tanween+\u06e2 at
+    # idgham/ikhfa positions where this print draws NO small م (QPC open-tanween
+    # encoding is the drawing convention — reported.json items 23/24). Abdullah
+    # sampled 16/16 of the residue by eye: all letters. So the demote keys on
+    # the QPC text where present.
     for r in owords:
-        if "\u06e2" in r["w"]["uthmani"] or "\u06ed" in r["w"]["uthmani"]:
+        _ptxt = r["w"].get("qpc") or r["w"]["uthmani"]
+        if "\u06e2" in _ptxt or "\u06ed" in _ptxt:
             continue
         for a in r["at"]:
             for e in a["els"]:
@@ -5037,6 +5043,10 @@ def assign_page(edition, page_no, cache_dir):
               "\u0650" if False else "\u064d": ("kasratan", "kasra", "\u0650")}
     for r in owords:
         txt = r["w"]["uthmani"]
+        # tanween NAMING keys on uthmani (needed at idgham too); only the
+        # MEEM rescue below keys on the print's text
+        _ptx = r["w"].get("qpc") or txt
+        _print_meem = "\u06e2" in _ptx or "\u06ed" in _ptx
         want = [_IQTAN[txt[i]] for i in range(len(txt) - 1)
                 if txt[i] in _IQTAN and txt[i + 1] in ("\u06e2", "\u06ed")]
         if not want:
@@ -5076,6 +5086,8 @@ def assign_page(edition, page_no, cache_dir):
                 mv = min(zone, key=lambda e: abs((e["x1"] + e["x2"]) / 2 - rx1))
                 mv["mark"] = tan
             # ... and its meem rides just beside it, usually filed as letter ink
+            if not _print_meem:
+                continue          # the PRINT draws no م here (items 23/24)
             if any(e.get("mark") == "meem-iqlab" and not e.get("mkpart")
                    for e in els):
                 continue
@@ -5541,8 +5553,9 @@ def assign_page(edition, page_no, cache_dir):
         # only ۢ (U+06E2) is drawn as a separate small م in this art; the
         # low ۭ of iqlab tanween leaves no standalone glyph to claim
         want_m = r["w"]["uthmani"].count("\u06e2")
-        if not want_m:
-            continue
+        _ptx2 = r["w"].get("qpc") or r["w"]["uthmani"]
+        if not want_m or "\u06e2" not in _ptx2:
+            continue          # the PRINT draws no م here (items 23/24)
         have_m = sum(1 for a in r["at"] for e in a["els"]
                      if e.get("mark") == "meem-iqlab" and not e.get("mkpart"))
         if have_m >= want_m:
@@ -7301,9 +7314,10 @@ def assign_page(edition, page_no, cache_dir):
             if not _wq:
                 continue
             _txt = _wq["uthmani"] or ""
+            _ptx3 = _wq.get("qpc") or _txt
             _wantm = _txt.count("ۢ") + _txt.count("ۭ")
-            if not _wantm:
-                continue
+            if not _wantm or not ("ۢ" in _ptx3 or "ۭ" in _ptx3):
+                continue      # the PRINT draws no م here
             _els = [e for a in _atq for e in a["els"]]
             _bod = [e for e in _els if e["kind"] == "body"]
             if not _bod:

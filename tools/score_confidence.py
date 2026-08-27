@@ -603,6 +603,15 @@ def main():
                     fam_agg[name.split(" ")[0].split(":")[0]] += 1
                 for pr in r["proofs"]:
                     fam_agg["PROOF:" + pr.split(" ")[0].split(":")[0]] += 1
+            elif r.get("human") == "reopened":
+                # the eye says still broken even though counts are clean —
+                # identity-blind audits cannot see it; never show as fixed
+                r2 = dict(r)
+                r2["tier"], r2["P"] = "review", max(r2["P"], 0.6)
+                r2["metrics"] = {"REOPENED by eye: "
+                                 + (r.get("human_note") or ""): 0.6}
+                worst.append((pg, r2))
+                tiers["review"] += 1
             elif r.get("human") == "confirmed":
                 # a word the reviewer CONFIRMED as defective that now scores
                 # clean was FIXED — keep it on the page (green) so the fix can

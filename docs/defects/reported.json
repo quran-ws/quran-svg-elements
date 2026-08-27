@@ -304,6 +304,16 @@
    "reported": "Abdullah confirmed the below-fatha instances by eye (p361 class): 'we don't expect kasrah below the meem — it's the lower word's fatha'",
    "cause": "QSVG_LSCNT adopted default-ON: solver trigger extended to budget violations with an overlapping candidate. Full sweep -43 flags, 0 pages worse, 0 new flags.",
    "status": "adopted 2026-08-27"
+  },
+  {
+   "id": 29,
+   "page": null,
+   "words": [
+    "~927 false meems eliminated; كلا p577, بكم p549 restored; قسورة's م named"
+   ],
+   "reported": "Abdullah: R7 samples 16/16 letters; كلا 'stole from everywhere but has no ink'; قسورة e190 is its iqlab م",
+   "cause": "All meem-creating passes now gate the MEEM on the print's text (QPC), while tanween NAMING stays uthmani-keyed (first attempt gated both and regressed 5 pages - caught and split). The last two bodyless words restored by overrides (cross-line body thefts by قسورة and قالوا). Gate: marks 163->155, intervals 110->80, clean 445->469, zero worse.",
+   "status": "adopted 2026-08-27"
   }
  ]
 }

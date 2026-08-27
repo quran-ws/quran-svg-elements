@@ -2009,6 +2009,267 @@
      "note": "missing small seen below it"
     }
    ]
+  },
+  {
+   "date": "2026-08-27",
+   "reviewer": "Abdullah",
+   "scope": "round 8: REOPENED — words shown as fixed that the eye says are still wrong",
+   "verdicts": [
+    {
+     "page": 44,
+     "key": "2:262:15",
+     "text": "لَّهُمْ",
+     "status": "reopened",
+     "note": "not fixed per eye 2026-08-27"
+    },
+    {
+     "page": 51,
+     "key": "3:14:18",
+     "text": "مَتَٰعُ",
+     "status": "reopened",
+     "note": "not fixed per eye"
+    },
+    {
+     "page": 129,
+     "key": "6:13:3",
+     "text": "سَكَنَ",
+     "status": "reopened",
+     "note": "extra kasrah"
+    },
+    {
+     "page": 323,
+     "key": "21:16:4",
+     "text": "وَٱلْأَرْضَ",
+     "status": "reopened",
+     "note": "extra kasrah"
+    },
+    {
+     "page": 260,
+     "key": "14:39:5",
+     "text": "لِي",
+     "status": "reopened",
+     "note": "still steals the hamza from the word above"
+    },
+    {
+     "page": 361,
+     "key": "25:18:15",
+     "text": "وَءَابَآءَهُمْ",
+     "status": "reopened",
+     "note": "steals kasrah at the end"
+    },
+    {
+     "page": 486,
+     "key": "42:23:12",
+     "text": "أَسْـَٔلُكُمْ",
+     "status": "reopened",
+     "note": "stole a fatha from the word below it"
+    }
+   ]
+  },
+  {
+   "date": "2026-08-27",
+   "reviewer": "Abdullah",
+   "scope": "round 9: human verification of the green FIXED cards (33 verified); the certain-tier re-confirmations were already on file; 7 reopened words (round 8) excluded and stay reopened",
+   "verdicts": [
+    {
+     "page": 42,
+     "key": "2:255:32",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 49,
+     "key": "2:285:23",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 59,
+     "key": "3:75:8",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 59,
+     "key": "3:75:19",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 63,
+     "key": "3:108:6",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 64,
+     "key": "3:115:6",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 71,
+     "key": "3:161:6",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 91,
+     "key": "4:81:12",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 112,
+     "key": "5:25:12",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 112,
+     "key": "5:26:6",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 114,
+     "key": "5:41:16",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 171,
+     "key": "7:160:32",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 222,
+     "key": "11:12:15",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 228,
+     "key": "11:56:6",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 234,
+     "key": "11:116:25",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 254,
+     "key": "13:37:9",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 272,
+     "key": "16:48:10",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 341,
+     "key": "22:73:17",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 341,
+     "key": "22:73:25",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 350,
+     "key": "24:3:10",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 371,
+     "key": "26:97:4",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 399,
+     "key": "29:26:3",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 436,
+     "key": "35:13:20",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 437,
+     "key": "35:27:17",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 439,
+     "key": "35:42:6",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 503,
+     "key": "46:8:22",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 504,
+     "key": "46:19:4",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 525,
+     "key": "52:37:7",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 525,
+     "key": "52:38:7",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 526,
+     "key": "53:26:5",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 535,
+     "key": "56:44:3",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 543,
+     "key": "58:7:1",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    },
+    {
+     "page": 576,
+     "key": "74:31:48",
+     "status": "confirmed",
+     "note": "fix VERIFIED by eye 2026-08-27"
+    }
+   ]
   }
  ]
 }
