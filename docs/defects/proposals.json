@@ -246,6 +246,34 @@
    ],
    "state": "superseded",
    "state_note": "the rename was REFUTED by blind verification; the true fix (letter restoration via labels) is applied instead"
+  },
+  {
+   "id": "P17",
+   "page": 115,
+   "key": "5:44:10",
+   "focus_x": 87.2,
+   "focus_y": null,
+   "title": "p115: ٱلَّذِينَ — first chunk may belong to the word before",
+   "found": "Its first chunk (x87-104) fits ٱلنَّبِيُّونَ's ن far better than its own الذ (13.3u misfit vs 5.1u).",
+   "expected": "Each chunk matches its own word's letter widths.",
+   "proposal": "You look: is that chunk الذ or the neighbour's ن? (Only width evidence — could be the stretch convention.)",
+   "alternatives": [
+    "it is a stretched final ن convention — no issue"
+   ]
+  },
+  {
+   "id": "P18",
+   "page": 474,
+   "key": "40:63:3",
+   "focus_x": null,
+   "focus_y": null,
+   "title": "p474: ٱلَّذِينَ — chunk may belong to كَانُوا۟",
+   "found": "A chunk fits كَانُوا۟'s كا much better than its own text (donor damaged on the facing side).",
+   "expected": "Same as above.",
+   "proposal": "You look and decide.",
+   "alternatives": [
+    "stretch convention — no issue"
+   ]
   }
  ],
  "decisions": {
