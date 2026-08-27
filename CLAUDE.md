@@ -42,11 +42,15 @@ the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's. Current sweep: `.cache/sweeps/dktext3`
-(QSVG_DKTEXT default-ON: marks 103, intervals 79, clean 494, bench 81 —
-strictly better than pixfix on every aggregate; the one "worse" page p446
-is the لازب iqlab pair theft REVEALED by the honest budget, Abdullah-confirmed,
-reported.json item 35).
+so they are not comparable to today's. Current sweep: `.cache/sweeps/slashx2`
+(marks 101, intervals 62, clean 510, bench 99 over 17 pages. The evening's
+passes: QSVG_HDRGUARD header-ink eviction, QSVG_PAUSEDOTS, and the
+QSVG_SLASHX exchange completion inside the orphan pass — a floating leg is
+geometric proof, the reciprocal is budget-forced, and the exchange is
+accepted only when EVERY touched word snaps to exact budget; a true mutual
+exchange is count-neutral, so counts can only veto, never approve. p586
+هو/بقول is the founding case and a bench case; 29 crossings remain for the
+vertical-discriminator iteration).
 
 **Pixel identity became a proven, gated invariant 2026-08-27** after Abdullah
 caught displaced/duplicated marks by eye on p17 (a قلى drawn twice, once

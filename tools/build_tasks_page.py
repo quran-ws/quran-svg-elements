@@ -61,6 +61,12 @@ def main():
                  "One glance: are the two words on the right lines? (line 15)"))
     rows.append((4, 177, "8:6", "بَعْدَ مَا",
                  "One glance: are the two words on the right lines? (line 12)"))
+    rows.append((4, 0, "taxonomy", "9 questions",
+                 "Answer the sign-naming questions (mark_taxonomy.md, top section)."))
+    rows.append((4, 329, "21:88", "نُـۨجِى",
+                 "One glance: the small high noon above — confirm it is drawn."))
+    rows.append((4, 159, "2:247", "بَصْۜطَةً",
+                 "One glance: is the small seen wrongly tagged as shadda?"))
     rows.sort()
     order = {0: "CERTAIN — do these first", 1: "CHANGED — review again",
              2: "LIKELY — one look each", 3: "DECISIONS",
@@ -88,6 +94,7 @@ text-decoration:none;font-size:13px;white-space:nowrap}
             link = "/proposals"
         elif grp == 4:
             link = ("/docs/defects/label_sheet.html" if key == "labels"
+                    else "/docs/defects/mark_taxonomy.md" if key == "taxonomy"
                     else "/?page=%d&step=audit&user=abdullah" % pg)
         else:
             link = "/confidence?focus=%s" % key

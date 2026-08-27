@@ -2319,11 +2319,13 @@
   "auto": true
  },
  "47c49c400b93c632": {
-  "label": "hamza"
+  "label": "hamza",
+  "note": "Abdullah 2026-08-27 sheet r11: hamza confirmed"
  },
  "2fb9f1b6e49c570e": {
   "label": "hamza",
-  "auto": true
+  "auto": true,
+  "note": "Abdullah 2026-08-27 sheet r11: hamza confirmed"
  },
  "f11855c7e982110e": {
   "label": "hamza"
@@ -9382,8 +9384,8 @@
   "auto": true
  },
  "4a172da1a8160bb3": {
-  "label": "two-dots",
-  "auto": true
+  "label": "letter",
+  "note": "Abdullah 2026-08-27 sheet r11: the letter ه (p337 ينصره) — not two-dots, not small-waw. Closes P19."
  },
  "302a9f2ecf16018b": {
   "label": "two-dots",
