@@ -1706,6 +1706,65 @@ def rewrite(page, assignment):
         _off = max(_votes, key=_votes.get) if _votes else 0
         hdr_art = {ln - _off: v for ln, v in _hdr_dk.items() if ln - _off >= 1}
 
+    # Header ink is inviolable: a word may never hold an element drawn on a
+    # header/basmalah line, unless the word itself lives on that line (p1/p2,
+    # where the basmalah IS ayah 1:1). Measured mushaf-wide (reported.json
+    # item 33): 9 thefts on 8 pages, 8 of them a last-line word reaching into
+    # the title below — the superscript recoveries hunt small glyphs and read
+    # title letters as small-waw/small-alef/maddah (p590: ٱلصَّـٰلِحَـٰتِ took
+    # the dot of the ب in سورة البروج). Evicted ink rejoins the wordless pool,
+    # where the header wrapper below picks it up; fabricated mark names are
+    # left in place — titles carry real diacritics and are not audited, so a
+    # wrong label here is display-only and visible in the header group.
+    if hdr_art and os.environ.get("QSVG_HDRGUARD", "1") == "1":
+        # Exception, p349-measured: a last-line word's own suffix mark (ـهُۥ's
+        # ۥ, a maddah) genuinely dips into the header band and the line cut
+        # files it under the header line. Such a mark sits at the band's TOP
+        # EDGE and inside its word's own x-span; title ink sits at band depth
+        # (p590's stolen ب dot: mid-band). Keep only what passes BOTH tests.
+        _btop = {}
+        for word, atoms in assignment:
+            for a in atoms:
+                for e in a["els"]:
+                    ln = e.get("line")
+                    if ln in hdr_art:
+                        _btop[ln] = min(_btop.get(ln, 1e9), e["y1"])
+        _evicted = []
+        for word, atoms in assignment:
+            if not word:
+                continue
+            _lns = [e.get("line") for a in atoms for e in a["els"]
+                    if e.get("line")]
+            if not _lns:
+                continue
+            if max(set(_lns), key=_lns.count) in hdr_art:
+                continue
+            _bx = [(e["x1"], e["x2"]) for a in atoms for e in a["els"]
+                   if e["kind"] == "body" and e.get("line") not in hdr_art]
+            _wx1 = min((x1 for x1, _ in _bx), default=0)
+            _wx2 = max((x2 for _, x2 in _bx), default=0)
+            for a in atoms:
+                keep = []
+                for e in a["els"]:
+                    ln = e.get("line")
+                    if ln in hdr_art:
+                        cx = (e["x1"] + e["x2"]) / 2
+                        # left margin 8u: the suffix ۥ/ۦ/maddah trails the
+                        # word on ITS LEFT (the next-word side — the p349
+                        # trio measured 1.4-2.5u past the body span).
+                        # Depth 12u sits in a measured empty band: genuine
+                        # dips reach top+8.7 (p570 ذلك's dagger alef), the
+                        # one true theft sits at top+19.2 (p590's title dot).
+                        dip = (e["kind"] == "mark"
+                               and _wx1 - 8 <= cx <= _wx2 + 2
+                               and e["y1"] <= _btop.get(ln, 0) + 12.0)
+                        (keep if dip else _evicted).append(e)
+                    else:
+                        keep.append(e)
+                a["els"] = keep
+        if _evicted:
+            assignment = assignment + [(None, [{"els": _evicted}])]
+
     # A word is one thing on the page, but its ink can straddle the boundary
     # between two line paths — a descender dips below it, a mark rides above —
     # and emitting the word once per wrapper leaves half of it inside a line it

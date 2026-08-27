@@ -77,6 +77,10 @@ CASES = {
         lambda e: any(x.get("mark") == "small-waw" for x in e)),
     (205, (9, 114, 15)): ("aduww holds no small-waw",
         lambda e: not any(x.get("mark") == "small-waw" for x in e)),
+    # header ink is inviolable: the word above سورة البروج must hold nothing
+    # from the title line below it (reported.json item 33)
+    (590, (84, 25, 5)): ("salihat holds no title-line ink",
+        lambda e: all(x.get("line") == 1 for x in e)),
 }
 
 def budget_mismatches(words):
@@ -100,7 +104,7 @@ def budget_mismatches(words):
 
 q = json.load(open(ROOT + "/.cache/qcf_widths.json"))
 case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
-for pg in (1, 2, 3, 7, 17, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454):
+for pg in (1, 2, 3, 7, 17, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454, 590):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     except Exception as e:
