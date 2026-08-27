@@ -1,0 +1,5101 @@
+{
+ "generated": "2026-08-28",
+ "build": "current (i39full-era), fresh assign_page runs",
+ "classes": {
+  "a": "boundary mis-cut: adjacent pair with compensating piece-count errors; repair = line-level re-deal",
+  "b": "genuine print layout (kashida stretch / compression); counts exact, both metrics agree; record, do not fix",
+  "c1": "metric artifact: QCF advance table scrambled on layout-drift pages; audits lack the _QCF_SUSPECT guard",
+  "c2": "metric artifact: score_confidence all-element span poisoned by a far-stray mark (p418 33:3:4)",
+  "c": "metric artifact: single-word qcf-vs-print disagreement, letter-sum agrees with the ink"
+ },
+ "lines": [
+  {
+   "page": 121,
+   "line": 13,
+   "class": "c1",
+   "evidence": "drift page: QCF pairing scrambled (corr 0.82 vs 0.9 normal); letter-sum clean",
+   "flagged_keys": [
+    "5:83:1",
+    "5:83:5"
+   ],
+   "words": [
+    {
+     "key": "5:82:25",
+     "text": "لَا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      320.0,
+      331.9
+     ],
+     "drawn_w": 11.9,
+     "r_qcf": 0.86,
+     "r_lettersum": 0.77
+    },
+    {
+     "key": "5:82:26",
+     "text": "يَسْتَكْبِرُونَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      198.2,
+      316.2
+     ],
+     "drawn_w": 117.9,
+     "r_qcf": 0.85,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "5:83:1",
+     "text": "وَإِذَا",
+     "flagged": true,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      148.9,
+      172.9
+     ],
+     "drawn_w": 23.9,
+     "r_qcf": 0.53,
+     "r_lettersum": 0.84
+    },
+    {
+     "key": "5:83:2",
+     "text": "سَمِعُوا۟",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      95.1,
+      146.2
+     ],
+     "drawn_w": 51.1,
+     "r_qcf": 1.16,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "5:83:3",
+     "text": "مَآ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      75.2,
+      92.5
+     ],
+     "drawn_w": 17.3,
+     "r_qcf": null,
+     "r_lettersum": 1.03
+    },
+    {
+     "key": "5:83:4",
+     "text": "أُنزِلَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      41.1,
+      72.3
+     ],
+     "drawn_w": 31.2,
+     "r_qcf": 1.01,
+     "r_lettersum": 0.77
+    },
+    {
+     "key": "5:83:5",
+     "text": "إِلَى",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      5.9,
+      36.3
+     ],
+     "drawn_w": 30.4,
+     "r_qcf": 2.6,
+     "r_lettersum": 1.38
+    }
+   ]
+  },
+  {
+   "page": 121,
+   "line": 14,
+   "class": "c1+b",
+   "evidence": "مِنَ 1.75x letter-sum (stretch); rest scramble",
+   "flagged_keys": [
+    "5:83:7",
+    "5:83:12",
+    "5:83:13"
+   ],
+   "words": [
+    {
+     "key": "5:83:6",
+     "text": "ٱلرَّسُولِ",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      287.3,
+      331.9
+     ],
+     "drawn_w": 44.6,
+     "r_qcf": 1.17,
+     "r_lettersum": 0.78
+    },
+    {
+     "key": "5:83:7",
+     "text": "تَرَىٰٓ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      255.3,
+      283.5
+     ],
+     "drawn_w": 28.2,
+     "r_qcf": 0.56,
+     "r_lettersum": 0.85
+    },
+    {
+     "key": "5:83:8",
+     "text": "أَعْيُنَهُمْ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      197.0,
+      251.6
+     ],
+     "drawn_w": 54.6,
+     "r_qcf": 1.43,
+     "r_lettersum": 1.13
+    },
+    {
+     "key": "5:83:9",
+     "text": "تَفِيضُ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      149.5,
+      197.0
+     ],
+     "drawn_w": 47.5,
+     "r_qcf": 1.38,
+     "r_lettersum": 1.04
+    },
+    {
+     "key": "5:83:10",
+     "text": "مِنَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      115.0,
+      148.2
+     ],
+     "drawn_w": 33.2,
+     "r_qcf": null,
+     "r_lettersum": 1.75
+    },
+    {
+     "key": "5:83:11",
+     "text": "ٱلدَّمْعِ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      80.2,
+      112.0
+     ],
+     "drawn_w": 31.8,
+     "r_qcf": 1.13,
+     "r_lettersum": 0.87
+    },
+    {
+     "key": "5:83:12",
+     "text": "مِمَّا",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      49.0,
+      76.1
+     ],
+     "drawn_w": 27.1,
+     "r_qcf": 0.6,
+     "r_lettersum": 1.15
+    },
+    {
+     "key": "5:83:13",
+     "text": "عَرَفُوا۟",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      6.1,
+      46.4
+     ],
+     "drawn_w": 40.3,
+     "r_qcf": 0.55,
+     "r_lettersum": 0.92
+    }
+   ]
+  },
+  {
+   "page": 121,
+   "line": 15,
+   "class": "c1",
+   "evidence": "letter-sum ratios 0.83-1.20, counts exact",
+   "flagged_keys": [
+    "5:83:15",
+    "5:83:16",
+    "5:83:17",
+    "5:83:19",
+    "5:83:20",
+    "5:83:21"
+   ],
+   "words": [
+    {
+     "key": "5:83:14",
+     "text": "مِنَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      314.7,
+      332.1
+     ],
+     "drawn_w": 17.3,
+     "r_qcf": 0.9,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "5:83:15",
+     "text": "ٱلْحَقِّۖ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      277.8,
+      311.4
+     ],
+     "drawn_w": 33.6,
+     "r_qcf": 0.65,
+     "r_lettersum": 1.2
+    },
+    {
+     "key": "5:83:16",
+     "text": "يَقُولُونَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      229.9,
+      273.4
+     ],
+     "drawn_w": 43.5,
+     "r_qcf": 0.68,
+     "r_lettersum": 0.83
+    },
+    {
+     "key": "5:83:17",
+     "text": "رَبَّنَآ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      200.9,
+      226.5
+     ],
+     "drawn_w": 25.6,
+     "r_qcf": 0.52,
+     "r_lettersum": 0.93
+    },
+    {
+     "key": "5:83:18",
+     "text": "ءَامَنَّا",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      164.5,
+      198.1
+     ],
+     "drawn_w": 33.6,
+     "r_qcf": null,
+     "r_lettersum": 1.17
+    },
+    {
+     "key": "5:83:19",
+     "text": "فَٱكْتُبْنَا",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      99.7,
+      161.4
+     ],
+     "drawn_w": 61.7,
+     "r_qcf": 1.52,
+     "r_lettersum": 1.07
+    },
+    {
+     "key": "5:83:20",
+     "text": "مَعَ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      83.8,
+      99.2
+     ],
+     "drawn_w": 15.4,
+     "r_qcf": 0.43,
+     "r_lettersum": 1.06
+    },
+    {
+     "key": "5:83:21",
+     "text": "ٱلشَّٰهِدِينَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      25.7,
+      81.2
+     ],
+     "drawn_w": 55.5,
+     "r_qcf": 2.13,
+     "r_lettersum": 0.94
+    }
+   ]
+  },
+  {
+   "page": 341,
+   "line": 5,
+   "class": "b",
+   "evidence": "إِنَّ 2.04x both metrics, counts exact — kashida stretch",
+   "flagged_keys": [
+    "22:74:6",
+    "22:75:3"
+   ],
+   "words": [
+    {
+     "key": "22:74:6",
+     "text": "إِنَّ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      298.0,
+      328.5
+     ],
+     "drawn_w": 30.5,
+     "r_qcf": 2.03,
+     "r_lettersum": 2.04
+    },
+    {
+     "key": "22:74:7",
+     "text": "ٱللَّهَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      275.4,
+      294.7
+     ],
+     "drawn_w": 19.3,
+     "r_qcf": 1.02,
+     "r_lettersum": 0.84
+    },
+    {
+     "key": "22:74:8",
+     "text": "لَقَوِىٌّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      239.9,
+      272.3
+     ],
+     "drawn_w": 32.3,
+     "r_qcf": 1.01,
+     "r_lettersum": 0.86
+    },
+    {
+     "key": "22:74:9",
+     "text": "عَزِيزٌ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      200.7,
+      237.6
+     ],
+     "drawn_w": 36.9,
+     "r_qcf": 0.96,
+     "r_lettersum": 0.89
+    },
+    {
+     "key": "22:75:1",
+     "text": "ٱللَّهُ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      158.5,
+      177.7
+     ],
+     "drawn_w": 19.2,
+     "r_qcf": 0.91,
+     "r_lettersum": 0.84
+    },
+    {
+     "key": "22:75:2",
+     "text": "يَصْطَفِى",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      102.5,
+      155.1
+     ],
+     "drawn_w": 52.6,
+     "r_qcf": 1.05,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "22:75:3",
+     "text": "مِنَ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      81.6,
+      97.7
+     ],
+     "drawn_w": 16.1,
+     "r_qcf": 0.48,
+     "r_lettersum": 0.85
+    },
+    {
+     "key": "22:75:4",
+     "text": "ٱلْمَلَٰٓئِكَةِ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      7.7,
+      77.7
+     ],
+     "drawn_w": 70.0,
+     "r_qcf": 1.03,
+     "r_lettersum": 1.1
+    }
+   ]
+  },
+  {
+   "page": 341,
+   "line": 6,
+   "class": "b",
+   "evidence": "إِنَّ 1.87x both metrics, counts exact — kashida stretch; وَمِنَ 0.81 letter-sum borderline",
+   "flagged_keys": [
+    "22:75:6",
+    "22:75:8"
+   ],
+   "words": [
+    {
+     "key": "22:75:5",
+     "text": "رُسُلࣰا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      293.9,
+      331.3
+     ],
+     "drawn_w": 37.4,
+     "r_qcf": 1.18,
+     "r_lettersum": 1.01
+    },
+    {
+     "key": "22:75:6",
+     "text": "وَمِنَ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      265.4,
+      290.9
+     ],
+     "drawn_w": 25.5,
+     "r_qcf": 0.65,
+     "r_lettersum": 0.81
+    },
+    {
+     "key": "22:75:7",
+     "text": "ٱلنَّاسِۚ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      223.0,
+      262.1
+     ],
+     "drawn_w": 39.1,
+     "r_qcf": 0.99,
+     "r_lettersum": 0.85
+    },
+    {
+     "key": "22:75:8",
+     "text": "إِنَّ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      186.7,
+      217.1
+     ],
+     "drawn_w": 30.4,
+     "r_qcf": 1.59,
+     "r_lettersum": 1.87
+    },
+    {
+     "key": "22:75:9",
+     "text": "ٱللَّهَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      163.4,
+      182.7
+     ],
+     "drawn_w": 19.3,
+     "r_qcf": 0.93,
+     "r_lettersum": 0.78
+    },
+    {
+     "key": "22:75:10",
+     "text": "سَمِيعُۢ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      115.1,
+      159.4
+     ],
+     "drawn_w": 44.3,
+     "r_qcf": 0.98,
+     "r_lettersum": 1.12
+    },
+    {
+     "key": "22:75:11",
+     "text": "بَصِيرࣱ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      71.8,
+      112.6
+     ],
+     "drawn_w": 40.8,
+     "r_qcf": 0.96,
+     "r_lettersum": 0.85
+    },
+    {
+     "key": "22:76:1",
+     "text": "يَعْلَمُ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      6.7,
+      48.1
+     ],
+     "drawn_w": 41.4,
+     "r_qcf": 1.03,
+     "r_lettersum": 1.17
+    }
+   ]
+  },
+  {
+   "page": 341,
+   "line": 7,
+   "class": "c",
+   "evidence": "بَيْنَ 0.65 qcf / 0.86 letter-sum — qcf noise, counts exact",
+   "flagged_keys": [
+    "22:76:3"
+   ],
+   "words": [
+    {
+     "key": "22:76:2",
+     "text": "مَا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      319.2,
+      331.5
+     ],
+     "drawn_w": 12.4,
+     "r_qcf": 0.98,
+     "r_lettersum": 0.95
+    },
+    {
+     "key": "22:76:3",
+     "text": "بَيْنَ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      296.4,
+      315.9
+     ],
+     "drawn_w": 19.5,
+     "r_qcf": 0.65,
+     "r_lettersum": 0.86
+    },
+    {
+     "key": "22:76:4",
+     "text": "أَيْدِيهِمْ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      241.6,
+      292.0
+     ],
+     "drawn_w": 50.4,
+     "r_qcf": 1.13,
+     "r_lettersum": 1.09
+    },
+    {
+     "key": "22:76:5",
+     "text": "وَمَا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      219.5,
+      240.2
+     ],
+     "drawn_w": 20.7,
+     "r_qcf": 1.04,
+     "r_lettersum": 0.92
+    },
+    {
+     "key": "22:76:6",
+     "text": "خَلْفَهُمْۚ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      165.7,
+      218.1
+     ],
+     "drawn_w": 52.4,
+     "r_qcf": 1.1,
+     "r_lettersum": 1.15
+    },
+    {
+     "key": "22:76:7",
+     "text": "وَإِلَى",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      139.5,
+      164.7
+     ],
+     "drawn_w": 25.2,
+     "r_qcf": 1.03,
+     "r_lettersum": 0.94
+    },
+    {
+     "key": "22:76:8",
+     "text": "ٱللَّهِ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      115.0,
+      134.7
+     ],
+     "drawn_w": 19.7,
+     "r_qcf": 0.91,
+     "r_lettersum": 0.92
+    },
+    {
+     "key": "22:76:9",
+     "text": "تُرْجَعُ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      75.4,
+      110.9
+     ],
+     "drawn_w": 35.5,
+     "r_qcf": 1.09,
+     "r_lettersum": 0.91
+    },
+    {
+     "key": "22:76:10",
+     "text": "ٱلْأُمُورُ",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      26.5,
+      70.1
+     ],
+     "drawn_w": 43.5,
+     "r_qcf": 0.96,
+     "r_lettersum": 1.03
+    }
+   ]
+  },
+  {
+   "page": 341,
+   "line": 10,
+   "class": "b",
+   "evidence": "فِى 1.53x both metrics — stretch",
+   "flagged_keys": [
+    "22:78:2"
+   ],
+   "words": [
+    {
+     "key": "22:78:1",
+     "text": "وَجَٰهِدُوا۟",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      266.7,
+      331.5
+     ],
+     "drawn_w": 64.8,
+     "r_qcf": 1.14,
+     "r_lettersum": 0.94
+    },
+    {
+     "key": "22:78:2",
+     "text": "فِى",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      236.2,
+      263.5
+     ],
+     "drawn_w": 27.3,
+     "r_qcf": 1.73,
+     "r_lettersum": 1.53
+    },
+    {
+     "key": "22:78:3",
+     "text": "ٱللَّهِ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      212.5,
+      233.0
+     ],
+     "drawn_w": 20.6,
+     "r_qcf": 0.82,
+     "r_lettersum": 0.76
+    },
+    {
+     "key": "22:78:4",
+     "text": "حَقَّ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      172.8,
+      210.4
+     ],
+     "drawn_w": 37.6,
+     "r_qcf": 1.38,
+     "r_lettersum": 1.27
+    },
+    {
+     "key": "22:78:5",
+     "text": "جِهَادِهِۦۚ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      121.9,
+      170.9
+     ],
+     "drawn_w": 49.0,
+     "r_qcf": 0.74,
+     "r_lettersum": 0.98
+    },
+    {
+     "key": "22:78:6",
+     "text": "هُوَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      89.0,
+      110.5
+     ],
+     "drawn_w": 21.5,
+     "r_qcf": 1.07,
+     "r_lettersum": 0.86
+    },
+    {
+     "key": "22:78:7",
+     "text": "ٱجْتَبَىٰكُمْ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 3,
+     "span": [
+      6.7,
+      90.1
+     ],
+     "drawn_w": 83.5,
+     "r_qcf": 0.9,
+     "r_lettersum": 0.97
+    }
+   ]
+  },
+  {
+   "page": 341,
+   "line": 11,
+   "class": "c",
+   "evidence": "أَبِيكُمْ 1.82 qcf / 1.23 letter-sum — qcf noise",
+   "flagged_keys": [
+    "22:78:16"
+   ],
+   "words": [
+    {
+     "key": "22:78:8",
+     "text": "وَمَا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      310.8,
+      331.6
+     ],
+     "drawn_w": 20.8,
+     "r_qcf": 0.85,
+     "r_lettersum": 0.85
+    },
+    {
+     "key": "22:78:9",
+     "text": "جَعَلَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      272.3,
+      309.0
+     ],
+     "drawn_w": 36.8,
+     "r_qcf": 0.9,
+     "r_lettersum": 0.99
+    },
+    {
+     "key": "22:78:10",
+     "text": "عَلَيْكُمْ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      206.5,
+      270.3
+     ],
+     "drawn_w": 63.7,
+     "r_qcf": 1.13,
+     "r_lettersum": 1.18
+    },
+    {
+     "key": "22:78:11",
+     "text": "فِى",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      192.7,
+      204.8
+     ],
+     "drawn_w": 12.1,
+     "r_qcf": 0.8,
+     "r_lettersum": 0.8
+    },
+    {
+     "key": "22:78:12",
+     "text": "ٱلدِّينِ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      156.8,
+      189.1
+     ],
+     "drawn_w": 32.4,
+     "r_qcf": 0.82,
+     "r_lettersum": 0.82
+    },
+    {
+     "key": "22:78:13",
+     "text": "مِنْ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      135.9,
+      152.0
+     ],
+     "drawn_w": 16.1,
+     "r_qcf": 0.76,
+     "r_lettersum": 0.84
+    },
+    {
+     "key": "22:78:14",
+     "text": "حَرَجࣲۚ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      95.4,
+      134.1
+     ],
+     "drawn_w": 38.6,
+     "r_qcf": 0.94,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "22:78:15",
+     "text": "مِّلَّةَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      71.7,
+      90.9
+     ],
+     "drawn_w": 19.1,
+     "r_qcf": 0.69,
+     "r_lettersum": 0.74
+    },
+    {
+     "key": "22:78:16",
+     "text": "أَبِيكُمْ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      6.6,
+      66.1
+     ],
+     "drawn_w": 59.5,
+     "r_qcf": 1.82,
+     "r_lettersum": 1.23
+    }
+   ]
+  },
+  {
+   "page": 341,
+   "line": 12,
+   "class": "b",
+   "evidence": "مِن 1.69x both metrics — stretch",
+   "flagged_keys": [
+    "22:78:21"
+   ],
+   "words": [
+    {
+     "key": "22:78:17",
+     "text": "إِبْرَٰهِيمَۚ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      272.9,
+      328.3
+     ],
+     "drawn_w": 55.3,
+     "r_qcf": 0.86,
+     "r_lettersum": 0.95
+    },
+    {
+     "key": "22:78:18",
+     "text": "هُوَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      252.2,
+      272.8
+     ],
+     "drawn_w": 20.6,
+     "r_qcf": 0.94,
+     "r_lettersum": 0.86
+    },
+    {
+     "key": "22:78:19",
+     "text": "سَمَّىٰكُمُ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 2,
+     "span": [
+      178.4,
+      254.2
+     ],
+     "drawn_w": 75.9,
+     "r_qcf": 0.92,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "22:78:20",
+     "text": "ٱلْمُسْلِمِينَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      117.6,
+      177.9
+     ],
+     "drawn_w": 60.3,
+     "r_qcf": 0.88,
+     "r_lettersum": 0.79
+    },
+    {
+     "key": "22:78:21",
+     "text": "مِن",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      77.6,
+      113.7
+     ],
+     "drawn_w": 36.2,
+     "r_qcf": 1.77,
+     "r_lettersum": 1.69
+    },
+    {
+     "key": "22:78:22",
+     "text": "قَبْلُ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      45.5,
+      74.1
+     ],
+     "drawn_w": 28.6,
+     "r_qcf": 1.04,
+     "r_lettersum": 0.82
+    },
+    {
+     "key": "22:78:23",
+     "text": "وَفِى",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      6.7,
+      41.2
+     ],
+     "drawn_w": 34.6,
+     "r_qcf": 1.32,
+     "r_lettersum": 1.22
+    }
+   ]
+  },
+  {
+   "page": 418,
+   "line": 5,
+   "class": "c2",
+   "evidence": "confidence-only cluster: line poisoned by 33:3:4's stray fathas (gap 290u, known ref-line/slashx defect); body-span audit sees وتوكل 1.68 qcf / 0.97 letter-sum only",
+   "flagged_keys": [
+    "33:2:11",
+    "33:3:2"
+   ],
+   "words": [
+    {
+     "key": "33:2:7",
+     "text": "إِنَّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      318.2,
+      331.6
+     ],
+     "drawn_w": 13.5,
+     "r_qcf": 0.77,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "33:2:8",
+     "text": "ٱللَّهَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      295.8,
+      315.1
+     ],
+     "drawn_w": 19.4,
+     "r_qcf": 0.85,
+     "r_lettersum": 0.91
+    },
+    {
+     "key": "33:2:9",
+     "text": "كَانَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      247.9,
+      293.7
+     ],
+     "drawn_w": 45.8,
+     "r_qcf": 1.02,
+     "r_lettersum": 1.35
+    },
+    {
+     "key": "33:2:10",
+     "text": "بِمَا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      223.2,
+      244.5
+     ],
+     "drawn_w": 21.3,
+     "r_qcf": 0.95,
+     "r_lettersum": 1.05
+    },
+    {
+     "key": "33:2:11",
+     "text": "تَعْمَلُونَ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      173.8,
+      221.6
+     ],
+     "drawn_w": 47.8,
+     "r_qcf": 0.82,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "33:2:12",
+     "text": "خَبِيرࣰا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      134.2,
+      171.6
+     ],
+     "drawn_w": 37.4,
+     "r_qcf": 0.96,
+     "r_lettersum": 0.93
+    },
+    {
+     "key": "33:3:1",
+     "text": "وَتَوَكَّلْ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      53.1,
+      110.2
+     ],
+     "drawn_w": 57.1,
+     "r_qcf": 1.68,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "33:3:2",
+     "text": "عَلَى",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      32.2,
+      51.4
+     ],
+     "drawn_w": 19.2,
+     "r_qcf": 1.03,
+     "r_lettersum": 0.88
+    },
+    {
+     "key": "33:3:3",
+     "text": "ٱللَّهِۚ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      8.5,
+      28.3
+     ],
+     "drawn_w": 19.8,
+     "r_qcf": 0.84,
+     "r_lettersum": 0.93
+    }
+   ]
+  },
+  {
+   "page": 418,
+   "line": 6,
+   "class": "c2",
+   "evidence": "same poisoning: 33:3:4 span reads 267u wide, every neighbour dilutes to ~0.5x; body-only audit near-clean",
+   "flagged_keys": [
+    "33:3:4",
+    "33:3:5",
+    "33:3:6",
+    "33:4:1",
+    "33:4:2",
+    "33:4:3",
+    "33:4:4",
+    "33:4:5",
+    "33:4:6",
+    "33:4:7",
+    "33:4:8"
+   ],
+   "words": [
+    {
+     "key": "33:3:4",
+     "text": "وَكَفَىٰ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      303.4,
+      334.3
+     ],
+     "drawn_w": 30.9,
+     "r_qcf": 1.1,
+     "r_lettersum": 0.85
+    },
+    {
+     "key": "33:3:5",
+     "text": "بِٱللَّهِ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      274.7,
+      299.4
+     ],
+     "drawn_w": 24.7,
+     "r_qcf": 1.03,
+     "r_lettersum": 1.02
+    },
+    {
+     "key": "33:3:6",
+     "text": "وَكِيلࣰا",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      240.7,
+      271.7
+     ],
+     "drawn_w": 31.0,
+     "r_qcf": 0.6,
+     "r_lettersum": 0.83
+    },
+    {
+     "key": "33:4:1",
+     "text": "مَّا",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      206.9,
+      219.5
+     ],
+     "drawn_w": 12.6,
+     "r_qcf": 1.18,
+     "r_lettersum": 1.17
+    },
+    {
+     "key": "33:4:2",
+     "text": "جَعَلَ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      172.4,
+      206.1
+     ],
+     "drawn_w": 33.7,
+     "r_qcf": 1.02,
+     "r_lettersum": 1.19
+    },
+    {
+     "key": "33:4:3",
+     "text": "ٱللَّهُ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      149.6,
+      169.9
+     ],
+     "drawn_w": 20.3,
+     "r_qcf": 1.12,
+     "r_lettersum": 1.15
+    },
+    {
+     "key": "33:4:4",
+     "text": "لِرَجُلࣲ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      116.1,
+      145.7
+     ],
+     "drawn_w": 29.6,
+     "r_qcf": 1.18,
+     "r_lettersum": 0.8
+    },
+    {
+     "key": "33:4:5",
+     "text": "مِّن",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      99.7,
+      116.5
+     ],
+     "drawn_w": 16.8,
+     "r_qcf": 1.25,
+     "r_lettersum": 1.16
+    },
+    {
+     "key": "33:4:6",
+     "text": "قَلْبَيْنِ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      64.6,
+      97.5
+     ],
+     "drawn_w": 32.9,
+     "r_qcf": 1.14,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "33:4:7",
+     "text": "فِى",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      49.5,
+      61.2
+     ],
+     "drawn_w": 11.7,
+     "r_qcf": 1.07,
+     "r_lettersum": 1.01
+    },
+    {
+     "key": "33:4:8",
+     "text": "جَوْفِهِۦۚ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      15.3,
+      48.7
+     ],
+     "drawn_w": 33.4,
+     "r_qcf": 0.99,
+     "r_lettersum": 1.13
+    }
+   ]
+  },
+  {
+   "page": 418,
+   "line": 11,
+   "class": "c2",
+   "evidence": "same page mechanism",
+   "flagged_keys": [
+    "33:5:21"
+   ],
+   "words": [
+    {
+     "key": "33:5:16",
+     "text": "عَلَيْكُمْ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      294.8,
+      334.3
+     ],
+     "drawn_w": 39.5,
+     "r_qcf": 1.22,
+     "r_lettersum": 0.91
+    },
+    {
+     "key": "33:5:17",
+     "text": "جُنَاحࣱ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      263.0,
+      296.2
+     ],
+     "drawn_w": 33.2,
+     "r_qcf": 0.97,
+     "r_lettersum": 0.93
+    },
+    {
+     "key": "33:5:18",
+     "text": "فِيمَآ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      234.3,
+      259.1
+     ],
+     "drawn_w": 24.8,
+     "r_qcf": 0.96,
+     "r_lettersum": 1.02
+    },
+    {
+     "key": "33:5:19",
+     "text": "أَخْطَأْتُم",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      178.9,
+      230.8
+     ],
+     "drawn_w": 51.9,
+     "r_qcf": 1.16,
+     "r_lettersum": 1.2
+    },
+    {
+     "key": "33:5:20",
+     "text": "بِهِۦ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      165.0,
+      175.5
+     ],
+     "drawn_w": 10.5,
+     "r_qcf": 0.57,
+     "r_lettersum": 1.01
+    },
+    {
+     "key": "33:5:21",
+     "text": "وَلَٰكِن",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      125.5,
+      154.5
+     ],
+     "drawn_w": 29.1,
+     "r_qcf": 0.61,
+     "r_lettersum": 0.76
+    },
+    {
+     "key": "33:5:22",
+     "text": "مَّا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      111.0,
+      123.1
+     ],
+     "drawn_w": 12.1,
+     "r_qcf": 1.03,
+     "r_lettersum": 1.06
+    },
+    {
+     "key": "33:5:23",
+     "text": "تَعَمَّدَتْ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      55.7,
+      108.9
+     ],
+     "drawn_w": 53.1,
+     "r_qcf": 1.12,
+     "r_lettersum": 1.29
+    },
+    {
+     "key": "33:5:24",
+     "text": "قُلُوبُكُمْۚ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      7.9,
+      52.7
+     ],
+     "drawn_w": 44.7,
+     "r_qcf": 1.21,
+     "r_lettersum": 0.88
+    }
+   ]
+  },
+  {
+   "page": 418,
+   "line": 12,
+   "class": "c2",
+   "evidence": "same page mechanism",
+   "flagged_keys": [
+    "33:5:25"
+   ],
+   "words": [
+    {
+     "key": "33:5:25",
+     "text": "وَكَانَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      307.9,
+      334.3
+     ],
+     "drawn_w": 26.4,
+     "r_qcf": 0.66,
+     "r_lettersum": 0.74
+    },
+    {
+     "key": "33:5:26",
+     "text": "ٱللَّهُ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      285.8,
+      305.1
+     ],
+     "drawn_w": 19.4,
+     "r_qcf": 1.19,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "33:5:27",
+     "text": "غَفُورࣰا",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      248.5,
+      284.0
+     ],
+     "drawn_w": 35.5,
+     "r_qcf": 1.12,
+     "r_lettersum": 0.99
+    },
+    {
+     "key": "33:5:28",
+     "text": "رَّحِيمًا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      210.5,
+      245.3
+     ],
+     "drawn_w": 34.8,
+     "r_qcf": 1.02,
+     "r_lettersum": 0.98
+    },
+    {
+     "key": "33:6:1",
+     "text": "ٱلنَّبِىُّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      163.6,
+      188.4
+     ],
+     "drawn_w": 24.8,
+     "r_qcf": 0.91,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "33:6:2",
+     "text": "أَوْلَىٰ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      137.1,
+      161.4
+     ],
+     "drawn_w": 24.3,
+     "r_qcf": 1.24,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "33:6:3",
+     "text": "بِٱلْمُؤْمِنِينَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      77.8,
+      133.7
+     ],
+     "drawn_w": 56.0,
+     "r_qcf": 0.92,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "33:6:4",
+     "text": "مِنْ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      56.8,
+      74.9
+     ],
+     "drawn_w": 18.1,
+     "r_qcf": 1.1,
+     "r_lettersum": 1.24
+    },
+    {
+     "key": "33:6:5",
+     "text": "أَنفُسِهِمْۖ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      7.9,
+      54.8
+     ],
+     "drawn_w": 46.8,
+     "r_qcf": 1.16,
+     "r_lettersum": 1.08
+    }
+   ]
+  },
+  {
+   "page": 592,
+   "line": 1,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "87:12:1",
+    "87:12:3",
+    "87:13:1",
+    "87:13:2",
+    "87:13:3"
+   ],
+   "words": [
+    {
+     "key": "87:11:1",
+     "text": "وَيَتَجَنَّبُهَا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      284.1,
+      334.9
+     ],
+     "drawn_w": 50.8,
+     "r_qcf": 1.13,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "87:11:2",
+     "text": "ٱلْأَشْقَى",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      241.2,
+      281.7
+     ],
+     "drawn_w": 40.5,
+     "r_qcf": 0.85,
+     "r_lettersum": 1.15
+    },
+    {
+     "key": "87:12:1",
+     "text": "ٱلَّذِى",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      192.4,
+      220.5
+     ],
+     "drawn_w": 28.0,
+     "r_qcf": 1.47,
+     "r_lettersum": 1.21
+    },
+    {
+     "key": "87:12:2",
+     "text": "يَصْلَى",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      160.5,
+      190.1
+     ],
+     "drawn_w": 29.6,
+     "r_qcf": 0.9,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "87:12:3",
+     "text": "ٱلنَّارَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      130.9,
+      158.4
+     ],
+     "drawn_w": 27.6,
+     "r_qcf": 2.56,
+     "r_lettersum": 1.07
+    },
+    {
+     "key": "87:12:4",
+     "text": "ٱلْكُبْرَىٰ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      90.6,
+      132.4
+     ],
+     "drawn_w": 41.8,
+     "r_qcf": 1.04,
+     "r_lettersum": 0.85
+    },
+    {
+     "key": "87:13:1",
+     "text": "ثُمَّ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      54.3,
+      68.6
+     ],
+     "drawn_w": 14.4,
+     "r_qcf": 0.45,
+     "r_lettersum": 0.9
+    },
+    {
+     "key": "87:13:2",
+     "text": "لَا",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      39.7,
+      51.1
+     ],
+     "drawn_w": 11.4,
+     "r_qcf": 0.32,
+     "r_lettersum": 1.13
+    },
+    {
+     "key": "87:13:3",
+     "text": "يَمُوتُ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      6.9,
+      38.7
+     ],
+     "drawn_w": 31.8,
+     "r_qcf": 2.46,
+     "r_lettersum": 0.96
+    }
+   ]
+  },
+  {
+   "page": 592,
+   "line": 2,
+   "class": "c1+b?",
+   "evidence": "تَزَكَّىٰ 0.61x under both metrics, counts exact — needs an eye; rest QCF scramble",
+   "flagged_keys": [
+    "87:13:4",
+    "87:14:1",
+    "87:14:2",
+    "87:14:4",
+    "87:15:1",
+    "87:15:3"
+   ],
+   "words": [
+    {
+     "key": "87:13:4",
+     "text": "فِيهَا",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      312.4,
+      334.5
+     ],
+     "drawn_w": 22.0,
+     "r_qcf": 1.94,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "87:13:5",
+     "text": "وَلَا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      289.8,
+      309.5
+     ],
+     "drawn_w": 19.7,
+     "r_qcf": 1.05,
+     "r_lettersum": 1.14
+    },
+    {
+     "key": "87:13:6",
+     "text": "يَحْيَىٰ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      263.6,
+      289.9
+     ],
+     "drawn_w": 26.4,
+     "r_qcf": 1.03,
+     "r_lettersum": 1.16
+    },
+    {
+     "key": "87:14:1",
+     "text": "قَدْ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      228.2,
+      241.0
+     ],
+     "drawn_w": 12.8,
+     "r_qcf": 0.48,
+     "r_lettersum": 0.92
+    },
+    {
+     "key": "87:14:2",
+     "text": "أَفْلَحَ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      202.2,
+      225.6
+     ],
+     "drawn_w": 23.4,
+     "r_qcf": 0.63,
+     "r_lettersum": 1.17
+    },
+    {
+     "key": "87:14:3",
+     "text": "مَن",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      182.8,
+      198.9
+     ],
+     "drawn_w": 16.1,
+     "r_qcf": 0.95,
+     "r_lettersum": 1.14
+    },
+    {
+     "key": "87:14:4",
+     "text": "تَزَكَّىٰ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      159.1,
+      180.7
+     ],
+     "drawn_w": 21.7,
+     "r_qcf": 0.68,
+     "r_lettersum": 0.61
+    },
+    {
+     "key": "87:15:1",
+     "text": "وَذَكَرَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      109.7,
+      137.1
+     ],
+     "drawn_w": 27.5,
+     "r_qcf": 1.7,
+     "r_lettersum": 0.76
+    },
+    {
+     "key": "87:15:2",
+     "text": "ٱسْمَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      84.7,
+      112.2
+     ],
+     "drawn_w": 27.5,
+     "r_qcf": 1.11,
+     "r_lettersum": 1.31
+    },
+    {
+     "key": "87:15:3",
+     "text": "رَبِّهِۦ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      65.2,
+      84.5
+     ],
+     "drawn_w": 19.3,
+     "r_qcf": 1.28,
+     "r_lettersum": 1.16
+    },
+    {
+     "key": "87:15:4",
+     "text": "فَصَلَّىٰ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      24.8,
+      57.0
+     ],
+     "drawn_w": 32.2,
+     "r_qcf": 1.33,
+     "r_lettersum": 1.1
+    }
+   ]
+  },
+  {
+   "page": 593,
+   "line": 1,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "88:23:1",
+    "88:23:2",
+    "88:24:1",
+    "88:24:2",
+    "88:24:3",
+    "88:24:4"
+   ],
+   "words": [
+    {
+     "key": "88:23:1",
+     "text": "إِلَّا",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      313.0,
+      329.7
+     ],
+     "drawn_w": 16.7,
+     "r_qcf": 0.3,
+     "r_lettersum": 1.06
+    },
+    {
+     "key": "88:23:2",
+     "text": "مَن",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      295.6,
+      311.7
+     ],
+     "drawn_w": 16.1,
+     "r_qcf": 0.34,
+     "r_lettersum": 0.89
+    },
+    {
+     "key": "88:23:3",
+     "text": "تَوَلَّىٰ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      271.6,
+      293.1
+     ],
+     "drawn_w": 21.5,
+     "r_qcf": 1.2,
+     "r_lettersum": 0.67
+    },
+    {
+     "key": "88:23:4",
+     "text": "وَكَفَرَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      218.7,
+      268.6
+     ],
+     "drawn_w": 50.0,
+     "r_qcf": 1.47,
+     "r_lettersum": 1.02
+    },
+    {
+     "key": "88:24:1",
+     "text": "فَيُعَذِّبُهُ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      155.5,
+      199.7
+     ],
+     "drawn_w": 44.2,
+     "r_qcf": 1.58,
+     "r_lettersum": 1.13
+    },
+    {
+     "key": "88:24:2",
+     "text": "ٱللَّهُ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      132.4,
+      151.8
+     ],
+     "drawn_w": 19.4,
+     "r_qcf": 0.39,
+     "r_lettersum": 0.89
+    },
+    {
+     "key": "88:24:3",
+     "text": "ٱلْعَذَابَ",
+     "flagged": true,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      81.5,
+      128.1
+     ],
+     "drawn_w": 46.6,
+     "r_qcf": 2.42,
+     "r_lettersum": 1.15
+    },
+    {
+     "key": "88:24:4",
+     "text": "ٱلْأَكْبَرَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      23.4,
+      78.3
+     ],
+     "drawn_w": 54.9,
+     "r_qcf": 3.1,
+     "r_lettersum": 1.03
+    }
+   ]
+  },
+  {
+   "page": 593,
+   "line": 2,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "88:25:1",
+    "88:25:3",
+    "88:26:4"
+   ],
+   "words": [
+    {
+     "key": "88:25:1",
+     "text": "إِنَّ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      286.2,
+      299.8
+     ],
+     "drawn_w": 13.6,
+     "r_qcf": 0.29,
+     "r_lettersum": 0.92
+    },
+    {
+     "key": "88:25:2",
+     "text": "إِلَيْنَآ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      253.5,
+      283.2
+     ],
+     "drawn_w": 29.6,
+     "r_qcf": 0.84,
+     "r_lettersum": 0.98
+    },
+    {
+     "key": "88:25:3",
+     "text": "إِيَابَهُمْ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      203.3,
+      251.1
+     ],
+     "drawn_w": 47.8,
+     "r_qcf": 1.63,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "88:26:1",
+     "text": "ثُمَّ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      159.2,
+      179.4
+     ],
+     "drawn_w": 20.2,
+     "r_qcf": 0.78,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "88:26:2",
+     "text": "إِنَّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      145.9,
+      159.0
+     ],
+     "drawn_w": 13.1,
+     "r_qcf": 0.65,
+     "r_lettersum": 0.89
+    },
+    {
+     "key": "88:26:3",
+     "text": "عَلَيْنَا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      109.6,
+      144.3
+     ],
+     "drawn_w": 34.7,
+     "r_qcf": 0.94,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "88:26:4",
+     "text": "حِسَابَهُم",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      50.4,
+      109.4
+     ],
+     "drawn_w": 59.0,
+     "r_qcf": 2.4,
+     "r_lettersum": 0.98
+    }
+   ]
+  },
+  {
+   "page": 593,
+   "line": 6,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "89:6:2"
+   ],
+   "words": [
+    {
+     "key": "89:5:1",
+     "text": "هَلْ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      313.2,
+      332.8
+     ],
+     "drawn_w": 19.5,
+     "r_qcf": 0.98,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "89:5:2",
+     "text": "فِى",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      299.4,
+      310.7
+     ],
+     "drawn_w": 11.2,
+     "r_qcf": 0.78,
+     "r_lettersum": 0.92
+    },
+    {
+     "key": "89:5:3",
+     "text": "ذَٰلِكَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 2,
+     "span": [
+      273.2,
+      296.4
+     ],
+     "drawn_w": 23.2,
+     "r_qcf": 0.89,
+     "r_lettersum": 1.04
+    },
+    {
+     "key": "89:5:4",
+     "text": "قَسَمࣱ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      238.4,
+      269.7
+     ],
+     "drawn_w": 31.3,
+     "r_qcf": 1.17,
+     "r_lettersum": 1.14
+    },
+    {
+     "key": "89:5:5",
+     "text": "لِّذِى",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      211.7,
+      236.2
+     ],
+     "drawn_w": 24.5,
+     "r_qcf": 0.89,
+     "r_lettersum": 1.16
+    },
+    {
+     "key": "89:5:6",
+     "text": "حِجْرٍ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      173.2,
+      209.5
+     ],
+     "drawn_w": 36.4,
+     "r_qcf": 1.04,
+     "r_lettersum": 1.14
+    },
+    {
+     "key": "89:6:1",
+     "text": "أَلَمْ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      139.3,
+      155.8
+     ],
+     "drawn_w": 16.5,
+     "r_qcf": 1.14,
+     "r_lettersum": 0.91
+    },
+    {
+     "key": "89:6:2",
+     "text": "تَرَ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      124.9,
+      140.5
+     ],
+     "drawn_w": 15.6,
+     "r_qcf": 2.89,
+     "r_lettersum": 0.94
+    },
+    {
+     "key": "89:6:3",
+     "text": "كَيْفَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      103.7,
+      134.4
+     ],
+     "drawn_w": 30.7,
+     "r_qcf": 0.98,
+     "r_lettersum": 0.8
+    },
+    {
+     "key": "89:6:4",
+     "text": "فَعَلَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      74.9,
+      101.3
+     ],
+     "drawn_w": 26.4,
+     "r_qcf": 0.96,
+     "r_lettersum": 1.09
+    },
+    {
+     "key": "89:6:5",
+     "text": "رَبُّكَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 2,
+     "span": [
+      51.3,
+      72.6
+     ],
+     "drawn_w": 21.2,
+     "r_qcf": 0.99,
+     "r_lettersum": 0.87
+    },
+    {
+     "key": "89:6:6",
+     "text": "بِعَادٍ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      24.1,
+      46.3
+     ],
+     "drawn_w": 22.2,
+     "r_qcf": 0.77,
+     "r_lettersum": 1.03
+    }
+   ]
+  },
+  {
+   "page": 594,
+   "line": 1,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "89:23:1",
+    "89:23:2",
+    "89:23:3",
+    "89:23:4",
+    "89:23:6",
+    "89:23:7"
+   ],
+   "words": [
+    {
+     "key": "89:23:1",
+     "text": "وَجِا۟ىٓءَ",
+     "flagged": true,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      290.8,
+      333.3
+     ],
+     "drawn_w": 42.5,
+     "r_qcf": 1.73,
+     "r_lettersum": 0.87
+    },
+    {
+     "key": "89:23:2",
+     "text": "يَوْمَئِذِۭ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      247.8,
+      285.7
+     ],
+     "drawn_w": 37.9,
+     "r_qcf": 1.74,
+     "r_lettersum": 0.95
+    },
+    {
+     "key": "89:23:3",
+     "text": "بِجَهَنَّمَۚ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      195.6,
+      243.2
+     ],
+     "drawn_w": 47.6,
+     "r_qcf": 0.51,
+     "r_lettersum": 1.01
+    },
+    {
+     "key": "89:23:4",
+     "text": "يَوْمَئِذࣲ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      157.5,
+      194.3
+     ],
+     "drawn_w": 36.8,
+     "r_qcf": 1.58,
+     "r_lettersum": 0.92
+    },
+    {
+     "key": "89:23:5",
+     "text": "يَتَذَكَّرُ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      88.7,
+      152.7
+     ],
+     "drawn_w": 64.0,
+     "r_qcf": 1.12,
+     "r_lettersum": 1.2
+    },
+    {
+     "key": "89:23:6",
+     "text": "ٱلْإِنسَٰنُ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      43.9,
+      91.3
+     ],
+     "drawn_w": 47.4,
+     "r_qcf": 1.69,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "89:23:7",
+     "text": "وَأَنَّىٰ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      8.7,
+      40.5
+     ],
+     "drawn_w": 31.7,
+     "r_qcf": 0.53,
+     "r_lettersum": 1.07
+    }
+   ]
+  },
+  {
+   "page": 594,
+   "line": 2,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "89:23:8",
+    "89:23:9"
+   ],
+   "words": [
+    {
+     "key": "89:23:8",
+     "text": "لَهُ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      322.1,
+      332.5
+     ],
+     "drawn_w": 10.3,
+     "r_qcf": 0.19,
+     "r_lettersum": 0.86
+    },
+    {
+     "key": "89:23:9",
+     "text": "ٱلذِّكْرَىٰ",
+     "flagged": true,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      259.1,
+      318.9
+     ],
+     "drawn_w": 59.8,
+     "r_qcf": 3.93,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "89:24:1",
+     "text": "يَقُولُ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      204.2,
+      234.2
+     ],
+     "drawn_w": 30.0,
+     "r_qcf": 0.98,
+     "r_lettersum": 0.93
+    },
+    {
+     "key": "89:24:2",
+     "text": "يَٰلَيْتَنِى",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      158.2,
+      200.3
+     ],
+     "drawn_w": 42.0,
+     "r_qcf": 1.0,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "89:24:3",
+     "text": "قَدَّمْتُ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      117.7,
+      155.5
+     ],
+     "drawn_w": 37.8,
+     "r_qcf": 1.07,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "89:24:4",
+     "text": "لِحَيَاتِى",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      75.5,
+      114.0
+     ],
+     "drawn_w": 38.5,
+     "r_qcf": 0.92,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "89:25:1",
+     "text": "فَيَوْمَئِذࣲ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      10.6,
+      52.3
+     ],
+     "drawn_w": 41.8,
+     "r_qcf": 0.99,
+     "r_lettersum": 0.99
+    }
+   ]
+  },
+  {
+   "page": 594,
+   "line": 13,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "90:14:1"
+   ],
+   "words": [
+    {
+     "key": "90:13:1",
+     "text": "فَكُّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 1,
+     "span": [
+      315.8,
+      333.5
+     ],
+     "drawn_w": 17.6,
+     "r_qcf": 1.0,
+     "r_lettersum": 1.05
+    },
+    {
+     "key": "90:13:2",
+     "text": "رَقَبَةٍ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      290.6,
+      312.8
+     ],
+     "drawn_w": 22.2,
+     "r_qcf": 0.83,
+     "r_lettersum": 0.75
+    },
+    {
+     "key": "90:14:1",
+     "text": "أَوْ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      255.8,
+      269.3
+     ],
+     "drawn_w": 13.5,
+     "r_qcf": 1.59,
+     "r_lettersum": 1.23
+    },
+    {
+     "key": "90:14:2",
+     "text": "إِطْعَٰمࣱ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      225.2,
+      256.3
+     ],
+     "drawn_w": 31.1,
+     "r_qcf": 0.99,
+     "r_lettersum": 1.21
+    },
+    {
+     "key": "90:14:3",
+     "text": "فِى",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      210.5,
+      222.4
+     ],
+     "drawn_w": 12.0,
+     "r_qcf": 1.11,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "90:14:4",
+     "text": "يَوْمࣲ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      191.3,
+      208.2
+     ],
+     "drawn_w": 16.8,
+     "r_qcf": 0.89,
+     "r_lettersum": 0.73
+    },
+    {
+     "key": "90:14:5",
+     "text": "ذِى",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      169.4,
+      188.6
+     ],
+     "drawn_w": 19.2,
+     "r_qcf": 1.0,
+     "r_lettersum": 1.25
+    },
+    {
+     "key": "90:14:6",
+     "text": "مَسْغَبَةࣲ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      125.1,
+      167.7
+     ],
+     "drawn_w": 42.5,
+     "r_qcf": 1.06,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "90:15:1",
+     "text": "يَتِيمࣰا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      73.1,
+      103.6
+     ],
+     "drawn_w": 30.5,
+     "r_qcf": 1.05,
+     "r_lettersum": 1.02
+    },
+    {
+     "key": "90:15:2",
+     "text": "ذَا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      61.1,
+      71.2
+     ],
+     "drawn_w": 10.0,
+     "r_qcf": 0.95,
+     "r_lettersum": 1.23
+    },
+    {
+     "key": "90:15:3",
+     "text": "مَقْرَبَةٍ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      27.8,
+      59.6
+     ],
+     "drawn_w": 31.7,
+     "r_qcf": 0.92,
+     "r_lettersum": 0.87
+    }
+   ]
+  },
+  {
+   "page": 594,
+   "line": 14,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "90:17:1"
+   ],
+   "words": [
+    {
+     "key": "90:16:1",
+     "text": "أَوْ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      319.8,
+      333.3
+     ],
+     "drawn_w": 13.5,
+     "r_qcf": 1.47,
+     "r_lettersum": 1.16
+    },
+    {
+     "key": "90:16:2",
+     "text": "مِسْكِينࣰا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      273.8,
+      321.4
+     ],
+     "drawn_w": 47.5,
+     "r_qcf": 0.97,
+     "r_lettersum": 0.92
+    },
+    {
+     "key": "90:16:3",
+     "text": "ذَا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      261.6,
+      271.6
+     ],
+     "drawn_w": 10.0,
+     "r_qcf": 0.75,
+     "r_lettersum": 1.17
+    },
+    {
+     "key": "90:16:4",
+     "text": "مَتْرَبَةࣲ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      225.3,
+      259.7
+     ],
+     "drawn_w": 34.4,
+     "r_qcf": 1.0,
+     "r_lettersum": 0.88
+    },
+    {
+     "key": "90:17:1",
+     "text": "ثُمَّ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      185.8,
+      203.7
+     ],
+     "drawn_w": 17.9,
+     "r_qcf": 1.5,
+     "r_lettersum": 1.04
+    },
+    {
+     "key": "90:17:2",
+     "text": "كَانَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      148.7,
+      188.1
+     ],
+     "drawn_w": 39.4,
+     "r_qcf": 1.46,
+     "r_lettersum": 1.28
+    },
+    {
+     "key": "90:17:3",
+     "text": "مِنَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      129.5,
+      145.6
+     ],
+     "drawn_w": 16.1,
+     "r_qcf": 0.76,
+     "r_lettersum": 1.01
+    },
+    {
+     "key": "90:17:4",
+     "text": "ٱلَّذِينَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      98.2,
+      126.8
+     ],
+     "drawn_w": 28.6,
+     "r_qcf": 0.82,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "90:17:5",
+     "text": "ءَامَنُوا۟",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      55.7,
+      95.5
+     ],
+     "drawn_w": 39.8,
+     "r_qcf": 0.88,
+     "r_lettersum": 1.22
+    },
+    {
+     "key": "90:17:6",
+     "text": "وَتَوَاصَوْا۟",
+     "flagged": false,
+     "held": 5,
+     "allowed": 5,
+     "span": [
+      8.7,
+      54.5
+     ],
+     "drawn_w": 45.8,
+     "r_qcf": 0.98,
+     "r_lettersum": 0.81
+    }
+   ]
+  },
+  {
+   "page": 595,
+   "line": 1,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "90:20:2"
+   ],
+   "words": [
+    {
+     "key": "90:19:1",
+     "text": "وَٱلَّذِينَ",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      299.1,
+      332.8
+     ],
+     "drawn_w": 33.6,
+     "r_qcf": 0.87,
+     "r_lettersum": 0.99
+    },
+    {
+     "key": "90:19:2",
+     "text": "كَفَرُوا۟",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      268.3,
+      304.4
+     ],
+     "drawn_w": 36.1,
+     "r_qcf": 0.96,
+     "r_lettersum": 0.87
+    },
+    {
+     "key": "90:19:3",
+     "text": "بِـَٔايَٰتِنَا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      235.3,
+      268.2
+     ],
+     "drawn_w": 32.9,
+     "r_qcf": 0.89,
+     "r_lettersum": 1.09
+    },
+    {
+     "key": "90:19:4",
+     "text": "هُمْ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      216.2,
+      233.1
+     ],
+     "drawn_w": 16.9,
+     "r_qcf": null,
+     "r_lettersum": 1.03
+    },
+    {
+     "key": "90:19:5",
+     "text": "أَصْحَٰبُ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      182.8,
+      218.5
+     ],
+     "drawn_w": 35.7,
+     "r_qcf": 0.99,
+     "r_lettersum": 0.95
+    },
+    {
+     "key": "90:19:6",
+     "text": "ٱلْمَشْـَٔمَةِ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      135.1,
+      180.5
+     ],
+     "drawn_w": 45.5,
+     "r_qcf": 0.91,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "90:20:1",
+     "text": "عَلَيْهِمْ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      79.8,
+      113.5
+     ],
+     "drawn_w": 33.6,
+     "r_qcf": 1.2,
+     "r_lettersum": 1.03
+    },
+    {
+     "key": "90:20:2",
+     "text": "نَارࣱ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      63.5,
+      81.7
+     ],
+     "drawn_w": 18.2,
+     "r_qcf": 1.66,
+     "r_lettersum": 1.04
+    },
+    {
+     "key": "90:20:3",
+     "text": "مُّؤْصَدَةُۢ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      25.3,
+      65.8
+     ],
+     "drawn_w": 40.6,
+     "r_qcf": 0.74,
+     "r_lettersum": 0.96
+    }
+   ]
+  },
+  {
+   "page": 596,
+   "line": 1,
+   "class": "a+c1",
+   "evidence": "إِذَا(2/3)↔تَرَدَّىٰٓ(4/3) compensating pair: تردى holds a 3.0u alef at 104.0-107.0 adjacent to إذا; other 6 flags = QCF scramble",
+   "flagged_keys": [
+    "92:10:1",
+    "92:10:2",
+    "92:11:2",
+    "92:11:3",
+    "92:11:4",
+    "92:11:5",
+    "92:11:6",
+    "92:12:2"
+   ],
+   "words": [
+    {
+     "key": "92:10:1",
+     "text": "فَسَنُيَسِّرُهُۥ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      282.0,
+      334.4
+     ],
+     "drawn_w": 52.4,
+     "r_qcf": 2.08,
+     "r_lettersum": 0.99
+    },
+    {
+     "key": "92:10:2",
+     "text": "لِلْعُسْرَىٰ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      231.4,
+      275.7
+     ],
+     "drawn_w": 44.3,
+     "r_qcf": 1.54,
+     "r_lettersum": 0.95
+    },
+    {
+     "key": "92:11:1",
+     "text": "وَمَا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      192.8,
+      209.6
+     ],
+     "drawn_w": 16.8,
+     "r_qcf": 1.34,
+     "r_lettersum": 0.89
+    },
+    {
+     "key": "92:11:2",
+     "text": "يُغْنِى",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      170.5,
+      191.9
+     ],
+     "drawn_w": 21.4,
+     "r_qcf": 0.66,
+     "r_lettersum": 0.94
+    },
+    {
+     "key": "92:11:3",
+     "text": "عَنْهُ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      148.8,
+      170.4
+     ],
+     "drawn_w": 21.6,
+     "r_qcf": 0.52,
+     "r_lettersum": 1.21
+    },
+    {
+     "key": "92:11:4",
+     "text": "مَالُهُۥٓ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      125.6,
+      146.8
+     ],
+     "drawn_w": 21.2,
+     "r_qcf": 1.32,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "92:11:5",
+     "text": "إِذَا",
+     "flagged": true,
+     "held": 2,
+     "allowed": 3,
+     "span": [
+      108.2,
+      116.6
+     ],
+     "drawn_w": 8.3,
+     "r_qcf": 0.31,
+     "r_lettersum": 0.77
+    },
+    {
+     "key": "92:11:6",
+     "text": "تَرَدَّىٰٓ",
+     "flagged": true,
+     "held": 4,
+     "allowed": 3,
+     "span": [
+      73.4,
+      107.0
+     ],
+     "drawn_w": 33.6,
+     "r_qcf": 2.29,
+     "r_lettersum": 1.09
+    },
+    {
+     "key": "92:12:1",
+     "text": "إِنَّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      38.0,
+      51.0
+     ],
+     "drawn_w": 13.0,
+     "r_qcf": 0.91,
+     "r_lettersum": 1.11
+    },
+    {
+     "key": "92:12:2",
+     "text": "عَلَيْنَا",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      7.9,
+      36.3
+     ],
+     "drawn_w": 28.4,
+     "r_qcf": 0.58,
+     "r_lettersum": 1.03
+    }
+   ]
+  },
+  {
+   "page": 596,
+   "line": 2,
+   "class": "c1",
+   "evidence": "all counts exact, letter-sum ratios 0.84-1.19; eye-verdict pair 92:14:1/2 measures clean on current build -> rebuild render, re-eye",
+   "flagged_keys": [
+    "92:12:3",
+    "92:13:1",
+    "92:13:2",
+    "92:13:4",
+    "92:14:1",
+    "92:14:2"
+   ],
+   "words": [
+    {
+     "key": "92:12:3",
+     "text": "لَلْهُدَىٰ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      294.9,
+      332.9
+     ],
+     "drawn_w": 38.0,
+     "r_qcf": 0.62,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "92:13:1",
+     "text": "وَإِنَّ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      253.5,
+      274.0
+     ],
+     "drawn_w": 20.5,
+     "r_qcf": 0.52,
+     "r_lettersum": 1.07
+    },
+    {
+     "key": "92:13:2",
+     "text": "لَنَا",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      237.6,
+      250.3
+     ],
+     "drawn_w": 12.7,
+     "r_qcf": 0.67,
+     "r_lettersum": 0.84
+    },
+    {
+     "key": "92:13:3",
+     "text": "لَلْـَٔاخِرَةَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      197.9,
+      234.1
+     ],
+     "drawn_w": 36.2,
+     "r_qcf": 1.21,
+     "r_lettersum": 0.93
+    },
+    {
+     "key": "92:13:4",
+     "text": "وَٱلْأُولَىٰ",
+     "flagged": true,
+     "held": 5,
+     "allowed": 5,
+     "span": [
+      152.8,
+      193.4
+     ],
+     "drawn_w": 40.6,
+     "r_qcf": 1.98,
+     "r_lettersum": 1.03
+    },
+    {
+     "key": "92:14:1",
+     "text": "فَأَنذَرْتُكُمْ",
+     "flagged": true,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      78.1,
+      130.9
+     ],
+     "drawn_w": 52.8,
+     "r_qcf": 2.67,
+     "r_lettersum": 0.92
+    },
+    {
+     "key": "92:14:2",
+     "text": "نَارࣰا",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      58.6,
+      78.5
+     ],
+     "drawn_w": 19.9,
+     "r_qcf": 0.49,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "92:14:3",
+     "text": "تَلَظَّىٰ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      26.0,
+      56.0
+     ],
+     "drawn_w": 30.0,
+     "r_qcf": 1.44,
+     "r_lettersum": 1.19
+    }
+   ]
+  },
+  {
+   "page": 597,
+   "line": 1,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "94:3:1",
+    "94:3:3",
+    "94:4:1",
+    "94:5:1",
+    "94:5:3"
+   ],
+   "words": [
+    {
+     "key": "94:3:1",
+     "text": "ٱلَّذِىٓ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      305.0,
+      331.7
+     ],
+     "drawn_w": 26.7,
+     "r_qcf": 0.51,
+     "r_lettersum": 1.19
+    },
+    {
+     "key": "94:3:2",
+     "text": "أَنقَضَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      269.5,
+      303.0
+     ],
+     "drawn_w": 33.4,
+     "r_qcf": 0.73,
+     "r_lettersum": 1.13
+    },
+    {
+     "key": "94:3:3",
+     "text": "ظَهْرَكَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 2,
+     "span": [
+      234.3,
+      269.8
+     ],
+     "drawn_w": 35.5,
+     "r_qcf": 2.13,
+     "r_lettersum": 1.06
+    },
+    {
+     "key": "94:4:1",
+     "text": "وَرَفَعْنَا",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      181.6,
+      214.6
+     ],
+     "drawn_w": 33.1,
+     "r_qcf": 1.61,
+     "r_lettersum": 0.92
+    },
+    {
+     "key": "94:4:2",
+     "text": "لَكَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 1,
+     "span": [
+      164.6,
+      179.9
+     ],
+     "drawn_w": 15.3,
+     "r_qcf": 0.66,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "94:4:3",
+     "text": "ذِكْرَكَ",
+     "flagged": false,
+     "held": 4,
+     "allowed": 3,
+     "span": [
+      134.6,
+      162.0
+     ],
+     "drawn_w": 27.4,
+     "r_qcf": 1.2,
+     "r_lettersum": 0.72
+    },
+    {
+     "key": "94:5:1",
+     "text": "فَإِنَّ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      94.5,
+      113.9
+     ],
+     "drawn_w": 19.4,
+     "r_qcf": 0.65,
+     "r_lettersum": 1.05
+    },
+    {
+     "key": "94:5:2",
+     "text": "مَعَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      79.2,
+      94.3
+     ],
+     "drawn_w": 15.0,
+     "r_qcf": 1.1,
+     "r_lettersum": 1.3
+    },
+    {
+     "key": "94:5:3",
+     "text": "ٱلْعُسْرِ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      39.4,
+      76.5
+     ],
+     "drawn_w": 37.1,
+     "r_qcf": 2.29,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "94:5:4",
+     "text": "يُسْرًا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      21.3,
+      45.5
+     ],
+     "drawn_w": 24.2,
+     "r_qcf": 0.91,
+     "r_lettersum": 0.86
+    }
+   ]
+  },
+  {
+   "page": 597,
+   "line": 2,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "94:6:3",
+    "94:6:4",
+    "94:7:2",
+    "94:7:3",
+    "94:8:2"
+   ],
+   "words": [
+    {
+     "key": "94:6:1",
+     "text": "إِنَّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      316.7,
+      329.7
+     ],
+     "drawn_w": 13.0,
+     "r_qcf": 0.73,
+     "r_lettersum": 1.18
+    },
+    {
+     "key": "94:6:2",
+     "text": "مَعَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      303.0,
+      318.0
+     ],
+     "drawn_w": 15.0,
+     "r_qcf": 0.68,
+     "r_lettersum": 1.34
+    },
+    {
+     "key": "94:6:3",
+     "text": "ٱلْعُسْرِ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      262.9,
+      300.4
+     ],
+     "drawn_w": 37.6,
+     "r_qcf": 2.44,
+     "r_lettersum": 1.15
+    },
+    {
+     "key": "94:6:4",
+     "text": "يُسْرࣰا",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      243.1,
+      269.4
+     ],
+     "drawn_w": 26.4,
+     "r_qcf": 0.65,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "94:7:1",
+     "text": "فَإِذَا",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      204.4,
+      223.6
+     ],
+     "drawn_w": 19.2,
+     "r_qcf": 1.06,
+     "r_lettersum": 1.13
+    },
+    {
+     "key": "94:7:2",
+     "text": "فَرَغْتَ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      171.7,
+      203.4
+     ],
+     "drawn_w": 31.7,
+     "r_qcf": 0.6,
+     "r_lettersum": 0.89
+    },
+    {
+     "key": "94:7:3",
+     "text": "فَٱنصَبْ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      130.9,
+      169.4
+     ],
+     "drawn_w": 38.5,
+     "r_qcf": 1.81,
+     "r_lettersum": 0.91
+    },
+    {
+     "key": "94:8:1",
+     "text": "وَإِلَىٰ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      87.5,
+      108.6
+     ],
+     "drawn_w": 21.1,
+     "r_qcf": 1.29,
+     "r_lettersum": 1.01
+    },
+    {
+     "key": "94:8:2",
+     "text": "رَبِّكَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 2,
+     "span": [
+      62.9,
+      85.0
+     ],
+     "drawn_w": 22.1,
+     "r_qcf": 1.83,
+     "r_lettersum": 1.01
+    },
+    {
+     "key": "94:8:3",
+     "text": "فَٱرْغَب",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      24.9,
+      59.8
+     ],
+     "drawn_w": 35.0,
+     "r_qcf": 0.81,
+     "r_lettersum": 0.89
+    }
+   ]
+  },
+  {
+   "page": 597,
+   "line": 14,
+   "class": "b",
+   "evidence": "إِنَّ 1.85x under both metrics, counts exact — line-end kashida stretch",
+   "flagged_keys": [
+    "96:8:1"
+   ],
+   "words": [
+    {
+     "key": "96:8:1",
+     "text": "إِنَّ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      301.5,
+      329.4
+     ],
+     "drawn_w": 27.9,
+     "r_qcf": 1.65,
+     "r_lettersum": 1.85
+    },
+    {
+     "key": "96:8:2",
+     "text": "إِلَىٰ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      280.1,
+      297.1
+     ],
+     "drawn_w": 17.0,
+     "r_qcf": 0.81,
+     "r_lettersum": 0.91
+    },
+    {
+     "key": "96:8:3",
+     "text": "رَبِّكَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 2,
+     "span": [
+      249.6,
+      276.2
+     ],
+     "drawn_w": 26.5,
+     "r_qcf": 0.93,
+     "r_lettersum": 0.88
+    },
+    {
+     "key": "96:8:4",
+     "text": "ٱلرُّجْعَىٰٓ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      200.5,
+      245.5
+     ],
+     "drawn_w": 45.0,
+     "r_qcf": 0.94,
+     "r_lettersum": 0.85
+    },
+    {
+     "key": "96:9:1",
+     "text": "أَرَءَيْتَ",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      138.0,
+      176.2
+     ],
+     "drawn_w": 38.3,
+     "r_qcf": 0.99,
+     "r_lettersum": 0.89
+    },
+    {
+     "key": "96:9:2",
+     "text": "ٱلَّذِى",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      101.1,
+      133.0
+     ],
+     "drawn_w": 31.9,
+     "r_qcf": 0.94,
+     "r_lettersum": 1.07
+    },
+    {
+     "key": "96:9:3",
+     "text": "يَنْهَىٰ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      64.7,
+      96.2
+     ],
+     "drawn_w": 31.5,
+     "r_qcf": 0.97,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "96:10:1",
+     "text": "عَبْدًا",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      6.2,
+      40.7
+     ],
+     "drawn_w": 34.5,
+     "r_qcf": 1.04,
+     "r_lettersum": 1.1
+    }
+   ]
+  },
+  {
+   "page": 598,
+   "line": 1,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "96:13:2",
+    "96:13:4",
+    "96:15:4"
+   ],
+   "words": [
+    {
+     "key": "96:13:1",
+     "text": "أَرَءَيْتَ",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      299.6,
+      334.3
+     ],
+     "drawn_w": 34.7,
+     "r_qcf": 1.17,
+     "r_lettersum": 1.09
+    },
+    {
+     "key": "96:13:2",
+     "text": "إِن",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      283.3,
+      296.7
+     ],
+     "drawn_w": 13.4,
+     "r_qcf": 0.45,
+     "r_lettersum": 1.2
+    },
+    {
+     "key": "96:13:3",
+     "text": "كَذَّبَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      253.5,
+      288.6
+     ],
+     "drawn_w": 35.1,
+     "r_qcf": 0.96,
+     "r_lettersum": 1.19
+    },
+    {
+     "key": "96:13:4",
+     "text": "وَتَوَلَّىٰٓ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      221.7,
+      250.4
+     ],
+     "drawn_w": 28.7,
+     "r_qcf": 1.71,
+     "r_lettersum": 0.88
+    },
+    {
+     "key": "96:14:1",
+     "text": "أَلَمْ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      184.9,
+      200.3
+     ],
+     "drawn_w": 15.4,
+     "r_qcf": 0.84,
+     "r_lettersum": 0.93
+    },
+    {
+     "key": "96:14:2",
+     "text": "يَعْلَم",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      162.7,
+      185.8
+     ],
+     "drawn_w": 23.1,
+     "r_qcf": 0.78,
+     "r_lettersum": 0.95
+    },
+    {
+     "key": "96:14:3",
+     "text": "بِأَنَّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      141.6,
+      159.4
+     ],
+     "drawn_w": 17.9,
+     "r_qcf": 1.01,
+     "r_lettersum": 1.02
+    },
+    {
+     "key": "96:14:4",
+     "text": "ٱللَّهَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      121.6,
+      139.3
+     ],
+     "drawn_w": 17.8,
+     "r_qcf": 0.91,
+     "r_lettersum": 1.04
+    },
+    {
+     "key": "96:14:5",
+     "text": "يَرَىٰ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      99.0,
+      119.5
+     ],
+     "drawn_w": 20.5,
+     "r_qcf": 1.34,
+     "r_lettersum": 0.85
+    },
+    {
+     "key": "96:15:1",
+     "text": "كَلَّا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      60.3,
+      83.5
+     ],
+     "drawn_w": 23.2,
+     "r_qcf": 1.0,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "96:15:2",
+     "text": "لَئِن",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      41.5,
+      59.7
+     ],
+     "drawn_w": 18.2,
+     "r_qcf": 1.14,
+     "r_lettersum": 0.98
+    },
+    {
+     "key": "96:15:3",
+     "text": "لَّمْ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      28.5,
+      39.4
+     ],
+     "drawn_w": 11.0,
+     "r_qcf": 0.81,
+     "r_lettersum": 0.79
+    },
+    {
+     "key": "96:15:4",
+     "text": "يَنتَهِ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      7.8,
+      30.4
+     ],
+     "drawn_w": 22.7,
+     "r_qcf": 1.46,
+     "r_lettersum": 1.07
+    }
+   ]
+  },
+  {
+   "page": 598,
+   "line": 2,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "96:15:6",
+    "96:16:1"
+   ],
+   "words": [
+    {
+     "key": "96:15:5",
+     "text": "لَنَسْفَعَۢا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      296.2,
+      334.1
+     ],
+     "drawn_w": 38.0,
+     "r_qcf": 0.96,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "96:15:6",
+     "text": "بِٱلنَّاصِيَةِ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      242.8,
+      294.0
+     ],
+     "drawn_w": 51.2,
+     "r_qcf": 1.52,
+     "r_lettersum": 0.95
+    },
+    {
+     "key": "96:16:1",
+     "text": "نَاصِيَةࣲ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      183.4,
+      221.5
+     ],
+     "drawn_w": 38.1,
+     "r_qcf": 1.48,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "96:16:2",
+     "text": "كَٰذِبَةٍ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      153.6,
+      187.6
+     ],
+     "drawn_w": 34.0,
+     "r_qcf": 0.81,
+     "r_lettersum": 1.02
+    },
+    {
+     "key": "96:16:3",
+     "text": "خَاطِئَةࣲ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      112.5,
+      151.2
+     ],
+     "drawn_w": 38.6,
+     "r_qcf": 0.72,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "96:17:1",
+     "text": "فَلْيَدْعُ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      59.5,
+      90.8
+     ],
+     "drawn_w": 31.3,
+     "r_qcf": 1.06,
+     "r_lettersum": 1.04
+    },
+    {
+     "key": "96:17:2",
+     "text": "نَادِيَهُۥ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      31.4,
+      57.2
+     ],
+     "drawn_w": 25.8,
+     "r_qcf": 0.78,
+     "r_lettersum": 1.0
+    }
+   ]
+  },
+  {
+   "page": 598,
+   "line": 3,
+   "class": "c1+b",
+   "evidence": "كَلَّا 1.60x both metrics (stretch); وَٱقْتَرِب۩ 0.78 (sajdah sign); rest QCF scramble",
+   "flagged_keys": [
+    "96:18:1",
+    "96:19:1",
+    "96:19:2",
+    "96:19:5"
+   ],
+   "words": [
+    {
+     "key": "96:18:1",
+     "text": "سَنَدْعُ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      293.2,
+      334.4
+     ],
+     "drawn_w": 41.2,
+     "r_qcf": 2.66,
+     "r_lettersum": 1.18
+    },
+    {
+     "key": "96:18:2",
+     "text": "ٱلزَّبَانِيَةَ",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      244.2,
+      289.3
+     ],
+     "drawn_w": 45.0,
+     "r_qcf": 1.24,
+     "r_lettersum": 0.81
+    },
+    {
+     "key": "96:19:1",
+     "text": "كَلَّا",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      175.2,
+      220.1
+     ],
+     "drawn_w": 44.8,
+     "r_qcf": 2.6,
+     "r_lettersum": 1.6
+    },
+    {
+     "key": "96:19:2",
+     "text": "لَا",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      160.0,
+      171.5
+     ],
+     "drawn_w": 11.5,
+     "r_qcf": 0.39,
+     "r_lettersum": 0.99
+    },
+    {
+     "key": "96:19:3",
+     "text": "تُطِعْهُ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      128.0,
+      158.9
+     ],
+     "drawn_w": 30.9,
+     "r_qcf": 0.77,
+     "r_lettersum": 1.02
+    },
+    {
+     "key": "96:19:4",
+     "text": "وَٱسْجُدْ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      82.8,
+      125.1
+     ],
+     "drawn_w": 42.3,
+     "r_qcf": 0.97,
+     "r_lettersum": 0.95
+    },
+    {
+     "key": "96:19:5",
+     "text": "وَٱقْتَرِب۩",
+     "flagged": true,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      39.8,
+      79.6
+     ],
+     "drawn_w": 39.8,
+     "r_qcf": 0.55,
+     "r_lettersum": 0.78
+    }
+   ]
+  },
+  {
+   "page": 599,
+   "line": 1,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "98:6:1",
+    "98:6:2",
+    "98:6:4",
+    "98:6:6",
+    "98:6:7",
+    "98:6:8"
+   ],
+   "words": [
+    {
+     "key": "98:6:1",
+     "text": "إِنَّ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      316.4,
+      329.3
+     ],
+     "drawn_w": 12.9,
+     "r_qcf": 0.29,
+     "r_lettersum": 1.09
+    },
+    {
+     "key": "98:6:2",
+     "text": "ٱلَّذِينَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      283.9,
+      313.1
+     ],
+     "drawn_w": 29.2,
+     "r_qcf": 1.9,
+     "r_lettersum": 1.06
+    },
+    {
+     "key": "98:6:3",
+     "text": "كَفَرُوا۟",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      228.3,
+      282.5
+     ],
+     "drawn_w": 54.1,
+     "r_qcf": 1.13,
+     "r_lettersum": 1.24
+    },
+    {
+     "key": "98:6:4",
+     "text": "مِنْ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      208.7,
+      224.7
+     ],
+     "drawn_w": 16.1,
+     "r_qcf": 0.39,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "98:6:5",
+     "text": "أَهْلِ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      181.3,
+      205.9
+     ],
+     "drawn_w": 24.6,
+     "r_qcf": 1.15,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "98:6:6",
+     "text": "ٱلْكِتَٰبِ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      138.1,
+      178.1
+     ],
+     "drawn_w": 40.0,
+     "r_qcf": 2.26,
+     "r_lettersum": 0.9
+    },
+    {
+     "key": "98:6:7",
+     "text": "وَٱلْمُشْرِكِينَ",
+     "flagged": true,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      75.1,
+      134.8
+     ],
+     "drawn_w": 59.7,
+     "r_qcf": 1.81,
+     "r_lettersum": 0.81
+    },
+    {
+     "key": "98:6:8",
+     "text": "فِى",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      60.2,
+      71.6
+     ],
+     "drawn_w": 11.4,
+     "r_qcf": 0.45,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "98:6:9",
+     "text": "نَارِ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      39.4,
+      57.1
+     ],
+     "drawn_w": 17.7,
+     "r_qcf": 0.71,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "98:6:10",
+     "text": "جَهَنَّمَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      5.7,
+      42.5
+     ],
+     "drawn_w": 36.9,
+     "r_qcf": 1.19,
+     "r_lettersum": 1.12
+    }
+   ]
+  },
+  {
+   "page": 599,
+   "line": 2,
+   "class": "c1+b",
+   "evidence": "ٱلْبَرِيَّةِ 0.79x both metrics (print-tight); أولئك 4/3 & هم 2/1 = detached-ك strokes; 98:6:13 fatha deficit = slashx family; width flags = QCF scramble",
+   "flagged_keys": [
+    "98:6:11",
+    "98:6:12",
+    "98:6:13",
+    "98:6:15",
+    "98:6:16"
+   ],
+   "words": [
+    {
+     "key": "98:6:11",
+     "text": "خَٰلِدِينَ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      287.8,
+      332.6
+     ],
+     "drawn_w": 44.8,
+     "r_qcf": 3.37,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "98:6:12",
+     "text": "فِيهَآۚ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      259.4,
+      283.3
+     ],
+     "drawn_w": 24.0,
+     "r_qcf": 0.54,
+     "r_lettersum": 0.83
+    },
+    {
+     "key": "98:6:13",
+     "text": "أُو۟لَٰٓئِكَ",
+     "flagged": true,
+     "held": 4,
+     "allowed": 3,
+     "span": [
+      215.8,
+      255.8
+     ],
+     "drawn_w": 40.0,
+     "r_qcf": 4.44,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "98:6:14",
+     "text": "هُمْ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 1,
+     "span": [
+      194.6,
+      225.1
+     ],
+     "drawn_w": 30.6,
+     "r_qcf": 1.27,
+     "r_lettersum": 1.42
+    },
+    {
+     "key": "98:6:15",
+     "text": "شَرُّ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      166.4,
+      194.0
+     ],
+     "drawn_w": 27.6,
+     "r_qcf": 0.72,
+     "r_lettersum": 1.07
+    },
+    {
+     "key": "98:6:16",
+     "text": "ٱلْبَرِيَّةِ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      130.7,
+      169.5
+     ],
+     "drawn_w": 38.8,
+     "r_qcf": 0.68,
+     "r_lettersum": 0.79
+    },
+    {
+     "key": "98:7:1",
+     "text": "إِنَّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      94.3,
+      107.4
+     ],
+     "drawn_w": 13.0,
+     "r_qcf": 0.36,
+     "r_lettersum": 0.88
+    },
+    {
+     "key": "98:7:2",
+     "text": "ٱلَّذِينَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      43.1,
+      91.0
+     ],
+     "drawn_w": 48.0,
+     "r_qcf": 1.3,
+     "r_lettersum": 1.39
+    },
+    {
+     "key": "98:7:3",
+     "text": "ءَامَنُوا۟",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      5.7,
+      39.6
+     ],
+     "drawn_w": 33.9,
+     "r_qcf": 0.82,
+     "r_lettersum": 0.88
+    }
+   ]
+  },
+  {
+   "page": 599,
+   "line": 3,
+   "class": "c1+b",
+   "evidence": "ٱلْبَرِيَّةِ 0.77x both metrics, second instance — systematic print compression; rest QCF scramble",
+   "flagged_keys": [
+    "98:7:4",
+    "98:7:5",
+    "98:7:8",
+    "98:7:9"
+   ],
+   "words": [
+    {
+     "key": "98:7:4",
+     "text": "وَعَمِلُوا۟",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      285.5,
+      332.3
+     ],
+     "drawn_w": 46.8,
+     "r_qcf": 2.18,
+     "r_lettersum": 1.02
+    },
+    {
+     "key": "98:7:5",
+     "text": "ٱلصَّٰلِحَٰتِ",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      218.5,
+      283.4
+     ],
+     "drawn_w": 64.9,
+     "r_qcf": 1.69,
+     "r_lettersum": 1.17
+    },
+    {
+     "key": "98:7:6",
+     "text": "أُو۟لَٰٓئِكَ",
+     "flagged": false,
+     "held": 4,
+     "allowed": 3,
+     "span": [
+      174.1,
+      215.2
+     ],
+     "drawn_w": 41.1,
+     "r_qcf": 0.99,
+     "r_lettersum": 1.06
+    },
+    {
+     "key": "98:7:7",
+     "text": "هُمْ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      148.9,
+      170.7
+     ],
+     "drawn_w": 21.8,
+     "r_qcf": 1.11,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "98:7:8",
+     "text": "خَيْرُ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      116.3,
+      147.5
+     ],
+     "drawn_w": 31.1,
+     "r_qcf": 0.62,
+     "r_lettersum": 1.06
+    },
+    {
+     "key": "98:7:9",
+     "text": "ٱلْبَرِيَّةِ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      81.4,
+      117.0
+     ],
+     "drawn_w": 35.6,
+     "r_qcf": 0.59,
+     "r_lettersum": 0.77
+    },
+    {
+     "key": "98:8:1",
+     "text": "جَزَآؤُهُمْ",
+     "flagged": false,
+     "held": 4,
+     "allowed": 4,
+     "span": [
+      5.7,
+      57.8
+     ],
+     "drawn_w": 52.2,
+     "r_qcf": 0.85,
+     "r_lettersum": 0.91
+    }
+   ]
+  },
+  {
+   "page": 600,
+   "line": 1,
+   "class": "a+c1",
+   "evidence": "لِرَبِّهِۦ(1/2)↔لَكَنُودࣱ(3/2): لكنود holds به at 251.6-261.8 overlapping لربه's span, 9u clear of its own ink; other flags = QCF scramble",
+   "flagged_keys": [
+    "100:6:3",
+    "100:6:4",
+    "100:7:2",
+    "100:7:3",
+    "100:7:4",
+    "100:8:1"
+   ],
+   "words": [
+    {
+     "key": "100:6:1",
+     "text": "إِنَّ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      318.8,
+      331.6
+     ],
+     "drawn_w": 12.8,
+     "r_qcf": 0.96,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "100:6:2",
+     "text": "ٱلْإِنسَٰنَ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      274.9,
+      316.6
+     ],
+     "drawn_w": 41.7,
+     "r_qcf": 1.57,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "100:6:3",
+     "text": "لِرَبِّهِۦ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 2,
+     "span": [
+      258.2,
+      272.0
+     ],
+     "drawn_w": 13.9,
+     "r_qcf": 0.32,
+     "r_lettersum": 0.55
+    },
+    {
+     "key": "100:6:4",
+     "text": "لَكَنُودࣱ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 2,
+     "span": [
+      214.6,
+      261.8
+     ],
+     "drawn_w": 47.2,
+     "r_qcf": 2.87,
+     "r_lettersum": 1.18
+    },
+    {
+     "key": "100:7:1",
+     "text": "وَإِنَّهُۥ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      170.5,
+      192.2
+     ],
+     "drawn_w": 21.7,
+     "r_qcf": 0.61,
+     "r_lettersum": 0.98
+    },
+    {
+     "key": "100:7:2",
+     "text": "عَلَىٰ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      149.5,
+      167.1
+     ],
+     "drawn_w": 17.7,
+     "r_qcf": 0.37,
+     "r_lettersum": 0.96
+    },
+    {
+     "key": "100:7:3",
+     "text": "ذَٰلِكَ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 2,
+     "span": [
+      124.0,
+      147.4
+     ],
+     "drawn_w": 23.4,
+     "r_qcf": 2.48,
+     "r_lettersum": 1.08
+    },
+    {
+     "key": "100:7:4",
+     "text": "لَشَهِيدࣱ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      85.3,
+      122.0
+     ],
+     "drawn_w": 36.7,
+     "r_qcf": 2.97,
+     "r_lettersum": 0.98
+    },
+    {
+     "key": "100:8:1",
+     "text": "وَإِنَّهُۥ",
+     "flagged": true,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      43.0,
+      63.8
+     ],
+     "drawn_w": 20.8,
+     "r_qcf": 0.59,
+     "r_lettersum": 0.94
+    },
+    {
+     "key": "100:8:2",
+     "text": "لِحُبِّ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      7.5,
+      35.7
+     ],
+     "drawn_w": 28.2,
+     "r_qcf": 1.19,
+     "r_lettersum": 1.05
+    }
+   ]
+  },
+  {
+   "page": 600,
+   "line": 2,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "100:9:1",
+    "100:9:2",
+    "100:9:5",
+    "100:9:6"
+   ],
+   "words": [
+    {
+     "key": "100:8:3",
+     "text": "ٱلْخَيْرِ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      303.5,
+      334.5
+     ],
+     "drawn_w": 31.1,
+     "r_qcf": null,
+     "r_lettersum": 0.76
+    },
+    {
+     "key": "100:8:4",
+     "text": "لَشَدِيدٌ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      258.3,
+      305.4
+     ],
+     "drawn_w": 47.1,
+     "r_qcf": 1.48,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "100:9:1",
+     "text": "۞أَفَلَا",
+     "flagged": true,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      201.6,
+      223.4
+     ],
+     "drawn_w": 21.9,
+     "r_qcf": 0.45,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "100:9:2",
+     "text": "يَعْلَمُ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      164.9,
+      198.3
+     ],
+     "drawn_w": 33.4,
+     "r_qcf": 2.91,
+     "r_lettersum": 1.06
+    },
+    {
+     "key": "100:9:3",
+     "text": "إِذَا",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      147.0,
+      160.4
+     ],
+     "drawn_w": 13.4,
+     "r_qcf": 1.03,
+     "r_lettersum": 1.01
+    },
+    {
+     "key": "100:9:4",
+     "text": "بُعْثِرَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      109.8,
+      141.7
+     ],
+     "drawn_w": 31.9,
+     "r_qcf": 0.84,
+     "r_lettersum": 1.11
+    },
+    {
+     "key": "100:9:5",
+     "text": "مَا",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      98.4,
+      110.6
+     ],
+     "drawn_w": 12.2,
+     "r_qcf": 0.46,
+     "r_lettersum": 0.9
+    },
+    {
+     "key": "100:9:6",
+     "text": "فِى",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      82.3,
+      94.8
+     ],
+     "drawn_w": 12.5,
+     "r_qcf": 0.36,
+     "r_lettersum": 0.86
+    },
+    {
+     "key": "100:9:7",
+     "text": "ٱلْقُبُورِ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      27.0,
+      78.7
+     ],
+     "drawn_w": 51.7,
+     "r_qcf": 1.02,
+     "r_lettersum": 1.17
+    }
+   ]
+  },
+  {
+   "page": 600,
+   "line": 14,
+   "class": "c1",
+   "evidence": "all piece counts match segment_word; letter-sum ratios inside [0.7,1.45]; flags reproduce only under the scrambled QCF advances",
+   "flagged_keys": [
+    "102:5:2"
+   ],
+   "words": [
+    {
+     "key": "102:4:2",
+     "text": "كَلَّا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      315.4,
+      335.7
+     ],
+     "drawn_w": 20.3,
+     "r_qcf": 1.05,
+     "r_lettersum": 0.94
+    },
+    {
+     "key": "102:4:3",
+     "text": "سَوْفَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      285.9,
+      315.9
+     ],
+     "drawn_w": 30.0,
+     "r_qcf": 0.96,
+     "r_lettersum": 1.1
+    },
+    {
+     "key": "102:4:4",
+     "text": "تَعْلَمُونَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      247.0,
+      284.0
+     ],
+     "drawn_w": 37.0,
+     "r_qcf": 0.94,
+     "r_lettersum": 1.0
+    },
+    {
+     "key": "102:5:1",
+     "text": "كَلَّا",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      210.0,
+      230.4
+     ],
+     "drawn_w": 20.4,
+     "r_qcf": 0.97,
+     "r_lettersum": 0.94
+    },
+    {
+     "key": "102:5:2",
+     "text": "لَوْ",
+     "flagged": true,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      195.3,
+      208.4
+     ],
+     "drawn_w": 13.2,
+     "r_qcf": 1.51,
+     "r_lettersum": 1.06
+    },
+    {
+     "key": "102:5:3",
+     "text": "تَعْلَمُونَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      163.7,
+      199.7
+     ],
+     "drawn_w": 36.0,
+     "r_qcf": 0.99,
+     "r_lettersum": 0.97
+    },
+    {
+     "key": "102:5:4",
+     "text": "عِلْمَ",
+     "flagged": false,
+     "held": 1,
+     "allowed": 1,
+     "span": [
+      140.7,
+      162.2
+     ],
+     "drawn_w": 21.5,
+     "r_qcf": 1.33,
+     "r_lettersum": 1.14
+    },
+    {
+     "key": "102:5:5",
+     "text": "ٱلْيَقِينِ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      111.6,
+      143.7
+     ],
+     "drawn_w": 32.0,
+     "r_qcf": 0.89,
+     "r_lettersum": 1.07
+    },
+    {
+     "key": "102:6:1",
+     "text": "لَتَرَوُنَّ",
+     "flagged": false,
+     "held": 3,
+     "allowed": 3,
+     "span": [
+      63.5,
+      91.5
+     ],
+     "drawn_w": 28.0,
+     "r_qcf": 0.97,
+     "r_lettersum": 0.83
+    },
+    {
+     "key": "102:6:2",
+     "text": "ٱلْجَحِيمَ",
+     "flagged": false,
+     "held": 2,
+     "allowed": 2,
+     "span": [
+      25.5,
+      61.8
+     ],
+     "drawn_w": 36.3,
+     "r_qcf": 0.95,
+     "r_lettersum": 1.04
+    }
+   ]
+  }
+ ]
+}
