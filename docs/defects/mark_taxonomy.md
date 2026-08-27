@@ -7,67 +7,23 @@ Machine table: `docs/defects/mark_taxonomy.json`.
 
 ---
 
-## QUESTIONS FOR ABDULLAH
+## DECISIONS (Abdullah, 2026-08-27 22:25, via walkthrough)
 
-1. **The small noon at 21:88 (نُـۨجِى, p329) is not emitted.** The tag `small-noon`
-   exists in `TEXT_WANT` and `_MARKFAM`, but the built page emits only
-   `['damma', 'dot', 'dot', 'kasra']` for that word — no `small-noon`. Two `dot`s
-   where the word's letters need one suggests the small noon's ink was tagged `dot`
-   or merged into the noon body. This is the ONLY occurrence in the whole mushaf.
-   Please eye it on p329 in the review server: is the small ۨ drawn as separate ink,
-   and what tag does it carry now?
+All nine questions answered. In simple words:
 
-2. **p159 `بَصْۜطَةࣰۖ` carries TWO catalog signs (the seen ۜ "read with seen" AND the
-   waqf ۖ) but only ONE `pause` is emitted** — the mark list is
-   `[pause, sukun, fatha, fatha, shadda, two-dots, dot, fathatan]`, and the word has
-   no shadda in its text. Suspicion: the seen was labelled `shadda` and the `pause`
-   is the waqf. Needs your eye before the seen gets its own name.
+1. p329 small noon: FIX the label (verify by render).
+2. p159 seen-on-sad tagged shadda: FIX the label (measure first).
+3. Two zeros: SPLIT -> `sifr-mustadir` (round) / `sifr-mustatil` (upright).
+4. Small seen: name BY JOB -> `saktah` / `seen-reading`, from a 7-row place table.
+5. Tanween arrangement: YES -> `data-form="stacked|staggered"` on the pair.
+6. Muanaqah: YES -> same `data-pair` id on both signs.
+7. Sajdah: SPLIT -> `sajdah-line` (groups with the word it covers) / `sajdah-sign`.
+8. Waqf types: RENAME to `waqf-lazim`, `waqf-awla`, `waqf-jaiz`, `wasl-awla`,
+   `muanaqah`.
+9. Furniture: tag margin hizb/sajdah MEDALLIONS now; borders/headers later.
 
-3. **Split `small-circle` into the two zeros?** The catalog distinguishes the round
-   zero ۟ (U+06DF, never pronounced, 3,988×) from the upright rectangular zero ۠
-   (U+06E0, silent in wasl only, 66×, almost all on أَنَا۠). Both are `small-circle`
-   today. The outlines are genuinely different (circle vs upright oval), but I could
-   not confirm whether one label SIGNATURE in `labels.json` covers both shapes. If
-   one signature covers both, the split needs position/aspect or your eye, not just
-   a rename. Do you want the split?
-
-4. **One outline, two functions — name by function or by shape?** U+06DC is a small
-   seen serving two unrelated jobs: saktah (5 places) and "read with seen instead of
-   sad" (2 places). The catalog itself warns about this. The ink cannot decide; only
-   the site can. Options: (a) one shape tag `small-seen` plus `data-function="saktah|
-   seen-reading"`, or (b) function names directly in `data-mark` (`saktah`,
-   `seen-above`), driven by a 7-row site table. I propose (b) — it matches how waqf
-   is already typed by place — but it bakes function into the mark name. Your call.
-
-5. **Encode the tanwin arrangement?** The catalog's biggest structural point: a
-   tanwin's stacked vs staggered ARRANGEMENT encodes the tajwid ruling (izhar vs
-   idgham/ikhfa), and Unicode does not carry it (U+064B/C/D cover both). Our two
-   strokes per tanwin are already separate elements; a `data-form="stacked|staggered"`
-   on the pair (derivable from the two strokes' relative offset) would capture what
-   the print actually says. This ripples into nothing that exists today (no audit
-   reads it) but is new surface. Worth doing?
-
-6. **Muanaqah pairing.** The two ۛ signs of one embracing pause span two words
-   (sometimes far apart). Today each carries `data-waqf="waqf taanuq"` separately.
-   Should the pair be cross-referenced (e.g. `data-pair="p2-a"` on both) so a reader
-   can find the partner?
-
-7. **Sajdah structure.** Today one tag `sajdah` covers 2-3 contours per site
-   (overline + mihrab ۩ pieces, undifferentiated). The catalog stresses these are two
-   different anchors, on DIFFERENT verses in 4 of 15 places (16:49/50, 17:107/109,
-   27:25/26, 41:37/38). Propose `sajdah-line` (the overline, owned by the word it
-   covers) and `sajdah-sign` (the ۩ glyph). Also connects to your shape note that the
-   sajdah line should group with the word below it. OK to split?
-
-8. **Waqf sign naming.** Current `data-waqf` values use the Egyptian sign names
-   (`waqf qila`, `waqf sali`) for signs this print does not draw as قلى/صلى — it
-   draws ۗ and ۖ. Propose moving to the catalog's own terms: `waqf-lazim`,
-   `waqf-awla`, `waqf-jaiz`, `wasl-awla`, `muanaqah`. Rename only, mapping is 1:1.
-
-9. **Page furniture in scope?** Sura banners, basmalah lines, borders, running
-   headers, margin hizb/sajdah medallions carry no tags today (only
-   `ayah-marker-ornament` / `ayah-number` exist as `data-kind`). Is tagging them a
-   goal, or out of scope for word decomposition?
+Rollout: TWO PHASES. Phase 1 = pure naming (1,2,3,4,7,8,9). Phase 2 = new
+attributes (5,6) after phase 1 gates clean.
 
 ---
 
