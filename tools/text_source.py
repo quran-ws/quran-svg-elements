@@ -149,7 +149,28 @@ def dk_words():
     return out
 
 
+def qpc_cache():
+    out = {}
+    import glob
+    for f in glob.glob(os.path.join(ROOT, ".cache", "words-qpc", "page-*.json")):
+        try:
+            d = json.load(open(f, encoding="utf-8"))
+        except Exception:
+            continue
+        for v in d.get("verses", []):
+            i = 0
+            for w in v.get("words", []):
+                if w.get("char_type_name") != "word":
+                    continue
+                i += 1
+                t = w.get("qpc_uthmani_hafs") or w.get("text") or ""
+                if t:
+                    out["%s:%d" % (v["verse_key"], i)] = t
+    return out
+
+
 def main():
+    QPC = qpc_cache()
     try:
         QP = qp_words()
     except Exception:
@@ -183,13 +204,17 @@ def main():
             rc = ref_counts(rec)
             cand = {f: (w.get(f) or "") for f in FIELDS}
             cand["quranpedia_m2"] = QP.get(key, "")
-            cand["digitalkhatt (print)"] = DK.get(key, "")
+            cand["text_qpc_hafs"] = QPC.get("%d:%d:%d" % key, "")
+            _dkk = "%d:%d:%d" % key
+            if (key[0], key[1]) in ((2, 181), (8, 6), (13, 37)):
+                _dkk = None            # split ayahs: indexing shifts, skip
+            cand["digitalkhatt (print)"] = DK.get(_dkk, "") if _dkk else ""
             # What this pipeline actually uses: uthmani for every mark, the KFGQPC text
             # for the waqf signs alone. Each is the best available source for its own
             # part, and neither is best for both.
             cand["uthmani + kfgqpc waqf"] = (
                 "".join(c for c in (w.get("text_uthmani") or "") if ord(c) not in WAQF_CP)
-                + "".join(c for c in (w.get("text_qpc_hafs") or "") if ord(c) in WAQF_CP))
+                + "".join(c for c in QPC.get("%d:%d:%d" % key, "") if ord(c) in WAQF_CP))
             cand["mushafdatabase_own"] = rec["hafs"]
             for name, t in cand.items():
                 if not t:
@@ -225,7 +250,8 @@ def main():
         for pg, k, h, t, got, want in examples[(best, fam)][:2]:
             print("   %-12s p%-4d %-11s ref-text %-18s cand %-18s spells %d, drawn %d"
                   % (fam, pg, k, h.strip()[:18], t.strip()[:18], got, want))
-    json.dump({n: dict(tally[n]) for n in tally}, open(sys.argv[2], "w"), indent=1)
+    if len(sys.argv) > 2:
+        json.dump({n: dict(tally[n]) for n in tally}, open(sys.argv[2], "w"), indent=1)
 
 
 main()
