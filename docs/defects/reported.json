@@ -294,6 +294,16 @@
    "reported": "Policy P5 (Abdullah): the sajdah overline + ۩ are ONE standalone sign, grouped with the sajdah word on the line below the bar, never counted as any word's mark or letter",
    "cause": "Verified per site (QSVG_SAJ, default ON). 13 of 15 sites were already standalone and correctly keyed. Fixed: p272 — the overline had been renamed 'kasra' and counted in ظِلَـٰلُهُۥ's budget (the page's only mark flag; bar ejection now accepts a renamed hairline and drops the name, flag gone); p589 — the ۩ outline there has a signature variant not in the shape table and was counted as يَسْجُدُونَ's 4th body (text-driven recovery: word text carries ۩ + the sign's geometry 7.9x11.1/nested contours; piece count back to 3). p597 has NO sajdah ink — the print draws 96:19 on p598 (item 21 family), where both sign and bar were already handled. rewrite() now homes each sajdah group to the wrapper holding the sajdah word's ink, so bar+sign come out in one <g class=\"sajdah-mark\"> in the word's line (per the shape_notes 'same tag as the following sajdah mark'). Mushaf-wide: marks -1 (p272), intervals 0 flat, bench 79 unchanged, pixelfail 0, controls byte-identical.",
    "status": "adopted 2026-08-27"
+  },
+  {
+   "id": 28,
+   "page": null,
+   "words": [
+    "40 words mushaf-wide (24 fatha, 12 pause, 3 damma, 1 rtl)"
+   ],
+   "reported": "Abdullah confirmed the below-fatha instances by eye (p361 class): 'we don't expect kasrah below the meem — it's the lower word's fatha'",
+   "cause": "QSVG_LSCNT adopted default-ON: solver trigger extended to budget violations with an overlapping candidate. Full sweep -43 flags, 0 pages worse, 0 new flags.",
+   "status": "adopted 2026-08-27"
   }
  ]
 }

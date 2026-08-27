@@ -14,7 +14,9 @@
     "it IS a mark of وَٱلزَّانِيَةُ (which one?)",
     "it belongs to مُشْرِكَةًۭ's tanween pair",
     "leave with لَا (surely wrong)"
-   ]
+   ],
+   "state": "pending",
+   "state_note": "solver fixed the rotation; the x14.9 stroke itself still awaits your identity call"
   },
   {
    "id": "P2",
@@ -28,7 +30,9 @@
    "alternatives": [
     "it is جُدَدٌۢ's م and جُدَدٌۢ claimed the wrong one",
     "it is letter ink of بِيضٌۭ's ب"
-   ]
+   ],
+   "state": "done",
+   "state_note": "executed per your decision; p437 2+2 flags -> 1+0"
   },
   {
    "id": "P3",
@@ -41,7 +45,9 @@
    "proposal": "Defer until the line fix lands, then re-audit; if names still disagree with your count, label the specific blobs on a label sheet.",
    "alternatives": [
     "adjudicate now from the preview"
-   ]
+   ],
+   "state": "pending",
+   "state_note": "line fixed; residue: a fatha named damma sits in أهواءهم — label sheet next"
   },
   {
    "id": "P4",
@@ -52,7 +58,9 @@
    "title": "أُوْلَـٰٓئِكَ 'missing fatha at the end' — print fact or pipeline loss?",
    "evidence": "Your note says the final fatha is missing. If the INK truly lacks it, that is a fact about the 1421H print (like إِلْ يَاسِينَ's extra piece) and becomes a recorded exception; if the stroke exists nearby, some word stole it.",
    "proposal": "You look at the printed page: is there a fatha drawn at the word's end anywhere? If absent → record as print-fact exception. If present → tell me which word holds it.",
-   "alternatives": []
+   "alternatives": [],
+   "state": "done",
+   "state_note": "chain applied by the line-set solver (البرية→شر→أولئك)"
   },
   {
    "id": "P5",
@@ -66,7 +74,9 @@
    "alternatives": [
     "attach as a non-counting mark of the word below",
     "leave per-site"
-   ]
+   ],
+   "state": "done",
+   "state_note": "15 sites verified; p272+p589 fixed; p597's sign found on p598"
   },
   {
    "id": "P6",
@@ -79,7 +89,9 @@
    "proposal": "Move the surplus body piece(s) of نَارًۭا back to فَأَنذَرْتُكُمْ, guarded by the joining-rule piece budgets of both words (deficit == surplus, pieces adjacent).",
    "alternatives": [
     "geometry override from the review platform instead of a pass"
-   ]
+   ],
+   "state": "done",
+   "state_note": "verified already fixed by dk_lines"
   },
   {
    "id": "P7",
@@ -90,7 +102,9 @@
    "title": "Body steal: مَا swallowed by يُؤَدِّهِۦٓ (3:75:8)",
    "evidence": "Your verdict: bodyless مَا; 3:75:8 holds it. Same shape as P6.",
    "proposal": "Same mechanism as P6: piece-budget-guarded return of the مَا ink.",
-   "alternatives": []
+   "alternatives": [],
+   "state": "done",
+   "state_note": "مَا restored; p59 fully clean"
   },
   {
    "id": "P8",
@@ -101,7 +115,9 @@
    "title": "Body steal: بَارِدٍۢ swallowed لَّا with its diacritics",
    "evidence": "Your verdict: بَارِدٍۢ holds the previous word لَّا entirely (its shadda surplus is لَّا's). لَّا (56:44:1) shows shadda 0/1.",
    "proposal": "Same mechanism as P6: return لَّا's body + its marks together, guarded by both words' budgets.",
-   "alternatives": []
+   "alternatives": [],
+   "state": "done",
+   "state_note": "لَّا returned; intervals 10->5"
   },
   {
    "id": "P9",
@@ -112,7 +128,9 @@
    "title": "PRE-APPROVED: the p341 chain (اجتمعوا ← له ← وإن, + منه's ۥ)",
    "evidence": "Abdullah's screenshots: اجتمعوا holds [اجتمعوا + له + ۖ + damma]; له holds only the و of وإن; وإن lacks its و; منه (22:73:25) holds له's small waw. One chained repair returns each piece one step right.",
    "proposal": "Execute the chain: له's body+pause+damma back from اجتمعوا; the و back from له to وإن; the ۥ back from منه to له. Guarded by each word's piece and mark budgets.",
-   "alternatives": []
+   "alternatives": [],
+   "state": "done",
+   "state_note": "chain executed; before/after in bodyfix_evidence/"
   },
   {
    "id": "P10",
@@ -125,7 +143,8 @@
    "proposal": "The 'dot' is the kasratan's twin: weld as the pair.",
    "alternatives": [
     "it is بِ's letter dot — twin genuinely lost"
-   ]
+   ],
+   "state": "pending"
   },
   {
    "id": "P11",
@@ -138,7 +157,8 @@
    "proposal": "You look: is the second stroke drawn nearby (which word holds it)?",
    "alternatives": [
     "print draws a single stroke here (record as convention)"
-   ]
+   ],
+   "state": "pending"
   },
   {
    "id": "P12",
@@ -151,7 +171,8 @@
    "proposal": "They are one open-tanween pair: weld and name fathatan.",
    "alternatives": [
     "the fatha belongs to the ء"
-   ]
+   ],
+   "state": "pending"
   },
   {
    "id": "P13",
@@ -162,7 +183,8 @@
    "title": "غَيْرِ — kasra 2.3u ABOVE the band top",
    "evidence": "a 'kasra' above the word: swapped name or stolen from above?",
    "proposal": "You look and say which word/side it belongs to.",
-   "alternatives": []
+   "alternatives": [],
+   "state": "pending"
   },
   {
    "id": "P14",
@@ -173,7 +195,8 @@
    "title": "مُشْرِكٌۭ — confirm the R7 meem→tanween-stroke rename here",
    "evidence": "R7 says its 'meem-iqlab' is the tanween's second stroke (8.8u from its twin). The word audits clean otherwise.",
    "proposal": "Approve the rename (part of the 926-word R7 family).",
-   "alternatives": []
+   "alternatives": [],
+   "state": "pending"
   },
   {
    "id": "P15",
@@ -184,7 +207,9 @@
    "title": "Rare stop shapes ۘ ۜ — do their outlines exist in the label table at all?",
    "evidence": "p399 لُوطٌۘ and p525's small-seen ۜ can never be marked if their signatures are absent from labels.json — structurally unreachable by any pass.",
    "proposal": "Label-sheet item: confirm the drawn shapes and label their signatures (visual agent may resolve part of this).",
-   "alternatives": []
+   "alternatives": [],
+   "state": "partial",
+   "state_note": "ۜ and ۘ signatures labeled by the visual agent; p399/p525 recovered — confirm on the page"
   },
   {
    "id": "P16",
@@ -197,7 +222,9 @@
    "proposal": "Adopt QSVG_MTYPE after the full-mushaf gate passes (pre-approve to proceed overnight).",
    "alternatives": [
     "hold for morning review"
-   ]
+   ],
+   "state": "superseded",
+   "state_note": "the rename was REFUTED by blind verification; the true fix (letter restoration via labels) is applied instead"
   }
  ],
  "decisions": {

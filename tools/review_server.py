@@ -292,6 +292,37 @@ class Handler(BaseHTTPRequestHandler):
                 return self.send_file(
                     os.path.join(ROOT, "docs", "defects", "confidence.html"),
                     "text/html; charset=utf-8")
+            if path.startswith("/docs/defects"):
+                # browse the defect reports: listing + files, no traversal
+                base = os.path.realpath(os.path.join(ROOT, "docs", "defects"))
+                rel = path[len("/docs/defects"):].lstrip("/")
+                tgt = os.path.realpath(os.path.join(base, rel))
+                if not tgt.startswith(base):
+                    return self.send_json({"error": "bad path"}, 400)
+                if os.path.isdir(tgt):
+                    idx = os.path.join(tgt, "index.html")
+                    if os.path.exists(idx) and "list=1" not in (parsed.query or ""):
+                        return self.send_file(idx, "text/html; charset=utf-8")
+                    rows = "".join(
+                        '<li><a href="/docs/defects/%s">%s</a></li>' % (f, f)
+                        for f in sorted(os.listdir(tgt))
+                        if not f.startswith("."))
+                    body = ("<!doctype html><meta charset=utf-8><title>defects"
+                            "</title><body style='font:14px system-ui;margin:24px'>"
+                            "<h2>docs/defects</h2><ul>%s</ul>" % rows).encode()
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/html; charset=utf-8")
+                    self.send_header("Content-Length", str(len(body)))
+                    self.end_headers()
+                    return self.wfile.write(body)
+                if os.path.exists(tgt):
+                    ct = ("text/html; charset=utf-8" if tgt.endswith(".html")
+                          else "image/png" if tgt.endswith(".png")
+                          else "application/json; charset=utf-8"
+                          if tgt.endswith(".json")
+                          else "text/plain; charset=utf-8")
+                    return self.send_file(tgt, ct)
+                return self.send_json({"error": "not found"}, 404)
             if path == "/proposals":
                 # build_proposals_page.py writes this — decisions needing a human
                 return self.send_file(
