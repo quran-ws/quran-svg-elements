@@ -7208,8 +7208,19 @@ def assign_page(edition, page_no, cache_dir):
                 for _e in _r["els"]:
                     if _e["kind"] == "body" or _e.get("mkpart") or _e.get("mark") not in _GRP:
                         continue
-                    if _ovl(_r["b"], _e) > -0.6:
-                        continue
+                    _own9 = _ovl(_r["b"], _e)
+                    if _own9 > -0.6:
+                        # touching its own word is not owning it: the measured
+                        # residue (50 one-way drifts, 2026-08-28) all have own
+                        # coverage under a quarter of the stroke while a
+                        # neighbour holds 60%+ — propose those too; the
+                        # line-budget accept still judges every move.
+                        _w9 = _e["x2"] - _e["x1"]
+                        _nb9 = max((_ovl(_line[_j]["b"], _e)
+                                    for _j in (_i - 1, _i + 1)
+                                    if 0 <= _j < len(_line)), default=-9e9)
+                        if not (_own9 < 0.25 * _w9 and _nb9 > 0.6 * _w9):
+                            continue
                     # Ink drawn in ANOTHER LINE'S BAND is a vertical defect and belongs
                     # to audit_crossline.py, not here; letting it in poisoned p350, where
                     # `لَا` holds a fatha drawn a line above its own letters.
@@ -7261,8 +7272,34 @@ def assign_page(edition, page_no, cache_dir):
                     _t["els"].append(_e)
                 _touched = {id(x): x for m in mv for x in (m[0], m[1])}
                 _snap = [(e, e.get("mark")) for x in _touched.values() for e in x["els"]]
-                for x in _touched.values():
-                    _rename(x)
+                # Name ONLY the arriving marks (the p371 lesson: the marks
+                # already in place earned their names where they sit; the
+                # whole-word midpoint rename scrambled them — p90's bowl
+                # kasratan became a fathatan and every exchange judged worse).
+                # The receiver's budget names the arrival when exactly one
+                # slash family is short (two signals: geometry moved it,
+                # budget names it); position decides only when budget cannot.
+                for _r0, _t0, _e0 in mv:
+                    if _e0.get("mark") not in _POS_SWAP_FAM:
+                        continue
+                    _defs = []
+                    for _fam0, _chs0 in (("fatha", "\u064e"),
+                                         ("kasra", "\u0650"),
+                                         ("fathatan", "\u064b\u08f0"),
+                                         ("kasratan", "\u064d\u08f2")):
+                        _wv = sum(_t0["w"]["uthmani"].count(c) for c in _chs0)
+                        _hv = sum(1 for x in _t0["els"]
+                                  if x is not _e0
+                                  and x.get("mark") == _fam0
+                                  and not x.get("mkpart"))
+                        if _hv < _wv:
+                            _defs.append(_fam0)
+                    if len(_defs) == 1:
+                        _e0["mark"] = _defs[0]
+                        for _m0 in _e0.get("mkmembers", []):
+                            _m0["mark"] = _defs[0]
+                    else:
+                        _rename1(_t0, _e0)
                 return _snap + _was
 
             def _undo(mv, snap):
