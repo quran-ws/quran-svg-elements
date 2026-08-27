@@ -7,16 +7,18 @@
    "key": "24:3:8",
    "focus_x": 14.9,
    "focus_y": 197.8,
-   "title": "The stroke at x=15 that no budget wants",
+   "title": "p350: extra stroke over وَٱلزَّانِيَة (shown in red)",
    "evidence": "A fatha-sized stroke (6.9x3.6u) sits over وَٱلزَّانِيَةُ's ة beside its two-dots, at the same height. Every word's slash budget on lines 6-7 is satisfied without it; it currently sits (wrongly) in لَا's count, 300u away.",
-   "proposal": "Reassign to وَٱلزَّانِيَةُ as LETTER ink (part of the ة region), i.e. it is not a diacritic at all.",
+   "proposal": "You name it: whose is it, or is it part of a letter?",
    "alternatives": [
     "it IS a mark of وَٱلزَّانِيَةُ (which one?)",
     "it belongs to مُشْرِكَةًۭ's tanween pair",
     "leave with لَا (surely wrong)"
    ],
-   "state": "pending",
-   "state_note": "solver fixed the rotation; the x14.9 stroke itself still awaits your identity call"
+   "state": "done",
+   "state_note": "resolved by Abdullah's eye: the red stroke IS يَ's fatha; the mid stroke was نِ's kasra misnamed. Overrides applied; the الزانية line is fully clean.",
+   "found": "A slash stroke sits above the ة, next to its two dots. It is counted as لَا's fatha — but لَا is 300u away.",
+   "expected": "No word on these two lines needs an extra slash. Every count is already full."
   },
   {
    "id": "P2",
@@ -40,14 +42,16 @@
    "key": "13:37:7",
    "focus_x": null,
    "focus_y": null,
-   "title": "أَهْوَآءَهُم label confusion (your '3 fathas, 1 sukun' note)",
+   "title": "p254: أَهْوَآءَهُم — one mark has the wrong name",
    "evidence": "After the بَعْدَ مَا line is repaired, this word's own marks need re-naming: the audit counted 5 fathas + 2 sukuns + 1 dot; your eye counted 3 fathas + 1 sukun and no dot. The extras are بعد's marks; what remains may still carry wrong names.",
-   "proposal": "Defer until the line fix lands, then re-audit; if names still disagree with your count, label the specific blobs on a label sheet.",
+   "proposal": "Look at the card: is the red-flagged stroke really a damma?",
    "alternatives": [
     "adjudicate now from the preview"
    ],
    "state": "pending",
-   "state_note": "line fixed; residue: a fatha named damma sits in أهواءهم — label sheet next"
+   "state_note": "line fixed; residue: a fatha named damma sits in أهواءهم — label sheet next",
+   "found": "After the line repair, one stroke in this word is named damma.",
+   "expected": "Text wants: 3 fathas, 1 sukun, 1 damma — your eye counted the same."
   },
   {
    "id": "P4",
@@ -138,13 +142,15 @@
    "key": "57:22:12",
    "focus_x": 34.5,
    "focus_y": 396.4,
-   "title": "كِتَـٰبٍۢ — is the 'dot' the kasratan's twin stroke?",
+   "title": "p540: كِتَـٰبٍۢ — kasratan is missing its twin stroke",
    "evidence": "kasratan single at (34.5,396.4); a 'dot' at (35.8,393.3) beside it. Either the twin stroke misnamed, or بٍ's letter dot.",
-   "proposal": "The 'dot' is the kasratan's twin: weld as the pair.",
+   "proposal": "The 'dot' is the second stroke → weld them as one kasratan.",
    "alternatives": [
     "it is بِ's letter dot — twin genuinely lost"
    ],
-   "state": "pending"
+   "state": "pending",
+   "found": "One kasratan stroke + a small 'dot' right next to it.",
+   "expected": "This print draws kasratan as TWO strokes."
   },
   {
    "id": "P11",
@@ -152,13 +158,15 @@
    "key": "70:4:6",
    "focus_x": 319.8,
    "focus_y": 461.3,
-   "title": "يَوْمٍۢ — kasratan twin absent from the word",
+   "title": "p568: يَوْمٍۢ — kasratan twin missing completely",
    "evidence": "kasratan single; no twin anywhere in the word. Neighbour or print-fact.",
-   "proposal": "You look: is the second stroke drawn nearby (which word holds it)?",
+   "proposal": "Look: is the second stroke drawn nearby (in another word), or does the print draw only one here?",
    "alternatives": [
     "print draws a single stroke here (record as convention)"
    ],
-   "state": "pending"
+   "state": "pending",
+   "found": "Only one kasratan stroke in the word.",
+   "expected": "Two strokes."
   },
   {
    "id": "P12",
@@ -166,13 +174,15 @@
    "key": "78:26:1",
    "focus_x": 139.1,
    "focus_y": 448.5,
-   "title": "جَزَآءًۭ — weld the adjacent 'fatha' as the fathatan pair?",
+   "title": "p582: جَزَآءًۭ — split fathatan pair",
    "evidence": "fathatan at (139.1,448.5) + a 'fatha' at (146.0,448.6), 7u apart.",
-   "proposal": "They are one open-tanween pair: weld and name fathatan.",
+   "proposal": "Weld the two strokes as the pair.",
    "alternatives": [
     "the fatha belongs to the ء"
    ],
-   "state": "pending"
+   "state": "pending",
+   "found": "A fathatan stroke + a separate 'fatha' 7u away at the same height.",
+   "expected": "One fathatan PAIR."
   },
   {
    "id": "P13",
@@ -180,11 +190,13 @@
    "key": "47:15:10",
    "focus_x": 146.9,
    "focus_y": null,
-   "title": "غَيْرِ — kasra 2.3u ABOVE the band top",
+   "title": "p508: غَيْرِ — a kasra ABOVE the word",
    "evidence": "a 'kasra' above the word: swapped name or stolen from above?",
-   "proposal": "You look and say which word/side it belongs to.",
+   "proposal": "You look: whose stroke is it (this word / word above / a fatha)?",
    "alternatives": [],
-   "state": "pending"
+   "state": "pending",
+   "found": "A stroke named kasra sits above the top of the word.",
+   "expected": "Kasra sits below its letter."
   },
   {
    "id": "P14",
@@ -192,11 +204,13 @@
    "key": "24:3:14",
    "focus_x": null,
    "focus_y": null,
-   "title": "مُشْرِكٌۭ — confirm the R7 meem→tanween-stroke rename here",
+   "title": "p350: مُشْرِكٌۭ — its 'م sign' is really a tanween stroke",
    "evidence": "R7 says its 'meem-iqlab' is the tanween's second stroke (8.8u from its twin). The word audits clean otherwise.",
-   "proposal": "Approve the rename (part of the 926-word R7 family).",
+   "proposal": "Rename it as the tanween's second stroke.",
    "alternatives": [],
-   "state": "pending"
+   "state": "pending",
+   "found": "A mark named meem-iqlab, 8.8u from the tanween stroke.",
+   "expected": "This print draws NO small م at this kind of position (only at true iqlab)."
   },
   {
    "id": "P15",
@@ -204,12 +218,14 @@
    "key": "29:26:3",
    "focus_x": null,
    "focus_y": null,
-   "title": "Rare stop shapes ۘ ۜ — do their outlines exist in the label table at all?",
+   "title": "Rare stop signs ۘ and ۜ",
    "evidence": "p399 لُوطٌۘ and p525's small-seen ۜ can never be marked if their signatures are absent from labels.json — structurally unreachable by any pass.",
-   "proposal": "Label-sheet item: confirm the drawn shapes and label their signatures (visual agent may resolve part of this).",
+   "proposal": "The visual agent named them and p399/p525 were fixed — confirm they look right on the page.",
    "alternatives": [],
    "state": "partial",
-   "state_note": "ۜ and ۘ signatures labeled by the visual agent; p399/p525 recovered — confirm on the page"
+   "state_note": "ۜ and ۘ signatures labeled by the visual agent; p399/p525 recovered — confirm on the page",
+   "found": "These shapes had no names in our table, so they could never be marked.",
+   "expected": "Every stop sign drawn in the print should be markable."
   },
   {
    "id": "P16",

@@ -5,6 +5,9 @@ header{position:sticky;top:0;background:#fffdf8;border-bottom:1px solid #ddd7c6;
  padding:10px 22px;z-index:5}
 header a{color:#245a9e;text-decoration:none;margin-right:2px}
 main{max-width:1000px;margin:0 auto;padding:10px 22px 80px}
+.plain{font-size:16px;background:#fffdf8;border-left:4px solid #245a9e;
+ padding:10px 14px;max-width:70ch}
+details summary{cursor:pointer;color:#245a9e;font-size:13.5px;margin:8px 0}
 section{border-bottom:2px solid #ddd7c6;padding:14px 0 26px}
 h1{font-size:22px} h2{font-size:18px} h3{font-size:16px}
 .tw{overflow-x:auto} table{border-collapse:collapse;font-size:13.5px}
@@ -15,9 +18,15 @@ code{background:#f0eee5;padding:1px 4px;border-radius:3px}
 .gal img{max-width:100%;background:#fff;border:1px solid #ddd}
 figcaption{font-size:11.5px;color:#6c675d}
 </style></head><body>
-<header><b>All defect reports</b> — certain 16 · high 265 · review 654 · fixed-cards 0 ·
+<header><b>All defect reports</b> — certain 16 · high 242 · review 654 · fixed-cards 0 ·
 <a href="/confidence">confidence</a> · <a href="/proposals">proposals</a> ·
-<a href="?list=1">raw files</a><br><a href="#pause_damma_report">pause damma report</a> · <a href="#compound_sajdah_report">compound sajdah report</a> · <a href="#lsolve_report">lsolve report</a> · <a href="#bodyfix_report">bodyfix report</a> · <a href="#visual_labels_report">visual labels report</a> · <a href="#marktype_verification">marktype verification</a> · <a href="#marktype_rules">marktype rules</a> · <a href="#xband_proposals">xband proposals</a> · <a href="#iqlab_notation">iqlab notation</a> · <a href="#manual_review">manual review</a></header><main><section id="pause_damma_report"><h1>pause damma report</h1><h2>Pause + damma recoveries — round-7 verdicts and R11 blobs, applied</h2>
+<a href="?list=1">raw files</a><br><a href="#pause_damma_report">pause damma report</a> · <a href="#compound_sajdah_report">compound sajdah report</a> · <a href="#lsolve_report">lsolve report</a> · <a href="#bodyfix_report">bodyfix report</a> · <a href="#visual_labels_report">visual labels report</a> · <a href="#marktype_verification">marktype verification</a> · <a href="#marktype_rules">marktype rules</a> · <a href="#xband_proposals">xband proposals</a> · <a href="#iqlab_notation">iqlab notation</a> · <a href="#manual_review">manual review</a></header><main>
+<section><h1>what you need to do</h1><ol style="font-size:16px;line-height:2">
+<li><a href="/proposals">Proposals page</a> — 6 pending cards. Pick an answer on each, press Copy, paste to Claude.</li>
+<li><a href="/confidence">Confidence page</a> — filter "certain" (16 cards): mark each ✓ real or ✗ not.</li>
+<li>Same page, filter "fixed" (green cards): quick glance that the repairs look right.</li>
+<li>Below on THIS page: "visual labels report" sections B and C — the hamza shapes only you can name.</li>
+</ol></section><section id="pause_damma_report"><h1>pause damma report</h1><p class="plain">Fixed: all 11 pause signs you flagged (they were drawn but held by the wrong word or counted as letters) and 3 missing dammas. Also lists 7 words we could NOT fix safely, each with the reason.</p><details><summary>full technical report</summary><h2>Pause + damma recoveries — round-7 verdicts and R11 blobs, applied</h2>
 <p>Repairs for Abdullah&#x27;s round-7 pause family (11 confirmed verdicts), the three</p>
 <p>R11 damma blobs, and a re-audit of the rounds-5/6 single-surplus words.</p>
 <p>Detection was already done (two signals each, <code>docs/defects/marktype_rules.md</code></p>
@@ -154,8 +163,8 @@ figcaption{font-size:11.5px;color:#6c675d}
 </ul>
 <p>Data backups: <code>.cache/review/kinds.json.bak-pause</code>,</p>
 <p><code>.cache/review/overrides.json.bak-pause</code>,</p>
-<p><code>.cache/marks/waqf_places.json.bak-pause</code>.</p></section>
-<section id="compound_sajdah_report"><h1>compound sajdah report</h1><h2>Letter-space compounds (p254) and sajdah policy P5 — 2026-08-27</h2>
+<p><code>.cache/marks/waqf_places.json.bak-pause</code>.</p></details></section>
+<section id="compound_sajdah_report"><h1>compound sajdah report</h1><p class="plain">Fixed: p254&#x27;s بعد ما (the two-part word that broke its whole line) and the sajdah signs (checked all 15; fixed 2).</p><details><summary>full technical report</summary><h2>Letter-space compounds (p254) and sajdah policy P5 — 2026-08-27</h2>
 <p>Both tasks adopted default-ON, each behind its own env switch for A/B</p>
 <p>(<code>QSVG_SPACESPLIT</code>, <code>QSVG_SAJ</code>). All edits in <code>tools/assign_words.py</code>.</p>
 <h3>Task 1 — p254 بَعْدَ مَا (13:37:8), reported.json item 20</h3>
@@ -243,8 +252,8 @@ figcaption{font-size:11.5px;color:#6c675d}
 <li>New env switches: <code>QSVG_SPACESPLIT</code> (compound split, default ON),</li>
 </ul>
 <p>  <code>QSVG_SAJ</code> (sajdah recovery + homing, default ON),</p>
-<p>  <code>QSVG_LDBG</code> (trace <code>_ink_refine</code> / hill-climb line moves).</p></section>
-<section id="lsolve_report"><h1>lsolve report</h1><h2>Line-set solver (<code>QSVG_LSOLVE</code>) — trial report, 2026-08-27</h2>
+<p>  <code>QSVG_LDBG</code> (trace <code>_ink_refine</code> / hill-climb line moves).</p></details></section>
+<section id="lsolve_report"><h1>lsolve report</h1><p class="plain">The new solver that moves each mark back to the word it is drawn over, whole line at a time. Fixed p350, p371, p599 and more. 3 cases need your eye — listed at the end.</p><details><summary>full technical report</summary><h2>Line-set solver (<code>QSVG_LSOLVE</code>) — trial report, 2026-08-27</h2>
 <p>The ownership rule implemented as a global re-solve, per the contract in</p>
 <p><code>docs/superpowers/plans/2026-08-26-certain-defect-fixes.md</code>. <b>Default OFF</b>;</p>
 <p>enable with <code>QSVG_LSOLVE=1</code>. Lives at the very end of <code>assign_page</code> in</p>
@@ -394,8 +403,8 @@ figcaption{font-size:11.5px;color:#6c675d}
 <p>pages can rise on audit_marks alone while falling combined), so the sweep</p>
 <p>comparison should be read on marks+intervals combined, with element dumps for</p>
 <p>any page that rises. Do not remove the orphan/stray/xband passes yet — this</p>
-<p>pass runs after them and was measured with them on.</p></section>
-<section id="bodyfix_report"><h1>bodyfix report</h1><h2>Body-steal repairs — approved batch (P9, P7, P8, P6, P2)</h2>
+<p>pass runs after them and was measured with them on.</p></details></section>
+<section id="bodyfix_report"><h1>bodyfix report</h1><p class="plain">The 5 word-theft repairs you approved (p341 chain, p59, p535, p437, p596). Before/after pictures are at the bottom of this page.</p><details><summary>full technical report</summary><h2>Body-steal repairs — approved batch (P9, P7, P8, P6, P2)</h2>
 <p>2026-08-27. The five approved repairs from <code>docs/defects/proposals.json</code></p>
 <p>(<code>decisions</code> block). All implemented as DATA — geometry-keyed entries in</p>
 <p><code>.cache/review/overrides.json</code>, <code>.cache/review/kinds.json</code>,</p>
@@ -530,8 +539,8 @@ figcaption{font-size:11.5px;color:#6c675d}
 <p>Ownership and counts identical to baseline — same precedent as the iqlab</p>
 <p>naming-visibility interval rise in CLAUDE.md. The word is the p418 33:3</p>
 <p>tangle already carrying 13 overrides, and the surplus itself is line-set</p>
-<p>solver material (P1 family).</p></section>
-<section id="visual_labels_report"><h1>visual labels report</h1><h2>Visual classification of unlabeled mark signatures</h2>
+<p>solver material (P1 family).</p></details></section>
+<section id="visual_labels_report"><h1>visual labels report</h1><p class="plain">An agent looked at every unnamed mark shape (332) and named 271 safely. 61 need YOU: mostly hamza shapes only a human may call. Sections B and C are your list.</p><details><summary>full technical report</summary><h2>Visual classification of unlabeled mark signatures</h2>
 <p>Agent pass, 2026-08-26. Every mark element on all 604 pages whose shape signature was missing from <code>.cache/marks/labels.json</code> (or that carried no mark name) was enumerated, rendered in context (target ink in red, surroundings in black), and classified by eye. 332 unlabeled signatures, 3,050 occurrences. Rendered evidence: contact sheets in <code>.cache/review/visual-labels/sheets/</code> (one tile per exemplar, labeled <code>sig n=count page_key</code>), one PNG per exemplar in <code>.cache/review/visual-labels/png/</code>.</p>
 <p>PNG file names below live in <code>.cache/review/visual-labels/png/</code>.</p>
 <h3>How to read this</h3>
@@ -988,8 +997,8 @@ figcaption{font-size:11.5px;color:#6c675d}
 <li><b>slash halves / small iqlab meems</b> — mostly &quot;(nothing there)&quot;: the reference draws the kasratan pair and the fused tanween+meem as one path offset from our half-strokes, so no overlapping piece exists. Not a contradiction.</li>
 <li><b>hamza queue (section B)</b> — the reference splits them: 8 signatures it calls <code>text/ء</code>, 21 it calls <code>diacritic/hamza</code>. Each queue item in <code>visual_label_queue.json</code> now carries a <code>mushafdatabase_calls_it</code> field, so most of section B can be settled by reading that field against the exemplar.</li>
 </ul>
-<p>No applied label was contradicted by the reference; nothing was reverted.</p></section>
-<section id="marktype_verification"><h1>marktype verification</h1><h2>Adversarial verification of the mark-type audit (marktype_flags.json, 1,093 flags)</h2>
+<p>No applied label was contradicted by the reference; nothing was reverted.</p></details></section>
+<section id="marktype_verification"><h1>marktype verification</h1><p class="plain">A second agent double-checked the rules agent. It confirmed the detections but caught one WRONG fix before it shipped (it would have turned ~900 letters into marks silently).</p><details><summary>full technical report</summary><h2>Adversarial verification of the mark-type audit (marktype_flags.json, 1,093 flags)</h2>
 <p>Independent check, 2026-08-26. Method: (1) external arbitration of R7 against</p>
 <p>MushafDatabase&#x27;s decomposition of the same artwork, by registered geometry, not</p>
 <p>labels; (2) a blind visual pass — 68 flags sampled across all adopted rules +</p>
@@ -1155,8 +1164,8 @@ figcaption{font-size:11.5px;color:#6c675d}
 <p>target, so red sometimes covers an adjacent mark; weld members further than</p>
 <p>1.5u stay black, so &quot;the twin is black&quot; never proved unwelded (R4 was verified</p>
 <p>from <code>mem</code> counts, not colour). Blind-sample crops were rendered from freshly</p>
-<p>generated page SVGs (current pipeline), not the possibly stale review cache.</p></section>
-<section id="marktype_rules"><h1>marktype rules</h1><h2>Mark-type rules — measured, challenged, adopted or rejected</h2>
+<p>generated page SVGs (current pipeline), not the possibly stale review cache.</p></details></section>
+<section id="marktype_rules"><h1>marktype rules</h1><p class="plain">The measured rules for what each mark family may look like (position, size, pairs). Technical reference.</p><details><summary>full technical report</summary><h2>Mark-type rules — measured, challenged, adopted or rejected</h2>
 <p>Companion to <code>tools/audit_marktype.py</code> (2026-08-26). Every threshold here was</p>
 <p>derived from a mushaf-wide distribution measured FIRST on the CLEAN subset —</p>
 <p>words with no flag in <code>.cache/sweeps/xband</code> and no confirmed visual verdict —</p>
@@ -1401,8 +1410,8 @@ figcaption{font-size:11.5px;color:#6c675d}
 <p>pixelfail 0, same 5 budget-mismatch words); audit_marks on the 20 touched</p>
 <p>pages: 6 flagged words before, 6 after, zero rows added or resolved;</p>
 <p>audit_marktype on those pages: <b>97 flags → 10</b>, every survivor a genuine</p>
-<p>ownership/lost-twin case, no new flags anywhere.</p></section>
-<section id="xband_proposals"><h1>xband proposals</h1><h2>Cross-line steal family — QSVG_XBAND trial proposals</h2>
+<p>ownership/lost-twin case, no new flags anywhere.</p></details></section>
+<section id="xband_proposals"><h1>xband proposals</h1><p class="plain">The cross-line steal fixes: which marks were returned to the word above/below, and which cases were refused and why.</p><details><summary>full technical report</summary><h2>Cross-line steal family — QSVG_XBAND trial proposals</h2>
 <p>Generated 2026-08-26. TRIAL ONLY: the pass lives in <code>tools/assign_words.py</code> behind</p>
 <p><code>QSVG_XBAND</code> (<b>default OFF</b>). Nothing is committed and nothing runs unless the</p>
 <p>switch is set. Every measurement below was taken with <code>QSVG_XBAND=1</code> explicitly.</p>
@@ -1566,8 +1575,8 @@ figcaption{font-size:11.5px;color:#6c675d}
 <li>The exchange&#x27;s give-back overlap is strict (−2u). Relaxing to −6u admits a</li>
 </ul>
 <p>  p577 إِلَّآ/يَخَافُونَ swap but the returned fatha lands in يَذْكُرُونَ&#x27;s</p>
-<p>  exclusive core (+1 interval flag) — a three-way chain; left refused.</p></section>
-<section id="iqlab_notation"><h1>iqlab notation</h1><h2>Iqlab is drawn as ONE haraka + small meem, not tanween + meem</h2>
+<p>  exclusive core (+1 interval flag) — a three-way chain; left refused.</p></details></section>
+<section id="iqlab_notation"><h1>iqlab notation</h1><p class="plain">Why this print writes iqlab as ONE stroke + small م, and everything in the code that had to learn that.</p><details><summary>full technical report</summary><h2>Iqlab is drawn as ONE haraka + small meem, not tanween + meem</h2>
 <p>Reported by Abdullah 2026-08-26. Verified against the texts and the ink.</p>
 <h3>The convention, measured</h3>
 <p>At an iqlab position the three sources disagree about what exists:</p>
@@ -1641,8 +1650,8 @@ figcaption{font-size:11.5px;color:#6c675d}
 <p>  way counting uthmani&#x27;s <code>ٌ</code> as a stroke pair is.</p>
 <ul>
 <li>Correct the stale comments in <code>audit_marks.py:33</code> and <code>ref_kinds.py:88</code> when touched.</li>
-</ul></section>
-<section id="manual_review"><h1>manual review</h1><h2>What still needs a person</h2>
+</ul></details></section>
+<section id="manual_review"><h1>manual review</h1><p class="plain">Older manual review notes.</p><details><summary>full technical report</summary><h2>What still needs a person</h2>
 <p>Everything a rule could settle has been settled. These are the decisions left, and they are of four different kinds — each needs something different from you.</p>
 <div class="tw"><table>
 <tr><td>what</td><td>how many</td><td>what the decision is</td></tr>
@@ -2414,6 +2423,6 @@ figcaption{font-size:11.5px;color:#6c675d}
 <div class="tw"><table>
 <tr><td>word</td><td>key</td><td>what</td><td>why</td></tr>
 <tr><td>لِرَبِّهِۦ</td><td><code>100:6:3</code></td><td>we look right, confirm</td><td>their width is off by 15.56, ours by 11.01</td></tr>
-</table></div></section>
+</table></div></details></section>
 <section id="bodyfix_evidence"><h1>bodyfix_evidence (10 images)</h1><div class="gal"><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p059_ma_after.png"><figcaption>p059_ma_after.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p059_ma_before.png"><figcaption>p059_ma_before.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p341_line2-3_after.png"><figcaption>p341_line2-3_after.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p341_line2-3_before.png"><figcaption>p341_line2-3_before.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p437_judad_after.png"><figcaption>p437_judad_after.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p437_judad_before.png"><figcaption>p437_judad_before.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p535_la-barid_after.png"><figcaption>p535_la-barid_after.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p535_la-barid_before.png"><figcaption>p535_la-barid_before.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p596_line2_after.png"><figcaption>p596_line2_after.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/bodyfix_evidence/p596_line2_before.png"><figcaption>p596_line2_before.png</figcaption></figure></div></section>
 <section id="marktype_verify"><h1>marktype_verify (98 images)</h1><div class="gal"><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q01.png"><figcaption>blind/q01.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q02.png"><figcaption>blind/q02.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q03.png"><figcaption>blind/q03.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q04.png"><figcaption>blind/q04.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q05.png"><figcaption>blind/q05.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q06.png"><figcaption>blind/q06.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q07.png"><figcaption>blind/q07.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q08.png"><figcaption>blind/q08.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q09.png"><figcaption>blind/q09.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q10.png"><figcaption>blind/q10.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q11.png"><figcaption>blind/q11.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q12.png"><figcaption>blind/q12.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q13.png"><figcaption>blind/q13.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q14.png"><figcaption>blind/q14.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q15.png"><figcaption>blind/q15.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q16.png"><figcaption>blind/q16.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q17.png"><figcaption>blind/q17.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q18.png"><figcaption>blind/q18.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q19.png"><figcaption>blind/q19.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q20.png"><figcaption>blind/q20.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q21.png"><figcaption>blind/q21.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q22.png"><figcaption>blind/q22.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q23.png"><figcaption>blind/q23.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q24.png"><figcaption>blind/q24.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q25.png"><figcaption>blind/q25.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q26.png"><figcaption>blind/q26.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q27.png"><figcaption>blind/q27.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q28.png"><figcaption>blind/q28.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q29.png"><figcaption>blind/q29.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q30.png"><figcaption>blind/q30.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q31.png"><figcaption>blind/q31.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q32.png"><figcaption>blind/q32.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q33.png"><figcaption>blind/q33.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q34.png"><figcaption>blind/q34.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q35.png"><figcaption>blind/q35.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q36.png"><figcaption>blind/q36.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q37.png"><figcaption>blind/q37.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q38.png"><figcaption>blind/q38.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q39.png"><figcaption>blind/q39.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q40.png"><figcaption>blind/q40.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q41.png"><figcaption>blind/q41.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q42.png"><figcaption>blind/q42.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q43.png"><figcaption>blind/q43.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q44.png"><figcaption>blind/q44.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q45.png"><figcaption>blind/q45.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q46.png"><figcaption>blind/q46.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q47.png"><figcaption>blind/q47.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q48.png"><figcaption>blind/q48.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q49.png"><figcaption>blind/q49.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q50.png"><figcaption>blind/q50.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q51.png"><figcaption>blind/q51.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q52.png"><figcaption>blind/q52.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q53.png"><figcaption>blind/q53.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q54.png"><figcaption>blind/q54.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q55.png"><figcaption>blind/q55.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q56.png"><figcaption>blind/q56.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q57.png"><figcaption>blind/q57.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q58.png"><figcaption>blind/q58.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q59.png"><figcaption>blind/q59.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q60.png"><figcaption>blind/q60.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q61.png"><figcaption>blind/q61.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q62.png"><figcaption>blind/q62.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q63.png"><figcaption>blind/q63.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q64.png"><figcaption>blind/q64.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q65.png"><figcaption>blind/q65.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q66.png"><figcaption>blind/q66.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q67.png"><figcaption>blind/q67.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q68.png"><figcaption>blind/q68.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q69.png"><figcaption>blind/q69.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q70.png"><figcaption>blind/q70.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q71.png"><figcaption>blind/q71.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q72.png"><figcaption>blind/q72.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q73.png"><figcaption>blind/q73.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q74.png"><figcaption>blind/q74.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q75.png"><figcaption>blind/q75.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q76.png"><figcaption>blind/q76.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q77.png"><figcaption>blind/q77.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q78.png"><figcaption>blind/q78.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q79.png"><figcaption>blind/q79.png</figcaption></figure><figure><img loading="lazy" src="/docs/defects/marktype_verify/blind/q80.png"><figcaption>blind/q80.png</figcaption></figure></div></section></main></body></html>

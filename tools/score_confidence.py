@@ -804,6 +804,13 @@ const flagSel = document.getElementById("flagSel");
 {
   const all = new Set();
   cards.forEach(c => (c.dataset.flags || "").split(" ").forEach(t => t && all.add(t)));
+  for (const tr of ["certain","high","review","fixed"]) {
+    const n = cards.filter(c => c.dataset.tier === tr).length;
+    if (!n) continue;
+    const o = document.createElement("option");
+    o.value = "tier:" + tr; o.textContent = `tier: ${tr} (${n})`;
+    flagSel.appendChild(o);
+  }
   [...all].sort().forEach(t => {
     const n = cards.filter(c => (" "+c.dataset.flags+" ").includes(" "+t+" ")).length;
     const o = document.createElement("option");
@@ -816,7 +823,9 @@ function applyFilters(){
   const t = flagSel.value;
   cards.forEach(c => {
     const okTier = !certOnly || c.dataset.tier === "certain";
-    const okFlag = !t || (" "+c.dataset.flags+" ").includes(" "+t+" ");
+    const okFlag = !t || (t.startsWith("tier:")
+        ? c.dataset.tier === t.slice(5)
+        : (" "+c.dataset.flags+" ").includes(" "+t+" "));
     c.style.display = (okTier && okFlag) ? "" : "none";
   });
 }
