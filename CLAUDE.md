@@ -29,7 +29,7 @@ is never committed anywhere.
 | Pages clean (marks+intervals) | 276 | **489** of 604 |
 | Pages clean incl. mark-TYPE audit | — | **461** of 604 (119 marktype flags) |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
-| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 78 over 14 pages, no failures, pixelfail 0 |
+| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 84 over 15 pages (p17 added as pixel case), no failures, pixelfail 0 |
 
 **"Clean" is always relative to the audits that exist** (Abdullah, 2026-08-26,
 after budget-neutral thefts and the R7 family were found living on "clean"
@@ -42,9 +42,25 @@ the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's. Current sweep: `.cache/sweeps/dkseg`
-(post-DKSEG, measured 2026-08-27: page-for-page IDENTICAL to
-`.cache/sweeps/reseat` — the segmentation migration moved zero flags).
+so they are not comparable to today's. Current sweep: `.cache/sweeps/pixfix`
+(marks 109, intervals 79, clean 489 — the +2 marks vs dkseg are p599's
+one-line ownership chain REVEALED when the emitter stopped double-listing a
+welded element; p123/p350 improved for the same reason).
+
+**Pixel identity became a proven, gated invariant 2026-08-27** after Abdullah
+caught displaced/duplicated marks by eye on p17 (a قلى drawn twice, once
+displaced). Four emitter defects, all pre-dating the session: cross-path
+emission without frame compensation, fully-drained source paths re-emitted
+verbatim, wordless header lines appended twice, and `_cl`'s memo key
+colliding on identical basmalah lines (p604 lines 6/11 got line 2's cached
+atoms). All fixed at cause in `rewrite()`/`_cl`; `tools/audit_pixels.py` now
+proves every page two ways — contour-multiset conservation (nothing added or
+removed, catches pixel-invisible same-position duplicates) and raster diff
+vs the artwork (nothing moved; tol 24/255, seam allowance 10 px inside a
+measured empty band: touching-contour AA seams are 1-3 px, the smallest real
+defect was 100+). The emitted SVG also wraps header ink in
+`<g class="surah-name"|"basmalah" data-surah="N">` driven by the DK layout
+DB's line_type (QSVG_HDR).
 
 Two figures need context. **Bench** now covers 12 pages (143 and 222 were added as
 iqlab cases); on the previous 10-page set the score is still 76, and the +3 is one
@@ -123,6 +139,7 @@ After anything touching the artwork or the line cut, also run
 | `tools/score_both.py` | how we compare to MushafDatabase on outside evidence | anything both get wrong |
 | `tools/score_confidence.py` | ALL of the above in one pass, combined into a per-mark/word/page P(defect): proof-class violations (empty bands, arithmetic) ⇒ CERTAIN, soft priors noisy-OR'd ⇒ HIGH/REVIEW. Ranked output `docs/defects/confidence.html`, per-page JSON `.cache/confidence/pages/` | anything every input metric is blind to; line placement only via `--ref` |
 | `tools/text_source.py` | which published text this print was set from | — |
+| `tools/audit_pixels.py` | ink added/removed (contour conservation) or moved (raster vs artwork), all 604 pages | AA seams under 10 px; semantic mis-labels |
 
 `tools/audit_split.py` is named above in older notes but **does not exist in the repo**.
 `audit_lines.py` and `verify_render.py` do.
@@ -419,8 +436,13 @@ Both +1 versus the session baseline; neither is explained.
   convention (which the pipeline already expresses once, as the print-gated meem rule)
   DK is 17 differs vs the composite's 20 — a tie, from one source instead of two. Not
   adopted for budgets: swapping would re-key every tanween count for zero measured gain.
-  DK is canonical for SEGMENTATION/LAYOUT/KEYS (QSVG_DKSEG, dk_lines); text stays
-  uthmani + KFGQPC waqf.
+  DK is canonical for SEGMENTATION/LAYOUT/KEYS (QSVG_DKSEG, dk_lines). **Then
+  adjudicated by eye 2026-08-27 (docs/defects/text_contest_eyes.json): of the 21
+  sites where the finalists differ from MushafDatabase, 16 are shared referee
+  errors; ALL FIVE genuine disagreements went DK's way (3 maddah, 1 hamza, 1
+  small-waw — each a composite budget error). DK is strictly better on
+  adjudicated ink; budget-source migration to DK text is approved in principle
+  and pending as its own measured phase.**
 - Human input is captured as DATA — shapes to `labels.json`, places to
   `overrides.json` — never as a code edit.
 - Every hard-won fix should become a bench case, or it comes back.
