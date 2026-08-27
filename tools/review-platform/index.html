@@ -1022,6 +1022,8 @@ async function renderQueue() {
         <button class="danger" data-act="reject">Reject</button>
         <button data-act="edit">Edit…</button>
       </div>
+      <textarea class="qnote" placeholder="note (saved with your decision)"
+        style="width:100%;min-height:34px;margin-top:6px;border:1px solid var(--line);border-radius:6px;padding:6px;font:inherit"></textarea>
       <textarea class="qedit">${JSON.stringify(e.payload, null, 2)}</textarea>`;
     item.append(ctx, body);
     m.appendChild(item);
@@ -1034,12 +1036,15 @@ async function renderQueue() {
           try { payload = JSON.parse(ta.value); }
           catch { alert("Invalid JSON"); return; }
           await api("/api/review", {id: e.id, action: "amend",
-            amended_payload: payload, reviewer: USER});
+            amended_payload: payload, reviewer: USER,
+            note: body.querySelector(".qnote").value.trim() || undefined});
           item.remove();
         } else { ta.style.display = "block"; b.textContent = "Save amended & approve"; }
         return;
       }
-      await api("/api/review", {id: e.id, action: act, reviewer: USER});
+      const note = body.querySelector(".qnote").value.trim();
+      await api("/api/review", {id: e.id, action: act, reviewer: USER,
+                                note: note || undefined});
       item.remove();
     });
   });
