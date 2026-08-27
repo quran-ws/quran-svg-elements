@@ -334,6 +334,31 @@
    "reported": "Abdullah: adopt DigitalKhatt/QUL (the print's model) for word segmentation; work must be standardized, not patchwork",
    "cause": "QSVG_DKSEG default ON: DK splits بعد ما in all three ayahs (later positions +1); إل ياسين and دائرة stay fused because DK fuses them (the p117 space is quran.com's own typo). All consumers remapped (widths shim, lines, overrides, verdicts). Two latent line defects found and fixed by the rebuild (p27 L15, p177 L12). p254 now emits TWO word groups; MushafDatabase alignment 1:1 on all three ayahs. Bench improved to 78.",
    "status": "adopted 2026-08-27"
+  },
+  {
+   "id": 32,
+   "date": "2026-08-27",
+   "page": 586,
+   "words": [
+    "هو",
+    "بقول (e784 fatha->kasra of bqwl; e788 kasra->fatha of hw)"
+   ],
+   "reported": "Slash-stroke EXCHANGE between adjacent words: e784 (upper stroke) is بقول's kasra but named fatha and owned by هو; e788 (lower) is هو's fatha but named kasra and owned by بقول. Budgets balance both sides, every counting audit silent — a mutual budget-neutral theft.",
+   "turned_out": "The slash families are excluded from neighbour-transfer movers (moving one reopens naming for both words), so a MUTUAL exchange survives untouched. Needs an exchange-specific rule: detect crossed pairs (each stroke over the OTHER word's letter ink), swap both, re-derive both names from position.",
+   "fixed": false,
+   "status": "family being measured mushaf-wide before the rule"
+  },
+  {
+   "id": 33,
+   "date": "2026-08-27",
+   "page": 590,
+   "words": [
+    "84:25:5 ٱلصَّـٰلِحَـٰتِ"
+   ],
+   "reported": "Word steals a dot from below — Abdullah read it as the ayah marker; the crop shows it is the dot of the ب in the surah title سورة البروج (line 2 is the header line). Same blob as the old p590 marksize case.",
+   "turned_out": "Measured mushaf-wide with dk_header_lines: 9 true thefts on 8 pages (p349 x3, p445 x2, p498, p555, p570, p590), 8 of 9 a last-line word reaching into the header line below; stolen marks are the superscript-recovery families (small-waw/maddah/small-alef), which hunt small glyphs and find title letters. Fix: ink on a DK-declared header line with no words is header ink — invisible to all word passes (except p1/p2-style lines the word stream lives on).",
+   "fixed": false,
+   "status": "rule queued behind the DK budget migration (same file)"
   }
  ]
 }
