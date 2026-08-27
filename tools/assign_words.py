@@ -7003,9 +7003,13 @@ def assign_page(edition, page_no, cache_dir):
                 for m in e.get("mkmembers", []):
                     m["mark"] = nm
 
+        # open tanween U+08F0-2 included: under QSVG_DKTEXT the budget text
+        # writes them at ~6,643 words, and a counter blind to them sees
+        # phantom mismatches — on p576 that made a wrong exchange look like
+        # an improvement.
         _FAMCH = {"fatha": "\u064e", "kasra": "\u0650",
-                  "fathatan": "\u064b", "kasratan": "\u064d",
-                  "damma": "\u064f", "dammatan": "\u064c"}
+                  "fathatan": "\u064b\u08f0", "kasratan": "\u064d\u08f2",
+                  "damma": "\u064f", "dammatan": "\u064c\u08f1"}
 
         def _off(rec):
             """How many ways this word's marks disagree with its spelling.
@@ -7019,10 +7023,10 @@ def assign_page(edition, page_no, cache_dir):
             other side of a letter and the family counts are meaningless.
             """
             n = 0
-            for fam, ch in _FAMCH.items():
+            for fam, chs in _FAMCH.items():
                 if sum(1 for e in rec["els"]
                        if e.get("mark") == fam and not e.get("mkpart")) \
-                        != rec["w"]["uthmani"].count(ch):
+                        != sum(rec["w"]["uthmani"].count(c) for c in chs):
                     n += 1
             if _held(rec["els"], "dots") != _want(rec["w"], "dots"):
                 n += 1
@@ -7164,6 +7168,56 @@ def assign_page(edition, page_no, cache_dir):
                     sys.stderr.write("      %-16s off=%d   %-16s off=%d\n"
                                      % (_r0["w"]["uthmani"], _off(_r0),
                                         _t0["w"]["uthmani"], _off(_t0)))
+            if sum(_off(r) for r in _line) > _before \
+                    and os.environ.get("QSVG_SLASHX", "1") == "1":
+                # Exchange completion (Abdullah's p586 هو/بقول, item 32): the
+                # geometric proposal finds only the leg with NO own-ink
+                # coverage; the counterpart stroke touches its holder's span
+                # (tight kerning) and is never proposed, so the half-exchange
+                # worsens counts and everything is rejected. When the one-way
+                # set fails, license ONE reciprocal per move: the receiving
+                # word's slash mark that most covers the donor's letters.
+                # Applied together and re-judged by the same line budget.
+                _undo(_plan, _snap)
+                _aug = list(_plan)
+                _moved = {id(m[2]) for m in _plan}
+                for _r, _t, _e in _plan:
+                    # geometry decides the reciprocal: it must cover the
+                    # donor's letters MORE than its own holder's (p586's
+                    # e784 sits over بقول's ب while merely touching هو).
+                    # Budget cannot judge these — a true mutual exchange is
+                    # exactly count-neutral — so the count below only vetoes.
+                    _cands = [x for x in _t["els"]
+                              if x.get("mark") in ("fatha", "kasra",
+                                                   "fathatan", "kasratan")
+                              and not x.get("mkpart") and id(x) not in _moved
+                              and _ovl(_r["b"], x)
+                              > 0.4 * (x["x2"] - x["x1"])]
+                    if _cands:
+                        _cand = max(_cands, key=lambda x: _ovl(_r["b"], x))
+                        _aug.append((_t, _r, _cand))
+                        _moved.add(id(_cand))
+                _adopted = False
+                if len(_aug) > len(_plan):
+                    _snap2 = _apply(_aug)
+                    # A true exchange is count-NEUTRAL (p586 هو/بقول: the two
+                    # misnames cancel, off 0 -> 0), so improvement can never
+                    # be the test. The test is PERFECTION: leg 1 is
+                    # geometrically certain (a floating mark over the other
+                    # word's letters), the reciprocal is budget-forced — and
+                    # a right exchange snaps EVERY touched word to exact
+                    # budget. Anything less is vetoed.
+                    _tch = {id(x): x for m in _aug for x in (m[0], m[1])}
+                    if (sum(_off(r) for r in _line) <= _before
+                            and all(_off(x) == 0 for x in _tch.values())):
+                        _plan, _snap, _adopted = _aug, _snap2, True
+                    else:
+                        _undo(_aug, _snap2)
+                if not _adopted:
+                    # leave the state exactly as the original flow expects:
+                    # plan applied, judged by the outer test (p576's silent
+                    # half-commit came from skipping this re-apply)
+                    _snap = _apply(_plan)
             if sum(_off(r) for r in _line) > _before:
                 _undo(_plan, _snap)
                 _kept = []
