@@ -26,10 +26,14 @@ def main():
             '<label><input type="radio" name="d-%s" value="alt%d"> %s</label>'
             % (it["id"], i, _html.escape(alt))
             for i, alt in enumerate(it.get("alternatives", [])))
+        st = it.get("state", "pending")
+        badge = ("" if st == "pending" else
+                 '<div class="badge b-%s">%s — %s</div>'
+                 % (st, st.upper(), _html.escape(it.get("state_note", ""))))
         cards.append(
-            '<div class="card" data-id="%s" data-page="%d" data-s="%s"'
-            ' data-a="%s" data-w="%s">'
-            '<h3>%s — <a href="/?page=%d&step=audit&word=%s" target=_blank>'
+            '<div class="card st-%s" data-state="%s" data-id="%s" data-page="%d" data-s="%s"'
+            ' data-a="%s" data-w="%s" data-fx="%s" data-fy="%s">'
+            '%s<h3>%s — <a href="/?page=%d&step=audit&word=%s" target=_blank>'
             'p%d %s</a></h3>'
             '<div class="ink"><span class="wait">…</span></div>'
             '<p class="ev">%s</p>'
@@ -42,7 +46,9 @@ def main():
             '</div>'
             '<textarea class="note" dir="auto" placeholder="comment…"></textarea>'
             '</div>'
-            % (it["id"], it["page"], s, a, w,
+            % (st, st, it["id"], it["page"], s, a, w,
+               it.get("focus_x") if it.get("focus_x") is not None else "",
+               it.get("focus_y") if it.get("focus_y") is not None else "", badge,
                _html.escape(it["title"]), it["page"], it["key"], it["page"],
                it["key"], _html.escape(it["evidence"]),
                _html.escape(it["proposal"]), it["id"], alts, it["id"]))
@@ -67,6 +73,10 @@ header button:hover{border-color:#245a9e;color:#245a9e}
   gap:14px;padding:16px}
 .card{border:1px solid #ddd7c6;border-radius:8px;background:#fff;padding:12px 14px}
 .card.decided{box-shadow:0 0 0 2px #245a9e;border-color:#245a9e}
+.badge{font-size:12px;font-weight:700;padding:3px 8px;border-radius:4px;margin-bottom:6px}
+.b-done{background:#e2f2e6;color:#1a7a3a}.b-superseded{background:#eee;color:#666}
+.b-partial{background:#fdf3dd;color:#8a6d00}
+.card.st-done,.card.st-superseded{opacity:.6}
 .card h3{margin:0 0 6px;font-size:14.5px}
 .card h3 a{color:#245a9e}
 .ink{min-height:90px;display:flex;align-items:center;justify-content:center;
@@ -88,6 +98,12 @@ header button:hover{border-color:#245a9e;color:#245a9e}
 const cards = [...document.querySelectorAll(".card")];
 const KEY = "proposal-decisions";
 let dec = JSON.parse(localStorage.getItem(KEY) || "{}");
+// a resolved card's old decision/comment is history — drop it automatically
+cards.forEach(c => {
+  if (c.dataset.state === "done" || c.dataset.state === "superseded")
+    delete dec[c.dataset.id];
+});
+localStorage.setItem(KEY, JSON.stringify(dec));
 function sync(){
   cards.forEach(c => {
     const d = dec[c.dataset.id];
@@ -163,6 +179,37 @@ async function renderInk(c){
     const wrap = document.createElementNS(NS,"g");
     wrap.setAttribute("transform",`matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f})`);
     wrap.appendChild(g.cloneNode(true)); clones.push(wrap);
+  }
+  // highlight the problem element in RED, wherever it lives on the page
+  let fx = parseFloat(c.dataset.fx), fy = parseFloat(c.dataset.fy);
+  if (!isNaN(fx) && !isNaN(fy)) {
+    // focus coords are PAGE units; getCTM maps to viewport px — rescale
+    const vb = svg.viewBox.baseVal;
+    const sc = (svg.clientWidth || 900) / (vb && vb.width || 345);
+    fx = (fx - (vb ? vb.x : 0)) * sc;
+    fy = (fy - (vb ? vb.y : 0)) * sc;
+    const tol = 1.8 * sc, toly = 3 * sc;
+    for (const p of svg.querySelectorAll("path")) {
+      let bb; try { bb = p.getBBox(); } catch(e){ continue; }
+      const m = p.getCTM();
+      const cx = m.a*bb.x + m.c*bb.y + m.e, cy = m.b*bb.x + m.d*bb.y + m.f;
+      // page y-axis is flipped inside the root transform: match on x plus
+      // proximity of either transformed corner to fy
+      const cy2 = m.b*(bb.x) + m.d*(bb.y+bb.height) + m.f;
+      if (Math.abs(cx - fx) < tol &&
+          (Math.abs(cy - fy) < toly || Math.abs(cy2 - fy) < toly)) {
+        const wrap = document.createElementNS(NS,"g");
+        wrap.setAttribute("transform",`matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f})`);
+        const cl = p.cloneNode(true); cl.setAttribute("fill", "#b3261e");
+        wrap.appendChild(cl); clones.push(wrap);
+        for (const [px,py] of [[bb.x,bb.y],[bb.x+bb.width,bb.y+bb.height]]) {
+          const x = m.a*px+m.c*py+m.e, y = m.b*px+m.d*py+m.f;
+          X1=Math.min(X1,x-3); Y1=Math.min(Y1,y-3);
+          X2=Math.max(X2,x+3); Y2=Math.max(Y2,y+3);
+        }
+        break;
+      }
+    }
   }
   const mini = document.createElementNS(NS,"svg");
   mini.setAttribute("viewBox",`${X1-4} ${Y1-4} ${X2-X1+8} ${Y2-Y1+8}`);

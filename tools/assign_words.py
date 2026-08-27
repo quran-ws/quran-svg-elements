@@ -8080,7 +8080,7 @@ def assign_page(edition, page_no, cache_dir):
         # cannot (nothing displaced, and it merged whole extra lines on
         # p350's first run). The solve itself is unchanged — receiver-room
         # guarded, applied only on a strict, unique improvement.
-        if os.environ.get("QSVG_LSCNT", "0") == "1":
+        if os.environ.get("QSVG_LSCNT", "1") == "1":
             _cbad = {id(r): r for r in _lrec
                      if _ls_count(r, _ls_sitting(r))}
             for _r in _cbad.values():
@@ -8221,7 +8221,7 @@ def assign_page(edition, page_no, cache_dir):
                                and abs(t["ln"] - _r["ln"]) <= 1]
                         if _sh:
                             _ents.append((_r, _e))
-            if not _vset and not (os.environ.get("QSVG_LSCNT", "0") == "1"
+            if not _vset and not (os.environ.get("QSVG_LSCNT", "1") == "1"
                                   and _ents):
                 continue          # count trigger alone, nothing displaced
             _ents.sort(key=lambda t: (t[1]["x1"], t[1]["y1"]))
