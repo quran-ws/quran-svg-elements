@@ -95,12 +95,111 @@ def page_words(page_no, cache_dir):
             ln = (qcf_lines.get("%s:%s" % (verse["verse_key"], w["position"]),
                                 w["line_number"]) if use_qcf
                   else w["line_number"])
+            ut = w["text_uthmani"]
+            if _dktext_on():
+                dt = _dktext(int(surah), int(ayah), w["position"])
+                # 5:52:12 دَآئِرَ ةٌ: the print draws two chunks and the
+                # composite's internal space carries that to _space_halves;
+                # the DK DB writes one token, so keep the composite there —
+                # a letter-space compound must not lose its space.
+                if dt is not None and not (_space_halves({"uthmani": ut})
+                                           and " " not in dt):
+                    ut = dt
             lines.setdefault(ln, []).append({
                 "surah": int(surah), "ayah": int(ayah), "pos": w["position"],
-                "uthmani": w["text_uthmani"], "imlaei": w["text_imlaei"],
+                "uthmani": ut, "imlaei": w["text_imlaei"],
                 "qpc": _dkseg_qpc(qpc, int(surah), int(ayah), w["position"]),
             })
     return lines
+
+
+# ---------------------------------------------------------------------------
+# QSVG_DKTEXT: mark budgets from the DigitalKhatt text — the print's own model
+# ---------------------------------------------------------------------------
+# The DK text (digital-khatt-v2.db, QUL export of the KFGQPC V2 1421H print)
+# won the ink adjudication 5-0 against the uthmani+QPC composite on every
+# genuinely disputed site (docs/defects/text_contest_eyes.json), and its 339
+# iqlab sites carry the print's real convention (ONE haraka + small م —
+# docs/defects/iqlab_notation.md) natively, so the tanween-pair rewrites stop
+# being needed where it is on. Off by default until accepted; when on, the
+# word's "uthmani" field carries the normalised DK text and every budget
+# reader downstream follows it unchanged.
+#
+# _dk_norm maps DK's encoding onto the conventions this file's tables
+# (HARAKA / HAMZA_MAP / DOTS / NONJOIN) are built around. Measured over all
+# 77,432 words against the composite (2026-08-27): after this normalisation
+# the two texts agree EXACTLY on segment count (0 diffs), letter dots
+# (0 diffs) and skeleton (2 diffs: 11:13:3, where quran.com writes the typo
+# افْتَرَاهُ, and one ر-seated hamza) — the only surviving budget deltas are
+# the documented content families: 6,643 phantom low meems dropped, 339 iqlab
+# tanween→haraka+م, 190 waqf, 3 maddah, 1 hamza, 1 wasla.
+_DK_TEXT = None
+
+
+def _dktext_on():
+    # Default ON since 2026-08-27: DK won the ink adjudication 5-0, the
+    # gate-ON build is better on every aggregate (marks 109->103, clean
+    # 489->494, bench 84->81), and Abdullah eye-confirmed the two exposed
+    # pages (p446, p90) as real pre-existing defects surfaced, not caused.
+    return os.environ.get("QSVG_DKTEXT", "1") == "1"
+
+
+def _dk_norm(t):
+    # rarities first: U+034F CGJ (5 sites) is invisible; U+08F3 SMALL HIGH WAW
+    # (17:7:12 only) is the suffix ۥ this art draws — fold to U+06E5 so the
+    # small-waw budget sees it.
+    t = t.replace("͏", "").replace("ࣳ", "ۥ")
+    # the imala dot of 11:41:6 مَجْرٜىٰهَا: DK writes U+065C, the composite
+    # U+06EA — same drawn dot, and the audit's pause table knows only U+06EA
+    t = t.replace("ٜ", "۪")
+    # DK writes every hamza/wasla seat decomposed (0 precomposed أإؤئ in the
+    # whole DB; seats are base + U+0654/0655, the final ya seat is ى+U+0654).
+    # Recompose to the precomposed forms HAMZA_MAP/dot_want key on — without
+    # this, a medial seat ي is charged its two dots (921 sites).
+    for a, b in (("أ", "أ"), ("إ", "إ"),
+                 ("ؤ", "ؤ"), ("ئ", "ئ"),
+                 ("ىٔ", "ئ")):
+        t = t.replace(a, b)
+    # Dotless-ya convention: DK writes ي where the composite writes ى at the
+    # 3,691 word-final / pre-ء positions (drawn dotless either way). Fold so
+    # letter_width and the per-segment dot prediction see the same letter.
+    ch = list(t)
+    for i, c in enumerate(ch):
+        if c != "ي":
+            continue
+        j = next((k for k in range(i + 1, len(ch))
+                  if _LETTER.match(ch[k])), None)
+        if j is None or ch[j] == "ء":
+            ch[i] = "ى"
+    return "".join(ch)
+
+
+def _dktext(s0, a0, pos):
+    """Normalised DK text for a word, in whichever keying QSVG_DKSEG selects."""
+    global _DK_TEXT
+    if _DK_TEXT is None:
+        _DK_TEXT = {}
+        p = os.path.join(ROOT, ".cache", "digitalkhatt", "digital-khatt-v2.db")
+        if os.path.exists(p):
+            import sqlite3
+            db = sqlite3.connect(p)
+            for loc, txt in db.execute("SELECT location, text FROM words"):
+                if loc.count(":") == 2 and not txt.startswith("۝"):
+                    _DK_TEXT[loc] = _dk_norm(txt)
+            db.close()
+    if not _DK_TEXT:
+        return None                       # DB absent: fall back to composite
+    if _dkseg_on():
+        return _DK_TEXT.get("%d:%d:%d" % (s0, a0, pos))
+    # fused keying: the compound position holds both DK halves
+    sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+    if sp is None or pos < sp:
+        return _DK_TEXT.get("%d:%d:%d" % (s0, a0, pos))
+    if pos == sp:
+        a = _DK_TEXT.get("%d:%d:%d" % (s0, a0, sp))
+        b = _DK_TEXT.get("%d:%d:%d" % (s0, a0, sp + 1))
+        return "%s %s" % (a, b) if a and b else None
+    return _DK_TEXT.get("%d:%d:%d" % (s0, a0, pos + 1))
 
 
 _QPC = {}
@@ -4421,8 +4520,8 @@ def assign_page(edition, page_no, cache_dir):
                               for _t in _TRACE.split(","))):
             import traceback as _tb
             _fr = _tb.extract_stack()[-2]
-            sys.stderr.write("MOVE line%-5d %-6s x %.1f-%.1f  %s -> %s\n"
-                             % (_fr.lineno, e["kind"], e["x1"], e["x2"],
+            sys.stderr.write("MOVE line%-5d %-6s/%s x %.1f-%.1f  %s -> %s\n"
+                             % (_fr.lineno, e["kind"], e.get("mark"), e["x1"], e["x2"],
                                 src["w"]["uthmani"], dst["w"]["uthmani"]))
         for a in src["at"]:
             if e in a["els"]:
@@ -5402,15 +5501,31 @@ def assign_page(edition, page_no, cache_dir):
         # MEEM rescue below keys on the print's text
         _ptx = r["w"].get("qpc") or txt
         _print_meem = "\u06e2" in _ptx or "\u06ed" in _ptx
-        want = [_IQTAN[txt[i]] for i in range(len(txt) - 1)
+        want = [_IQTAN[txt[i]] + (True,) for i in range(len(txt) - 1)
                 if txt[i] in _IQTAN and txt[i + 1] in ("\u06e2", "\u06ed")]
+        if _dktext_on():
+            # The DK text writes the print's OWN encodings, which the composite
+            # only implies: (a) the open tanween U+08F0-2 where quran.com
+            # writes plain tanween + a phantom \u06ed \u2014 the phantom was what fired
+            # this pass's stroke NAMING at all ~6,643 idgham/ikhfa sites, so
+            # the open char must fire it too (no meem rescue: _print_meem is
+            # false there); (b) true iqlab as PLAIN haraka + \u06e2/\u06ed \u2014 the budget
+            # wants the plain name, so no renaming, but the meem rescue and
+            # the demote of a shape-table tanween name still run (rename
+            # False). Both triggers are gated so QSVG_DKTEXT=0 is untouched.
+            _open = {"\u08f0": "\u064b", "\u08f1": "\u064c", "\u08f2": "\u064d"}
+            _plain = {"\u064e": "\u064b", "\u064f": "\u064c", "\u0650": "\u064d"}
+            want += [_IQTAN[_open[c]] + (True,) for c in txt if c in _open]
+            want += [_IQTAN[_plain[txt[i]]] + (False,)
+                     for i in range(len(txt) - 1)
+                     if txt[i] in _plain and txt[i + 1] in ("\u06e2", "\u06ed")]
         if not want:
             continue
         els = [e for a in r["at"] for e in a["els"]]
         rx1 = min((e["x1"] for e in els if e["kind"] == "body"), default=None)
         if rx1 is None:
             continue
-        for tan, base, plain_ch in want:
+        for tan, base, plain_ch, rename in want:
             # The stroke may ALREADY carry the tanween name (a single-outline
             # dammatan glyph labels straight from the shape table). That must
             # not skip the meem rescue below: this print draws iqlab as ONE
@@ -5418,6 +5533,26 @@ def assign_page(edition, page_no, cache_dir):
             # early exit here left the م counted as a letter piece in 12 words.
             mv = next((e for e in els
                        if e.get("mark") == tan and not e.get("mkpart")), None)
+            if mv is not None and not rename:
+                # DK iqlab: the budget says PLAIN haraka, so a shape-table
+                # tanween name on the single stroke is demoted to it (only a
+                # lone outline — a welded pair is two real strokes, not this)
+                if not mv.get("mkmembers"):
+                    mv["mark"] = base
+            if mv is None and not rename:
+                # anchor on the plain stroke the budget names, without renaming
+                fams = ("damma",) if base == "damma" else ("fatha", "kasra")
+                pool = [e for e in els if e.get("mark") in fams
+                        and not e.get("mkpart") and not e.get("mkmembers")]
+                if not pool:
+                    continue
+                bods = [e for e in els if e["kind"] == "body"]
+                mid = ((min(e["y1"] for e in bods) + max(e["y2"] for e in bods))
+                       / 2 if bods else 0.0)
+                below = tan == "kasratan"
+                zone = [e for e in pool
+                        if ((e["y1"] + e["y2"]) / 2 > mid) == below] or pool
+                mv = min(zone, key=lambda e: abs((e["x1"] + e["x2"]) / 2 - rx1))
             if mv is None:
                 if base == "damma":
                     pool = [e for e in els if e.get("mark") == "damma"
@@ -5448,6 +5583,12 @@ def assign_page(edition, page_no, cache_dir):
                 continue
             cx = (mv["x1"] + mv["x2"]) / 2
             cy = (mv["y1"] + mv["y2"]) / 2
+            if os.environ.get("QSVG_DKDBG"):
+                print("IQTAN-RESCUE %s tan=%s rename=%s mv=(%.0f,%.0f) cand=%s"
+                      % (txt, tan, rename, cx, cy,
+                         [(round(e["x1"]), round(e["y1"]),
+                           round(e["x2"]-e["x1"],1), round(e["y2"]-e["y1"],1))
+                          for e in els if not e.get("mark") and e is not mv]))
             best = None
             for e in els:
                 if e.get("mark") or e is mv:
@@ -7139,8 +7280,25 @@ def assign_page(edition, page_no, cache_dir):
                 continue
             if any((e.get("mark") or "") == "meem-iqlab" for e in _src["els"]):
                 continue
-            for _tan in [e for e in _src["els"]
-                         if e.get("mark") in _IQ_TAN and not e.get("mkpart")]:
+            _anch = [e for e in _src["els"]
+                     if e.get("mark") in _IQ_TAN and not e.get("mkpart")]
+            if not _anch and _dktext_on():
+                # Under QSVG_DKTEXT the iqlab stroke is budgeted (and named)
+                # PLAIN — fatha/kasra/damma — so the tanween-name anchor never
+                # exists. Anchor instead on the plain stroke of the haraka the
+                # DK text writes before its ۢ/ۭ, nearest the word's left edge
+                # (the iqlab always ends the word); the tight geometric window
+                # below is unchanged and still does the deciding.
+                _pf = next((("damma",) if _ti[i] == "ُ"
+                            else ("fatha", "kasra")
+                            for i in range(len(_ti) - 1)
+                            if _ti[i] in "َُِ" and _ti[i + 1] in "ۭۢ"), None)
+                if _pf:
+                    _pool = [e for e in _src["els"]
+                             if e.get("mark") in _pf and not e.get("mkpart")]
+                    if _pool:
+                        _anch = [min(_pool, key=lambda e: e["x1"])]
+            for _tan in _anch:
                 _tcx = (_tan["x1"] + _tan["x2"]) / 2
                 for _oth in _iqw:
                     if _oth is _src or abs(_oth["ln"] - _src["ln"]) != 1:
