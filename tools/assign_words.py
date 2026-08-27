@@ -8512,6 +8512,133 @@ def assign_page(edition, page_no, cache_dir):
                         _prt["mkpart"] = True
                         _mst.setdefault("mkmembers", []).append(_prt)
 
+    # LATE RE-SEAT of the two word-ANCHORED sign families (QSVG_RESEAT=0 reverts).
+    #
+    # wasla ٱ rides above its word's INITIAL alef; the suffix ۥ trails after its
+    # word's FINAL ha. Both signs sit in the kerned gap between two words, and the
+    # neighbour's tail sweeps under them, so collection hands each to the word one
+    # step EARLIER in reading order. The mid-pipeline reconcilers cannot repair it:
+    # measured on p273 (QSVG_TRACE + oracle instrumentation), at oracle time
+    # ٱلْعَزِيزُ held only the STOLEN wasla — its own was still with وَهُوَ — so
+    # every budget test saw it at-cap and the trial move scored flat (base=2, d=2)
+    # and was reverted. The chain unwinds link by link across later passes and the
+    # surplus/deficit pair only exists AFTER the last mover, where nothing ran.
+    # Mushaf-wide these two families sat frozen at 27+26 flags through every fix
+    # wave: 13 wasla pairs (all ٱلْX ٱلْY divine-name pairs), 10 small-waw
+    # pair/chains, 5 small-waw captured by unowned furniture, 2 singletons left
+    # alone here (p223 = quran.com text bug, p337 = unexplained extra outline).
+    #
+    # (1) Per line, per family: if the words' TEXT budget balances in total but
+    # not per word, re-deal the marks in reading order (rightmost mark to the
+    # first slot — both sign and slot orders are monotonic on the line) and only
+    # commit when EVERY reseated mark sits within its new owner's reach. Budget-
+    # neutral across the line by construction; text and geometry must both agree.
+    if os.environ.get("QSVG_RESEAT", "1") != "0":
+        _rs_words = []
+        for _wr, _atr in assignment:
+            if not _wr:
+                continue
+            _elr = [e for a in _atr for e in a["els"]]
+            _bdr = [e for e in _elr if e["kind"] == "body"]
+            if not _bdr:
+                continue
+            _lnr = [e.get("line") for e in _bdr if e.get("line")]
+            _rs_words.append({
+                "w": _wr, "at": _atr,
+                "ln": max(set(_lnr), key=_lnr.count) if _lnr else None,
+                "x1": min(e["x1"] for e in _bdr), "x2": max(e["x2"] for e in _bdr),
+                "y1": min(e["y1"] for e in _bdr), "y2": max(e["y2"] for e in _bdr)})
+        _RS_CHAR = {"wasla": ("ٱ",), "small-waw": ("ۥ",)}
+        for _fam, _chs in _RS_CHAR.items():
+            _byline = {}
+            for _r in _rs_words:
+                if _r["ln"] is not None:
+                    _byline.setdefault(_r["ln"], []).append(_r)
+            for _ln, _rs in _byline.items():
+                _caps = [sum(_r["w"]["uthmani"].count(c) for c in _chs)
+                         for _r in _rs]
+                _held = []
+                for _r in _rs:
+                    _held.append([e for a in _r["at"] for e in a["els"]
+                                  if e.get("mark") == _fam
+                                  and not e.get("mkpart")
+                                  and not e.get("standalone")])
+                if sum(_caps) == 0 or sum(len(h) for h in _held) != sum(_caps):
+                    continue
+                if all(len(h) == c for h, c in zip(_held, _caps)):
+                    continue
+                _marks = [(e, _r) for h, _r in zip(_held, _rs) for e in h]
+                _marks.sort(key=lambda t: -(t[0]["x1"] + t[0]["x2"]))
+                _slots = [_r for _r, c in zip(_rs, _caps) for _ in range(c)]
+                _plan, _ok = [], True
+                for (_e, _src), _dst in zip(_marks, _slots):
+                    if _dst is _src:
+                        continue
+                    _cx = (_e["x1"] + _e["x2"]) / 2
+                    if not (_dst["x1"] - 8.0 <= _cx <= _dst["x2"] + 8.0):
+                        _ok = False
+                        break
+                    _plan.append((_e, _src, _dst))
+                if not _ok or not _plan:
+                    continue
+                for _e, _src, _dst in _plan:
+                    for _a in _src["at"]:
+                        if _e in _a["els"]:
+                            _a["els"].remove(_e)
+                            for _m in _e.get("mkmembers", []):
+                                if _m in _a["els"]:
+                                    _a["els"].remove(_m)
+                            break
+                    put_in_ligature(_dst["at"], _e)
+                    if _dst["ln"]:
+                        _e["line"] = _dst["ln"]
+                        for _m in _e.get("mkmembers", []):
+                            _m["line"] = _dst["ln"]
+        # (2) A ۥ hanging low off its ha descends toward the next line, and the
+        # line cut hands it to an UNOWNED furniture atom there (the ayah
+        # medallion below) — the owner simply loses it and no count audit can
+        # see furniture. All five open cases (p255/293/396/603/604) are this,
+        # each drawn in the OWNER'S band (y within it) while tagged one line
+        # down. Claim it back only when the text owes one, the sign sits inside
+        # the word's own band and reach, and exactly ONE word qualifies.
+        for _wu, _atu in assignment:
+            if _wu is not None:
+                continue
+            for _au in _atu:
+                for _eu in list(_au["els"]):
+                    if (_eu.get("mark") != "small-waw" or _eu.get("mkpart")
+                            or _eu.get("standalone")):
+                        continue
+                    _cxu = (_eu["x1"] + _eu["x2"]) / 2
+                    _cyu = (_eu["y1"] + _eu["y2"]) / 2
+                    _cands = []
+                    for _r in _rs_words:
+                        _cap = _r["w"]["uthmani"].count("ۥ")
+                        if not _cap:
+                            continue
+                        _n = sum(1 for a in _r["at"] for e in a["els"]
+                                 if e.get("mark") == "small-waw"
+                                 and not e.get("mkpart"))
+                        if _n >= _cap:
+                            continue
+                        if not (_r["x1"] - 8.0 <= _cxu <= _r["x2"] + 2.0):
+                            continue
+                        if not (_r["y1"] - 6.0 <= _cyu <= _r["y2"] + 8.0):
+                            continue
+                        _cands.append(_r)
+                    if len(_cands) != 1:
+                        continue
+                    _r = _cands[0]
+                    _au["els"].remove(_eu)
+                    for _m in _eu.get("mkmembers", []):
+                        if _m in _au["els"]:
+                            _au["els"].remove(_m)
+                    put_in_ligature(_r["at"], _eu)
+                    if _r["ln"]:
+                        _eu["line"] = _r["ln"]
+                        for _m in _eu.get("mkmembers", []):
+                            _m["line"] = _r["ln"]
+
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)
