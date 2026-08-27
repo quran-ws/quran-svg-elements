@@ -181,6 +181,30 @@ def _strip_ns(tag):
     return tag.split("}")[-1]
 
 
+def word_audit_state(page, payload):
+    """Expected-vs-held mark families for the word an edit points at, from the
+    current sweep — so the queue shows the FLAG, not only the picture."""
+    w = payload.get("word") or payload.get("from") or payload.get("to")
+    if not w:
+        return None
+    import glob
+    for d in ("tax2", "tax1"):
+        f = os.path.join(ROOT, ".cache", "sweeps", d, "%03d.json" % int(page))
+        if not os.path.exists(f):
+            continue
+        try:
+            j = json.load(open(f))
+        except Exception:
+            return None
+        for m in j.get("marks", []):
+            if m.get("key") == w:
+                return {"flagged": True,
+                        "bad": ["%s: held %s, expected %s" % (b[0], b[1], b[2])
+                                for b in m["bad"]]}
+        return {"flagged": False, "bad": []}
+    return None
+
+
 def extract_context(page, payload):
     """Return a small standalone SVG snippet (ancestor transform chain kept)
     around the word/element an edit touches.  Client tightens the viewBox."""
@@ -505,6 +529,7 @@ class Handler(BaseHTTPRequestHandler):
             e = dict(e)
             e["state"] = state
             e["context_svg"] = extract_context(e["page"], e.get("payload", {}))
+            e["audit"] = word_audit_state(e["page"], e.get("payload", {}))
             out.append(e)
         out.sort(key=lambda e: e.get("ts", ""), reverse=True)
         return self.send_json({"queue": out, "count": len(out)})
