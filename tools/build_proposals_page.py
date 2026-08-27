@@ -36,6 +36,7 @@ def main():
             '%s<h3>%s — <a href="/?page=%d&step=audit&word=%s" target=_blank>'
             'p%d %s</a></h3>'
             '<div class="ink"><span class="wait">…</span></div>'
+            '%s'
             '<p class="ev">%s</p>'
             '<p class="prop"><b>Proposal:</b> %s</p>'
             '<div class="choices">'
@@ -50,7 +51,11 @@ def main():
                it.get("focus_x") if it.get("focus_x") is not None else "",
                it.get("focus_y") if it.get("focus_y") is not None else "", badge,
                _html.escape(it["title"]), it["page"], it["key"], it["page"],
-               it["key"], _html.escape(it["evidence"]),
+               it["key"],
+               ('<p class="fx"><b>Found:</b> %s<br><b>Expected:</b> %s</p>'
+                % (_html.escape(it["found"]), _html.escape(it["expected"]))
+                if it.get("found") else ""),
+               "" if it.get("found") else _html.escape(it["evidence"]),
                _html.escape(it["proposal"]), it["id"], alts, it["id"]))
     doc = _TMPL.replace("__CARDS__", "\n".join(cards)) \
                .replace("__N__", str(len(data["items"])))
@@ -83,6 +88,8 @@ header button:hover{border-color:#245a9e;color:#245a9e}
   background:#fffdf8;border-radius:4px;margin-bottom:6px}
 .ink svg{max-width:100%;max-height:120px}
 .wait{color:#8a8577}
+.fx{font-size:14px;background:#fbf9f2;padding:8px 10px;border-radius:4px}
+.fx b{color:#245a9e}
 .ev{font-size:13px;color:#555;margin:6px 0}
 .prop{font-size:13.5px;margin:6px 0}
 .choices{display:flex;flex-direction:column;gap:4px;font-size:13px;margin:8px 0}
@@ -189,13 +196,20 @@ async function renderInk(c){
     fx = (fx - (vb ? vb.x : 0)) * sc;
     fy = (fy - (vb ? vb.y : 0)) * sc;
     const tol = 1.8 * sc, toly = 3 * sc;
-    for (const p of svg.querySelectorAll("path")) {
-      let bb; try { bb = p.getBBox(); } catch(e){ continue; }
-      const m = p.getCTM();
-      const cx = m.a*bb.x + m.c*bb.y + m.e, cy = m.b*bb.x + m.d*bb.y + m.f;
-      // page y-axis is flipped inside the root transform: match on x plus
-      // proximity of either transformed corner to fy
-      const cy2 = m.b*(bb.x) + m.d*(bb.y+bb.height) + m.f;
+    // one-time geometry index per page (avoids re-walking every path per card)
+    if (!holder._idx) {
+      holder._idx = [];
+      for (const p of svg.querySelectorAll("g.word path")) {
+        let bb; try { bb = p.getBBox(); } catch(e){ continue; }
+        const m = p.getCTM();
+        holder._idx.push({p, bb, m,
+          cx: m.a*bb.x + m.c*bb.y + m.e,
+          cy: m.b*bb.x + m.d*bb.y + m.f,
+          cy2: m.b*bb.x + m.d*(bb.y+bb.height) + m.f});
+      }
+    }
+    for (const it of holder._idx) {
+      const {p, bb, m, cx, cy, cy2} = it;
       if (Math.abs(cx - fx) < tol &&
           (Math.abs(cy - fy) < toly || Math.abs(cy2 - fy) < toly)) {
         const wrap = document.createElementNS(NS,"g");
@@ -218,7 +232,11 @@ async function renderInk(c){
 }
 const io = new IntersectionObserver(es => {
   for (const en of es) if (en.isIntersecting) {
-    io.unobserve(en.target); renderInk(en.target).catch(()=>{});
+    io.unobserve(en.target);
+    renderInk(en.target).catch(e => {
+      en.target.querySelector(".ink").innerHTML =
+        "<span class=wait>preview failed — use the p-link above</span>";
+    });
   }
 }, {rootMargin: "300px"});
 cards.forEach(c => io.observe(c));
