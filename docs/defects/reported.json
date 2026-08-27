@@ -408,6 +408,18 @@
    "turned_out": "The word's own damma is welded into the dammatan stack as a 3rd part (measured: master+2 parts on p249). Fix: when budget wants damma+dammatan and the stack holds 3 curls, peel one as damma.",
    "fixed": false,
    "status": "queued behind taxonomy phase 2"
+  },
+  {
+   "id": 38,
+   "date": "2026-08-27",
+   "page": 583,
+   "words": [
+    "79:16:1 إِذْ (e1025) + the 9-flag hamza family (p573, p342, p380...)"
+   ],
+   "reported": "Abdullah: e1025 is a hamza (his confirmed sig 2fb9f1b6e49c) emitted as data-mark=kasra.",
+   "turned_out": "The naming layer renames a below-position hamza into the kasra family — position beat shape, violating classify()'s own rule ('shape identity outranks position'). Also my r11 label apply left auto:True (now cleared). Fix: a human-confirmed hamza label is never renamed to a slash family.",
+   "fixed": false,
+   "status": "queued behind taxonomy phase 2 (items 36-38 batch)"
   }
  ]
 }
