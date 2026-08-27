@@ -27,6 +27,25 @@ import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from page import Page
+
+# Taxonomy phase 2 (decision 5). |dx| of a tanween pair's two stroke centers
+# (lower minus upper), measured over ALL 604 pages before choosing
+# (empty-band rule), 8,516 pairs on 2026-08-27:
+#
+#   fathatan (3,630)  stacked cluster |dx| 0.00-0.92 | EMPTY | open 2.18-5.4
+#   kasratan (2,515)  stacked cluster |dx| 0.00-0.82 | EMPTY | open 1.29-7.7
+#   dammatan (2,371)  stacked cluster |dx| 0.28-0.39 | EMPTY | open 3.55-3.9
+#
+# The signed direction differs (open fathatan shifts the lower stroke right,
+# open kasratan left, open dammatan either), so the threshold is on |dx|,
+# per family, INSIDE each band. Cross-checked against the text's own
+# open/closed tanween encoding (U+08F0-08F2 = idgham/ikhfa = staggered):
+# 8,515 of 8,516 agree; the one disagreement is p208 10:2 مُّبِينٌ, a closed
+# tanween welded at |dx|=7.65 (geometry wins: it carries staggered).
+_TAN_STAG = {"fathatan": 1.5, "kasratan": 1.05, "dammatan": 1.5}
+# QSVG_TANDUMP: collect every tanween master/twin geometry record here for
+# the measuring script; None (the default) costs nothing.
+TAN_DUMP = [] if os.environ.get("QSVG_TANDUMP") else None
 from svg_lines import transform_box
 from split_line_elements import group_elements, PATH_RE
 
@@ -1957,6 +1976,10 @@ def rewrite(page, assignment):
                     wq = _rec.get("waqf") if isinstance(_rec, dict) else _rec
                 if wq:
                     extra += 'data-waqf="%s" ' % wq
+            if e.get("tanform"):
+                extra += 'data-form="%s" ' % e["tanform"]
+            if e.get("mnqpair"):
+                extra += 'data-pair="%s" ' % e["mnqpair"]
             if e.get("fused"):
                 extra += 'data-fused="1" '
             if e.get("standalone"):
@@ -9413,6 +9436,77 @@ def assign_page(edition, page_no, cache_dir):
                     _cand[0]["mark"] = _job
                     for _m in _cand[0].get("mkmembers", []):
                         _m["mark"] = _job
+
+    # ------------------------------------------------------------------
+    # Taxonomy phase 2 (Abdullah, 2026-08-27) — NEW ATTRIBUTES, decisions
+    # 5 and 6. Pure metadata: nothing changes hands, name, or kind.
+    #  - decision 5: every tanween PAIR (master + its same-name welded twin)
+    #    gets data-form="stacked|staggered" on the master, derived from the
+    #    two strokes' horizontal center offset |dx|. Thresholds and the
+    #    mushaf-wide histogram live at _TAN_STAG (top of file). A dammatan
+    #    drawn as ONE fused glyph has no twin and carries no data-form.
+    #  - decision 6: the muanaqah's two signs pair within their ayah: both
+    #    MASTERS carry data-pair="mnq-<surah>-<ayah>-<n>". Three sites in
+    #    this print (2:2 p2, 5:26 p112, 5:41 p114) — quran.com's uthmani
+    #    writes three more (2:195, 7:172, 14:9) where the print draws a
+    #    jaiz or nothing (faces of the known 203-site waqf disagreement);
+    #    waqf_places, built from the ink, is the authority.
+    if os.environ.get("QSVG_TAX2", "1") == "1":
+        _TANW = ("fathatan", "kasratan", "dammatan")
+        _pg2 = str(int(os.path.splitext(page.name)[0].split("-")[0]
+                       .lstrip("0") or 0))
+        _wp2 = waqf_places().get(_pg2, {})
+        _mnq2 = {}
+        for _wi2, (_w3, _at3) in enumerate(assignment):
+            if not _w3:
+                continue
+            for _a3 in _at3:
+                for e in _a3["els"]:
+                    mk = e.get("mark")
+                    if not mk or e.get("mkpart"):
+                        continue
+                    if mk in _TANW:
+                        _tw = [m for m in e.get("mkmembers", [])
+                               if m.get("mark") == mk]
+                        if len(_tw) == 1:
+                            _m3 = _tw[0]
+                            _up, _lo = ((e, _m3)
+                                        if (e["y1"] + e["y2"])
+                                        <= (_m3["y1"] + _m3["y2"])
+                                        else (_m3, e))
+                            _dx = ((_lo["x1"] + _lo["x2"]) / 2
+                                   - (_up["x1"] + _up["x2"]) / 2)
+                            e["tanform"] = ("staggered"
+                                            if abs(_dx) >= _TAN_STAG[mk]
+                                            else "stacked")
+                        if TAN_DUMP is not None:
+                            TAN_DUMP.append({
+                                "page": int(_pg2), "s": _w3["surah"],
+                                "a": _w3["ayah"],
+                                "pos": _w3.get("pos"),
+                                "uthmani": _w3.get("uthmani"),
+                                "mark": mk, "ntwin": len(_tw),
+                                "master": [e["x1"], e["y1"],
+                                           e["x2"], e["y2"]],
+                                "twin": ([_tw[0]["x1"], _tw[0]["y1"],
+                                          _tw[0]["x2"], _tw[0]["y2"]]
+                                         if len(_tw) == 1 else None)})
+                    elif mk == "pause":
+                        _rec2 = _wp2.get("%.1f,%.1f,%.1f,%.1f"
+                                         % (e["x1"], e["y1"],
+                                            e["x2"], e["y2"]))
+                        _wq2 = (_rec2.get("waqf")
+                                if isinstance(_rec2, dict) else _rec2)
+                        if _wq2 == "muanaqah":
+                            _mnq2.setdefault(
+                                (_w3["surah"], _w3["ayah"]),
+                                []).append((_wi2, -e["x1"], e))
+        for (_s4, _a4), _lst4 in sorted(_mnq2.items()):
+            _lst4.sort(key=lambda t: (t[0], t[1]))
+            for _k4 in range(0, len(_lst4) - 1, 2):
+                _pid = "mnq-%d-%d-%d" % (_s4, _a4, _k4 // 2 + 1)
+                _lst4[_k4][2]["mnqpair"] = _pid
+                _lst4[_k4 + 1][2]["mnqpair"] = _pid
 
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
