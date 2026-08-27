@@ -49,7 +49,7 @@
     "adjudicate now from the preview"
    ],
    "state": "pending",
-   "state_note": "line fixed; residue: a fatha named damma sits in أهواءهم — label sheet next",
+   "state_note": "still open: أهواءهم is missing its هم ink — being traced",
    "found": "After the line repair, one stroke in this word is named damma.",
    "expected": "Text wants: 3 fathas, 1 sukun, 1 damma — your eye counted the same."
   },
@@ -64,7 +64,7 @@
    "proposal": "You look at the printed page: is there a fatha drawn at the word's end anywhere? If absent → record as print-fact exception. If present → tell me which word holds it.",
    "alternatives": [],
    "state": "done",
-   "state_note": "chain applied by the line-set solver (البرية→شر→أولئك)"
+   "state_note": "approved — solver fix stands"
   },
   {
    "id": "P5",
@@ -148,9 +148,10 @@
    "alternatives": [
     "it is بِ's letter dot — twin genuinely lost"
    ],
-   "state": "pending",
+   "state": "done",
    "found": "One kasratan stroke + a small 'dot' right next to it.",
-   "expected": "This print draws kasratan as TWO strokes."
+   "expected": "This print draws kasratan as TWO strokes.",
+   "state_note": "twin returned from لِّكَيْلَا and welded — p540 clean"
   },
   {
    "id": "P11",
@@ -164,9 +165,10 @@
    "alternatives": [
     "print draws a single stroke here (record as convention)"
    ],
-   "state": "pending",
+   "state": "done",
    "found": "Only one kasratan stroke in the word.",
-   "expected": "Two strokes."
+   "expected": "Two strokes.",
+   "state_note": "twin returned from كَانَ and welded — p568 back to its one old flag"
   },
   {
    "id": "P12",
@@ -180,9 +182,10 @@
    "alternatives": [
     "the fatha belongs to the ء"
    ],
-   "state": "pending",
+   "state": "done",
    "found": "A fathatan stroke + a separate 'fatha' 7u away at the same height.",
-   "expected": "One fathatan PAIR."
+   "expected": "One fathatan PAIR.",
+   "state_note": "no weld — e842 confirmed as زَ's own fatha; nothing changed"
   },
   {
    "id": "P13",
@@ -194,9 +197,10 @@
    "evidence": "a 'kasra' above the word: swapped name or stolen from above?",
    "proposal": "You look: whose stroke is it (this word / word above / a fatha)?",
    "alternatives": [],
-   "state": "pending",
+   "state": "done",
    "found": "A stroke named kasra sits above the top of the word.",
-   "expected": "Kasra sits below its letter."
+   "expected": "Kasra sits below its letter.",
+   "state_note": "both strokes swapped to their owners — p508 fully clean"
   },
   {
    "id": "P14",
@@ -208,9 +212,10 @@
    "evidence": "R7 says its 'meem-iqlab' is the tanween's second stroke (8.8u from its twin). The word audits clean otherwise.",
    "proposal": "Rename it as the tanween's second stroke.",
    "alternatives": [],
-   "state": "pending",
+   "state": "done",
    "found": "A mark named meem-iqlab, 8.8u from the tanween stroke.",
-   "expected": "This print draws NO small م at this kind of position (only at true iqlab)."
+   "expected": "This print draws NO small م at this kind of position (only at true iqlab).",
+   "state_note": "e536 restored to letter ink of ك"
   },
   {
    "id": "P15",
@@ -222,8 +227,8 @@
    "evidence": "p399 لُوطٌۘ and p525's small-seen ۜ can never be marked if their signatures are absent from labels.json — structurally unreachable by any pass.",
    "proposal": "The visual agent named them and p399/p525 were fixed — confirm they look right on the page.",
    "alternatives": [],
-   "state": "partial",
-   "state_note": "ۜ and ۘ signatures labeled by the visual agent; p399/p525 recovered — confirm on the page",
+   "state": "done",
+   "state_note": "approved — labels stand",
    "found": "These shapes had no names in our table, so they could never be marked.",
    "expected": "Every stop sign drawn in the print should be markable."
   },

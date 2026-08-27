@@ -3757,13 +3757,17 @@ def assign_page(edition, page_no, cache_dir):
     for _w, _atoms in assignment:
         if not _w:
             continue
+        # same for the stroke tanweens: two same-label kasratan/fathatan
+        # singles side by side are ONE pair (p540/p568 twins, Abdullah)
         dt = [e for a in _atoms for e in a["els"]
-              if e.get("mark") == "dammatan" and not e.get("mkpart")
-              and not e.get("mkmembers")]
+              if e.get("mark") in ("dammatan", "kasratan", "fathatan")
+              and not e.get("mkpart") and not e.get("mkmembers")]
         for i in range(len(dt)):
             for j in range(i + 1, len(dt)):
                 a2, b2 = dt[i], dt[j]
                 if a2.get("mkpart") or b2.get("mkpart"):
+                    continue
+                if a2.get("mark") != b2.get("mark"):
                     continue
                 dx = abs((a2["x1"] + a2["x2"]) / 2 - (b2["x1"] + b2["x2"]) / 2)
                 dy = abs((a2["y1"] + a2["y2"]) / 2 - (b2["y1"] + b2["y2"]) / 2)
@@ -6079,6 +6083,8 @@ def assign_page(edition, page_no, cache_dir):
                 a2, b2 = dt[i], dt[j]
                 if a2.get("mkpart") or b2.get("mkpart"):
                     continue
+                if a2.get("mark") != b2.get("mark"):
+                    continue
                 dx = abs((a2["x1"] + a2["x2"]) / 2 - (b2["x1"] + b2["x2"]) / 2)
                 dy = abs((a2["y1"] + a2["y2"]) / 2 - (b2["y1"] + b2["y2"]) / 2)
                 if dx < 5.0 and dy < 5.0:
@@ -6311,6 +6317,25 @@ def assign_page(edition, page_no, cache_dir):
                         _ek["kind"] = "mark"
                         _ek["mark"] = _kk
                         _ek.pop("mkpart", None)
+
+    # Late same-label tanween pair re-weld: kinds/override arrivals above can
+    # name a pair's second stroke after the early weld already ran (p540/p568
+    # kasratan twins, Abdullah). Same geometry gate as the early weld.
+    for _wq2, _atq2 in assignment:
+        if not _wq2:
+            continue
+        _tp = [e for a in _atq2 for e in a["els"]
+               if e.get("mark") in ("dammatan", "kasratan", "fathatan")
+               and not e.get("mkpart") and not e.get("mkmembers")]
+        for _i2 in range(len(_tp)):
+            for _j2 in range(_i2 + 1, len(_tp)):
+                _a3, _b3 = _tp[_i2], _tp[_j2]
+                if _a3.get("mark") != _b3.get("mark") or _b3.get("mkpart"):
+                    continue
+                if (abs((_a3["x1"] + _a3["x2"]) / 2 - (_b3["x1"] + _b3["x2"]) / 2) < 5.0
+                        and abs((_a3["y1"] + _a3["y2"]) / 2
+                                - (_b3["y1"] + _b3["y2"]) / 2) < 5.0):
+                    _b3["mkpart"] = True
 
     # Dot clusters whose label overstates the ink they cover — the residue the measured
     # blob width cannot separate. Adjudicated, geometry-keyed; see tools/ref_marks.py.
