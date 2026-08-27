@@ -24,12 +24,12 @@ is never committed anywhere.
 
 | | pinned baseline | now |
 |---|---|---|
-| Flagged words (mark audit) | 559 | **155** |
+| Flagged words (mark audit) | 559 | **107** |
 | Interval-audit flags | 172 | **80** |
-| Pages clean (marks+intervals) | 276 | **469** of 604 |
+| Pages clean (marks+intervals) | 276 | **489** of 604 |
 | Pages clean incl. mark-TYPE audit | — | **108** of 604 |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
-| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 79 over 12 pages, no failures, pixelfail 0 |
+| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 78 over 14 pages, no failures, pixelfail 0 |
 
 **"Clean" is always relative to the audits that exist** (Abdullah, 2026-08-26,
 after budget-neutral thefts and the R7 family were found living on "clean"
@@ -42,7 +42,7 @@ the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's. Current sweep: `.cache/sweeps/r7fix`
+so they are not comparable to today's. Current sweep: `.cache/sweeps/reseat`
 (dk_lines validated over all 604 pages: -8 marks, -2 intervals, +4 clean, zero
 pages worse vs `.cache/sweeps/iqlab-fix`).
 

@@ -65,6 +65,18 @@ CASES = {
     (222, (11, 12, 2)): ("tarik iqlab: 4 bodies + meem mark",
         lambda e: nbody(e) == 4
         and any(x.get("mark") == "meem-iqlab" for x in e)),
+    # the word-anchored signs stay seated: wasla rides ITS word's alef and the
+    # suffix ۥ trails ITS word's ha, even in a tight-kerned ٱلْX ٱلْY pair or a
+    # ـهُۥ chain (QSVG_RESEAT; the 27+26 frozen wasla/small-waw flags)
+    (273, (16, 60, 11)): ("aziz keeps exactly 1 wasla",
+        lambda e: sum(1 for x in e if x.get("mark") == "wasla"
+                      and not x.get("mkpart")) == 1),
+    (273, (16, 60, 12)): ("hakim has its wasla",
+        lambda e: any(x.get("mark") == "wasla" for x in e)),
+    (205, (9, 114, 13)): ("lahu 9:114 has its small-waw",
+        lambda e: any(x.get("mark") == "small-waw" for x in e)),
+    (205, (9, 114, 15)): ("aduww holds no small-waw",
+        lambda e: not any(x.get("mark") == "small-waw" for x in e)),
 }
 
 def budget_mismatches(words):
@@ -88,7 +100,7 @@ def budget_mismatches(words):
 
 q = json.load(open(ROOT + "/.cache/qcf_widths.json"))
 case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
-for pg in (1, 2, 3, 7, 133, 143, 200, 202, 222, 307, 453, 454):
+for pg in (1, 2, 3, 7, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     except Exception as e:
