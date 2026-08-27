@@ -161,10 +161,24 @@ def scan_page(pg):
         ta = sum(x["x2"] - x["x1"] for x in ws)
         if not tl or not ta:
             continue
+        # two-metric agreement (width_diagnosis.md §5): QCF-share and
+        # letter-share must BOTH call the word off before width flags it —
+        # the ~400 single-metric disagreements are table-vs-ink noise, not
+        # defects. On suspect pages only the letter metric exists and stands
+        # alone.
+        _tq2 = sum(q.get(x["k"], 0) for x in ws)
         for x in ws:
             exp = exp_l[x["k"]] / tl * ta
             wd = x["x2"] - x["x1"]
-            width[x["k"]] = (round(wd / max(exp, 1e-6), 3), round(abs(wd - exp), 2))
+            r1 = wd / max(exp, 1e-6)
+            if not _suspect and _tq2:
+                qw = q.get(x["k"], 0)
+                if qw:
+                    r2 = wd / max(qw / _tq2 * ta, 1e-6)
+                    both_off = (min(r1, r2) > 1.5 or max(r1, r2) < 0.62)
+                    if not both_off:
+                        r1 = 1.0          # metrics disagree -> not a width flag
+            width[x["k"]] = (round(r1, 3), round(abs(wd - exp), 2))
 
     # rtl order violations per line (audit_marks' mechanism)
     rtl_bad = set()
