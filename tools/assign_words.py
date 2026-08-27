@@ -823,6 +823,14 @@ _QCF = None
 
 _WAQF = None
 
+# Taxonomy phase 1 (Abdullah's decisions, 2026-08-27): the print's own sign
+# vocabulary. Old values are still ACCEPTED on input — waqf_types.json /
+# waqf_places.json may be rebuilt from MushafDatabase, whose vocabulary the
+# left column is — but only the right column is ever emitted.
+_WAQF_CANON = {"waqf lazim": "waqf-lazim", "waqf qila": "waqf-awla",
+               "waqf sali": "wasl-awla", "waqf jaiz": "waqf-jaiz",
+               "waqf taanuq": "muanaqah"}
+
 
 def waqf_types():
     """{signature: waqf name} — evidence, built by tools/waqf_table.py, applied as data.
@@ -835,7 +843,8 @@ def waqf_types():
     if _WAQF is None:
         p = os.path.join(ROOT, ".cache", "marks", "waqf_types.json")
         try:
-            _WAQF = {k: v["waqf"] for k, v in json.load(open(p, encoding="utf-8")).items()}
+            _WAQF = {k: _WAQF_CANON.get(v["waqf"], v["waqf"])
+                     for k, v in json.load(open(p, encoding="utf-8")).items()}
         except Exception:
             _WAQF = {}
     return _WAQF
@@ -881,9 +890,41 @@ def waqf_places():
         p = os.path.join(ROOT, ".cache", "marks", "waqf_places.json")
         try:
             _WAQF_PLACES = json.load(open(p, encoding="utf-8"))
+            for _pg in _WAQF_PLACES.values():
+                for _g, _rec in _pg.items():
+                    if isinstance(_rec, dict):
+                        _rec["waqf"] = _WAQF_CANON.get(_rec.get("waqf"),
+                                                       _rec.get("waqf"))
+                    else:
+                        _pg[_g] = _WAQF_CANON.get(_rec, _rec)
         except Exception:
             _WAQF_PLACES = {}
     return _WAQF_PLACES
+
+
+_RARE_PLACES = None
+
+
+def rare_places():
+    """{(surah, ayah): job} for the seven U+06DC sites, named BY JOB (taxonomy
+    phase 1, decision 4): `saktah` at the five saktah sites, `seen-reading` at
+    the two seen-for-sad sites. A place table exactly like waqf_places() —
+    the ۜ outline is not one shape (each site has its own signature, and one of
+    them, 9a5430a7a9db4617, doubles as a letter س body at 69:17), so the shape
+    table cannot carry the job; the PLACE does. Data: .cache/marks/rare_places.json."""
+    global _RARE_PLACES
+    if _RARE_PLACES is None:
+        p = os.path.join(ROOT, ".cache", "marks", "rare_places.json")
+        _RARE_PLACES = {}
+        try:
+            d = json.load(open(p, encoding="utf-8"))
+            for job in ("saktah", "seen-reading"):
+                for ref in d.get(job, ()):
+                    su, ay = ref.split(":")
+                    _RARE_PLACES[(int(su), int(ay))] = job
+        except Exception:
+            _RARE_PLACES = {}
+    return _RARE_PLACES
 
 
 def qcf_widths():
@@ -6532,6 +6573,21 @@ def assign_page(edition, page_no, cache_dir):
             su, ay = _ayah_at(cx, cy)
             e["standalone"] = (su, ay)
             ejected.setdefault(("sajdah", su, ay), []).append(e)
+    # Taxonomy phase 1 (decision 7): the sajdah compound splits by NAME into
+    # its two components — `sajdah-line` (the hairline overline, which the
+    # appendix says identifies the word making prostration) and `sajdah-sign`
+    # (the ۩ mihrab glyph). Grouping is untouched (Policy P5 still holds one
+    # standalone group); only the per-element data-mark changes. The bar test
+    # is the same ratio classify() uses: hairline height, many times wider.
+    if os.environ.get("QSVG_TAX", "1") == "1":
+        for (lab, su, ay), grp in ejected.items():
+            if lab != "sajdah":
+                continue
+            for e in grp:
+                _bh = e["y2"] - e["y1"]
+                _bw = e["x2"] - e["x1"]
+                e["mark"] = ("sajdah-line" if _bh < 2.5 and _bw >= 8.0
+                             else "sajdah-sign")
     for (lab, su, ay), grp in ejected.items():
         assignment = assignment + [(None, [{"els": grp,
                                             "sa": (lab, su, ay)}])]
@@ -9273,7 +9329,7 @@ def assign_page(edition, page_no, cache_dir):
     # lazim signs have no dots at all and adopt nothing).
     if os.environ.get("QSVG_PAUSEDOTS", "1") == "1":
         _wtypes = waqf_types()
-        _CAP = {"waqf jaiz": ("dot",), "waqf qila": ("dot", "two-dots")}
+        _CAP = {"waqf-jaiz": ("dot",), "waqf-awla": ("dot", "two-dots")}
         _allat = [(a, e) for _w9, _at9 in assignment for a in _at9
                   for e in a["els"]]
         for _pa, _pe in _allat:
@@ -9305,6 +9361,58 @@ def assign_page(edition, page_no, cache_dir):
                     _pa["els"].append(_de)
                     _de["line"] = _pe.get("line")
                 _room -= 2 if _de.get("mark") == "two-dots" else 1
+
+    # ------------------------------------------------------------------
+    # Taxonomy phase 1 (Abdullah, 2026-08-27) — PURE NAMING, the last thing
+    # before rewrite() so no mover ever sees the new names. Nothing changes
+    # hands, nothing changes kind; only what a mark is CALLED.
+    #  - the two zeros split by the TEXT (measured mushaf-wide: 3988 ۟ words,
+    #    66 ۠ words, no word carries both; the aspect distributions confirm —
+    #    round zero h/w <= 1.34, upright >= 1.44, an empty band between);
+    #  - the seven U+06DC sites are named BY JOB from rare_places();
+    #  - at 7:69 the seen is mislabeled `shadda` (its own signature,
+    #    c63853f10a0002de, sole occurrence) — renamed by the same place rule,
+    #    guarded by the word's text demanding no shadda.
+    if os.environ.get("QSVG_TAX", "1") == "1":
+        _rare = rare_places()
+        for _wt, _att in assignment:
+            if not _wt:
+                continue
+            _txtt = _wt["uthmani"]
+            _zero = ("sifr-mustatil" if "۠" in _txtt else
+                     "sifr-mustadir" if "۟" in _txtt else None)
+            _job = (_rare.get((_wt["surah"], _wt["ayah"]))
+                    if "ۜ" in _txtt else None)
+            if not _zero and not _job:
+                continue
+            _els_t = [e for a in _att for e in a["els"]]
+            for e in _els_t:
+                mk = e.get("mark")
+                if not mk:
+                    continue
+                if _zero and "small-circle" in mk:
+                    e["mark"] = "+".join(_zero if p2 == "small-circle" else p2
+                                         for p2 in mk.split("+"))
+            if _job:
+                # the sign to rename: a `pause` that no waqf table names —
+                # the word's true waqf (if any) keeps its data-waqf identity
+                _page_no_t = str(int(os.path.splitext(page.name)[0]
+                                     .split("-")[0].lstrip("0") or 0))
+                _wp = waqf_places().get(_page_no_t, {})
+                _cand = [e for e in _els_t
+                         if e.get("mark") == "pause" and not e.get("mkpart")
+                         and not waqf_types().get(e.get("sig"))
+                         and not _wp.get("%.1f,%.1f,%.1f,%.1f"
+                                         % (e["x1"], e["y1"], e["x2"], e["y2"]))]
+                if not _cand and "ّ" not in _txtt \
+                        and (_wt.get("qpc") or "").count("ّ") == 0:
+                    _cand = [e for e in _els_t
+                             if e.get("mark") == "shadda"
+                             and not e.get("mkpart")]
+                if len(_cand) == 1:
+                    _cand[0]["mark"] = _job
+                    for _m in _cand[0].get("mkmembers", []):
+                        _m["mark"] = _job
 
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []

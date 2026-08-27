@@ -53,8 +53,13 @@ def _spy(page, a):
 aw.rewrite = _spy
 OUT = os.path.join(ROOT, ".cache", "marks", "waqf_places.json")
 
-# Which signs to place rather than key by shape.
+# Which signs to place rather than key by shape. The name here is the
+# REFERENCE'S vocabulary (it is matched against MushafDatabase's data-waqf
+# attributes); the table is WRITTEN in ours (taxonomy phase 1, decision 8).
 BY_PLACE = ("waqf taanuq",)
+_CANON = {"waqf lazim": "waqf-lazim", "waqf qila": "waqf-awla",
+          "waqf sali": "wasl-awla", "waqf jaiz": "waqf-jaiz",
+          "waqf taanuq": "muanaqah"}
 
 
 def our_page(pg):
@@ -145,7 +150,7 @@ def main(argv=None):
                     # counts them as three letter dots — `ٱلْقَوْمِ` on p112 came out with
                     # five dots where its spelling allows two, the extra three being the
                     # triangle sitting over it.
-                    table.setdefault(str(pg), {})[key] = {"waqf": lab, "occ": occ}
+                    table.setdefault(str(pg), {})[key] = {"waqf": _CANON.get(lab, lab), "occ": occ}
                     claimed += 1
                 tally[(pg, lab, claimed)] += 1
     for (pg, lab, n), c in sorted(tally.items()):

@@ -44,7 +44,13 @@ def main(argv=None):
         if r["n"] < args.min_n or r["purity"] < args.min_purity:
             skipped.append(r)
             continue
-        table[r["sig"]] = {"waqf": r["ref_label"], "n": r["n"], "purity": r["purity"],
+        # ref_label is MushafDatabase's vocabulary; the table is written in the
+        # print's own (taxonomy phase 1, decision 8)
+        _CANON = {"waqf lazim": "waqf-lazim", "waqf qila": "waqf-awla",
+                  "waqf sali": "wasl-awla", "waqf jaiz": "waqf-jaiz",
+                  "waqf taanuq": "muanaqah"}
+        table[r["sig"]] = {"waqf": _CANON.get(r["ref_label"], r["ref_label"]),
+                           "n": r["n"], "purity": r["purity"],
                            "we_call": r["ours"]}
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
