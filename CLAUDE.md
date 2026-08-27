@@ -24,12 +24,12 @@ is never committed anywhere.
 
 | | pinned baseline | now |
 |---|---|---|
-| Flagged words (mark audit) | 559 | **107** |
-| Interval-audit flags | 172 | **80** |
-| Pages clean (marks+intervals) | 276 | **489** of 604 |
+| Flagged words (mark audit) | 559 | **84** |
+| Interval-audit flags | 172 | **62** |
+| Pages clean (marks+intervals) | 276 | **520** of 604 |
 | Pages clean incl. mark-TYPE audit | — | **461** of 604 (119 marktype flags) |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
-| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 81 over 15 pages (DKTEXT on; 84 with QSVG_DKTEXT=0), no failures, pixelfail 0 |
+| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 104 over 19 pages, no failures, pixelfail 0 |
 
 **"Clean" is always relative to the audits that exist** (Abdullah, 2026-08-26,
 after budget-neutral thefts and the R7 family were found living on "clean"
@@ -42,14 +42,12 @@ the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's. Current sweep: `.cache/sweeps/tax1`
-(taxonomy phase 1: marks 99, intervals 62, clean 512 — the -2 marks are the
-p329 small-noon and p159 seen-reading fixes landing; every sign now carries
-the print catalog's name: sifr-mustadir/mustatil, saktah/seen-reading by
-place table, sajdah-line/sajdah-sign, waqf-lazim/waqf-awla/waqf-jaiz/
-wasl-awla/muanaqah in data-waqf. Old names accepted on input forever, never
-emitted. Phase 2 pending: tanween data-form + muanaqah data-pair +
-audit_taxonomy.py.) Previous: `.cache/sweeps/slashx2`
+so they are not comparable to today's. Current sweep: `.cache/sweeps/i36`
+(2026-08-28 overnight: taxonomy phases 1+2 complete + audit_taxonomy gate;
+items 36-38 fixed at cause — dot-family marks emit as ONE path, the كُلࣱّ
+stack yields its damma back, and the shape table outranks position at a late
+reconciliation pass. marks 84, intervals 62, clean 520, bench 104/19 pages,
+all 604 pixel-identical, taxonomy audit green.) Previous: `.cache/sweeps/slashx2`
 (marks 101, intervals 62, clean 510, bench 99 over 17 pages. The evening's
 passes: QSVG_HDRGUARD header-ink eviction, QSVG_PAUSEDOTS, and the
 QSVG_SLASHX exchange completion inside the orphan pass — a floating leg is
