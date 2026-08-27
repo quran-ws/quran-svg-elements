@@ -220,7 +220,7 @@
    ],
    "reported": "we don't compare with the correct text of the mushaf: the print has two words بعد and ما with ما on the following line, but we link them as a single word بعد ما",
    "cause": "confirmed. quran.com's layout carries بَعْدَ مَا as ONE word on line 6; the print draws بعد at line 6's end and ما at line 7's start. The pipeline cannot split a word across a line boundary, so it forced the whole word onto line 7 — بعد's ink on line 6 was folded into أَهْوَآءَهُم (4/5 pieces, the audit counting بعد's marks in its budget) and the word took a piece from جَآءَكَ (2/3). One mis-expressible word shears BOTH lines: the 12-word 0.47x width cluster, the mushaf's only rtl-order flag, and the interval flags on this page are all this. The letter-space compound family has 5 members; only this one straddles a line break.",
-   "status": "diagnosed, fix in plan (allow a letter-space compound to split at the space across the line boundary during reflow/clustering; check how MushafDatabase segments it before choosing the emission shape)"
+   "status": "fixed 2026-08-27: QSVG_SPACESPLIT (default ON) — cluster_line partitions a letter-space compound as its two halves (own width prior each, the internal space earns the boundary reward) and merges the clusters back to one word; the density hill-climb no longer moves a compound across a line boundary. 13:37:8 stays on line 6 holding its two chunks (8.8-45.2), أَهْوَآءَهُم back to its 4 pieces, جَآءَكَ regains its piece and fathas; rtl-order flag gone. p254 marks 3->2, intervals 4->1; p27/p117/p177/p451 and controls p1/p3 byte-identical; bench 79 unchanged, pixelfail 0."
   },
   {
    "id": 21,
@@ -282,6 +282,18 @@
    "reported": "Abdullah's ownership rule implemented as the line-set solver (QSVG_LSOLVE)",
    "cause": "exact per-line-set re-solve of mark ownership (position owns, text constrains, names follow position, global resolve, ties->proposals). Gated on the color-rotation line and the confirmed chains; controls byte-identical. Full-mushaf: marks -9, intervals -24, clean 421->424, one documented visibility exception (p418). 31 chain proposals in lsolve_proposals.json for review; بِمَا p543 (confirmed line error) fixed as a bonus.",
    "status": "adopted default-ON 2026-08-27"
+  },
+  {
+   "id": 27,
+   "page": null,
+   "words": [
+    "15 sajdah sites + p598 (the 96:19 sign the print draws there)",
+    "p272 16:48:10 ظِلَـٰلُهُۥ",
+    "p589 84:21:6 يَسْجُدُونَ ۩"
+   ],
+   "reported": "Policy P5 (Abdullah): the sajdah overline + ۩ are ONE standalone sign, grouped with the sajdah word on the line below the bar, never counted as any word's mark or letter",
+   "cause": "Verified per site (QSVG_SAJ, default ON). 13 of 15 sites were already standalone and correctly keyed. Fixed: p272 — the overline had been renamed 'kasra' and counted in ظِلَـٰلُهُۥ's budget (the page's only mark flag; bar ejection now accepts a renamed hairline and drops the name, flag gone); p589 — the ۩ outline there has a signature variant not in the shape table and was counted as يَسْجُدُونَ's 4th body (text-driven recovery: word text carries ۩ + the sign's geometry 7.9x11.1/nested contours; piece count back to 3). p597 has NO sajdah ink — the print draws 96:19 on p598 (item 21 family), where both sign and bar were already handled. rewrite() now homes each sajdah group to the wrapper holding the sajdah word's ink, so bar+sign come out in one <g class=\"sajdah-mark\"> in the word's line (per the shape_notes 'same tag as the following sajdah mark'). Mushaf-wide: marks -1 (p272), intervals 0 flat, bench 79 unchanged, pixelfail 0, controls byte-identical.",
+   "status": "adopted 2026-08-27"
   }
  ]
 }
