@@ -104,6 +104,12 @@ CASES = {
     (90, (4, 78, 8)): ("buruj holds its kasratan",
         lambda e: sum(1 for x in e if x.get("mark") == "kasratan"
                       and not x.get("mkpart")) == 1),
+    # LREDEAL: the به piece returns to لربه (p600 L1, the width diagnosis's
+    # proven boundary pair)
+    (600, (100, 6, 3)): ("lirabbihi has both its pieces",
+        lambda e: nbody(e) == 2),
+    (600, (100, 6, 4)): ("lakanud holds exactly its 2 pieces",
+        lambda e: nbody(e) == 2),
     (586, (81, 25, 3)): ("biqawli: 2 kasras + 1 fatha",
         lambda e: sorted(x["mark"] for x in e if x.get("mark")
                          and not x.get("mkpart")
@@ -133,7 +139,7 @@ def budget_mismatches(words):
 
 q = json.load(open(ROOT + "/.cache/qcf_widths.json"))
 case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
-for pg in (1, 2, 3, 7, 17, 90, 133, 143, 200, 202, 205, 222, 249, 273, 307, 453, 454, 583, 586, 590):
+for pg in (1, 2, 3, 7, 17, 90, 133, 143, 200, 202, 205, 222, 249, 273, 307, 453, 454, 583, 586, 590, 600):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     except Exception as e:
