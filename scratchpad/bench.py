@@ -86,6 +86,13 @@ CASES = {
     (586, (81, 25, 2)): ("huwa: damma + one fatha, no kasra",
         lambda e: sorted(x["mark"] for x in e if x.get("mark")
                          and not x.get("mkpart")) == ["damma", "fatha"]),
+    # shape identity outranks position (item 38): the below-alef hamza of إِذْ
+    # keeps its human-confirmed name, never renamed kasra
+    (583, (79, 16, 1)): ("idh: 1 hamza + 1 kasra",
+        lambda e: sorted(x["mark"] for x in e if x.get("mark")
+                         and not x.get("mkpart")
+                         and x["mark"] in ("hamza", "kasra", "fatha"))
+        == ["hamza", "kasra"]),
     (586, (81, 25, 3)): ("biqawli: 2 kasras + 1 fatha",
         lambda e: sorted(x["mark"] for x in e if x.get("mark")
                          and not x.get("mkpart")
@@ -115,7 +122,7 @@ def budget_mismatches(words):
 
 q = json.load(open(ROOT + "/.cache/qcf_widths.json"))
 case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
-for pg in (1, 2, 3, 7, 17, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454, 586, 590):
+for pg in (1, 2, 3, 7, 17, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454, 583, 586, 590):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     except Exception as e:
