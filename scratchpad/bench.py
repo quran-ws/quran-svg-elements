@@ -81,6 +81,17 @@ CASES = {
     # from the title line below it (reported.json item 33)
     (590, (84, 25, 5)): ("salihat holds no title-line ink",
         lambda e: all(x.get("line") == 1 for x in e)),
+    # the p586 slash exchange (item 32): each word ends with exactly its own
+    # marks after the mutual theft resolves
+    (586, (81, 25, 2)): ("huwa: damma + one fatha, no kasra",
+        lambda e: sorted(x["mark"] for x in e if x.get("mark")
+                         and not x.get("mkpart")) == ["damma", "fatha"]),
+    (586, (81, 25, 3)): ("biqawli: 2 kasras + 1 fatha",
+        lambda e: sorted(x["mark"] for x in e if x.get("mark")
+                         and not x.get("mkpart")
+                         and x["mark"] in ("fatha", "kasra", "fathatan",
+                                           "kasratan"))
+        == ["fatha", "kasra", "kasra"]),
 }
 
 def budget_mismatches(words):
@@ -104,7 +115,7 @@ def budget_mismatches(words):
 
 q = json.load(open(ROOT + "/.cache/qcf_widths.json"))
 case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
-for pg in (1, 2, 3, 7, 17, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454, 590):
+for pg in (1, 2, 3, 7, 17, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454, 586, 590):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     except Exception as e:
