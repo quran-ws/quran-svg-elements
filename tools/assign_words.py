@@ -1900,6 +1900,33 @@ def rewrite(page, assignment):
                     kept.append(x)
                 a["els"] = kept
 
+    # A dot-family mark is ONE mark (Abdullah, item 36): a three-dots drawn
+    # as 2+1 contour groups must emit as a single <path>. Absorb each member's
+    # contours into its master when both come from the same source path (same
+    # frame — build_d absolutizes separated contours, so coordinates hold and
+    # contour conservation is untouched). Cross-path members keep their own
+    # path with _reframe, as before.
+    if os.environ.get("QSVG_DOTMERGE", "1") == "1":
+        _DOTFAM6 = ("dot", "two-dots", "three-dots")
+        for word, atoms in assignment:
+            for atom in atoms:
+                for e in atom["els"]:
+                    if (e.get("mark") in _DOTFAM6 and not e.get("mkpart")
+                            and e.get("mkmembers")):
+                        keepm = []
+                        for m in e["mkmembers"]:
+                            if (m.get("path") == e.get("path")
+                                    and m in atom["els"]):
+                                e["contours"] = list(e["contours"]) + \
+                                    list(m["contours"])
+                                m["_absorbed"] = True
+                            else:
+                                keepm.append(m)
+                        e["mkmembers"] = keepm
+                if any(x.get("_absorbed") for x in atom["els"]):
+                    atom["els"] = [x for x in atom["els"]
+                                   if not x.pop("_absorbed", False)]
+
     per_path = {}
     consumed = set()
     for word, atoms in assignment:
