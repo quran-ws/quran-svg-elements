@@ -1002,8 +1002,13 @@ async function renderQueue() {
     if (e.context_svg) ctx.innerHTML = e.context_svg;
     else ctx.innerHTML = "<span class='noctx'>no preview</span>";
     const body = el("div", {class: "qbody"});
+    const auditLine = e.audit == null ? ""
+      : e.audit.flagged
+        ? `<div class="qaudit" style="color:var(--bad);font-weight:600">⚠ still flagged — ${e.audit.bad.join("; ")}</div>`
+        : `<div class="qaudit" style="color:var(--good);font-weight:600">✓ word audits clean in the current build</div>`;
     body.innerHTML = `
       <div class="qdesc">${KIND_DESC(e)}</div>
+      ${auditLine}
       <div class="qmeta">
         <span class="badge">page ${e.page}</span>
         <span class="badge">${e.step} step</span>
