@@ -96,6 +96,8 @@ def scan(pg):
         for i in range(len(ws) - 1):
             a, ax2 = ws[i]
             b, bx2 = ws[i + 1]
+            if (" " in a["uthmani"].strip() or " " in b["uthmani"].strip()):
+                continue  # a letter-space compound straddles the break legitimately
             if bx2 > ax2 + 1.0:       # the next word sits right of this one
                 rows.append(("%d:%d:%d" % (a["surah"], a["ayah"], a["pos"]),
                              a["uthmani"], [("rtl-order", int(ax2), int(bx2))]))
