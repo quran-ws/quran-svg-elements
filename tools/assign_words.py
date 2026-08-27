@@ -9307,6 +9307,66 @@ def assign_page(edition, page_no, cache_dir):
                         _prt["mkpart"] = True
                         _mst.setdefault("mkmembers", []).append(_prt)
 
+    # LATE LINE RE-DEAL of body pieces (QSVG_LREDEAL=0 reverts): the width
+    # diagnosis (docs/defects/width_diagnosis.md) proved exactly two boundary
+    # mis-cuts by compensating piece arithmetic — p600 L1 لِرَبِّهِۦ(1/2)
+    # holds one piece too few while لَكَنُودࣱ(3/2) holds its به piece 9u clear
+    # of its own ink, and p596 L1 إِذَا(2/3)/تَرَدَّىٰٓ(4/3). The trigger is
+    # the COMPENSATING PAIR: adjacent words where one is exactly one body
+    # piece under its joining-rule allowance and the other exactly one over —
+    # never width (QSVG_WDECIDE's grave), and single-sided surpluses are
+    # excluded (the detached-ك family holds allowance+1 with no shorted
+    # neighbour). The moved piece is the surplus word's piece nearest the
+    # short word's span; it must sit closer to the short word's ink than to
+    # the rest of its holder's.
+    if os.environ.get("QSVG_LREDEAL", "1") == "1":
+        _lr_lines = {}
+        for _wl, _al in assignment:
+            if not _wl:
+                continue
+            _bl = [e for a in _al for e in a["els"] if e["kind"] == "body"]
+            if not _bl:
+                continue
+            _lnl = [e.get("line") for e in _bl if e.get("line")]
+            if not _lnl:
+                continue
+            _lr_lines.setdefault(max(set(_lnl), key=_lnl.count), []).append(
+                (_wl, _al, _bl))
+        for _lnq, _wsq in _lr_lines.items():
+            _wsq.sort(key=lambda t: -max(e["x2"] for e in t[2]))
+            for _iq in range(len(_wsq) - 1):
+                for _aq, _bq in ((_iq, _iq + 1), (_iq + 1, _iq)):
+                    _wA, _atA, _bA = _wsq[_aq]     # short one
+                    _wB, _atB, _bB = _wsq[_bq]     # long one
+                    _allowA = len(segment_word(_wA["uthmani"]))
+                    _allowB = len(segment_word(_wB["uthmani"]))
+                    if not (len(_bA) == _allowA - 1
+                            and len(_bB) == _allowB + 1):
+                        continue
+                    _spanA = (min(e["x1"] for e in _bA),
+                              max(e["x2"] for e in _bA))
+                    # candidate: B's piece nearest A's span
+                    def _dA(e):
+                        c = (e["x1"] + e["x2"]) / 2
+                        return max(_spanA[0] - c, c - _spanA[1], 0.0)
+                    _cand = min(_bB, key=_dA)
+                    _rest = [e for e in _bB if e is not _cand]
+                    if not _rest:
+                        continue
+                    _dther = min(abs((_cand["x1"] + _cand["x2"]) / 2
+                                     - (e["x1"] + e["x2"]) / 2)
+                                 for e in _rest)
+                    if _dA(_cand) + 2.0 >= _dther:
+                        continue          # not clearly nearer the short word
+                    for _a2 in _atB:
+                        if _cand in _a2["els"]:
+                            _a2["els"].remove(_cand)
+                            break
+                    put_in_ligature(_atA, _cand)
+                    _bA.append(_cand)
+                    _bB.remove(_cand)
+                    break
+
     # LATE RE-SEAT of the two word-ANCHORED sign families (QSVG_RESEAT=0 reverts).
     #
     # wasla ٱ rides above its word's INITIAL alef; the suffix ۥ trails after its
