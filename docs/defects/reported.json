@@ -384,6 +384,30 @@
    "turned_out": "The composite build hid it by fake-balancing names; the DK budget exposes it (fatha 3/2 on رأوا). Fix = budget-proven one-way slash transfer, SLASHX acceptance case.",
    "fixed": false,
    "status": "SLASHX rule acceptance case"
+  },
+  {
+   "id": 36,
+   "date": "2026-08-27",
+   "page": null,
+   "words": [
+    "e496/e497 sample: three-dots as master(2 dots)+part(1 dot)"
+   ],
+   "reported": "Abdullah: three dots split into 2 marks (two-dots + one-dot part); we want them as ONE mark.",
+   "turned_out": "Emitter design: mkpart contours emit as separate paths. Fix: merge dot-family part contours into the master's single path at emission (same source frame only; cross-frame keeps _reframe parts).",
+   "fixed": false,
+   "status": "queued behind taxonomy phase 2 (file lock)"
+  },
+  {
+   "id": 37,
+   "date": "2026-08-27",
+   "page": 249,
+   "words": [
+    "كُلࣱّ p90/249/290/355/442/456/518... (11 flags)"
+   ],
+   "reported": "Ledger family: damma 0/1 on كُلࣱّ-type words.",
+   "turned_out": "The word's own damma is welded into the dammatan stack as a 3rd part (measured: master+2 parts on p249). Fix: when budget wants damma+dammatan and the stack holds 3 curls, peel one as damma.",
+   "fixed": false,
+   "status": "queued behind taxonomy phase 2"
   }
  ]
 }
