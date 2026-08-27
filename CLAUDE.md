@@ -27,7 +27,7 @@ is never committed anywhere.
 | Flagged words (mark audit) | 559 | **107** |
 | Interval-audit flags | 172 | **80** |
 | Pages clean (marks+intervals) | 276 | **489** of 604 |
-| Pages clean incl. mark-TYPE audit | — | **108** of 604 |
+| Pages clean incl. mark-TYPE audit | — | **461** of 604 (119 marktype flags) |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
 | Bench | SCORE 77, no failures, pixelfail 0 | SCORE 78 over 14 pages, no failures, pixelfail 0 |
 
@@ -42,9 +42,9 @@ the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's. Current sweep: `.cache/sweeps/reseat`
-(dk_lines validated over all 604 pages: -8 marks, -2 intervals, +4 clean, zero
-pages worse vs `.cache/sweeps/iqlab-fix`).
+so they are not comparable to today's. Current sweep: `.cache/sweeps/dkseg`
+(post-DKSEG, measured 2026-08-27: page-for-page IDENTICAL to
+`.cache/sweeps/reseat` — the segmentation migration moved zero flags).
 
 Two figures need context. **Bench** now covers 12 pages (143 and 222 were added as
 iqlab cases); on the previous 10-page set the score is still 76, and the +3 is one
