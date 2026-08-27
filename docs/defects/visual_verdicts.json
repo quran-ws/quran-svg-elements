@@ -12,7 +12,8 @@
      "tier": "certain",
      "evidence": "bodyless",
      "status": "confirmed",
-     "note": "also affect 3:75:8 stole the ما"
+     "note": "also affect 3:75:8 stole the ما",
+     "sig": "ab70bf3f"
     },
     {
      "page": 63,
@@ -21,7 +22,8 @@
      "tier": "certain",
      "evidence": "mark pause: 41u outside its line band",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it"
+     "note": "stole صلى pause from the word above it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 64,
@@ -30,7 +32,8 @@
      "tier": "certain",
      "evidence": "mark pause: 37u outside its line band",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it"
+     "note": "stole صلى pause from the word above it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 71,
@@ -39,7 +42,8 @@
      "tier": "certain",
      "evidence": "mark fatha: 18u outside its line band",
      "status": "confirmed",
-     "note": "extra fataha or kasrah at top stolen from the word above"
+     "note": "extra fataha or kasrah at top stolen from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 129,
@@ -48,7 +52,8 @@
      "tier": "certain",
      "evidence": "meem-iqlab 26u + kasratan 32u outside band",
      "status": "confirmed",
-     "note": "extra fatha after it (or kasra from word above) + stole haa letter and a kasra below it from the word below"
+     "note": "extra fatha after it (or kasra from word above) + stole haa letter and a kasra below it from the word below",
+     "sig": "d7e8d417"
     },
     {
      "page": 203,
@@ -57,7 +62,8 @@
      "tier": "certain",
      "evidence": "ligature surplus 2/1",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 219,
@@ -66,7 +72,8 @@
      "tier": "certain",
      "evidence": "ligature surplus 2/1",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 222,
@@ -75,7 +82,8 @@
      "tier": "certain",
      "evidence": "mark hamza: 27u outside its line band",
      "status": "confirmed",
-     "note": "stole hamza from the word below"
+     "note": "stole hamza from the word below",
+     "sig": "ab70bf3f"
     },
     {
      "page": 231,
@@ -84,7 +92,8 @@
      "tier": "certain",
      "evidence": "mark meem-iqlab: 22u outside its line band",
      "status": "confirmed",
-     "note": "stole meem from a word above it"
+     "note": "stole meem from a word above it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 234,
@@ -93,7 +102,8 @@
      "tier": "certain",
      "evidence": "mark fatha: 34u outside its line band",
      "status": "confirmed",
-     "note": "stole kasra from the word below it"
+     "note": "stole kasra from the word below it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 260,
@@ -102,7 +112,8 @@
      "tier": "certain",
      "evidence": "mark hamza: 19u outside its line band",
      "status": "confirmed",
-     "note": "stole hamza+kasrateen from the word above"
+     "note": "stole hamza+kasrateen from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 267,
@@ -111,7 +122,8 @@
      "tier": "certain",
      "evidence": "mark fatha: 35u outside its line band",
      "status": "confirmed",
-     "note": "stole kasra from the word below it"
+     "note": "stole kasra from the word below it",
+     "sig": "43857b79"
     },
     {
      "page": 341,
@@ -120,7 +132,8 @@
      "tier": "certain",
      "evidence": "mark small-waw: 18u outside its line band",
      "status": "confirmed",
-     "note": "stole waw or small waw from the word above"
+     "note": "stole waw or small waw from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 350,
@@ -129,7 +142,8 @@
      "tier": "certain",
      "evidence": "rtl-order",
      "status": "no-issue",
-     "note": "collateral of 24:3:9's stray"
+     "note": "collateral of 24:3:9's stray",
+     "sig": "ab70bf3f"
     },
     {
      "page": 350,
@@ -138,7 +152,8 @@
      "tier": "certain",
      "evidence": "rtl-order; fatha stray 300u",
      "status": "confirmed",
-     "note": "stole a far away fatha"
+     "note": "stole a far away fatha",
+     "sig": "4e98cf3d"
     },
     {
      "page": 371,
@@ -147,7 +162,8 @@
      "tier": "certain",
      "evidence": "rtl-order",
      "status": "no-issue",
-     "note": "collateral of 26:97:4's strays"
+     "note": "collateral of 26:97:4's strays",
+     "sig": "b355f5b1"
     },
     {
      "page": 371,
@@ -156,7 +172,8 @@
      "tier": "certain",
      "evidence": "kasra strays 303u + 286u",
      "status": "confirmed",
-     "note": "stole a ksra far far away"
+     "note": "stole a ksra far far away",
+     "sig": "ab70bf3f"
     },
     {
      "page": 451,
@@ -165,7 +182,8 @@
      "tier": "certain",
      "evidence": "ligature surplus 4/3",
      "status": "no-issue",
-     "note": "the art genuinely draws this word so; the joining-rule cap does not apply here"
+     "note": "the art genuinely draws this word so; the joining-rule cap does not apply here",
+     "sig": "8bea6996"
     },
     {
      "page": 535,
@@ -174,7 +192,8 @@
      "tier": "certain",
      "evidence": "ligature surplus 4/3",
      "status": "confirmed",
-     "note": "stole the word before it with its diacritics لا"
+     "note": "stole the word before it with its diacritics لا",
+     "sig": "c643b1f1"
     },
     {
      "page": 599,
@@ -183,7 +202,8 @@
      "tier": "certain",
      "evidence": "rtl-order",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -192,7 +212,8 @@
      "tier": "high",
      "evidence": "dots 1/0; fatha 5/3; sukun 2/1",
      "status": "confirmed",
-     "note": "i dont see any dot, I see 3 fathas, one sokoon !!"
+     "note": "i dont see any dot, I see 3 fathas, one sokoon !!",
+     "sig": "ab70bf3f"
     }
    ]
   },
@@ -207,7 +228,8 @@
      "tier": "high",
      "evidence": "width 2.08x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "8881196e"
     },
     {
      "page": 43,
@@ -216,7 +238,8 @@
      "tier": "high",
      "evidence": "width 2.01x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "8d8f5081"
     },
     {
      "page": 44,
@@ -225,7 +248,8 @@
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "009eb70e"
     },
     {
      "page": 535,
@@ -234,7 +258,8 @@
      "tier": "high",
      "evidence": "shadda 1/0",
      "status": "confirmed",
-     "note": "stole the word before it with its diacritics لا"
+     "note": "stole the word before it with its diacritics لا",
+     "sig": "c643b1f1"
     }
    ]
   },
@@ -250,7 +275,8 @@
      "tier": "certain",
      "evidence": "bodyless",
      "status": "confirmed",
-     "note": "also affect 3:75:8 stole the ما"
+     "note": "also affect 3:75:8 stole the ما",
+     "sig": "ab70bf3f"
     },
     {
      "page": 63,
@@ -259,7 +285,8 @@
      "tier": "certain",
      "evidence": "mark pause: 41u outside its line band",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it"
+     "note": "stole صلى pause from the word above it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 64,
@@ -268,7 +295,8 @@
      "tier": "certain",
      "evidence": "mark pause: 37u outside its line band",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it"
+     "note": "stole صلى pause from the word above it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 71,
@@ -277,7 +305,8 @@
      "tier": "certain",
      "evidence": "mark fatha: 18u outside its line band",
      "status": "confirmed",
-     "note": "extra fataha or kasrah at top stolen from the word above"
+     "note": "extra fataha or kasrah at top stolen from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 129,
@@ -286,7 +315,8 @@
      "tier": "certain",
      "evidence": "meem-iqlab 26u + kasratan 32u outside band",
      "status": "confirmed",
-     "note": "extra fatha after it (or kasra from word above) + stole haa letter and a kasra below it from the word below"
+     "note": "extra fatha after it (or kasra from word above) + stole haa letter and a kasra below it from the word below",
+     "sig": "d7e8d417"
     },
     {
      "page": 222,
@@ -295,7 +325,8 @@
      "tier": "certain",
      "evidence": "mark hamza: 27u outside band",
      "status": "confirmed",
-     "note": "stole hamza from the word below"
+     "note": "stole hamza from the word below",
+     "sig": "ab70bf3f"
     },
     {
      "page": 231,
@@ -304,7 +335,8 @@
      "tier": "certain",
      "evidence": "mark meem-iqlab: 22u outside band",
      "status": "confirmed",
-     "note": "stole meem from a word above it"
+     "note": "stole meem from a word above it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 234,
@@ -313,7 +345,8 @@
      "tier": "certain",
      "evidence": "mark fatha: 34u outside band",
      "status": "confirmed",
-     "note": "stole kasra from the word below it"
+     "note": "stole kasra from the word below it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -322,7 +355,8 @@
      "tier": "certain",
      "evidence": "ligature surplus 3/2",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 260,
@@ -331,7 +365,8 @@
      "tier": "certain",
      "evidence": "mark hamza: 19u outside band",
      "status": "confirmed",
-     "note": "stole hamza+kasrateen from the word above"
+     "note": "stole hamza+kasrateen from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 267,
@@ -340,7 +375,8 @@
      "tier": "certain",
      "evidence": "mark fatha: 35u outside band",
      "status": "confirmed",
-     "note": "stole kasra from the word below it"
+     "note": "stole kasra from the word below it",
+     "sig": "43857b79"
     },
     {
      "page": 341,
@@ -349,7 +385,8 @@
      "tier": "certain",
      "evidence": "mark small-waw: 18u outside band",
      "status": "confirmed",
-     "note": "stole waw or small waw from the word above"
+     "note": "stole waw or small waw from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 350,
@@ -358,7 +395,8 @@
      "tier": "certain",
      "evidence": "rtl-order; fatha stray 300u",
      "status": "confirmed",
-     "note": "stole a far away fatha"
+     "note": "stole a far away fatha",
+     "sig": "4e98cf3d"
     },
     {
      "page": 371,
@@ -367,7 +405,8 @@
      "tier": "certain",
      "evidence": "kasra strays 303u+286u",
      "status": "confirmed",
-     "note": "stole a ksra far far away"
+     "note": "stole a ksra far far away",
+     "sig": "ab70bf3f"
     },
     {
      "page": 418,
@@ -376,7 +415,8 @@
      "tier": "certain",
      "evidence": "fatha strays 290u+281u",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "0ed184c4"
     },
     {
      "page": 507,
@@ -385,7 +425,8 @@
      "tier": "certain",
      "evidence": "mark fatha: 20u outside band",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "e08dadc9"
     },
     {
      "page": 535,
@@ -394,7 +435,8 @@
      "tier": "certain",
      "evidence": "fatha strays 299u+302u",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 599,
@@ -403,7 +445,8 @@
      "tier": "certain",
      "evidence": "mark kasra: 16u outside band",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "08815c9d"
     },
     {
      "page": 535,
@@ -412,7 +455,8 @@
      "tier": "high",
      "evidence": "width 0.50x; fatha 5/4",
      "status": "confirmed",
-     "note": "stole kasrah from the word above it"
+     "note": "stole kasrah from the word above it",
+     "sig": "774fcf08"
     },
     {
      "page": 583,
@@ -421,7 +465,8 @@
      "tier": "high",
      "evidence": "width 0.26x; kasra 2/1; hamza 0/1",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "6ae7463c"
     },
     {
      "page": 341,
@@ -430,7 +475,8 @@
      "tier": "high",
      "evidence": "ref-line; damma 0/1; small-waw 0/1; pause 0/1; width 0.55x",
      "status": "confirmed",
-     "note": "the word before it stole له with the pause and diacritics, and here it shows the waw and its fatha from the following word"
+     "note": "the word before it stole له with the pause and diacritics, and here it shows the waw and its fatha from the following word",
+     "sig": "4e98cf3d"
     },
     {
      "page": 418,
@@ -439,7 +485,8 @@
      "tier": "high",
      "evidence": "width 2.69x",
      "status": "confirmed",
-     "note": "missing its 2 fathas, stolen (two) from prev word"
+     "note": "missing its 2 fathas, stolen (two) from prev word",
+     "sig": "e1fa9595"
     },
     {
      "page": 272,
@@ -448,7 +495,8 @@
      "tier": "high",
      "evidence": "fatha 2/1; width 1.81x",
      "status": "confirmed",
-     "note": "has below it a line that is a sajdah line above the word below it"
+     "note": "has below it a line that is a sajdah line above the word below it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -457,7 +505,8 @@
      "tier": "high",
      "evidence": "width 0.47x; meem-iqlab",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -466,7 +515,8 @@
      "tier": "high",
      "evidence": "width 0.47x; fatha 2/3",
      "status": "confirmed",
-     "note": "missing حا shape (the dot is not missing)"
+     "note": "missing حا shape (the dot is not missing)",
+     "sig": "ab70bf3f"
     },
     {
      "page": 599,
@@ -475,7 +525,8 @@
      "tier": "high",
      "evidence": "width 2.75x",
      "status": "confirmed",
-     "note": "stole kasrah from the word above it"
+     "note": "stole kasrah from the word above it",
+     "sig": "04654417"
     },
     {
      "page": 418,
@@ -484,7 +535,8 @@
      "tier": "high",
      "evidence": "width 0.29x; kasra 0/1",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "02ecaf8a"
     },
     {
      "page": 599,
@@ -493,7 +545,8 @@
      "tier": "high",
      "evidence": "width 3.62x; fatha 1/2",
      "status": "confirmed",
-     "note": "missing fatha at the end"
+     "note": "missing fatha at the end",
+     "sig": "d8a48020"
     },
     {
      "page": 499,
@@ -502,7 +555,8 @@
      "tier": "high",
      "evidence": "fatha 2/1; width 1.86x",
      "status": "confirmed",
-     "note": "extra fatha at the end"
+     "note": "extra fatha at the end",
+     "sig": "aa262fef"
     },
     {
      "page": 535,
@@ -511,7 +565,8 @@
      "tier": "high",
      "evidence": "width 2.02x",
      "status": "confirmed",
-     "note": "stole diacritics from the left (same line or the line below)"
+     "note": "stole diacritics from the left (same line or the line below)",
+     "sig": "ab70bf3f"
     },
     {
      "page": 350,
@@ -520,7 +575,8 @@
      "tier": "high",
      "evidence": "width 0.45x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "02894ec8"
     },
     {
      "page": 350,
@@ -529,7 +585,8 @@
      "tier": "high",
      "evidence": "width 0.45x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 11,
@@ -538,7 +595,8 @@
      "tier": "high",
      "evidence": "width 2.16x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "51cee532"
     },
     {
      "page": 20,
@@ -547,7 +605,8 @@
      "tier": "high",
      "evidence": "width 2.41x",
      "status": "no-issue",
-     "note": "the shape of meem in this font doesnt match the svg shape"
+     "note": "the shape of meem in this font doesnt match the svg shape",
+     "sig": "e5286726"
     },
     {
      "page": 20,
@@ -556,7 +615,8 @@
      "tier": "high",
      "evidence": "width 2.08x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "8881196e"
     },
     {
      "page": 43,
@@ -565,7 +625,8 @@
      "tier": "high",
      "evidence": "width 2.01x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "8d8f5081"
     },
     {
      "page": 44,
@@ -574,7 +635,8 @@
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "009eb70e"
     },
     {
      "page": 121,
@@ -583,7 +645,8 @@
      "tier": "high",
      "evidence": "width 2.73x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "b89a5f8a"
     },
     {
      "page": 121,
@@ -592,7 +655,8 @@
      "tier": "high",
      "evidence": "width 0.44x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "b76740c6"
     },
     {
      "page": 121,
@@ -601,7 +665,8 @@
      "tier": "high",
      "evidence": "width 2.10x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "356ab986"
     },
     {
      "page": 122,
@@ -610,7 +675,8 @@
      "tier": "high",
      "evidence": "width 2.88x",
      "status": "confirmed",
-     "note": "stole kasra from next word"
+     "note": "stole kasra from next word",
+     "sig": "7d5e2fd3"
     },
     {
      "page": 122,
@@ -619,7 +685,8 @@
      "tier": "high",
      "evidence": "width 0.20x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "631f75d6"
     },
     {
      "page": 123,
@@ -628,7 +695,8 @@
      "tier": "high",
      "evidence": "width 2.87x",
      "status": "confirmed",
-     "note": "stole kasra from prev word"
+     "note": "stole kasra from prev word",
+     "sig": "a6079a4d"
     },
     {
      "page": 130,
@@ -637,7 +705,8 @@
      "tier": "high",
      "evidence": "width 2.38x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "59889918"
     },
     {
      "page": 133,
@@ -646,7 +715,8 @@
      "tier": "high",
      "evidence": "width 2.20x",
      "status": "confirmed",
-     "note": "stole fatha from prev word"
+     "note": "stole fatha from prev word",
+     "sig": "58d52cb7"
     },
     {
      "page": 145,
@@ -655,7 +725,8 @@
      "tier": "high",
      "evidence": "width 0.48x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "f352f694"
     },
     {
      "page": 145,
@@ -664,7 +735,8 @@
      "tier": "high",
      "evidence": "width 2.66x",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "45959a3b"
     },
     {
      "page": 145,
@@ -673,7 +745,8 @@
      "tier": "high",
      "evidence": "width 2.30x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "432d3f51"
     },
     {
      "page": 150,
@@ -682,7 +755,8 @@
      "tier": "high",
      "evidence": "width 2.30x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "432d3f51"
     },
     {
      "page": 151,
@@ -691,7 +765,8 @@
      "tier": "high",
      "evidence": "width 2.30x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "432d3f51"
     },
     {
      "page": 243,
@@ -700,7 +775,8 @@
      "tier": "high",
      "evidence": "width 2.57x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "9ef3fec3"
     },
     {
      "page": 254,
@@ -709,7 +785,8 @@
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -718,7 +795,8 @@
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -727,7 +805,8 @@
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -736,7 +815,8 @@
      "tier": "high",
      "evidence": "width 0.47x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -745,7 +825,8 @@
      "tier": "high",
      "evidence": "width 0.47x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -754,7 +835,8 @@
      "tier": "high",
      "evidence": "width 0.48x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -763,7 +845,8 @@
      "tier": "high",
      "evidence": "width 0.47x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 286,
@@ -772,7 +855,8 @@
      "tier": "high",
      "evidence": "width 2.58x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "a1bc18ea"
     },
     {
      "page": 304,
@@ -781,7 +865,8 @@
      "tier": "high",
      "evidence": "width 2.00x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "9c705669"
     },
     {
      "page": 305,
@@ -790,7 +875,8 @@
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "009eb70e"
     },
     {
      "page": 331,
@@ -799,7 +885,8 @@
      "tier": "high",
      "evidence": "width 2.06x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ba5b21e4"
     },
     {
      "page": 337,
@@ -808,7 +895,8 @@
      "tier": "high",
      "evidence": "width 0.45x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "4093efae"
     },
     {
      "page": 341,
@@ -817,7 +905,8 @@
      "tier": "high",
      "evidence": "width 2.15x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "79674d82"
     },
     {
      "page": 350,
@@ -826,7 +915,8 @@
      "tier": "high",
      "evidence": "width 0.42x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 350,
@@ -835,7 +925,8 @@
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 350,
@@ -844,7 +935,8 @@
      "tier": "high",
      "evidence": "width 0.47x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 350,
@@ -853,7 +945,8 @@
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 355,
@@ -862,7 +955,8 @@
      "tier": "high",
      "evidence": "width 2.92x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "cdcc9dce"
     },
     {
      "page": 371,
@@ -871,7 +965,8 @@
      "tier": "high",
      "evidence": "width 0.48x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 371,
@@ -880,7 +975,8 @@
      "tier": "high",
      "evidence": "width 0.48x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 371,
@@ -889,7 +985,8 @@
      "tier": "high",
      "evidence": "width 0.47x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 371,
@@ -898,7 +995,8 @@
      "tier": "high",
      "evidence": "width 0.46x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 376,
@@ -907,7 +1005,8 @@
      "tier": "high",
      "evidence": "width 2.27x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "a74c21bc"
     },
     {
      "page": 385,
@@ -916,7 +1015,8 @@
      "tier": "high",
      "evidence": "width 2.33x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "f5ac72c0"
     },
     {
      "page": 404,
@@ -925,7 +1025,8 @@
      "tier": "high",
      "evidence": "width 2.10x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "356ab986"
     },
     {
      "page": 418,
@@ -934,7 +1035,8 @@
      "tier": "high",
      "evidence": "width 0.48x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "f352f694"
     },
     {
      "page": 447,
@@ -943,7 +1045,8 @@
      "tier": "high",
      "evidence": "width 2.01x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "8d8f5081"
     },
     {
      "page": 450,
@@ -952,7 +1055,8 @@
      "tier": "high",
      "evidence": "width 2.04x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "48563cc5"
     },
     {
      "page": 452,
@@ -961,7 +1065,8 @@
      "tier": "high",
      "evidence": "width 2.11x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "f62631e9"
     },
     {
      "page": 458,
@@ -970,7 +1075,8 @@
      "tier": "high",
      "evidence": "width 2.03x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "c116e76f"
     },
     {
      "page": 461,
@@ -979,7 +1085,8 @@
      "tier": "high",
      "evidence": "width 2.04x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "48563cc5"
     },
     {
      "page": 464,
@@ -988,7 +1095,8 @@
      "tier": "high",
      "evidence": "width 2.22x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "6876bb55"
     },
     {
      "page": 501,
@@ -997,7 +1105,8 @@
      "tier": "high",
      "evidence": "width 2.13x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "04155a20"
     },
     {
      "page": 502,
@@ -1006,7 +1115,8 @@
      "tier": "high",
      "evidence": "width 2.03x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "c116e76f"
     },
     {
      "page": 526,
@@ -1015,7 +1125,8 @@
      "tier": "high",
      "evidence": "width 0.41x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "420d54b3"
     },
     {
      "page": 529,
@@ -1024,7 +1135,8 @@
      "tier": "high",
      "evidence": "width 2.16x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "51cee532"
     },
     {
      "page": 532,
@@ -1033,7 +1145,8 @@
      "tier": "high",
      "evidence": "width 0.46x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "981ea91d"
     },
     {
      "page": 535,
@@ -1042,7 +1155,8 @@
      "tier": "high",
      "evidence": "width 0.44x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 535,
@@ -1051,7 +1165,8 @@
      "tier": "high",
      "evidence": "width 0.43x",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 596,
@@ -1060,7 +1175,8 @@
      "tier": "high",
      "evidence": "width 2.60x",
      "status": "confirmed",
-     "note": "missing a large part of تكم"
+     "note": "missing a large part of تكم",
+     "sig": "73d14a28"
     },
     {
      "page": 596,
@@ -1069,7 +1185,8 @@
      "tier": "high",
      "evidence": "width 0.48x",
      "status": "confirmed",
-     "note": "stole a large part from the word before it"
+     "note": "stole a large part from the word before it",
+     "sig": "f352f694"
     },
     {
      "page": 535,
@@ -1078,7 +1195,8 @@
      "tier": "high",
      "evidence": "shadda 1/0",
      "status": "confirmed",
-     "note": "stole the word before it with its diacritics لا"
+     "note": "stole the word before it with its diacritics لا",
+     "sig": "c643b1f1"
     },
     {
      "page": 350,
@@ -1087,7 +1205,8 @@
      "tier": "review",
      "evidence": "width 0.66x",
      "status": "confirmed",
-     "note": "extra fataha stolen from the prev word"
+     "note": "extra fataha stolen from the prev word",
+     "sig": "ab70bf3f"
     }
    ]
   },
@@ -1103,7 +1222,8 @@
      "tier": "high",
      "evidence": "multi-family surplus",
      "status": "confirmed",
-     "note": "swallowed له with its صلى pause and damma"
+     "note": "swallowed له with its صلى pause and damma",
+     "sig": "ab70bf3f"
     },
     {
      "page": 341,
@@ -1112,7 +1232,8 @@
      "tier": "high",
      "evidence": "holds almost nothing",
      "status": "confirmed",
-     "note": "holds only the و of the NEXT word وإن; its own له is inside اجتمعوا"
+     "note": "holds only the و of the NEXT word وإن; its own له is inside اجتمعوا",
+     "sig": "4e98cf3d"
     },
     {
      "page": 341,
@@ -1121,7 +1242,8 @@
      "tier": "high",
      "evidence": "width deficit",
      "status": "confirmed",
-     "note": "its و is held by له"
+     "note": "its و is held by له",
+     "sig": "ab70bf3f"
     },
     {
      "page": 341,
@@ -1130,7 +1252,8 @@
      "tier": "certain",
      "evidence": "small-waw 18u outside band",
      "status": "confirmed",
-     "note": "stole the small waw ۥ from له"
+     "note": "stole the small waw ۥ from له",
+     "sig": "ab70bf3f"
     }
    ]
   },
@@ -1146,7 +1269,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "bodyless",
-     "note": "also affect 3:75:8 stole the ما"
+     "note": "also affect 3:75:8 stole the ما",
+     "sig": "ab70bf3f"
     },
     {
      "page": 63,
@@ -1155,7 +1279,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark pause: 41u outside its line band",
-     "note": "stole صلى pause from the word above it"
+     "note": "stole صلى pause from the word above it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 64,
@@ -1164,7 +1289,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark pause: 37u outside its line band",
-     "note": "stole صلى pause from the word above it"
+     "note": "stole صلى pause from the word above it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 71,
@@ -1173,7 +1299,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: 18u outside its line band",
-     "note": "extra fataha or kasrah at top stolen from the word above"
+     "note": "extra fataha or kasrah at top stolen from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 129,
@@ -1182,7 +1309,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark meem-iqlab: 26u outside its line band; mark kasratan: 32u outside its line band",
-     "note": "extra fatat after it ( or kasra from the word above ) + stole haa letter and a kasra below it from the word below"
+     "note": "extra fatat after it ( or kasra from the word above ) + stole haa letter and a kasra below it from the word below",
+     "sig": "d7e8d417"
     },
     {
      "page": 222,
@@ -1191,7 +1319,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark hamza: 27u outside its line band",
-     "note": "stole hamza from the word below"
+     "note": "stole hamza from the word below",
+     "sig": "ab70bf3f"
     },
     {
      "page": 231,
@@ -1200,7 +1329,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark meem-iqlab: 22u outside its line band",
-     "note": "stole meem from a word above it"
+     "note": "stole meem from a word above it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 234,
@@ -1209,7 +1339,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: 34u outside its line band",
-     "note": "stole kasra from the word below it"
+     "note": "stole kasra from the word below it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -1218,7 +1349,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "ligature surplus 3/2",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 260,
@@ -1227,7 +1359,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark hamza: 19u outside its line band",
-     "note": "stole hamza+kasrateen from the word above"
+     "note": "stole hamza+kasrateen from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 267,
@@ -1236,7 +1369,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: 35u outside its line band",
-     "note": "stole kasra from the word below it"
+     "note": "stole kasra from the word below it",
+     "sig": "43857b79"
     },
     {
      "page": 341,
@@ -1245,7 +1379,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark small-waw: 18u outside its line band",
-     "note": "stole waw or small waw from the word above"
+     "note": "stole waw or small waw from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 350,
@@ -1254,7 +1389,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "rtl-order; mark fatha: stray 300u from its word",
-     "note": "stole a far away fatha"
+     "note": "stole a far away fatha",
+     "sig": "4e98cf3d"
     },
     {
      "page": 371,
@@ -1263,7 +1399,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark kasra: stray 303u from its word; mark kasra: stray 286u from its word",
-     "note": "stole a ksra far far away"
+     "note": "stole a ksra far far away",
+     "sig": "ab70bf3f"
     },
     {
      "page": 415,
@@ -1272,7 +1409,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark meem-iqlab: 17u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 418,
@@ -1281,7 +1419,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: stray 290u from its word; mark fatha: stray 281u from its word",
-     "note": ""
+     "note": "",
+     "sig": "0ed184c4"
     },
     {
      "page": 436,
@@ -1290,7 +1429,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark pause: 38u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 437,
@@ -1299,7 +1439,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "ligature surplus 2/1",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 439,
@@ -1308,7 +1449,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark maddah: 24u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 446,
@@ -1317,7 +1459,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: 17u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "b564033a"
     },
     {
      "page": 507,
@@ -1326,7 +1469,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: 20u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "e08dadc9"
     },
     {
      "page": 507,
@@ -1335,7 +1479,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark damma: 23u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "988e4ffd"
     },
     {
      "page": 507,
@@ -1344,7 +1489,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark damma: 17u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "272bbd2f"
     },
     {
      "page": 535,
@@ -1353,7 +1499,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: stray 299u from its word; mark fatha: stray 302u from its word",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 549,
@@ -1362,7 +1509,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "bodyless",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 567,
@@ -1371,7 +1519,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark kasra: 16u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "0c100fa8"
     },
     {
      "page": 576,
@@ -1380,7 +1529,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: 34u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "a53a997d"
     },
     {
      "page": 576,
@@ -1389,7 +1539,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: 36u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "6fe4d669"
     },
     {
      "page": 577,
@@ -1398,7 +1549,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "bodyless",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 577,
@@ -1407,7 +1559,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark fatha: 26u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "a5f28b75"
     },
     {
      "page": 599,
@@ -1416,7 +1569,8 @@
      "tier": "certain",
      "status": "confirmed",
      "evidence": "mark kasra: 16u outside its line band",
-     "note": ""
+     "note": "",
+     "sig": "08815c9d"
     },
     {
      "page": 535,
@@ -1425,7 +1579,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "width 0.50x 0.85; fatha 5/4 0.55",
-     "note": "stole kasrah from the word above it"
+     "note": "stole kasrah from the word above it",
+     "sig": "774fcf08"
     },
     {
      "page": 341,
@@ -1434,7 +1589,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 3/2; damma 2/1; pause 1/0",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 90,
@@ -1443,7 +1599,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 4/2",
-     "note": ""
+     "note": "",
+     "sig": "7861346e"
     },
     {
      "page": 341,
@@ -1452,7 +1609,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "ref-line; damma 0/1; small-waw 0/1; pause 0/1; width 0.55x",
-     "note": "the word before it stole له with the pause and diacrtics, and here it shows the waw and its fatha from the following word"
+     "note": "the word before it stole له with the pause and diacrtics, and here it shows the waw and its fatha from the following word",
+     "sig": "4e98cf3d"
     },
     {
      "page": 239,
@@ -1461,7 +1619,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "shadda 2/1; pause 1/0",
-     "note": ""
+     "note": "",
+     "sig": "488635b2"
     },
     {
      "page": 418,
@@ -1470,7 +1629,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "width 2.69x",
-     "note": "missing its 2 fathas stonlen two form prev word"
+     "note": "missing its 2 fathas stonlen two form prev word",
+     "sig": "e1fa9595"
     },
     {
      "page": 361,
@@ -1479,7 +1639,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 5/4",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 576,
@@ -1488,7 +1649,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 3/2",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 272,
@@ -1497,7 +1659,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 2/1; width 1.81x",
-     "note": "has below it a lign that is a sajdah line above the word below it"
+     "note": "has below it a lign that is a sajdah line above the word below it",
+     "sig": "ab70bf3f"
     },
     {
      "page": 355,
@@ -1506,7 +1669,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 3/2",
-     "note": ""
+     "note": "",
+     "sig": "2fe5d0e6"
     },
     {
      "page": 254,
@@ -1515,7 +1679,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "width 0.47x; meem-iqlab",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
@@ -1524,7 +1689,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "width 0.47x; fatha 2/3",
-     "note": "missing حا shape ( the dot is not missing )"
+     "note": "missing حا shape ( the dot is not missing )",
+     "sig": "ab70bf3f"
     },
     {
      "page": 239,
@@ -1533,7 +1699,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "kasra 1/0; shadda 0/1; pause 0/1",
-     "note": ""
+     "note": "",
+     "sig": "c9aca354"
     },
     {
      "page": 599,
@@ -1542,7 +1709,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "width 2.75x",
-     "note": "stole kasrah from the word above it"
+     "note": "stole kasrah from the word above it",
+     "sig": "04654417"
     },
     {
      "page": 323,
@@ -1551,7 +1719,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 4/3",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 599,
@@ -1560,7 +1729,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "width 3.62x; fatha 1/2",
-     "note": "missing fatha at the end"
+     "note": "missing fatha at the end",
+     "sig": "d8a48020"
     },
     {
      "page": 129,
@@ -1569,7 +1739,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 4/3",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 222,
@@ -1578,7 +1749,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 2/1",
-     "note": ""
+     "note": "",
+     "sig": "6bc41d0c"
     },
     {
      "page": 59,
@@ -1587,7 +1759,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 2/1; kasra 1/2",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 499,
@@ -1596,7 +1769,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 2/1; width 1.86x",
-     "note": "extra fatha at the end"
+     "note": "extra fatha at the end",
+     "sig": "aa262fef"
     },
     {
      "page": 486,
@@ -1605,7 +1779,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 3/2",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 543,
@@ -1614,7 +1789,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 3/2",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 51,
@@ -1623,7 +1799,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 3/2",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 100,
@@ -1632,7 +1809,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 3/2",
-     "note": ""
+     "note": "",
+     "sig": "2fe5d0e6"
     },
     {
      "page": 228,
@@ -1641,7 +1819,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 3/2",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 319,
@@ -1650,7 +1829,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 3/2",
-     "note": ""
+     "note": "",
+     "sig": "2fe5d0e6"
     },
     {
      "page": 525,
@@ -1659,7 +1839,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "pause 1/0",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 535,
@@ -1668,7 +1849,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "width 2.02x",
-     "note": "stole directicts from the left ( same line or the line below )"
+     "note": "stole directicts from the left ( same line or the line below )",
+     "sig": "ab70bf3f"
     },
     {
      "page": 535,
@@ -1677,7 +1859,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 2/1",
-     "note": ""
+     "note": "",
+     "sig": "68af18bf"
     },
     {
      "page": 526,
@@ -1686,7 +1869,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "kasra 2/1",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 585,
@@ -1695,7 +1879,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "damma 2/1",
-     "note": ""
+     "note": "",
+     "sig": "59463192"
     },
     {
      "page": 44,
@@ -1704,7 +1889,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "fatha 2/1",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 535,
@@ -1713,7 +1899,8 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "shadda 1/0",
-     "note": "stole the word before it with its diarctics لا"
+     "note": "stole the word before it with its diarctics لا",
+     "sig": "c643b1f1"
     },
     {
      "page": 122,
@@ -1722,7 +1909,8 @@
      "tier": "review",
      "status": "confirmed",
      "evidence": "width 2.88x",
-     "note": "stole kasra from next word"
+     "note": "stole kasra from next word",
+     "sig": "7d5e2fd3"
     },
     {
      "page": 123,
@@ -1731,7 +1919,8 @@
      "tier": "review",
      "status": "confirmed",
      "evidence": "width 2.87x",
-     "note": "stole kasra from prev word"
+     "note": "stole kasra from prev word",
+     "sig": "a6079a4d"
     },
     {
      "page": 133,
@@ -1740,7 +1929,8 @@
      "tier": "review",
      "status": "confirmed",
      "evidence": "width 2.20x",
-     "note": "stole fatha from prev word"
+     "note": "stole fatha from prev word",
+     "sig": "58d52cb7"
     },
     {
      "page": 145,
@@ -1749,7 +1939,8 @@
      "tier": "review",
      "status": "confirmed",
      "evidence": "width 2.66x",
-     "note": ""
+     "note": "",
+     "sig": "45959a3b"
     },
     {
      "page": 596,
@@ -1758,7 +1949,8 @@
      "tier": "review",
      "status": "commented",
      "evidence": "width 2.60x",
-     "note": "missin a large part of تكم"
+     "note": "missin a large part of تكم",
+     "sig": "73d14a28"
     },
     {
      "page": 596,
@@ -1767,7 +1959,8 @@
      "tier": "review",
      "status": "confirmed",
      "evidence": "width 0.48x",
-     "note": "stole a large part from the word before it"
+     "note": "stole a large part from the word before it",
+     "sig": "f352f694"
     },
     {
      "page": 350,
@@ -1776,7 +1969,8 @@
      "tier": "review",
      "status": "confirmed",
      "evidence": "width 0.66x",
-     "note": "extra fataha stolen from the prev word"
+     "note": "extra fataha stolen from the prev word",
+     "sig": "ab70bf3f"
     }
    ]
   },
@@ -1792,7 +1986,8 @@
      "tier": "high",
      "evidence": "ref-line; damma 3/2; dammatan 0/1",
      "status": "no-issue",
-     "note": "overturns the old reference-confirmed line error"
+     "note": "overturns the old reference-confirmed line error",
+     "sig": "9986982b"
     },
     {
      "page": 207,
@@ -1801,7 +1996,8 @@
      "tier": "high",
      "evidence": "ref-line",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 367,
@@ -1810,7 +2006,8 @@
      "tier": "high",
      "evidence": "ref-line",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 548,
@@ -1819,7 +2016,8 @@
      "tier": "high",
      "evidence": "ref-line",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 586,
@@ -1828,7 +2026,8 @@
      "tier": "high",
      "evidence": "ref-line",
      "status": "no-issue",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 599,
@@ -1837,7 +2036,8 @@
      "tier": "high",
      "evidence": "ref-line",
      "status": "no-issue",
-     "note": "overturns the old reference-confirmed line error"
+     "note": "overturns the old reference-confirmed line error",
+     "sig": "4e98cf3d"
     },
     {
      "page": 526,
@@ -1846,7 +2046,8 @@
      "tier": "high",
      "evidence": "ref-line",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 228,
@@ -1855,7 +2056,8 @@
      "tier": "high",
      "evidence": "ref-line; kasra 0/1",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 350,
@@ -1864,7 +2066,8 @@
      "tier": "high",
      "evidence": "ref-line; fatha 1/2",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 535,
@@ -1873,7 +2076,8 @@
      "tier": "high",
      "evidence": "ref-line; shadda 0/1",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "4e98cf3d"
     },
     {
      "page": 543,
@@ -1882,7 +2086,8 @@
      "tier": "high",
      "evidence": "ref-line; kasra 0/1",
      "status": "confirmed",
-     "note": "one of the four reference-confirmed line errors — re-confirmed"
+     "note": "one of the four reference-confirmed line errors — re-confirmed",
+     "sig": "4e98cf3d"
     },
     {
      "page": 543,
@@ -1891,7 +2096,8 @@
      "tier": "high",
      "evidence": "fatha 3/2",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 599,
@@ -1900,7 +2106,8 @@
      "tier": "review",
      "evidence": "width 1.80x",
      "status": "confirmed",
-     "note": "still defective after the band fix — width now"
+     "note": "still defective after the band fix — width now",
+     "sig": "08815c9d"
     }
    ]
   },
@@ -1916,7 +2123,8 @@
      "tier": "high",
      "evidence": "pause 2/1",
      "status": "confirmed",
-     "note": "pause exist visual but not marked"
+     "note": "pause exist visual but not marked",
+     "sig": "ab70bf3f"
     },
     {
      "page": 112,
@@ -1925,7 +2133,8 @@
      "tier": "high",
      "evidence": "pause 1/0",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 42,
@@ -1934,7 +2143,8 @@
      "tier": "high",
      "evidence": "pause 0/1",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 49,
@@ -1943,7 +2153,8 @@
      "tier": "high",
      "evidence": "pause 0/1",
      "status": "confirmed",
-     "note": "pause exist visual but not marked"
+     "note": "pause exist visual but not marked",
+     "sig": "ab70bf3f"
     },
     {
      "page": 91,
@@ -1952,7 +2163,8 @@
      "tier": "high",
      "evidence": "pause 0/1",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 112,
@@ -1961,7 +2173,8 @@
      "tier": "high",
      "evidence": "pause 0/1",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 171,
@@ -1970,7 +2183,8 @@
      "tier": "high",
      "evidence": "pause 0/1",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 399,
@@ -1979,7 +2193,8 @@
      "tier": "high",
      "evidence": "pause 0/1",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 503,
@@ -1988,7 +2203,8 @@
      "tier": "high",
      "evidence": "pause 0/1",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 504,
@@ -1997,7 +2213,8 @@
      "tier": "high",
      "evidence": "pause 0/1",
      "status": "confirmed",
-     "note": ""
+     "note": "",
+     "sig": "ab70bf3f"
     },
     {
      "page": 525,
@@ -2006,7 +2223,8 @@
      "tier": "high",
      "evidence": "pause 0/1",
      "status": "confirmed",
-     "note": "missing small seen below it"
+     "note": "missing small seen below it",
+     "sig": "ab70bf3f"
     }
    ]
   },
@@ -2020,49 +2238,56 @@
      "key": "2:262:15",
      "text": "لَّهُمْ",
      "status": "reopened",
-     "note": "not fixed per eye 2026-08-27"
+     "note": "not fixed per eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 51,
      "key": "3:14:18",
      "text": "مَتَٰعُ",
      "status": "reopened",
-     "note": "not fixed per eye"
+     "note": "not fixed per eye",
+     "sig": "ab70bf3f"
     },
     {
      "page": 129,
      "key": "6:13:3",
      "text": "سَكَنَ",
      "status": "reopened",
-     "note": "extra kasrah"
+     "note": "extra kasrah",
+     "sig": "ab70bf3f"
     },
     {
      "page": 323,
      "key": "21:16:4",
      "text": "وَٱلْأَرْضَ",
      "status": "reopened",
-     "note": "extra kasrah"
+     "note": "extra kasrah",
+     "sig": "ab70bf3f"
     },
     {
      "page": 260,
      "key": "14:39:5",
      "text": "لِي",
      "status": "reopened",
-     "note": "still steals the hamza from the word above"
+     "note": "still steals the hamza from the word above",
+     "sig": "ab70bf3f"
     },
     {
      "page": 361,
      "key": "25:18:15",
      "text": "وَءَابَآءَهُمْ",
      "status": "reopened",
-     "note": "steals kasrah at the end"
+     "note": "steals kasrah at the end",
+     "sig": "ab70bf3f"
     },
     {
      "page": 486,
      "key": "42:23:12",
      "text": "أَسْـَٔلُكُمْ",
      "status": "reopened",
-     "note": "stole a fatha from the word below it"
+     "note": "stole a fatha from the word below it",
+     "sig": "ab70bf3f"
     }
    ]
   },
@@ -2075,199 +2300,232 @@
      "page": 42,
      "key": "2:255:32",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 49,
      "key": "2:285:23",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 59,
      "key": "3:75:8",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 59,
      "key": "3:75:19",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 63,
      "key": "3:108:6",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 64,
      "key": "3:115:6",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 71,
      "key": "3:161:6",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 91,
      "key": "4:81:12",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 112,
      "key": "5:25:12",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 112,
      "key": "5:26:6",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 114,
      "key": "5:41:16",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 171,
      "key": "7:160:32",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 222,
      "key": "11:12:15",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 228,
      "key": "11:56:6",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 234,
      "key": "11:116:25",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 254,
      "key": "13:37:10",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 272,
      "key": "16:48:10",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 341,
      "key": "22:73:17",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 341,
      "key": "22:73:25",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 350,
      "key": "24:3:10",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 371,
      "key": "26:97:4",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 399,
      "key": "29:26:3",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 436,
      "key": "35:13:20",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 437,
      "key": "35:27:17",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 439,
      "key": "35:42:6",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 503,
      "key": "46:8:22",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 504,
      "key": "46:19:4",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 525,
      "key": "52:37:7",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 525,
      "key": "52:38:7",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 526,
      "key": "53:26:5",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 535,
      "key": "56:44:3",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 543,
      "key": "58:7:1",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     },
     {
      "page": 576,
      "key": "74:31:48",
      "status": "confirmed",
-     "note": "fix VERIFIED by eye 2026-08-27"
+     "note": "fix VERIFIED by eye 2026-08-27",
+     "sig": "ab70bf3f"
     }
    ]
   }
