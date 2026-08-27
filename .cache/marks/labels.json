@@ -3042,7 +3042,7 @@
   "label": "fatha"
  },
  "2fb9f1b6e49c570e": {
-  "auto": true,
+  "auto": false,
   "label": "hamza",
   "note": "Abdullah 2026-08-27 sheet r11: hamza confirmed"
  },
@@ -4665,7 +4665,8 @@
  },
  "47c49c400b93c632": {
   "label": "hamza",
-  "note": "Abdullah 2026-08-27 sheet r11: hamza confirmed"
+  "note": "Abdullah 2026-08-27 sheet r11: hamza confirmed",
+  "auto": false
  },
  "47c6f26645675fcd": {
   "auto": true,
@@ -4817,7 +4818,8 @@
  },
  "4a172da1a8160bb3": {
   "label": "letter",
-  "note": "Abdullah 2026-08-27 sheet r11: the letter ه (p337 ينصره) — not two-dots, not small-waw. Closes P19."
+  "note": "Abdullah 2026-08-27 sheet r11: the letter ه (p337 ينصره) — not two-dots, not small-waw. Closes P19.",
+  "auto": false
  },
  "4a186eafe7ed5b4c": {
   "auto": true,
