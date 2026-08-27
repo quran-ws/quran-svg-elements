@@ -14,26 +14,42 @@ Two signals convict a rotation: the word's own worst-chunk residual is high AND
 that chunk — sitting at the word edge — fits a contiguous segment run of the
 ADJACENT word on that side markedly better (the rotation signature).
 
-Calibration (clean subset = multi-chunk words with no flag in the lscnt sweep,
-no adverse reference verdict, not in reference_words flags; 45,946 of 48,110):
+Calibration (clean subset = multi-chunk words with no flag in the r7fix sweep,
+no reference verdict, not in reference_words flags; 51,815 of 52,105 scored,
+measured 2026-08-27 on the post-R7 build):
 
     worst-chunk residual, in mean-segment units (wres):
-      p50 0.14  p90 0.40  p99 0.83  p99.9 1.53  max 4.06
-      1.5-1.75: 21   1.75-2.0: 6   2.0-2.5: 5   2.5-3.0: 2   3.0+: 2
-    alignment cost: p99 0.35, p99.9 0.68, max 2.18
-    the clean tail >=1.75 is 15 words in 45,946 (0.03%) — thin, not empty; a
-    hard proof band does not exist for widths alone, which is WHY the
-    conviction needs the second signal (cross-fit). Thresholds sit at
-    wres>=1.20 (clean beyond it: 82 = 0.18%) for a REPORT, and rotation
-    conviction additionally needs cross_u <= 0.5*own_u with cross_norm <= 0.35.
+      p50 0.233  p90 0.492  p99 0.814  p99.9 1.485  max 2.39
+      1.0-1.2: 127   1.2-1.5: 48   1.5-1.75: 30   1.75-2.0: 16
+      2.0-2.5: 4     2.5+: 0
+    alignment cost: p99 0.465, p99.9 0.842, max 1.79
 
-Confounders enumerated and tested (see docs/defects/chunkfit_report.md):
-swash merges (handled by the aligner's merge move), kashida stretch at
-justified line ends (absorbed by per-LINE alpha; line-end words' wres median
-0.16 vs 0.14 overall), pen-lift splits (many-atoms↔one-seg groups are legal),
-letter-space compounds (each half aligns to its own segs; the inter-half gap
-never enters a group span), juz 30 (flag rate reported per region, threshold
-not region-tuned).
+    There is NO empty band: the clean tail thins but never empties, and it is
+    dominated by one calligraphic convention — the elongated final ن of
+    إِنَّ / أَنَّ before the next word (74 of the top-100). So the width
+    residual alone is a REVIEW signal, never a proof, and the audit does not
+    pretend otherwise: a rotation CONVICTION needs three signals agreeing —
+    (1) own worst-chunk residual >= THR_ROT, (2) that chunk fits a contiguous
+    segment run of the adjacent word 2x better and well absolutely, and
+    (3) the donor word itself misfits >= NB_DAMAGE on the side FACING the
+    suspect (a real exchange damages both parties, on facing edges).
+    Dropping any one gate was measured: without (3) the list is 220 words,
+    ~95% the إنّ ٱللَّه stretch; with (3) but ignoring WHICH side the donor
+    misfits on, 16, ~10 of them الله's systematic 0.60-0.65 'لله' model error.
+
+Confounders enumerated and tested (counts on the clean subset; see
+docs/defects/chunkfit_report.md for the reversed-flag audit):
+swash وا۟ merges n=2,901, 0 at wres>=1.2 (the aligner's merge move absorbs
+them — the naive 1:1 prototype's whole top tail was this family); ـرًا endings
+n=443, 0; letter-space compounds n=4, 0 (each half aligns to its own segments;
+the inter-half gap never enters a group span); line-end words n=6,381, 5
+(0.08%, per-LINE alpha absorbs justification); juz 30 n=1,563, 3 (0.19%);
+pen-lift splits nch<nseg n=1,539, 4 (many-atoms-to-one-segment groups are
+legal); surplus nch>nseg n=1,069, 1. Two artefact families were found by this
+calibration and are handled IN the metric: the standalone-ء the print draws as
+a diacritic (dual hamza model below — before it, the ٱلسَّمَآءِ/رَءَا family
+sat at wres 2.4-2.5 and رَءَا was infeasible outright), and the إنّ final-ن
+stretch (tagged fam=final-nun-stretch in the output, never convicted).
 
     python3 tools/audit_chunkfit.py 1 604 8 docs/defects/chunkfit_flags.json
     python3 tools/audit_chunkfit.py 1 604 8 out.json --dump all.json
@@ -54,6 +70,7 @@ THR_ROT = 0.90      # residual floor for a rotation conviction (needs cross-fit 
 THR_COST = 0.80     # whole-word alignment cost that earns a report on its own
 X_RATIO = 0.50      # cross fit must beat own fit by 2x ...
 X_NORM = 0.35       # ... and be a genuinely GOOD fit for the neighbour
+NB_DAMAGE = 0.60    # the donor word must itself misfit (pair-damage gate)
 
 
 def _load_aw():
@@ -114,8 +131,24 @@ def analyze(assignment, pg):
         al = alpha.get(x["ln"])
         if not al or al <= 0:
             continue
-        groups, cost = aw.align_segs_atoms(x["ch"], x["segs"], al)
-        mean_len = sum(x["lens"]) / len(x["lens"])
+        # Two hamza models. segment_word expects a standalone ء as its own tiny
+        # body, but the print draws many of them as a DIACRITIC above the join
+        # (the whole ٱلسَّمَآءِ / رَءَا family) — scoring only the body model
+        # put every such word in the residual tail (wres ~2.4, a solid band of
+        # audit artefacts) and made رَءَا infeasible outright. Score both and
+        # keep the model the ink itself prefers.
+        cands = [("b", x["segs"], x["lens"])]
+        if any(s["text"] == "ء" for s in x["segs"]):
+            sB = [s for s in x["segs"] if s["text"] != "ء"]
+            if sB:
+                cands.append(("m", sB, [aw.letter_width(s["text"]) for s in sB]))
+        best = None
+        for hz, sgs, lens in cands:
+            groups, cost = aw.align_segs_atoms(x["ch"], sgs, al)
+            if best is None or (cost < best[1]):
+                best = (groups, cost, hz, sgs, lens)
+        groups, cost, hz, sgs, lens = best
+        mean_len = sum(lens) / len(lens)
         unit = al * mean_len
         if cost == float("inf"):
             out.append({"p": pg, "k": x["k"], "t": x["t"], "ln": x["ln"],
@@ -166,7 +199,7 @@ def analyze(assignment, pg):
                "wx": [round(min(c["x1"] for c in x["ch"]), 1),
                       round(max(c["x2"] for c in x["ch"]), 1)],
                "lx": round(span.get(x["ln"], (0, 0))[0], 1),
-               "nch": len(x["ch"]), "nseg": len(x["segs"]),
+               "nch": len(x["ch"]), "nseg": len(sgs), "hz": hz,
                "cost": round(cost, 3), "wres": round(wres, 3),
                "own_u": round(own_u, 2), "unit": round(unit, 2),
                "side": side, "gi": gi, "xline": xline,
@@ -207,6 +240,53 @@ def categorize(r):
     return None
 
 
+def flag_records(recs):
+    """Apply categorize + the PAIR-DAMAGE gate; returns the flagged list.
+
+    A genuine exchange damages BOTH parties: the word that absorbed foreign ink
+    misfits, and the word it was taken from is short. Without this gate the
+    rotation rule's list is ~95% one calligraphic convention — إِنَّ / أَنَّ
+    with the final ن stretched before ٱللَّهِ, whose stretch happens to equal
+    الله's expected width (measured: 214 clean-word hits, the إن family the
+    bulk). Requiring the cross-fit neighbour to ALSO score wres >= NB_DAMAGE,
+    or be infeasible, keeps p254's conviction (its neighbour scored 0.68) and
+    drops the stretch family (their neighbours are clean).
+    """
+    by_key = {r["k"]: r for r in recs}
+
+    def _kt(k):
+        return tuple(int(x) for x in k.split(":"))
+
+    out = []
+    for r in recs:
+        cat = categorize(r)
+        if not cat:
+            continue
+        if cat == "rotation-suspect":
+            nbk = (r.get("cross") or {}).get("nb", "")
+            nb = by_key.get(nbk)
+            # The damage must be on the donor's side FACING the suspect. All
+            # ~10 إِنَّ→ٱللَّهِ pairs that slipped the plain wres gate had the
+            # donor الله misfitting mildly (0.60-0.65) on its FAR side ('لله',
+            # last) — a systematic لله-ligature width error, not a donation.
+            facing = "first" if _kt(nbk) > _kt(r["k"]) else "last"
+            damaged = nb and (nb.get("cat") == "align-fail"
+                              or ((nb.get("wres") or 0) >= NB_DAMAGE
+                                  and nb.get("side") == facing))
+            if not damaged:
+                cat = "width-anomaly" if r["wres"] >= THR_RES else None
+        if not cat:
+            continue
+        f = dict(r, cat=cat)
+        # the elongated final ن before the next word (إِنَّ ٱللَّهَ and kin) is
+        # a calligraphic CONVENTION this script uses freely — mark the family
+        # so the review list does not drown in it
+        if cat == "width-anomaly" and r.get("seg_text") == "ن" and r["side"] == "last":
+            f["fam"] = "final-nun-stretch"
+        out.append(f)
+    return out
+
+
 def page(pg):
     try:
         with contextlib.redirect_stdout(io.StringIO()):
@@ -227,11 +307,7 @@ def report(recs, out_path):
                    (1.2, 1.5), (1.5, 2.0), (2.0, 3.0), (3.0, 100)):
         n = bisect.bisect_left(ds, hi) - bisect.bisect_left(ds, lo)
         print("   %5s - %-5s %6d" % (lo, hi, n))
-    flags = []
-    for r in recs:
-        cat = categorize(r)
-        if cat:
-            flags.append(dict(r, cat=cat))
+    flags = flag_records(recs)
     byc = Counter(f["cat"] for f in flags)
     print("\nflags %d: %s" % (len(flags), dict(byc)))
     rot = sorted([f for f in flags if f["cat"] == "rotation-suspect"],
