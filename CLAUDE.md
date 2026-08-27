@@ -42,7 +42,14 @@ the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's. Current sweep: `.cache/sweeps/slashx2`
+so they are not comparable to today's. Current sweep: `.cache/sweeps/tax1`
+(taxonomy phase 1: marks 99, intervals 62, clean 512 — the -2 marks are the
+p329 small-noon and p159 seen-reading fixes landing; every sign now carries
+the print catalog's name: sifr-mustadir/mustatil, saktah/seen-reading by
+place table, sajdah-line/sajdah-sign, waqf-lazim/waqf-awla/waqf-jaiz/
+wasl-awla/muanaqah in data-waqf. Old names accepted on input forever, never
+emitted. Phase 2 pending: tanween data-form + muanaqah data-pair +
+audit_taxonomy.py.) Previous: `.cache/sweeps/slashx2`
 (marks 101, intervals 62, clean 510, bench 99 over 17 pages. The evening's
 passes: QSVG_HDRGUARD header-ink eviction, QSVG_PAUSEDOTS, and the
 QSVG_SLASHX exchange completion inside the orphan pass — a floating leg is

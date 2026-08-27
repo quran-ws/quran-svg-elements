@@ -28,6 +28,10 @@ LANE = {
     "damma": "label",        # the ornate damma and a dot pair look alike
     "dots": "label",
     "small-circle": "label",
+    "sifr-mustadir": "label",   # taxonomy phase 1: the two zeros
+    "sifr-mustatil": "label",
+    "saktah": "label",         # the U+06DC sites, named by job
+    "seen-reading": "label",
     "small-noon": "label",
     "ligatures": "auto",     # surplus pieces = ink stolen from a neighbour
     "fatha": "auto",         # side rule + budget

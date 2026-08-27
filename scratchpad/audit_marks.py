@@ -24,12 +24,30 @@ TEXT_WANT = {
     "fathatan": ("ً", "ࣰ"), "kasratan": ("ٍ", "ࣲ"), "dammatan": ("ٌ", "ࣱ"),
     "sukun": ("ْ", "ۡ"), "shadda": ("ّ",), "maddah": ("ٓ", "ۤ"),
     "small-alef": ("ٰ",), "wasla": ("ٱ",), "small-waw": ("ۥ",),
-    "small-ya": ("ۦ", "ۧ"), "small-circle": ("۟", "۠"),
+    "small-ya": ("ۦ", "ۧ"),
+    # taxonomy phase 1: the two zeros are different signs with different rules
+    # (U+06DF round, U+06E0 upright); no word carries both, so the text splits
+    # the family exactly (3988 + 66 sites, measured mushaf-wide)
+    "sifr-mustadir": ("۟",), "sifr-mustatil": ("۠",),
     "hamza": ("أ", "إ", "ؤ", "ئ", "ٔ", "ٕ"),
-    "pause": ("ۖ", "ۗ", "ۘ", "ۙ", "ۚ", "ۛ", "ۜ",
+    # ۜ (U+06DC) left this bucket: it is a saktah at five sites and a reading
+    # sign at two, named BY JOB from the place table below. ۣ (U+06E3, 52:37)
+    # stays: phase 1 did not rename the seen-below/imalah/ishmam/tashil dots.
+    "pause": ("ۖ", "ۗ", "ۘ", "ۙ", "ۚ", "ۛ",
               "۬", "۪", "۫", "ۣ"),
     "small-noon": ("ۨ",),
+    "saktah": ("ۜ",), "seen-reading": ("ۜ",),
 }
+# The U+06DC sites by JOB (mirrors .cache/marks/rare_places.json, which the
+# pipeline's naming pass reads): the same character is a saktah on one page and
+# a seen-for-sad on another, so the budget is place-gated — a site demands its
+# OWN job's family and zero of the other.
+RARE_SITES = {(18, 1): "saktah", (36, 52): "saktah", (75, 27): "saktah",
+              (83, 14): "saktah", (69, 28): "saktah",
+              (2, 245): "seen-reading", (7, 69): "seen-reading"}
+# legacy input names (an older build under QSVG_PIPE) fold into the new family
+# the word's own text selects
+_LEGACY_ZERO = "small-circle"
 # the iqlab meem is fused into the tanween glyph in this art (measured), so it
 # is not demanded as a separate mark
 
@@ -107,10 +125,13 @@ def scan(pg):
         els = [e for a in at for e in a["els"]]
         txt = w["uthmani"]
         have, dots = Counter(), 0
+        _zero_fam = ("sifr-mustatil" if "۠" in txt else "sifr-mustadir")
         for e in els:
             if e.get("mkpart"):
                 continue              # a welded twin counts through its master
             for part in (e.get("mark") or "").split("+"):
+                if part == _LEGACY_ZERO:
+                    part = _zero_fam  # old emitted name, accepted on input
                 if part in _DOTU:
                     dots += _DOTU[part]
                 elif part:
@@ -144,6 +165,9 @@ def scan(pg):
                 continue
             src = wtxt if fam == "pause" else txt
             want = sum(src.count(c) for c in chars)
+            if fam in ("saktah", "seen-reading") \
+                    and RARE_SITES.get((w["surah"], w["ayah"])) != fam:
+                want = 0              # the ۜ here belongs to the OTHER job
             if want != have.get(fam, 0):
                 bad.append((fam, have.get(fam, 0), want))
         dw = dot_want(txt, aw)
