@@ -25,11 +25,11 @@ is never committed anywhere.
 | | pinned baseline | now |
 |---|---|---|
 | Flagged words (mark audit) | 559 | **75** |
-| Interval-audit flags | 172 | **55** |
-| Pages clean (marks+intervals) | 276 | **526** of 604 |
+| Interval-audit flags | 172 | **44** |
+| Pages clean (marks+intervals) | 276 | **534** of 604 |
 | Pages clean incl. mark-TYPE audit | — | **461** of 604 (119 marktype flags) |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
-| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 109 over 20 pages, no failures, pixelfail 0 |
+| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 148 over 21 pages (p600 juz-30 noise joins the aggregate), no failures, pixelfail 0 |
 
 **"Clean" is always relative to the audits that exist** (Abdullah, 2026-08-26,
 after budget-neutral thefts and the R7 family were found living on "clean"
@@ -42,7 +42,7 @@ the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's. Current sweep: `.cache/sweeps/drift`
+so they are not comparable to today's. Current sweep: `.cache/sweeps/lredeal-full`
 (2026-08-28 overnight: taxonomy phases 1+2 complete + audit_taxonomy gate;
 items 36-38 fixed at cause — dot-family marks emit as ONE path, the كُلࣱّ
 stack yields its damma back, and the shape table outranks position at a late
