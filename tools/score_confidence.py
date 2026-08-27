@@ -151,6 +151,8 @@ def scan_page(pg):
             continue
         ws2 = sorted(ws, key=lambda x: tuple(int(v) for v in x["k"].split(":")))
         for i in range(len(ws2) - 1):
+            if " " in ws2[i]["t"].strip() or " " in ws2[i + 1]["t"].strip():
+                continue  # letter-space compound straddles the break
             if ws2[i + 1]["x2"] > ws2[i]["x2"] + 1.0:
                 rtl_bad.add(ws2[i]["k"])
 
