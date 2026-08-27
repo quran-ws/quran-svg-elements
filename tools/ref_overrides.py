@@ -81,7 +81,10 @@ _WANT = {
     "fathatan": ("ً", "ࣰ"), "kasratan": ("ٍ", "ࣲ"), "dammatan": ("ٌ", "ࣱ"),
     "sukun": ("ْ", "ۡ"), "shadda": ("ّ",), "maddah": ("ٓ", "ۤ"),
     "small-alef": ("ٰ",), "wasla": ("ٱ",), "small-waw": ("ۥ",),
-    "small-ya": ("ۦ", "ۧ"), "small-circle": ("۟", "۠"),
+    "small-ya": ("ۦ", "ۧ"),
+    # taxonomy phase 1: the zeros split (the pipeline emits the new names;
+    # a mark still named small-circle simply finds no budget here, as before)
+    "sifr-mustadir": ("۟",), "sifr-mustatil": ("۠",),
     "hamza": ("أ", "إ", "ؤ", "ئ", "ٔ", "ٕ"),
     "small-noon": ("ۨ",),
 }

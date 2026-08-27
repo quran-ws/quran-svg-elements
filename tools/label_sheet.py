@@ -32,7 +32,9 @@ DERIVED = ({"fatha", "kasra", "fathatan", "kasratan"},
            {"damma", "dammatan"})
 ALL = ["fatha", "kasra", "damma", "fathatan", "kasratan", "dammatan",
        "sukun", "shadda", "maddah", "small-alef", "small-waw", "small-ya",
-       "small-circle", "small-noon", "wasla", "hamza", "pause", "meem-iqlab",
+       "small-circle", "sifr-mustadir", "sifr-mustatil", "small-noon",
+       "saktah", "seen-reading", "sajdah-line", "sajdah-sign",
+       "wasla", "hamza", "pause", "meem-iqlab",
        "dot", "two-dots", "three-dots", "letter-part", "word", "ignore"]
 # offered as one-tap buttons beside whatever the shape is already called
 COMMON = ["fatha", "kasra", "damma", "sukun", "shadda", "pause",

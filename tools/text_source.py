@@ -169,6 +169,9 @@ def qpc_cache():
     return out
 
 
+_dump = {}
+
+
 def main():
     QPC = qpc_cache()
     try:
@@ -226,7 +229,13 @@ def main():
                     if tc.get(fam, 0) != rc.get(fam, 0):
                         ok = False
                         famtal[name][fam] += 1
-                        if len(examples[(name, fam)]) < 3:
+                        if os.environ.get("QSVG_TXDUMP"):
+                            _dump.setdefault(name, []).append(
+                                {"key": "%d:%d:%d" % key, "fam": fam,
+                                 "ref": rec["hafs"], "cand": t,
+                                 "spells": tc.get(fam, 0),
+                                 "drawn": rc.get(fam, 0)})
+                        if len(examples[(name, fam)]) < 40:
                             examples[(name, fam)].append(
                                 (pg, "%d:%d:%d" % key, rec["hafs"], t,
                                  tc.get(fam, 0), rc.get(fam, 0)))
@@ -240,6 +249,9 @@ def main():
         print("%-22s %10d %10d %8.3f%%"
               % (name, t["exact"], t["differs"], 100.0 * t["exact"] / max(1, n)))
     print("\nwhere each source goes wrong (words, by family):")
+    if os.environ.get("QSVG_TXDUMP"):
+        json.dump(_dump, open(os.environ["QSVG_TXDUMP"], "w", encoding="utf-8"),
+                  ensure_ascii=False, indent=1)
     hdr = [f for f in FAMS + ("waqf",) if any(famtal[n][f] for n in order)]
     print("%-22s %s" % ("source", " ".join("%9s" % f[:9] for f in hdr)))
     for name in order:

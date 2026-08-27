@@ -50,7 +50,7 @@ sys.path.insert(0, os.path.join(ROOT, "scratchpad"))
 CONF = os.path.join(ROOT, ".cache", "confidence")
 RAW = os.path.join(CONF, "raw")
 
-from audit_marks import TEXT_WANT, _DOTU, POLY_SUSPECT  # noqa: E402  (text budgets)
+from audit_marks import TEXT_WANT, _DOTU, POLY_SUSPECT, RARE_SITES  # noqa: E402  (text budgets)
 
 # ---------------------------------------------------------------- scan phase
 
@@ -315,9 +315,12 @@ def fam_want(word):
     editions disagree (audit_marks' rule -- neither edition can be quoted as
     the expectation, so an editorial difference is never convicted)."""
     txt, qpc = word["text"], word.get("qpc")
+    _site = tuple(int(v) for v in word["key"].split(":")[:2])
     out = {}
     for fam, chars in TEXT_WANT.items():
         n = sum(txt.count(c) for c in chars)
+        if fam in ("saktah", "seen-reading") and RARE_SITES.get(_site) != fam:
+            n = 0                 # the ۜ here belongs to the OTHER job (place table)
         if fam == "pause" and qpc and qpc != txt:
             m = sum(qpc.count(c) for c in chars)
             out[fam] = (min(n, m), max(n, m))

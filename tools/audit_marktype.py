@@ -44,6 +44,7 @@ OPEN_TANW = {"fathatan": "ٗ", "kasratan": "ٖ", "dammatan": "٘"}
 PLAIN_CH = {"fathatan": "َ", "kasratan": "ِ", "dammatan": "ُ"}
 # marks this art never draws below their letter (assign_words._ABOVE_ONLY)
 ABOVE_ONLY = {"damma", "dammatan", "pause", "sukun", "shadda", "small-circle",
+              "sifr-mustadir", "sifr-mustatil", "saktah", "seen-reading",
               "small-waw", "small-alef", "maddah", "wasla"}
 # pause signs the TEXT itself places low (U+06EA/U+06E3 below-letter stops):
 # p226 مَجْر۪ىٰهَا carries ۪ and its pause sits 2.9u below the band — legal
@@ -51,7 +52,10 @@ LOW_PAUSE = "۪ۣ"
 DOTV = {"dot": 1, "two-dots": 2, "three-dots": 3}
 DOT_W = 2.38          # one drawn dot blob, page units (QSVG_DOTLBL, measured)
 # waqf signs, both editions' repertoires (same set audit_marks budgets with)
-PAUSE_CH = "ۖۗۘۙۚۛۜ" + "۪ۣ۬۫"
+# ۜ (U+06DC) left with taxonomy phase 1: its marks are now named
+# saktah/seen-reading by place, so it neither counts in the pause budget nor
+# in the held pause marks -- both sides drop together.
+PAUSE_CH = "ۖۗۘۙۚۛ" + "۪ۣ۬۫"
 DAMMA_CH = "ٌࣱُ"
 
 

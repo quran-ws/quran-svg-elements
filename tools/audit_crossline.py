@@ -67,7 +67,10 @@ def scan(pg):
     # above its own word by design, so it lands nearer the line above and
     # looks stolen when it is not; the same goes for any mark the word really
     # owns. Only ink the holder has no room for is evidence of theft.
-    TXT = {"pause": "\u06d6\u06d7\u06d8\u06d9\u06da\u06db\u06dc",
+    TXT = {"pause": "\u06d6\u06d7\u06d8\u06d9\u06da\u06db",
+           # taxonomy phase 1: \u06dc marks are named by job now; same char, so a
+           # site's own sign is still never read as surplus
+           "saktah": "\u06dc", "seen-reading": "\u06dc",
            "fatha": "\u064e", "kasra": "\u0650", "damma": "\u064f",
            "sukun": "\u0652\u06e1", "shadda": "\u0651",
            "maddah": "\u0653\u06e4", "small-alef": "\u0670",
