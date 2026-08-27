@@ -1,0 +1,3721 @@
+[
+ {
+  "p": 1,
+  "k": "1:1:3",
+  "t": "ٱلرَّحْمَـٰنِ",
+  "ln": 1,
+  "wx": [
+   80.6,
+   131.1
+  ],
+  "lx": 73.0,
+  "nch": 2,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.668,
+  "wres": 1.205,
+  "own_u": 14.15,
+  "unit": 11.74,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   80.6,
+   127.7
+  ],
+  "seg_text": "لرحمن",
+  "cross": {
+   "u": 12.76,
+   "norm": 1.11,
+   "nb": "1:1:4",
+   "nb_t": "ٱلرَّحِيمِ",
+   "run": "الرحيم"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 15,
+  "k": "2:96:6",
+  "t": "وَمِنَ",
+  "ln": 4,
+  "wx": [
+   84.8,
+   126.6
+  ],
+  "lx": 6.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.65,
+  "wres": 1.248,
+  "own_u": 16.51,
+  "unit": 13.23,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   84.8,
+   118.6
+  ],
+  "seg_text": "من",
+  "cross": {
+   "u": 1.88,
+   "norm": 0.18,
+   "nb": "2:96:7",
+   "nb_t": "ٱلَّذِينَ",
+   "run": "الذين"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 17,
+  "k": "2:106:14",
+  "t": "أَنَّ",
+  "ln": 2,
+  "wx": [
+   251.9,
+   280.8
+  ],
+  "lx": 8.9,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.826,
+  "wres": 1.481,
+  "own_u": 12.43,
+  "unit": 8.39,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   251.9,
+   277.1
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.51,
+   "norm": 0.04,
+   "nb": "2:106:15",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 22,
+  "k": "2:143:41",
+  "t": "إِنَّ",
+  "ln": 7,
+  "wx": [
+   30.7,
+   62.2
+  ],
+  "lx": 9.7,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.927,
+  "wres": 1.708,
+  "own_u": 14.98,
+  "unit": 8.77,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   30.7,
+   58.9
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.46,
+   "norm": 0.11,
+   "nb": "2:143:42",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 26,
+  "k": "2:173:22",
+  "t": "إِنَّ",
+  "ln": 8,
+  "wx": [
+   32.9,
+   62.1
+  ],
+  "lx": 10.8,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.881,
+  "wres": 1.64,
+  "own_u": 13.1,
+  "unit": 7.99,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   32.9,
+   58.1
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.78,
+   "norm": 0.06,
+   "nb": "2:173:23",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 28,
+  "k": "2:182:13",
+  "t": "إِنَّ",
+  "ln": 2,
+  "wx": [
+   277.2,
+   302.6
+  ],
+  "lx": 9.1,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.695,
+  "wres": 1.272,
+  "own_u": 10.05,
+  "unit": 7.9,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   277.2,
+   299.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.72,
+   "norm": 0.14,
+   "nb": "2:182:14",
+   "nb_t": "ٱللَّهَ",
+   "run": "لله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 31,
+  "k": "2:197:23",
+  "t": "فَإِنَّ",
+  "ln": 3,
+  "wx": [
+   121.3,
+   163.1
+  ],
+  "lx": 8.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.71,
+  "wres": 1.206,
+  "own_u": 16.32,
+  "unit": 13.53,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   121.3,
+   150.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 6.24,
+   "norm": 0.18,
+   "nb": "2:197:24",
+   "nb_t": "خَيْرَ",
+   "run": "خير"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 31,
+  "k": "2:199:9",
+  "t": "إِنَّ",
+  "ln": 9,
+  "wx": [
+   140.1,
+   171.9
+  ],
+  "lx": 27.1,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.923,
+  "wres": 1.703,
+  "own_u": 14.49,
+  "unit": 8.51,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   140.1,
+   167.5
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.37,
+   "norm": 0.11,
+   "nb": "2:199:10",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 40,
+  "k": "2:247:4",
+  "t": "إِنَّ",
+  "ln": 7,
+  "wx": [
+   248.6,
+   279.9
+  ],
+  "lx": 9.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.79,
+  "wres": 1.4,
+  "own_u": 13.33,
+  "unit": 9.52,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   248.6,
+   276.4
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.35,
+   "norm": 0.09,
+   "nb": "2:247:5",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 41,
+  "k": "2:249:6",
+  "t": "إِنَّ",
+  "ln": 1,
+  "wx": [
+   81.7,
+   113.0
+  ],
+  "lx": 7.1,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.971,
+  "wres": 1.853,
+  "own_u": 14.85,
+  "unit": 8.01,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   81.7,
+   108.7
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.49,
+   "norm": 0.2,
+   "nb": "2:249:7",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 39,
+  "k": "2:243:18",
+  "t": "إِنَّ",
+  "ln": 11,
+  "wx": [
+   102.7,
+   132.1
+  ],
+  "lx": 6.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.815,
+  "wres": 1.454,
+  "own_u": 12.44,
+  "unit": 8.55,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   102.7,
+   128.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.75,
+   "norm": 0.06,
+   "nb": "2:243:19",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 43,
+  "k": "2:259:62",
+  "t": "أَنَّ",
+  "ln": 15,
+  "wx": [
+   182.3,
+   212.7
+  ],
+  "lx": 26.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.838,
+  "wres": 1.545,
+  "own_u": 13.43,
+  "unit": 8.69,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   182.3,
+   208.9
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.03,
+   "norm": 0.0,
+   "nb": "2:259:63",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 51,
+  "k": "3:13:24",
+  "t": "إِنَّ",
+  "ln": 8,
+  "wx": [
+   71.4,
+   104.7
+  ],
+  "lx": 6.9,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.906,
+  "wres": 1.651,
+  "own_u": 15.16,
+  "unit": 9.18,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   71.4,
+   100.5
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 10.66,
+   "norm": 0.58,
+   "nb": "3:13:25",
+   "nb_t": "فِى",
+   "run": "فى"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 57,
+  "k": "3:59:1",
+  "t": "إِنَّ",
+  "ln": 10,
+  "wx": [
+   40.8,
+   72.5
+  ],
+  "lx": 5.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.759,
+  "wres": 1.332,
+  "own_u": 12.93,
+  "unit": 9.71,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   40.8,
+   68.4
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 6.45,
+   "norm": 0.19,
+   "nb": "3:59:2",
+   "nb_t": "مَثَلَ",
+   "run": "مثل"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 61,
+  "k": "3:86:9",
+  "t": "أَنَّ",
+  "ln": 6,
+  "wx": [
+   6.3,
+   32.7
+  ],
+  "lx": 6.3,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.686,
+  "wres": 1.262,
+  "own_u": 10.42,
+  "unit": 8.25,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   6.3,
+   29.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.07,
+   "norm": 0.07,
+   "nb": "3:86:10",
+   "nb_t": "ٱلرَّسُولَ",
+   "run": "الر"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 74,
+  "k": "3:183:3",
+  "t": "إِنَّ",
+  "ln": 4,
+  "wx": [
+   31.3,
+   65.4
+  ],
+  "lx": 9.2,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.954,
+  "wres": 1.763,
+  "own_u": 16.05,
+  "unit": 9.11,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   31.3,
+   61.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.01,
+   "norm": 0.14,
+   "nb": "3:183:4",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 71,
+  "k": "3:165:9",
+  "t": "هَـٰذَا ۖ",
+  "ln": 14,
+  "wx": [
+   6.5,
+   41.9
+  ],
+  "lx": 6.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.662,
+  "wres": 1.232,
+  "own_u": 13.24,
+  "unit": 10.75,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   11.1,
+   41.9
+  ],
+  "seg_text": "هذ",
+  "cross": {
+   "u": 10.13,
+   "norm": 0.98,
+   "nb": "3:165:8",
+   "nb_t": "أَنَّىٰ",
+   "run": "انى"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 83,
+  "k": "4:32:22",
+  "t": "إِنَّ",
+  "ln": 12,
+  "wx": [
+   156.7,
+   188.3
+  ],
+  "lx": 7.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.791,
+  "wres": 1.408,
+  "own_u": 13.16,
+  "unit": 9.35,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   156.7,
+   184.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.25,
+   "norm": 0.09,
+   "nb": "4:32:23",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 83,
+  "k": "4:33:13",
+  "t": "إِنَّ",
+  "ln": 15,
+  "wx": [
+   241.9,
+   271.5
+  ],
+  "lx": 26.7,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.799,
+  "wres": 1.472,
+  "own_u": 12.68,
+  "unit": 8.62,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   241.9,
+   267.6
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.6,
+   "norm": 0.05,
+   "nb": "4:33:14",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 81,
+  "k": "4:23:50",
+  "t": "إِنَّ",
+  "ln": 15,
+  "wx": [
+   216.2,
+   248.0
+  ],
+  "lx": 29.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.783,
+  "wres": 1.409,
+  "own_u": 13.33,
+  "unit": 9.46,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   216.2,
+   243.8
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.26,
+   "norm": 0.09,
+   "nb": "4:23:51",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 82,
+  "k": "4:24:38",
+  "t": "إِنَّ",
+  "ln": 5,
+  "wx": [
+   114.2,
+   142.3
+  ],
+  "lx": 9.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.805,
+  "wres": 1.483,
+  "own_u": 12.01,
+  "unit": 8.1,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   114.2,
+   138.5
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.48,
+   "norm": 0.04,
+   "nb": "4:24:39",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 84,
+  "k": "4:35:18",
+  "t": "إِنَّ",
+  "ln": 8,
+  "wx": [
+   113.3,
+   141.7
+  ],
+  "lx": 7.6,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.769,
+  "wres": 1.432,
+  "own_u": 11.66,
+  "unit": 8.14,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   113.3,
+   137.3
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.89,
+   "norm": 0.07,
+   "nb": "4:35:19",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 84,
+  "k": "4:36:25",
+  "t": "إِنَّ",
+  "ln": 12,
+  "wx": [
+   31.4,
+   63.7
+  ],
+  "lx": 7.6,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.822,
+  "wres": 1.469,
+  "own_u": 14.08,
+  "unit": 9.58,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   31.4,
+   60.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.7,
+   "norm": 0.05,
+   "nb": "4:36:26",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 97,
+  "k": "4:116:1",
+  "t": "إِنَّ",
+  "ln": 6,
+  "wx": [
+   232.0,
+   261.6
+  ],
+  "lx": 7.2,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.868,
+  "wres": 1.632,
+  "own_u": 13.27,
+  "unit": 8.13,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   232.0,
+   257.6
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.73,
+   "norm": 0.06,
+   "nb": "4:116:2",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 97,
+  "k": "4:119:5",
+  "t": "ءَاذَانَ",
+  "ln": 11,
+  "wx": [
+   133.6,
+   184.3
+  ],
+  "lx": 6.8,
+  "nch": 5,
+  "nseg": 4,
+  "hz": "m",
+  "cost": 0.621,
+  "wres": 1.768,
+  "own_u": 12.66,
+  "unit": 7.16,
+  "side": "last",
+  "gi": 3,
+  "xline": false,
+  "chunk_x": [
+   133.6,
+   159.1
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 5.41,
+   "norm": 0.33,
+   "nb": "4:119:6",
+   "nb_t": "ٱلْأَنْعَـٰمِ",
+   "run": "نعم"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 93,
+  "k": "4:94:34",
+  "t": "إِنَّ",
+  "ln": 15,
+  "wx": [
+   240.7,
+   272.0
+  ],
+  "lx": 29.3,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.863,
+  "wres": 1.534,
+  "own_u": 14.22,
+  "unit": 9.27,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   240.7,
+   269.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.07,
+   "norm": 0.01,
+   "nb": "4:94:35",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 100,
+  "k": "4:135:26",
+  "t": "أَن",
+  "ln": 3,
+  "wx": [
+   107.8,
+   139.0
+  ],
+  "lx": 9.8,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 1.069,
+  "wres": 2.007,
+  "own_u": 15.4,
+  "unit": 7.67,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   107.8,
+   134.8
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.22,
+   "norm": 0.01,
+   "nb": "4:135:27",
+   "nb_t": "تَعْدِلُوا۟ ۚ",
+   "run": "تعد"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 109,
+  "k": "5:13:29",
+  "t": "إِنَّ",
+  "ln": 15,
+  "wx": [
+   160.9,
+   192.8
+  ],
+  "lx": 27.3,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.992,
+  "wres": 1.856,
+  "own_u": 15.47,
+  "unit": 8.33,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   160.9,
+   189.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.62,
+   "norm": 0.21,
+   "nb": "5:13:30",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 106,
+  "k": "5:2:49",
+  "t": "إِنَّ",
+  "ln": 15,
+  "wx": [
+   165.1,
+   199.4
+  ],
+  "lx": 29.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.982,
+  "wres": 1.821,
+  "own_u": 16.48,
+  "unit": 9.05,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   165.1,
+   195.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.52,
+   "norm": 0.18,
+   "nb": "5:2:50",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 110,
+  "k": "5:17:5",
+  "t": "إِنَّ",
+  "ln": 11,
+  "wx": [
+   202.6,
+   235.4
+  ],
+  "lx": 9.1,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.768,
+  "wres": 1.34,
+  "own_u": 13.45,
+  "unit": 10.04,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   202.6,
+   231.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.03,
+   "norm": 0.13,
+   "nb": "5:17:6",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 111,
+  "k": "5:22:3",
+  "t": "إِنَّ",
+  "ln": 11,
+  "wx": [
+   6.8,
+   35.9
+  ],
+  "lx": 6.8,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.93,
+  "wres": 1.708,
+  "own_u": 13.91,
+  "unit": 8.14,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   6.8,
+   33.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.23,
+   "norm": 0.01,
+   "nb": "5:22:4",
+   "nb_t": "فِيهَا",
+   "run": "فيها"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 108,
+  "k": "5:8:22",
+  "t": "إِنَّ",
+  "ln": 13,
+  "wx": [
+   9.4,
+   39.9
+  ],
+  "lx": 9.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.944,
+  "wres": 1.798,
+  "own_u": 14.46,
+  "unit": 8.05,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   9.4,
+   36.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.4,
+   "norm": 0.1,
+   "nb": "5:8:23",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 113,
+  "k": "5:34:10",
+  "t": "أَنَّ",
+  "ln": 11,
+  "wx": [
+   298.1,
+   331.0
+  ],
+  "lx": 8.7,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.889,
+  "wres": 1.634,
+  "own_u": 14.84,
+  "unit": 9.08,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   298.1,
+   326.6
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.84,
+   "norm": 0.06,
+   "nb": "5:34:11",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 114,
+  "k": "5:39:11",
+  "t": "إِنَّ",
+  "ln": 5,
+  "wx": [
+   232.9,
+   263.3
+  ],
+  "lx": 8.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.864,
+  "wres": 1.584,
+  "own_u": 13.49,
+  "unit": 8.51,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   232.9,
+   259.3
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.36,
+   "norm": 0.03,
+   "nb": "5:39:12",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 115,
+  "k": "5:44:10",
+  "t": "ٱلَّذِينَ",
+  "ln": 7,
+  "wx": [
+   52.7,
+   104.4
+  ],
+  "lx": 6.7,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.63,
+  "wres": 1.074,
+  "own_u": 13.28,
+  "unit": 12.37,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   87.2,
+   104.4
+  ],
+  "seg_text": "ا",
+  "cross": {
+   "u": 5.13,
+   "norm": 0.27,
+   "nb": "5:44:9",
+   "nb_t": "ٱلنَّبِيُّونَ",
+   "run": "ن"
+  },
+  "cat": "rotation-suspect"
+ },
+ {
+  "p": 129,
+  "k": "6:18:4",
+  "t": "عِبَادِهِۦ ۚ",
+  "ln": 15,
+  "wx": [
+   186.3,
+   240.3
+  ],
+  "lx": 24.0,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 1.232,
+  "wres": 1.677,
+  "own_u": 22.1,
+  "unit": 13.18,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   192.8,
+   240.3
+  ],
+  "seg_text": "عبا",
+  "cross": {
+   "u": 14.63,
+   "norm": 0.89,
+   "nb": "6:18:3",
+   "nb_t": "فَوْقَ",
+   "run": "فوق"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 120,
+  "k": "5:73:5",
+  "t": "إِنَّ",
+  "ln": 6,
+  "wx": [
+   27.7,
+   55.2
+  ],
+  "lx": 7.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.725,
+  "wres": 1.342,
+  "own_u": 11.06,
+  "unit": 8.24,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   27.7,
+   51.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.64,
+   "norm": 0.13,
+   "nb": "5:73:6",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 163,
+  "k": "7:100:9",
+  "t": "أَن",
+  "ln": 7,
+  "wx": [
+   60.2,
+   90.2
+  ],
+  "lx": 8.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.795,
+  "wres": 1.441,
+  "own_u": 12.47,
+  "unit": 8.66,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   60.2,
+   85.7
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 4.89,
+   "norm": 0.24,
+   "nb": "7:100:10",
+   "nb_t": "لَّوْ",
+   "run": "لو"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 165,
+  "k": "7:128:7",
+  "t": "إِنَّ",
+  "ln": 10,
+  "wx": [
+   51.1,
+   78.7
+  ],
+  "lx": 6.6,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.913,
+  "wres": 1.702,
+  "own_u": 12.8,
+  "unit": 7.52,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   51.1,
+   75.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.68,
+   "norm": 0.15,
+   "nb": "7:128:8",
+   "nb_t": "ٱلْأَرْضَ",
+   "run": "لار"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 179,
+  "k": "8:24:12",
+  "t": "أَنَّ",
+  "ln": 13,
+  "wx": [
+   251.6,
+   279.5
+  ],
+  "lx": 7.1,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.705,
+  "wres": 1.26,
+  "own_u": 10.9,
+  "unit": 8.66,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   251.6,
+   275.6
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.78,
+   "norm": 0.13,
+   "nb": "8:24:13",
+   "nb_t": "ٱللَّهَ",
+   "run": "لله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 179,
+  "k": "8:25:10",
+  "t": "أَنَّ",
+  "ln": 15,
+  "wx": [
+   145.2,
+   173.1
+  ],
+  "lx": 27.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.746,
+  "wres": 1.334,
+  "own_u": 11.09,
+  "unit": 8.32,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   145.2,
+   168.9
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.73,
+   "norm": 0.14,
+   "nb": "8:25:11",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 192,
+  "k": "9:36:33",
+  "t": "أَنَّ",
+  "ln": 15,
+  "wx": [
+   133.3,
+   164.3
+  ],
+  "lx": 28.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.974,
+  "wres": 1.821,
+  "own_u": 14.77,
+  "unit": 8.11,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   133.3,
+   160.3
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.27,
+   "norm": 0.18,
+   "nb": "9:36:34",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 199,
+  "k": "9:78:3",
+  "t": "أَنَّ",
+  "ln": 12,
+  "wx": [
+   238.5,
+   266.2
+  ],
+  "lx": 7.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.805,
+  "wres": 1.494,
+  "own_u": 11.78,
+  "unit": 7.89,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   238.5,
+   262.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.38,
+   "norm": 0.03,
+   "nb": "9:78:4",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 207,
+  "k": "9:123:13",
+  "t": "أَنَّ",
+  "ln": 2,
+  "wx": [
+   30.7,
+   60.4
+  ],
+  "lx": 8.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.86,
+  "wres": 1.598,
+  "own_u": 13.13,
+  "unit": 8.22,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   30.7,
+   56.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.46,
+   "norm": 0.04,
+   "nb": "9:123:14",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 215,
+  "k": "10:59:15",
+  "t": "أَذِنَ",
+  "ln": 9,
+  "wx": [
+   87.9,
+   123.5
+  ],
+  "lx": 7.4,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.803,
+  "wres": 0.754,
+  "own_u": 5.66,
+  "unit": 7.5,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   114.0,
+   123.5
+  ],
+  "seg_text": "ا",
+  "cross": {
+   "u": 0.1,
+   "norm": 0.01,
+   "nb": "10:59:14",
+   "nb_t": "ءَآللَّهُ",
+   "run": "ءا"
+  },
+  "cat": "unexplained"
+ },
+ {
+  "p": 216,
+  "k": "10:62:2",
+  "t": "إِنَّ",
+  "ln": 1,
+  "wx": [
+   285.9,
+   313.9
+  ],
+  "lx": 29.1,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.842,
+  "wres": 1.569,
+  "own_u": 12.31,
+  "unit": 7.84,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   285.9,
+   310.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.56,
+   "norm": 0.25,
+   "nb": "10:62:3",
+   "nb_t": "أَوْلِيَآءَ",
+   "run": "لياء"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 216,
+  "k": "10:67:10",
+  "t": "إِنَّ",
+  "ln": 9,
+  "wx": [
+   74.8,
+   102.9
+  ],
+  "lx": 8.3,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.699,
+  "wres": 1.26,
+  "own_u": 10.86,
+  "unit": 8.62,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   74.8,
+   98.7
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 6.63,
+   "norm": 0.38,
+   "nb": "10:67:11",
+   "nb_t": "فِى",
+   "run": "فى"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 220,
+  "k": "10:106:4",
+  "t": "دُونِ",
+  "ln": 14,
+  "wx": [
+   64.8,
+   102.9
+  ],
+  "lx": 8.8,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.504,
+  "wres": 1.397,
+  "own_u": 12.82,
+  "unit": 9.17,
+  "side": "last",
+  "gi": 2,
+  "xline": false,
+  "chunk_x": [
+   64.8,
+   88.8
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.43,
+   "norm": 0.13,
+   "nb": "10:106:5",
+   "nb_t": "ٱللَّهِ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 232,
+  "k": "11:90:6",
+  "t": "إِنَّ",
+  "ln": 3,
+  "wx": [
+   39.4,
+   71.0
+  ],
+  "lx": 8.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.901,
+  "wres": 1.685,
+  "own_u": 14.24,
+  "unit": 8.45,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   39.4,
+   66.4
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.23,
+   "norm": 0.02,
+   "nb": "11:90:7",
+   "nb_t": "رَبِّى",
+   "run": "ربى"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 255,
+  "k": "14:5:15",
+  "t": "إِنَّ",
+  "ln": 15,
+  "wx": [
+   278.2,
+   306.8
+  ],
+  "lx": 28.6,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.715,
+  "wres": 1.28,
+  "own_u": 11.35,
+  "unit": 8.87,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   278.2,
+   303.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 7.0,
+   "norm": 0.39,
+   "nb": "14:5:16",
+   "nb_t": "فِى",
+   "run": "فى"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 258,
+  "k": "14:19:3",
+  "t": "أَنَّ",
+  "ln": 1,
+  "wx": [
+   265.8,
+   296.1
+  ],
+  "lx": 10.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.98,
+  "wres": 1.839,
+  "own_u": 14.62,
+  "unit": 7.95,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   265.8,
+   292.4
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.37,
+   "norm": 0.2,
+   "nb": "14:19:4",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 261,
+  "k": "14:47:7",
+  "t": "إِنَّ",
+  "ln": 9,
+  "wx": [
+   72.3,
+   106.9
+  ],
+  "lx": 8.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 1.071,
+  "wres": 1.958,
+  "own_u": 17.57,
+  "unit": 8.97,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   72.3,
+   103.4
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 3.74,
+   "norm": 0.27,
+   "nb": "14:47:8",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 261,
+  "k": "14:48:3",
+  "t": "ٱلْأَرْضُ",
+  "ln": 10,
+  "wx": [
+   142.4,
+   203.0
+  ],
+  "lx": 8.4,
+  "nch": 4,
+  "nseg": 4,
+  "hz": "b",
+  "cost": 0.335,
+  "wres": 1.244,
+  "own_u": 14.48,
+  "unit": 11.64,
+  "side": "last",
+  "gi": 3,
+  "xline": false,
+  "chunk_x": [
+   142.4,
+   177.2
+  ],
+  "seg_text": "ض",
+  "cross": {
+   "u": 2.44,
+   "norm": 0.08,
+   "nb": "14:48:4",
+   "nb_t": "غَيْرَ",
+   "run": "غير"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 262,
+  "k": "15:6:3",
+  "t": "ٱلَّذِى",
+  "ln": 7,
+  "wx": [
+   61.6,
+   107.8
+  ],
+  "lx": 9.0,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.711,
+  "wres": 1.242,
+  "own_u": 12.91,
+  "unit": 10.39,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   91.1,
+   107.8
+  ],
+  "seg_text": "ا",
+  "cross": {
+   "u": 2.87,
+   "norm": 0.15,
+   "nb": "15:6:2",
+   "nb_t": "يَـٰٓأَيُّهَا",
+   "run": "يا"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 268,
+  "k": "16:11:11",
+  "t": "إِنَّ",
+  "ln": 8,
+  "wx": [
+   242.0,
+   272.7
+  ],
+  "lx": 31.9,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.834,
+  "wres": 1.532,
+  "own_u": 13.59,
+  "unit": 8.87,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   242.0,
+   269.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 9.24,
+   "norm": 0.52,
+   "nb": "16:11:12",
+   "nb_t": "فِى",
+   "run": "فى"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 268,
+  "k": "16:12:10",
+  "t": "إِنَّ",
+  "ln": 10,
+  "wx": [
+   128.6,
+   159.0
+  ],
+  "lx": 10.1,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.925,
+  "wres": 1.717,
+  "own_u": 14.16,
+  "unit": 8.25,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   128.6,
+   155.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 10.11,
+   "norm": 0.61,
+   "nb": "16:12:11",
+   "nb_t": "فِى",
+   "run": "فى"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 269,
+  "k": "16:18:7",
+  "t": "إِنَّ",
+  "ln": 4,
+  "wx": [
+   132.0,
+   159.9
+  ],
+  "lx": 27.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.863,
+  "wres": 1.622,
+  "own_u": 12.37,
+  "unit": 7.62,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   132.0,
+   155.9
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.61,
+   "norm": 0.05,
+   "nb": "16:18:8",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 269,
+  "k": "16:23:3",
+  "t": "أَنَّ",
+  "ln": 9,
+  "wx": [
+   158.5,
+   189.1
+  ],
+  "lx": 7.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.972,
+  "wres": 1.833,
+  "own_u": 14.59,
+  "unit": 7.96,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   158.5,
+   185.1
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.32,
+   "norm": 0.19,
+   "nb": "16:23:4",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 271,
+  "k": "16:36:7",
+  "t": "أَنِ",
+  "ln": 4,
+  "wx": [
+   90.8,
+   119.7
+  ],
+  "lx": 8.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.707,
+  "wres": 1.249,
+  "own_u": 11.32,
+  "unit": 9.06,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   90.8,
+   115.8
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 8.37,
+   "norm": 0.61,
+   "nb": "16:36:8",
+   "nb_t": "ٱعْبُدُوا۟",
+   "run": "وا"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 275,
+  "k": "16:77:14",
+  "t": "إِنَّ",
+  "ln": 11,
+  "wx": [
+   183.1,
+   213.9
+  ],
+  "lx": 26.1,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.995,
+  "wres": 1.841,
+  "own_u": 14.83,
+  "unit": 8.06,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   183.1,
+   210.1
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.41,
+   "norm": 0.2,
+   "nb": "16:77:15",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 296,
+  "k": "18:21:5",
+  "t": "أَنَّ",
+  "ln": 1,
+  "wx": [
+   108.7,
+   137.3
+  ],
+  "lx": 9.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.945,
+  "wres": 1.754,
+  "own_u": 13.64,
+  "unit": 7.78,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   108.7,
+   134.1
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 4.65,
+   "norm": 0.3,
+   "nb": "18:21:6",
+   "nb_t": "وَعْدَ",
+   "run": "عد"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 301,
+  "k": "18:63:15",
+  "t": "أَذْكُرَهُۥ ۚ",
+  "ln": 3,
+  "wx": [
+   101.1,
+   128.4
+  ],
+  "lx": 14.3,
+  "nch": 3,
+  "nseg": 4,
+  "hz": "b",
+  "cost": 0.536,
+  "wres": 1.385,
+  "own_u": 15.69,
+  "unit": 11.33,
+  "side": "last",
+  "gi": 2,
+  "xline": false,
+  "chunk_x": [
+   101.1,
+   121.2
+  ],
+  "seg_text": "كره",
+  "cross": {
+   "u": 4.67,
+   "norm": 0.37,
+   "nb": "18:63:16",
+   "nb_t": "وَٱتَّخَذَ",
+   "run": "تخذ"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 319,
+  "k": "20:109:7",
+  "t": "أَذِنَ",
+  "ln": 10,
+  "wx": [
+   121.9,
+   156.2
+  ],
+  "lx": 13.1,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.85,
+  "wres": 0.879,
+  "own_u": 6.16,
+  "unit": 7.01,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   146.5,
+   156.2
+  ],
+  "seg_text": "ا",
+  "cross": {
+   "u": 8.74,
+   "norm": 0.47,
+   "nb": "20:109:6",
+   "nb_t": "مَنْ",
+   "run": "من"
+  },
+  "cat": "unexplained"
+ },
+ {
+  "p": 334,
+  "k": "22:18:3",
+  "t": "أَنَّ",
+  "ln": 4,
+  "wx": [
+   32.1,
+   58.8
+  ],
+  "lx": 9.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.702,
+  "wres": 1.233,
+  "own_u": 10.33,
+  "unit": 8.37,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   32.1,
+   55.1
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.5,
+   "norm": 0.12,
+   "nb": "22:18:4",
+   "nb_t": "ٱللَّهَ",
+   "run": "لله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 340,
+  "k": "22:72:26",
+  "t": "ٱلَّذِينَ",
+  "ln": 15,
+  "wx": [
+   154.0,
+   202.3
+  ],
+  "lx": 27.6,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.473,
+  "wres": 1.271,
+  "own_u": 13.85,
+  "unit": 10.89,
+  "side": "last",
+  "gi": 2,
+  "xline": false,
+  "chunk_x": [
+   154.0,
+   184.8
+  ],
+  "seg_text": "ين",
+  "cross": {
+   "u": 8.05,
+   "norm": 0.47,
+   "nb": "22:72:27",
+   "nb_t": "كَفَرُوا۟ ۖ",
+   "run": "كفر"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 339,
+  "k": "22:60:13",
+  "t": "إِنَّ",
+  "ln": 8,
+  "wx": [
+   32.0,
+   64.3
+  ],
+  "lx": 7.8,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.891,
+  "wres": 1.644,
+  "own_u": 14.66,
+  "unit": 8.92,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   32.0,
+   60.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.91,
+   "norm": 0.07,
+   "nb": "22:60:14",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 339,
+  "k": "22:62:13",
+  "t": "وَأَنَّ",
+  "ln": 12,
+  "wx": [
+   163.4,
+   203.5
+  ],
+  "lx": 24.3,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.749,
+  "wres": 1.278,
+  "own_u": 11.9,
+  "unit": 9.31,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   163.4,
+   192.0
+  ],
+  "seg_text": "ان",
+  "cross": {
+   "u": 3.12,
+   "norm": 0.24,
+   "nb": "22:62:14",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 339,
+  "k": "22:63:12",
+  "t": "إِنَّ",
+  "ln": 14,
+  "wx": [
+   238.9,
+   270.4
+  ],
+  "lx": 6.9,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.903,
+  "wres": 1.653,
+  "own_u": 14.42,
+  "unit": 8.72,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   238.9,
+   266.5
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.97,
+   "norm": 0.07,
+   "nb": "22:63:13",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 337,
+  "k": "22:40:32",
+  "t": "إِنَّ",
+  "ln": 5,
+  "wx": [
+   86.1,
+   114.1
+  ],
+  "lx": 6.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.729,
+  "wres": 1.336,
+  "own_u": 11.36,
+  "unit": 8.51,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   86.1,
+   110.3
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.75,
+   "norm": 0.13,
+   "nb": "22:40:33",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 331,
+  "k": "21:105:8",
+  "t": "أَنَّ",
+  "ln": 7,
+  "wx": [
+   244.0,
+   275.9
+  ],
+  "lx": 27.7,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.876,
+  "wres": 1.576,
+  "own_u": 13.78,
+  "unit": 8.75,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   244.0,
+   271.0
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.85,
+   "norm": 0.06,
+   "nb": "21:105:9",
+   "nb_t": "ٱلْأَرْضَ",
+   "run": "لار"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 356,
+  "k": "24:53:13",
+  "t": "إِنَّ",
+  "ln": 15,
+  "wx": [
+   148.8,
+   176.0
+  ],
+  "lx": 27.9,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.896,
+  "wres": 1.702,
+  "own_u": 12.5,
+  "unit": 7.34,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   148.8,
+   172.4
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.18,
+   "norm": 0.11,
+   "nb": "24:53:14",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 359,
+  "k": "24:62:17",
+  "t": "إِنَّ",
+  "ln": 2,
+  "wx": [
+   93.7,
+   115.1
+  ],
+  "lx": 5.3,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.663,
+  "wres": 1.21,
+  "own_u": 8.17,
+  "unit": 6.76,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   93.7,
+   112.1
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.11,
+   "norm": 0.2,
+   "nb": "24:62:18",
+   "nb_t": "ٱلَّذِينَ",
+   "run": "ين"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 359,
+  "k": "24:62:36",
+  "t": "إِنَّ",
+  "ln": 5,
+  "wx": [
+   280.1,
+   308.4
+  ],
+  "lx": 5.3,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.727,
+  "wres": 1.337,
+  "own_u": 11.23,
+  "unit": 8.4,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   280.1,
+   304.1
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.72,
+   "norm": 0.13,
+   "nb": "24:62:37",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 341,
+  "k": "22:73:7",
+  "t": "إِنَّ",
+  "ln": 1,
+  "wx": [
+   52.2,
+   82.5
+  ],
+  "lx": 6.7,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.843,
+  "wres": 1.533,
+  "own_u": 13.41,
+  "unit": 8.74,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   52.2,
+   78.9
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 5.56,
+   "norm": 0.41,
+   "nb": "22:73:8",
+   "nb_t": "ٱلَّذِينَ",
+   "run": "ين"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 341,
+  "k": "22:74:6",
+  "t": "إِنَّ",
+  "ln": 5,
+  "wx": [
+   298.0,
+   328.5
+  ],
+  "lx": 7.7,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.873,
+  "wres": 1.597,
+  "own_u": 13.84,
+  "unit": 8.67,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   298.0,
+   324.9
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.48,
+   "norm": 0.04,
+   "nb": "22:74:7",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 341,
+  "k": "22:75:8",
+  "t": "إِنَّ",
+  "ln": 6,
+  "wx": [
+   186.7,
+   217.1
+  ],
+  "lx": 6.7,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.752,
+  "wres": 1.324,
+  "own_u": 12.56,
+  "unit": 9.48,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   186.7,
+   213.6
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 2.07,
+   "norm": 0.14,
+   "nb": "22:75:9",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 366,
+  "k": "25:68:20",
+  "t": "ذَٰلِكَ",
+  "ln": 3,
+  "wx": [
+   240.1,
+   286.4
+  ],
+  "lx": 8.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 1.582,
+  "wres": 1.891,
+  "own_u": 36.99,
+  "unit": 19.56,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   240.1,
+   286.4
+  ],
+  "seg_text": "ذ",
+  "cross": {
+   "u": 10.46,
+   "norm": 0.18,
+   "nb": "25:68:19",
+   "nb_t": "يَفْعَلْ",
+   "run": "يفعل"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 369,
+  "k": "26:51:8",
+  "t": "أَن",
+  "ln": 10,
+  "wx": [
+   26.3,
+   51.5
+  ],
+  "lx": 8.6,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.842,
+  "wres": 1.633,
+  "own_u": 11.22,
+  "unit": 6.87,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   26.3,
+   47.9
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 7.79,
+   "norm": 0.27,
+   "nb": "26:51:9",
+   "nb_t": "كُنَّآ",
+   "run": "كنا"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 394,
+  "k": "28:75:10",
+  "t": "أَنَّ",
+  "ln": 9,
+  "wx": [
+   149.8,
+   178.6
+  ],
+  "lx": 8.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.822,
+  "wres": 1.485,
+  "own_u": 12.35,
+  "unit": 8.31,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   149.8,
+   174.7
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 3.56,
+   "norm": 0.22,
+   "nb": "28:75:11",
+   "nb_t": "ٱلْحَقَّ",
+   "run": "لحق"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 394,
+  "k": "28:76:25",
+  "t": "إِنَّ",
+  "ln": 12,
+  "wx": [
+   31.8,
+   64.1
+  ],
+  "lx": 8.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 1.057,
+  "wres": 2.008,
+  "own_u": 15.82,
+  "unit": 7.88,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   31.8,
+   59.6
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 3.67,
+   "norm": 0.31,
+   "nb": "28:76:26",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 395,
+  "k": "28:80:10",
+  "t": "ءَامَنَ",
+  "ln": 6,
+  "wx": [
+   51.1,
+   96.1
+  ],
+  "lx": 5.6,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.463,
+  "wres": 1.287,
+  "own_u": 12.38,
+  "unit": 9.62,
+  "side": "last",
+  "gi": 2,
+  "xline": false,
+  "chunk_x": [
+   51.1,
+   83.0
+  ],
+  "seg_text": "من",
+  "cross": {
+   "u": 3.04,
+   "norm": 0.13,
+   "nb": "28:80:11",
+   "nb_t": "وَعَمِلَ",
+   "run": "عمل"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 401,
+  "k": "29:45:9",
+  "t": "إِنَّ",
+  "ln": 14,
+  "wx": [
+   209.7,
+   242.4
+  ],
+  "lx": 6.8,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.904,
+  "wres": 1.605,
+  "own_u": 14.97,
+  "unit": 9.33,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   209.7,
+   238.8
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 19.65,
+   "norm": 0.89,
+   "nb": "29:45:10",
+   "nb_t": "ٱلصَّلَوٰةَ",
+   "run": "ة"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 400,
+  "k": "29:31:12",
+  "t": "إِنَّ",
+  "ln": 2,
+  "wx": [
+   191.3,
+   221.1
+  ],
+  "lx": 30.7,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.709,
+  "wres": 1.25,
+  "own_u": 11.71,
+  "unit": 9.37,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   191.3,
+   217.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 13.09,
+   "norm": 0.6,
+   "nb": "29:31:13",
+   "nb_t": "أَهْلَهَا",
+   "run": "هلها"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 400,
+  "k": "29:32:2",
+  "t": "إِنَّ",
+  "ln": 3,
+  "wx": [
+   281.1,
+   310.9
+  ],
+  "lx": 15.1,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.946,
+  "wres": 1.778,
+  "own_u": 13.94,
+  "unit": 7.84,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   281.1,
+   306.8
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 4.94,
+   "norm": 0.16,
+   "nb": "29:32:3",
+   "nb_t": "فِيهَا",
+   "run": "فيها"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 417,
+  "k": "32:26:13",
+  "t": "إِنَّ",
+  "ln": 10,
+  "wx": [
+   219.5,
+   247.3
+  ],
+  "lx": 28.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.746,
+  "wres": 1.31,
+  "own_u": 11.35,
+  "unit": 8.67,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   219.5,
+   243.9
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 7.1,
+   "norm": 0.41,
+   "nb": "32:26:14",
+   "nb_t": "فِى",
+   "run": "فى"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 417,
+  "k": "32:26:15",
+  "t": "ذَٰلِكَ",
+  "ln": 10,
+  "wx": [
+   154.3,
+   199.8
+  ],
+  "lx": 28.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 1.79,
+  "wres": 2.391,
+  "own_u": 37.91,
+  "unit": 15.85,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   154.3,
+   199.8
+  ],
+  "seg_text": "ذ",
+  "cross": {
+   "u": 28.08,
+   "norm": 1.62,
+   "nb": "32:26:14",
+   "nb_t": "فِى",
+   "run": "فى"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 414,
+  "k": "31:29:3",
+  "t": "أَنَّ",
+  "ln": 1,
+  "wx": [
+   264.1,
+   293.6
+  ],
+  "lx": 8.9,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.875,
+  "wres": 1.597,
+  "own_u": 13.03,
+  "unit": 8.16,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   264.1,
+   289.5
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.45,
+   "norm": 0.04,
+   "nb": "31:29:4",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 438,
+  "k": "35:34:8",
+  "t": "إِنَّ",
+  "ln": 7,
+  "wx": [
+   73.0,
+   99.5
+  ],
+  "lx": 9.2,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.805,
+  "wres": 1.541,
+  "own_u": 11.46,
+  "unit": 7.44,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   73.0,
+   95.7
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 3.62,
+   "norm": 0.25,
+   "nb": "35:34:9",
+   "nb_t": "رَبَّنَا",
+   "run": "بنا"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 455,
+  "k": "38:36:5",
+  "t": "بِأَمْرِهِۦ",
+  "ln": 11,
+  "wx": [
+   186.1,
+   229.8
+  ],
+  "lx": 5.1,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.475,
+  "wres": 1.238,
+  "own_u": 13.86,
+  "unit": 11.19,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   205.4,
+   229.8
+  ],
+  "seg_text": "با",
+  "cross": {
+   "u": 3.81,
+   "norm": 0.2,
+   "nb": "38:36:4",
+   "nb_t": "تَجْرِى",
+   "run": "تجر"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 466,
+  "k": "39:69:2",
+  "t": "ٱلْأَرْضُ",
+  "ln": 3,
+  "wx": [
+   222.7,
+   280.9
+  ],
+  "lx": 10.0,
+  "nch": 4,
+  "nseg": 4,
+  "hz": "b",
+  "cost": 0.366,
+  "wres": 1.308,
+  "own_u": 14.96,
+  "unit": 11.44,
+  "side": "last",
+  "gi": 3,
+  "xline": false,
+  "chunk_x": [
+   222.7,
+   257.6
+  ],
+  "seg_text": "ض",
+  "cross": {
+   "u": 1.45,
+   "norm": 0.09,
+   "nb": "39:69:3",
+   "nb_t": "بِنُورِ",
+   "run": "بنور"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 474,
+  "k": "40:61:10",
+  "t": "إِنَّ",
+  "ln": 5,
+  "wx": [
+   182.1,
+   213.0
+  ],
+  "lx": 9.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 1.176,
+  "wres": 2.227,
+  "own_u": 16.18,
+  "unit": 7.26,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   182.1,
+   209.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 4.98,
+   "norm": 0.45,
+   "nb": "40:61:11",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 474,
+  "k": "40:63:3",
+  "t": "ٱلَّذِينَ",
+  "ln": 8,
+  "wx": [
+   199.9,
+   247.1
+  ],
+  "lx": 28.6,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.415,
+  "wres": 0.93,
+  "own_u": 11.47,
+  "unit": 12.33,
+  "side": "last",
+  "gi": 2,
+  "xline": false,
+  "chunk_x": [
+   199.9,
+   230.5
+  ],
+  "seg_text": "ين",
+  "cross": {
+   "u": 3.99,
+   "norm": 0.24,
+   "nb": "40:63:4",
+   "nb_t": "كَانُوا۟",
+   "run": "كا"
+  },
+  "cat": "rotation-suspect"
+ },
+ {
+  "p": 473,
+  "k": "40:55:2",
+  "t": "إِنَّ",
+  "ln": 7,
+  "wx": [
+   68.9,
+   99.9
+  ],
+  "lx": 8.6,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.875,
+  "wres": 1.505,
+  "own_u": 13.47,
+  "unit": 8.95,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   68.9,
+   95.9
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 3.12,
+   "norm": 0.17,
+   "nb": "40:55:3",
+   "nb_t": "وَعْدَ",
+   "run": "عد"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 477,
+  "k": "41:9:6",
+  "t": "ٱلْأَرْضَ",
+  "ln": 11,
+  "wx": [
+   157.5,
+   210.9
+  ],
+  "lx": 6.9,
+  "nch": 4,
+  "nseg": 4,
+  "hz": "b",
+  "cost": 0.368,
+  "wres": 1.276,
+  "own_u": 13.07,
+  "unit": 10.24,
+  "side": "last",
+  "gi": 3,
+  "xline": false,
+  "chunk_x": [
+   157.5,
+   188.4
+  ],
+  "seg_text": "ض",
+  "cross": {
+   "u": 17.61,
+   "norm": 1.32,
+   "nb": "41:9:7",
+   "nb_t": "فِى",
+   "run": "فى"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 478,
+  "k": "41:18:3",
+  "t": "ءَامَنُوا۟",
+  "ln": 13,
+  "wx": [
+   217.4,
+   261.9
+  ],
+  "lx": 10.1,
+  "nch": 2,
+  "nseg": 3,
+  "hz": "m",
+  "cost": 0.812,
+  "wres": 0.83,
+  "own_u": 8.2,
+  "unit": 9.88,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   227.3,
+   261.9
+  ],
+  "seg_text": "امنو",
+  "cross": {
+   "u": 3.49,
+   "norm": 0.34,
+   "nb": "41:18:2",
+   "nb_t": "ٱلَّذِينَ",
+   "run": "الذين"
+  },
+  "cat": "unexplained"
+ },
+ {
+  "p": 495,
+  "k": "43:88:3",
+  "t": "إِنَّ",
+  "ln": 14,
+  "wx": [
+   69.0,
+   98.3
+  ],
+  "lx": 6.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.993,
+  "wres": 1.887,
+  "own_u": 14.21,
+  "unit": 7.53,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   69.0,
+   94.6
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 4.4,
+   "norm": 0.33,
+   "nb": "43:88:4",
+   "nb_t": "هَـٰٓؤُلَآءِ",
+   "run": "هو"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 498,
+  "k": "44:40:1",
+  "t": "إِنَّ",
+  "ln": 1,
+  "wx": [
+   298.2,
+   330.4
+  ],
+  "lx": 8.8,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.886,
+  "wres": 1.645,
+  "own_u": 14.55,
+  "unit": 8.85,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   298.2,
+   326.2
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 6.23,
+   "norm": 0.36,
+   "nb": "44:40:2",
+   "nb_t": "يَوْمَ",
+   "run": "يوم"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 498,
+  "k": "44:43:1",
+  "t": "إِنَّ",
+  "ln": 3,
+  "wx": [
+   121.7,
+   152.7
+  ],
+  "lx": 30.8,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.881,
+  "wres": 1.654,
+  "own_u": 13.95,
+  "unit": 8.43,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   121.7,
+   148.5
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 10.12,
+   "norm": 0.34,
+   "nb": "44:43:2",
+   "nb_t": "شَجَرَتَ",
+   "run": "ت"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 509,
+  "k": "47:20:2",
+  "t": "ٱلَّذِينَ",
+  "ln": 1,
+  "wx": [
+   239.8,
+   287.6
+  ],
+  "lx": 9.9,
+  "nch": 3,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.443,
+  "wres": 1.286,
+  "own_u": 13.87,
+  "unit": 10.79,
+  "side": "last",
+  "gi": 2,
+  "xline": false,
+  "chunk_x": [
+   239.8,
+   270.4
+  ],
+  "seg_text": "ين",
+  "cross": {
+   "u": 0.25,
+   "norm": 0.03,
+   "nb": "47:20:3",
+   "nb_t": "ءَامَنُوا۟",
+   "run": "امنوا"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 508,
+  "k": "47:18:15",
+  "t": "ذِكْرَىٰهُمْ",
+  "ln": 14,
+  "wx": [
+   288.2,
+   333.7
+  ],
+  "lx": 7.8,
+  "nch": 2,
+  "nseg": 4,
+  "hz": "b",
+  "cost": 0.828,
+  "wres": 0.849,
+  "own_u": 16.41,
+  "unit": 19.33,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   309.5,
+   333.7
+  ],
+  "seg_text": "ذكر",
+  "cross": {
+   "u": 1.07,
+   "norm": 0.06,
+   "nb": "47:18:14",
+   "nb_t": "جَآءَتْهُمْ",
+   "run": "جاء"
+  },
+  "cat": "unexplained"
+ },
+ {
+  "p": 506,
+  "k": "46:29:16",
+  "t": "إِلَىٰ",
+  "ln": 2,
+  "wx": [
+   54.6,
+   85.8
+  ],
+  "lx": 9.0,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.671,
+  "wres": 1.267,
+  "own_u": 11.57,
+  "unit": 9.13,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   54.6,
+   80.8
+  ],
+  "seg_text": "لى",
+  "cross": {
+   "u": 2.39,
+   "norm": 0.1,
+   "nb": "46:29:17",
+   "nb_t": "قَوْمِهِم",
+   "run": "مهم"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 512,
+  "k": "48:12:3",
+  "t": "أَن",
+  "ln": 7,
+  "wx": [
+   26.2,
+   51.1
+  ],
+  "lx": 8.7,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.735,
+  "wres": 1.377,
+  "own_u": 10.21,
+  "unit": 7.42,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   26.2,
+   47.6
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 3.87,
+   "norm": 0.22,
+   "nb": "48:12:4",
+   "nb_t": "لَّن",
+   "run": "لن"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 517,
+  "k": "49:12:28",
+  "t": "إِنَّ",
+  "ln": 3,
+  "wx": [
+   28.5,
+   57.5
+  ],
+  "lx": 5.4,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.928,
+  "wres": 1.76,
+  "own_u": 13.48,
+  "unit": 7.66,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   28.5,
+   53.6
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 1.67,
+   "norm": 0.14,
+   "nb": "49:12:29",
+   "nb_t": "ٱللَّهَ",
+   "run": "الله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 548,
+  "k": "59:18:13",
+  "t": "إِنَّ",
+  "ln": 3,
+  "wx": [
+   8.2,
+   34.6
+  ],
+  "lx": 8.2,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 0.723,
+  "wres": 1.299,
+  "own_u": 10.44,
+  "unit": 8.04,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   8.2,
+   30.8
+  ],
+  "seg_text": "ن",
+  "cross": {
+   "u": 0.0,
+   "norm": 0.0,
+   "nb": "59:18:14",
+   "nb_t": "ٱللَّهَ",
+   "run": "لله"
+  },
+  "cat": "width-anomaly",
+  "fam": "final-nun-stretch"
+ },
+ {
+  "p": 584,
+  "k": "79:20:1",
+  "t": "فَأَرَىٰهُ",
+  "ln": 2,
+  "wx": [
+   121.5,
+   148.1
+  ],
+  "lx": 27.7,
+  "nch": 2,
+  "nseg": 4,
+  "hz": "b",
+  "cost": 0.962,
+  "wres": 1.353,
+  "own_u": 14.82,
+  "unit": 10.95,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   139.3,
+   148.1
+  ],
+  "seg_text": "فار",
+  "cross": {
+   "u": 42.08,
+   "norm": 0.83,
+   "nb": "79:19:4",
+   "nb_t": "فَتَخْشَىٰ",
+   "run": "فتخشى"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 585,
+  "k": "80:38:1",
+  "t": "وُجُوهٌۭ",
+  "ln": 14,
+  "wx": [
+   39.6,
+   67.8
+  ],
+  "lx": 5.2,
+  "nch": 2,
+  "nseg": 3,
+  "hz": "b",
+  "cost": 0.888,
+  "wres": 1.203,
+  "own_u": 16.32,
+  "unit": 13.57,
+  "side": "last",
+  "gi": 1,
+  "xline": false,
+  "chunk_x": [
+   39.9,
+   62.6
+  ],
+  "seg_text": "ه",
+  "cross": {
+   "u": 1.57,
+   "norm": 0.08,
+   "nb": "80:38:2",
+   "nb_t": "يَوْمَئِذٍۢ",
+   "run": "ميذ"
+  },
+  "cat": "width-anomaly"
+ },
+ {
+  "p": 600,
+  "k": "100:6:4",
+  "t": "لَكَنُودٌۭ",
+  "ln": 1,
+  "wx": [
+   214.6,
+   261.8
+  ],
+  "lx": 7.5,
+  "nch": 2,
+  "nseg": 2,
+  "hz": "b",
+  "cost": 1.106,
+  "wres": 1.326,
+  "own_u": 32.41,
+  "unit": 24.45,
+  "side": "first",
+  "gi": 0,
+  "xline": false,
+  "chunk_x": [
+   251.6,
+   261.8
+  ],
+  "seg_text": "لكنو",
+  "cross": {
+   "u": 2.1,
+   "norm": 0.14,
+   "nb": "100:6:3",
+   "nb_t": "لِرَبِّهِۦ",
+   "run": "به"
+  },
+  "cat": "width-anomaly"
+ }
+]
