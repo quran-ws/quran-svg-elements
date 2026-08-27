@@ -394,8 +394,8 @@
    ],
    "reported": "Abdullah: three dots split into 2 marks (two-dots + one-dot part); we want them as ONE mark.",
    "turned_out": "Emitter design: mkpart contours emit as separate paths. Fix: merge dot-family part contours into the master's single path at emission (same source frame only; cross-frame keeps _reframe parts).",
-   "fixed": false,
-   "status": "queued behind taxonomy phase 2 (file lock)"
+   "fixed": true,
+   "status": "FIXED 2026-08-28, gated (bench cases p249/p583; dot merge flag-neutral + pixel-identical)"
   },
   {
    "id": 37,
@@ -406,8 +406,8 @@
    ],
    "reported": "Ledger family: damma 0/1 on كُلࣱّ-type words.",
    "turned_out": "The word's own damma is welded into the dammatan stack as a 3rd part (measured: master+2 parts on p249). Fix: when budget wants damma+dammatan and the stack holds 3 curls, peel one as damma.",
-   "fixed": false,
-   "status": "queued behind taxonomy phase 2"
+   "fixed": true,
+   "status": "FIXED 2026-08-28, gated (bench cases p249/p583; dot merge flag-neutral + pixel-identical)"
   },
   {
    "id": 38,
@@ -418,8 +418,8 @@
    ],
    "reported": "Abdullah: e1025 is a hamza (his confirmed sig 2fb9f1b6e49c) emitted as data-mark=kasra.",
    "turned_out": "The naming layer renames a below-position hamza into the kasra family — position beat shape, violating classify()'s own rule ('shape identity outranks position'). Also my r11 label apply left auto:True (now cleared). Fix: a human-confirmed hamza label is never renamed to a slash family. | SECOND FACE (Abdullah, 33:3:6 p418 e295): sig e2d0fd140fc49dfc is table-labeled fatha yet emits as UNLABELED BODY — a labeled slash demoted to letter ink; occurs exactly on the slash-chain pages (418/446/576/583/599). One naming-layer fix covers both faces.",
-   "fixed": false,
-   "status": "queued behind taxonomy phase 2 (items 36-38 batch)"
+   "fixed": true,
+   "status": "FIXED 2026-08-28, gated (bench cases p249/p583; dot merge flag-neutral + pixel-identical)"
   }
  ]
 }
