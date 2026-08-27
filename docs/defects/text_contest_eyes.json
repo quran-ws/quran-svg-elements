@@ -1,0 +1,42 @@
+{
+ "_": "Ink adjudication of the 5 sites where the two text finalists (uthmani+QPC-waqf composite vs DigitalKhatt) genuinely disagree; judged by Abdullah's eye against the drawn page. 16 further differ-sites are shared (both differ from MushafDatabase identically = referee errors).",
+ "verdicts": [
+  {
+   "key": "17:7:12",
+   "page": 282,
+   "word": "لِيَسُـُٔوا۟",
+   "question": "small-waw after the su?",
+   "eye": "PRESENT — e844 data-mark=small-waw in the build, confirmed by Abdullah 2026-08-27",
+   "winner": "digitalkhatt",
+   "loser": "composite+referee"
+  },
+  {
+   "key": "70:1:2",
+   "page": 568,
+   "word": "سَآئِلٌۢ",
+   "question": "maddah drawn?",
+   "eye": null
+  },
+  {
+   "key": "82:1:2",
+   "page": 587,
+   "word": "ٱلسَّمَآءُ",
+   "question": "maddah drawn?",
+   "eye": null
+  },
+  {
+   "key": "108:1:1",
+   "page": 602,
+   "word": "إِنَّآ",
+   "question": "maddah drawn?",
+   "eye": null
+  },
+  {
+   "key": "80:25:1",
+   "page": 585,
+   "word": "أَنَّا/اَنَّا",
+   "question": "hamza on the alef?",
+   "eye": null
+  }
+ ]
+}
