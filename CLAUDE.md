@@ -29,7 +29,7 @@ is never committed anywhere.
 | Pages clean (marks+intervals) | 276 | **489** of 604 |
 | Pages clean incl. mark-TYPE audit | — | **461** of 604 (119 marktype flags) |
 | Words emitted as two `<g class="word">` | 1158 | **0** |
-| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 84 over 15 pages (p17 added as pixel case), no failures, pixelfail 0 |
+| Bench | SCORE 77, no failures, pixelfail 0 | SCORE 81 over 15 pages (DKTEXT on; 84 with QSVG_DKTEXT=0), no failures, pixelfail 0 |
 
 **"Clean" is always relative to the audits that exist** (Abdullah, 2026-08-26,
 after budget-neutral thefts and the R7 family were found living on "clean"
@@ -42,10 +42,11 @@ the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
 old figures in this table were taken with a pause budget that has since been corrected,
-so they are not comparable to today's. Current sweep: `.cache/sweeps/pixfix`
-(marks 109, intervals 79, clean 489 — the +2 marks vs dkseg are p599's
-one-line ownership chain REVEALED when the emitter stopped double-listing a
-welded element; p123/p350 improved for the same reason).
+so they are not comparable to today's. Current sweep: `.cache/sweeps/dktext3`
+(QSVG_DKTEXT default-ON: marks 103, intervals 79, clean 494, bench 81 —
+strictly better than pixfix on every aggregate; the one "worse" page p446
+is the لازب iqlab pair theft REVEALED by the honest budget, Abdullah-confirmed,
+reported.json item 35).
 
 **Pixel identity became a proven, gated invariant 2026-08-27** after Abdullah
 caught displaced/duplicated marks by eye on p17 (a قلى drawn twice, once
@@ -442,7 +443,11 @@ Both +1 versus the session baseline; neither is explained.
   errors; ALL FIVE genuine disagreements went DK's way (3 maddah, 1 hamza, 1
   small-waw — each a composite budget error). DK is strictly better on
   adjudicated ink; budget-source migration to DK text is approved in principle
-  and pending as its own measured phase.**
+  and pending as its own measured phase.** DONE and DEFAULT-ON 2026-08-27:
+  `QSVG_DKTEXT=1` reads budgets from the DK DB (normalised in `_dk_norm`,
+  proven exact over 77,432 words), the iqlab passes key on the print's real
+  notation, all five adjudicated words budget natively, and the gate-OFF path
+  is byte-identical for A/B (`QSVG_DKTEXT=0`).
 - Human input is captured as DATA — shapes to `labels.json`, places to
   `overrides.json` — never as a code edit.
 - Every hard-won fix should become a bench case, or it comes back.

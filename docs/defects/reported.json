@@ -359,6 +359,31 @@
    "turned_out": "Measured mushaf-wide with dk_header_lines: 9 true thefts on 8 pages (p349 x3, p445 x2, p498, p555, p570, p590), 8 of 9 a last-line word reaching into the header line below; stolen marks are the superscript-recovery families (small-waw/maddah/small-alef), which hunt small glyphs and find title letters. Fix: ink on a DK-declared header line with no words is header ink — invisible to all word passes (except p1/p2-style lines the word stream lives on).",
    "fixed": false,
    "status": "rule queued behind the DK budget migration (same file)"
+  },
+  {
+   "id": 34,
+   "date": "2026-08-27",
+   "page": 90,
+   "words": [
+    "4:78:8 بُرُوجٖ"
+   ],
+   "reported": "e876 (kasratan) + e877 (part): Abdullah confirms both ARE بروج's kasratan pair, drawn INSIDE the circular bowl of the ج — an art fact of this print. The unusual seat threw position-based ownership/naming (flags kasratan 0/1 + fathatan 1/0 = one defect wearing two names).",
+   "turned_out": "Third acceptance case for the slash-family transfer rule (with p586 exchange and p446 لازب iqlab pair): budget-proven one-way transfers where both signals agree.",
+   "fixed": false,
+   "status": "SLASHX rule acceptance case"
+  },
+  {
+   "id": 35,
+   "date": "2026-08-27",
+   "page": 446,
+   "words": [
+    "37:11 لَّازِبِۭ",
+    "37:14:2 رَأَوْا۟"
+   ],
+   "reported": "Abdullah: رأوا steals لازب's iqlab kasra + low meem (the pair hangs into the line below's band).",
+   "turned_out": "The composite build hid it by fake-balancing names; the DK budget exposes it (fatha 3/2 on رأوا). Fix = budget-proven one-way slash transfer, SLASHX acceptance case.",
+   "fixed": false,
+   "status": "SLASHX rule acceptance case"
   }
  ]
 }
