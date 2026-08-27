@@ -12,12 +12,16 @@ Output: .cache/words-dk/page-NNN.json in the exact shape page_words() reads
 from cache, so the pipeline runs unchanged with cache_dir pointed here.
 
 Location mapping: DigitalKhatt segments بَعْدَ مَا as TWO words (the print's
-own segmentation), so in 13:37 its positions run one ahead of quran.com's
-from position 9 on. The uthmani join maps through that shift; the two halves
-of the compound take the split texts بَعْدَ and مَا directly.
+own segmentation) in all three ayahs it occurs — 2:181 (p27), 8:6 (p177),
+13:37 (p254) — so those ayahs' positions run one ahead of quran.com's after
+the split. The uthmani join maps through that shift; the two halves of each
+compound take the split texts بَعْدَ and مَا directly.
 
     python3 tools/build_dk_words.py            # writes all 604 pages
     python3 tools/build_dk_words.py 599 600    # a range
+    python3 tools/build_dk_words.py --lines    # rebuild .cache/dk_lines.json
+                                               # (DK-canonical keys; the
+                                               # pipeline's line table)
 """
 import json, os, sqlite3, sys, unicodedata
 
@@ -25,6 +29,9 @@ ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(os.path.dirname(os.path.ab
 DK = os.path.join(ROOT, ".cache", "digitalkhatt")
 OUT = os.path.join(ROOT, ".cache", "words-dk")
 SRC = os.path.join(ROOT, ".cache", "words")
+
+# fused quran.com position of each بَعْدَ مَا compound (split in the DK DB)
+SPLITS = {(2, 181): 3, (8, 6): 4, (13, 37): 8}
 
 
 def load_qc_text():
@@ -47,14 +54,54 @@ def load_qc_text():
 
 
 def qc_location(loc):
-    """DigitalKhatt location -> quran.com location (the 13:37 بعد/ما shift)."""
+    """DigitalKhatt location -> quran.com location (the بعد/ما splits)."""
     s, a, p = (int(x) for x in loc.split(":"))
-    if (s, a) == (13, 37) and p >= 9:
-        return "%d:%d:%d" % (s, a, p - 1), p == 9
+    sp = SPLITS.get((s, a))
+    if sp is not None and p > sp:
+        return "%d:%d:%d" % (s, a, p - 1), p == sp + 1
     return loc, False
 
 
+def build_lines():
+    """Rebuild .cache/dk_lines.json: {page: {"s:a:p": line}} from the DK
+    layout DB. Keys are DK-CANONICAL — the بعد/ما compounds are two words
+    each and later positions run +1 vs quran.com (assign_words._qcf_lines
+    converts back to the fused keying when QSVG_DKSEG=0). Medallions are
+    left out, matching the table this file replaces."""
+    lay = sqlite3.connect(os.path.join(DK, "digital-khatt-15-lines.db"))
+    wdb = sqlite3.connect(os.path.join(DK, "digital-khatt-v2.db"))
+    words = {int(r[0]): (r[1], r[2]) for r in
+             wdb.execute("SELECT id, location, text FROM words")}
+    out = {}
+    for pg, ln, ltype, lo, hi in lay.execute(
+            "SELECT page_number, line_number, line_type,"
+            " CAST(first_word_id AS INT), CAST(last_word_id AS INT)"
+            " FROM pages ORDER BY page_number, line_number"):
+        if ltype != "ayah":
+            continue
+        for wid in range(lo, hi + 1):
+            if wid not in words:
+                continue
+            loc, txt = words[wid]
+            if txt.startswith("۝"):
+                continue                       # ayah-end medallion
+            out.setdefault(str(pg), {})[loc] = ln
+    # The DK layout DB is a typesetting MODEL; at the one compound that
+    # straddles a line break it breaks differently from the print: it ends
+    # p254 line 6 with 13:37:9 مَا, while the print draws مَا first on line 7
+    # (reported.json item 20 — Abdullah's eye; MushafDatabase agrees, line 07).
+    # The ink outranks the model.
+    out["254"]["13:37:9"] = 7
+    p = os.path.join(ROOT, ".cache", "dk_lines.json")
+    json.dump(out, open(p, "w", encoding="utf-8"))
+    print("wrote %s: %d pages, %d words"
+          % (p, len(out), sum(len(v) for v in out.values())))
+
+
 def main():
+    if "--lines" in sys.argv[1:]:
+        build_lines()
+        return
     a = int(sys.argv[1]) if len(sys.argv) > 1 else 1
     b = int(sys.argv[2]) if len(sys.argv) > 2 else 604
     os.makedirs(OUT, exist_ok=True)
@@ -90,10 +137,11 @@ def main():
                     continue
                 qloc, is_split_second = qc_location(loc)
                 ut = im = None
-                if (13, 37) == (s, ay) and int(loc.split(":")[2]) in (8, 9):
+                sp = SPLITS.get((s, ay))
+                if sp is not None and int(loc.split(":")[2]) in (sp, sp + 1):
                     # the print's two halves of بَعْدَ مَا: take the split
                     # texts directly (quran.com fuses them into one word)
-                    fused = qc.get("13:37:8", ("", ""))
+                    fused = qc.get("%d:%d:%d" % (s, ay, sp), ("", ""))
                     halves = fused[0].split(" ") if " " in fused[0] else None
                     if halves and len(halves) == 2:
                         ut = halves[0] if not is_split_second else halves[1]

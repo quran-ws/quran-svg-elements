@@ -138,8 +138,23 @@ FIELDS = ["text_uthmani", "text_qpc_hafs", "text_imlaei", "text_indopak",
           "text_uthmani_simple", "text_imlaei_simple"]
 
 
+def dk_words():
+    import sqlite3
+    db = sqlite3.connect(os.path.join(ROOT, ".cache", "digitalkhatt",
+                                      "digital-khatt-v2.db"))
+    out = {}
+    for loc, txt in db.execute("SELECT location, text FROM words"):
+        if loc.count(":") == 2 and not txt.startswith("\u06dd"):
+            out[loc] = txt
+    return out
+
+
 def main():
-    QP = qp_words()
+    try:
+        QP = qp_words()
+    except Exception:
+        QP = {}
+    DK = dk_words()
     tally = defaultdict(Counter)
     famtal = defaultdict(Counter)
     examples = defaultdict(list)
@@ -168,6 +183,7 @@ def main():
             rc = ref_counts(rec)
             cand = {f: (w.get(f) or "") for f in FIELDS}
             cand["quranpedia_m2"] = QP.get(key, "")
+            cand["digitalkhatt (print)"] = DK.get(key, "")
             # What this pipeline actually uses: uthmani for every mark, the KFGQPC text
             # for the waqf signs alone. Each is the best available source for its own
             # part, and neither is best for both.

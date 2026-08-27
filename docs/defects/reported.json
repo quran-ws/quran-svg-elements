@@ -324,6 +324,16 @@
    "reported": "the two families frozen through every fix wave",
    "cause": "one mechanism each: tight-kerned divine-name pairs hand the wasla one word early; the suffix ۥ trails into the gap (10 pair/chains) or hangs into an unowned furniture atom (5). Frozen because at reconciliation time the theft is a CHAIN (every word at-cap), only clean after the last mover. QSVG_RESEAT (default ON): per-line re-deal in reading order when the line balances in total but not per word, 8u reach, one miss aborts; + unowned-atom ۥ adoption. Gate: marks 155->107, clean 469->489, intervals flat, zero worse (3 +1 pages A/B-proven pre-existing). 2 needs-eye queued (p337 ه-as-ۥ; p223 quran.com data defect: uthmani==imlaei for one word).",
    "status": "adopted 2026-08-27"
+  },
+  {
+   "id": 31,
+   "page": null,
+   "words": [
+    "2:181 p27, 8:6 p177, 13:37 p254 — بعد ما split as the print segments"
+   ],
+   "reported": "Abdullah: adopt DigitalKhatt/QUL (the print's model) for word segmentation; work must be standardized, not patchwork",
+   "cause": "QSVG_DKSEG default ON: DK splits بعد ما in all three ayahs (later positions +1); إل ياسين and دائرة stay fused because DK fuses them (the p117 space is quran.com's own typo). All consumers remapped (widths shim, lines, overrides, verdicts). Two latent line defects found and fixed by the rebuild (p27 L15, p177 L12). p254 now emits TWO word groups; MushafDatabase alignment 1:1 on all three ayahs. Bench improved to 78.",
+   "status": "adopted 2026-08-27"
   }
  ]
 }
