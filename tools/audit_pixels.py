@@ -75,6 +75,11 @@ def check_page(pg):
     import assign_words as aw
     _, svg, _, _ = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     extra, missing = contour_conservation(pg, svg)
+    import re as _re
+    # a mark named "x+y" must never ship: one outline carrying two marks is
+    # split into two named marks before emission (Abdullah 2026-08-27);
+    # measured zero over all 604 pages after the p1/p2 relabel
+    compound = len(_re.findall(r'data-mark="[^"]*\+[^"]*"', svg))
     with tempfile.TemporaryDirectory() as td:
         ours = os.path.join(td, "ours.svg")
         open(ours, "w").write(svg)
@@ -86,7 +91,7 @@ def check_page(pg):
             mx2, bad2 = _diff_at(pg, ours, 2200)
             if not bad2:
                 mx, bad = mx2, 0
-    return {"page": pg, "max": mx, "bad_px": bad,
+    return {"page": pg, "max": mx, "bad_px": bad, "compound_marks": compound,
             "contours_extra": extra, "contours_missing": missing}
 
 
@@ -113,7 +118,8 @@ def main():
     with cf.ThreadPoolExecutor(jobs) as ex:
         for r in ex.map(run, range(a, b + 1)):
             if (r["bad_px"] > SEAM_PX or r["bad_px"] < 0
-                    or r.get("contours_extra") or r.get("contours_missing")):
+                    or r.get("contours_extra") or r.get("contours_missing")
+                    or r.get("compound_marks")):
                 fails.append(r)
                 print("FAIL p%03d max %d bad_px %d extra %s missing %s %s"
                       % (r["page"], r["max"], r["bad_px"],
