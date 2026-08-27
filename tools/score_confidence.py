@@ -517,7 +517,8 @@ def main():
     if os.path.exists(vp):
         for rnd in json.load(open(vp)).get("rounds", []):
             for v in rnd.get("verdicts", []):
-                verd[(v["page"], v["key"])] = (v["status"], v.get("note", ""))
+                verd[(v["page"], v["key"])] = (v["status"], v.get("note", ""),
+                                               v.get("sig"))
 
     tiers, worst, fam_agg = Counter(), [], Counter()
     for pg, rec in sorted(raws.items()):
@@ -583,10 +584,21 @@ def main():
                         x["P"] = max(x["P"], 0.25)
                         x["metrics"]["pair:" + fam] = 0.25
         for r in rows:
+            # signature of the card's defect content: a verdict binds to THIS
+            # state; when a later build changes it, the verdict goes stale and
+            # the card returns for re-review (Abdullah 2026-08-27: "if
+            # resolved we need delete my prev review and make me review again")
+            import hashlib as _hl
+            r["sig"] = _hl.md5(json.dumps(
+                [r["tier"], sorted(r["proofs"]), sorted(r["metrics"])],
+                ensure_ascii=False).encode()).hexdigest()[:8]
             st = verd.get((pg, r["key"]))
             if not st:
                 continue
-            r["human"], r["human_note"] = st
+            if len(st) > 2 and st[2] and st[2] != r["sig"]:
+                r["human_stale"] = st          # changed since his verdict
+                continue
+            r["human"], r["human_note"] = st[0], st[1]
             if st[0] == "no-issue" and r["tier"] != "clean":
                 r["tier"], r["P"] = "clean", 0.0
                 r["proofs"] = []
@@ -610,6 +622,15 @@ def main():
                 r2["tier"], r2["P"] = "review", max(r2["P"], 0.6)
                 r2["metrics"] = {"REOPENED by eye: "
                                  + (r.get("human_note") or ""): 0.6}
+                worst.append((pg, r2))
+                tiers["review"] += 1
+            elif r.get("human_stale"):
+                st = r["human_stale"]
+                r2 = dict(r)
+                r2["tier"], r2["P"] = "review", max(r2["P"], 0.5)
+                r2["metrics"] = {"RE-REVIEW: this word CHANGED since your "
+                                 "verdict (%s%s)" % (st[0],
+                                 (" — " + st[1]) if st[1] else ""): 0.5}
                 worst.append((pg, r2))
                 tiers["review"] += 1
             elif r.get("human") == "confirmed":
@@ -936,6 +957,18 @@ const io = new IntersectionObserver(entries => {
   }
 }, {rootMargin: "300px"});
 cards.forEach(c => io.observe(c));
+// ?focus=s:a:p from the tasks page: scroll to that card and flash it
+(function(){
+  var q = new URLSearchParams(location.search).get('focus');
+  if (!q) return;
+  var p = q.split(':');
+  var el = document.querySelector(
+    '.card[data-s="'+p[0]+'"][data-a="'+p[1]+'"][data-w="'+p[2]+'"]');
+  if (!el) return;
+  el.scrollIntoView({block:'center'});
+  el.style.outline = '3px solid #f59e0b';
+  setTimeout(function(){ el.style.outline=''; }, 4000);
+})();
 </script></body></html>
 """
 
