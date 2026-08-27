@@ -314,6 +314,16 @@
    "reported": "Abdullah: R7 samples 16/16 letters; كلا 'stole from everywhere but has no ink'; قسورة e190 is its iqlab م",
    "cause": "All meem-creating passes now gate the MEEM on the print's text (QPC), while tanween NAMING stays uthmani-keyed (first attempt gated both and regressed 5 pages - caught and split). The last two bodyless words restored by overrides (cross-line body thefts by قسورة and قالوا). Gate: marks 163->155, intervals 110->80, clean 445->469, zero worse.",
    "status": "adopted 2026-08-27"
+  },
+  {
+   "id": 30,
+   "page": null,
+   "words": [
+    "wasla 27->1, small-waw 26->1"
+   ],
+   "reported": "the two families frozen through every fix wave",
+   "cause": "one mechanism each: tight-kerned divine-name pairs hand the wasla one word early; the suffix ۥ trails into the gap (10 pair/chains) or hangs into an unowned furniture atom (5). Frozen because at reconciliation time the theft is a CHAIN (every word at-cap), only clean after the last mover. QSVG_RESEAT (default ON): per-line re-deal in reading order when the line balances in total but not per word, 8u reach, one miss aborts; + unowned-atom ۥ adoption. Gate: marks 155->107, clean 469->489, intervals flat, zero worse (3 +1 pages A/B-proven pre-existing). 2 needs-eye queued (p337 ه-as-ۥ; p223 quran.com data defect: uthmani==imlaei for one word).",
+   "status": "adopted 2026-08-27"
   }
  ]
 }

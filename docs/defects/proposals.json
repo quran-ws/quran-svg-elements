@@ -274,6 +274,24 @@
    "alternatives": [
     "stretch convention — no issue"
    ]
+  },
+  {
+   "page": 337,
+   "key": "22:40:31",
+   "word": "يَنصُرُهُۥٓ ۗ",
+   "found": "the word's final letter ه (the ring at x128-132, y168-175, boxed red in docs/defects/wasla_smallwaw_samples/p337_22-40-31.png) is counted as a SECOND small-waw mark, so the word holds 2 small-waw where the text spells 1, and its letter ink is one piece short (1 body where the joining rules allow 2: ينصر + ه)",
+   "expected": "the ring is the letter ه; the word's real ۥ sits just left of it at x120-126 with the maddah above",
+   "proposal": "restore the x128-132 outline to the word's body, the same letter-restoration the R7 family used (label-table / signature channel — not applied here because labels.json is out of bounds for this task)",
+   "id": "P19"
+  },
+  {
+   "page": 223,
+   "key": "11:13:3",
+   "word": "ٱفْتَرَىٰهُ ۖ",
+   "found": "the page draws a wasla over the alef and a dagger alef over the ىٰ (both boxed red in docs/defects/wasla_smallwaw_samples/p223_11-13-3.png) and the decomposition reads both correctly — but quran.com's text_uthmani for this ONE word is 'افْتَرَاهُ' (its imlaei spelling: bare alef, full alef, no wasla, no dagger), so the budget demands 0 of each and the audit convicts the correct ink twice (wasla 1/0, small-alef 1/0)",
+   "expected": "the true uthmani spelling ٱفْتَرَىٰهُ — the ink follows the 1421H print exactly",
+   "proposal": "an upstream data defect in quran.com (text_uthmani == text_imlaei for word id 15424); either patch this one word in the cached word source from a verified text (QPC/DigitalKhatt both carry the print's spelling), or widen the audit budget to a range where text_uthmani == text_imlaei and the QPC text disagrees, the same shape as the waqf-range rule. Needs Abdullah's call on the channel — never hand-typed",
+   "id": "P20"
   }
  ],
  "decisions": {
