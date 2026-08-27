@@ -100,7 +100,7 @@ def budget_mismatches(words):
 
 q = json.load(open(ROOT + "/.cache/qcf_widths.json"))
 case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
-for pg in (1, 2, 3, 7, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454):
+for pg in (1, 2, 3, 7, 17, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     except Exception as e:
@@ -143,7 +143,7 @@ for pg in (1, 2, 3, 7, 133, 143, 200, 202, 205, 222, 273, 307, 453, 454):
             nw += 1
             if r < 0.55 or r > 1.8:
                 badw += 1
-    if pg in (3, 453):
+    if pg in (3, 17, 453):  # 17: the displaced/duplicated قلى pair (cross-frame emission)
         from PIL import Image, ImageChops
         open(S + "/bpx.svg", "w").write(svg)
         subprocess.run(["rsvg-convert", "-w", "900", "-b", "white",

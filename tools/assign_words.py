@@ -170,6 +170,56 @@ def _qcf_lines():
     return _QCF_LINES
 
 
+_DK_HEADERS = None
+
+
+def dk_header_lines():
+    """{page: {dk_line: ("surah-name"|"basmalah", surah)}} from the DK layout DB.
+
+    The DigitalKhatt layout DB (same authority as dk_lines.json) declares each
+    line's type: 'surah_name' rows carry the surah number directly; a
+    'basmallah' line takes its surah from the first ayah word after it on the
+    page (joined through digital-khatt-v2.db word ids — every basmallah in the
+    DB has a following ayah line on its own page, checked over all 604 pages).
+    Line numbers here are DK's; rewrite() maps them to art lines through the
+    word anchors, because the ornate spreads' art omits DK line 1 (p1, p2).
+    """
+    global _DK_HEADERS
+    if _DK_HEADERS is None:
+        _DK_HEADERS = {}
+        lay_p = os.path.join(ROOT, ".cache", "digitalkhatt",
+                             "digital-khatt-15-lines.db")
+        wdb_p = os.path.join(ROOT, ".cache", "digitalkhatt",
+                             "digital-khatt-v2.db")
+        if os.path.exists(lay_p) and os.path.exists(wdb_p):
+            import sqlite3
+            lay = sqlite3.connect(lay_p)
+            wdb = sqlite3.connect(wdb_p)
+            wsurah = {int(r[0]): int(r[1].split(":")[0]) for r in
+                      wdb.execute("SELECT id, location FROM words")}
+            rows = lay.execute(
+                "SELECT page_number, line_number, line_type,"
+                " CAST(surah_number AS INT), CAST(first_word_id AS INT)"
+                " FROM pages ORDER BY page_number, line_number").fetchall()
+            by_page = {}
+            for pg, ln, lt, su, fw in rows:
+                by_page.setdefault(pg, []).append((ln, lt, su, fw))
+            for pg, lns in by_page.items():
+                for i, (ln, lt, su, fw) in enumerate(lns):
+                    if lt == "surah_name" and su:
+                        _DK_HEADERS.setdefault(pg, {})[ln] = ("surah-name", su)
+                    elif lt == "basmallah":
+                        # surah of the first ayah word below it on the page
+                        for ln2, lt2, _su2, fw2 in lns[i + 1:]:
+                            if lt2 == "ayah" and fw2 in wsurah:
+                                _DK_HEADERS.setdefault(pg, {})[ln] = (
+                                    "basmalah", wsurah[fw2])
+                                break
+            lay.close()
+            wdb.close()
+    return _DK_HEADERS
+
+
 # ---------------------------------------------------------------------------
 # The print's own segmentation of the بَعْدَ مَا compounds (QSVG_DKSEG)
 # ---------------------------------------------------------------------------
@@ -913,8 +963,11 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
             return (-ov, abs((a["x1"] + a["x2"]) / 2 - cx))
 
         best = min(atoms, key=fit)
-        best["els"].append(mk)
-        best["els"].extend(mk.get("mkmembers", []))
+        # identity-guarded: a member may already sit in this atom (the late
+        # re-weld meets the original weld) and an element must be listed once
+        for _e in [mk] + mk.get("mkmembers", []):
+            if not any(x is _e for x in best["els"]):
+                best["els"].append(_e)
     # a SMALL body atom sitting mostly inside a wider atom's span is a stacked
     # stroke of the same ligature (the second stroke of a lam-alef, a broken
     # letter piece) — the boundary search must not be able to separate them
@@ -1466,8 +1519,9 @@ def put_in_ligature(atoms, e):
     tgt = min(atoms, key=lambda a: min(
         (abs((x["x1"] + x["x2"]) / 2 - (e["x1"] + e["x2"]) / 2) for x in a["els"]),
         default=1e9))
-    tgt["els"].append(e)
-    tgt["els"].extend(e.get("mkmembers", []))
+    for _e in [e] + e.get("mkmembers", []):
+        if not any(x is _e for x in tgt["els"]):
+            tgt["els"].append(_e)
     return tgt
 
 
@@ -1524,6 +1578,35 @@ def rewrite(page, assignment):
     _page_no = str(int(os.path.splitext(page.name)[0].split("-")[0].lstrip("0") or 0))
     from add_line_structure import build_d
 
+    # Surah-header and basmalah lines: the DK layout DB says which lines they
+    # are (dk_header_lines()); their ink otherwise comes out as anonymous bare
+    # paths. Map DK line numbers to art lines through the words already
+    # assigned — on 114 of the 116 header pages the numberings are identical,
+    # but the ornate spreads' art omits DK line 1 (p1, p2), so every art line
+    # runs one behind there. Majority vote over (dk_line - art_line) of all
+    # anchored words settles the page's offset without any per-page rule.
+    hdr_art = {}
+    _hdr_dk = (dk_header_lines().get(int(_page_no) if _page_no.isdigit()
+                                     else 0, {})
+               if os.environ.get("QSVG_HDR", "1") == "1" else {})
+    if _hdr_dk:
+        _wtab = _qcf_lines().get(_page_no, {})
+        _votes = {}
+        for word, atoms in assignment:
+            if not word:
+                continue
+            dk_ln = _wtab.get("%d:%d:%d" % (word["surah"], word["ayah"],
+                                            word["pos"]))
+            if dk_ln is None:
+                continue
+            arts = [e["line"] for a in atoms for e in a["els"] if e.get("line")]
+            if not arts:
+                continue
+            art_ln = max(set(arts), key=arts.count)
+            _votes[dk_ln - art_ln] = _votes.get(dk_ln - art_ln, 0) + 1
+        _off = max(_votes, key=_votes.get) if _votes else 0
+        hdr_art = {ln - _off: v for ln, v in _hdr_dk.items() if ln - _off >= 1}
+
     # A word is one thing on the page, but its ink can straddle the boundary
     # between two line paths — a descender dips below it, a mark rides above —
     # and emitting the word once per wrapper leaves half of it inside a line it
@@ -1568,15 +1651,71 @@ def rewrite(page, assignment):
                 if tgt is not None:
                     sa_home[id(atom)] = tgt
 
+    # Invariant: an element is drawn exactly once. Movers that carry a welded
+    # master between atoms adopt its mkmembers into the target without pulling
+    # them out of their origin atom (p123's doubled dammatan strokes, AA-dark
+    # edges on 168 pages). Keep the occurrence that sits beside its master —
+    # the atom whose els list it in some mkmembers — else the first.
+    occ = {}
+    for word, atoms in assignment:
+        for atom in atoms:
+            for e in atom["els"]:
+                occ.setdefault(id(e), []).append(atom)
+    for eid_, ats in occ.items():
+        if len(ats) < 2:
+            continue
+        keep = next((a for a in ats
+                     if any(any(m is x for m in y.get("mkmembers", []))
+                            for y in a["els"] for x in a["els"]
+                            if id(x) == eid_)), ats[0])
+        for a in ats:
+            if a is not keep:
+                a["els"] = [x for x in a["els"] if id(x) != eid_]
+            else:
+                seen_self = False
+                kept = []
+                for x in a["els"]:
+                    if id(x) == eid_:
+                        if seen_self:
+                            continue
+                        seen_self = True
+                    kept.append(x)
+                a["els"] = kept
+
     per_path = {}
+    consumed = set()
     for word, atoms in assignment:
         tgt = home.get(id(word)) if word else None
         for ai, atom in enumerate(atoms):
             tgt_a = tgt if tgt is not None else sa_home.get(id(atom))
             lig = (id(word), atom.get("lig", ai))
             for e in atom["els"]:
+                consumed.add(e["path"])
                 per_path.setdefault(e["path"] if tgt_a is None else tgt_a,
                                     []).append((word, lig, atom, e))
+
+    def _reframe(src_pi, tgt_pi):
+        """transform attribute that repositions contours written in path
+        src_pi's local frame so they render identically under path tgt_pi's
+        wrappers: inv(M_tgt) . M_src. The p17 قلى pair proved regrouping is
+        pixel-free ONLY within one frame — every cross-path emission must
+        carry this compensation."""
+        ms = page.paths[src_pi]["M"]
+        mt = page.paths[tgt_pi]["M"]
+        if ms == mt:
+            return ""
+        a, b, c, d, e_, f_ = mt
+        det = a * d - b * c
+        inv = (d / det, -b / det, -c / det, a / det,
+               (c * f_ - d * e_) / det, (b * e_ - a * f_) / det)
+        a1, b1, c1, d1, e1, f1 = inv
+        a2, b2, c2, d2, e2, f2 = ms
+        comp = (a1 * a2 + c1 * b2, b1 * a2 + d1 * b2,
+                a1 * c2 + c1 * d2, b1 * c2 + d1 * d2,
+                a1 * e2 + c1 * f2 + e1, b1 * e2 + d1 * f2 + f1)
+        if all(abs(v - w) < 1e-9 for v, w in zip(comp, (1, 0, 0, 1, 0, 0))):
+            return ""
+        return 'transform="matrix(%g %g %g %g %g %g)" ' % comp
 
     svg = page.svg
     eid = [0]
@@ -1586,7 +1725,11 @@ def rewrite(page, assignment):
         out.append(svg[pos:s])
         pos = t
         if pi not in per_path:
-            out.append(p["text"])
+            # A path whose elements ALL now live under other homes must not
+            # fall back to its original text: that re-draws every contour a
+            # second time (the unlabelled قلى duplicates on p17).
+            if pi not in consumed:
+                out.append(p["text"])
             continue
         a, b = p["d_span"][0] - s, p["d_span"][1] - s
         head, tail = p["text"][:a], p["text"][b:]
@@ -1620,16 +1763,44 @@ def rewrite(page, assignment):
             if e.get("standalone"):
                 extra += ('data-standalone="1" data-surah="%d" data-ayah="%d" '
                           % e["standalone"])
+            if e["path"] != pi:
+                extra += _reframe(e["path"], pi)
             out.append(head.replace("<path ", extra, 1) + build_d(e["contours"]) + tail)
 
         open_word = open_lig = None
         open_ayah = None
         open_sa = None
+        open_hdr = None
         for word, lig_key, atom, e in per_path[pi]:
             sa = atom.get("sa") if not word else None
             if id(atom) != open_sa and open_sa is not None:
                 out.append("</g>")
                 open_sa = None
+            # A wordless element on a DK-declared header line joins that
+            # line's <g class="surah-name"/"basmalah"> group; consecutive
+            # clusters of the same line share one group. Pure regrouping in
+            # the element's own frame — nothing moves, so pixels cannot.
+            hd = hdr_art.get(e.get("line")) \
+                if (word is None and not sa and not e.get("offcanvas")) \
+                else None
+            if open_hdr is not None and hd != open_hdr:
+                out.append("</g>")
+                open_hdr = None
+            if hd is not None:
+                if open_hdr is None:
+                    if open_lig is not None:
+                        out.append("</g>")
+                        open_lig = None
+                    if open_word is not None:
+                        out.append("</g>")
+                        open_word = None
+                    if open_ayah is not None:
+                        out.append("</g>")
+                        open_ayah = None
+                    out.append('<g class="%s" data-surah="%d">' % hd)
+                    open_hdr = hd
+                emit(e)
+                continue
             wkey = id(word) if word else None
             if sa and open_sa is None:
                 if open_lig is not None:
@@ -1691,6 +1862,8 @@ def rewrite(page, assignment):
         if open_ayah is not None:
             out.append("</g>")
         if open_sa is not None:
+            out.append("</g>")
+        if open_hdr is not None:
             out.append("</g>")
     out.append(svg[pos:])
     return "".join(out)
@@ -2599,8 +2772,12 @@ def assign_page(edition, page_no, cache_dir):
     _cl_memo = {}
 
     def _cl(els4, words4, ayr4, alpha4=1.0, use_dots=True):
-        key = (id(ayr4), round(alpha4, 4), use_dots, len(els4),
-               sum(1 for e in els4 if e["kind"] == "body"),
+        # key on the element OBJECTS, not their statistics: p604's three
+        # identical basmalah lines collided on (len, body-count) and lines
+        # 6/11 were handed line 2's cached atoms — line-2 ink emitted three
+        # times while 6/11's own went back to passthrough.
+        key = (id(ayr4), round(alpha4, 4), use_dots,
+               tuple(id(e) for e in els4),
                tuple((w["surah"], w["ayah"], w["pos"]) for w in words4))
         hit = _cl_memo.get(key)
         if hit is None:
@@ -2943,7 +3120,6 @@ def assign_page(edition, page_no, cache_dir):
             words = words_by_line.get(line_map.get(ln), []) if line_map else \
                 words_by_line.get(ln, [])
             clusters, deviation = _cl(els, words, ay_ranges.get(ln))
-
             # Repair pass: an overflowing last word is drawn small and raised, so its ink
             # was classified as marks and its cluster came out far too narrow. Reclaim
             # word-sized mark elements from the starved word's expected region as bodies
@@ -3069,11 +3245,11 @@ def assign_page(edition, page_no, cache_dir):
                                        baselines.get(ln)) or merged["bad"]:
                         flags.append("marks:%d" % w["pos"])
                 assignment.append((w, cl))
+            # clusters[len(words):] is ALL clusters when words is empty, so the
+            # old extra `if not words` loop emitted every header/bismillah
+            # cluster twice (p604's stacked-basmalah halo).
             for cl in clusters[len(words):]:
                 assignment.append((None, cl))
-            if not words:
-                for cl in clusters:
-                    assignment.append((None, cl))
             hard = [f for f in flags if not f.startswith("marks:")]
             if reflow_info:
                 hard = hard + ["page-reflowed"] if ln == min(
