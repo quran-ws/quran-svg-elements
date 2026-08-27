@@ -50,6 +50,8 @@ def page_words(page_no, cache_dir):
         with urllib.request.urlopen(req, timeout=30) as r:
             data = json.load(r)
         json.dump(data, open(cache, "w", encoding="utf-8"), ensure_ascii=False)
+    if _dkseg_on():
+        _dkseg_split_data(data)
     # The art is the KFGQPC madani print, which the QCF v2 page fonts replicate
     # line-for-line; quran.com's own line numbers drift from it on some pages
     # (p4: end-of-line word wrapped). Prefer the QCF layout when we have it.
@@ -96,7 +98,7 @@ def page_words(page_no, cache_dir):
             lines.setdefault(ln, []).append({
                 "surah": int(surah), "ayah": int(ayah), "pos": w["position"],
                 "uthmani": w["text_uthmani"], "imlaei": w["text_imlaei"],
-                "qpc": qpc.get("%s:%s" % (verse["verse_key"], w["position"]), ""),
+                "qpc": _dkseg_qpc(qpc, int(surah), int(ayah), w["position"]),
             })
     return lines
 
@@ -151,10 +153,178 @@ def _qcf_lines():
         # tools/build_dk_words.py --lines writes it in this table's format.
         # QSVG_DKLINES=0 falls back to the QCF v2 font layout for A/B.
         p = os.path.join(ROOT, ".cache", "dk_lines.json")
-        if os.environ.get("QSVG_DKLINES", "1") != "1" or not os.path.exists(p):
+        dk_file = (os.environ.get("QSVG_DKLINES", "1") == "1"
+                   and os.path.exists(p))
+        if not dk_file:
             p = os.path.join(ROOT, ".cache", "qcf_lines.json")
-        _QCF_LINES = json.load(open(p)) if os.path.exists(p) else {}
+        tbl = json.load(open(p)) if os.path.exists(p) else {}
+        # dk_lines.json is keyed DK-canonical (the print's own segmentation of
+        # the بَعْدَ مَا compounds, _DKSEG_SPLITS); qcf_lines.json is keyed
+        # quran.com-fused. Convert to whichever keying QSVG_DKSEG selects.
+        if tbl:
+            if dk_file and not _dkseg_on():
+                tbl = _dkseg_lines_convert(tbl, to_dk=False)
+            elif not dk_file and _dkseg_on():
+                tbl = _dkseg_lines_convert(tbl, to_dk=True)
+        _QCF_LINES = tbl
     return _QCF_LINES
+
+
+# ---------------------------------------------------------------------------
+# The print's own segmentation of the بَعْدَ مَا compounds (QSVG_DKSEG)
+# ---------------------------------------------------------------------------
+# DigitalKhatt's word DB of THIS print — and MushafDatabase, independently —
+# segment بَعْدَ مَا as TWO words in all three ayahs it occurs; quran.com fuses
+# each pair into one word with an internal space (reported.json item 20: the
+# p254 pair straddles a line break, which one fused word cannot express). The
+# DK keying is canonical here: the compound splits at position `fused` into
+# `fused` (بَعْدَ) and `fused+1` (مَا) and every later position shifts +1.
+# The other two letter-space compounds stay ONE word because the DK DB fuses
+# them too: 37:130:3 إِلْ يَاسِينَ, and 5:52:12 where quran.com's internal
+# space is its own typo (DK and MushafDatabase both write one word).
+# QSVG_DKSEG=0 reverts everything to quran.com's fused keying.
+_DKSEG_SPLITS = {(2, 181): (3, 27), (8, 6): (4, 177), (13, 37): (8, 254)}
+_DKSEG_HALVES = {}
+
+
+def _dkseg_on():
+    return os.environ.get("QSVG_DKSEG", "1") == "1"
+
+
+def _dkseg_fused(s0, a0, pos):
+    """DK-canonical position -> (quran.com fused position, half or None)."""
+    sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+    if sp is None or pos < sp:
+        return pos, None
+    if pos == sp:
+        return sp, 0
+    if pos == sp + 1:
+        return sp, 1
+    return pos - 1, None
+
+
+def _dkseg_split_data(data):
+    """Rewrite a quran.com page payload in place to the print's segmentation."""
+    for verse in data.get("verses", []):
+        s0, a0 = (int(x) for x in verse["verse_key"].split(":"))
+        sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+        if sp is None:
+            continue
+        comp = next((w for w in verse["words"]
+                     if w.get("char_type_name") == "word"
+                     and w["position"] == sp
+                     and " " in (w.get("text_uthmani") or "")), None)
+        if comp is None:
+            continue                     # not the page holding the compound,
+        nw = []                          # or the cache no longer fuses it
+        for w in verse["words"]:
+            if w is comp:
+                hu = [t for t in w["text_uthmani"].split(" ") if t]
+                hi = [t for t in (w.get("text_imlaei") or "").split(" ") if t]
+                if len(hi) != len(hu):
+                    hi = hu
+                for k in range(len(hu)):
+                    h = dict(w)
+                    h["position"] = sp + k
+                    h["text_uthmani"] = hu[k]
+                    h["text_imlaei"] = hi[k]
+                    nw.append(h)
+            else:
+                if w["position"] > sp:
+                    w = dict(w)
+                    w["position"] += 1
+                nw.append(w)
+        verse["words"] = nw
+
+
+def _dkseg_qpc(qpc, s0, a0, pos):
+    """QPC text for a word: the cache is fused-keyed, so DK positions map back
+    through the split and the compound's halves split its (two-token) text."""
+    if not _dkseg_on():
+        return qpc.get("%d:%d:%d" % (s0, a0, pos), "")
+    fp, half = _dkseg_fused(s0, a0, pos)
+    t = qpc.get("%d:%d:%d" % (s0, a0, fp), "")
+    if half is None:
+        return t
+    parts = [x for x in t.split(" ") if x]
+    return parts[half] if len(parts) == 2 else ""
+
+
+def _dkseg_lines_convert(tbl, to_dk):
+    """Convert a {page: {"s:a:p": line}} table between the two keyings.
+    Fused -> DK gives both halves the fused word's line (the straddling p254
+    pair is corrected by the DK-canonical dk_lines.json, not by this shim)."""
+    out = {}
+    for pg, d in tbl.items():
+        nd = {}
+        for k, ln in d.items():
+            s0, a0, p = (int(x) for x in k.split(":"))
+            sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+            if sp is None or p < sp:
+                nd[k] = ln
+            elif to_dk:
+                if p == sp:
+                    nd[k] = ln
+                    nd["%d:%d:%d" % (s0, a0, sp + 1)] = ln
+                else:
+                    nd["%d:%d:%d" % (s0, a0, p + 1)] = ln
+            else:
+                if p == sp:
+                    nd[k] = ln            # the fused word takes بَعْدَ's line
+                elif p > sp + 1:
+                    nd["%d:%d:%d" % (s0, a0, p - 1)] = ln
+        out[pg] = nd
+    return out
+
+
+def _dkseg_half_lw(s0, a0):
+    """Calibrated letter-width share of each compound half, from the cached
+    quran.com text of the page the compound is printed on (never hand-typed)."""
+    key = (s0, a0)
+    if key in _DKSEG_HALVES:
+        return _DKSEG_HALVES[key]
+    sp, pg = _DKSEG_SPLITS[key]
+    res = None
+    f = os.path.join(ROOT, ".cache", "words", "page-%03d.json" % pg)
+    if os.path.exists(f):
+        for v in json.load(open(f, encoding="utf-8"))["verses"]:
+            if v["verse_key"] != "%d:%d" % (s0, a0):
+                continue
+            for w in v["words"]:
+                if w.get("char_type_name") == "word" and w["position"] == sp:
+                    parts = [t for t in (w.get("text_uthmani") or "").split(" ") if t]
+                    if len(parts) == 2:
+                        res = [max(1e-6, sum(letter_width(sg["text"])
+                                             for sg in segment_word(t)))
+                               for t in parts]
+    _DKSEG_HALVES[key] = res
+    return res
+
+
+def _dkseg_widths(q):
+    """Remap the fused-keyed QCF advance table to DK-canonical keys; the
+    compound's advance splits between its halves in proportion to their
+    calibrated letter widths (CLAUDE.md: the width prior stays a prior)."""
+    out = dict(q)
+    for (s0, a0), (sp, _pg) in _DKSEG_SPLITS.items():
+        pre = "%d:%d:" % (s0, a0)
+        ent = {int(k.split(":")[2]): v for k, v in q.items()
+               if k.startswith(pre)}
+        if not ent:
+            continue
+        for p in ent:
+            del out[pre + str(p)]
+        lw = _dkseg_half_lw(s0, a0)
+        for p, v in ent.items():
+            if p < sp:
+                out[pre + str(p)] = v
+            elif p == sp:
+                if lw:
+                    out[pre + str(sp)] = v * lw[0] / (lw[0] + lw[1])
+                    out[pre + str(sp + 1)] = v * lw[1] / (lw[0] + lw[1])
+            else:
+                out[pre + str(p + 1)] = v
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -573,6 +743,11 @@ def qcf_widths():
     if _QCF is None:
         p = os.path.join(ROOT, ".cache", "qcf_widths.json")
         _QCF = json.load(open(p)) if os.path.exists(p) else {}
+        # the table is fused-keyed (quran.com pairing); under QSVG_DKSEG the
+        # word keys are the print's own segmentation — remap once, here, so
+        # every consumer sees one consistent keying
+        if _QCF and _dkseg_on():
+            _QCF = _dkseg_widths(_QCF)
     return _QCF
 
 
@@ -668,6 +843,10 @@ def _space_halves(word):
     print draws two chunks separated by a full space. Trailing waqf signs also
     follow a space (`بَعْضٍۢ ۚ`) but hold no skeleton letter, so requiring a
     letter on BOTH sides selects exactly the compound family.
+
+    Under QSVG_DKSEG (default on) the three بَعْدَ مَا pairs arrive as two
+    ordinary words each (_DKSEG_SPLITS — the print's own segmentation), so
+    this fires only for p117 and p451, which the DK DB also keeps fused.
     """
     core = word["uthmani"].replace("۞", "").replace("۩", "").strip()
     parts = [p for p in core.split(" ") if p]

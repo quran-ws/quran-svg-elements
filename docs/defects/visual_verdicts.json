@@ -1,5 +1,5 @@
 {
- "note": "Visual verdicts from the confidence review page, appended per round; status no-issue = human-verified false positive (the scorer must honor these), confirmed = human-verified defect with the steal direction in the note.",
+ "note": "Visual verdicts from the confidence review page, appended per round; status no-issue = human-verified false positive (the scorer must honor these), confirmed = human-verified defect with the steal direction in the note. | 2026-08-27 DKSEG migration: word keys in 2:181/8:6/13:37 are now the print's own segmentation (بَعْدَ مَا = two words, DigitalKhatt DB) — positions after the compound shifted +1; the fused key (e.g. 13:37:8) now names بَعْدَ alone.",
  "rounds": [
   {
    "date": "2026-08-26",
@@ -452,7 +452,7 @@
     },
     {
      "page": 254,
-     "key": "13:37:19",
+     "key": "13:37:20",
      "text": "وَاقٖ",
      "tier": "high",
      "evidence": "width 0.47x; meem-iqlab",
@@ -461,7 +461,7 @@
     },
     {
      "page": 254,
-     "key": "13:37:9",
+     "key": "13:37:10",
      "text": "جَآءَكَ",
      "tier": "high",
      "evidence": "width 0.47x; fatha 2/3",
@@ -704,17 +704,8 @@
     },
     {
      "page": 254,
-     "key": "13:37:10",
+     "key": "13:37:11",
      "text": "مِنَ",
-     "tier": "high",
-     "evidence": "width 0.49x",
-     "status": "no-issue",
-     "note": ""
-    },
-    {
-     "page": 254,
-     "key": "13:37:12",
-     "text": "مَا",
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
@@ -723,7 +714,7 @@
     {
      "page": 254,
      "key": "13:37:13",
-     "text": "لَكَ",
+     "text": "مَا",
      "tier": "high",
      "evidence": "width 0.49x",
      "status": "no-issue",
@@ -732,6 +723,15 @@
     {
      "page": 254,
      "key": "13:37:14",
+     "text": "لَكَ",
+     "tier": "high",
+     "evidence": "width 0.49x",
+     "status": "no-issue",
+     "note": ""
+    },
+    {
+     "page": 254,
+     "key": "13:37:15",
      "text": "مِنَ",
      "tier": "high",
      "evidence": "width 0.47x",
@@ -740,7 +740,7 @@
     },
     {
      "page": 254,
-     "key": "13:37:15",
+     "key": "13:37:16",
      "text": "ٱللَّهِ",
      "tier": "high",
      "evidence": "width 0.47x",
@@ -749,7 +749,7 @@
     },
     {
      "page": 254,
-     "key": "13:37:16",
+     "key": "13:37:17",
      "text": "مِن",
      "tier": "high",
      "evidence": "width 0.48x",
@@ -758,7 +758,7 @@
     },
     {
      "page": 254,
-     "key": "13:37:17",
+     "key": "13:37:18",
      "text": "وَلِيّٖ",
      "tier": "high",
      "evidence": "width 0.47x",
@@ -1510,7 +1510,7 @@
     },
     {
      "page": 254,
-     "key": "13:37:19",
+     "key": "13:37:20",
      "text": "وَاقٖ",
      "tier": "high",
      "status": "confirmed",
@@ -1519,7 +1519,7 @@
     },
     {
      "page": 254,
-     "key": "13:37:9",
+     "key": "13:37:10",
      "text": "جَآءَكَ",
      "tier": "high",
      "status": "confirmed",
@@ -2163,7 +2163,7 @@
     },
     {
      "page": 254,
-     "key": "13:37:9",
+     "key": "13:37:10",
      "status": "confirmed",
      "note": "fix VERIFIED by eye 2026-08-27"
     },
