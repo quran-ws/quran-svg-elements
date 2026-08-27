@@ -3127,6 +3127,14 @@ def assign_page(edition, page_no, cache_dir):
                 # page; on drift pages that pairing is scrambled — distrust
                 # implausible advances here (and only here)
                 _QCF_SUSPECT[0] = True
+        # dk_lines FIXED the word lists, which retired the drift detection
+        # above — but the advance TABLE still carries the old scrambled
+        # pairing on those pages. The set is derived from data
+        # (dk_lines vs qcf_lines, 36 pages) and marks the table suspect
+        # whether or not the live word lists still drift.
+        _dpf = os.path.join(ROOT, ".cache", "qcf_drift_pages.json")
+        if os.path.exists(_dpf) and page_no in json.load(open(_dpf)):
+            _QCF_SUSPECT[0] = True
         if ident:
             _rr = []
             for _ln, _wl in words_by_line.items():

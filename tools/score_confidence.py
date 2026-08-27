@@ -112,8 +112,15 @@ def scan_page(pg):
             # span over ALL elements, as bench does: a suffix ۥ/ۦ is a MARK
             # here, and a body-only span under-measures exactly those words
             # while their QCF advance counts the suffix
-            rec["x1"] = min(e["x1"] for e in els)
-            rec["x2"] = max(e["x2"] for e in els)
+            # span over ALL elements, but a mark stranded 40u+ from the
+            # body ink is a DEFECT (audit_strayink's empty band), not width:
+            # p418's stray fathas stretched وكفى to 2.7x and poisoned 11
+            # neighbouring words' shares (width_diagnosis.md, class c2)
+            _bx1 = min(e["x1"] for e in bods); _bx2 = max(e["x2"] for e in bods)
+            _in = [e for e in els
+                   if e["x1"] >= _bx1 - 40 and e["x2"] <= _bx2 + 40]
+            rec["x1"] = min(e["x1"] for e in _in)
+            rec["x2"] = max(e["x2"] for e in _in)
         W.append(rec)
 
     # line bands from every word's body ink (audit_crossband's mechanism)
@@ -130,17 +137,32 @@ def scan_page(pg):
     for x in W:
         if x["b"]:
             byline[x["ln"]].append(x)
+    # expected width via the pipeline's own hybrid (aw.letters): QCF advance
+    # when plausible against the calibrated letter sum, the letter sum where
+    # the drift pages scrambled the table (_QCF_SUSPECT is already set by the
+    # page build we just captured). This retires the raw-QCF shares that made
+    # p592-600 look like chaos (width_diagnosis.md).
     width = {}
     for ln, ws in byline.items():
-        tq = sum(q.get(x["k"], 0) for x in ws)
+        exp_l = {}
+        _suspect = bool(getattr(aw, "_QCF_SUSPECT", [False])[0])
+        for x in ws:
+            s0, a0, p0 = (int(v) for v in x["k"].split(":"))
+            if _suspect:
+                # drift page: the table is scrambled and even plausible
+                # advances can belong to other words — pure letter sum,
+                # consistent across the whole line
+                exp_l[x["k"]] = sum(aw.letter_width(t["text"]) for t in
+                                    aw.segment_word(x["t"])) or 3.0
+            else:
+                exp_l[x["k"]] = aw.letters({"surah": s0, "ayah": a0,
+                                            "pos": p0, "uthmani": x["t"]})
+        tl = sum(exp_l.values())
         ta = sum(x["x2"] - x["x1"] for x in ws)
-        if not tq:
+        if not tl or not ta:
             continue
         for x in ws:
-            qw = q.get(x["k"])
-            if not qw:
-                continue
-            exp = qw / tq * ta
+            exp = exp_l[x["k"]] / tl * ta
             wd = x["x2"] - x["x1"]
             width[x["k"]] = (round(wd / max(exp, 1e-6), 3), round(abs(wd - exp), 2))
 
@@ -308,6 +330,48 @@ def noisy_or(ps):
     for p in ps:
         keep *= (1.0 - min(max(p, 0.0), 0.999999))
     return 1.0 - keep
+
+
+def _lsum(txt):
+    """Letter weight of a word: base letters only (marks stripped). Fallback
+    width share for lines where the QCF advance table is scrambled (the 26
+    layout-drift pages, reported.json item 21: on p599 a 2-letter word
+    carries advance 1.71 while a 6-letter one carries 0.58)."""
+    import unicodedata
+    n = 0
+    for c in txt:
+        if unicodedata.category(c) == "Mn":
+            continue
+        if c in " \u06d6\u06d7\u06d8\u06d9\u06da\u06db\u06dc\u06e9\u08f0\u08f1\u08f2\u0640":
+            continue
+        n += 1
+    return max(n, 1)
+
+
+def _line_expected(pairs):
+    """[(key, txt, qcf, drawn_w)] -> {key: expected_w}. QCF shares unless the
+    line is suspect (any word's qcf-share/letter-share off by >2.2x or
+    <0.45x), then letter-sum shares. Measured: correlation 0.89-0.93 on
+    normal pages, 0.59-0.69 on the drift pages."""
+    tq = sum(p[2] for p in pairs)
+    tl = sum(_lsum(p[1]) for p in pairs)
+    ta = sum(p[3] for p in pairs)
+    if not tq or not tl or not ta:
+        return {}
+    suspect = False
+    for k, txt, qw, _ in pairs:
+        if not qw:
+            suspect = True
+            break
+        r = (qw / tq) / (_lsum(txt) / tl)
+        if r > 2.2 or r < 0.45:
+            suspect = True
+            break
+    out = {}
+    for k, txt, qw, _ in pairs:
+        share = (_lsum(txt) / tl) if suspect else (qw / tq)
+        out[k] = share * ta
+    return out
 
 
 def fam_want(word):

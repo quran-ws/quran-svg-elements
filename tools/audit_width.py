@@ -105,4 +105,46 @@ if __name__ == "__main__":
     for r in worst:
         print("p%-5d %-16s %6.2f %8.1f %8.1f %d"
               % (r["page"], r["word"], r["ratio"], r["width"], r["want"],
-                 r["bodies"]))
+                 r["bodies"]))def _lsum(txt):
+    """Letter weight of a word: base letters only (marks stripped). Fallback
+    width share for lines where the QCF advance table is scrambled (the 26
+    layout-drift pages, reported.json item 21: on p599 a 2-letter word
+    carries advance 1.71 while a 6-letter one carries 0.58)."""
+    import unicodedata
+    n = 0
+    for c in txt:
+        if unicodedata.category(c) == "Mn":
+            continue
+        if c in " \u06d6\u06d7\u06d8\u06d9\u06da\u06db\u06dc\u06e9\u08f0\u08f1\u08f2\u0640":
+            continue
+        n += 1
+    return max(n, 1)
+
+
+def _line_expected(pairs):
+    """[(key, txt, qcf, drawn_w)] -> {key: expected_w}. QCF shares unless the
+    line is suspect (any word's qcf-share/letter-share off by >2.2x or
+    <0.45x), then letter-sum shares. Measured: correlation 0.89-0.93 on
+    normal pages, 0.59-0.69 on the drift pages."""
+    tq = sum(p[2] for p in pairs)
+    tl = sum(_lsum(p[1]) for p in pairs)
+    ta = sum(p[3] for p in pairs)
+    if not tq or not tl or not ta:
+        return {}
+    suspect = False
+    for k, txt, qw, _ in pairs:
+        if not qw:
+            suspect = True
+            break
+        r = (qw / tq) / (_lsum(txt) / tl)
+        if r > 2.2 or r < 0.45:
+            suspect = True
+            break
+    out = {}
+    for k, txt, qw, _ in pairs:
+        share = (_lsum(txt) / tl) if suspect else (qw / tq)
+        out[k] = share * ta
+    return out
+
+
+
