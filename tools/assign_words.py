@@ -586,7 +586,8 @@ def letters(word):
     # a hizb-quarter word's QCF advance includes the ۞ ornament glyph, which this
     # art draws separately — the inflated width would make the word steal atoms
     ls = sum(letter_width(s["text"]) for s in segment_word(word["uthmani"])) or 3.0
-    if q and not any(m in word["uthmani"] for m in "۞۩") \
+    if q and not word.get("half") \
+            and not any(m in word["uthmani"] for m in "۞۩") \
             and os.environ.get("QSVG_QCF", "1") == "1":
         est = q * 19.5                    # em -> page units (alpha absorbs residual)
         # a handful of cached advances are corrupt (page-boundary drift pages
@@ -657,6 +658,22 @@ _SEG_GAP = float(__import__("os").environ.get("QSVG_SEGGAP", "6.0"))
 _DOT_REACH = float(__import__("os").environ.get("QSVG_DOTREACH", "3.0"))
 _DOT_SCORE = float(__import__("os").environ.get("QSVG_DOTSCORE", "0.25"))
 _W_SURPLUS = float(__import__("os").environ.get("QSVG_WSURP", "0.6"))
+
+
+def _space_halves(word):
+    """The two chunks of a letter-space compound, or None.
+
+    Five layout words in the mushaf carry a REAL word-space inside one word
+    entry (بَعْدَ مَا p27/p177/p254, دَآئِرَ ةٌ p117, إِلْ يَاسِينَ p451): the
+    print draws two chunks separated by a full space. Trailing waqf signs also
+    follow a space (`بَعْضٍۢ ۚ`) but hold no skeleton letter, so requiring a
+    letter on BOTH sides selects exactly the compound family.
+    """
+    core = word["uthmani"].replace("۞", "").replace("۩", "").strip()
+    parts = [p for p in core.split(" ") if p]
+    if len(parts) != 2 or not all(_LETTER.search(p) for p in parts):
+        return None
+    return parts
 
 
 def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
@@ -755,6 +772,45 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
                 merged_away.add(id(sm))
                 break
     atoms = [a for a in atoms if id(a) not in merged_away]
+
+    # A letter-space compound is ONE layout word drawn as TWO chunks with a
+    # real word-space between them. The DP below treats each word as one
+    # contiguous run, so the internal space either blows up the width prior or
+    # hands the right half to the neighbouring word (p254 بَعْدَ folded into
+    # أَهْوَآءَهُم). Partition with the compound split into its halves — each
+    # half gets its own width prior and the space earns its boundary reward —
+    # then merge the two clusters back into one so every caller still sees one
+    # cluster per layout word.
+    merge_src = None
+    if os.environ.get("QSVG_SPACESPLIT", "1") == "1":
+        xw, src = [], []
+        for wi, w in enumerate(words):
+            hs = _space_halves(w)
+            if hs:
+                for h in hs:
+                    pw = dict(w)
+                    pw["uthmani"] = h
+                    pw["half"] = True     # letters() must not use the full
+                    xw.append(pw)         # compound's QCF advance per half
+                    src.append(wi)
+            else:
+                xw.append(w)
+                src.append(wi)
+        if len(xw) != len(words):
+            merge_src = src
+            words = xw
+
+    def _merge_halves(cls):
+        if not merge_src:
+            return cls
+        out, last = [], None
+        for wi, cl in zip(merge_src, cls):
+            if out and wi == last:
+                out[-1].extend(cl)
+            else:
+                out.append(list(cl))
+            last = wi
+        return out
 
     n = len(words)
     if n <= 0 or not atoms:
@@ -1060,7 +1116,7 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
         if cl:
             span_k = spanw(cl)
             worst = max(worst, abs(span_k - alpha * lens[k]) / mean_w)
-    return clusters, worst
+    return _merge_halves(clusters), worst
 
 
 # ---------------------------------------------------------------------------
@@ -1310,13 +1366,37 @@ def rewrite(page, assignment):
         if weight:
             home[id(word)] = max(weight, key=weight.get)
 
+    # Policy P5 (Abdullah): the sajdah overline and ۩ are ONE standalone sign,
+    # grouped with the sajdah word on the line below the bar — so the whole
+    # ejected group is homed to the wrapper holding that word's ink, and the
+    # bar and sign come out in the same tag instead of one per source path.
+    sa_home = {}
+    if os.environ.get("QSVG_SAJ", "1") == "1":
+        _sajw = {}
+        for word, atoms in assignment:
+            if word and "۩" in word["uthmani"] and id(word) in home:
+                _sajw[(word["surah"], word["ayah"])] = home[id(word)]
+        for word, atoms in assignment:
+            if word is not None:
+                continue
+            for atom in atoms:
+                sa = atom.get("sa")
+                if not sa or sa[0] != "sajdah":
+                    continue
+                tgt = _sajw.get((sa[1], sa[2]))
+                if tgt is None and len(_sajw) == 1:
+                    tgt = next(iter(_sajw.values()))
+                if tgt is not None:
+                    sa_home[id(atom)] = tgt
+
     per_path = {}
     for word, atoms in assignment:
         tgt = home.get(id(word)) if word else None
         for ai, atom in enumerate(atoms):
+            tgt_a = tgt if tgt is not None else sa_home.get(id(atom))
             lig = (id(word), atom.get("lig", ai))
             for e in atom["els"]:
-                per_path.setdefault(e["path"] if tgt is None else tgt,
+                per_path.setdefault(e["path"] if tgt_a is None else tgt_a,
                                     []).append((word, lig, atom, e))
 
     svg = page.svg
@@ -2276,6 +2356,11 @@ def assign_page(edition, page_no, cache_dir):
             if best is None:
                 break
             _, L, L2, dirn, wm = best
+            if os.environ.get("QSVG_LDBG"):
+                print("LDBG ink_refine move %d:%d:%d %s -> %s"
+                      % (wm["surah"], wm["ayah"], wm["pos"],
+                         L if dirn == 0 else L2, L2 if dirn == 0 else L),
+                      file=sys.stderr)
             if dirn == 0:
                 wbl[L].pop()
                 wbl[L2].insert(0, wm)
@@ -2642,16 +2727,33 @@ def assign_page(edition, page_no, cache_dir):
                 if abs(math.log(max(sr, 1e-6) / max(sl, 1e-6))) < 0.06:
                     continue
                 d0 = _devpair(_lnr, _wr, _lnl, _wll)
+                # a letter-space compound at a line edge is the one word whose
+                # width prior cannot be trusted across a boundary: the print
+                # draws it as two chunks (p254 بَعْدَ مَا straddles the very
+                # gap the density test reads as crowding) — never move it
+                _ssp = os.environ.get("QSVG_SPACESPLIT", "1") == "1"
                 if sr < sl and len(_wr) > 1 \
+                        and not (_ssp and _space_halves(_wr[-1])) \
                         and _polyfit(_wr[-1], _lnl, _wll):  # upper crowded
                     d1 = _devpair(_lnr, _wr[:-1], _lnl, [_wr[-1]] + _wll)
                     if d1 < d0 - _thr:
+                        if os.environ.get("QSVG_LDBG"):
+                            _wm9 = _wr[-1]
+                            print("LDBG hillclimb %d:%d:%d line %s -> %s (d0=%.2f d1=%.2f)"
+                                  % (_wm9["surah"], _wm9["ayah"], _wm9["pos"],
+                                     _lnr, _lnl, d0, d1), file=sys.stderr)
                         _wll.insert(0, _wr.pop())
                         _shifted = True
                 elif sr > sl and len(_wll) > 1 \
+                        and not (_ssp and _space_halves(_wll[0])) \
                         and _polyfit(_wll[0], _lnr, _wr):   # lower crowded
                     d1 = _devpair(_lnr, _wr + [_wll[0]], _lnl, _wll[1:])
                     if d1 < d0 - _thr:
+                        if os.environ.get("QSVG_LDBG"):
+                            _wm9 = _wll[0]
+                            print("LDBG hillclimb %d:%d:%d line %s -> %s (d0=%.2f d1=%.2f)"
+                                  % (_wm9["surah"], _wm9["ayah"], _wm9["pos"],
+                                     _lnl, _lnr, d0, d1), file=sys.stderr)
                         _wr.append(_wll.pop(0))
                         _shifted = True
             if not _shifted:
@@ -5755,6 +5857,30 @@ def assign_page(edition, page_no, cache_dir):
                     spare3.remove(hit)
                     have -= 1
 
+    # The ۩ sign's outline on p589 differs from the table's confirmed signature
+    # and classify read it as a letter body inside يَسْجُدُونَ (a 4th piece
+    # where the joining rules allow 3). The TEXT says the word carries ۩; take
+    # the count from the text and the identity from the geometry — the ۩ is
+    # ~7.9x11.1 with nested contours, unlike any letter this size — and hand it
+    # back to the standalone-sign ejection below. (Policy P5: the sajdah sign
+    # is never any word's mark or letter.)
+    if os.environ.get("QSVG_SAJ", "1") == "1":
+        for _ws, _ats in assignment:
+            if not _ws or "۩" not in _ws["uthmani"]:
+                continue
+            for _as in _ats:
+                for _es in _as["els"]:
+                    if _es["kind"] != "body" or _es.get("mark") \
+                            or _es.get("lab"):
+                        continue
+                    _w9 = _es["x2"] - _es["x1"]
+                    _h9 = _es["y2"] - _es["y1"]
+                    if 6.5 <= _w9 <= 9.5 and 9.8 <= _h9 <= 12.5 \
+                            and len(_es.get("contours", [])) >= 3:
+                        _es["kind"] = "mark"
+                        _es["mark"] = "sajdah"
+                        _es["lab"] = "sajdah"
+
     # Standalone signs (hizb / rub markers, division stars) belong to no word:
     # eject them and stamp the ayah whose polygon holds them
     _rects_sa = []
@@ -5787,9 +5913,18 @@ def assign_page(edition, page_no, cache_dir):
                 # the sajdah overline is a hairline bar: variable length, all
                 # but fixed height. It belongs to the sajdah sign, never to a
                 # word — collect it even though it carries no mark name.
-                is_bar = (e.get("lab") == "sajdah" and not e.get("mark")
-                          and not e.get("mkpart"))
+                # ... and a later mark-namer can have called the hairline a
+                # vowel (p272: the bar over 16:48-49 renamed kasra and counted
+                # in ظِلَـٰلُهُۥ's budget) — the geometry says bar, so the name
+                # is dropped and the bar is ejected all the same.
+                is_bar = (e.get("lab") == "sajdah" and not e.get("mkpart")
+                          and (not e.get("mark")
+                               or (os.environ.get("QSVG_SAJ", "1") == "1"
+                                   and e.get("mark") != "sajdah"
+                                   and (e["y2"] - e["y1"]) < 2.5
+                                   <= (e["x2"] - e["x1"]))))
                 if is_bar:
+                    e.pop("mark", None)
                     a["els"].remove(e)
                     bars.append(e)
                     continue
