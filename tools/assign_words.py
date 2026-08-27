@@ -4161,9 +4161,27 @@ def assign_page(edition, page_no, cache_dir):
             free = len([e for e in pool if not e.get("mkpart")])
             spare = free - sum(txt.count(c) for c in _PLAIN[fam])
             has_tan = any(c in txt for c in _TAN[fam])
-            for e in sorted(pool, key=lambda q: -(q["y1"] + q["y2"])):
+            # Shape identity outranks position (Abdullah's e1025, item 38):
+            # an element whose HUMAN-confirmed table label is hamza is the
+            # hamza — no seating geometry needed, the outline is the proof.
+            # classify() deliberately keeps hamza out of lab (ء twins), so
+            # consult the raw table by signature here. The position test
+            # below serves only shapes the table cannot tell apart.
+            def _tab_hamza(q):
+                v = shape_labels().get(q.get("sig"))
+                lb = v.get("label") if isinstance(v, dict) else v
+                auto = v.get("auto", False) if isinstance(v, dict) else False
+                return lb == "hamza" and not auto
+            for e in sorted(pool, key=lambda q: (not _tab_hamza(q),
+                                                 -(q["y1"] + q["y2"]))):
                 if have_h >= want_h:
                     break
+                if _tab_hamza(e) and not e.get("mkpart"):
+                    e["mark"] = "hamza"
+                    e["lab"] = "hamza"
+                    have_h += 1
+                    spare -= 1
+                    continue
                 # A welded twin is spare capacity too. Two of the same stroke
                 # are welded as a tanween, but this word's spelling has none —
                 # so the pair is not a doubled vowel at all. It is the hamza
@@ -9507,6 +9525,71 @@ def assign_page(edition, page_no, cache_dir):
                 _pid = "mnq-%d-%d-%d" % (_s4, _a4, _k4 // 2 + 1)
                 _lst4[_k4][2]["mnqpair"] = _pid
                 _lst4[_k4 + 1][2]["mnqpair"] = _pid
+
+    # Shape identity outranks position, applied LAST (item 38, both faces).
+    # By now every sig exists and every namer has spoken; where the word's
+    # budget disagrees with the names, the human-confirmed shape table gets
+    # the final word: (a) a slash-named mark whose outline is a confirmed
+    # hamza becomes the word's missing hamza (p583 إِذْ, 9-flag family);
+    # (b) a BODY whose outline is a confirmed mark shape becomes the word's
+    # missing mark of that family (p418 e295, the labeled fatha demoted to
+    # letter ink). Budget deficit is the license in both directions — a
+    # balanced word is never touched.
+    if os.environ.get("QSVG_SHAPEFIRST", "1") == "1":
+        _CARR8 = "\u0623\u0625\u0624\u0626\u0654\u0655"
+        _SLASH8 = {"fatha": "\u064e", "kasra": "\u0650",
+                   "fathatan": "\u064b\u08f0", "kasratan": "\u064d\u08f2"}
+        def _tabl(sig):
+            v = shape_labels().get(sig or "")
+            lb = v.get("label") if isinstance(v, dict) else v
+            auto = v.get("auto", True) if isinstance(v, dict) else True
+            return (lb, auto)
+        for _w8, _at8 in assignment:
+            if not _w8:
+                continue
+            _txt8 = _w8["uthmani"]
+            _els8 = [e for a in _at8 for e in a["els"]]
+            # (a) missing hamza, held by a slash name on a confirmed-hamza shape
+            _wanth = sum(_txt8.count(c) for c in _CARR8) + _txt8.count("\u0621")
+            _haveh = sum(1 for e in _els8 if e.get("mark") == "hamza"
+                         and not e.get("mkpart"))
+            if _haveh < _wanth:
+                for e in _els8:
+                    if _haveh >= _wanth:
+                        break
+                    if (e["kind"] == "mark" and not e.get("mkpart")
+                            and e.get("mark") in _SLASH8):
+                        lb, auto = _tabl(e.get("sig"))
+                        if lb == "hamza" and not auto:
+                            e["mark"] = "hamza"
+                            e["lab"] = "hamza"
+                            _haveh += 1
+            # (b) missing slash mark, its ink demoted to body
+            for fam, chs in _SLASH8.items():
+                _want = sum(_txt8.count(c) for c in chs)
+                if not _want:
+                    continue
+                grp = ("fatha", "fathatan") if fam in ("fatha", "fathatan") \
+                    else ("kasra", "kasratan")
+                _have = sum(1 for e in _els8 if e.get("mark") in grp
+                            and not e.get("mkpart"))
+                _wgrp = sum(_txt8.count(c) for f2 in grp
+                            for c in _SLASH8[f2])
+                if _have >= _wgrp:
+                    continue
+                for e in _els8:
+                    if _have >= _wgrp:
+                        break
+                    if e["kind"] == "body" and not e.get("mkpart"):
+                        lb, auto = _tabl(e.get("sig"))
+                        # the table stores one canonical slash name; the
+                        # drawn position picks fatha vs kasra, so any slash
+                        # label licenses the deficit family
+                        if lb in ("fatha", "kasra", "fathatan", "kasratan"):
+                            e["kind"] = "mark"
+                            e["mark"] = fam
+                            e["lab"] = lb
+                            _have += 1
 
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
