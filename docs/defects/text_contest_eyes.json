@@ -24,21 +24,28 @@
    "page": 587,
    "word": "ٱلسَّمَآءُ",
    "question": "maddah drawn?",
-   "eye": null
+   "eye": "MADDAH DRAWN and marked correctly in the build, Abdullah 2026-08-27",
+   "winner": "digitalkhatt",
+   "loser": "composite (spells no separate maddah)"
   },
   {
    "key": "108:1:1",
    "page": 602,
    "word": "إِنَّآ",
    "question": "maddah drawn?",
-   "eye": null
+   "eye": "MADDAH DRAWN and marked correctly in the build, Abdullah 2026-08-27",
+   "winner": "digitalkhatt",
+   "loser": "composite (spells no separate maddah)"
   },
   {
    "key": "80:25:1",
    "page": 585,
    "word": "أَنَّا/اَنَّا",
    "question": "hamza on the alef?",
-   "eye": null
+   "eye": "HAMZA DRAWN above the alef (e659 data-mark=hamza), Abdullah 2026-08-27",
+   "winner": "digitalkhatt",
+   "loser": "composite (uthmani writes bare alef)"
   }
- ]
+ ],
+ "result": "DK 5-0. Every genuinely-disputed site adjudicated by eye against the ink went DigitalKhatt's way. The composite's four losses are all budget errors (missing maddah x3, missing hamza, missing small-waw at 17:7:12). The DK text is strictly better than uthmani+QPC-waqf on adjudicated ink; budget-source migration is now the principled move (2026-08-27)."
 }
