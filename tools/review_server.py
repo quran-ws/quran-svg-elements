@@ -496,6 +496,8 @@ class Handler(BaseHTTPRequestHandler):
         }
         if body["action"] == "amend":
             record["amended_payload"] = body["amended_payload"]
+        if body.get("note"):
+            record["note"] = str(body["note"])[:2000]
         append_jsonl(DECISIONS_PATH, record)
         return self.send_json({"ok": True, "record": record})
 
