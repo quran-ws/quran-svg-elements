@@ -4805,6 +4805,8 @@ def assign_page(edition, page_no, cache_dir):
     _WDECIDE = float(os.environ.get("QSVG_WDECIDE", "0"))
 
     def _omove(e, src, dst):
+        if isinstance(e, dict) and e.get("_ovr"):
+            return False              # overridden pieces never move again
         # QSVG_TRACE=<x1> prints every hand-off of one piece of ink, which is
         # how a word that ends up with the wrong letter gets traced back to
         # the pass that took it.
@@ -7113,6 +7115,11 @@ def assign_page(edition, page_no, cache_dir):
                         _k9 = "%.1f,%.1f,%.1f,%.1f" % (_e9["x1"], _e9["y1"],
                                                        _e9["x2"], _e9["y2"])
                         _tgt = _ovr.get(_k9)
+                        if os.environ.get("QSVG_OVRDBG") and _k9 in (
+                                "231.3,517.6,237.6,521.0",):
+                            print("OVRDBG key=%s tgt=%r in_by_word=%s"
+                                  % (_k9, _tgt, _tgt in _by_word
+                                     if _tgt else None), file=sys.stderr)
                         if not _tgt and len(_e9.get("contours", [])) > 1:
                             # CONTOUR-level override (Abdullah 2026-08-28,
                             # p535 e420: a fused pair whose halves belong to
@@ -7142,6 +7149,7 @@ def assign_page(edition, page_no, cache_dir):
                                     _ne9.pop("mkmembers", None)
                                     _ne9.pop("sig", None)
                                     _ne9.pop("tanform", None)
+                                    _ne9["_ovr"] = 1
                                     _dw9, _dat9 = _by_word[_ct]
                                     put_in_ligature(_dat9, _ne9)
                                     # the stranded remainder re-fits its own
@@ -7159,6 +7167,8 @@ def assign_page(edition, page_no, cache_dir):
                         _dw, _dat = _by_word[_tgt]
                         if _dw is _w9:
                             continue          # already where it belongs
+                        _e9["_ovr"] = 1     # human placement: no later
+                                            # mover may relocate this piece
                         _a9["els"].remove(_e9)
                         # an override move BREAKS any weld: a piece pinned
                         # to a word by the eye may not keep counting
@@ -8488,6 +8498,9 @@ def assign_page(edition, page_no, cache_dir):
                     fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
         def _xb_move(src, dst, e, name):
+            if e.get("_ovr"):
+                return                    # human placement outranks the
+                                          # crossband corrections (p129 e910)
             """The one way ink changes hands here: atoms via put_in_ligature."""
             for _a in src["at"]:
                 if e in _a["els"]:
@@ -9052,6 +9065,8 @@ def assign_page(edition, page_no, cache_dir):
                     for _d, e, _src2 in sorted(_cand, key=lambda t: t[0]):
                         if _tot >= 3:
                             break
+                        if e.get("_ovr"):
+                            continue
                         if _src2 is not None:
                             _src2["els"].remove(e)
                             _atp[0]["els"].append(e)
@@ -10436,6 +10451,57 @@ def assign_page(edition, page_no, cache_dir):
                 e.pop("mkmembers", None)
                 _host.setdefault("mkmembers", []).append(e)
 
+    # OVERRIDE ENFORCEMENT — the LAST word, literally (Abdullah 2026-08-29,
+    # p129 e910: the mid-pipeline override applied and a later pass undid
+    # it). Re-pin every overridden piece to its human-placed owner after all
+    # movers; an optional "|mark" suffix on the value also names it, so a
+    # human weld verdict (p85 e298 "|kasra") feeds the pair welds that run
+    # after this point.
+    _ovp = os.path.join(ROOT, ".cache", "review", "overrides.json")
+    if os.path.exists(_ovp):
+        try:
+            _ov2 = json.load(open(_ovp)).get(str(page_no), {})
+        except Exception:
+            _ov2 = {}
+        if _ov2:
+            _bw2 = {}
+            for _w9, _at9 in assignment:
+                if _w9:
+                    _bw2["%d:%d:%d" % (_w9["surah"], _w9["ayah"],
+                                       _w9["pos"])] = (_w9, _at9)
+            for _w9, _at9 in assignment:
+                for _a9 in list(_at9):
+                    for _e9 in list(_a9["els"]):
+                        _k9 = "%.1f,%.1f,%.1f,%.1f" % (
+                            _e9["x1"], _e9["y1"], _e9["x2"], _e9["y2"])
+                        _v9 = _ov2.get(_k9)
+                        if not _v9:
+                            continue
+                        _tgt, _, _nm9 = _v9.partition("|")
+                        if _tgt not in _bw2:
+                            continue
+                        _e9["_ovr"] = 1
+                        if _nm9:
+                            _e9["kind"] = "mark"
+                            _e9["mark"] = _nm9
+                            _e9["lab"] = _nm9
+                            _e9.pop("mkpart", None)
+                            for _mm9 in (_e9.pop("mkmembers", None) or []):
+                                _mm9["mkpart"] = False
+                        _dw9, _dat9 = _bw2[_tgt]
+                        if _dw9 is _w9:
+                            continue
+                        if _e9.get("mkpart"):
+                            _e9["mkpart"] = False
+                            for _wq9, _atq9 in assignment:
+                                for _aq9 in _atq9:
+                                    for _x9 in _aq9["els"]:
+                                        if _e9 in (_x9.get("mkmembers")
+                                                   or []):
+                                            _x9["mkmembers"].remove(_e9)
+                        _a9["els"].remove(_e9)
+                        put_in_ligature(_dat9, _e9)
+
     # SMALL-NOON COMPLETION (Abdullah 2026-08-28, the mushaf's one ۨ site,
     # 21:88 نُـۨجِى p329): the superscript sign is a noon BOWL plus its dot.
     # The dot carries the table label; the bowl wears the letter-ن outline
@@ -10790,6 +10856,7 @@ def assign_page(edition, page_no, cache_dir):
                         for e9 in _a9["els"]:
                             if (e9.get("mark") not in ("fatha", "kasra",
                                                        "damma")
+                                    or e9.get("_ovr")
                                     or e9.get("mkpart")
                                     or abs((e9["x1"] + e9["x2"]) / 2
                                            - _cx1) >= 8.0
@@ -11030,6 +11097,8 @@ def assign_page(edition, page_no, cache_dir):
                 if len(_held9) <= _bud9:
                     continue
                 for _eH in list(_held9[_bud9:]):
+                    if _eH.get("_ovr"):
+                        continue
                     _cxh = (_eH["x1"] + _eH["x2"]) / 2
                     _best9 = None
                     for _wR, _atR in _widr:
@@ -11152,6 +11221,7 @@ def assign_page(edition, page_no, cache_dir):
                     for _eX in list(_aX["els"]):
                         mkX = _eX.get("mark")
                         if mkX not in ("fatha", "kasra") \
+                                or _eX.get("_ovr") \
                                 or _eX.get("mkpart") \
                                 or _eX.get("mkmembers"):
                             continue
