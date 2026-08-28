@@ -31,6 +31,12 @@ def span(els):
     return max(e["x2"] for e in els) - min(e["x1"] for e in els)
 
 CASES = {
+    # a bare word-final seated ء is the LETTER, not a hamza mark — the r11
+    # table label "hamza" must not survive the final ء reconciliation
+    (582, (78, 29, 2)): ("shay'in: no hamza MARK, ā seated as letter",
+        lambda e: not any(x.get("mark") == "hamza" for x in e)),
+    (591, (86, 11, 1)): ("wassamaa'i: no hamza MARK",
+        lambda e: not any(x.get("mark") == "hamza" for x in e)),
     (453, (38, 1, 3)): ("dhi has 2 bodies", lambda e: nbody(e) == 2),
     (453, (38, 6, 12)): ("yuraad 3 bodies + 2 damma-family",
         lambda e: nbody(e) == 3 and sum(1 for x in e if x.get("mark") in
@@ -139,7 +145,7 @@ def budget_mismatches(words):
 
 q = json.load(open(ROOT + "/.cache/qcf_widths.json"))
 case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
-for pg in (1, 2, 3, 7, 17, 90, 133, 143, 200, 202, 205, 222, 249, 273, 307, 453, 454, 583, 586, 590, 600):
+for pg in (1, 2, 3, 7, 17, 90, 133, 143, 200, 202, 205, 222, 249, 273, 307, 453, 454, 582, 583, 586, 590, 591, 600):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     except Exception as e:

@@ -9956,6 +9956,42 @@ def assign_page(edition, page_no, cache_dir):
                             e["lab"] = lb
                             _have += 1
 
+    # Final ء reconciliation. The mid-pipeline demote (see "runs late on
+    # purpose" above) is no longer last: movers and table-label passes added
+    # since can name a standalone ء "hamza" after it has run. Same rule,
+    # re-applied once nothing renames after it: a hamza mark beyond the
+    # word's carrier budget, standing inside the letter band of a word that
+    # spells a bare ء, is that letter (p582 شَىْءٍ / p591 وَٱلسَّمَآءِ,
+    # promoted by the r11 table label "hamza" — identical-ink trap #3).
+    if os.environ.get("QSVG_HZA") != "0":
+        _CARR10 = "\u0623\u0625\u0624\u0626\u0654\u0655"
+        for _w10, _at10 in assignment:
+            if not _w10 or "\u0621" not in _w10["uthmani"]:
+                continue
+            _txt10 = _w10["uthmani"]
+            _els10 = [e for a in _at10 for e in a["els"]]
+            _want10 = sum(_txt10.count(c) for c in _CARR10)
+            _hz10 = [e for e in _els10 if e.get("mark") == "hamza"
+                     and not e.get("mkpart")]
+            if len(_hz10) <= _want10:
+                continue
+            _bod10 = [e for e in _els10 if e["kind"] == "body"]
+            if not _bod10:
+                continue
+            _top10 = min(e["y1"] for e in _bod10)
+            _bot10 = max(e["y2"] for e in _bod10)
+            _inl10 = [e for e in _hz10
+                      if e["y1"] >= _top10 - 1.5 and e["y2"] <= _bot10 + 1.5]
+            _inl10.sort(key=lambda e: -((e["x2"] - e["x1"])
+                                        * (e["y2"] - e["y1"])))
+            for e in _inl10[:len(_hz10) - _want10]:
+                for m in (e.get("mkmembers") or []):
+                    m["mkpart"] = False
+                e["mkmembers"] = []
+                e["kind"] = "body"
+                e["mark"] = None
+                e["lab"] = "letter-hamza"
+
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)
