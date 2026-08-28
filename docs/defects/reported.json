@@ -434,6 +434,14 @@
    "reporter": "pipeline (after the eye-driven sign hunt)",
    "what": "Three low-iqlab (ۭ) words hold NO separate م ink and no canonical sign outline exists within reach: جَنَّةِۭ p45, لَّازِبِۭ p446, قَسْوَرَةِۭ p577. Their kasras are plain single-contour slashes (no fusion). All other iqlab sites are now complete (p36 فإمساك recovered from بمعروف; p358 متبرجات by eye; p7 already had its sign).",
    "status": "awaiting Abdullah's eye ON THE PRINT: does the 1421H edition draw a small م at these three sites at all, or is low-ۭ iqlab expressed by the kasra alone there? If drawn, point at the ink; if not, art fact — record and exempt from the sign budget."
+  },
+  {
+   "id": 41,
+   "date": "2026-08-29",
+   "reporter": "Abdullah (eye, review platform)",
+   "what": "أَيْدِيهِمْ hamza 0/1 at 21:28:4 (p324, e236) and 22:76:4 (p341, e373): the hamza is DRAWN CONNECTED to the alif — one 4.4x19.8 contour carries both letter and hamza. No separate hamza ink exists; a contour split would cut ink and break pixel identity.",
+   "verdict": "ART FACT — the print fuses hamza+alif at these two sites. The two flags stand explained. Encoding belongs to schema v2 (a logical hamza mark whose geometry is shared with the letter), same seam as the letter-dot bridge ruling in attr_schema_v3.md §5a.",
+   "status": "DECIDED by Abdullah 2026-08-29: mark the fused contour as hamza — applied as overrides on both sites"
   }
  ]
 }
