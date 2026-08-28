@@ -401,6 +401,20 @@ class Handler(BaseHTTPRequestHandler):
                 return self.api_edit(body)
             if path == "/api/edit/delete":
                 return self.api_edit_delete(body)
+            if path == "/api/siglabel":
+                # variants-page flags: {sig, label, note} -> jsonl; applied to
+                # labels.json only through the measured path.
+                import time as _t
+                if not (isinstance(body, dict) and body.get("sig")
+                        and body.get("label")):
+                    return self.send_json({"error": "need sig and label"}, 400)
+                rec = {"sig": body["sig"], "label": body["label"],
+                       "note": str(body.get("note") or "")[:500],
+                       "ts": _t.strftime("%Y-%m-%dT%H:%M:%S")}
+                with open(os.path.join(REVIEW_DIR, "sig_labels.jsonl"),
+                          "a", encoding="utf-8") as f:
+                    f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+                return self.send_json({"ok": True})
             if path == "/api/cverdict":
                 # confidence-board verdicts: {page, key, status, note, sig}
                 # appended last-wins; the scorer reads this store directly, so

@@ -3848,8 +3848,9 @@
   "label": "three-dots"
  },
  "3c7388fec539f532": {
+  "label": "hamza",
   "auto": false,
-  "label": "kasra"
+  "note": "Abdullah 2026-08-28: this is a hamza (p491 إنا) — was mislabeled kasra in an old round, position renamed it fatha."
  },
  "3c7631bbe97b2758": {
   "auto": true,
