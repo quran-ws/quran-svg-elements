@@ -7113,12 +7113,64 @@ def assign_page(edition, page_no, cache_dir):
                         _k9 = "%.1f,%.1f,%.1f,%.1f" % (_e9["x1"], _e9["y1"],
                                                        _e9["x2"], _e9["y2"])
                         _tgt = _ovr.get(_k9)
+                        if not _tgt and len(_e9.get("contours", [])) > 1:
+                            # CONTOUR-level override (Abdullah 2026-08-28,
+                            # p535 e420: a fused pair whose halves belong to
+                            # different WORDS). If a key matches one
+                            # contour's transformed bbox, split that contour
+                            # out as its own element and move only it.
+                            _pM9 = page.paths[_e9["path"]]["M"]
+                            for _c9 in list(_e9["contours"]):
+                                sp9 = _c9["sp"]
+                                bx1, by1, bx2, by2 = transform_box(
+                                    _pM9, sp9["xmin"], sp9["ymin"],
+                                    sp9["xmax"], sp9["ymax"])
+                                _ck = "%.1f,%.1f,%.1f,%.1f" % (
+                                    min(bx1, bx2), min(by1, by2),
+                                    max(bx1, bx2), max(by1, by2))
+                                _ct = _ovr.get(_ck)
+                                if _ct and _ct in _by_word:
+                                    _e9["contours"] = [
+                                        c for c in _e9["contours"]
+                                        if c is not _c9]
+                                    _ne9 = dict(_e9)
+                                    _ne9["contours"] = [_c9]
+                                    _ne9["x1"], _ne9["y1"] = (
+                                        min(bx1, bx2), min(by1, by2))
+                                    _ne9["x2"], _ne9["y2"] = (
+                                        max(bx1, bx2), max(by1, by2))
+                                    _ne9.pop("mkmembers", None)
+                                    _ne9.pop("sig", None)
+                                    _ne9.pop("tanform", None)
+                                    _dw9, _dat9 = _by_word[_ct]
+                                    put_in_ligature(_dat9, _ne9)
+                                    # the stranded remainder re-fits its own
+                                    # bbox
+                                    _rb = [transform_box(
+                                        _pM9, c["sp"]["xmin"], c["sp"]["ymin"],
+                                        c["sp"]["xmax"], c["sp"]["ymax"])
+                                        for c in _e9["contours"]]
+                                    _e9["x1"] = min(min(a, c) for a, b, c, d in _rb)
+                                    _e9["y1"] = min(min(b, d) for a, b, c, d in _rb)
+                                    _e9["x2"] = max(max(a, c) for a, b, c, d in _rb)
+                                    _e9["y2"] = max(max(b, d) for a, b, c, d in _rb)
                         if not _tgt or _tgt not in _by_word:
                             continue
                         _dw, _dat = _by_word[_tgt]
                         if _dw is _w9:
                             continue          # already where it belongs
                         _a9["els"].remove(_e9)
+                        # an override move BREAKS any weld: a piece pinned
+                        # to a word by the eye may not keep counting
+                        # through a master in another word (p535 e420)
+                        if _e9.get("mkpart"):
+                            _e9["mkpart"] = False
+                            for _wq9, _atq9 in assignment:
+                                for _aq9 in _atq9:
+                                    for _x9 in _aq9["els"]:
+                                        if _e9 in (_x9.get("mkmembers")
+                                                   or []):
+                                            _x9["mkmembers"].remove(_e9)
                         for _m9 in _e9.get("mkmembers", []):
                             if _m9 in _a9["els"]:
                                 _a9["els"].remove(_m9)
