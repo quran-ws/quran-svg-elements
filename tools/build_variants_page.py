@@ -97,7 +97,7 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
         if fam not in by_fam:
             continue
         rows = sorted(by_fam[fam], key=lambda t: -len(t[1]))
-        out.append('<h2 onclick="this.nextElementSibling.classList.toggle(\'open\')">'
+        out.append('<h2 onclick="this.nextElementSibling.classList.toggle(\'open\');fitInk(this.nextElementSibling)">'
                    '%s — %d shapes, %d occurrences</h2><div class="sec">'
                    % (fam, len(rows), sum(len(r[1]) for r in rows)))
         for sig, rws in rows:
@@ -139,15 +139,21 @@ document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
       document.getElementById('sv-' + sig.slice(0,12)).textContent = 'saved ✓';
     });
 });
-requestAnimationFrame(() => {
-  document.querySelectorAll('.ink svg').forEach(s => {
-    try { const bb = s.getBBox();
-      if (bb.width && bb.height)
-        s.setAttribute('viewBox', `${bb.x-2} ${bb.y-2} ${bb.width+4} ${bb.height+4}`);
-    } catch(_){}
+function fitInk(scope){
+  requestAnimationFrame(() => {
+    (scope || document).querySelectorAll('.ink svg:not([data-fit])').forEach(s => {
+      try { const bb = s.getBBox();
+        if (bb.width && bb.height) {
+          s.setAttribute('viewBox', `${bb.x-3} ${bb.y-3} ${bb.width+6} ${bb.height+6}`);
+          s.dataset.fit = "1";
+        }
+      } catch(_){}
+    });
   });
-});
-document.querySelector('h2').nextElementSibling.classList.add('open');
+}
+const first = document.querySelector('h2').nextElementSibling;
+first.classList.add('open');
+fitInk(first);
 /* modal: 30 in-context samples per shape, loaded on demand */
 const modal = document.createElement('div');
 modal.style.cssText = 'display:none;position:fixed;inset:4vh 6vw;background:#fff;'
