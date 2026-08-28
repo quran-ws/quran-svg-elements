@@ -1129,6 +1129,7 @@ modal.style.cssText = 'display:none;position:fixed;inset:4vh 6vw;background:#fff
   + 'z-index:99;box-shadow:0 8px 40px rgba(0,0,0,.35)';
 document.body.appendChild(modal);
 document.addEventListener('click', e => {
+  if (e.target.closest('.mclose')) { modal.style.display = 'none'; return; }
   const a = e.target.closest('a.more');
   if (!a) { if (!modal.contains(e.target)) modal.style.display = 'none'; return; }
   e.preventDefault();
@@ -1138,7 +1139,7 @@ document.addEventListener('click', e => {
     .then(r => r.json()).then(d => {
       modal.innerHTML = '<h3 style="margin-top:0">sig ' + d.sig.slice(0,12)
         + ' — ' + d.samples.length + ' samples '
-        + '<button style="float:left" onclick="this.closest('div').style.display='none'">close</button></h3>'
+        + '<button class="mclose" style="float:left">close</button></h3>'
         + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px">'
         + d.samples.map(x =>
             '<div style="border:1px solid #eee;border-radius:6px;padding:6px">'
