@@ -406,9 +406,12 @@ class Handler(BaseHTTPRequestHandler):
                     grp = grp.replace('data-eid="%s" ' % eid,
                                       'data-eid="%s" style="fill:#c22" ' % eid)
                     wt = re.search(r'data-uthmani="([^"]*)"', grp)
+                    km = re.search(r'data-surah="(\d+)"[^>]*data-ayah="(\d+)"'
+                                   r'[^>]*data-word="(\d+)"', grp)
                     root = re.search(r'<g transform="matrix[^"]*">', svg)
                     vb = re.search(r'viewBox="[^"]*"', svg)
-                    out.append({"page": pg, "mark": mk,
+                    out.append({"page": pg, "mark": mk, "eid": eid,
+                                "key": ("%s:%s:%s" % km.groups()) if km else "",
                                 "word": wt.group(1) if wt else "",
                                 "svg": '<svg xmlns="http://www.w3.org/2000/svg" %s>%s%s</g></svg>'
                                        % (vb.group(0) if vb else 'viewBox="0 0 345 550"',
@@ -460,6 +463,23 @@ class Handler(BaseHTTPRequestHandler):
                 return self.api_edit(body)
             if path == "/api/edit/delete":
                 return self.api_edit_delete(body)
+            if path == "/api/eidflag":
+                # per-occurrence flag from the variants modal: THIS element on
+                # THIS page is named wrong. {page, eid, key, word, sig,
+                # current, correct, note} -> jsonl; converted to fixes by hand
+                # through the measured path.
+                import time as _t
+                if not (isinstance(body, dict) and body.get("page")
+                        and body.get("eid") and body.get("correct")):
+                    return self.send_json({"error": "need page, eid, correct"}, 400)
+                rec = {k: body.get(k) for k in ("page", "eid", "key", "word",
+                                                "sig", "current", "correct",
+                                                "note")}
+                rec["ts"] = _t.strftime("%Y-%m-%dT%H:%M:%S")
+                with open(os.path.join(REVIEW_DIR, "eid_flags.jsonl"),
+                          "a", encoding="utf-8") as f:
+                    f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+                return self.send_json({"ok": True})
             if path == "/api/siglabel":
                 # variants-page flags: {sig, label, note} -> jsonl; applied to
                 # labels.json only through the measured path.
