@@ -1,135 +1,86 @@
 [
  {
-  "page": 77,
-  "word": "وَنِسَآءࣰۚ",
-  "eid": "e134",
-  "named": "fathatan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
- },
- {
   "page": 85,
   "word": "ذَرَّةࣲۖ",
-  "eid": "e304",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 111,
   "word": "بَشِيرࣲ",
-  "eid": "e369",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 129,
   "word": "بِخَيْرࣲ",
-  "eid": "e863",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
+ },
+ {
+  "page": 131,
+  "word": "رُسُلࣱ",
+  "missing": "dammatan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 133,
   "word": "بَغْتَةً",
-  "eid": "e298",
-  "named": "fathatan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "fathatan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 155,
   "word": "أُمَمࣲ",
-  "eid": "e25",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 204,
   "word": "جُرُفٍ",
-  "eid": "e493",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
- },
- {
-  "page": 380,
-  "word": "قَوْمࣲ",
-  "eid": "e945",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 415,
   "word": "نَّذِيرࣲ",
-  "eid": "e152",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
- },
- {
-  "page": 433,
-  "word": "أَجْرࣲ",
-  "eid": "e952",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
- },
- {
-  "page": 446,
-  "word": "طِينࣲ",
-  "eid": "e506",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
- },
- {
-  "page": 518,
-  "word": "أَمْرࣲ",
-  "eid": "e273",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 529,
   "word": "أَمْرࣲ",
-  "eid": "e361",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 535,
   "word": "وَظِلࣲّ",
-  "eid": "e381",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 535,
   "word": "وَفَٰكِهَةࣲ",
-  "eid": "e416",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
- },
- {
-  "page": 535,
-  "word": "مَقْطُوعَةࣲ",
-  "eid": "e435",
-  "named": "fathatan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 536,
   "word": "شَجَرࣲ",
-  "eid": "e69",
-  "named": "kasratan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "kasratan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 567,
   "word": "أَخْذَةࣰ",
-  "eid": "e108",
-  "named": "fathatan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "fathatan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  },
  {
   "page": 582,
   "word": "جَزَآءࣰ",
-  "eid": "e699",
-  "named": "fathatan",
-  "note": "single stroke wearing a tanween name; twin missing/misplaced — eye needed"
+  "missing": "fathatan",
+  "why": "single stroke demoted per the two-strokes rule (Abdullah 2026-08-28); the twin is welded into another unit or held across the boundary — eye needed"
  }
 ]
