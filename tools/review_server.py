@@ -357,6 +357,21 @@ class Handler(BaseHTTPRequestHandler):
                 return self.api_page(int(m.group(1)))
             if path == "/api/labels":
                 return self.send_json({"labels": KNOWN_LABELS})
+            if path == "/api/siglabels":
+                agg = {}
+                fp = os.path.join(REVIEW_DIR, "sig_labels.jsonl")
+                if os.path.exists(fp):
+                    for line in open(fp, encoding="utf-8"):
+                        try:
+                            v = json.loads(line)
+                        except Exception:
+                            continue
+                        a = agg.setdefault(v["sig"], {})
+                        if v.get("label") and v["label"] != "reviewed-ok":
+                            a["label"] = v["label"]
+                        if "reviewed" in v or v.get("label") == "reviewed-ok":
+                            a["reviewed"] = v.get("reviewed", True)
+                return self.send_json({"sigs": agg})
             if path == "/api/sigsamples":
                 from urllib.parse import parse_qs
                 qs = parse_qs(parsed.query or "")
