@@ -207,10 +207,26 @@ function loadGroup(sig, btn){
       d.samples.forEach(x => {
         const cell = document.createElement('div');
         cell.style.cssText = 'border:1px solid #eee;border-radius:6px;padding:5px';
+        const opts = ['fatha','kasra','fathatan','kasratan','damma','dammatan',
+                      'hamza','sukun','shadda','maddah','wasla','meem-iqlab',
+                      'pause','dot','two-dots','three-dots','letter','letter-part']
+          .map(o => '<option' + (o === x.mark ? ' selected' : '') + '>'
+                    + o + '</option>').join('');
         cell.innerHTML = '<div style="height:70px">' + x.svg + '</div>'
           + '<div class="w" style="font-size:17px">' + x.word + '</div>'
           + '<a class="k" href="/?page=' + x.page
-          + '&step=audit&user=abdullah">p' + x.page + '</a>';
+          + '&step=audit&user=abdullah">p' + x.page + ' · ' + x.eid + '</a> '
+          + '<select class="fixsel" style="font-size:11px">' + opts + '</select>'
+          + '<button class="fixgo" style="font-size:11px">flag</button>'
+          + '<span class="k fixok"></span>';
+        cell.querySelector('.fixgo').onclick = () => {
+          fetch('/api/eidflag', {method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({page: x.page, eid: x.eid, key: x.key,
+              word: x.word, sig: d.sig || '', current: x.mark,
+              correct: cell.querySelector('.fixsel').value})})
+            .then(() => cell.querySelector('.fixok').textContent = '✓');
+        };
         grid.appendChild(cell);
       });
       requestAnimationFrame(() => {
