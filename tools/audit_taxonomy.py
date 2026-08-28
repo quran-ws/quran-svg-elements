@@ -42,7 +42,7 @@ ALLOWED_MARKS = {
     "small-alef", "small-waw", "small-ya", "small-noon",
     "sifr-mustadir", "sifr-mustatil", "meem-iqlab",
     "dot", "two-dots", "three-dots",
-    "pause", "saktah", "seen-reading",
+    "pause", "saktah", "seen-reading", "imalah", "ishmam", "tashil",
     "sajdah-line", "sajdah-sign", "hizb",
 }
 ALLOWED_KINDS = {"body", "mark", "ayah-marker-ornament", "ayah-number",

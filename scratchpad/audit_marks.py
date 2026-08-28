@@ -33,10 +33,11 @@ TEXT_WANT = {
     # ۜ (U+06DC) left this bucket: it is a saktah at five sites and a reading
     # sign at two, named BY JOB from the place table below. ۣ (U+06E3, 52:37)
     # stays: phase 1 did not rename the seen-below/imalah/ishmam/tashil dots.
-    "pause": ("ۖ", "ۗ", "ۘ", "ۙ", "ۚ", "ۛ",
-              "۬", "۪", "۫", "ۣ"),
+    "pause": ("ۖ", "ۗ", "ۘ", "ۙ", "ۚ", "ۛ"),
     "small-noon": ("ۨ",),
-    "saktah": ("ۜ",), "seen-reading": ("ۜ",),
+    "saktah": ("ۜ",), "seen-reading": ("ۜ", "ۣ"),
+    # phase-3 rare dots (Abdullah 2026-08-28): each is ONE site mushaf-wide
+    "imalah": ("۪",), "ishmam": ("۬", "۫"), "tashil": ("۬",),
 }
 # The U+06DC sites by JOB (mirrors .cache/marks/rare_places.json, which the
 # pipeline's naming pass reads): the same character is a saktah on one page and
@@ -44,7 +45,13 @@ TEXT_WANT = {
 # OWN job's family and zero of the other.
 RARE_SITES = {(18, 1): "saktah", (36, 52): "saktah", (75, 27): "saktah",
               (83, 14): "saktah", (69, 28): "saktah",
-              (2, 245): "seen-reading", (7, 69): "seen-reading"}
+              (2, 245): "seen-reading", (7, 69): "seen-reading",
+              # U+06E3 seen-below, one site
+              (52, 37): "seen-reading",
+              # U+06EC serves TWO jobs, split by site exactly like U+06DC:
+              # 12:11 تَأْمَ۬نَّا is the ishmam, 41:44 ءَا۬عْجَمِى the tashil
+              (12, 11): "ishmam", (41, 44): "tashil",
+              (11, 41): "imalah"}
 # legacy input names (an older build under QSVG_PIPE) fold into the new family
 # the word's own text selects
 _LEGACY_ZERO = "small-circle"
@@ -165,9 +172,10 @@ def scan(pg):
                 continue
             src = wtxt if fam == "pause" else txt
             want = sum(src.count(c) for c in chars)
-            if fam in ("saktah", "seen-reading") \
+            if fam in ("saktah", "seen-reading", "imalah", "ishmam",
+                       "tashil") \
                     and RARE_SITES.get((w["surah"], w["ayah"])) != fam:
-                want = 0              # the ۜ here belongs to the OTHER job
+                want = 0              # this char here belongs to the OTHER job
             if want != have.get(fam, 0):
                 bad.append((fam, have.get(fam, 0), want))
         dw = dot_want(txt, aw)
