@@ -10502,6 +10502,21 @@ def assign_page(edition, page_no, cache_dir):
                         _a9["els"].remove(_e9)
                         put_in_ligature(_dat9, _e9)
 
+    # ORPHANED-PART REPAIR: an element flagged mkpart whose master no
+    # longer references it counts for NOBODY (p85: the ة pair after its
+    # master was renamed by override). Free it — it is its own mark.
+    _allm = set()
+    for _wo9, _ato9 in assignment:
+        for _ao9 in _ato9:
+            for _eo9 in _ao9["els"]:
+                for _mm9 in (_eo9.get("mkmembers") or []):
+                    _allm.add(id(_mm9))
+    for _wo9, _ato9 in assignment:
+        for _ao9 in _ato9:
+            for _eo9 in _ao9["els"]:
+                if _eo9.get("mkpart") and id(_eo9) not in _allm:
+                    _eo9["mkpart"] = False
+
     # SMALL-NOON COMPLETION (Abdullah 2026-08-28, the mushaf's one ۨ site,
     # 21:88 نُـۨجِى p329): the superscript sign is a noon BOWL plus its dot.
     # The dot carries the table label; the bowl wears the letter-ن outline
