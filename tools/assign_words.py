@@ -10480,8 +10480,6 @@ def assign_page(edition, page_no, cache_dir):
                             _k9 = "%.1f,%.1f,%.1f,%.1f" % (
                                 _e9["x1"], _e9["y1"], _e9["x2"], _e9["y2"])
                             _v9 = _ov2.get(_k9)
-                            if os.environ.get("QSVG_OVSCAN") and 135<_e9["x1"]<150 and 450<_e9["y1"]<465:
-                                import sys as _so; print("OVSCAN", _k9, "hit=",bool(_v9), _e9.get("kind"), _e9.get("mark"), "w=", _w9 and _w9.get("pos"), file=_so.stderr)
                             if not _v9 and len(_e9.get("contours", [])) > 1:
                                 # contour-level key at ENFORCEMENT time: pairs
                                 # that fuse after the mid-pass override (p126
@@ -10690,14 +10688,6 @@ def assign_page(edition, page_no, cache_dir):
                                    if cb[4] in _e["contours"])
 
     _enforce_overrides()
-
-    if os.environ.get("QSVG_YAPROBE"):
-        import sys as _sy
-        _hits=[(("%d:%d:%d"%(w9["surah"],w9["ayah"],w9["pos"])) if w9 else None)
-               for w9,at9 in assignment for a9 in at9 for e9 in a9["els"]
-               if abs(e9["x1"]-float(os.environ["QSVG_YAPROBE"].split(",")[0]))<0.3
-               and abs(e9["y1"]-float(os.environ["QSVG_YAPROBE"].split(",")[1]))<0.3]
-        print("YAPROBE %s:"%"post-enforce", _hits, file=_sy.stderr)
 
     # SMALL-NOON COMPLETION (Abdullah 2026-08-28, the mushaf's one ۨ site,
     # 21:88 نُـۨجِى p329): the superscript sign is a noon BOWL plus its dot.
@@ -11480,14 +11470,6 @@ def assign_page(edition, page_no, cache_dir):
                     e["mark"] = nm
                     e["lab"] = nm
 
-
-    if os.environ.get("QSVG_YAPROBE"):
-        import sys as _sy
-        _hits=[(("%d:%d:%d"%(w9["surah"],w9["ayah"],w9["pos"])) if w9 else None)
-               for w9,at9 in assignment for a9 in at9 for e9 in a9["els"]
-               if abs(e9["x1"]-float(os.environ["QSVG_YAPROBE"].split(",")[0]))<0.3
-               and abs(e9["y1"]-float(os.environ["QSVG_YAPROBE"].split(",")[1]))<0.3]
-        print("YAPROBE %s:"%"pre-rewrite", _hits, file=_sy.stderr)
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)
