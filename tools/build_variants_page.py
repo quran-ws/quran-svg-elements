@@ -290,6 +290,27 @@ function fitInk(scope){
     });
   });
 }
+/* live state: paint saved labels + reviewed flags from the server on load */
+fetch('/api/siglabels').then(r => r.json()).then(d => {
+  for (const [sig, st] of Object.entries(d.sigs)) {
+    const btns = document.querySelectorAll(`.btns button[data-sig="${sig}"]`);
+    if (!btns.length) continue;
+    btns.forEach(b => {
+      if (b.classList.contains('rvw')) b.classList.toggle('on', !!st.reviewed);
+      else if (st.label) b.classList.toggle('on', b.dataset.lab === st.label);
+    });
+  }
+  document.querySelectorAll('.sec').forEach(sec => {
+    const h2 = sec.previousElementSibling;
+    const total = sec.querySelectorAll('.row').length;
+    const done = sec.querySelectorAll('.btns .rvw.on').length;
+    const p = h2 && h2.querySelector('.prog');
+    if (p) {
+      p.style.color = done === total ? '#3e7d4f' : '#888';
+      p.textContent = (done === total ? '✓ ' : '') + done + '/' + total + ' reviewed';
+    }
+  });
+});
 const first = document.querySelector('h2').nextElementSibling;
 first.classList.add('open');
 fitInk(first);
