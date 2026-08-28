@@ -373,7 +373,6 @@ class Handler(BaseHTTPRequestHandler):
                             a["reviewed"] = v.get("reviewed", True)
                 return self.send_json({"sigs": agg})
             if path == "/api/sigsamples":
-                from urllib.parse import parse_qs
                 qs = parse_qs(parsed.query or "")
                 sig = (qs.get("sig") or [""])[0]
                 want_mark = (qs.get("mark") or [""])[0]
