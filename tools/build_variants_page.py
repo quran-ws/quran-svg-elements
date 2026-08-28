@@ -45,7 +45,7 @@ def main():
             # catalog's waqf types, tanween arrangement, iqlab membership,
             # welded parts, standalone signs
             if mark == "pause" and attrs.get("waqf"):
-                mark = attrs["waqf"]
+                mark = attrs["waqf"]        # legacy pages
             if attrs.get("form"):
                 mark += " (%s)" % attrs["form"]
             if attrs.get("iqlab"):
