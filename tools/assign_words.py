@@ -10236,6 +10236,34 @@ def assign_page(edition, page_no, cache_dir):
             _elz = [e for a in _aw for e in a["els"]]
             _pm = [e for e in _elz if e.get("mark") == "pause"
                    and not e.get("mkpart")]
+            # a pause held with NO waqf budget belongs to the PREVIOUS word
+            # (Abdullah 2026-08-28: pause sits at its word's LEFT end —
+            # measured p5 of rel-x is 0.82; p239 إِنَّهُۥ held one at
+            # -1.33). Return it when the previous word is owed one.
+            if not _bud and _pm:
+                _wi5 = next((i5 for i5, (w5, _) in enumerate(assignment)
+                             if w5 is _ww), None)
+                if _wi5 is not None and _wi5 > 0:
+                    _wpv, _apv = assignment[_wi5 - 1]
+                    if _wpv:
+                        _ptv = _wpv.get("qpc") or _wpv["uthmani"]
+                        _bpv = sum(_ptv.count(c) for c in _WQCH)
+                        _hpv = sum(1 for a5 in _apv for x in a5["els"]
+                                   if x.get("mark") == "pause"
+                                   and not x.get("mkpart"))
+                        if _bpv > _hpv:
+                            for e in list(_pm):
+                                for _a5 in _aw:
+                                    if e in _a5["els"]:
+                                        _a5["els"].remove(e)
+                                        break
+                                put_in_ligature(_apv, e)
+                                for m in (e.get("mkmembers") or []):
+                                    m["line"] = _wpv and e.get("line")
+                                _pm.remove(e)
+                                _hpv += 1
+                                if _hpv >= _bpv:
+                                    break
             if not _bud or len(_pm) <= _bud:
                 continue
             _pm.sort(key=lambda e: -(e["x2"] - e["x1"]) * (e["y2"] - e["y1"]))
@@ -10520,7 +10548,85 @@ def assign_page(edition, page_no, cache_dir):
                     _tw["mkpart"] = True
                     _tw["mark"] = _fam
                     _m1.setdefault("mkmembers", []).append(_tw)
-
+                # TWIN RETRIEVAL (Abdullah 2026-08-28: "tanween is always
+                # at the END of the word — a stroke at the next word's right
+                # edge, mostly outside its ink, is the rest of the previous
+                # word's tanween", the 8eb38c verdict). Gate: the master is
+                # single-stroke (budget-proven deficit) AND the candidate in
+                # the FOLLOWING word lies within the measured pair envelope
+                # (dx<8, dy<7). Slash strokes never cross words on position
+                # alone — this pass moves only what a deficit demands.
+                for _m1 in _mst:
+                    if _m1.get("mkmembers") or len(_m1["contours"]) > 1:
+                        _later = False
+                        continue
+                    _cx1 = (_m1["x1"] + _m1["x2"]) / 2
+                    _cy1 = (_m1["y1"] + _m1["y2"]) / 2
+                    _wi9 = next((i9 for i9, (w9, _) in enumerate(assignment)
+                                 if w9 is _wt2), None)
+                    if _wi9 is None or _wi9 + 1 >= len(assignment):
+                        continue
+                    _wnx, _anx = assignment[_wi9 + 1]
+                    if not _wnx:
+                        continue
+                    _cand9 = None
+                    _SCH9 = {"fatha": "\u064e", "kasra": "\u0650",
+                             "damma": "\u064f"}
+                    _nb9 = [x for a9 in _anx for x in a9["els"]
+                            if x["kind"] == "body"]
+                    _nbr = max((x["x2"] for x in _nb9), default=None)
+                    for _a9 in _anx:
+                        for e9 in _a9["els"]:
+                            if (e9.get("mark") not in ("fatha", "kasra",
+                                                       "damma")
+                                    or e9.get("mkpart")
+                                    or abs((e9["x1"] + e9["x2"]) / 2
+                                           - _cx1) >= 8.0
+                                    or abs((e9["y1"] + e9["y2"]) / 2
+                                           - _cy1) >= 7.0):
+                                continue
+                            # the holder must not need it: surplus to its
+                            # own budget, OR drawn mostly OUTSIDE the
+                            # holder's ink past its right edge (the
+                            # boundary rule)
+                            # PROOF only: the stroke's hull must lie at
+                            # least 3/4 outside the holder's body hull —
+                            # surplus alone cannot say WHICH stroke, and a
+                            # first-letter fatha legitimately floats right
+                            # of its word's body start (p77 re-taught the
+                            # forbidden-slash-move lesson)
+                            _nbl = min((x["x1"] for x in _nb9), default=None)
+                            if _nbr is None or _nbl is None:
+                                continue
+                            _w9 = e9["x2"] - e9["x1"]
+                            _ov9 = (min(e9["x2"], _nbr)
+                                    - max(e9["x1"], _nbl))
+                            if _w9 > 0 and _ov9 / _w9 < 0.25:
+                                _cand9 = (e9, _a9)
+                                break
+                        if _cand9:
+                            break
+                    if not _cand9:
+                        continue
+                    e9, _a9 = _cand9
+                    _a9["els"].remove(e9)
+                    put_in_ligature(_at2, e9)
+                    e9["mkpart"] = True
+                    e9["mark"] = _fam
+                    e9["lab"] = _fam
+                    e9["line"] = _m1.get("line")
+                    _m1.setdefault("mkmembers", []).append(e9)
+                # a tanween NAME requires two strokes (Abdullah 2026-08-28,
+                # d7a8b5/c9b82d verdicts: these are single fathas). A master
+                # still standing on one contour with no twin found does not
+                # get to wear the pair's name — it is the single vowel, and
+                # the missing twin flags honestly in the budget audit.
+                for _m1 in _mst:
+                    if _m1.get("mkmembers") or len(_m1["contours"]) > 1:
+                        continue
+                    _m1["mark"] = _sng[0]
+                    _m1["lab"] = _sng[0]
+                    _m1.pop("tanform", None)
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)
