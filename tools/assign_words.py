@@ -1877,7 +1877,11 @@ def rewrite(page, assignment):
                         dip = (e["kind"] == "mark"
                                and _wx1 - 8 <= cx <= _wx2 + 2
                                and e["y1"] <= _btop.get(ln, 0) + 12.0)
-                        (keep if dip else _evicted).append(e)
+                        # an override-pinned piece is a human verdict —
+                        # HDRGUARD never overrules it (p359/p570: the ۦ
+                        # after a basmalah, stale header line-tag, seated
+                        # by eye).
+                        (keep if dip or e.get("_ovr") else _evicted).append(e)
                     else:
                         keep.append(e)
                 a["els"] = keep
@@ -10476,6 +10480,8 @@ def assign_page(edition, page_no, cache_dir):
                             _k9 = "%.1f,%.1f,%.1f,%.1f" % (
                                 _e9["x1"], _e9["y1"], _e9["x2"], _e9["y2"])
                             _v9 = _ov2.get(_k9)
+                            if os.environ.get("QSVG_OVSCAN") and 135<_e9["x1"]<150 and 450<_e9["y1"]<465:
+                                import sys as _so; print("OVSCAN", _k9, "hit=",bool(_v9), _e9.get("kind"), _e9.get("mark"), "w=", _w9 and _w9.get("pos"), file=_so.stderr)
                             if not _v9 and len(_e9.get("contours", [])) > 1:
                                 # contour-level key at ENFORCEMENT time: pairs
                                 # that fuse after the mid-pass override (p126
@@ -10574,7 +10580,124 @@ def assign_page(edition, page_no, cache_dir):
                     if _eo9.get("mkpart") and id(_eo9) not in _allm:
                         _eo9["mkpart"] = False
 
+    # SLASHFIX (Abdullah 2026-08-29: "it doesn't need manual work") — the
+    # two species his eye kept finding, automated with two signals each:
+    #   A. NAME INVERSION: fatha/kasra are one stroke named by position
+    #      relative to the word that HOLDS it, so a mis-owned or mis-dealt
+    #      stroke arrives wearing the opposite name. Proof: a "kasra" lying
+    #      ABOVE the word's letter ink (or a "fatha" fully below it) is
+    #      impossible in the script. Direction: the word's own budget
+    #      deficit. Both must agree before renaming (e603 p218, e290 p385,
+    #      e274 p518).
+    #   B. FUSED PAIR: two slash strokes drawn touching share one MARK
+    #      element and count once. Proof: a mark element with side-by-side
+    #      slash-sized contours (never nested — nested = an evenodd hole,
+    #      the p218 ظ-loop trap; and never body elements). Direction: the
+    #      family's budget deficit (e458 p126, e607 p218, e292 p385,
+    #      e312 p459, e180 p552).
+    if os.environ.get("QSVG_SLASHFIX", "1") == "1":
+        for _wf, _atf in assignment:
+            if not _wf:
+                continue
+            _txf = _wf["uthmani"]
+            _wantf = {"fatha": _txf.count("\u064e"),
+                      "kasra": _txf.count("\u0650")}
+            if not (_wantf["fatha"] or _wantf["kasra"]):
+                continue
+            _elf = [e for a in _atf for e in a["els"]]
+            _bods = [e for e in _elf if e.get("kind") == "body"]
+            if not _bods:
+                continue
+            _btop = min(e["y1"] for e in _bods)
+            _bbot = max(e["y2"] for e in _bods)
+
+            def _havef(fam):
+                return [e for e in _elf if e.get("mark") == fam
+                        and not e.get("mkpart")]
+            # A: rename by impossible position + deficit
+            for _fam, _oth, _side in (("fatha", "kasra", "top"),
+                                      ("kasra", "fatha", "bot")):
+                _def = _wantf[_fam] - len(_havef(_fam))
+                if _def <= 0:
+                    continue
+                _cands = [e for e in _havef(_oth)
+                          if len(e["contours"]) == 1
+                          and not e.get("mkmembers")
+                          and not e.get("_ovr")
+                          and ((_side == "top" and e["y2"] <= _btop + 2.0)
+                               or (_side == "bot"
+                                   and e["y1"] >= _bbot - 2.0))]
+                _cands.sort(key=lambda e: e["y1"]
+                            if _side == "top" else -e["y2"])
+                for _e in _cands[:_def]:
+                    _e["mark"] = _fam
+                    _e["lab"] = _fam
+                    _e.pop("tanform", None)
+            # B: split fused side-by-side pairs up to the deficit
+            for _fam in ("fatha", "kasra"):
+                _def = _wantf[_fam] - len(_havef(_fam))
+                if _def <= 0:
+                    continue
+                for _e in list(_havef(_fam)):
+                    if _def <= 0:
+                        break
+                    if len(_e["contours"]) < 2 or _e.get("_ovr"):
+                        continue
+                    _pMf = page.paths[_e["path"]]["M"]
+                    _cbs = []
+                    for _c in _e["contours"]:
+                        sp = _c["sp"]
+                        b = transform_box(_pMf, sp["xmin"], sp["ymin"],
+                                          sp["xmax"], sp["ymax"])
+                        _cbs.append((min(b[0], b[2]), min(b[1], b[3]),
+                                     max(b[0], b[2]), max(b[1], b[3]), _c))
+                    _ok = [cb for cb in _cbs
+                           if 3.0 <= cb[2] - cb[0] <= 11.0
+                           and 2.0 <= cb[3] - cb[1] <= 6.0
+                           and not any(o is not cb
+                                       and o[0] <= cb[0] and o[1] <= cb[1]
+                                       and o[2] >= cb[2] and o[3] >= cb[3]
+                                       for o in _cbs)]
+                    if len(_ok) < 2:
+                        continue
+                    _ok.sort(key=lambda cb: cb[0])
+                    _keep = _ok[0]
+                    for cb in _ok[1:]:
+                        if _def <= 0:
+                            break
+                        if abs(((cb[0] + cb[2]) / 2)
+                               - ((_keep[0] + _keep[2]) / 2)) < 3.0:
+                            continue
+                        _e["contours"] = [c for c in _e["contours"]
+                                          if c is not cb[4]]
+                        _ne = dict(_e)
+                        _ne["contours"] = [cb[4]]
+                        _ne["x1"], _ne["y1"], _ne["x2"], _ne["y2"] = cb[:4]
+                        _ne.pop("mkmembers", None)
+                        _ne.pop("sig", None)
+                        _ne.pop("tanform", None)
+                        _ne["mkpart"] = False
+                        put_in_ligature(_atf, _ne)
+                        _elf.append(_ne)
+                        _def -= 1
+                    _e["x1"] = min(cb[0] for cb in _cbs
+                                   if cb[4] in _e["contours"])
+                    _e["y1"] = min(cb[1] for cb in _cbs
+                                   if cb[4] in _e["contours"])
+                    _e["x2"] = max(cb[2] for cb in _cbs
+                                   if cb[4] in _e["contours"])
+                    _e["y2"] = max(cb[3] for cb in _cbs
+                                   if cb[4] in _e["contours"])
+
     _enforce_overrides()
+
+    if os.environ.get("QSVG_YAPROBE"):
+        import sys as _sy
+        _hits=[(("%d:%d:%d"%(w9["surah"],w9["ayah"],w9["pos"])) if w9 else None)
+               for w9,at9 in assignment for a9 in at9 for e9 in a9["els"]
+               if abs(e9["x1"]-float(os.environ["QSVG_YAPROBE"].split(",")[0]))<0.3
+               and abs(e9["y1"]-float(os.environ["QSVG_YAPROBE"].split(",")[1]))<0.3]
+        print("YAPROBE %s:"%"post-enforce", _hits, file=_sy.stderr)
 
     # SMALL-NOON COMPLETION (Abdullah 2026-08-28, the mushaf's one ۨ site,
     # 21:88 نُـۨجِى p329): the superscript sign is a noon BOWL plus its dot.
@@ -11357,6 +11480,14 @@ def assign_page(edition, page_no, cache_dir):
                     e["mark"] = nm
                     e["lab"] = nm
 
+
+    if os.environ.get("QSVG_YAPROBE"):
+        import sys as _sy
+        _hits=[(("%d:%d:%d"%(w9["surah"],w9["ayah"],w9["pos"])) if w9 else None)
+               for w9,at9 in assignment for a9 in at9 for e9 in a9["els"]
+               if abs(e9["x1"]-float(os.environ["QSVG_YAPROBE"].split(",")[0]))<0.3
+               and abs(e9["y1"]-float(os.environ["QSVG_YAPROBE"].split(",")[1]))<0.3]
+        print("YAPROBE %s:"%"pre-rewrite", _hits, file=_sy.stderr)
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)
