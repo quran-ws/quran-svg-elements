@@ -178,10 +178,18 @@ function fitInk(scope){
         if (zsvg) {
           const zred = zsvg.querySelector('path[style*="c22"]');
           if (zred) {
-            const zb = zred.getBBox();
-            zsvg.setAttribute('viewBox',
-              `${zb.x-1.5} ${zb.y-1.5} ${zb.width+3} ${zb.height+3}`);
-            zsvg.dataset.fit = '1';
+            // hide everything but the mark; svg.getBBox() then returns the
+            // mark's bbox in viewBox units, transforms included
+            const others = [...zsvg.querySelectorAll('path')]
+              .filter(p => p !== zred);
+            others.forEach(p => p.style.display = 'none');
+            const zb = zsvg.getBBox();
+            others.forEach(p => p.style.display = '');
+            if (zb.width && zb.height) {
+              zsvg.setAttribute('viewBox',
+                `${zb.x-1.5} ${zb.y-1.5} ${zb.width+3} ${zb.height+3}`);
+              zsvg.dataset.fit = '1';
+            }
           }
         }
       } catch(_){}
