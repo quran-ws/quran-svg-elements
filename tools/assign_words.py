@@ -6949,14 +6949,32 @@ def assign_page(edition, page_no, cache_dir):
         for _a2 in _at2:
             bods2 = [e for e in _a2["els"] if e["kind"] == "body"]
             for _e2 in _a2["els"]:
-                if _e2.get("mkpart") or _e2.get("fused") or _e2.get("mkmembers"):
+                if _e2.get("mkpart") or _e2.get("fused"):
                     continue
+                if _e2.get("mkmembers"):
+                    # the p85 ذَرَّةࣲ knot (Abdullah's e298/e304 verdict): a
+                    # slash stroke wearing "two-dots" as a MASTER with the
+                    # letter's real dot pair welded beneath it. Free the
+                    # members (they are the ة's two-dots) and let the table
+                    # rename the slash; everything else with members stays.
+                    _tk = _tbl_fix.get(_late_sig(_e2))
+                    if (_e2.get("mark") == "two-dots"
+                            and _tk in ("fatha", "kasra")
+                            and (_e2["x2"] - _e2["x1"]) >= 4.5):
+                        for _mmb in _e2["mkmembers"]:
+                            _mmb["mkpart"] = False
+                        _e2["mkmembers"] = []
+                    else:
+                        continue
                 t = _tbl_fix.get(_late_sig(_e2))
                 cur = _e2.get("mark")
                 if not t or not cur or t == cur:
                     continue
                 fix = None
-                if cur == "dot" and t in ("fatha", "kasra")                         and (_e2["x2"] - _e2["x1"]) >= 4.5:
+                if cur in ("dot", "two-dots") and t in ("fatha", "kasra") \
+                        and (_e2["x2"] - _e2["x1"]) >= 4.5:
+                    # p85 ذَرَّةࣲ: the kasratan's slash half wore
+                    # "two-dots" as a master, its real pair welded under it
                     fix = "slash"
                 elif cur in ("damma", "dammatan") and t in ("fatha", "kasra"):
                     fix = "slash"
@@ -10362,6 +10380,18 @@ def assign_page(edition, page_no, cache_dir):
             _eln = [e for a in _an for e in a["els"]]
             _m0 = next((e for e in _eln if e.get("mark") == "small-noon"
                         and not e.get("mkpart")), None)
+            if _m0 is None:
+                # the dot outline is SHARED with the jeem-sign dot, so no
+                # table label may name it (it leaked onto p68). The SITE
+                # names it: in the one U+06E8 word, the unnamed dot-sized
+                # mark is the small-noon dot.
+                _m0 = next((e for e in _eln if e["kind"] == "mark"
+                            and not e.get("mark") and not e.get("mkpart")
+                            and (e["x2"] - e["x1"]) < 4.0
+                            and (e["y2"] - e["y1"]) < 4.0), None)
+                if _m0 is not None:
+                    _m0["mark"] = "small-noon"
+                    _m0["lab"] = "small-noon"
             if _m0 is None or _m0.get("mkmembers"):
                 continue
             _cx0 = (_m0["x1"] + _m0["x2"]) / 2
@@ -10721,12 +10751,339 @@ def assign_page(edition, page_no, cache_dir):
                 # still standing on one contour with no twin found does not
                 # get to wear the pair's name — it is the single vowel, and
                 # the missing twin flags honestly in the budget audit.
-                for _m1 in _mst:
+                for _m1 in list(_mst):
                     if _m1.get("mkmembers") or len(_m1["contours"]) > 1:
                         continue
                     _m1["mark"] = _sng[0]
                     _m1["lab"] = _sng[0]
                     _m1.pop("tanform", None)
+                    _mst.remove(_m1)     # the deficit must become VISIBLE
+                                         # to the missing-master branch
+                # MISSING MASTER (Abdullah 2026-08-28: p131 رُسُلࣱ held a
+                # fused dammatan outline named "damma"; p585's pair half the
+                # same). When the word is OWED a tanween and no master
+                # exists: a surplus single with two-plus contours IS the
+                # fused pair — rename it; else two surplus singles in the
+                # pair envelope on the word's end side weld.
+                if len(_mst) < _want:
+                    # a slash pair's twins can be misnamed ACROSS fatha and
+                    # kasra (one stroke, position-named): pool both for the
+                    # slash tanweens (Abdullah's p529 أَمْرࣲ verdict —
+                    # kasra e361 + "fatha" e362 are the kasratan)
+                    if _fam in ("fathatan", "kasratan"):
+                        _pool_nm = ("fatha", "kasra")
+                        _ownw = _txv.count("\u064e") + _txv.count("\u0650")
+                    else:
+                        _pool_nm = (_sng[0],)
+                        _ownw = sum(_txv.count(c) for c in _sch)
+                    _sgl2 = [e for e in _elv if e.get("mark") in _pool_nm
+                             and not e.get("mkpart")]
+                    if len(_sgl2) > _ownw:
+                        _fx1 = min((b["x1"] for a2_ in _at2
+                                    for b in a2_["els"]
+                                    if b["kind"] == "body"), default=None)
+                        _fx2 = max((b["x2"] for a2_ in _at2
+                                    for b in a2_["els"]
+                                    if b["kind"] == "body"), default=None)
+                        def _endside(e):
+                            if _fx1 is None or _fx2 - _fx1 < 8.0:
+                                return True
+                            return (_fx2 - (e["x1"] + e["x2"]) / 2) \
+                                / (_fx2 - _fx1) > 0.5
+                        for e in _sgl2:
+                            if len(_mst) >= _want:
+                                break
+                            _units2 = len(e["contours"]) + sum(
+                                len(x["contours"])
+                                for x in (e.get("mkmembers") or []))
+                            if _units2 >= 2 and _endside(e):
+                                e["mark"] = _fam
+                                e["lab"] = _fam
+                                for x in (e.get("mkmembers") or []):
+                                    x["mark"] = _fam
+                                _mst.append(e)
+                        if len(_mst) < _want:
+                            for i2, a2 in enumerate(_sgl2):
+                                if len(_mst) >= _want:
+                                    break
+                                for b2 in _sgl2[i2 + 1:]:
+                                    dx = abs((a2["x1"] + a2["x2"]) / 2
+                                             - (b2["x1"] + b2["x2"]) / 2)
+                                    dy = abs((a2["y1"] + a2["y2"]) / 2
+                                             - (b2["y1"] + b2["y2"]) / 2)
+                                    if dx < 8.0 and dy < 7.0 \
+                                            and _endside(a2):
+                                        a2["mark"] = _fam
+                                        a2["lab"] = _fam
+                                        b2["mkpart"] = True
+                                        b2["mark"] = _fam
+                                        a2.setdefault("mkmembers",
+                                                      []).append(b2)
+                                        _mst.append(a2)
+                                        break
+                # POSITION SWAP (Abdullah 2026-08-28, p208 مُّبِينٌ):
+
+                # kasratan/dammatan end their word — a master welded at the
+                # word's START while two loose same-family singles stand
+                # interlocked at the END is inverted. Two signals: the
+                # master fails the position law AND a true pair (two
+                # singles within the pair envelope) exists on the end side.
+                if _fam in ("kasratan", "dammatan"):
+                    _bx1 = min((b["x1"] for a2_ in _at2
+                                for b in a2_["els"]
+                                if b["kind"] == "body"), default=None)
+                    _bx2 = max((b["x2"] for a2_ in _at2
+                                for b in a2_["els"]
+                                if b["kind"] == "body"), default=None)
+                    if _bx1 is not None and _bx2 is not None \
+                            and _bx2 - _bx1 > 8.0:
+                        _spn = _bx2 - _bx1
+                        for _m1 in list(_mst):
+                            _rel = (_bx2 - (_m1["x1"] + _m1["x2"]) / 2) / _spn
+                            if _rel > 0.45:
+                                continue      # master already end-side
+                            _sgl = [e for e in _elv
+                                    if e.get("mark") == _sng[0]
+                                    and not e.get("mkpart")]
+                            _prq = None
+                            for i2, a2 in enumerate(_sgl):
+                                for b2 in _sgl[i2 + 1:]:
+                                    dx = abs((a2["x1"] + a2["x2"]) / 2
+                                             - (b2["x1"] + b2["x2"]) / 2)
+                                    dy = abs((a2["y1"] + a2["y2"]) / 2
+                                             - (b2["y1"] + b2["y2"]) / 2)
+                                    _r2 = (_bx2 - (a2["x1"] + a2["x2"]) / 2) \
+                                        / _spn
+                                    if dx < 8.0 and dy < 7.0 and _r2 > 0.55:
+                                        _prq = (a2, b2)
+                                        break
+                                if _prq:
+                                    break
+                            if not _prq:
+                                continue
+                            a2, b2 = _prq
+                            # the pair takes the name; the master unwelds to
+                            # its singles (their surplus flags honestly)
+                            a2["mark"] = _fam
+                            a2["lab"] = _fam
+                            b2["mkpart"] = True
+                            b2["mark"] = _fam
+                            a2.setdefault("mkmembers", []).append(b2)
+                            for _mm2 in (_m1.pop("mkmembers", None) or []):
+                                _mm2["mkpart"] = False
+                                _mm2["mark"] = _sng[0]
+                                _mm2["lab"] = _sng[0]
+                            _m1["mark"] = _sng[0]
+                            _m1["lab"] = _sng[0]
+                            _m1.pop("tanform", None)
+                            _mst.remove(_m1)
+                            _mst.append(a2)
+    # BUDGET RETURN for unambiguous marks (Abdullah 2026-08-28, p431
+    # رَبُّكُمْۖ wearing إِلَّا's hamza): the holder has NO budget for the
+    # family, a vertically-adjacent word overlapping the ink's x has an
+    # unfilled budget — surplus meets deficit and the shape is not a
+    # derived slash/damma, so the move is exact on both sides. The mark
+    # returns and re-seats in the right ligature.
+    if os.environ.get("QSVG_BUDGETRET", "1") == "1":
+        _URFAM = {"hamza": ("\u0623\u0625\u0624\u0626\u0654\u0655", 1),
+                  "meem-iqlab": ("\u06e2\u06ed", 1),
+                  "sukun": ("\u0652\u06e1", 1),
+                  "shadda": ("\u0651", 1),
+                  "maddah": ("\u0653\u06e4", 1)}
+        _widr = [(w, at) for (w, at) in assignment if w]
+        for _wH, _atH in _widr:
+            _elH = [e for a in _atH for e in a["els"]]
+            for _fam9, (_chs9, _) in _URFAM.items():
+                _bud9 = sum((_wH.get("qpc") or _wH["uthmani"]).count(c)
+                            for c in _chs9)
+                _held9 = [e for e in _elH if e.get("mark") == _fam9
+                          and not e.get("mkpart")]
+                if len(_held9) <= _bud9:
+                    continue
+                for _eH in list(_held9[_bud9:]):
+                    _cxh = (_eH["x1"] + _eH["x2"]) / 2
+                    _best9 = None
+                    for _wR, _atR in _widr:
+                        if _wR is _wH:
+                            continue
+                        _bR = [e for a in _atR for e in a["els"]
+                               if e["kind"] == "body"]
+                        if not _bR:
+                            continue
+                        _rx1 = min(e["x1"] for e in _bR)
+                        _rx2 = max(e["x2"] for e in _bR)
+                        if not (_rx1 - 2.0 <= _cxh <= _rx2 + 2.0):
+                            continue
+                        _bud_r = sum((_wR.get("qpc")
+                                      or _wR["uthmani"]).count(c)
+                                     for c in _chs9)
+                        _held_r = sum(1 for a in _atR for e in a["els"]
+                                      if e.get("mark") == _fam9
+                                      and not e.get("mkpart"))
+                        _ry1 = min(e["y1"] for e in _bR)
+                        _ry2 = max(e["y2"] for e in _bR)
+                        _rename_to = None
+                        if _held_r >= _bud_r:
+                            # the family is full — but a SLASH-shaped piece
+                            # wearing this name may be the receiver's owed
+                            # fatha/kasra (p431: إلا's kasra rode along
+                            # named "hamza"). Ratio test + deficit.
+                            _wq9 = _eH["x2"] - _eH["x1"]
+                            _hq9 = _eH["y2"] - _eH["y1"] or 0.1
+                            if _wq9 / _hq9 < 1.8:
+                                continue
+                            _txR = _wR["uthmani"]
+                            _fb = _txR.count("\u064e")
+                            _kb = _txR.count("\u0650")
+                            _fh = sum(1 for a in _atR for e in a["els"]
+                                      if e.get("mark") == "fatha"
+                                      and not e.get("mkpart"))
+                            _kh = sum(1 for a in _atR for e in a["els"]
+                                      if e.get("mark") == "kasra"
+                                      and not e.get("mkpart"))
+                            _rmid = (_ry1 + _ry2) / 2 if _bR else 0
+                            _cyh2 = (_eH["y1"] + _eH["y2"]) / 2
+                            _owed = []
+                            if _kh < _kb:
+                                _owed.append("kasra")
+                            if _fh < _fb:
+                                _owed.append("fatha")
+                            if len(_owed) == 1:
+                                # unique deficit names the arrival — the
+                                # stroke was drawn displaced, so its
+                                # position cannot testify
+                                _rename_to = _owed[0]
+                            elif len(_owed) == 2:
+                                _rename_to = ("kasra" if _cyh2 > _rmid
+                                              else "fatha")
+                            else:
+                                continue
+                        # vertical adjacency: receiver band within a line
+                        # height of the ink
+                        _cyh = (_eH["y1"] + _eH["y2"]) / 2
+                        _dv = 0.0 if _ry1 - 18.0 <= _cyh <= _ry2 + 18.0 \
+                            else 1e9
+                        if _dv < 1e9 and (_best9 is None):
+                            _best9 = (_wR, _atR, _rename_to)
+                    if _best9 is None:
+                        continue
+                    _wR, _atR, _rename_to = _best9
+                    for _a9 in _atH:
+                        if _eH in _a9["els"]:
+                            _a9["els"].remove(_eH)
+                            break
+                    put_in_ligature(_atR, _eH)
+                    if _best9 and _rename_to:
+                        _eH["mark"] = _rename_to
+                        _eH["lab"] = _rename_to
+                    _held9.remove(_eH)
+
+    # BOUNDARY SLASH RETURN (Abdullah 2026-08-28, the كَانَ picture): a
+    # stroke named "fatha" drawn BELOW its word's letter band at the edge
+    # toward a neighbour is that neighbour's kasra (and symmetrically). The
+    # SLASHX veto guards it: the move is applied ONLY when it makes BOTH
+    # words' plain fatha AND kasra counts exactly match their budgets —
+    # counts can veto, never approve.
+    if os.environ.get("QSVG_SLASHRET", "1") == "1":
+        _widx = [(i, w, at) for i, (w, at) in enumerate(assignment) if w]
+        def _scnt(at_):
+            f = k = 0
+            for a_ in at_:
+                for e_ in a_["els"]:
+                    if e_.get("mkpart"):
+                        continue
+                    if e_.get("mark") == "fatha":
+                        f += 1
+                    elif e_.get("mark") == "kasra":
+                        k += 1
+            return f, k
+        for _pi9 in range(len(_widx) - 1):
+            for (_, _wA, _atA), (_, _wB, _atB) in (
+                    (_widx[_pi9], _widx[_pi9 + 1]),
+                    (_widx[_pi9 + 1], _widx[_pi9])):
+                _bA = [e for a in _atA for e in a["els"]
+                       if e["kind"] == "body"]
+                _bB = [e for a in _atB for e in a["els"]
+                       if e["kind"] == "body"]
+                if not _bA or not _bB:
+                    continue
+                _topA = min(e["y1"] for e in _bA)
+                _botA = max(e["y2"] for e in _bA)
+                # same line only
+                _topB = min(e["y1"] for e in _bB)
+                if abs(_topA - _topB) > 12.0:
+                    continue
+                _fbA = _wA["uthmani"].count("\u064e")
+                _kbA = _wA["uthmani"].count("\u0650")
+                _fbB = _wB["uthmani"].count("\u064e")
+                _kbB = _wB["uthmani"].count("\u0650")
+                _fA, _kA = _scnt(_atA)
+                _fB, _kB = _scnt(_atB)
+                for _aX in _atA:
+                    for _eX in list(_aX["els"]):
+                        mkX = _eX.get("mark")
+                        if mkX not in ("fatha", "kasra") \
+                                or _eX.get("mkpart") \
+                                or _eX.get("mkmembers"):
+                            continue
+                        _cy = (_eX["y1"] + _eX["y2"]) / 2
+                        if mkX == "fatha" and _cy > _botA + 1.0:
+                            _nm = "kasra"
+                        elif mkX == "kasra" and _cy < _topA - 1.0:
+                            _nm = "fatha"
+                        else:
+                            continue
+                        # the veto: BOTH words exact after the move
+                        _fA2 = _fA - (mkX == "fatha")
+                        _kA2 = _kA - (mkX == "kasra")
+                        _fB2 = _fB + (_nm == "fatha")
+                        _kB2 = _kB + (_nm == "kasra")
+                        if not (_fA2 == _fbA and _kA2 == _kbA
+                                and _fB2 == _fbB and _kB2 == _kbB):
+                            continue
+                        _aX["els"].remove(_eX)
+                        put_in_ligature(_atB, _eX)
+                        _eX["mark"] = _nm
+                        _eX["lab"] = _nm
+                        _fA, _kA = _fA2, _kA2
+                        _fB, _kB = _fB2, _kB2
+
+    # INVERTED SLASH PAIR (Abdullah 2026-08-28, e707/e710: a "kasra" at the
+    # TOP of its word with a "fatha" at the BOTTOM — the names are swapped).
+    # Swapping back is COUNT-NEUTRAL: both family budgets keep their exact
+    # totals, position law is restored, nothing moves. The only safe
+    # automatic slash rename.
+    if os.environ.get("QSVG_SLASHSWAP", "1") == "1":
+        for _ws2, _as2 in assignment:
+            if not _ws2:
+                continue
+            _el2 = [e for a in _as2 for e in a["els"]]
+            _kas = [e for e in _el2 if e.get("mark") == "kasra"
+                    and not e.get("mkpart")]
+            _fat = [e for e in _el2 if e.get("mark") == "fatha"
+                    and not e.get("mkpart")]
+            # the full law: ALL of a word's fathas ride above ALL its
+            # kasras. When the current names violate that order, re-deal
+            # them by height — top N stay fathas, bottom M kasras. Exactly
+            # count-neutral by construction.
+            _fb0 = _ws2["uthmani"].count("\u064e")
+            _kb0 = _ws2["uthmani"].count("\u0650")
+            _all0 = _kas + _fat
+            if _all0 and len(_all0) == _fb0 + _kb0 \
+                    and (len(_fat) != _fb0 or len(_kas) != _kb0
+                         or (_kas and _fat
+                             and any(k["y2"] < f["y1"] - 0.5
+                                     for k in _kas for f in _fat))):
+                # total matches the budget but the split or the order is
+                # wrong (p482 إلا: TWO "fathas", zero kasras, budget 1+1)
+                # — deal by height against the BUDGET: top fathas, bottom
+                # kasras. Count-neutral against the text by construction.
+                _all0.sort(key=lambda e: (e["y1"] + e["y2"]) / 2)
+                for i9, e in enumerate(_all0):
+                    nm = "fatha" if i9 < _fb0 else "kasra"
+                    e["mark"] = nm
+                    e["lab"] = nm
+
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)
