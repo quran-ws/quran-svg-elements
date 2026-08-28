@@ -97,6 +97,19 @@ Legal values are gated PER MARK (audit_taxonomy extends its current
 "form only on tanween" check to a `{mark: legal-forms}` table). No second
 attribute (`data-pos`, `data-variant`) — one axis, closed sets.
 
+### 2b. Headers — basmalah and surah names (added after Abdullah's review)
+
+The agent's draft left the header groups "untouched"; they need three things:
+
+| gap | fix | why |
+|---|---|---|
+| header-ink paths carry no `data-eid`/`data-sig` | every header path gets an eid (sig optional) | the ONLY ink that cannot be referenced from a review — the muanaqah dots hid inside a basmalah group and the p453 reports could not be pointed at |
+| the Fatiha's basmalah IS ayah 1 but says only `data-surah="1"` | `data-ayah="1"` on that one group | the other 111 basmalahs are unnumbered openings; surah 9 has none |
+| the one-item law is behaviour, not a gate | audit_taxonomy rules: exactly one basmalah group per surah start except surah 9; exactly one surah-name group per surah; NO `data-mark` inside either | Abdullah's law from 2026-08-28 morning, currently unenforced |
+
+No text attributes beyond the number — surah names derive from `data-surah`;
+hand-typing Quranic text is forbidden by the ground rules.
+
 ### Decision: one `data-unit` id, kind in the prefix.
 
 `mnq-`/`iq-`/`sjd-` share one grammar: `<kind>-<surah>-<ayah>[-<word|n>]`.
