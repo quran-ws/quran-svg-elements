@@ -15,7 +15,7 @@ CACHE = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
 
 
 def newest_sweep():
-    for d in ("lredeal-full", "drift", "i39full", "i36", "tax2", "tax1"):
+    for d in ("jaa-full", "lredeal-full", "drift", "i39full", "i36", "tax2", "tax1"):
         p = os.path.join(ROOT, ".cache", "sweeps", d)
         if os.path.isdir(p) and len(glob.glob(p + "/*.json")) > 500:
             return p, d

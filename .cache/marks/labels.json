@@ -7317,8 +7317,9 @@
   "label": "three-dots"
  },
  "7028fabc0870b7c6": {
-  "auto": true,
-  "label": "damma"
+  "label": "letter-hamza",
+  "auto": false,
+  "note": "2026-08-28: the seated ء of the p585/p567 جاء-family words, auto-mislabeled damma — 7 occurrences, all in hamza words, 3 with no damma budget (arithmetic proof). Was the 8-flag damma family."
  },
  "702ae2c20ffb25d2": {
   "auto": true,
@@ -15202,8 +15203,9 @@
   "label": "fatha"
  },
  "ec461553fbdc1a13": {
-  "auto": true,
-  "label": "damma"
+  "label": "letter-hamza",
+  "auto": false,
+  "note": "2026-08-28: the seated ء (second digitization, 15 occ on p350/377/507/567), auto-mislabeled damma; 14/15 in hamza words, the 15th is p507 فتعسا's stolen ء (Abdullah round-10 CERTAIN)."
  },
  "ec806f93f064a9e7": {
   "auto": true,
