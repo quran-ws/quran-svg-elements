@@ -1765,6 +1765,22 @@ def rewrite(page, assignment):
             _votes[dk_ln - art_ln] = _votes.get(dk_ln - art_ln, 0) + 1
         _off = max(_votes, key=_votes.get) if _votes else 0
         hdr_art = {ln - _off: v for ln, v in _hdr_dk.items() if ln - _off >= 1}
+        # the art draws a surah BANNER line that DK carries on the previous
+        # page (p453-style): a wordless art line directly above a mapped
+        # basmalah is that banner — map it as the surah-name line
+        _wlines = set()
+        for _wv, _av in assignment:
+            if not _wv:
+                continue
+            for _aa in _av:
+                for e in _aa["els"]:
+                    if e.get("line"):
+                        _wlines.add(e["line"])
+        for _lnb, (_knd, _su) in list(hdr_art.items()):
+            if _knd == "basmalah" and _lnb - 1 >= 1 \
+                    and _lnb - 1 not in _wlines \
+                    and _lnb - 1 not in hdr_art:
+                hdr_art[_lnb - 1] = ("surah-name", _su)
 
     # Header ink is inviolable: a word may never hold an element drawn on a
     # header/basmalah line, unless the word itself lives on that line (p1/p2,
@@ -1781,6 +1797,9 @@ def rewrite(page, assignment):
     # sits on a basmalah/surah-name line is banner decoration — plain
     # ornament ink. Anywhere else an unnamed mark stays visible in the
     # UNNAMED review section: an unknown shape could be a stolen real mark.
+    if os.environ.get("QSVG_ORNDBG"):
+        print("ORNDBG hdr_art=%s wordless-entries=%d" % (
+            hdr_art, sum(1 for w, _ in assignment if not w)), file=sys.stderr)
     if hdr_art:
         for _wo9, _ao9 in assignment:
             if _wo9:
@@ -1791,6 +1810,10 @@ def rewrite(page, assignment):
                             and e.get("line") in hdr_art):
                         v9 = shape_labels().get(e.get("sig") or "")
                         lb9 = v9.get("label") if isinstance(v9, dict) else v9
+                        if os.environ.get("QSVG_ORNDBG"):
+                            print("ORNDBG line=%s sig=%s lb=%s" % (
+                                e.get("line"), (e.get("sig") or "")[:8], lb9),
+                                file=sys.stderr)
                         if lb9 == "ignore":
                             e["kind"] = "ornament"
                             e.pop("mkpart", None)
@@ -9822,6 +9845,17 @@ def assign_page(edition, page_no, cache_dir):
             if not _meem:
                 continue
             _m0 = _meem[0]
+            # NOON iqlab vs TANWEEN iqlab (Abdullah 2026-08-28, 4:73:9): when
+            # the print writes the م over a BARE ن (the char before ۢ/ۭ is a
+            # letter, not a haraka), no haraka belongs to the unit — a nearby
+            # damma is its own letter's. Pair a haraka ONLY for tanween iqlab.
+            _hset = "\u064b\u064c\u064d\u064e\u064f\u0650\u08f0\u08f1\u08f2"
+            _iqi = max(_ptx.find("\u06e2"), _ptx.find("\u06ed"))
+            _tanween_iqlab = _iqi > 0 and _ptx[_iqi - 1] in _hset
+            if not _tanween_iqlab:
+                _m0["iqpair"] = "iq-%d-%d-%d" % (_wi["surah"], _wi["ayah"],
+                                                 _wi["pos"])
+                continue
             _cxm = (_m0["x1"] + _m0["x2"]) / 2
             _har = [e for e in _eli
                     if e.get("mark") in ("fatha", "kasra", "damma",
