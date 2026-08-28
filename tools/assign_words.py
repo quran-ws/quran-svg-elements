@@ -10113,11 +10113,23 @@ def assign_page(edition, page_no, cache_dir):
                                          "fathatan", "kasratan", "dammatan")
                     and not e.get("mkpart")]
             if _har:
-                _h0 = min(_har, key=lambda e:
+                # the unit's haraka is named by the TEXT (the char before
+                # ۭ/ۢ — Abdullah 2026-08-28, p531 كَلَمْحِۭ). Prefer the
+                # nearest stroke ALREADY wearing that name; rename the
+                # nearest slash only when none does (position misread it).
+                _hnm = {"\u064e": "fatha", "\u0650": "kasra",
+                        "\u064f": "damma"}.get(_ptx[_iqi - 1])
+                _same = [e for e in _har if e.get("mark") == _hnm]
+                _pool0 = _same or _har
+                _h0 = min(_pool0, key=lambda e:
                           abs((e["x1"] + e["x2"]) / 2 - _cxm))
                 _pid = "iq-%d-%d-%d" % (_wi["surah"], _wi["ayah"], _wi["pos"])
                 _m0["iqpair"] = _pid
                 _h0["iqpair"] = _pid
+                if _hnm and not _same \
+                        and _h0.get("mark") in ("fatha", "kasra", "damma"):
+                    _h0["mark"] = _hnm
+                    _h0["lab"] = _hnm
 
     # Shape identity outranks position, applied LAST (item 38, both faces).
     # By now every sig exists and every namer has spoken; where the word's
