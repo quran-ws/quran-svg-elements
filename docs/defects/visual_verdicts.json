@@ -3130,6 +3130,440 @@
      "sig": "ab70bf3f"
     }
    ]
+  },
+  {
+   "round": 11,
+   "date": "2026-08-28",
+   "source": "chat paste 13:54",
+   "verdicts": [
+    {
+     "page": 59,
+     "key": "3:75:19",
+     "status": "commented",
+     "note": "also affect 3:75:8 stole the ما",
+     "sig": "a0c9b4d6"
+    },
+    {
+     "page": 267,
+     "key": "16:2:11",
+     "status": "confirmed",
+     "note": "stole kasra from the word below it and missing its fataha",
+     "sig": "43857b79"
+    },
+    {
+     "page": 418,
+     "key": "33:3:4",
+     "status": "confirmed",
+     "note": "",
+     "sig": "0ba69b92"
+    },
+    {
+     "page": 531,
+     "key": "54:51:6",
+     "status": "confirmed",
+     "note": "stole fatha from the word above, and missing it fatha above the د shadda",
+     "sig": "34e078aa"
+    },
+    {
+     "page": 567,
+     "key": "69:9:5",
+     "status": "confirmed",
+     "note": "",
+     "sig": "0c100fa8"
+    },
+    {
+     "page": 576,
+     "key": "74:31:51",
+     "status": "confirmed",
+     "note": "",
+     "sig": "6fe4d669"
+    },
+    {
+     "page": 577,
+     "key": "74:56:3",
+     "status": "confirmed",
+     "note": "",
+     "sig": "a5f28b75"
+    },
+    {
+     "page": 535,
+     "key": "56:35:2",
+     "status": "confirmed",
+     "note": "stole kasrah from the word above it",
+     "sig": "a05c6205"
+    },
+    {
+     "page": 239,
+     "key": "12:34:7",
+     "status": "confirmed",
+     "note": "",
+     "sig": "488635b2"
+    },
+    {
+     "page": 100,
+     "key": "4:137:16",
+     "status": "confirmed",
+     "note": "",
+     "sig": "2fe5d0e6"
+    },
+    {
+     "page": 129,
+     "key": "6:17:12",
+     "status": "confirmed",
+     "note": "extra fatha after it (or kasra from word above) + stole haa letter and kasra below it from word below",
+     "sig": "d7e8d417"
+    },
+    {
+     "page": 319,
+     "key": "20:103:2",
+     "status": "confirmed",
+     "note": "",
+     "sig": "2fe5d0e6"
+    },
+    {
+     "page": 418,
+     "key": "33:3:2",
+     "status": "confirmed",
+     "note": "missing its 2 fathas stolen from prev word",
+     "sig": "8a1b2ec7"
+    },
+    {
+     "page": 535,
+     "key": "56:44:2",
+     "status": "confirmed",
+     "note": "stole the word before it with its diacritics لا",
+     "sig": "c643b1f1"
+    },
+    {
+     "page": 239,
+     "key": "12:34:6",
+     "status": "confirmed",
+     "note": "",
+     "sig": "c9aca354"
+    },
+    {
+     "page": 586,
+     "key": "81:21:2",
+     "status": "no-issue",
+     "note": "",
+     "sig": "50daaf19"
+    },
+    {
+     "page": 44,
+     "key": "2:262:15",
+     "status": "reopened",
+     "note": "not fixed has extra fatha at the end",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 51,
+     "key": "3:14:18",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 129,
+     "key": "6:13:3",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 228,
+     "key": "11:56:8",
+     "status": "confirmed",
+     "note": "",
+     "sig": "4e98cf3d"
+    },
+    {
+     "page": 260,
+     "key": "14:39:5",
+     "status": "reopened",
+     "note": "stole hamza+kasratan from the word above",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 341,
+     "key": "22:73:18",
+     "status": "confirmed",
+     "note": "the word before it stole له with the pause and diacritics; shows waw+fatha from following word",
+     "sig": "4e98cf3d"
+    },
+    {
+     "page": 350,
+     "key": "24:3:9",
+     "status": "confirmed",
+     "note": "stole a far away fatha",
+     "sig": "4e98cf3d"
+    },
+    {
+     "page": 350,
+     "key": "24:4:2",
+     "status": "confirmed",
+     "note": "",
+     "sig": "4e98cf3d"
+    },
+    {
+     "page": 526,
+     "key": "53:26:6",
+     "status": "confirmed",
+     "note": "",
+     "sig": "4e98cf3d"
+    },
+    {
+     "page": 535,
+     "key": "56:33:3",
+     "status": "confirmed",
+     "note": "",
+     "sig": "4e98cf3d"
+    },
+    {
+     "page": 535,
+     "key": "56:44:1",
+     "status": "confirmed",
+     "note": "",
+     "sig": "4e98cf3d"
+    },
+    {
+     "page": 543,
+     "key": "58:7:39",
+     "status": "confirmed",
+     "note": "",
+     "sig": "4e98cf3d"
+    },
+    {
+     "page": 90,
+     "key": "4:78:20",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 121,
+     "key": "5:83:5",
+     "status": "no-issue",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 121,
+     "key": "5:83:20",
+     "status": "no-issue",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 121,
+     "key": "5:83:21",
+     "status": "no-issue",
+     "note": "",
+     "sig": "5456a19d"
+    },
+    {
+     "page": 122,
+     "key": "5:89:21",
+     "status": "confirmed",
+     "note": "stole kasra from next word",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 122,
+     "key": "5:90:10",
+     "status": "no-issue",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 123,
+     "key": "5:95:27",
+     "status": "confirmed",
+     "note": "stole kasra from prev word",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 145,
+     "key": "6:131:2",
+     "status": "no-issue",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 145,
+     "key": "6:131:4",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 145,
+     "key": "6:131:10",
+     "status": "no-issue",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 222,
+     "key": "11:8:16",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 350,
+     "key": "24:3:14",
+     "status": "no-issue",
+     "note": "",
+     "sig": "5456a19d"
+    },
+    {
+     "page": 355,
+     "key": "24:39:6",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 418,
+     "key": "33:4:2",
+     "status": "no-issue",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 446,
+     "key": "37:5:3",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 499,
+     "key": "45:8:10",
+     "status": "confirmed",
+     "note": "extra fatha at the end",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 507,
+     "key": "47:4:4",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 507,
+     "key": "47:4:34",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 507,
+     "key": "47:8:3",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 532,
+     "key": "55:41:4",
+     "status": "no-issue",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 535,
+     "key": "56:34:1",
+     "status": "no-issue",
+     "note": "",
+     "sig": "5456a19d"
+    },
+    {
+     "page": 576,
+     "key": "74:31:22",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 583,
+     "key": "79:16:1",
+     "status": "no-issue",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 585,
+     "key": "80:12:3",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 596,
+     "key": "92:14:1",
+     "status": "reopened",
+     "note": "missing a large part of تكم",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 596,
+     "key": "92:14:2",
+     "status": "confirmed",
+     "note": "stole a large part from the word before it",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 599,
+     "key": "98:6:2",
+     "status": "confirmed",
+     "note": "",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 599,
+     "key": "98:6:11",
+     "status": "confirmed",
+     "note": "stole kasrah from the word above it",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 599,
+     "key": "98:6:13",
+     "status": "confirmed",
+     "note": "missing fatha at the end",
+     "sig": "ab70bf3f"
+    },
+    {
+     "page": 133,
+     "key": "6:47:8",
+     "status": "confirmed",
+     "note": "stole fatha from prev word",
+     "sig": "58d52cb7"
+    },
+    {
+     "page": 526,
+     "key": "53:26:1",
+     "status": "no-issue",
+     "note": "",
+     "sig": "fece1810"
+    },
+    {
+     "page": 418,
+     "key": "33:3:6",
+     "status": "no-issue",
+     "note": "",
+     "sig": "854c7c34"
+    },
+    {
+     "page": 535,
+     "key": "56:44:4",
+     "status": "confirmed",
+     "note": "",
+     "sig": "68af18bf"
+    }
+   ]
   }
  ]
 }
