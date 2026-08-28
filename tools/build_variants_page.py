@@ -80,7 +80,7 @@ h1{font-size:22px} h2{font-size:18px;margin:24px 0 6px;padding:4px 10px;
 background:#eee;border-radius:6px;cursor:pointer}
 .row{background:#fff;border:1px solid #ddd;border-radius:8px;padding:10px 14px;
 margin:6px 0;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.ink{width:170px;height:80px;flex:none;border:1px solid #eee;border-radius:6px}
+.ink{width:170px;height:80px;} .ink.zoom{width:80px;height:80px;flex:none;border:1px solid #eee;border-radius:6px}
 .ink svg{width:100%;height:100%}
 .w{font-size:20px;font-family:'KFGQPC Uthmanic Script HAFS',serif}
 .k{color:#888;font-size:12px}
@@ -123,6 +123,7 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                              ("damma", "dammatan") else tl))
             out.append(
                 '<div class="row"><div class="ink">%s</div>'
+                '<div class="ink zoom" title="the mark alone"></div>'
                 '<div style="flex:1;min-width:260px">'
                 '<div style="font-size:14px;font-weight:600">final: %s</div>'
                 '<div class="k">sig %s · %d× · '
@@ -153,11 +154,33 @@ document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
 });
 function fitInk(scope){
   requestAnimationFrame(() => {
-    (scope || document).querySelectorAll('.ink svg:not([data-fit])').forEach(s => {
+    (scope || document).querySelectorAll('.ink:not(.zoom) svg:not([data-fit])').forEach(s => {
       try { const bb = s.getBBox();
-        if (bb.width && bb.height) {
-          s.setAttribute('viewBox', `${bb.x-3} ${bb.y-3} ${bb.width+6} ${bb.height+6}`);
-          s.dataset.fit = "1";
+        if (!bb.width || !bb.height) return;
+        s.setAttribute('viewBox', `${bb.x-3} ${bb.y-3} ${bb.width+6} ${bb.height+6}`);
+        s.dataset.fit = "1";
+        const red = s.querySelector('path[style*="c22"]');
+        if (!red) return;
+        const rb = red.getBBox();
+        // halo circle so a 2-unit dot is findable in the word view
+        const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+        const r = Math.max(rb.width, rb.height) / 2 + 2.5;
+        c.setAttribute('cx', rb.x + rb.width/2);
+        c.setAttribute('cy', rb.y + rb.height/2);
+        c.setAttribute('r', r);
+        c.setAttribute('style',
+          'fill:none;stroke:#c22;stroke-width:0.5;opacity:.75');
+        red.parentNode.appendChild(c);
+        // mark-alone zoom box
+        const zbox = s.closest('.row').querySelector('.ink.zoom');
+        if (zbox) {
+          const clone = s.cloneNode(true);
+          clone.querySelector('circle')?.remove();
+          clone.setAttribute('viewBox',
+            `${rb.x-2} ${rb.y-2} ${rb.width+4} ${rb.height+4}`);
+          clone.removeAttribute('data-fit');
+          clone.style.width = '100%'; clone.style.height = '100%';
+          zbox.appendChild(clone);
         }
       } catch(_){}
     });
