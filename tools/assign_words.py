@@ -2007,6 +2007,8 @@ def rewrite(page, assignment):
                 extra += 'data-form="%s" ' % e["tanform"]
             if e.get("mnqpair"):
                 extra += 'data-pair="%s" ' % e["mnqpair"]
+            if e.get("iqpair"):
+                extra += 'data-iqlab="%s" ' % e["iqpair"]
             if e.get("fused"):
                 extra += 'data-fused="1" '
             if e.get("standalone"):
@@ -9657,6 +9659,56 @@ def assign_page(edition, page_no, cache_dir):
                 _pid = "mnq-%d-%d-%d" % (_s4, _a4, _k4 // 2 + 1)
                 _lst4[_k4][2]["mnqpair"] = _pid
                 _lst4[_k4 + 1][2]["mnqpair"] = _pid
+
+    # IQLAB UNIT (Abdullah 2026-08-28): the print draws iqlab as ONE unit —
+    # a haraka + the small م. Late reconciliation: at every print-iqlab word
+    # (ۢ/ۭ in the print text), the م must wear meem-iqlab (his p531 e236 was
+    # unnamed with a CORRECT table label; p577 e122 wore "pause"), and both
+    # halves carry one data-iqlab pair id. Names stay catalog-true: the
+    # haraka keeps fatha/kasra/damma — recitation changes, ink does not.
+    if os.environ.get("QSVG_IQPAIR", "1") == "1":
+        for _wi, _ai in assignment:
+            if not _wi:
+                continue
+            _ptx = _wi.get("qpc") or _wi["uthmani"]
+            if not any(c in _ptx for c in "\u06e2\u06ed"):
+                continue
+            _eli = [e for a in _ai for e in a["els"]]
+            _meem = [e for e in _eli if e.get("mark") == "meem-iqlab"
+                     and not e.get("mkpart")]
+            if not _meem:
+                for e in _eli:
+                    v = shape_labels().get(e.get("sig") or "")
+                    lb = v.get("label") if isinstance(v, dict) else v
+                    if lb == "meem-iqlab" and not e.get("mkpart"):
+                        e["kind"] = "mark"
+                        e["mark"] = "meem-iqlab"
+                        e["lab"] = "meem-iqlab"
+                        _meem = [e]
+                        break
+            if not _meem:
+                for e in _eli:
+                    if (e.get("mark") == "pause" and not e.get("mkpart")
+                            and (e["x2"] - e["x1"]) <= 6.5
+                            and (e["y2"] - e["y1"]) <= 6.5):
+                        e["mark"] = "meem-iqlab"
+                        e["lab"] = "meem-iqlab"
+                        _meem = [e]
+                        break
+            if not _meem:
+                continue
+            _m0 = _meem[0]
+            _cxm = (_m0["x1"] + _m0["x2"]) / 2
+            _har = [e for e in _eli
+                    if e.get("mark") in ("fatha", "kasra", "damma",
+                                         "fathatan", "kasratan", "dammatan")
+                    and not e.get("mkpart")]
+            if _har:
+                _h0 = min(_har, key=lambda e:
+                          abs((e["x1"] + e["x2"]) / 2 - _cxm))
+                _pid = "iq-%d-%d-%d" % (_wi["surah"], _wi["ayah"], _wi["pos"])
+                _m0["iqpair"] = _pid
+                _h0["iqpair"] = _pid
 
     # Shape identity outranks position, applied LAST (item 38, both faces).
     # By now every sig exists and every namer has spoken; where the word's
