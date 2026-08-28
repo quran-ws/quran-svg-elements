@@ -2,3 +2,9 @@
 {"page": 499, "eid": "e147", "key": "45:3:5", "word": "لَـَٔايَٰتࣲ", "sig": "c9b82d57cfff4954", "current": "kasratan-part", "correct": "fatha", "note": "Abdullah chat 14:19: the above pair are the fathas of ل/ء; real kasratan is below ت", "ts": "2026-08-28T14:22:43"}
 {"page": 268, "eid": "e608", "key": "16:12:13", "word": "لَـَٔايَٰتࣲ", "sig": "c9b82d57cfff4954", "current": "kasratan-part", "correct": "fatha", "note": "same rotation as p499", "ts": "2026-08-28T14:22:43"}
 {"page": 567, "eid": "e45", "key": "69:9:5", "word": "وَٱلْمُؤْتَفِكَٰتُ", "sig": "c9b82d57cfff4954", "current": "body", "correct": "fatha", "note": "slash as body inside the round-10 CERTAIN chain word", "ts": "2026-08-28T14:22:43"}
+{"page": 518, "eid": "e456", "key": "50:7:10", "word": "زَوْجِۭ", "sig": "78db55471472a3e0", "current": "body", "correct": "meem-iqlab", "note": null, "ts": "2026-08-28T18:59:03"}
+{"page": 531, "eid": "e226", "key": "54:55:6", "word": "مُّقْتَدِرِۭ", "sig": "78db55471472a3e0", "current": "body", "correct": "meem-iqlab", "note": null, "ts": "2026-08-28T18:59:05"}
+{"page": 332, "eid": "e882", "key": "22:5:68", "word": "زَوْجِۭ", "sig": "78db55471472a3e0", "current": "meem-iqlab (iqlab)", "correct": "meem-iqlab", "note": null, "ts": "2026-08-28T18:59:11"}
+{"page": 531, "eid": "e32", "key": "54:50:5", "word": "كَلَمْحِۭ", "sig": "78db55471472a3e0", "current": "meem-iqlab (iqlab)", "correct": "meem-iqlab", "note": null, "ts": "2026-08-28T18:59:14"}
+{"page": 531, "eid": "e224", "key": "54:55:6", "word": "مُّقْتَدِرِۭ", "sig": "2c26fe4e625d41f2", "current": "meem-iqlab (iqlab)", "correct": "letter", "note": null, "ts": "2026-08-28T19:00:01"}
+{"page": 577, "eid": "e115", "key": "74:51:3", "word": "قَسْوَرَةِۭ", "sig": "2c26fe4e625d41f2", "current": "meem-iqlab (iqlab)", "correct": "letter-part", "note": null, "ts": "2026-08-28T19:00:04"}

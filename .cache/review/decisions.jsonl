@@ -499,3 +499,4 @@
 {"id": "37a21a33-e103-455e-b379-ecf5f2423303", "action": "reject", "by": "machine-triage", "reviewer": "auto: word now clean in sweep tax1", "ts": "2026-08-27T23:22:15"}
 {"id": "0f3ff3fb-e305-4fae-ae2f-9affae5e64bc", "action": "reject", "by": "machine-triage", "reviewer": "auto: word now clean in sweep tax1", "ts": "2026-08-27T23:22:15"}
 {"id": "c7760f1d-c339-49fe-8445-181bdccce8ff", "action": "reject", "by": "machine-triage", "reviewer": "auto: word now clean in sweep tax1", "ts": "2026-08-27T23:22:15"}
+{"id": "5711bf37-6303-4a1a-9517-16d47aab2e51", "action": "withdraw", "by": "abdullah", "ts": "2026-08-28T15:15:41"}

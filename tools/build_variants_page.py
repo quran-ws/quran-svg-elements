@@ -90,6 +90,19 @@ def main():
                 break
         else:
             return ""
+        if 'data-eid="%s"' % eid not in grp:
+            # a STANDALONE sign (hizb, sajdah) lives outside every word
+            # group: the nearest word's group cannot show it. Render the
+            # sign's own path alone instead of an unrelated word.
+            pe = svg.find(">", m.start())
+            tail = svg.find("/>", m.start())
+            if tail == -1 or (0 <= pe < tail):
+                tail = svg.find("</path>", m.start())
+                grp = svg[m.start():tail + 7] if tail > -1 else ""
+            else:
+                grp = svg[m.start():tail + 2]
+            if not grp:
+                return ""
         grp = grp.replace('data-eid="%s" ' % eid,
                           'data-eid="%s" style="fill:#c22" ' % eid)
         # the sign's welded parts (the ج's dot, the قلى dots, the small

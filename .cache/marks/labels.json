@@ -24,8 +24,9 @@
   "label": "fatha"
  },
  "005430b3c8b67c6a": {
-  "ai": true,
-  "label": "meem-iqlab"
+  "label": "letter",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: a letter م of the TEXT, taken twice as meem-iqlab by the rescue passes."
  },
  "0059f4f1e9ab5ef8": {
   "ai": true,
@@ -432,7 +433,9 @@
   "label": "damma"
  },
  "06a7d045f47ace44": {
-  "label": "hamza+damma"
+  "label": "hamza+damma",
+  "auto": false,
+  "note": "composite: ؤ's hamza fused with its damma (p159 e503). Abdullah 2026-08-28: was showing final=hamza — emission must carry the composite."
  },
  "06b323beff5c31d4": {
   "auto": true,
@@ -679,8 +682,9 @@
   "label": "three-dots"
  },
  "0a2f0c349d9c1fb4": {
-  "ai": true,
-  "label": "dot"
+  "label": "ishmam",
+  "auto": false,
+  "note": "Abdullah 2026-08-28 (mark_taxonomy decision): the ishmam dot, 12:11 تَأْمَ۬نَّا p236."
  },
  "0a3bdb98ae00e7cc": {
   "auto": true,
@@ -2834,7 +2838,9 @@
   "label": "two-dots"
  },
  "2c26fe4e625d41f2": {
-  "label": "letter-part"
+  "label": "letter",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: the letter ر (p577 e115), was taken as meem-iqlab."
  },
  "2c2764b527361faf": {
   "auto": true,
@@ -4310,8 +4316,9 @@
   "label": "three-dots"
  },
  "42d027682ddba9b3": {
-  "ai": true,
-  "label": "fatha+dot"
+  "label": "fatha",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: plain fatha, AI had it as fatha+dot (p453 لَهَا / p590 لَهُمْ)."
  },
  "4303c9a6b6c615c9": {
   "auto": true,
@@ -4638,8 +4645,9 @@
   "label": "two-dots"
  },
  "4772cca2add5d192": {
-  "ai": true,
-  "label": "dot"
+  "label": "tashil",
+  "auto": false,
+  "note": "Abdullah 2026-08-28 (mark_taxonomy decision): the tashil dot, 41:44 ءَا۬عْجَمِىࣱّ p481."
  },
  "477f80c6200ae493": {
   "auto": true,
@@ -5729,7 +5737,9 @@
   "label": "three-dots"
  },
  "5869cc2b38457898": {
-  "label": "letter-part"
+  "label": "letter",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: letter ink, was taken as meem-iqlab."
  },
  "587750d34aa6f440": {
   "ai": true,
@@ -6533,8 +6543,9 @@
   "label": "two-dots"
  },
  "6474cc85d57c7bf4": {
-  "ai": true,
-  "label": "pause"
+  "label": "seen-reading",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: pause)"
  },
  "64784c527b9b1559": {
   "auto": true,
@@ -7433,8 +7444,9 @@
   "label": "letter-part"
  },
  "71ff3e1e23470f48": {
-  "ai": true,
-  "label": "dot"
+  "label": "imalah",
+  "auto": false,
+  "note": "Abdullah 2026-08-28 (mark_taxonomy decision): the imalah dot, 11:41 مَجْر۪ىٰهَا p226."
  },
  "7200236160c24d13": {
   "auto": true,
@@ -7929,8 +7941,9 @@
   "label": "two-dots"
  },
  "78db55471472a3e0": {
+  "label": "meem-iqlab",
   "auto": false,
-  "label": "meem-iqlab"
+  "note": "Abdullah variants review 2026-08-28: the low fused iqlab م (زَوْجِۭ p518 e456, مُّقْتَدِرِۭ p531 e226), was sitting as body."
  },
  "78db579738601600": {
   "auto": true,
@@ -8195,7 +8208,8 @@
  },
  "7d3b5bf233b0270a": {
   "label": "letter-part",
-  "note": "the small hamza part of letter ك"
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: the small stroke of ك, was being taken as meem-iqlab by the rescue passes."
  },
  "7d5794569f2edcfb": {
   "auto": true,
@@ -10420,8 +10434,9 @@
   "label": "letter-part"
  },
  "a0892b5a81f79b26": {
-  "ai": true,
-  "label": "pause"
+  "label": "pause",
+  "auto": false,
+  "note": "Abdullah 2026-08-28: a صلي (wasl-awla) outline."
  },
  "a09172837395b597": {
   "auto": true,
@@ -10940,8 +10955,9 @@
   "label": "ignore"
  },
  "a8dfd9e5f7bb5cd5": {
+  "label": "meem-iqlab",
   "auto": false,
-  "label": "meem-iqlab"
+  "note": "Abdullah variants review 2026-08-28: the actual iqlab م outline (e266/e577), was sitting unnamed as body."
  },
  "a8e2cbefa12184e7": {
   "auto": true,
@@ -13099,8 +13115,9 @@
   "label": "damma"
  },
  "cc09cbebef3c9261": {
+  "label": "letter",
   "auto": false,
-  "label": "letter"
+  "note": "Abdullah variants review 2026-08-28: letter ink, was taken as meem-iqlab."
  },
  "cc178da3be30bbdc": {
   "auto": true,
@@ -15828,8 +15845,9 @@
   "label": "pause"
  },
  "f63db39dac0f4e67": {
-  "ai": true,
-  "label": "fatha+dot"
+  "label": "fatha",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: plain fatha, AI had it as fatha+dot (p453 لَهَا / p590 لَهُمْ)."
  },
  "f64599190180a182": {
   "ai": true,
@@ -16444,5 +16462,20 @@
   "label": "two-dots",
   "auto": false,
   "note": "Abdullah 2026-08-28: 2-dot contour of the ث in p66 بثلاثة — with its single dot = three-dots"
+ },
+ "f0bd6b45e7fdf5ce": {
+  "label": "letter",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: a letter ن, was taken as meem-iqlab; the real sign (a8dfd9e5) sat as body."
+ },
+ "3f64b7037e5b7838": {
+  "label": "pause",
+  "auto": false,
+  "note": "Abdullah 2026-08-28: the قلي outline of p14 مَعَهُمْۗ was kind=body; its lower dots were the only pause mark."
+ },
+ "448337c0c4b14f73": {
+  "label": "small-noon",
+  "auto": false,
+  "note": "2026-08-28: the superscript ۨ of 21:88 نُـۨجِى (p329) — the mushaf's ONE small-noon site (taxonomy Q1); was unnamed. Deficit-of-one proof: the word's only unnamed mark, its only missing budget family."
  }
 }
