@@ -105,6 +105,12 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
             v = lab.get(sig)
             tl = (v.get("label") if isinstance(v, dict) else v) or "—"
             auto = v.get("auto", False) if isinstance(v, dict) else False
+            # FINAL identification split: what the finished build actually
+            # calls this shape, occurrence by occurrence (Abdullah audits the
+            # end result, not the table)
+            fin = Counter(m for _, _, m, _ in rws)
+            fin_show = " / ".join("%s %d×" % (k, n)
+                                  for k, n in fin.most_common())
             samples = "".join(
                 '<span class="w">%s</span> <a class="k" href="/?page=%d&step=audit&user=abdullah">p%d</a> &nbsp;'
                 % (html.escape(t), p, p) for p, t, _, _ in rws[:3])
@@ -117,14 +123,20 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                              ("damma", "dammatan") else tl))
             out.append(
                 '<div class="row"><div class="ink">%s</div>'
-                '<div style="flex:1;min-width:260px"><div class="k">sig %s · %d× · '
-                'table: %s%s · <a href="#" class="more" data-sig="%s">30 samples…</a></div>'
+                '<div style="flex:1;min-width:260px">'
+                '<div style="font-size:14px;font-weight:600">final: %s</div>'
+                '<div class="k">sig %s · %d× · '
+                'table: %s%s%s</div>'
                 '<div>%s</div>'
                 '<div class="btns">%s</div>'
                 '<textarea placeholder="note" data-sig="%s"></textarea>'
                 '<span class="saved" id="sv-%s"></span></div></div>'
-                % (snippet(pg0, eid0), sig[:12], len(rws), tl_show,
-                   " (auto)" if auto else "", sig, samples, btns, sig, sig[:12]))
+                % (snippet(pg0, eid0), html.escape(fin_show), sig[:12],
+                   len(rws), tl_show,
+                   " (auto)" if auto else "",
+                   (' · <a href="#" class="more" data-sig="%s">view %d samples…</a>'
+                    % (sig, min(30, len(rws)))) if len(rws) > 1 else "",
+                   samples, btns, sig, sig[:12]))
         out.append("</div>")
     out.append("""<script>
 document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
