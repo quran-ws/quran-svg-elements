@@ -75,8 +75,8 @@ def main():
            'font-size:12.5px}',
            '.ink{width:230px;height:95px}.ink svg{width:220px;height:90px}'
            '</style>',
-           '<h1>Everything that remains — %d mark flags · %d interval '
-           'records</h1>' % (len(marks), len(intervals)),
+           '<h1>Everything that remains</h1>',
+           '<p id="tally"></p>',
            '<p>Red ink = the flagged mark family. Every link opens the '
            'review page with the word highlighted.</p>']
     for title, _ in GROUPS:
@@ -104,15 +104,71 @@ def main():
                       (" ↔ " + n) if n else "", key, pg, key))
     out.append('<h2>Interval records — %d</h2><table>%s</table>'
                % (len(ivr), "".join(ivr)))
+
+    # POSITION dimension — the counting audits are blind to a mark of the
+    # right name in the WRONG PLACE, which is most of what Abdullah's eye
+    # catches. Each detector writes a {page: [rows]} json; the row's second
+    # field is always the word text and the last is the human sentence.
+    npos = 0
+    for cachename, title, note in (
+            ("topmost", "Topmost law",
+             "a letter body drawn above a fatha/damma/sukun — forbidden"),
+            ("slashpos", "Slash on the wrong side",
+             "a fatha below its letters, or a kasra above them — the "
+             "name-inversion signature of a mis-owned stroke"),
+            ("crossline", "Drawn in another line's territory", ""),
+            ("wordheight_form", "Too tall for this word elsewhere",
+             "holding ink from another line")):
+        f = os.path.join(ROOT, ".cache", "%s.json" % cachename)
+        if not os.path.exists(f):
+            continue
+        try:
+            data = json.load(open(f))
+        except Exception:
+            continue
+        rows = []
+        for pg in sorted(data, key=lambda p: int(p)):
+            for r in data[pg]:
+                key = r[0]
+                wtxt = r[1] if len(r) > 1 else "?"
+                fam = r[2] if len(r) > 2 and isinstance(r[2], str) else ""
+                why = next((x for x in reversed(r)
+                            if isinstance(x, str) and " " in x), "")
+                if why == wtxt:
+                    why = ""
+                if not why and len(r) > 2:
+                    why = " · ".join(
+                        ("%.2fx" % x) if isinstance(x, float) else str(x)
+                        for x in r[2:])
+                rows.append(
+                    '<tr><td class="ink">%s</td><td class="w">%s</td>'
+                    '<td>%s</td>'
+                    '<td><a href="/?page=%s&step=audit&user=abdullah'
+                    '&word=%s">open highlighted</a></td>'
+                    '<td class="b">%s</td></tr>'
+                    % (snippet(int(pg), wtxt, [fam] if fam else []),
+                       wtxt, key, pg, key, html.escape(str(why))))
+        npos += len(rows)
+        if rows:
+            out.append('<h2>%s — %d</h2>%s<table>%s</table>'
+                       % (title, len(rows),
+                          ('<p style="color:#666;font-size:13px;'
+                           'margin:2px 0 6px">%s</p>' % note) if note else "",
+                          "".join(rows)))
+
     out.append('<script>document.querySelectorAll(".ink svg").forEach(s=>{'
                'try{const bb=s.getBBox();if(bb.width&&bb.height)'
                's.setAttribute("viewBox",`${bb.x-4} ${bb.y-4} '
                '${bb.width+8} ${bb.height+8}`);}catch(e){}});</script>')
 
+    out.append('<script>document.getElementById("tally").textContent = '
+               '[...document.querySelectorAll("h2")].map(h=>h.textContent)'
+               '.join("  ·  ");</script>')
+
     dst = os.path.join(ROOT, "docs", "defects", "remaining.html")
     open(dst, "w", encoding="utf-8").write("\n".join(out))
-    print("wrote %s — %d mark flags, %d interval records"
-          % (dst, len(marks), len(intervals)))
+    print("wrote %s — %d mark flags, %d interval records, %d position"
+          % (dst, len(marks), len(intervals), npos))
 
 
 if __name__ == "__main__":
