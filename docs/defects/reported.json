@@ -420,6 +420,13 @@
    "turned_out": "The naming layer renames a below-position hamza into the kasra family — position beat shape, violating classify()'s own rule ('shape identity outranks position'). Also my r11 label apply left auto:True (now cleared). Fix: a human-confirmed hamza label is never renamed to a slash family. | SECOND FACE (Abdullah, 33:3:6 p418 e295): sig e2d0fd140fc49dfc is table-labeled fatha yet emits as UNLABELED BODY — a labeled slash demoted to letter ink; occurs exactly on the slash-chain pages (418/446/576/583/599). One naming-layer fix covers both faces.",
    "fixed": true,
    "status": "FIXED 2026-08-28, gated (bench cases p249/p583; dot merge flag-neutral + pixel-identical)"
+  },
+  {
+   "id": 39,
+   "date": "2026-08-28",
+   "reporter": "pipeline (after Abdullah's p548 two-dots verdict)",
+   "what": "59:22:10 وَٱلشَّهَٰدَةِۖ (p548): both texts carry ۖ but after the ة's stolen two-dots were returned (sig 08eefab4 wore 'pause'), no صلے ink exists anywhere near the word.",
+   "status": "awaiting Abdullah's eye — does the print draw a صلے over وٱلشهادة's end, or is this a print omission (art fact)?"
   }
  ]
 }
