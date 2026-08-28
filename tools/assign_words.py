@@ -9798,6 +9798,7 @@ def assign_page(edition, page_no, cache_dir):
                 _p2["mkmembers"] = []
                 _p2["mark"] = "fatha"
                 _p2["lab"] = "fatha"
+                _p2.pop("tanform", None)     # no longer a tanween pair
                 # two lowest below-fathas -> the kasratan pair
                 _ma2, _mb2 = _low_f[0], _low_f[1]
                 _mb2["mkpart"] = True
