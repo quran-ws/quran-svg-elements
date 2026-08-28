@@ -426,7 +426,7 @@
    "date": "2026-08-28",
    "reporter": "pipeline (after Abdullah's p548 two-dots verdict)",
    "what": "59:22:10 وَٱلشَّهَٰدَةِۖ (p548): both texts carry ۖ but after the ة's stolen two-dots were returned (sig 08eefab4 wore 'pause'), no صلے ink exists anywhere near the word.",
-   "status": "awaiting Abdullah's eye — does the print draw a صلے over وٱلشهادة's end, or is this a print omission (art fact)?"
+   "status": "RESOLVED 2026-08-28: the صلے was inside the word as kind=body (e622, sig f5581079 — the canonical صلي outline). QSVG_WQBODY now promotes a body wearing a waqf outline in a word owed a pause; p548 clean, no eye needed."
   }
  ]
 }
