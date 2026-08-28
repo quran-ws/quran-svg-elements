@@ -45,7 +45,8 @@ ALLOWED_MARKS = {
     "pause", "saktah", "seen-reading",
     "sajdah-line", "sajdah-sign", "hizb",
 }
-ALLOWED_KINDS = {"body", "mark", "ayah-marker-ornament", "ayah-number"}
+ALLOWED_KINDS = {"body", "mark", "ayah-marker-ornament", "ayah-number",
+                 "header-ink", "ornament"}   # one-item headers + banner decoration (2026-08-28)
 # the standalone <g class="sajdah-mark"> keeps the family name "sajdah" at
 # GROUP level; its paths carry the split names sajdah-line / sajdah-sign
 ALLOWED_GROUP_MARKS = {"sajdah", "hizb"}

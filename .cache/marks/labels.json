@@ -618,8 +618,9 @@
   "label": "small-circle"
  },
  "093178c2cdec8286": {
-  "label": "ignore",
-  "note": "opening-spread, visually verified"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: ignore)"
  },
  "095064422819b7d8": {
   "auto": true,
@@ -1994,8 +1995,9 @@
   "label": "fatha"
  },
  "1f0222d822eef539": {
-  "label": "ignore",
-  "note": "degenerate sliver <0.2 units"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: ignore)"
  },
  "1f23d32e9c21919d": {
   "auto": false,
@@ -2338,8 +2340,9 @@
   "label": "fatha"
  },
  "24a1db8cda046bcb": {
-  "label": "ignore",
-  "note": "degenerate sliver <0.2 units"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: ignore)"
  },
  "24c4d24bb5072453": {
   "ai": true,
@@ -6230,8 +6233,9 @@
   "label": "fatha"
  },
  "605d51a28d6d5858": {
-  "label": "ignore",
-  "note": "opening-spread, visually verified"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: ignore)"
  },
  "605f63bdf0b4c29e": {
   "auto": true,
@@ -8512,8 +8516,9 @@
   "label": "fatha"
  },
  "81d9ab2ce00f3a93": {
-  "label": "ignore",
-  "note": "degenerate sliver <0.2 units"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: ignore)"
  },
  "81e9d8aea5381a87": {
   "auto": true,
@@ -10327,8 +10332,9 @@
   "label": "three-dots"
  },
  "9eea320225fa61b7": {
-  "label": "ignore",
-  "note": "degenerate sliver <0.2 units"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: ignore)"
  },
  "9efbda77414b269c": {
   "auto": true,
@@ -14157,8 +14163,9 @@
   "label": "fatha"
  },
  "dcd6bb2cde6d73f2": {
-  "label": "ignore",
-  "note": "degenerate sliver <0.2 units"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: ignore)"
  },
  "dce2414bfa4b5566": {
   "auto": true,
@@ -14775,8 +14782,9 @@
   "label": "two-dots"
  },
  "e63b8ba177f08f6b": {
-  "label": "ignore",
-  "note": "degenerate sliver <0.2 units"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: ignore)"
  },
  "e6432e1243932918": {
   "auto": true,
@@ -15752,8 +15760,9 @@
   "label": "ignore"
  },
  "f54c1a8281c32fd8": {
-  "label": "ignore",
-  "note": "opening-spread, visually verified"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: ignore)"
  },
  "f553e15be62af585": {
   "auto": false,
@@ -16417,5 +16426,10 @@
   "label": "hamza",
   "auto": false,
   "note": "Abdullah variants review 2026-08-28 (was: None)"
+ },
+ "0a98aa1a05b65855": {
+  "label": "two-dots",
+  "auto": false,
+  "note": "Abdullah 2026-08-28: 2-dot contour of the ث in p66 بثلاثة — with its single dot = three-dots"
  }
 }

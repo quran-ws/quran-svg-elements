@@ -1776,6 +1776,25 @@ def rewrite(page, assignment):
     # where the header wrapper below picks it up; fabricated mark names are
     # left in place — titles carry real diacritics and are not audited, so a
     # wrong label here is display-only and visible in the header group.
+    # ORNAMENT demotion, HEADER CONTEXT ONLY (Abdullah 2026-08-28): a
+    # wordless unnamed fragment whose shape the table calls "ignore" AND that
+    # sits on a basmalah/surah-name line is banner decoration — plain
+    # ornament ink. Anywhere else an unnamed mark stays visible in the
+    # UNNAMED review section: an unknown shape could be a stolen real mark.
+    if hdr_art:
+        for _wo9, _ao9 in assignment:
+            if _wo9:
+                continue
+            for _a9 in _ao9:
+                for e in _a9["els"]:
+                    if (e["kind"] == "mark" and not e.get("mark")
+                            and e.get("line") in hdr_art):
+                        v9 = shape_labels().get(e.get("sig") or "")
+                        lb9 = v9.get("label") if isinstance(v9, dict) else v9
+                        if lb9 == "ignore":
+                            e["kind"] = "ornament"
+                            e.pop("mkpart", None)
+
     if hdr_art and os.environ.get("QSVG_HDRGUARD", "1") == "1":
         # Exception, p349-measured: a last-line word's own suffix mark (ـهُۥ's
         # ۥ, a maddah) genuinely dips into the header band and the line cut
@@ -9669,24 +9688,46 @@ def assign_page(edition, page_no, cache_dir):
                 _lst4[_k4][2]["mnqpair"] = _pid
                 _lst4[_k4 + 1][2]["mnqpair"] = _pid
 
-    # UNNAMED STANDALONE PIECES: the hizb ۞ sign's companion contours were
-    # emitted as bare kind=mark with no name (143 mushaf-wide). Any unnamed
-    # mark inside a standalone sign's atom takes the sign's name as a part.
+    # UNNAMED STANDALONE PIECES: the hizb ۞ / sajdah signs' companion
+    # contours were emitted as bare kind=mark with no name (169 mushaf-wide,
+    # on the hizb-quarter pages). An unnamed wordless fragment joins the
+    # standalone sign whose ink it sits beside (same atom, or within 15u of
+    # a named sign) as a part — one sign, one mark. Anything that matches no
+    # sign stays visible in the UNNAMED review section.
+    _signs = []
+    for _wu, _au in assignment:
+        for _a in _au:
+            for e in _a["els"]:
+                if e.get("mark") in ("hizb", "sajdah-sign", "sajdah-line") \
+                        and not e.get("mkpart"):
+                    _signs.append(e)
     for _wu, _au in assignment:
         if _wu:
             continue
         for _a in _au:
             _named = [e for e in _a["els"] if e.get("mark")]
             _sa9 = _a.get("sa")
-            _base = (_named[0]["mark"] if _named else
-                     (_sa9[0] if _sa9 else None))
-            if not _base:
-                continue
+            _base = (_named[0] if _named else None)
             for e in _a["els"]:
-                if e["kind"] == "mark" and not e.get("mark"):
-                    e["mark"] = _base
+                if e["kind"] != "mark" or e.get("mark"):
+                    continue
+                _tgt = _base
+                if _tgt is None and _sa9:
+                    e["mark"] = _sa9[0]
                     e["mkpart"] = True
-
+                    continue
+                if _tgt is None:
+                    _cx = (e["x1"] + e["x2"]) / 2
+                    _cy = (e["y1"] + e["y2"]) / 2
+                    _near = [t for t in _signs
+                             if t["x1"] - 15 <= _cx <= t["x2"] + 15
+                             and t["y1"] - 15 <= _cy <= t["y2"] + 15]
+                    if len(_near) == 1:
+                        _tgt = _near[0]
+                if _tgt is not None:
+                    e["mark"] = _tgt["mark"]
+                    e["mkpart"] = True
+                    _tgt.setdefault("mkmembers", []).append(e)
     # ROTATED TANWEEN PAIR (Abdullah 2026-08-28, لَـَٔايَٰتࣲ p499/p268): two
     # adjacent fathas at a word's TOP get welded and named kasratan, while the
     # word's real kasratan below wears two fatha names — a perfectly
