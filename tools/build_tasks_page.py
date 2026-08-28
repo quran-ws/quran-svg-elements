@@ -61,6 +61,8 @@ def main():
                  "One glance: are the two words on the right lines? (line 15)"))
     rows.append((4, 177, "8:6", "بَعْدَ مَا",
                  "One glance: are the two words on the right lines? (line 12)"))
+    rows.append((4, 0, "variants", "1024 shapes",
+                 "Flag wrong mark shapes on the variants catalog (red = the shape in a real word)."))
     rows.append((4, 0, "taxonomy", "9 questions",
                  "Answer the sign-naming questions (mark_taxonomy.md, top section)."))
     rows.append((4, 329, "21:88", "نُـۨجِى",
@@ -94,6 +96,7 @@ text-decoration:none;font-size:13px;white-space:nowrap}
             link = "/proposals"
         elif grp == 4:
             link = ("/docs/defects/label_sheet.html" if key == "labels"
+                    else "/docs/defects/variants.html" if key == "variants"
                     else "/docs/defects/mark_taxonomy.md" if key == "taxonomy"
                     else "/?page=%d&step=audit&user=abdullah" % pg)
         else:
