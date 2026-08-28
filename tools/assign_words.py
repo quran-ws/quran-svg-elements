@@ -2050,7 +2050,13 @@ def rewrite(page, assignment):
                         open_ayah = None
                     out.append('<g class="%s" data-surah="%d">' % hd)
                     open_hdr = hd
-                emit(e)
+                # ONE ITEM per header (Abdullah 2026-08-28): inside a surah
+                # name or basmalah the block is the semantic unit — emit the
+                # ink plain, no data-eid/kind/mark decomposition. Header
+                # glyphs stop polluting the mark inventories too.
+                out.append(head.replace(
+                    "<path ", '<path data-kind="header-ink" ', 1)
+                    + build_d(e["contours"]) + tail)
                 continue
             wkey = id(word) if word else None
             if sa and open_sa is None:
@@ -9695,6 +9701,10 @@ def assign_page(edition, page_no, cache_dir):
                                 key=lambda e: -(e["y1"] + e["y2"]))
                 if len(_low_f) < 2:
                     continue
+                if os.environ.get("QSVG_TANDBG"):
+                    print("TANROT p? %d:%d:%d %s" % (
+                        _wr2["surah"], _wr2["ayah"], _wr2["pos"],
+                        _wr2["uthmani"]), file=sys.stderr)
                 # rotate: top pair -> two fathas
                 for _m2 in _p2.get("mkmembers", []):
                     _m2["mkpart"] = False
