@@ -6945,6 +6945,12 @@ def assign_page(edition, page_no, cache_dir):
                     fix = "slash"
                 elif cur in ("fatha", "kasra", "damma", "dammatan")                         and t == "shadda":
                     fix = "shadda"
+                elif cur == "pause" and t in ("dot", "two-dots",
+                                              "three-dots"):
+                    # a letter's dots taken as a waqf sign (p548
+                    # وَٱلشَّهَٰدَةِۖ: the ة pair named pause). Welded
+                    # sign satellites are mkpart and never reach here.
+                    _e2["mark"] = t
                 elif cur == "small-waw" and t == "damma":
                     _e2["mark"] = "damma"
                 if fix == "slash":
