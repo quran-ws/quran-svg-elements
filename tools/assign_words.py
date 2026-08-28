@@ -2042,6 +2042,15 @@ def rewrite(page, assignment):
 
     svg = page.svg
     eid = [0]
+    _EIDMAP = []
+    if os.environ.get("QSVG_EIDMAP"):
+        import atexit as _ae
+        def _dump_eidmap(_l=_EIDMAP):
+            try:
+                json.dump(_l, open(os.environ["QSVG_EIDMAP"], "w"))
+            except Exception:
+                pass
+        _ae.register(_dump_eidmap)
     out, pos = [], 0
     for pi, p in enumerate(page.paths):
         s, t = p["span"]
@@ -2076,6 +2085,12 @@ def rewrite(page, assignment):
 
         def emit(e):
             eid[0] += 1
+            if os.environ.get("QSVG_EIDMAP"):
+                _EIDMAP.append({"eid": "e%d" % eid[0],
+                                "x1": round(e["x1"], 1), "y1": round(e["y1"], 1),
+                                "x2": round(e["x2"], 1), "y2": round(e["y2"], 1),
+                                "kind": e["kind"], "mark": e.get("mark"),
+                                "part": bool(e.get("mkpart"))})
             extra = '<path data-eid="e%d" data-kind="%s" ' % (eid[0], e["kind"])
             wq = None
             if e.get("sig"):
@@ -10632,6 +10647,19 @@ def assign_page(edition, page_no, cache_dir):
             for _fam, (_tch, _sng, _sch) in _TP.items():
                 _want = sum(_txv.count(c) for c in _tch)
                 if not _want:
+                    # the word has NO budget for this tanween at all — a
+                    # single stroke wearing its name escaped every check
+                    # below (p535 مَقْطُوعَةࣲ, the last survivor of the
+                    # 19). It is the single vowel; multi-stroke pairs stay
+                    # (a stolen whole pair is an ownership question).
+                    for _m1 in _elv:
+                        if _m1.get("mark") == _fam \
+                                and not _m1.get("mkpart") \
+                                and not _m1.get("mkmembers") \
+                                and len(_m1["contours"]) == 1:
+                            _m1["mark"] = _sng[0]
+                            _m1["lab"] = _sng[0]
+                            _m1.pop("tanform", None)
                     continue
                 _mst = [e for e in _elv if e.get("mark") == _fam
                         and not e.get("mkpart")]
