@@ -10239,6 +10239,41 @@ def assign_page(edition, page_no, cache_dir):
                             e["lab"] = lb
                             _have += 1
 
+    # A BODY wearing a waqf outline is the waqf (Abdullah 2026-08-28,
+    # p548 وَٱلشَّهَٰدَةِۖ: its صلے sat as letter ink and the word read as
+    # missing its sign — the only body+data-waqf emission in the mushaf).
+    # Budget is the license: only a word still OWED a pause may promote.
+    if os.environ.get("QSVG_WQBODY", "1") == "1":
+        _wqt = waqf_types()
+        _WQC2 = "\u06d6\u06d7\u06d8\u06d9\u06da\u06dc"
+        for _wb, _ab in assignment:
+            if not _wb:
+                continue
+            _ptb = _wb.get("qpc") or _wb["uthmani"]
+            _budb = sum(_ptb.count(c) for c in _WQC2)
+            if not _budb:
+                continue
+            _elb = [e for a in _ab for e in a["els"]]
+            _hvb = sum(1 for e in _elb if e.get("mark") == "pause"
+                       and not e.get("mkpart"))
+            if _hvb >= _budb:
+                continue
+            for e in _elb:
+                if _hvb >= _budb:
+                    break
+                if e["kind"] != "body" or e.get("mkpart") or e.get("mark"):
+                    continue
+                try:
+                    _sg = e.get("sig") or sig_key(signature(el_points(e)))
+                except Exception:
+                    continue
+                if _sg in _wqt:
+                    e.setdefault("sig", _sg)
+                    e["kind"] = "mark"
+                    e["mark"] = "pause"
+                    e["lab"] = "pause"
+                    _hvb += 1
+
     # A waqf sign OWNS its satellite ink (Abdullah 2026-08-28, p14
     # مَعَهُمْۗ: the قلي's two lower dots auto-labelled as a second
     # "pause"). When a word holds more pause MASTERS than its text has waqf
