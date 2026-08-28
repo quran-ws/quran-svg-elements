@@ -43,15 +43,18 @@ def main():
             occ[sig].append((pg, wt.group(1) if wt else "", mark, eid))
     lab = json.load(open(os.path.join(ROOT, ".cache", "marks", "labels.json")))
     # prior review flags (last wins per sig)
-    flags = {}
+    flags, reviewed = {}, {}
     fp = os.path.join(ROOT, ".cache", "review", "sig_labels.jsonl")
     if os.path.exists(fp):
         for line in open(fp, encoding="utf-8"):
             try:
                 v = json.loads(line)
-                flags[v["sig"]] = v
             except Exception:
-                pass
+                continue
+            if v.get("label") and v["label"] != "reviewed-ok":
+                flags[v["sig"]] = v
+            if "reviewed" in v or v.get("label") == "reviewed-ok":
+                reviewed[v["sig"]] = v.get("reviewed", True)
 
     def snippet(pg, eid):
         f = os.path.join(CACHE, "%03d.svg" % pg)
@@ -103,9 +106,9 @@ textarea{width:220px;min-height:30px;font:inherit;font-size:12px}
 <h1>Mark variants — every shape, in place</h1>
 <p>Red = this shape inside a real word. Click the correct name if the label is
 wrong; it saves immediately. Click a family title to open it.</p>"""]
-    for fam in FAMS + sorted(set(by_fam) - set(FAMS)):
-        if fam not in by_fam:
-            continue
+    # sections ordered by total occurrences, rows within by count
+    fam_order = sorted(by_fam, key=lambda f: -sum(len(r) for _, r in by_fam[f]))
+    for fam in fam_order:
         rows = sorted(by_fam[fam], key=lambda t: -len(t[1]))
         out.append('<h2 onclick="this.nextElementSibling.classList.toggle(\'open\');fitInk(this.nextElementSibling)">'
                    '%s — %d shapes, %d occurrences</h2><div class="sec">'
@@ -125,14 +128,11 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                 '<span class="w">%s</span> <a class="k" href="/?page=%d&step=audit&user=abdullah">p%d</a> &nbsp;'
                 % (html.escape(t), p, p) for p, t, _, _ in rws[:3])
             fl = flags.get(sig)
-            state = ""
-            if fl:
-                state = (' <span class="saved">✓ reviewed</span>'
-                         if fl["label"] == "reviewed-ok" else
-                         ' <span class="saved">your label: %s</span>' % fl["label"])
-            btns = ('<button data-sig="%s" data-lab="reviewed-ok" '
-                    'class="rvw%s">✓ reviewed</button>'
-                    % (sig, " on" if fl and fl["label"] == "reviewed-ok" else ""))                 + "".join('<button data-sig="%s" data-lab="%s"%s>%s</button>'
+            rv = reviewed.get(sig, False)
+            state = ((' <span class="saved">your label: %s</span>' % fl["label"])
+                     if fl else "")
+            btns = ('<button data-sig="%s" class="rvw%s">✓ reviewed</button>'
+                    % (sig, " on" if rv else ""))                 + "".join('<button data-sig="%s" data-lab="%s"%s>%s</button>'
                           % (sig, c,
                              ' class="on"' if (fl and fl["label"] == c)
                              or (not fl and c == tl) else "", c)
@@ -164,11 +164,20 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
 document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
   const sig = b.dataset.sig;
   const note = document.querySelector(`textarea[data-sig="${sig}"]`).value;
+  if (b.classList.contains('rvw')) {
+    // reviewed is a FLAG, independent of the mark type
+    const now = !b.classList.contains('on');
+    fetch('/api/siglabel', {method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({sig, reviewed: now, note})})
+      .then(() => b.classList.toggle('on', now));
+    return;
+  }
   fetch('/api/siglabel', {method:'POST',
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({sig, label: b.dataset.lab, note})})
     .then(() => {
-      b.parentElement.querySelectorAll('button').forEach(x =>
+      b.parentElement.querySelectorAll('button:not(.rvw)').forEach(x =>
         x.classList.toggle('on', x === b));
       document.getElementById('sv-' + sig.slice(0,12)).textContent = 'saved ✓';
     });

@@ -485,11 +485,16 @@ class Handler(BaseHTTPRequestHandler):
                 # labels.json only through the measured path.
                 import time as _t
                 if not (isinstance(body, dict) and body.get("sig")
-                        and body.get("label")):
-                    return self.send_json({"error": "need sig and label"}, 400)
-                rec = {"sig": body["sig"], "label": body["label"],
+                        and (body.get("label") or "reviewed" in body)):
+                    return self.send_json(
+                        {"error": "need sig and label or reviewed"}, 400)
+                rec = {"sig": body["sig"],
                        "note": str(body.get("note") or "")[:500],
                        "ts": _t.strftime("%Y-%m-%dT%H:%M:%S")}
+                if body.get("label"):
+                    rec["label"] = body["label"]
+                if "reviewed" in body:
+                    rec["reviewed"] = bool(body["reviewed"])
                 with open(os.path.join(REVIEW_DIR, "sig_labels.jsonl"),
                           "a", encoding="utf-8") as f:
                     f.write(json.dumps(rec, ensure_ascii=False) + "\n")
