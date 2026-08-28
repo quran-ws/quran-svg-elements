@@ -737,7 +737,9 @@ def main():
     args = ap.parse_args()
     EDITION = args.edition
     os.makedirs(REVIEW_DIR, exist_ok=True)
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), Handler)
+    # 0.0.0.0 so the platform is reachable from other devices on the
+    # tailnet; nothing here is public — tailscale is the only other route in.
+    server = ThreadingHTTPServer(("0.0.0.0", args.port), Handler)
     print("review platform: http://127.0.0.1:%d/  (edition %s)"
           % (args.port, EDITION))
     try:
