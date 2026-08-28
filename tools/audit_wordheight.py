@@ -48,6 +48,13 @@ def scan_page(pg):
             continue
         bods = [e for e in els if e["kind"] == "body"]
         if not bods:
+            # the word the trap warns about: NO letter ink at all — flag
+            # unconditionally (its marks give it a position)
+            key = "%d:%d:%d" % (word["surah"], word["ayah"], word["pos"])
+            flags_extra = getattr(scan_page, "_nobody", None)
+            if flags_extra is None:
+                scan_page._nobody = flags_extra = []
+            flags_extra.append((key, word["uthmani"], 0.0, 0.0, 0.0))
             continue
         btop = min(e["y1"] for e in bods)
         ext_top = min(e["y1"] for e in els)
@@ -69,6 +76,8 @@ def scan_page(pg):
         cur.append(w)
     lines.append(cur)
     flags, hist = [], []
+    flags += getattr(scan_page, "_nobody", []) or []
+    scan_page._nobody = []
     # the print's own line grid is the ruler (Abdullah 2026-08-28: "we
     # already have the line height — add 5% and call it a day"): the pitch
     # is the median distance between consecutive line clusters, and no
@@ -81,7 +90,11 @@ def scan_page(pg):
         for ln in lines:
             for _, h, key, txt in ln:
                 hist.append(round(h / pitch, 2))
-                if h > lim:
+                # tall: stole from another line. short: robbed — the
+                # shortest real word (من) is 0.35 pitch; a mark-only husk
+                # is under 0.1 (Abdullah's 3:75:19 ما). 0.30 sits in the
+                # empty band between them.
+                if h > lim or h < 0.30 * pitch:
                     flags.append((key, txt, round(h / pitch, 2),
                                   round(h, 1), round(pitch, 1)))
     return pg, flags, hist

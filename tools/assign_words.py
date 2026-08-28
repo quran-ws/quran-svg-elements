@@ -10878,6 +10878,54 @@ def assign_page(edition, page_no, cache_dir):
                             _m1.pop("tanform", None)
                             _mst.remove(_m1)
                             _mst.append(a2)
+    # BODY RETURN (Abdullah 2026-08-28, 3:75:19: the whole rasm of ما
+    # held by يؤده on the line above). Proof class on BOTH sides: the
+    # victim holds ZERO bodies; the holder counts more pieces than the
+    # joining rules allow (segment_word). The nearest such surplus piece
+    # overlapping the victim's mark-span comes home.
+    if os.environ.get("QSVG_BODYRET", "1") == "1":
+        _wlist = [(w, at) for (w, at) in assignment if w]
+        for _wV, _atV in _wlist:
+            _elV = [e for a in _atV for e in a["els"]]
+            if any(e["kind"] == "body" for e in _elV):
+                continue
+            _mks = [e for e in _elV if e["kind"] == "mark"]
+            if not _mks:
+                continue
+            _vx1 = min(e["x1"] for e in _mks) - 6.0
+            _vx2 = max(e["x2"] for e in _mks) + 6.0
+            _vy = sum((e["y1"] + e["y2"]) / 2 for e in _mks) / len(_mks)
+            _best = None
+            for _wH, _atH in _wlist:
+                if _wH is _wV:
+                    continue
+                _bH = [e for a in _atH for e in a["els"]
+                       if e["kind"] == "body" and not e.get("mkpart")]
+                try:
+                    _allow = max(1, len(segment_word(_wH["uthmani"])))
+                except Exception:
+                    continue
+                if len(_bH) <= _allow:
+                    continue        # holder is not over its piece budget
+                for e in _bH:
+                    _cx = (e["x1"] + e["x2"]) / 2
+                    _cy = (e["y1"] + e["y2"]) / 2
+                    if not (_vx1 <= _cx <= _vx2):
+                        continue
+                    _d = abs(_cy - _vy)
+                    if _d > 45.0:
+                        continue
+                    if _best is None or _d < _best[0]:
+                        _best = (_d, e, _atH)
+            if _best is None:
+                continue
+            _, _eB, _atH = _best
+            for _a in _atH:
+                if _eB in _a["els"]:
+                    _a["els"].remove(_eB)
+                    break
+            put_in_ligature(_atV, _eB)
+
     # BUDGET RETURN for unambiguous marks (Abdullah 2026-08-28, p431
     # رَبُّكُمْۖ wearing إِلَّا's hamza): the holder has NO budget for the
     # family, a vertically-adjacent word overlapping the ink's x has an
