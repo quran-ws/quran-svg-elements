@@ -38,13 +38,26 @@ def main():
                 r'(?:[^>]*?data-waqf="([^"]+)")?',
                 svg):
             eid, mark, sig = m.group(1), m.group(2) or "?", m.group(3)
-            # the catalog's own waqf types are the real families for pause ink
-            if mark == "pause" and m.group(4):
-                mark = m.group(4)
+            tag_end = svg.find(">", m.start())
+            attrs = dict(re.findall(r'data-([a-z-]+)="([^"]*)"',
+                                    svg[m.start():tag_end]))
+            # EVERY distinguishing attribute makes its own section: the
+            # catalog's waqf types, tanween arrangement, iqlab membership,
+            # welded parts, standalone signs
+            if mark == "pause" and attrs.get("waqf"):
+                mark = attrs["waqf"]
+            if attrs.get("form"):
+                mark += " (%s)" % attrs["form"]
+            if attrs.get("iqlab"):
+                mark += " (iqlab)"
+            if "mark-part" in attrs:
+                mark += " [part]"
+            if attrs.get("standalone"):
+                mark += " [standalone]"
             w0 = svg.rfind('<g class="word"', 0, m.start())
             wt = re.search(r'data-uthmani="([^"]*)"', svg[w0:w0 + 400]) \
                 if w0 > -1 else None
-            occ[sig].append((pg, wt.group(1) if wt else "", mark, eid))
+            occ[sig].append((pg, wt.group(1) if wt else "", mark, eid, attrs))
     lab = json.load(open(os.path.join(ROOT, ".cache", "marks", "labels.json")))
     # prior review flags (last wins per sig)
     flags, reviewed = {}, {}
@@ -87,7 +100,7 @@ def main():
 
     by_fam = defaultdict(list)
     for sig, rows in occ.items():
-        fam = Counter(m for _, _, m, _ in rows).most_common(1)[0][0]
+        fam = Counter(m for _, _, m, _, _ in rows).most_common(1)[0][0]
         by_fam[fam].append((sig, rows))
 
     out = ["""<!doctype html><html><head><meta charset="utf-8">
@@ -118,19 +131,24 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                    '%s — %d shapes, %d occurrences</h2><div class="sec">'
                    % (fam, len(rows), sum(len(r[1]) for r in rows)))
         for sig, rws in rows:
-            pg0, w0, mk0, eid0 = rws[0]
+            pg0, w0, mk0, eid0, at0 = rws[0]
             v = lab.get(sig)
             tl = (v.get("label") if isinstance(v, dict) else v) or "—"
             auto = v.get("auto", False) if isinstance(v, dict) else False
             # FINAL identification split: what the finished build actually
             # calls this shape, occurrence by occurrence (Abdullah audits the
             # end result, not the table)
-            fin = Counter(m for _, _, m, _ in rws)
+            fin = Counter(m for _, _, m, _, _ in rws)
             fin_show = " / ".join("%s %d×" % (k, n)
                                   for k, n in fin.most_common())
             samples = "".join(
                 '<span class="w">%s</span> <a class="k" href="/?page=%d&step=audit&user=abdullah">p%d</a> &nbsp;'
-                % (html.escape(t), p, p) for p, t, _, _ in rws[:3])
+                % (html.escape(t), p, p) for p, t, _, _, _ in rws[:3])
+            attr_chips = " ".join(
+                '<span style="background:#eef;border-radius:4px;'
+                'padding:1px 5px;font-size:11px">%s=%s</span>'
+                % (html.escape(k), html.escape(v)) for k, v in at0.items()
+                if k != "sig")
             fl = flags.get(sig)
             rv = reviewed.get(sig, False)
             state = ((' <span class="saved">your label: %s</span>' % fl["label"])
@@ -151,13 +169,14 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                 '<div class="ink zoom" title="the mark alone">%s</div>'
                 '<div style="flex:1;min-width:260px">'
                 '<div style="font-size:14px;font-weight:600">final: %s</div>'
+                '<div style="margin:3px 0">%s</div>'
                 '<div class="k">sig %s · %d× · '
                 'table: %s%s%s</div>'
                 '<div>%s</div>'
                 '<div class="btns">%s</div>'
                 '<textarea placeholder="note" data-sig="%s"></textarea>'
                 '<span class="saved" id="sv-%s">%s</span></div></div>'
-                % (snip, snip, html.escape(fin_show), sig[:12],
+                % (snip, snip, html.escape(fin_show), attr_chips, sig[:12],
                    len(rws), tl_show,
                    " (auto)" if auto else "",
                    (' · <a href="#" class="more" data-sig="%s">view %d samples…</a>'
