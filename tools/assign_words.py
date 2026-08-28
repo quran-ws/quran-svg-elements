@@ -10280,6 +10280,36 @@ def assign_page(edition, page_no, cache_dir):
                 e.pop("mkmembers", None)
                 _host.setdefault("mkmembers", []).append(e)
 
+    # SMALL-NOON COMPLETION (Abdullah 2026-08-28, the mushaf's one ۨ site,
+    # 21:88 نُـۨجِى p329): the superscript sign is a noon BOWL plus its dot.
+    # The dot carries the table label; the bowl wears the letter-ن outline
+    # (identical ink, 672 real letters share the sig) so no table entry can
+    # name it — the SITE does. Weld the adjacent bowl into the unit.
+    if os.environ.get("QSVG_SMALLNOON", "1") == "1":
+        for _wn, _an in assignment:
+            if not _wn or "\u06e8" not in _wn["uthmani"]:
+                continue
+            _eln = [e for a in _an for e in a["els"]]
+            _m0 = next((e for e in _eln if e.get("mark") == "small-noon"
+                        and not e.get("mkpart")), None)
+            if _m0 is None or _m0.get("mkmembers"):
+                continue
+            _cx0 = (_m0["x1"] + _m0["x2"]) / 2
+            _cy0 = (_m0["y1"] + _m0["y2"]) / 2
+            _bowl = min((e for e in _eln if e["kind"] == "body"
+                         and (e["x2"] - e["x1"]) * (e["y2"] - e["y1"]) < 30.0
+                         and abs((e["x1"] + e["x2"]) / 2 - _cx0) < 6.0
+                         and abs((e["y1"] + e["y2"]) / 2 - _cy0) < 6.0),
+                        key=lambda e: abs((e["x1"] + e["x2"]) / 2 - _cx0)
+                        + abs((e["y1"] + e["y2"]) / 2 - _cy0),
+                        default=None)
+            if _bowl is not None:
+                _bowl["kind"] = "mark"
+                _bowl["mark"] = "small-noon"
+                _bowl["mkpart"] = True
+                _bowl.pop("mkmembers", None)
+                _m0.setdefault("mkmembers", []).append(_bowl)
+
     # COMPOSITE RESOLUTION — no "x+y" ever ships (Abdullah 2026-08-28).
     # A table label naming two marks describes ONE piece of artwork carrying
     # both. classify names the halves but leaves them welded, so the member
