@@ -9,3 +9,15 @@
 {"sig": "test", "note": "", "ts": "2026-08-28T14:36:40", "reviewed": true}
 {"sig": "c9b82d57cfff4954", "note": "", "ts": "2026-08-28T14:37:18", "label": "reviewed-ok"}
 {"sig": "c9b82d57cfff4954", "note": "", "ts": "2026-08-28T14:37:18", "label": "fatha"}
+{"sig": "d6c97b5d3d42cb36", "note": "", "ts": "2026-08-28T14:49:22", "label": "hamza"}
+{"sig": "d6c97b5d3d42cb36", "note": "", "ts": "2026-08-28T14:49:22", "label": "hamza"}
+{"sig": "d6c97b5d3d42cb36", "note": "", "ts": "2026-08-28T14:49:24", "reviewed": true}
+{"sig": "f5662d69238b800b", "note": "", "ts": "2026-08-28T14:49:32", "label": "hamza"}
+{"sig": "f5662d69238b800b", "note": "", "ts": "2026-08-28T14:49:33", "reviewed": true}
+{"sig": "1d0eb0fdc2217098", "note": "", "ts": "2026-08-28T14:49:47", "label": "hamza"}
+{"sig": "1d0eb0fdc2217098", "note": "", "ts": "2026-08-28T14:49:48", "reviewed": true}
+{"sig": "9c598c7381df35fa", "note": "", "ts": "2026-08-28T14:49:49", "label": "hamza"}
+{"sig": "9c598c7381df35fa", "note": "", "ts": "2026-08-28T14:49:50", "reviewed": true}
+{"sig": "e87e486cad353398", "note": "", "ts": "2026-08-28T14:51:42", "label": "letter-part"}
+{"sig": "e87e486cad353398", "note": "ه", "ts": "2026-08-28T14:51:50", "reviewed": true}
+{"sig": "18c3c1d3e96f5e7e", "note": "", "ts": "2026-08-28T14:51:51", "reviewed": true}
