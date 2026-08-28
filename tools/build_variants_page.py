@@ -51,7 +51,10 @@ def main():
             if attrs.get("iqlab"):
                 mark += " (iqlab)"
             if "mark-part" in attrs:
-                mark += " [part]"
+                # a welded member is not its own occurrence — it counts and
+                # displays through its master (the master's sample colours
+                # every member red); no [part] sections (Abdullah 2026-08-28)
+                continue
             if attrs.get("standalone"):
                 mark += " [standalone]"
             w0 = svg.rfind('<g class="word"', 0, m.start())
@@ -122,8 +125,15 @@ def main():
 
     by_fam = defaultdict(list)
     for sig, rows in occ.items():
-        fam = Counter(m for _, _, m, _, _ in rows).most_common(1)[0][0]
-        by_fam[fam].append((sig, rows))
+        # one row per (signature, FINAL family) — a shared outline must not
+        # bury a rare sign in a common family's section (the generic dot
+        # sig carries 3 of the 6 muanaqah masters; they belong in the
+        # muanaqah section, Abdullah 2026-08-28)
+        per = defaultdict(list)
+        for r in rows:
+            per[r[2]].append(r)
+        for fam, rws in per.items():
+            by_fam[fam].append((sig, rws))
 
     out = ["""<!doctype html><html><head><meta charset="utf-8">
 <title>Mark variants</title><style>

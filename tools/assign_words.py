@@ -8953,6 +8953,14 @@ def assign_page(edition, page_no, cache_dir):
                         e.pop("mkmembers", None)
                         _m0.setdefault("mkmembers", []).append(e)
                         _tot += len(e["contours"])
+                # the sign IS the muʿānaqah — its catalog name, not a pause
+                # wearing an attribute (Abdullah 2026-08-28): each of the six
+                # words holds exactly ONE mark named muanaqah
+                for _m0 in _mst:
+                    _m0["mark"] = "muanaqah"
+                    _m0["lab"] = "muanaqah"
+                    for _mm in (_m0.get("mkmembers") or []):
+                        _mm["mark"] = "muanaqah"
 
     # LINE-SET SOLVER (trial, DEFAULT OFF — QSVG_LSOLVE=1 to enable).
     #
@@ -9862,16 +9870,14 @@ def assign_page(edition, page_no, cache_dir):
                                 "twin": ([_tw[0]["x1"], _tw[0]["y1"],
                                           _tw[0]["x2"], _tw[0]["y2"]]
                                          if len(_tw) == 1 else None)})
-                    elif mk == "pause":
-                        _rec2 = _wp2.get("%.1f,%.1f,%.1f,%.1f"
-                                         % (e["x1"], e["y1"],
-                                            e["x2"], e["y2"]))
-                        _wq2 = (_rec2.get("waqf")
-                                if isinstance(_rec2, dict) else _rec2)
-                        if _wq2 == "muanaqah":
-                            _mnq2.setdefault(
-                                (_w3["surah"], _w3["ayah"]),
-                                []).append((_wi2, -e["x1"], e))
+                    elif mk == "muanaqah":
+                        # the name IS the identity now (set at the MNQ3
+                        # weld); the place table only ever covered the
+                        # p112/p114 recordings, p2 paired by luck of the
+                        # waqf_types sig match
+                        _mnq2.setdefault(
+                            (_w3["surah"], _w3["ayah"]),
+                            []).append((_wi2, -e["x1"], e))
         for (_s4, _a4), _lst4 in sorted(_mnq2.items()):
             _lst4.sort(key=lambda t: (t[0], t[1]))
             for _k4 in range(0, len(_lst4) - 1, 2):
@@ -10221,7 +10227,7 @@ def assign_page(edition, page_no, cache_dir):
     # characters, and two of them overlap in x within a line's height, the
     # smaller is the sign's own satellite — weld it in.
     if os.environ.get("QSVG_WQOWN", "1") == "1":
-        _WQCH = "\u06d6\u06d7\u06d8\u06d9\u06da\u06db\u06dc"
+        _WQCH = "\u06d6\u06d7\u06d8\u06d9\u06da\u06dc"
         for _ww, _aw in assignment:
             if not _ww:
                 continue
@@ -10448,6 +10454,72 @@ def assign_page(edition, page_no, cache_dir):
                         continue
                     e["mkpart"] = True
                     _hd.setdefault("mkmembers", []).append(e)
+
+    # LATE TANWEEN PAIR REJOIN (Abdullah 2026-08-28: 23 single-stroke
+    # tanween masters mushaf-wide — p535 held five). The mid-pipeline weld
+    # runs before the movers and the late renames, and either can leave a
+    # master standing alone while its twin sits beside it wearing "fatha"/
+    # "kasra". Two signals to weld: pair geometry (dx<8, dy<7 — the measured
+    # tanween pair envelope) AND the twin must be SURPLUS to its own
+    # family's budget. Same-name surplus masters weld the same way.
+    if os.environ.get("QSVG_TANPAIR", "1") == "1":
+        _TP = {"fathatan": ("\u064b\u08f0", ("fatha",), "\u064e"),
+               "kasratan": ("\u064d\u08f2", ("kasra",), "\u0650"),
+               "dammatan": ("\u064c\u08f1", ("damma",), "\u064f")}
+        for _wt2, _at2 in assignment:
+            if not _wt2:
+                continue
+            _txv = _wt2["uthmani"]
+            _elv = [e for a in _at2 for e in a["els"]]
+            for _fam, (_tch, _sng, _sch) in _TP.items():
+                _want = sum(_txv.count(c) for c in _tch)
+                if not _want:
+                    continue
+                _mst = [e for e in _elv if e.get("mark") == _fam
+                        and not e.get("mkpart")]
+                # surplus same-name masters first
+                while len(_mst) > _want:
+                    _bp = None
+                    for i, a1 in enumerate(_mst):
+                        for b1 in _mst[i + 1:]:
+                            dx = abs((a1["x1"] + a1["x2"]) / 2
+                                     - (b1["x1"] + b1["x2"]) / 2)
+                            dy = abs((a1["y1"] + a1["y2"]) / 2
+                                     - (b1["y1"] + b1["y2"]) / 2)
+                            if dx < 8.0 and dy < 7.0 and (
+                                    _bp is None or dx + dy < _bp[0]):
+                                _bp = (dx + dy, a1, b1)
+                    if not _bp:
+                        break
+                    _, a1, b1 = _bp
+                    b1["mkpart"] = True
+                    for m in (b1.pop("mkmembers", None) or []):
+                        m["mkpart"] = True
+                        a1.setdefault("mkmembers", []).append(m)
+                    a1.setdefault("mkmembers", []).append(b1)
+                    _mst.remove(b1)
+                # single-stroke masters missing their twin
+                for _m1 in _mst:
+                    if _m1.get("mkmembers") or len(_m1["contours"]) > 1:
+                        continue
+                    _own = sum(_txv.count(c) for c in _sch)
+                    _hld = [e for e in _elv if e.get("mark") in _sng
+                            and not e.get("mkpart")]
+                    if len(_hld) <= _own:
+                        continue          # no surplus single — nothing owed
+                    _cx1 = (_m1["x1"] + _m1["x2"]) / 2
+                    _cy1 = (_m1["y1"] + _m1["y2"]) / 2
+                    _tw = min((e for e in _hld
+                               if abs((e["x1"] + e["x2"]) / 2 - _cx1) < 8.0
+                               and abs((e["y1"] + e["y2"]) / 2 - _cy1) < 7.0),
+                              key=lambda e: abs((e["x1"] + e["x2"]) / 2 - _cx1)
+                              + abs((e["y1"] + e["y2"]) / 2 - _cy1),
+                              default=None)
+                    if _tw is None:
+                        continue
+                    _tw["mkpart"] = True
+                    _tw["mark"] = _fam
+                    _m1.setdefault("mkmembers", []).append(_tw)
 
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
