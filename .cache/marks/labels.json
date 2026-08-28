@@ -3884,8 +3884,9 @@
   "label": "three-dots"
  },
  "3c9f81a716bc165b": {
-  "auto": true,
-  "label": "fatha"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: the ك armature of كَذَٰلِكَ (p576 e607), was named fatha by position."
  },
  "3ca2924545642a8a": {
   "auto": true,
@@ -7901,8 +7902,9 @@
   "label": "word"
  },
  "7873424232da14ff": {
-  "auto": true,
-  "label": "fatha"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: a stroke of the letter ب in يُكَذِّبُ (p588 e216), auto-read as a slash."
  },
  "7876574486846c69": {
   "auto": true,
@@ -13212,8 +13214,9 @@
   "label": "fatha"
  },
  "cdbc93f4cce3b075": {
-  "auto": true,
-  "label": "fatha"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28: the ك armature stroke of the previous word (p415), was named fatha by position."
  },
  "cde72bda005369c2": {
   "auto": true,
@@ -16472,10 +16475,5 @@
   "label": "pause",
   "auto": false,
   "note": "Abdullah 2026-08-28: the قلي outline of p14 مَعَهُمْۗ was kind=body; its lower dots were the only pause mark."
- },
- "448337c0c4b14f73": {
-  "label": "small-noon",
-  "auto": false,
-  "note": "2026-08-28: the superscript ۨ of 21:88 نُـۨجِى (p329) — the mushaf's ONE small-noon site (taxonomy Q1); was unnamed. Deficit-of-one proof: the word's only unnamed mark, its only missing budget family."
  }
 }

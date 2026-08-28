@@ -34,7 +34,7 @@ if __name__ == "__main__":
     print("todo %d pages" % len(todo), flush=True)
     from multiprocessing import Pool
     t0 = time.time()
-    with Pool(int(os.environ.get("QSVG_JOBS", "2")), maxtasksperchild=6) as pool:
+    with Pool(int(os.environ.get("QSVG_JOBS", "32")), maxtasksperchild=6) as pool:
         for i, (pg, rec) in enumerate(pool.imap_unordered(one, todo), 1):
             json.dump(rec, open("%s/%03d.json" % (OUT, pg), "w"), ensure_ascii=False)
             el = time.time() - t0
