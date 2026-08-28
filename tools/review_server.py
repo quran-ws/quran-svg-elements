@@ -357,6 +357,20 @@ class Handler(BaseHTTPRequestHandler):
                 return self.api_page(int(m.group(1)))
             if path == "/api/labels":
                 return self.send_json({"labels": KNOWN_LABELS})
+            if path == "/api/eyeflags":
+                rows = {}
+                fp = os.path.join(REVIEW_DIR, "eid_flags.jsonl")
+                if os.path.exists(fp):
+                    for line in open(fp, encoding="utf-8"):
+                        try:
+                            v = json.loads(line)
+                        except Exception:
+                            continue
+                        e = v.get("eid") or ""
+                        if e.startswith("eye:"):
+                            rows[e[4:]] = {"correct": v.get("correct"),
+                                           "note": v.get("note")}
+                return self.send_json({"eyes": rows})
             if path == "/api/siglabels":
                 agg = {}
                 fp = os.path.join(REVIEW_DIR, "sig_labels.jsonl")
