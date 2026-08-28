@@ -1025,3 +1025,184 @@
 {"page": 260, "key": "14:39:5", "status": "commented", "note": "stole hamza+kasrateen from the word above", "sig": null, "ts": "2026-08-28T14:00:00"}
 {"page": 596, "key": "92:14:1", "status": "commented", "note": "missin a large part of تكم", "sig": null, "ts": "2026-08-28T14:00:00"}
 {"page": 44, "key": "2:262:15", "status": "commented", "note": "not fixed has extra fatha at the end", "sig": null, "ts": "2026-08-28T14:00:00"}
+{"page": 63, "key": "3:108:6", "status": "confirmed", "note": "stole صلى pause from the word above it", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 71, "key": "3:161:6", "status": "confirmed", "note": "extra fataha or kasrah at top stolen from the word above", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 129, "key": "6:17:12", "status": "confirmed", "note": "extra fatat after it ( or kasra from the word above ) + stole haa letter and a kasra below it from the word below", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 222, "key": "11:12:15", "status": "confirmed", "note": "stole hamza from the word below", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 234, "key": "11:116:25", "status": "confirmed", "note": "stole kasra from the word below it", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 231, "key": "11:88:13", "status": "confirmed", "note": "stole meem from a word above it", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 341, "key": "22:73:25", "status": "confirmed", "note": "stole waw or small waw from the word above", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 350, "key": "24:3:9", "status": "confirmed", "note": "stole a far away fatha", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 371, "key": "26:97:4", "status": "confirmed", "note": "stole a ksra far far away", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 535, "key": "56:44:2", "status": "confirmed", "note": "stole the word before it with its diarctics لا", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 254, "key": "13:37:7", "status": "confirmed", "note": "i dont see any dot, I see 3 fathas , one sokoon !!", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 64, "key": "3:115:6", "status": "confirmed", "note": "stole صلى pause from the word above it", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 507, "key": "47:4:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 341, "key": "22:73:18", "status": "confirmed", "note": "the word before it stole له with the pause and diacrtics, and here it shows the waw and its fatha from the following word", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 122, "key": "5:89:21", "status": "confirmed", "note": "stole kasra from next word", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 123, "key": "5:95:27", "status": "confirmed", "note": "stole kasra from prev word", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 133, "key": "6:47:8", "status": "confirmed", "note": "stole fatha from prev word", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 145, "key": "6:131:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 418, "key": "33:3:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 254, "key": "13:37:8", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 535, "key": "56:33:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 599, "key": "98:6:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 599, "key": "98:6:13", "status": "confirmed", "note": "missing fatha at the end", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 499, "key": "45:8:10", "status": "confirmed", "note": "extra fatha at the end", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 535, "key": "56:44:3", "status": "confirmed", "note": "stole directicts from the left ( same line or the line below )", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 350, "key": "24:3:10", "status": "confirmed", "note": "extra fataha stolen from the prev word", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 596, "key": "92:14:2", "status": "confirmed", "note": "stole a large part from the word before it", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 418, "key": "33:3:2", "status": "confirmed", "note": "missing its 2 fathas stonlen two form prev word", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 272, "key": "16:48:10", "status": "confirmed", "note": "has below it a lign that is a sajdah line above the word below it", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 599, "key": "98:6:11", "status": "confirmed", "note": "stole kasrah from the word above it", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 437, "key": "35:27:17", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 436, "key": "35:13:20", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 415, "key": "32:10:8", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 507, "key": "47:4:34", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 507, "key": "47:8:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 446, "key": "37:5:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 439, "key": "35:42:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 549, "key": "60:4:22", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 567, "key": "69:9:5", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 576, "key": "74:31:22", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 576, "key": "74:31:51", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 577, "key": "74:56:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 90, "key": "4:78:20", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 341, "key": "22:73:17", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 535, "key": "56:35:2", "status": "confirmed", "note": "stole kasrah from the word above it", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 576, "key": "74:31:48", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 239, "key": "12:34:7", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 355, "key": "24:39:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 239, "key": "12:34:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 59, "key": "3:75:8", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 222, "key": "11:8:16", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 129, "key": "6:13:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 100, "key": "4:137:16", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 543, "key": "58:7:1", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 525, "key": "52:38:7", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 319, "key": "20:103:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 228, "key": "11:56:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 585, "key": "80:12:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 526, "key": "53:26:5", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 535, "key": "56:44:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 535, "key": "56:44:1", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 350, "key": "24:4:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 543, "key": "58:7:39", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 228, "key": "11:56:8", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 526, "key": "53:26:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 112, "key": "5:26:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 91, "key": "4:81:12", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 42, "key": "2:255:32", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 112, "key": "5:25:12", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 525, "key": "52:37:7", "status": "confirmed", "note": "missing small seen below it", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 504, "key": "46:19:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 503, "key": "46:8:22", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 399, "key": "29:26:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 171, "key": "7:160:32", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 49, "key": "2:285:23", "status": "confirmed", "note": "pause exist visual but not marked", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 114, "key": "5:41:16", "status": "confirmed", "note": "pause exist visual but not marked", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 51, "key": "3:14:18", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 267, "key": "16:2:11", "status": "confirmed", "note": "stole kasra from the word below it and missing its fataha", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 577, "key": "74:53:1", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 531, "key": "54:51:6", "status": "confirmed", "note": "stole fatha from the word above, and missing it fatha above the د shadda", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 59, "key": "3:75:19", "status": "confirmed", "note": "also affect 3:75:8 stole the ما", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 576, "key": "74:31:38", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 446, "key": "37:14:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 591, "key": "87:9:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 526, "key": "53:26:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 531, "key": "54:55:6", "status": "confirmed", "note": "data-eid=\"e236\" this is meem iqlab", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 577, "key": "74:51:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 260, "key": "14:39:5", "status": "commented", "note": "stole hamza+kasrateen from the word above", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 596, "key": "92:14:1", "status": "commented", "note": "missin a large part of تكم", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 44, "key": "2:262:15", "status": "commented", "note": "not fixed has extra fatha at the end", "sig": null, "ts": "2026-08-28T14:02:16"}
+{"page": 63, "key": "3:108:6", "status": "confirmed", "note": "stole صلى pause from the word above it", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 71, "key": "3:161:6", "status": "confirmed", "note": "extra fataha or kasrah at top stolen from the word above", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 129, "key": "6:17:12", "status": "confirmed", "note": "extra fatat after it ( or kasra from the word above ) + stole haa letter and a kasra below it from the word below", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 222, "key": "11:12:15", "status": "confirmed", "note": "stole hamza from the word below", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 234, "key": "11:116:25", "status": "confirmed", "note": "stole kasra from the word below it", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 231, "key": "11:88:13", "status": "confirmed", "note": "stole meem from a word above it", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 341, "key": "22:73:25", "status": "confirmed", "note": "stole waw or small waw from the word above", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 350, "key": "24:3:9", "status": "confirmed", "note": "stole a far away fatha", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 371, "key": "26:97:4", "status": "confirmed", "note": "stole a ksra far far away", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 535, "key": "56:44:2", "status": "confirmed", "note": "stole the word before it with its diarctics لا", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 254, "key": "13:37:7", "status": "confirmed", "note": "i dont see any dot, I see 3 fathas , one sokoon !!", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 64, "key": "3:115:6", "status": "confirmed", "note": "stole صلى pause from the word above it", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 507, "key": "47:4:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 341, "key": "22:73:18", "status": "confirmed", "note": "the word before it stole له with the pause and diacrtics, and here it shows the waw and its fatha from the following word", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 122, "key": "5:89:21", "status": "confirmed", "note": "stole kasra from next word", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 123, "key": "5:95:27", "status": "confirmed", "note": "stole kasra from prev word", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 133, "key": "6:47:8", "status": "confirmed", "note": "stole fatha from prev word", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 145, "key": "6:131:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 418, "key": "33:3:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 254, "key": "13:37:8", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 535, "key": "56:33:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 599, "key": "98:6:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 599, "key": "98:6:13", "status": "confirmed", "note": "missing fatha at the end", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 499, "key": "45:8:10", "status": "confirmed", "note": "extra fatha at the end", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 535, "key": "56:44:3", "status": "confirmed", "note": "stole directicts from the left ( same line or the line below )", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 350, "key": "24:3:10", "status": "confirmed", "note": "extra fataha stolen from the prev word", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 596, "key": "92:14:2", "status": "confirmed", "note": "stole a large part from the word before it", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 418, "key": "33:3:2", "status": "confirmed", "note": "missing its 2 fathas stonlen two form prev word", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 272, "key": "16:48:10", "status": "confirmed", "note": "has below it a lign that is a sajdah line above the word below it", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 599, "key": "98:6:11", "status": "confirmed", "note": "stole kasrah from the word above it", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 437, "key": "35:27:17", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 436, "key": "35:13:20", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 415, "key": "32:10:8", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 507, "key": "47:4:34", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 507, "key": "47:8:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 446, "key": "37:5:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 439, "key": "35:42:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 549, "key": "60:4:22", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 567, "key": "69:9:5", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 576, "key": "74:31:22", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 576, "key": "74:31:51", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 577, "key": "74:56:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 90, "key": "4:78:20", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 341, "key": "22:73:17", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 535, "key": "56:35:2", "status": "confirmed", "note": "stole kasrah from the word above it", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 576, "key": "74:31:48", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 239, "key": "12:34:7", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 355, "key": "24:39:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 239, "key": "12:34:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 59, "key": "3:75:8", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 222, "key": "11:8:16", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 129, "key": "6:13:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 100, "key": "4:137:16", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 543, "key": "58:7:1", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 525, "key": "52:38:7", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 319, "key": "20:103:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 228, "key": "11:56:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 585, "key": "80:12:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 526, "key": "53:26:5", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 535, "key": "56:44:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 535, "key": "56:44:1", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 350, "key": "24:4:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 543, "key": "58:7:39", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 228, "key": "11:56:8", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 526, "key": "53:26:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 112, "key": "5:26:6", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 91, "key": "4:81:12", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 42, "key": "2:255:32", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 112, "key": "5:25:12", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 525, "key": "52:37:7", "status": "confirmed", "note": "missing small seen below it", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 504, "key": "46:19:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 503, "key": "46:8:22", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 399, "key": "29:26:3", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 171, "key": "7:160:32", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 49, "key": "2:285:23", "status": "confirmed", "note": "pause exist visual but not marked", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 114, "key": "5:41:16", "status": "confirmed", "note": "pause exist visual but not marked", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 51, "key": "3:14:18", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 267, "key": "16:2:11", "status": "confirmed", "note": "stole kasra from the word below it and missing its fataha", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 577, "key": "74:53:1", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 531, "key": "54:51:6", "status": "confirmed", "note": "stole fatha from the word above, and missing it fatha above the د shadda", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 59, "key": "3:75:19", "status": "confirmed", "note": "also affect 3:75:8 stole the ما", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 576, "key": "74:31:38", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 446, "key": "37:14:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 591, "key": "87:9:2", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 526, "key": "53:26:4", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 531, "key": "54:55:6", "status": "confirmed", "note": "data-eid=\"e236\" this is meem iqlab", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 577, "key": "74:51:3", "status": "confirmed", "note": "this is data-eid=\"e122\" meemiqlab", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 350, "key": "24:8:7", "status": "confirmed", "note": "", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 260, "key": "14:39:5", "status": "commented", "note": "stole hamza+kasrateen from the word above", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 596, "key": "92:14:1", "status": "commented", "note": "missin a large part of تكم", "sig": null, "ts": "2026-08-28T14:02:35"}
+{"page": 44, "key": "2:262:15", "status": "commented", "note": "not fixed has extra fatha at the end", "sig": null, "ts": "2026-08-28T14:02:35"}
