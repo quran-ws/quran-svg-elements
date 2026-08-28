@@ -3442,8 +3442,9 @@
   "label": "dot"
  },
  "366f53cb42c85831": {
-  "ai": true,
-  "label": "fatha+dot"
+  "label": "fatha",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: fatha+dot)"
  },
  "367197b509c5e671": {
   "auto": true,
@@ -5087,8 +5088,9 @@
   "label": "hamza+kasra"
  },
  "4e6c5e3b5373ca5a": {
-  "ai": true,
-  "label": "fatha+dot"
+  "label": "fatha",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: fatha+dot)"
  },
  "4e837af2ec8cee4f": {
   "auto": true,
@@ -9836,8 +9838,9 @@
   "label": "ignore"
  },
  "97bb0b80118ebe90": {
-  "auto": true,
-  "label": "fatha"
+  "label": "letter",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: fatha)"
  },
  "97bda016a7c4ad46": {
   "auto": true,
@@ -14940,8 +14943,9 @@
   "label": "three-dots"
  },
  "e87e486cad353398": {
-  "auto": true,
-  "label": "two-dots"
+  "label": "letter-part",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: two-dots)"
  },
  "e8a677ca1ee5de57": {
   "ai": true,
@@ -16393,5 +16397,25 @@
  "fffd5cc622496623": {
   "auto": true,
   "label": "dot"
+ },
+ "d6c97b5d3d42cb36": {
+  "label": "hamza",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: None)"
+ },
+ "9c598c7381df35fa": {
+  "label": "hamza",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: None)"
+ },
+ "f5662d69238b800b": {
+  "label": "hamza",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: None)"
+ },
+ "1d0eb0fdc2217098": {
+  "label": "hamza",
+  "auto": false,
+  "note": "Abdullah variants review 2026-08-28 (was: None)"
  }
 }
