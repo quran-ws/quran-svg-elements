@@ -49,7 +49,8 @@ TAN_DUMP = [] if os.environ.get("QSVG_TANDUMP") else None
 from svg_lines import transform_box
 from split_line_elements import group_elements, PATH_RE
 
-ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT = (os.environ.get("QSVG_ROOT")
+        or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 API = ("https://api.quran.com/api/v4/verses/by_page/%d?words=true&mushaf=2"
        "&word_fields=line_number,text_uthmani,text_imlaei&per_page=50")
 
