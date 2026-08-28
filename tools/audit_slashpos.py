@@ -74,6 +74,36 @@ def scan_page(pg):
                 flags.append((key, word["uthmani"], mk, round(off, 1),
                               "named %s, drawn %.1fu ABOVE the letters"
                               % (mk, -off)))
+    # SIDE-ORDER law (Abdullah 2026-08-28 23:09, refined): above-marks
+    # (fatha/damma) and below-marks (kasra) each keep the TEXT's order
+    # right-to-left; the first letter's haraka is rightmost ON ITS SIDE and
+    # the last letter's leftmost on its side. Sides are not compared to
+    # each other — a kasra legitimately tucks under the ligature join.
+    HK = {"\u064e": "fatha", "\u0650": "kasra", "\u064f": "damma"}
+    for word, atoms in cap:
+        if not word:
+            continue
+        txt = word["uthmani"]
+        els = [e for a in atoms for e in a["els"]]
+        seq = [HK[c] for c in txt if c in HK]
+        above_txt = [f for f in seq if f in ("fatha", "damma")]
+        below_txt = [f for f in seq if f == "kasra"]
+        above = sorted([e for e in els if e.get("mark") in
+                        ("fatha", "damma") and not e.get("mkpart")],
+                       key=lambda e: -(e["x1"] + e["x2"]))
+        below = sorted([e for e in els if e.get("mark") == "kasra"
+                        and not e.get("mkpart")],
+                       key=lambda e: -(e["x1"] + e["x2"]))
+        key = "%d:%d:%d" % (word["surah"], word["ayah"], word["pos"])
+        for side, want, have in (("above", above_txt, above),
+                                 ("below", below_txt, below)):
+            if len(want) != len(have) or len(want) < 2:
+                continue        # counts differ -> other audits' domain
+            got = [e.get("mark") for e in have]
+            if got != want:
+                flags.append((key, txt, got[0], 0.0,
+                              "%s-marks drawn order %s but the text says %s"
+                              % (side, ">".join(got), ">".join(want))))
     return pg, flags, hist
 
 
