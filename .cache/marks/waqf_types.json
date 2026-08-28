@@ -406,5 +406,26 @@
   "purity": 1.0,
   "waqf": "waqf-lazim",
   "we_call": "pause"
+ },
+ "f2b91a63b30ff50b": {
+  "n": 1,
+  "purity": 1.0,
+  "waqf": "waqf-lazim",
+  "we_call": "",
+  "note": "Abdullah 2026-08-28: p74 أَغْنِيَآءُۘ"
+ },
+ "0565ae88d5cfc527": {
+  "n": 1,
+  "purity": 1.0,
+  "waqf": "waqf-lazim",
+  "we_call": "",
+  "note": "Abdullah 2026-08-28: p117 أَوْلِيَآءَۘ"
+ },
+ "a0892b5a81f79b26": {
+  "n": 1,
+  "purity": 1.0,
+  "waqf": "wasl-awla",
+  "we_call": "",
+  "note": "Abdullah 2026-08-28: Abdullah eye"
  }
 }

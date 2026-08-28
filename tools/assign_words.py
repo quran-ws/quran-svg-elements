@@ -554,6 +554,22 @@ _DUAL_SIZE_CAP = {"small-alef": 12.0, "small-waw": 8.0, "small-ya": 9.5,
                   "fatha": 12.0, "kasra": 12.0, "fathatan": 12.0, "kasratan": 12.0}
 
 
+
+def _human_letter_label(e):
+    """True when a HUMAN table entry says this outline is letter ink
+    (letter-hamza / letter / letter-part): the iqlab-م rescues must never
+    press it into service as the sign (Abdullah 2026-08-28: the seated ء
+    82bbe2d7 and the ك armature 7d3b5bf2 were both taken on iqlab words)."""
+    try:
+        sg = e.get("sig") or sig_key(signature(el_points(e)))
+    except Exception:
+        return False
+    v = shape_labels().get(sg)
+    lb = v.get("label") if isinstance(v, dict) else v
+    auto = (v.get("auto", v.get("ai", False))
+            if isinstance(v, dict) else False)
+    return (not auto) and lb in ("letter-hamza", "letter", "letter-part")
+
 def classify(elements, lines_info, part_key=None, mark_shapes=None):
     """Tag each element body/mark: known mark shapes first, then baseline geometry.
 
@@ -1960,11 +1976,19 @@ def rewrite(page, assignment):
                             and e.get("mkmembers")):
                         keepm = []
                         for m in e["mkmembers"]:
+                            # the member may sit in ANY atom of the same
+                            # word (49 open-kasratan pairs emitted split
+                            # because the twin lived one atom over)
+                            _hostm = next((a2 for a2 in atoms
+                                           if m in a2["els"]), None)
                             if (m.get("path") == e.get("path")
-                                    and m in atom["els"]):
+                                    and _hostm is not None):
                                 e["contours"] = list(e["contours"]) + \
                                     list(m["contours"])
-                                m["_absorbed"] = True
+                                if _hostm is atom:
+                                    m["_absorbed"] = True
+                                else:
+                                    _hostm["els"].remove(m)
                             else:
                                 keepm.append(m)
                         e["mkmembers"] = keepm
@@ -1983,6 +2007,15 @@ def rewrite(page, assignment):
                 consumed.add(e["path"])
                 per_path.setdefault(e["path"] if tgt_a is None else tgt_a,
                                     []).append((word, lig, atom, e))
+
+    if os.environ.get("QSVG_EMDBG"):
+        for _pi, _lst in per_path.items():
+            for _w4, _lg4, _a4, _e4 in _lst:
+                if _e4.get("mkpart") or _e4.get("mark") == "pause":
+                    print("EMDBG path=%s word=%s mark=%s mkpart=%s nc=%d line=%s"
+                          % (_pi, (_w4 or {}).get("uthmani"), _e4.get("mark"),
+                             _e4.get("mkpart"), len(_e4["contours"]),
+                             _e4.get("line")), file=sys.stderr)
 
     def _reframe(src_pi, tgt_pi):
         """transform attribute that repositions contours written in path
@@ -2322,7 +2355,8 @@ def apply_shape_labels(page, assignment, baselines):
     _MARKY = {"fatha", "kasra", "damma", "fathatan", "kasratan", "dammatan",
               "sukun", "shadda", "hamza", "maddah", "small-alef", "wasla",
               "dot", "two-dots", "three-dots", "pause", "small-circle",
-              "small-ya", "small-waw", "small-meem", "small-noon"}
+              "small-ya", "small-waw", "small-meem", "small-noon",
+              "saktah", "seen-reading", "imalah", "ishmam", "tashil"}
     labeled = total = 0
     for word, atoms in assignment:
         for atom in atoms:
@@ -5825,6 +5859,8 @@ def assign_page(edition, page_no, cache_dir):
                 w2 = e["x2"] - e["x1"]; h2 = e["y2"] - e["y1"]
                 if not (1.5 <= w2 <= 12.0 and 3.0 <= h2 <= 12.0):
                     continue
+                if _human_letter_label(e):
+                    continue
                 d = abs((e["x1"] + e["x2"]) / 2 - cx) \
                     + abs((e["y1"] + e["y2"]) / 2 - cy)
                 if d < 14.0 and (best is None or d < best[0]):
@@ -6307,6 +6343,8 @@ def assign_page(edition, page_no, cache_dir):
                                  v["w"]["uthmani"]), file=sys.stderr)
                     if not (2.0 <= w2 <= 6.0 and 5.0 <= h2 <= 12.0):
                         continue
+                    if _human_letter_label(e):
+                        continue
                     cx = (e["x1"] + e["x2"]) / 2
                     d = abs(cx - rx1)          # iqlab م trails at the LEFT edge
                     if d > 8.0:
@@ -6717,9 +6755,26 @@ def assign_page(edition, page_no, cache_dir):
                 _bw = e["x2"] - e["x1"]
                 e["mark"] = ("sajdah-line" if _bh < 2.5 and _bw >= 8.0
                              else "sajdah-sign")
+            # ONE overline per site: p480's hairline is digitized as two
+            # segments and both were masters — 16 lines over 15 signs. The
+            # segments weld, rightmost (first in reading order) counting.
+            _sl = sorted((e for e in grp if e["mark"] == "sajdah-line"),
+                         key=lambda e: -e["x1"])
+            for e in _sl[1:]:
+                e["mkpart"] = True
+                _sl[0].setdefault("mkmembers", []).append(e)
     for (lab, su, ay), grp in ejected.items():
-        assignment = assignment + [(None, [{"els": grp,
-                                            "sa": (lab, su, ay)}])]
+        # document order follows recitation (Abdullah 2026-08-28): the sign
+        # emits right after the last word of the ayah it belongs to, not at
+        # the end of the page
+        _entry = (None, [{"els": grp, "sa": (lab, su, ay)}])
+        _idx = max((i for i, (w, _) in enumerate(assignment)
+                    if w and w["surah"] == su and w["ayah"] == ay),
+                   default=None)
+        if _idx is None:
+            assignment = assignment + [_entry]
+        else:
+            assignment.insert(_idx + 1, _entry)
 
 
 
@@ -6904,7 +6959,8 @@ def assign_page(edition, page_no, cache_dir):
     _MARKFAM = {"fatha", "kasra", "damma", "fathatan", "kasratan", "dammatan",
                 "sukun", "shadda", "hamza", "maddah", "small-alef", "wasla",
                 "dot", "two-dots", "three-dots", "pause", "small-circle",
-                "small-ya", "small-waw", "small-meem", "small-noon"}
+                "small-ya", "small-waw", "small-meem", "small-noon",
+                "saktah", "seen-reading", "imalah", "ishmam", "tashil"}
     for _w2, _at2 in assignment:
         for _a2 in _at2:
             for _e2 in _a2["els"]:
@@ -7643,6 +7699,8 @@ def assign_page(edition, page_no, cache_dir):
                             continue
                         _ari = (_ei["x2"] - _ei["x1"]) * (_ei["y2"] - _ei["y1"])
                         if not (18.0 <= _ari <= 45.0):
+                            continue
+                        if _human_letter_label(_ei):
                             continue
                         if abs((_ei["x1"] + _ei["x2"]) / 2 - _tcx) > 3.5:
                             continue
@@ -8786,6 +8844,116 @@ def assign_page(edition, page_no, cache_dir):
                     _m["mkpart"] = True
                     _m.pop("mkmembers", None)
 
+    # The muʿānaqah triangle is THREE dots, always — independent of the
+    # place table (p2 and half of p112/p114 have no recorded places at all).
+    if os.environ.get("QSVG_MNQ3", "1") == "1":
+        for _wp, _atp in assignment:
+            if not _wp:
+                continue
+            # The place table only welds pieces it recorded; a muʿānaqah dot
+            # the movers digitized differently (p2 رَيْبَ holding 2 of 3,
+            # p112 سَنَةࣰۛ's unnamed fragment) stays loose. The occurrence
+            # is THREE dots, always: weld nearby loose ink into the master —
+            # an unnamed mark fragment freely, a dot-family mark only when
+            # the word holds more of that family than its spelling allows
+            # (the budget veto keeps the ب's own dot safe).
+
+            if "\u06db" in (_wp.get("qpc") or _wp["uthmani"]):
+                _elw = [e for _a in _atp for e in _a["els"]]
+                _mst = [e for e in _elw if e.get("mark") == "pause"
+                        and not e.get("mkpart")]
+                _D1w = "\u0628\u062c\u062e\u0630\u0632\u0636\u0638\u063a\u0641\u0646"
+                _txtw = _wp["uthmani"]
+                for _m0 in _mst:
+                    # a member welded by an earlier pass can be REFERENCED by
+                    # two atoms at once — its word's and a wordless one whose
+                    # stale header line-tag routes it into the basmalah group
+                    # at emit (p2: both triangles complete in memory, a dot
+                    # drawn as header ink). One reference only: the atom that
+                    # holds the master.
+                    _hatom = next((_a for _a in _atp
+                                   if _m0 in _a["els"]), _atp[0])
+                    for _mm in (_m0.get("mkmembers") or []):
+                        for _wo2, _ao2 in assignment:
+                            for _a3 in _ao2:
+                                if _a3 is _hatom:
+                                    continue
+                                while _mm in _a3["els"]:
+                                    _a3["els"].remove(_mm)
+                        if _mm not in _hatom["els"]:
+                            _hatom["els"].append(_mm)
+                        _mm.pop("line", None) is None
+                        _mm["line"] = _m0.get("line")
+                    _tot = len(_m0["contours"]) + sum(
+                        len(x["contours"]) for x in (_m0.get("mkmembers") or []))
+                    if _tot >= 3:
+                        continue
+                    _cxm = (_m0["x1"] + _m0["x2"]) / 2
+                    _cym = (_m0["y1"] + _m0["y2"]) / 2
+                    _cand = []
+
+                    def _consider(e, src_atom=None):
+                        # a triangle dot may live in the word, in the OTHER
+                        # word of the pair, or in no word at all (the p2
+                        # fragments sit wordless in the line group) — the
+                        # sign floats BETWEEN the words it binds
+                        if e is _m0 or e.get("mkpart") or e.get("mkmembers"):
+                            return
+                        if (e["x2"] - e["x1"]) > 4.5 \
+                                or (e["y2"] - e["y1"]) > 4.5:
+                            return
+                        _d = (((e["x1"] + e["x2"]) / 2 - _cxm) ** 2
+                              + ((e["y1"] + e["y2"]) / 2 - _cym) ** 2) ** 0.5
+                        if _d > 9.0:
+                            return
+                        _ar = (e["x2"] - e["x1"]) * (e["y2"] - e["y1"])
+                        if not e.get("mark") and _ar <= 8.0:
+                            # unnamed dot-sized ink at the triangle site
+                            _cand.append((_d, e, src_atom))
+                        elif e.get("mark") == "dot":
+                            _hdw = sum(1 for x in _elw
+                                       if x.get("mark") == "dot"
+                                       and not x.get("mkpart"))
+                            if _hdw > sum(_txtw.count(c) for c in _D1w):
+                                _cand.append((_d, e, src_atom))
+
+                    for e in _elw:
+                        _consider(e)
+                    if os.environ.get("QSVG_MNQDBG"):
+                        print("MNQ %s master(%.0f,%.0f) tot=%d cand=%d"
+                              % (_wp["uthmani"], _cxm, _cym, _tot,
+                                 len(_cand)), file=sys.stderr)
+                        for _wo, _ao in assignment:
+                            if _wo:
+                                continue
+                            for _a2 in _ao:
+                                for e in _a2["els"]:
+                                    print("  wordless (%.0f,%.0f) %sx%s kind=%s mark=%s"
+                                          % (e["x1"], e["y1"],
+                                             round(e["x2"]-e["x1"],1),
+                                             round(e["y2"]-e["y1"],1),
+                                             e.get("kind"), e.get("mark")),
+                                          file=sys.stderr)
+                    for _wo, _ao in assignment:
+                        if _wo:
+                            continue
+                        for _a2 in _ao:
+                            for e in list(_a2["els"]):
+                                _consider(e, _a2)
+                    for _d, e, _src2 in sorted(_cand, key=lambda t: t[0]):
+                        if _tot >= 3:
+                            break
+                        if _src2 is not None:
+                            _src2["els"].remove(e)
+                            _atp[0]["els"].append(e)
+                        e["kind"] = "mark"
+                        e["mark"] = "pause"
+                        e["lab"] = "pause"
+                        e["mkpart"] = True
+                        e.pop("mkmembers", None)
+                        _m0.setdefault("mkmembers", []).append(e)
+                        _tot += len(e["contours"])
+
     # LINE-SET SOLVER (trial, DEFAULT OFF — QSVG_LSOLVE=1 to enable).
     #
     # The ownership rule (Abdullah, 2026-08-26): POSITION OWNS a mark — it
@@ -9814,6 +9982,75 @@ def assign_page(edition, page_no, cache_dir):
     # unnamed with a CORRECT table label; p577 e122 wore "pause"), and both
     # halves carry one data-iqlab pair id. Names stay catalog-true: the
     # haraka keeps fatha/kasra/damma — recitation changes, ink does not.
+    # IQLAB SIGN BY TABLE IDENTITY (Abdullah 2026-08-28: قَوْمِۭ p93/p186
+    # took its own letter م as the sign; زَوْجِۭ p518 took a letter piece
+    # while the real ۭ outline sat as body). The rescues choose by geometry;
+    # where a HUMAN table entry identifies the sign outline, identity wins:
+    # that element is the م, and any other element wearing the name whose
+    # human label calls it letter ink gives it back.
+    if os.environ.get("QSVG_IQTAB", "1") == "1":
+        _qtab = shape_labels()
+        def _qlb(e):
+            try:
+                sg = e.get("sig") or sig_key(signature(el_points(e)))
+            except Exception:
+                return (None, True)
+            e.setdefault("sig", sg)
+            v = _qtab.get(sg)
+            lb = v.get("label") if isinstance(v, dict) else v
+            auto = v.get("auto", v.get("ai", True)) if isinstance(v, dict) else True
+            return (lb, auto)
+        for _wq, _aq in assignment:
+            if not _wq:
+                continue
+            _ptq = _wq.get("qpc") or _wq["uthmani"]
+            if not any(c in _ptq for c in "\u06e2\u06ed"):
+                continue
+            _elq = [e for a in _aq for e in a["els"]]
+            _tabm = []
+            _imp = []
+            for e in _elq:
+                if e.get("mkpart"):
+                    continue
+                lb, auto = _qlb(e)
+                if auto:
+                    continue
+                if lb == "meem-iqlab":
+                    _tabm.append(e)
+                elif lb in ("letter", "letter-hamza", "letter-part")                         and e.get("mark") == "meem-iqlab":
+                    _imp.append(e)
+            # a letter-labelled impostor yields even when the true sign is
+            # not yet identified — a missing sign flags honestly; a letter
+            # wearing the sign lies twice (Abdullah: قَسْوَرَةِۭ p577 kept
+            # its ر as the م because the word had no table sign to trade)
+            for e in _imp:
+                e["kind"] = "body"
+                e["mark"] = None
+                e["lab"] = None
+            if not _tabm:
+                continue
+            for e in _tabm:
+                if e.get("mark") != "meem-iqlab":
+                    e["kind"] = "mark"
+                    e["mark"] = "meem-iqlab"
+                    e["lab"] = "meem-iqlab"
+            # one sign per ۢ/ۭ: surplus impostors NOT letter-labelled but
+            # geometry-named stay only while the table holds fewer than the
+    # text wants — with the table sign present, a second named element
+            # that the table cannot vouch for yields
+            _wantq = sum(_ptq.count(c) for c in "\u06e2\u06ed")
+            _named = [e for e in _elq if e.get("mark") == "meem-iqlab"
+                      and not e.get("mkpart")]
+            if len(_named) > _wantq:
+                for e in sorted(_named, key=lambda x: x not in _tabm):
+                    if len(_named) <= _wantq:
+                        break
+                    if e not in _tabm:
+                        e["kind"] = "body"
+                        e["mark"] = None
+                        e["lab"] = None
+                        _named.remove(e)
+
     if os.environ.get("QSVG_IQPAIR", "1") == "1":
         for _wi, _ai in assignment:
             if not _wi:
@@ -9838,7 +10075,8 @@ def assign_page(edition, page_no, cache_dir):
                 for e in _eli:
                     if (e.get("mark") == "pause" and not e.get("mkpart")
                             and (e["x2"] - e["x1"]) <= 6.5
-                            and (e["y2"] - e["y1"]) <= 6.5):
+                            and (e["y2"] - e["y1"]) <= 6.5
+                            and not _human_letter_label(e)):
                         e["mark"] = "meem-iqlab"
                         e["lab"] = "meem-iqlab"
                         _meem = [e]
@@ -9885,13 +10123,34 @@ def assign_page(edition, page_no, cache_dir):
         def _tabl(sig):
             v = shape_labels().get(sig or "")
             lb = v.get("label") if isinstance(v, dict) else v
-            auto = v.get("auto", True) if isinstance(v, dict) else True
+            # {'ai': True} marks the auto pass; a plain {'label': x} entry
+            # is a HUMAN decision from before the flag existed
+            auto = (v.get("auto", v.get("ai", False))
+                    if isinstance(v, dict) else True)
             return (lb, auto)
         for _w8, _at8 in assignment:
             if not _w8:
                 continue
             _txt8 = _w8["uthmani"]
             _els8 = [e for a in _at8 for e in a["els"]]
+            # (e) HUMAN letter labels outrank every namer: an element wearing
+            # a mark name whose confirmed table label calls it letter ink is
+            # letter ink (p159: the seated ء named "damma"). The one twin
+            # exception: letter-hamza ink named "hamza" stays — the final ء
+            # reconciliation decides that pair by carrier budget.
+            for e in _els8:
+                if e.get("mkpart") or e["kind"] != "mark" or not e.get("mark"):
+                    continue
+                lbE, autoE = _tabl(e.get("sig"))
+                if autoE:
+                    continue
+                if lbE in ("letter", "letter-part") or                         (lbE == "letter-hamza" and e["mark"] != "hamza"):
+                    for m in (e.get("mkmembers") or []):
+                        m["mkpart"] = False
+                    e["mkmembers"] = []
+                    e["kind"] = "body"
+                    e["mark"] = None
+                    e["lab"] = lbE
             # (a) missing hamza, held by a slash name on a confirmed-hamza shape
             _wanth = sum(_txt8.count(c) for c in _CARR8) + _txt8.count("\u0621")
             _haveh = sum(1 for e in _els8 if e.get("mark") == "hamza"
@@ -9956,6 +10215,109 @@ def assign_page(edition, page_no, cache_dir):
                             e["lab"] = lb
                             _have += 1
 
+    # A waqf sign OWNS its satellite ink (Abdullah 2026-08-28, p14
+    # مَعَهُمْۗ: the قلي's two lower dots auto-labelled as a second
+    # "pause"). When a word holds more pause MASTERS than its text has waqf
+    # characters, and two of them overlap in x within a line's height, the
+    # smaller is the sign's own satellite — weld it in.
+    if os.environ.get("QSVG_WQOWN", "1") == "1":
+        _WQCH = "\u06d6\u06d7\u06d8\u06d9\u06da\u06db\u06dc"
+        for _ww, _aw in assignment:
+            if not _ww:
+                continue
+            _ptw = _ww.get("qpc") or _ww["uthmani"]
+            _bud = sum(_ptw.count(c) for c in _WQCH)
+            _elz = [e for a in _aw for e in a["els"]]
+            _pm = [e for e in _elz if e.get("mark") == "pause"
+                   and not e.get("mkpart")]
+            if not _bud or len(_pm) <= _bud:
+                continue
+            _pm.sort(key=lambda e: -(e["x2"] - e["x1"]) * (e["y2"] - e["y1"]))
+            for e in _pm[_bud:]:
+                _host = min(_pm[:_bud], key=lambda h: abs(
+                    (h["x1"] + h["x2"]) / 2 - (e["x1"] + e["x2"]) / 2))
+                if (min(_host["x2"], e["x2"]) - max(_host["x1"], e["x1"])
+                        < -1.0):
+                    continue
+                if abs((_host["y1"] + _host["y2"]) / 2
+                       - (e["y1"] + e["y2"]) / 2) > 12.0:
+                    continue
+                e["mkpart"] = True
+                e.pop("mkmembers", None)
+                _host.setdefault("mkmembers", []).append(e)
+
+    # COMPOSITE RESOLUTION — no "x+y" ever ships (Abdullah 2026-08-28).
+    # A table label naming two marks describes ONE piece of artwork carrying
+    # both. classify names the halves but leaves them welded, so the member
+    # half counts through the master's name only and one mark vanishes from
+    # every budget (p159 وَءَابَآؤُكُم lost the ؤ's damma). Resolve late,
+    # after every namer: a welded member whose name differs from its
+    # master's is its own mark — free it; a single element whose contours
+    # can carry the names splits into one element per name, top-to-bottom.
+    if os.environ.get("QSVG_CSPLIT", "1") == "1":
+        _ctab = shape_labels()
+        for _wc, _atc in assignment:
+            if not _wc:
+                continue
+            for _ac in _atc:
+                _addc = []
+                for e in _ac["els"]:
+                    if e.get("mkpart") or e["kind"] != "mark":
+                        continue
+                    _vc = _ctab.get(e.get("sig") or "")
+                    _lbc = _vc.get("label") if isinstance(_vc, dict) else _vc
+                    if not _lbc or "+" not in _lbc:
+                        continue
+                    _names = [x.strip() for x in _lbc.split("+")]
+                    _mems = [m for m in (e.get("mkmembers") or [])
+                             if m.get("mark") and m["mark"] != e.get("mark")]
+                    if _mems:
+                        for m in _mems:
+                            m["mkpart"] = False
+                        e["mkmembers"] = [m for m in e["mkmembers"]
+                                          if m not in _mems]
+                        if "+" in (e.get("mark") or ""):
+                            e["mark"] = _names[0]
+                            e["lab"] = _names[0]
+                        continue
+                    if len(e["contours"]) >= len(_names)                             and not e.get("mkmembers"):
+                        _pM = page.paths[e["path"]]["M"]
+                        _cbs = []
+                        for c in e["contours"]:
+                            sp = c["sp"]
+                            bx1, by1, bx2, by2 = transform_box(
+                                _pM, sp["xmin"], sp["ymin"],
+                                sp["xmax"], sp["ymax"])
+                            _cbs.append((c, min(by1, by2), max(by1, by2),
+                                         min(bx1, bx2), max(bx1, bx2)))
+                        _cbs.sort(key=lambda t: t[1] + t[2])
+                        _gaps = sorted(range(1, len(_cbs)),
+                                       key=lambda i: _cbs[i][1] - _cbs[i-1][2],
+                                       reverse=True)[:len(_names) - 1]
+                        _grpc, _prev = [], 0
+                        for _cu in sorted(_gaps) + [len(_cbs)]:
+                            _grpc.append(_cbs[_prev:_cu]); _prev = _cu
+                        for _gi, _grp in enumerate(_grpc):
+                            _bb = (min(t[3] for t in _grp),
+                                   min(t[1] for t in _grp),
+                                   max(t[4] for t in _grp),
+                                   max(t[2] for t in _grp))
+                            if _gi == 0:
+                                e["contours"] = [t[0] for t in _grp]
+                                e["mark"] = _names[0]
+                                e["lab"] = _names[0]
+                                e["x1"], e["y1"], e["x2"], e["y2"] = _bb
+                            else:
+                                _ne = dict(e)
+                                _ne["contours"] = [t[0] for t in _grp]
+                                _ne["mark"] = _names[_gi]
+                                _ne["lab"] = _names[_gi]
+                                _ne["x1"], _ne["y1"], _ne["x2"], _ne["y2"] = _bb
+                                _ne.pop("sig", None)
+                                _addc.append(_ne)
+                if _addc:
+                    _ac["els"].extend(_addc)
+
     # Final ء reconciliation. The mid-pipeline demote (see "runs late on
     # purpose" above) is no longer last: movers and table-label passes added
     # since can name a standalone ء "hamza" after it has run. Same rule,
@@ -9991,6 +10353,101 @@ def assign_page(edition, page_no, cache_dir):
                 e["kind"] = "body"
                 e["mark"] = None
                 e["lab"] = "letter-hamza"
+
+    # Text-driven dot REGROUPING (Abdullah 2026-08-28, p230 شيخا / p33 فبعث
+    # family, 527 words). The digitizer draws a ث/ش triangle or a ي/ة pair as
+    # separate outlines; every unit is present, only the grouping is wrong.
+    # The text gives the grouping, the ink gives the positions. Welds happen
+    # ONLY when the word's dot-unit total already equals its budget and the
+    # weld makes the group vector match EXACTLY — counts can veto, never
+    # approve (the SLASHX rule). Distance chooses between candidate partners
+    # where arithmetic leaves a choice: measured mushaf-wide, wrong-grouping
+    # nearest-dot distances are 1.6-2.1 (the 1+2 ث welds reach 2.7) while the
+    # closest CORRECT distinct-letter dots sit at 2.3 with p1 = 3.2 and
+    # p5 = 4.0 — 4.5 is far outside every weld actually owed and below
+    # nothing that must stay apart.
+    if os.environ.get("QSVG_DOTGROUP", "1") == "1":
+        _D1 = "\u0628\u062c\u062e\u0630\u0632\u0636\u0638\u063a\u0641\u0646"
+        _D2 = "\u062a\u0642\u0629\u064a"
+        _D3 = "\u062b\u0634"
+        _DFAM = {"dot": 1, "two-dots": 2, "three-dots": 3}
+        _DNAME = {1: "dot", 2: "two-dots", 3: "three-dots"}
+        for _wd, _atd in assignment:
+            if not _wd:
+                continue
+            _txtd = _wd["uthmani"]
+            _exp = {"dot": sum(_txtd.count(c) for c in _D1),
+                    "two-dots": sum(_txtd.count(c) for c in _D2),
+                    "three-dots": sum(_txtd.count(c) for c in _D3)}
+            if not any(_exp.values()):
+                continue
+            _mast = [e for a in _atd for e in a["els"]
+                     if e.get("mark") in _DFAM and not e.get("mkpart")]
+            _nh = {k: sum(1 for e in _mast if e["mark"] == k) for k in _DFAM}
+            if _nh == _exp:
+                continue
+            _ue = sum(_DFAM[k] * v for k, v in _exp.items())
+            _uh = sum(_DFAM[k] * v for k, v in _nh.items())
+            if _ue != _uh:
+                continue        # a unit is missing or surplus — not a regroup
+            # deficits must be strictly in BIGGER groups: outlines only weld
+            _defs = [(k, _exp[k] - _nh[k]) for k in ("three-dots", "two-dots")
+                     if _exp[k] > _nh[k]]
+            if any(_exp[k] > _nh[k] for k in ("dot",)):
+                continue        # would need splitting an outline — impossible
+            _ctr = lambda e: ((e["x1"] + e["x2"]) / 2, (e["y1"] + e["y2"]) / 2)
+            _dist = lambda a, b: ((_ctr(a)[0] - _ctr(b)[0]) ** 2
+                                  + (_ctr(a)[1] - _ctr(b)[1]) ** 2) ** 0.5
+            _plan = []
+            _free = list(_mast)
+            _ok = True
+            for _fam, _need in _defs:
+                _tgt = _DFAM[_fam]
+                for _ in range(_need):
+                    _best = None
+                    _sm = [e for e in _free if e["mark"] != _fam]
+                    # every subset of 2-3 smaller masters whose units sum to
+                    # the target, tightest cluster first
+                    import itertools as _it
+                    for _r in (2, 3):
+                        for _cmb in _it.combinations(_sm, _r):
+                            if sum(_DFAM[e["mark"]] for e in _cmb) != _tgt:
+                                continue
+                            _dm = max(_dist(a, b)
+                                      for i, a in enumerate(_cmb)
+                                      for b in _cmb[i + 1:])
+                            if _dm >= 4.5:
+                                continue
+                            if _best is None or _dm < _best[0]:
+                                _best = (_dm, _cmb)
+                    if _best is None:
+                        _ok = False
+                        break
+                    _plan.append((_fam, _best[1]))
+                    for e in _best[1]:
+                        _free.remove(e)
+                if not _ok:
+                    break
+            if not _ok or not _plan:
+                continue
+            # prove the resulting vector before touching anything
+            _sim = dict(_nh)
+            for _fam, _cmb in _plan:
+                _sim[_fam] += 1
+                for e in _cmb:
+                    _sim[e["mark"]] -= 1
+            if _sim != _exp:
+                continue
+            for _fam, _cmb in _plan:
+                _hd = max(_cmb, key=lambda e: (e["x2"] - e["x1"])
+                          * (e["y2"] - e["y1"]))
+                _hd["mark"] = _fam
+                _hd["lab"] = _fam
+                for e in _cmb:
+                    if e is _hd:
+                        continue
+                    e["mkpart"] = True
+                    _hd.setdefault("mkmembers", []).append(e)
 
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
