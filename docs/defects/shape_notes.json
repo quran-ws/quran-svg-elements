@@ -294,5 +294,6 @@
  "17bb026e5da235cf": "visual agent: the diamond dot below the ج of مَرْجِعُهُمْ",
  "feedf4b381cc302c": "visual agent: a plain slash over the ن of أَنَا۠ — the ۠ itself is drawn separately as a ring above",
  "9a348392065566fc": "visual agent: the full-size joined ة of ٱلصَّلَوٰةِ (22:35:12) held as an unnamed mark",
- "4b02e3a5a4b9e939": "visual agent: the full-size joined ة of ٱلْـَٔاخِرَةِ (23:74:5) held as an unnamed mark"
+ "4b02e3a5a4b9e939": "visual agent: the full-size joined ة of ٱلْـَٔاخِرَةِ (23:74:5) held as an unnamed mark",
+ "_slash_family_review": "abdullah 2026-08-28 14:11: reviewed the slash (fatha/kasra) variant signatures with 30-sample modals — no non-haraka intruders found. The by-position naming convention is confirmed for the whole family (incl. c9b82d57cfff 9,874x, d7a8b5e19121 9,863x, 081e17149495 4,873x, 505e12501bff 2,096x)."
 }
