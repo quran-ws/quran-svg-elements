@@ -388,12 +388,23 @@ class Handler(BaseHTTPRequestHandler):
                     svg = open(f, encoding="utf-8").read()
                     for m in re.finditer('data-sig="%s"' % re.escape(sig), svg):
                         t0 = svg.rfind("<path", 0, m.start())
-                        tag = svg[t0:m.start()]
-                        mk = re.search(r'data-mark(?:-part)?="([^"]*)"', tag)
-                        em = re.search(r'data-eid="(e\d+)"', tag)
-                        occ.append((int(os.path.basename(f)[:3]),
-                                    mk.group(1) if mk else "body",
-                                    em.group(1) if em else None, f))
+                        tag_end = svg.find(">", m.start())
+                        tag = svg[t0:tag_end]
+                        at = dict(re.findall(r'data-([a-z-]+)="([^"]*)"', tag))
+                        # derive the family EXACTLY like the variants builder
+                        fam = at.get("mark") or at.get("mark-part") or "body"
+                        if fam == "pause" and at.get("waqf"):
+                            fam = at["waqf"]
+                        if at.get("form"):
+                            fam += " (%s)" % at["form"]
+                        if at.get("iqlab"):
+                            fam += " (iqlab)"
+                        if "mark-part" in at:
+                            fam += " [part]"
+                        if at.get("standalone"):
+                            fam += " [standalone]"
+                        occ.append((int(os.path.basename(f)[:3]), fam,
+                                    at.get("eid"), f))
                 if groups_only:
                     return self.send_json(
                         {"sig": sig,
