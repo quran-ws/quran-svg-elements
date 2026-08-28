@@ -132,8 +132,12 @@ textarea{width:220px;min-height:30px;font:inherit;font-size:12px}
 <h1>Mark variants — every shape, in place</h1>
 <p>Red = this shape inside a real word. Click the correct name if the label is
 wrong; it saves immediately. Click a family title to open it.</p>"""]
-    # sections ordered by total occurrences, rows within by count
-    fam_order = sorted(by_fam, key=lambda f: -sum(len(r) for _, r in by_fam[f]))
+    # sections ordered by total occurrences, rows within by count;
+    # the unnamed group is pinned FIRST — every entry there is a defect
+    if "?" in by_fam:
+        by_fam["UNNAMED — needs your eye"] = by_fam.pop("?")
+    fam_order = sorted(by_fam, key=lambda f: (f != "UNNAMED — needs your eye",
+                                              -sum(len(r) for _, r in by_fam[f])))
     for fam in fam_order:
         rows = sorted(by_fam[fam], key=lambda t: -len(t[1]))
         out.append('<h2 onclick="this.nextElementSibling.classList.toggle(\'open\');fitInk(this.nextElementSibling)">'

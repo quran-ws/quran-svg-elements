@@ -1907,11 +1907,14 @@ def rewrite(page, assignment):
     # contour conservation is untouched). Cross-path members keep their own
     # path with _reframe, as before.
     if os.environ.get("QSVG_DOTMERGE", "1") == "1":
-        _DOTFAM6 = ("dot", "two-dots", "three-dots")
+        # generalized (Abdullah 2026-08-28): EVERY welded sign is ONE mark —
+        # a kasratan pair, the ج with its dot, the hizb with its ornament —
+        # so occurrence counts are exact. Same-source-frame merge only;
+        # cross-path members keep their own reframed path as before.
         for word, atoms in assignment:
             for atom in atoms:
                 for e in atom["els"]:
-                    if (e.get("mark") in _DOTFAM6 and not e.get("mkpart")
+                    if (e.get("mark") and not e.get("mkpart")
                             and e.get("mkmembers")):
                         keepm = []
                         for m in e["mkmembers"]:
@@ -9665,6 +9668,24 @@ def assign_page(edition, page_no, cache_dir):
                 _pid = "mnq-%d-%d-%d" % (_s4, _a4, _k4 // 2 + 1)
                 _lst4[_k4][2]["mnqpair"] = _pid
                 _lst4[_k4 + 1][2]["mnqpair"] = _pid
+
+    # UNNAMED STANDALONE PIECES: the hizb ۞ sign's companion contours were
+    # emitted as bare kind=mark with no name (143 mushaf-wide). Any unnamed
+    # mark inside a standalone sign's atom takes the sign's name as a part.
+    for _wu, _au in assignment:
+        if _wu:
+            continue
+        for _a in _au:
+            _named = [e for e in _a["els"] if e.get("mark")]
+            _sa9 = _a.get("sa")
+            _base = (_named[0]["mark"] if _named else
+                     (_sa9[0] if _sa9 else None))
+            if not _base:
+                continue
+            for e in _a["els"]:
+                if e["kind"] == "mark" and not e.get("mark"):
+                    e["mark"] = _base
+                    e["mkpart"] = True
 
     # ROTATED TANWEEN PAIR (Abdullah 2026-08-28, لَـَٔايَٰتࣲ p499/p268): two
     # adjacent fathas at a word's TOP get welded and named kasratan, while the
