@@ -106,6 +106,7 @@ def scan(pg):
     except Exception as e:
         return (pg, [("PAGE", "-", [("error", 0, 0)])])
     rows = []
+    piece_led = []
     byline = {}
     for w, at in cap["a"]:
         if not w:
@@ -222,8 +223,26 @@ def scan(pg):
         # visual review sheet; a SURPLUS is unambiguous stolen ink
         if len(eff) > nseg:
             bad.append(("ligatures", len(eff), nseg))
+        piece_led.append((w, len(eff), nseg))
         if bad:
             rows.append(("%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), txt, bad))
+    # BODY CHAIN SIGNATURE (Abdullah 2026-08-29, the 56:18 lesson): a piece
+    # DEFICIT alone is usually the art joining letters — but a deficit word
+    # within three positions of a SURPLUS word is a theft pair, the body
+    # layer's version of the count-perfect chain. Flag both.
+    for i1, (w1, e1, n1) in enumerate(piece_led):
+        if e1 >= n1:
+            continue
+        for w2, e2, n2 in piece_led:
+            if e2 <= n2 or w2 is w1:
+                continue
+            if w1["surah"] == w2["surah"] \
+                    and abs((w1["ayah"] * 1000 + w1["pos"])
+                            - (w2["ayah"] * 1000 + w2["pos"])) <= 3:
+                rows.append(("%d:%d:%d" % (w1["surah"], w1["ayah"],
+                                           w1["pos"]), w1["uthmani"],
+                             [("pieces", e1, n1)]))
+                break
     return (pg, rows)
 
 
