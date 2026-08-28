@@ -427,6 +427,13 @@
    "reporter": "pipeline (after Abdullah's p548 two-dots verdict)",
    "what": "59:22:10 وَٱلشَّهَٰدَةِۖ (p548): both texts carry ۖ but after the ة's stolen two-dots were returned (sig 08eefab4 wore 'pause'), no صلے ink exists anywhere near the word.",
    "status": "RESOLVED 2026-08-28: the صلے was inside the word as kind=body (e622, sig f5581079 — the canonical صلي outline). QSVG_WQBODY now promotes a body wearing a waqf outline in a word owed a pause; p548 clean, no eye needed."
+  },
+  {
+   "id": 40,
+   "date": "2026-08-28",
+   "reporter": "pipeline (after the eye-driven sign hunt)",
+   "what": "Three low-iqlab (ۭ) words hold NO separate م ink and no canonical sign outline exists within reach: جَنَّةِۭ p45, لَّازِبِۭ p446, قَسْوَرَةِۭ p577. Their kasras are plain single-contour slashes (no fusion). All other iqlab sites are now complete (p36 فإمساك recovered from بمعروف; p358 متبرجات by eye; p7 already had its sign).",
+   "status": "awaiting Abdullah's eye ON THE PRINT: does the 1421H edition draw a small م at these three sites at all, or is low-ۭ iqlab expressed by the kasra alone there? If drawn, point at the ink; if not, art fact — record and exempt from the sign budget."
   }
  ]
 }
