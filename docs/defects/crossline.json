@@ -1,18 +1,5 @@
 [
  {
-  "page": 59,
-  "line": 9,
-  "holder": "يُؤَدِّهِۦٓ",
-  "key": "3:75:8",
-  "kind": "body",
-  "mark": null,
-  "other_line": 10,
-  "other": "إِلَّا",
-  "gap_own": 22.8,
-  "gap_other": 0.0,
-  "x_gap": 1.6
- },
- {
   "page": 71,
   "line": 5,
   "holder": "غَالِبَ",
@@ -40,29 +27,16 @@
  },
  {
   "page": 129,
-  "line": 14,
-  "holder": "بِخَيْرࣲ",
-  "key": "6:17:12",
-  "kind": "body",
-  "mark": null,
-  "other_line": 15,
-  "other": "عِبَادِهِۦۚ",
-  "gap_own": 32.5,
-  "gap_other": 22.6,
+  "line": 15,
+  "holder": "عِبَادِهِۦۚ",
+  "key": "6:18:4",
+  "kind": "mark",
+  "mark": "fatha",
+  "other_line": 14,
+  "other": "بِخَيْرࣲ",
+  "gap_own": 36.8,
+  "gap_other": 6.8,
   "x_gap": 0.0
- },
- {
-  "page": 129,
-  "line": 14,
-  "holder": "بِخَيْرࣲ",
-  "key": "6:17:12",
-  "kind": "body",
-  "mark": null,
-  "other_line": 15,
-  "other": "عِبَادِهِۦۚ",
-  "gap_own": 28.3,
-  "gap_other": 0.0,
-  "x_gap": 2.6
  },
  {
   "page": 133,
@@ -78,19 +52,6 @@
   "x_gap": 0.0
  },
  {
-  "page": 164,
-  "line": 5,
-  "holder": "إِنَّ",
-  "key": "7:109:6",
-  "kind": "body",
-  "mark": null,
-  "other_line": 4,
-  "other": "يَدَهُۥ",
-  "gap_own": 22.8,
-  "gap_other": 0.0,
-  "x_gap": 2.7
- },
- {
   "page": 216,
   "line": 12,
   "holder": "سُلْطَٰنِۭ",
@@ -102,19 +63,6 @@
   "gap_own": 8.7,
   "gap_other": 5.1,
   "x_gap": 0.0
- },
- {
-  "page": 263,
-  "line": 5,
-  "holder": "بِرَٰزِقِينَ",
-  "key": "15:20:8",
-  "kind": "body",
-  "mark": null,
-  "other_line": 4,
-  "other": "شَىْءࣲ",
-  "gap_own": 28.3,
-  "gap_other": 0.0,
-  "x_gap": 1.2
  },
  {
   "page": 267,
@@ -153,32 +101,6 @@
   "other": "وَأَعْنَٰبࣲ",
   "gap_own": 12.1,
   "gap_other": 7.0,
-  "x_gap": 0.0
- },
- {
-  "page": 418,
-  "line": 6,
-  "holder": "وَكَفَىٰ",
-  "key": "33:3:4",
-  "kind": "mark",
-  "mark": "fatha",
-  "other_line": 5,
-  "other": "ٱللَّهِۚ",
-  "gap_own": 10.3,
-  "gap_other": 2.8,
-  "x_gap": 0.0
- },
- {
-  "page": 418,
-  "line": 6,
-  "holder": "وَكَفَىٰ",
-  "key": "33:3:4",
-  "kind": "mark",
-  "mark": "fatha",
-  "other_line": 5,
-  "other": "ٱللَّهِۚ",
-  "gap_own": 30.8,
-  "gap_other": 0.6,
   "x_gap": 0.0
  },
  {
