@@ -9660,6 +9660,58 @@ def assign_page(edition, page_no, cache_dir):
                 _lst4[_k4][2]["mnqpair"] = _pid
                 _lst4[_k4 + 1][2]["mnqpair"] = _pid
 
+    # ROTATED TANWEEN PAIR (Abdullah 2026-08-28, لَـَٔايَٰتࣲ p499/p268): two
+    # adjacent fathas at a word's TOP get welded and named kasratan, while the
+    # word's real kasratan below wears two fatha names — a perfectly
+    # count-neutral rotation only an eye caught. Position doctrine applied to
+    # PAIRS: a kasratan pair must sit BELOW the word's letters. When a
+    # kasratan-named pair sits clearly ABOVE the word's letter mid-line AND
+    # at least two below-the-letters marks are named fatha AND the budget
+    # wants no fathatan, rotate: unweld the top pair into two fathas, weld
+    # the two lowest below-fathas as the kasratan.
+    if os.environ.get("QSVG_TANROT", "1") == "1":
+        for _wr2, _ar2 in assignment:
+            if not _wr2:
+                continue
+            _t2 = _wr2["uthmani"]
+            if not any(c in _t2 for c in "\u064d\u08f2"):
+                continue           # word owns no kasratan
+            if any(c in _t2 for c in "\u064b\u08f0"):
+                continue           # fathatan present: ambiguous, leave
+            _e2s = [e for a in _ar2 for e in a["els"]]
+            _b2s = [e for e in _e2s if e["kind"] == "body"]
+            if not _b2s:
+                continue
+            _mid2 = (min(b["y1"] for b in _b2s) + max(b["y2"] for b in _b2s)) / 2
+            _pairs = [e for e in _e2s if e.get("mark") == "kasratan"
+                      and not e.get("mkpart") and e.get("mkmembers")]
+            for _p2 in _pairs:
+                _cy2 = (_p2["y1"] + _p2["y2"]) / 2
+                if _cy2 >= _mid2 - 1.0:
+                    continue       # pair is not clearly above
+                _low_f = sorted([e for e in _e2s if e.get("mark") == "fatha"
+                                 and not e.get("mkpart")
+                                 and (e["y1"] + e["y2"]) / 2 > _mid2],
+                                key=lambda e: -(e["y1"] + e["y2"]))
+                if len(_low_f) < 2:
+                    continue
+                # rotate: top pair -> two fathas
+                for _m2 in _p2.get("mkmembers", []):
+                    _m2["mkpart"] = False
+                    _m2["mark"] = "fatha"
+                    _m2["lab"] = "fatha"
+                _p2["mkmembers"] = []
+                _p2["mark"] = "fatha"
+                _p2["lab"] = "fatha"
+                # two lowest below-fathas -> the kasratan pair
+                _ma2, _mb2 = _low_f[0], _low_f[1]
+                _mb2["mkpart"] = True
+                _mb2["mark"] = "kasratan"
+                _ma2["mark"] = "kasratan"
+                _ma2["lab"] = "kasratan"
+                _ma2.setdefault("mkmembers", []).append(_mb2)
+                break
+
     # IQLAB UNIT (Abdullah 2026-08-28): the print draws iqlab as ONE unit —
     # a haraka + the small م. Late reconciliation: at every print-iqlab word
     # (ۢ/ۭ in the print text), the م must wear meem-iqlab (his p531 e236 was

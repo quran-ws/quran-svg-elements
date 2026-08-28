@@ -1,0 +1,4 @@
+{"page": 1, "eid": "e1", "key": null, "word": null, "sig": null, "current": null, "correct": "fatha", "note": null, "ts": "2026-08-28T14:20:35"}
+{"page": 499, "eid": "e147", "key": "45:3:5", "word": "لَـَٔايَٰتࣲ", "sig": "c9b82d57cfff4954", "current": "kasratan-part", "correct": "fatha", "note": "Abdullah chat 14:19: the above pair are the fathas of ل/ء; real kasratan is below ت", "ts": "2026-08-28T14:22:43"}
+{"page": 268, "eid": "e608", "key": "16:12:13", "word": "لَـَٔايَٰتࣲ", "sig": "c9b82d57cfff4954", "current": "kasratan-part", "correct": "fatha", "note": "same rotation as p499", "ts": "2026-08-28T14:22:43"}
+{"page": 567, "eid": "e45", "key": "69:9:5", "word": "وَٱلْمُؤْتَفِكَٰتُ", "sig": "c9b82d57cfff4954", "current": "body", "correct": "fatha", "note": "slash as body inside the round-10 CERTAIN chain word", "ts": "2026-08-28T14:22:43"}
