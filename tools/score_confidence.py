@@ -600,6 +600,26 @@ def main():
             for v in rnd.get("verdicts", []):
                 verd[(v["page"], v["key"])] = (v["status"], v.get("note", ""),
                                                v.get("sig"))
+    # live store: every click on the confidence page posts here the moment it
+    # happens (and the page bulk-syncs its browser cache on load), so verdicts
+    # can never again sit only in localStorage. Later lines win.
+    cvp = os.path.join(ROOT, ".cache", "review", "confidence_verdicts.jsonl")
+    if os.path.exists(cvp):
+        for line in open(cvp, encoding="utf-8"):
+            try:
+                v = json.loads(line)
+            except Exception:
+                continue
+            if v.get("status") in ("confirmed", "no-issue", "reopened",
+                                   "commented"):
+                st = "reopened" if (v["status"] == "commented"
+                                    and any(t in (v.get("note") or "")
+                                            for t in ("not fixed", "still",
+                                                      "missin"))) \
+                    else ("confirmed" if v["status"] == "commented"
+                          else v["status"])
+                verd[(int(v["page"]), v["key"])] = (st, v.get("note", ""),
+                                                    v.get("sig"))
 
     tiers, worst, fam_agg = Counter(), [], Counter()
     for pg, rec in sorted(raws.items()):
@@ -883,7 +903,36 @@ function sync(){
   document.getElementById("nrej").textContent = rejected.size;
   localStorage.setItem(KEY, JSON.stringify([...active]));
   localStorage.setItem(RKEY, JSON.stringify([...rejected]));
+  postVerdicts();
 }
+/* every state change posts to the server (fire-and-forget, debounced);
+   localStorage stays only as the page's own cache */
+let postTimer = null;
+function verdictOf(k){
+  const c = cards.find(x => widOf(x) === k);
+  if (!c) return null;
+  const status = rejected.has(k) ? "no-issue"
+               : active.has(k) ? "confirmed"
+               : (notes && notes[k]) ? "commented" : null;
+  if (!status) return null;
+  return {page: +c.dataset.page,
+          key: `${c.dataset.s}:${c.dataset.a}:${c.dataset.w}`,
+          status, note: (notes && notes[k]) || "",
+          sig: c.dataset.cardsig || null};
+}
+function postVerdicts(){
+  clearTimeout(postTimer);
+  postTimer = setTimeout(() => {
+    const all = new Set([...active, ...rejected,
+                         ...Object.keys(notes || {})]);
+    const payload = [...all].map(verdictOf).filter(Boolean);
+    if (payload.length)
+      fetch("/api/cverdict", {method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(payload)}).catch(() => {});
+  }, 800);
+}
+window.addEventListener("load", () => setTimeout(postVerdicts, 1500));
 cards.forEach(c => c.onclick = e => {
   if (e.target.closest("a") || e.target.closest(".note")) return;
   const k = widOf(c);

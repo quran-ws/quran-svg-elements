@@ -401,6 +401,23 @@ class Handler(BaseHTTPRequestHandler):
                 return self.api_edit(body)
             if path == "/api/edit/delete":
                 return self.api_edit_delete(body)
+            if path == "/api/cverdict":
+                # confidence-board verdicts: {page, key, status, note, sig}
+                # appended last-wins; the scorer reads this store directly, so
+                # browser localStorage is only a cache, never the record.
+                items = body if isinstance(body, list) else [body]
+                import time as _t
+                with open(os.path.join(REVIEW_DIR, "confidence_verdicts.jsonl"),
+                          "a", encoding="utf-8") as f:
+                    for it in items:
+                        if not (isinstance(it, dict) and it.get("key")
+                                and it.get("page")):
+                            continue
+                        it = {k: it.get(k) for k in
+                              ("page", "key", "status", "note", "sig")}
+                        it["ts"] = _t.strftime("%Y-%m-%dT%H:%M:%S")
+                        f.write(json.dumps(it, ensure_ascii=False) + "\n")
+                return self.send_json({"ok": True, "n": len(items)})
             if path == "/api/review":
                 return self.api_review(body)
             if path == "/api/page-status":
