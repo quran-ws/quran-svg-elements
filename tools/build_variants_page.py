@@ -92,6 +92,15 @@ def main():
             return ""
         grp = grp.replace('data-eid="%s" ' % eid,
                           'data-eid="%s" style="fill:#c22" ' % eid)
+        # the sign's welded parts (the ج's dot, the قلى dots, the small
+        # noon's dot) belong to the shape — colour them too so the variant
+        # shows the COMPLETE sign
+        mk_m = re.search(r'data-eid="%s"[^>]*data-mark="([^"]+)"' % eid, grp)
+        if mk_m:
+            grp = re.sub(
+                r'(<path data-eid="e\d+" data-kind="mark" '
+                r'data-mark-part="%s" )' % re.escape(mk_m.group(1)),
+                r'\1style="fill:#c22" ', grp)
         root = re.search(r'<g transform="matrix[^"]*">', svg)
         vb = re.search(r'viewBox="[^"]*"', svg)
         return ('<svg xmlns="http://www.w3.org/2000/svg" %s>%s%s</g></svg>'
@@ -233,7 +242,7 @@ function fitInk(scope){
             // hide everything but the mark; svg.getBBox() then returns the
             // mark's bbox in viewBox units, transforms included
             const others = [...zsvg.querySelectorAll('path')]
-              .filter(p => p !== zred);
+              .filter(p => !(p.getAttribute('style') || '').includes('c22'));
             others.forEach(p => p.style.display = 'none');
             const zb = zsvg.getBBox();
             others.forEach(p => p.style.display = '');
