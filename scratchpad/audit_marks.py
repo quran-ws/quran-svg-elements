@@ -33,7 +33,8 @@ TEXT_WANT = {
     # ۜ (U+06DC) left this bucket: it is a saktah at five sites and a reading
     # sign at two, named BY JOB from the place table below. ۣ (U+06E3, 52:37)
     # stays: phase 1 did not rename the seen-below/imalah/ishmam/tashil dots.
-    "pause": ("ۖ", "ۗ", "ۘ", "ۙ", "ۚ", "ۛ"),
+    "pause": ("ۖ", "ۗ", "ۘ", "ۙ", "ۚ"),
+    "muanaqah": ("ۛ",),
     "small-noon": ("ۨ",),
     "saktah": ("ۜ",), "seen-reading": ("ۜ", "ۣ"),
     # phase-3 rare dots (Abdullah 2026-08-28): each is ONE site mushaf-wide

@@ -43,6 +43,7 @@ ALLOWED_MARKS = {
     "sifr-mustadir", "sifr-mustatil", "meem-iqlab",
     "dot", "two-dots", "three-dots",
     "pause", "saktah", "seen-reading", "imalah", "ishmam", "tashil",
+    "muanaqah",
     "sajdah-line", "sajdah-sign", "hizb",
 }
 ALLOWED_KINDS = {"body", "mark", "ayah-marker-ornament", "ayah-number",
@@ -132,7 +133,7 @@ def scan_page(pg):
         pr = at.get("data-pair")
         if pr is not None:
             pairs[pr] += 1
-        if wq == "muanaqah" and mk is not None:
+        if (wq == "muanaqah" or mk == "muanaqah") and mk is not None:
             mnq_masters += 1
             if pr is not None:
                 mnq_paired += 1
