@@ -26,19 +26,6 @@
   "x_gap": 0.0
  },
  {
-  "page": 129,
-  "line": 15,
-  "holder": "عِبَادِهِۦۚ",
-  "key": "6:18:4",
-  "kind": "mark",
-  "mark": "fatha",
-  "other_line": 14,
-  "other": "بِخَيْرࣲ",
-  "gap_own": 36.8,
-  "gap_other": 6.8,
-  "x_gap": 0.0
- },
- {
   "page": 133,
   "line": 5,
   "holder": "بَغْتَةً",
@@ -65,32 +52,6 @@
   "x_gap": 0.0
  },
  {
-  "page": 267,
-  "line": 10,
-  "holder": "ٱلْمَلَٰٓئِكَةَ",
-  "key": "16:2:2",
-  "kind": "mark",
-  "mark": "fatha",
-  "other_line": 11,
-  "other": "عِبَادِهِۦٓ",
-  "gap_own": 39.6,
-  "gap_other": 3.3,
-  "x_gap": 0.0
- },
- {
-  "page": 267,
-  "line": 12,
-  "holder": "ٱلسَّمَٰوَٰتِ",
-  "key": "16:3:2",
-  "kind": "body",
-  "mark": null,
-  "other_line": 11,
-  "other": "عِبَادِهِۦٓ",
-  "gap_own": 21.1,
-  "gap_other": 0.0,
-  "x_gap": 0.0
- },
- {
   "page": 343,
   "line": 2,
   "holder": "ذَهَابِۭ",
@@ -105,15 +66,15 @@
  },
  {
   "page": 535,
-  "line": 8,
-  "holder": "أَنشَأْنَٰهُنَّ",
-  "key": "56:35:2",
+  "line": 7,
+  "holder": "مَقْطُوعَةࣲ",
+  "key": "56:33:2",
   "kind": "mark",
   "mark": "fatha",
-  "other_line": 7,
-  "other": "كَثِيرَةࣲ",
-  "gap_own": 14.7,
-  "gap_other": 1.2,
-  "x_gap": 0.5
+  "other_line": 6,
+  "other": "وَظِلࣲّ",
+  "gap_own": 16.4,
+  "gap_other": 0.0,
+  "x_gap": 0.0
  }
 ]
