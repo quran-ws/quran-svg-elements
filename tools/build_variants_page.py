@@ -42,6 +42,16 @@ def main():
                 if w0 > -1 else None
             occ[sig].append((pg, wt.group(1) if wt else "", mark, eid))
     lab = json.load(open(os.path.join(ROOT, ".cache", "marks", "labels.json")))
+    # prior review flags (last wins per sig)
+    flags = {}
+    fp = os.path.join(ROOT, ".cache", "review", "sig_labels.jsonl")
+    if os.path.exists(fp):
+        for line in open(fp, encoding="utf-8"):
+            try:
+                v = json.loads(line)
+                flags[v["sig"]] = v
+            except Exception:
+                pass
 
     def snippet(pg, eid):
         f = os.path.join(CACHE, "%03d.svg" % pg)
@@ -86,7 +96,7 @@ margin:6px 0;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
 .k{color:#888;font-size:12px}
 .btns button{margin:2px;padding:3px 8px;border:1px solid #bbb;border-radius:5px;
 background:#f4f4f4;cursor:pointer;font-size:12px}
-.btns button.on{background:#2563eb;color:#fff}
+.btns button.on{background:#2563eb;color:#fff} .btns button.rvw.on{background:#3e7d4f}
 .saved{color:#3e7d4f;font-size:12px;margin-left:6px}
 textarea{width:220px;min-height:30px;font:inherit;font-size:12px}
 .sec{display:none}.sec.open{display:block}</style></head><body>
@@ -114,9 +124,19 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
             samples = "".join(
                 '<span class="w">%s</span> <a class="k" href="/?page=%d&step=audit&user=abdullah">p%d</a> &nbsp;'
                 % (html.escape(t), p, p) for p, t, _, _ in rws[:3])
-            btns = "".join('<button data-sig="%s" data-lab="%s"%s>%s</button>'
-                           % (sig, c, ' class="on"' if c == tl else "", c)
-                           for c in CHOICES)
+            fl = flags.get(sig)
+            state = ""
+            if fl:
+                state = (' <span class="saved">✓ reviewed</span>'
+                         if fl["label"] == "reviewed-ok" else
+                         ' <span class="saved">your label: %s</span>' % fl["label"])
+            btns = ('<button data-sig="%s" data-lab="reviewed-ok" '
+                    'class="rvw%s">✓ reviewed</button>'
+                    % (sig, " on" if fl and fl["label"] == "reviewed-ok" else ""))                 + "".join('<button data-sig="%s" data-lab="%s"%s>%s</button>'
+                          % (sig, c,
+                             ' class="on"' if (fl and fl["label"] == c)
+                             or (not fl and c == tl) else "", c)
+                          for c in CHOICES)
             tl_show = ("slash — fatha/kasra by position"
                        if tl in ("fatha", "kasra", "fathatan", "kasratan")
                        else ("damma-family — by pairing" if tl in
@@ -132,13 +152,13 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                 '<div>%s</div>'
                 '<div class="btns">%s</div>'
                 '<textarea placeholder="note" data-sig="%s"></textarea>'
-                '<span class="saved" id="sv-%s"></span></div></div>'
+                '<span class="saved" id="sv-%s">%s</span></div></div>'
                 % (snip, snip, html.escape(fin_show), sig[:12],
                    len(rws), tl_show,
                    " (auto)" if auto else "",
                    (' · <a href="#" class="more" data-sig="%s">view %d samples…</a>'
                     % (sig, min(30, len(rws)))) if len(rws) > 1 else "",
-                   samples, btns, sig, sig[:12]))
+                   samples, btns, sig, sig[:12], state))
         out.append("</div>")
     out.append("""<script>
 document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
