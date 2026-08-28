@@ -124,6 +124,15 @@ def scan(pg):
             b, bx2 = ws[i + 1]
             if (" " in a["uthmani"].strip() or " " in b["uthmani"].strip()):
                 continue  # a letter-space compound straddles the break legitimately
+            # trust DRAWN position over the line tag (p59 إليك/إلا: a stale
+            # tag grouped a line-9 end with a line-10 start): words whose
+            # y-bands do not overlap are on different drawn lines — reading
+            # order across a line break is not an x question
+            ay = [ (min(e["y1"] for a9 in at9 for e in a9["els"] if e["kind"]=="body"),
+                    max(e["y2"] for a9 in at9 for e in a9["els"] if e["kind"]=="body"))
+                   for w9, at9 in cap["a"] if w9 is a or w9 is b ]
+            if len(ay) == 2 and (ay[0][1] < ay[1][0] - 2 or ay[1][1] < ay[0][0] - 2):
+                continue
             if bx2 > ax2 + 1.0:       # the next word sits right of this one
                 rows.append(("%d:%d:%d" % (a["surah"], a["ayah"], a["pos"]),
                              a["uthmani"], [("rtl-order", int(ax2), int(bx2))]))
