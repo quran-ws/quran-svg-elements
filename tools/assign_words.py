@@ -1579,7 +1579,19 @@ def segment_word(uthmani):
     """
     segs, cur, pend, bad = [], None, [], False
     for ch in uthmani:
-        if ch in " ـ":
+        if ch == " ":
+            # A SPACE BREAKS THE JOIN. The mushaf writes two words as one
+            # token in a handful of places (إِلْ يَاسِينَ 37:130) and the
+            # ink draws four runs there, not three — the ل cannot reach the
+            # ي across a space. Skipping the space made the rule claim one
+            # piece fewer than the print draws, and p451 was flagged for
+            # ligature surplus for it (docs/defects, "the art case").
+            # Harmless for the ~2900 trailing spaces before a waqf sign:
+            # closing an already-finished segment changes nothing.
+            if cur:
+                cur["closed"] = True
+            continue
+        if ch == "ـ":
             continue
         if ch == "ء":                       # drawn at baseline: its own tiny body
             cur = {"text": "ء", "marks": pend, "closed": True}
