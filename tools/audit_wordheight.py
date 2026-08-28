@@ -94,7 +94,7 @@ def scan_page(pg):
                 # shortest real word (من) is 0.35 pitch; a mark-only husk
                 # is under 0.1 (Abdullah's 3:75:19 ما). 0.30 sits in the
                 # empty band between them.
-                if h > lim or h < 0.30 * pitch:
+                if h > lim or h < 0.28 * pitch:
                     flags.append((key, txt, round(h / pitch, 2),
                                   round(h, 1), round(pitch, 1)))
     return pg, flags, hist
