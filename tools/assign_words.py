@@ -10457,111 +10457,124 @@ def assign_page(edition, page_no, cache_dir):
     # movers; an optional "|mark" suffix on the value also names it, so a
     # human weld verdict (p85 e298 "|kasra") feeds the pair welds that run
     # after this point.
-    _ovp = os.path.join(ROOT, ".cache", "review", "overrides.json")
-    if os.path.exists(_ovp):
-        try:
-            _ov2 = json.load(open(_ovp)).get(str(page_no), {})
-        except Exception:
-            _ov2 = {}
-        if _ov2:
-            _bw2 = {}
-            for _w9, _at9 in assignment:
-                if _w9:
-                    _bw2["%d:%d:%d" % (_w9["surah"], _w9["ayah"],
-                                       _w9["pos"])] = (_w9, _at9)
-            for _w9, _at9 in assignment:
-                for _a9 in list(_at9):
-                    for _e9 in list(_a9["els"]):
-                        _k9 = "%.1f,%.1f,%.1f,%.1f" % (
-                            _e9["x1"], _e9["y1"], _e9["x2"], _e9["y2"])
-                        _v9 = _ov2.get(_k9)
-                        if not _v9 and len(_e9.get("contours", [])) > 1:
-                            # contour-level key at ENFORCEMENT time: pairs
-                            # that fuse after the mid-pass override (p126
-                            # بإذني) split here, with the last word.
-                            _pM9 = page.paths[_e9["path"]]["M"]
-                            for _c9 in list(_e9["contours"]):
-                                sp9 = _c9["sp"]
-                                bx1, by1, bx2, by2 = transform_box(
-                                    _pM9, sp9["xmin"], sp9["ymin"],
-                                    sp9["xmax"], sp9["ymax"])
-                                _ck = "%.1f,%.1f,%.1f,%.1f" % (
-                                    min(bx1, bx2), min(by1, by2),
-                                    max(bx1, bx2), max(by1, by2))
-                                _cv = _ov2.get(_ck)
-                                if not _cv:
-                                    continue
-                                _ct, _, _cn = _cv.partition("|")
-                                if _ct not in _bw2:
-                                    continue
-                                _e9["contours"] = [
-                                    c for c in _e9["contours"]
-                                    if c is not _c9]
-                                _ne9 = dict(_e9)
-                                _ne9["contours"] = [_c9]
-                                _ne9["x1"], _ne9["y1"] = (
-                                    min(bx1, bx2), min(by1, by2))
-                                _ne9["x2"], _ne9["y2"] = (
-                                    max(bx1, bx2), max(by1, by2))
-                                _ne9.pop("mkmembers", None)
-                                _ne9.pop("sig", None)
-                                _ne9.pop("tanform", None)
-                                _ne9["_ovr"] = 1
-                                _ne9["mkpart"] = False
-                                if _cn:
-                                    _ne9["mark"] = _cn
-                                    _ne9["lab"] = _cn
-                                put_in_ligature(_bw2[_ct][1], _ne9)
-                                _rb = [transform_box(
-                                    _pM9, c["sp"]["xmin"], c["sp"]["ymin"],
-                                    c["sp"]["xmax"], c["sp"]["ymax"])
-                                    for c in _e9["contours"]]
-                                _e9["x1"] = min(min(a, c) for a, b, c, d in _rb)
-                                _e9["y1"] = min(min(b, d) for a, b, c, d in _rb)
-                                _e9["x2"] = max(max(a, c) for a, b, c, d in _rb)
-                                _e9["y2"] = max(max(b, d) for a, b, c, d in _rb)
-                            continue
-                        if not _v9:
-                            continue
-                        _tgt, _, _nm9 = _v9.partition("|")
-                        if _tgt not in _bw2:
-                            continue
-                        _e9["_ovr"] = 1
-                        if _nm9:
-                            _e9["kind"] = "mark"
-                            _e9["mark"] = _nm9
-                            _e9["lab"] = _nm9
-                            _e9.pop("mkpart", None)
-                            for _mm9 in (_e9.pop("mkmembers", None) or []):
-                                _mm9["mkpart"] = False
-                        _dw9, _dat9 = _bw2[_tgt]
-                        if _dw9 is _w9:
-                            continue
-                        if _e9.get("mkpart"):
-                            _e9["mkpart"] = False
-                            for _wq9, _atq9 in assignment:
-                                for _aq9 in _atq9:
-                                    for _x9 in _aq9["els"]:
-                                        if _e9 in (_x9.get("mkmembers")
-                                                   or []):
-                                            _x9["mkmembers"].remove(_e9)
-                        _a9["els"].remove(_e9)
-                        put_in_ligature(_dat9, _e9)
+    def _enforce_overrides(rename=True):
+        _ovp = os.path.join(ROOT, ".cache", "review", "overrides.json")
+        if os.path.exists(_ovp):
+            try:
+                _ov2 = json.load(open(_ovp)).get(str(page_no), {})
+            except Exception:
+                _ov2 = {}
+            if _ov2:
+                _bw2 = {}
+                for _w9, _at9 in assignment:
+                    if _w9:
+                        _bw2["%d:%d:%d" % (_w9["surah"], _w9["ayah"],
+                                           _w9["pos"])] = (_w9, _at9)
+                for _w9, _at9 in assignment:
+                    for _a9 in list(_at9):
+                        for _e9 in list(_a9["els"]):
+                            _k9 = "%.1f,%.1f,%.1f,%.1f" % (
+                                _e9["x1"], _e9["y1"], _e9["x2"], _e9["y2"])
+                            _v9 = _ov2.get(_k9)
+                            if not _v9 and len(_e9.get("contours", [])) > 1:
+                                # contour-level key at ENFORCEMENT time: pairs
+                                # that fuse after the mid-pass override (p126
+                                # بإذني) split here, with the last word.
+                                _pM9 = page.paths[_e9["path"]]["M"]
+                                for _c9 in list(_e9["contours"]):
+                                    sp9 = _c9["sp"]
+                                    bx1, by1, bx2, by2 = transform_box(
+                                        _pM9, sp9["xmin"], sp9["ymin"],
+                                        sp9["xmax"], sp9["ymax"])
+                                    _ck = "%.1f,%.1f,%.1f,%.1f" % (
+                                        min(bx1, bx2), min(by1, by2),
+                                        max(bx1, bx2), max(by1, by2))
+                                    _cv = _ov2.get(_ck)
+                                    if not _cv:
+                                        continue
+                                    _ct, _, _cn = _cv.partition("|")
+                                    if _ct not in _bw2:
+                                        continue
+                                    _e9["contours"] = [
+                                        c for c in _e9["contours"]
+                                        if c is not _c9]
+                                    _ne9 = dict(_e9)
+                                    _ne9["contours"] = [_c9]
+                                    _ne9["x1"], _ne9["y1"] = (
+                                        min(bx1, bx2), min(by1, by2))
+                                    _ne9["x2"], _ne9["y2"] = (
+                                        max(bx1, bx2), max(by1, by2))
+                                    _ne9.pop("mkmembers", None)
+                                    _ne9.pop("sig", None)
+                                    _ne9.pop("tanform", None)
+                                    _ne9["_ovr"] = 1
+                                    _ne9["mkpart"] = False
+                                    if _cn:
+                                        _ne9["mark"] = _cn
+                                        _ne9["lab"] = _cn
+                                    put_in_ligature(_bw2[_ct][1], _ne9)
+                                    _rb = [transform_box(
+                                        _pM9, c["sp"]["xmin"], c["sp"]["ymin"],
+                                        c["sp"]["xmax"], c["sp"]["ymax"])
+                                        for c in _e9["contours"]]
+                                    _e9["x1"] = min(min(a, c) for a, b, c, d in _rb)
+                                    _e9["y1"] = min(min(b, d) for a, b, c, d in _rb)
+                                    _e9["x2"] = max(max(a, c) for a, b, c, d in _rb)
+                                    _e9["y2"] = max(max(b, d) for a, b, c, d in _rb)
+                                continue
+                            if not _v9:
+                                continue
+                            _tgt, _, _nm9 = _v9.partition("|")
+                            if _tgt not in _bw2:
+                                continue
+                            _e9["_ovr"] = 1
+                            if _nm9 and rename:
+                                _e9["kind"] = "mark"
+                                _e9["mark"] = _nm9
+                                _e9["lab"] = _nm9
+                                _e9.pop("mkpart", None)
+                                for _mm9 in (_e9.pop("mkmembers", None) or []):
+                                    _mm9["mkpart"] = False
+                                # and leave any master that held IT — a named
+                                # override is its own mark (p126 بإذني: the
+                                # second kasra was a member of the first, so
+                                # emit merged the pair and it counted once).
+                                for _wq9, _atq9 in assignment:
+                                    for _aq9 in _atq9:
+                                        for _x9 in _aq9["els"]:
+                                            if _e9 in (_x9.get("mkmembers")
+                                                       or []):
+                                                _x9["mkmembers"].remove(_e9)
+                            _dw9, _dat9 = _bw2[_tgt]
+                            if _dw9 is _w9:
+                                continue
+                            if _e9.get("mkpart"):
+                                _e9["mkpart"] = False
+                                for _wq9, _atq9 in assignment:
+                                    for _aq9 in _atq9:
+                                        for _x9 in _aq9["els"]:
+                                            if _e9 in (_x9.get("mkmembers")
+                                                       or []):
+                                                _x9["mkmembers"].remove(_e9)
+                            _a9["els"].remove(_e9)
+                            put_in_ligature(_dat9, _e9)
 
     # ORPHANED-PART REPAIR: an element flagged mkpart whose master no
     # longer references it counts for NOBODY (p85: the ة pair after its
     # master was renamed by override). Free it — it is its own mark.
-    _allm = set()
-    for _wo9, _ato9 in assignment:
-        for _ao9 in _ato9:
-            for _eo9 in _ao9["els"]:
-                for _mm9 in (_eo9.get("mkmembers") or []):
-                    _allm.add(id(_mm9))
-    for _wo9, _ato9 in assignment:
-        for _ao9 in _ato9:
-            for _eo9 in _ao9["els"]:
-                if _eo9.get("mkpart") and id(_eo9) not in _allm:
-                    _eo9["mkpart"] = False
+        _allm = set()
+        for _wo9, _ato9 in assignment:
+            for _ao9 in _ato9:
+                for _eo9 in _ao9["els"]:
+                    for _mm9 in (_eo9.get("mkmembers") or []):
+                        _allm.add(id(_mm9))
+        for _wo9, _ato9 in assignment:
+            for _ao9 in _ato9:
+                for _eo9 in _ao9["els"]:
+                    if _eo9.get("mkpart") and id(_eo9) not in _allm:
+                        _eo9["mkpart"] = False
+
+    _enforce_overrides()
 
     # SMALL-NOON COMPLETION (Abdullah 2026-08-28, the mushaf's one ۨ site,
     # 21:88 نُـۨجِى p329): the superscript sign is a noon BOWL plus its dot.
