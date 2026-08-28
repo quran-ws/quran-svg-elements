@@ -10475,6 +10475,52 @@ def assign_page(edition, page_no, cache_dir):
                         _k9 = "%.1f,%.1f,%.1f,%.1f" % (
                             _e9["x1"], _e9["y1"], _e9["x2"], _e9["y2"])
                         _v9 = _ov2.get(_k9)
+                        if not _v9 and len(_e9.get("contours", [])) > 1:
+                            # contour-level key at ENFORCEMENT time: pairs
+                            # that fuse after the mid-pass override (p126
+                            # بإذني) split here, with the last word.
+                            _pM9 = page.paths[_e9["path"]]["M"]
+                            for _c9 in list(_e9["contours"]):
+                                sp9 = _c9["sp"]
+                                bx1, by1, bx2, by2 = transform_box(
+                                    _pM9, sp9["xmin"], sp9["ymin"],
+                                    sp9["xmax"], sp9["ymax"])
+                                _ck = "%.1f,%.1f,%.1f,%.1f" % (
+                                    min(bx1, bx2), min(by1, by2),
+                                    max(bx1, bx2), max(by1, by2))
+                                _cv = _ov2.get(_ck)
+                                if not _cv:
+                                    continue
+                                _ct, _, _cn = _cv.partition("|")
+                                if _ct not in _bw2:
+                                    continue
+                                _e9["contours"] = [
+                                    c for c in _e9["contours"]
+                                    if c is not _c9]
+                                _ne9 = dict(_e9)
+                                _ne9["contours"] = [_c9]
+                                _ne9["x1"], _ne9["y1"] = (
+                                    min(bx1, bx2), min(by1, by2))
+                                _ne9["x2"], _ne9["y2"] = (
+                                    max(bx1, bx2), max(by1, by2))
+                                _ne9.pop("mkmembers", None)
+                                _ne9.pop("sig", None)
+                                _ne9.pop("tanform", None)
+                                _ne9["_ovr"] = 1
+                                _ne9["mkpart"] = False
+                                if _cn:
+                                    _ne9["mark"] = _cn
+                                    _ne9["lab"] = _cn
+                                put_in_ligature(_bw2[_ct][1], _ne9)
+                                _rb = [transform_box(
+                                    _pM9, c["sp"]["xmin"], c["sp"]["ymin"],
+                                    c["sp"]["xmax"], c["sp"]["ymax"])
+                                    for c in _e9["contours"]]
+                                _e9["x1"] = min(min(a, c) for a, b, c, d in _rb)
+                                _e9["y1"] = min(min(b, d) for a, b, c, d in _rb)
+                                _e9["x2"] = max(max(a, c) for a, b, c, d in _rb)
+                                _e9["y2"] = max(max(b, d) for a, b, c, d in _rb)
+                            continue
                         if not _v9:
                             continue
                         _tgt, _, _nm9 = _v9.partition("|")
