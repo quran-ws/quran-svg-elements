@@ -361,45 +361,61 @@ class Handler(BaseHTTPRequestHandler):
                 from urllib.parse import parse_qs
                 qs = parse_qs(parsed.query or "")
                 sig = (qs.get("sig") or [""])[0]
+                want_mark = (qs.get("mark") or [""])[0]
+                off = int((qs.get("offset") or ["0"])[0])
                 n = int((qs.get("n") or ["30"])[0])
-                out = []
+                groups_only = "groups" in qs
                 import glob as _g
+                from collections import Counter as _C
                 cache = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
+                occ = []
                 for f in sorted(_g.glob(cache + "/*.svg")):
-                    if len(out) >= n:
-                        break
                     svg = open(f, encoding="utf-8").read()
                     for m in re.finditer('data-sig="%s"' % re.escape(sig), svg):
-                        if len(out) >= n:
-                            break
                         t0 = svg.rfind("<path", 0, m.start())
-                        em = re.search(r'data-eid="(e\d+)"', svg[t0:m.start()])
-                        w0 = svg.rfind('<g class="word"', 0, t0)
-                        if w0 == -1:
-                            continue
-                        depth = 0
-                        grp = None
-                        for mm in re.finditer(r"<g\b|</g>", svg[w0:]):
-                            depth += 1 if mm.group(0) == "<g" else -1
-                            if depth == 0:
-                                grp = svg[w0:w0 + mm.end()]
-                                break
-                        if not grp:
-                            continue
-                        if em:
-                            grp = grp.replace(
-                                'data-eid="%s" ' % em.group(1),
-                                'data-eid="%s" style="fill:#c22" ' % em.group(1))
-                        wt = re.search(r'data-uthmani="([^"]*)"', grp)
-                        root = re.search(r'<g transform="matrix[^"]*">', svg)
-                        vb = re.search(r'viewBox="[^"]*"', svg)
-                        out.append({
-                            "page": int(os.path.basename(f)[:3]),
-                            "word": wt.group(1) if wt else "",
-                            "svg": '<svg xmlns="http://www.w3.org/2000/svg" %s>%s%s</g></svg>'
-                                   % (vb.group(0) if vb else 'viewBox="0 0 345 550"',
-                                      root.group(0) if root else "<g>", grp)})
-                return self.send_json({"sig": sig, "samples": out})
+                        tag = svg[t0:m.start()]
+                        mk = re.search(r'data-mark(?:-part)?="([^"]*)"', tag)
+                        em = re.search(r'data-eid="(e\d+)"', tag)
+                        occ.append((int(os.path.basename(f)[:3]),
+                                    mk.group(1) if mk else "body",
+                                    em.group(1) if em else None, f))
+                if groups_only:
+                    return self.send_json(
+                        {"sig": sig,
+                         "groups": _C(o[1] for o in occ).most_common()})
+                sel = [o for o in occ if not want_mark or o[1] == want_mark]
+                total = len(sel)
+                out = []
+                for pg, mk, eid, f in sel[off:off + n]:
+                    svg = open(f, encoding="utf-8").read()
+                    m = re.search('<path data-eid="%s"' % eid, svg) if eid else None
+                    if not m:
+                        continue
+                    w0 = svg.rfind('<g class="word"', 0, m.start())
+                    if w0 == -1:
+                        continue
+                    depth = 0
+                    grp = None
+                    for mm in re.finditer(r"<g\b|</g>", svg[w0:]):
+                        depth += 1 if mm.group(0) == "<g" else -1
+                        if depth == 0:
+                            grp = svg[w0:w0 + mm.end()]
+                            break
+                    if not grp:
+                        continue
+                    grp = grp.replace('data-eid="%s" ' % eid,
+                                      'data-eid="%s" style="fill:#c22" ' % eid)
+                    wt = re.search(r'data-uthmani="([^"]*)"', grp)
+                    root = re.search(r'<g transform="matrix[^"]*">', svg)
+                    vb = re.search(r'viewBox="[^"]*"', svg)
+                    out.append({"page": pg, "mark": mk,
+                                "word": wt.group(1) if wt else "",
+                                "svg": '<svg xmlns="http://www.w3.org/2000/svg" %s>%s%s</g></svg>'
+                                       % (vb.group(0) if vb else 'viewBox="0 0 345 550"',
+                                          root.group(0) if root else "<g>", grp)})
+                return self.send_json({"sig": sig, "mark": want_mark,
+                                       "offset": off, "total": total,
+                                       "samples": out})
             if path == "/api/queue":
                 return self.api_queue()
             if path == "/api/export":

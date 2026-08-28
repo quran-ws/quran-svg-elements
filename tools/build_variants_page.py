@@ -195,35 +195,66 @@ modal.style.cssText = 'display:none;position:fixed;inset:4vh 6vw;background:#fff
   + 'border:1px solid #999;border-radius:10px;overflow:auto;padding:18px;'
   + 'z-index:99;box-shadow:0 8px 40px rgba(0,0,0,.35)';
 document.body.appendChild(modal);
+function loadGroup(sig, btn){
+  const mk = btn.dataset.mark, off = +btn.dataset.off;
+  btn.disabled = true;
+  fetch('/api/sigsamples?sig=' + sig + '&mark=' + encodeURIComponent(mk)
+        + '&offset=' + off + '&n=30')
+    .then(r => r.json()).then(d => {
+      const grid = btn.parentElement.querySelector('.mgrid');
+      d.samples.forEach(x => {
+        const cell = document.createElement('div');
+        cell.style.cssText = 'border:1px solid #eee;border-radius:6px;padding:5px';
+        cell.innerHTML = '<div style="height:70px">' + x.svg + '</div>'
+          + '<div class="w" style="font-size:17px">' + x.word + '</div>'
+          + '<a class="k" href="/?page=' + x.page
+          + '&step=audit&user=abdullah">p' + x.page + '</a>';
+        grid.appendChild(cell);
+      });
+      requestAnimationFrame(() => {
+        grid.querySelectorAll('svg:not([data-fit])').forEach(s => {
+          try { const bb = s.getBBox();
+            if (bb.width && bb.height)
+              s.setAttribute('viewBox',
+                `${bb.x-2} ${bb.y-2} ${bb.width+4} ${bb.height+4}`);
+            s.dataset.fit = '1';
+            s.style.width = '100%'; s.style.height = '100%';
+          } catch(_){}
+        });
+      });
+      const next = off + d.samples.length;
+      btn.dataset.off = next;
+      if (next >= +btn.dataset.total) btn.remove();
+      else { btn.disabled = false;
+             btn.textContent = 'load 30 more (' + next + '/'
+               + btn.dataset.total + ')'; }
+    });
+}
 document.addEventListener('click', e => {
   if (e.target.closest('.mclose')) { modal.style.display = 'none'; return; }
+  const lm = e.target.closest('.mmore');
+  if (lm) { const sig2 = modal.querySelector('h3').textContent.trim().split(' ')[1];
+            loadGroup(document.querySelector('a.more[data-sig^="' + sig2 + '"]').dataset.sig, lm);
+            return; }
   const a = e.target.closest('a.more');
   if (!a) { if (!modal.contains(e.target)) modal.style.display = 'none'; return; }
   e.preventDefault();
   modal.style.display = 'block';
   modal.innerHTML = '<p>loading…</p>';
-  fetch('/api/sigsamples?sig=' + a.dataset.sig + '&n=30')
+  const sig = a.dataset.sig;
+  fetch('/api/sigsamples?sig=' + sig + '&groups=1')
     .then(r => r.json()).then(d => {
-      modal.innerHTML = '<h3 style="margin-top:0">sig ' + d.sig.slice(0,12)
-        + ' — ' + d.samples.length + ' samples '
-        + '<button class="mclose" style="float:left">close</button></h3>'
-        + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px">'
-        + d.samples.map(x =>
-            '<div style="border:1px solid #eee;border-radius:6px;padding:6px">'
-            + '<div style="height:80px">' + x.svg + '</div>'
-            + '<div class="w" style="font-size:18px">' + x.word + '</div>'
-            + '<a class="k" href="/?page=' + x.page + '&step=audit&user=abdullah">p'
-            + x.page + '</a></div>').join('') + '</div>';
-      requestAnimationFrame(() => {
-        modal.querySelectorAll('svg').forEach(s => {
-          try { const bb = s.getBBox();
-            if (bb.width && bb.height)
-              s.setAttribute('viewBox',
-                `${bb.x-2} ${bb.y-2} ${bb.width+4} ${bb.height+4}`);
-            s.style.width = '100%'; s.style.height = '100%';
-          } catch(_){}
-        });
-      });
+      modal.innerHTML = '<h3 style="margin-top:0">sig ' + sig.slice(0,12)
+        + ' <button class="mclose" style="float:left">close</button></h3>'
+        + d.groups.map(([mk, n]) =>
+            '<div class="mgrp" data-mark="' + mk + '">'
+            + '<h4 style="margin:12px 0 6px">' + mk + ' — ' + n + '×</h4>'
+            + '<div class="mgrid" style="display:grid;'
+            + 'grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>'
+            + '<button class="mmore" data-mark="' + mk + '" data-off="0" '
+            + 'data-total="' + n + '" style="margin:6px 0">load 30</button></div>'
+          ).join('');
+      modal.querySelectorAll('.mmore').forEach(b => loadGroup(sig, b));
     });
 });
 </script></body></html>""")
