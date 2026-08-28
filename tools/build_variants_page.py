@@ -34,9 +34,13 @@ def main():
         svg = open(f, encoding="utf-8").read()
         for m in re.finditer(
                 r'<path data-eid="(e\d+)" data-kind="mark" '
-                r'(?:data-mark(?:-part)?="([^"]+)" )?[^>]*?data-sig="([0-9a-f]+)"',
+                r'(?:data-mark(?:-part)?="([^"]+)" )?[^>]*?data-sig="([0-9a-f]+)"'
+                r'(?:[^>]*?data-waqf="([^"]+)")?',
                 svg):
             eid, mark, sig = m.group(1), m.group(2) or "?", m.group(3)
+            # the catalog's own waqf types are the real families for pause ink
+            if mark == "pause" and m.group(4):
+                mark = m.group(4)
             w0 = svg.rfind('<g class="word"', 0, m.start())
             wt = re.search(r'data-uthmani="([^"]*)"', svg[w0:w0 + 400]) \
                 if w0 > -1 else None
