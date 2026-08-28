@@ -140,9 +140,13 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                                               -sum(len(r) for _, r in by_fam[f])))
     for fam in fam_order:
         rows = sorted(by_fam[fam], key=lambda t: -len(t[1]))
+        n_rev = sum(1 for sig, _ in rows if reviewed.get(sig, False))
+        prog = ('<span class="prog" style="float:left;font-size:14px;color:%s">%s %d/%d reviewed</span>'
+                % ("#3e7d4f" if n_rev == len(rows) else "#888",
+                   "✓" if n_rev == len(rows) else "", n_rev, len(rows)))
         out.append('<h2 onclick="this.nextElementSibling.classList.toggle(\'open\');fitInk(this.nextElementSibling)">'
-                   '%s — %d shapes, %d occurrences</h2><div class="sec">'
-                   % (fam, len(rows), sum(len(r[1]) for r in rows)))
+                   '%s — %d shapes, %d occurrences %s</h2><div class="sec">'
+                   % (fam, len(rows), sum(len(r[1]) for r in rows), prog))
         for sig, rws in rows:
             pg0, w0, mk0, eid0, at0 = rws[0]
             v = lab.get(sig)
@@ -206,7 +210,18 @@ document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
     fetch('/api/siglabel', {method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({sig, reviewed: now, note})})
-      .then(() => b.classList.toggle('on', now));
+      .then(() => {
+        b.classList.toggle('on', now);
+        const sec = b.closest('.sec');
+        const h2 = sec.previousElementSibling;
+        const total = sec.querySelectorAll('.row').length;
+        const done = sec.querySelectorAll('.btns .rvw.on').length;
+        const p = h2.querySelector('.prog');
+        if (p) {
+          p.style.color = done === total ? '#3e7d4f' : '#888';
+          p.textContent = (done === total ? '✓ ' : '') + done + '/' + total + ' reviewed';
+        }
+      });
     return;
   }
   fetch('/api/siglabel', {method:'POST',
