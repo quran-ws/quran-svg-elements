@@ -509,3 +509,4 @@
 {"id": "15c41f1f-2f1e-445f-88ff-02ead50b538a", "page": 586, "step": "words", "kind": "note", "payload": {"word": "81:25:2", "note": "audit-mismatch"}, "editor": "abdullah", "ts": "2026-08-27T18:10:24", "status": "proposed"}
 {"id": "459e6053-065b-48a2-bfeb-ae0bb3d2fa67", "page": 446, "step": "words", "kind": "note", "payload": {"word": "37:14:2", "note": "audit-mismatch"}, "editor": "abdullah", "ts": "2026-08-27T20:05:22", "status": "proposed"}
 {"id": "5711bf37-6303-4a1a-9517-16d47aab2e51", "page": 89, "step": "words", "kind": "note", "payload": {"word": "4:73:9", "note": "audit-mismatch"}, "editor": "abdullah", "ts": "2026-08-28T15:09:37", "status": "proposed"}
+{"id": "f65a0c14-c4e0-4407-9c04-75d9577291ce", "page": 267, "step": "words", "kind": "note", "payload": {"word": "16:2:10", "note": "audit-mismatch"}, "editor": "abdullah", "ts": "2026-08-28T22:38:16", "status": "proposed"}
