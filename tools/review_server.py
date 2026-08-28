@@ -369,7 +369,8 @@ class Handler(BaseHTTPRequestHandler):
                         e = v.get("eid") or ""
                         if e.startswith("eye:"):
                             rows[e[4:]] = {"correct": v.get("correct"),
-                                           "note": v.get("note")}
+                                           "note": v.get("note"),
+                                           "picked": v.get("picked")}
                 return self.send_json({"eyes": rows})
             if path == "/api/siglabels":
                 agg = {}
@@ -513,7 +514,7 @@ class Handler(BaseHTTPRequestHandler):
                     return self.send_json({"error": "need page, eid, correct"}, 400)
                 rec = {k: body.get(k) for k in ("page", "eid", "key", "word",
                                                 "sig", "current", "correct",
-                                                "note")}
+                                                "note", "picked")}
                 rec["ts"] = _t.strftime("%Y-%m-%dT%H:%M:%S")
                 with open(os.path.join(REVIEW_DIR, "eid_flags.jsonl"),
                           "a", encoding="utf-8") as f:
