@@ -121,9 +121,10 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                        if tl in ("fatha", "kasra", "fathatan", "kasratan")
                        else ("damma-family — by pairing" if tl in
                              ("damma", "dammatan") else tl))
+            snip = snippet(pg0, eid0)
             out.append(
                 '<div class="row"><div class="ink">%s</div>'
-                '<div class="ink zoom" title="the mark alone"></div>'
+                '<div class="ink zoom" title="the mark alone">%s</div>'
                 '<div style="flex:1;min-width:260px">'
                 '<div style="font-size:14px;font-weight:600">final: %s</div>'
                 '<div class="k">sig %s · %d× · '
@@ -132,7 +133,7 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                 '<div class="btns">%s</div>'
                 '<textarea placeholder="note" data-sig="%s"></textarea>'
                 '<span class="saved" id="sv-%s"></span></div></div>'
-                % (snippet(pg0, eid0), html.escape(fin_show), sig[:12],
+                % (snip, snip, html.escape(fin_show), sig[:12],
                    len(rws), tl_show,
                    " (auto)" if auto else "",
                    (' · <a href="#" class="more" data-sig="%s">view %d samples…</a>'
@@ -171,16 +172,17 @@ function fitInk(scope){
         c.setAttribute('style',
           'fill:none;stroke:#c22;stroke-width:0.5;opacity:.75');
         red.parentNode.appendChild(c);
-        // mark-alone zoom box
-        const zbox = s.closest('.row').querySelector('.ink.zoom');
-        if (zbox) {
-          const clone = s.cloneNode(true);
-          clone.querySelector('circle')?.remove();
-          clone.setAttribute('viewBox',
-            `${rb.x-2} ${rb.y-2} ${rb.width+4} ${rb.height+4}`);
-          clone.removeAttribute('data-fit');
-          clone.style.width = '100%'; clone.style.height = '100%';
-          zbox.appendChild(clone);
+        // mark-alone zoom box: its own copy of the ink, viewBox
+        // re-targeted to the red path's bbox
+        const zsvg = s.closest('.row').querySelector('.ink.zoom svg');
+        if (zsvg) {
+          const zred = zsvg.querySelector('path[style*="c22"]');
+          if (zred) {
+            const zb = zred.getBBox();
+            zsvg.setAttribute('viewBox',
+              `${zb.x-1.5} ${zb.y-1.5} ${zb.width+3} ${zb.height+3}`);
+            zsvg.dataset.fit = '1';
+          }
         }
       } catch(_){}
     });
