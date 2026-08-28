@@ -226,10 +226,24 @@ document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
   }
   fetch('/api/siglabel', {method:'POST',
     headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({sig, label: b.dataset.lab, note})})
+    body: JSON.stringify({sig, label: b.dataset.lab, note, reviewed: true})})
     .then(() => {
       b.parentElement.querySelectorAll('button:not(.rvw)').forEach(x =>
         x.classList.toggle('on', x === b));
+      // choosing a type IS a review — flip the flag too
+      const rv = b.parentElement.querySelector('.rvw');
+      if (rv && !rv.classList.contains('on')) {
+        rv.classList.add('on');
+        const sec = b.closest('.sec');
+        const h2 = sec.previousElementSibling;
+        const total = sec.querySelectorAll('.row').length;
+        const done = sec.querySelectorAll('.btns .rvw.on').length;
+        const p = h2.querySelector('.prog');
+        if (p) {
+          p.style.color = done === total ? '#3e7d4f' : '#888';
+          p.textContent = (done === total ? '✓ ' : '') + done + '/' + total + ' reviewed';
+        }
+      }
       document.getElementById('sv-' + sig.slice(0,12)).textContent = 'saved ✓';
     });
 });
