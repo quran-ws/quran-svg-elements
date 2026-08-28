@@ -357,6 +357,49 @@ class Handler(BaseHTTPRequestHandler):
                 return self.api_page(int(m.group(1)))
             if path == "/api/labels":
                 return self.send_json({"labels": KNOWN_LABELS})
+            if path == "/api/sigsamples":
+                from urllib.parse import parse_qs
+                qs = parse_qs(parsed.query or "")
+                sig = (qs.get("sig") or [""])[0]
+                n = int((qs.get("n") or ["30"])[0])
+                out = []
+                import glob as _g
+                cache = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
+                for f in sorted(_g.glob(cache + "/*.svg")):
+                    if len(out) >= n:
+                        break
+                    svg = open(f, encoding="utf-8").read()
+                    for m in re.finditer('data-sig="%s"' % re.escape(sig), svg):
+                        if len(out) >= n:
+                            break
+                        t0 = svg.rfind("<path", 0, m.start())
+                        em = re.search(r'data-eid="(e\d+)"', svg[t0:m.start()])
+                        w0 = svg.rfind('<g class="word"', 0, t0)
+                        if w0 == -1:
+                            continue
+                        depth = 0
+                        grp = None
+                        for mm in re.finditer(r"<g\b|</g>", svg[w0:]):
+                            depth += 1 if mm.group(0) == "<g" else -1
+                            if depth == 0:
+                                grp = svg[w0:w0 + mm.end()]
+                                break
+                        if not grp:
+                            continue
+                        if em:
+                            grp = grp.replace(
+                                'data-eid="%s" ' % em.group(1),
+                                'data-eid="%s" style="fill:#c22" ' % em.group(1))
+                        wt = re.search(r'data-uthmani="([^"]*)"', grp)
+                        root = re.search(r'<g transform="matrix[^"]*">', svg)
+                        vb = re.search(r'viewBox="[^"]*"', svg)
+                        out.append({
+                            "page": int(os.path.basename(f)[:3]),
+                            "word": wt.group(1) if wt else "",
+                            "svg": '<svg xmlns="http://www.w3.org/2000/svg" %s>%s%s</g></svg>'
+                                   % (vb.group(0) if vb else 'viewBox="0 0 345 550"',
+                                      root.group(0) if root else "<g>", grp)})
+                return self.send_json({"sig": sig, "samples": out})
             if path == "/api/queue":
                 return self.api_queue()
             if path == "/api/export":

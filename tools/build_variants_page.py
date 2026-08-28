@@ -111,15 +111,20 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
             btns = "".join('<button data-sig="%s" data-lab="%s"%s>%s</button>'
                            % (sig, c, ' class="on"' if c == tl else "", c)
                            for c in CHOICES)
+            tl_show = ("slash — fatha/kasra by position"
+                       if tl in ("fatha", "kasra", "fathatan", "kasratan")
+                       else ("damma-family — by pairing" if tl in
+                             ("damma", "dammatan") else tl))
             out.append(
                 '<div class="row"><div class="ink">%s</div>'
                 '<div style="flex:1;min-width:260px"><div class="k">sig %s · %d× · '
-                'table: %s%s</div><div>%s</div>'
+                'table: %s%s · <a href="#" class="more" data-sig="%s">30 samples…</a></div>'
+                '<div>%s</div>'
                 '<div class="btns">%s</div>'
                 '<textarea placeholder="note" data-sig="%s"></textarea>'
                 '<span class="saved" id="sv-%s"></span></div></div>'
-                % (snippet(pg0, eid0), sig[:12], len(rws), tl,
-                   " (auto)" if auto else "", samples, btns, sig, sig[:12]))
+                % (snippet(pg0, eid0), sig[:12], len(rws), tl_show,
+                   " (auto)" if auto else "", sig, samples, btns, sig, sig[:12]))
         out.append("</div>")
     out.append("""<script>
 document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
@@ -143,6 +148,42 @@ requestAnimationFrame(() => {
   });
 });
 document.querySelector('h2').nextElementSibling.classList.add('open');
+/* modal: 30 in-context samples per shape, loaded on demand */
+const modal = document.createElement('div');
+modal.style.cssText = 'display:none;position:fixed;inset:4vh 6vw;background:#fff;'
+  + 'border:1px solid #999;border-radius:10px;overflow:auto;padding:18px;'
+  + 'z-index:99;box-shadow:0 8px 40px rgba(0,0,0,.35)';
+document.body.appendChild(modal);
+document.addEventListener('click', e => {
+  const a = e.target.closest('a.more');
+  if (!a) { if (!modal.contains(e.target)) modal.style.display = 'none'; return; }
+  e.preventDefault();
+  modal.style.display = 'block';
+  modal.innerHTML = '<p>loading…</p>';
+  fetch('/api/sigsamples?sig=' + a.dataset.sig + '&n=30')
+    .then(r => r.json()).then(d => {
+      modal.innerHTML = '<h3 style="margin-top:0">sig ' + d.sig.slice(0,12)
+        + ' — ' + d.samples.length + ' samples '
+        + '<button style="float:left" onclick="this.closest(\'div\').style.display=\'none\'">close</button></h3>'
+        + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px">'
+        + d.samples.map(x =>
+            '<div style="border:1px solid #eee;border-radius:6px;padding:6px">'
+            + '<div style="height:80px">' + x.svg + '</div>'
+            + '<div class="w" style="font-size:18px">' + x.word + '</div>'
+            + '<a class="k" href="/?page=' + x.page + '&step=audit&user=abdullah">p'
+            + x.page + '</a></div>').join('') + '</div>';
+      requestAnimationFrame(() => {
+        modal.querySelectorAll('svg').forEach(s => {
+          try { const bb = s.getBBox();
+            if (bb.width && bb.height)
+              s.setAttribute('viewBox',
+                `${bb.x-2} ${bb.y-2} ${bb.width+4} ${bb.height+4}`);
+            s.style.width = '100%'; s.style.height = '100%';
+          } catch(_){}
+        });
+      });
+    });
+});
 </script></body></html>""")
     p = os.path.join(ROOT, "docs", "defects", "variants.html")
     open(p, "w", encoding="utf-8").write("\n".join(out))
