@@ -144,9 +144,11 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
         prog = ('<span class="prog" style="float:left;font-size:14px;color:%s">%s %d/%d reviewed</span>'
                 % ("#3e7d4f" if n_rev == len(rows) else "#888",
                    "✓" if n_rev == len(rows) else "", n_rev, len(rows)))
+        allrev = ('<a class="revall" href="#" style="float:left;margin-left:12px;'
+                  'font-size:12px;color:#68c">mark all reviewed</a>')
         out.append('<h2 onclick="this.nextElementSibling.classList.toggle(\'open\');fitInk(this.nextElementSibling)">'
-                   '%s — %d shapes, %d occurrences %s</h2><div class="sec">'
-                   % (fam, len(rows), sum(len(r[1]) for r in rows), prog))
+                   '%s — %d shapes, %d occurrences %s%s</h2><div class="sec">'
+                   % (fam, len(rows), sum(len(r[1]) for r in rows), prog, allrev))
         for sig, rws in rows:
             pg0, w0, mk0, eid0, at0 = rws[0]
             v = lab.get(sig)
@@ -170,8 +172,9 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
             rv = reviewed.get(sig, False)
             state = ((' <span class="saved">your label: %s</span>' % fl["label"])
                      if fl else "")
-            btns = ('<button data-sig="%s" class="rvw%s">✓ reviewed</button>'
-                    % (sig, " on" if rv else ""))                 + "".join('<button data-sig="%s" data-lab="%s"%s>%s</button>'
+            btns = ('<button data-sig="%s" data-final="%s" class="rvw%s">✓ reviewed</button>'
+                    % (sig, html.escape(fin.most_common(1)[0][0] if fin else ""),
+                       " on" if rv else ""))                 + "".join('<button data-sig="%s" data-lab="%s"%s>%s</button>'
                           % (sig, c,
                              ' class="on"' if (fl and fl["label"] == c)
                              or (not fl and c == tl) else "", c)
@@ -209,7 +212,7 @@ document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
     const now = !b.classList.contains('on');
     fetch('/api/siglabel', {method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({sig, reviewed: now, note})})
+      body: JSON.stringify({sig, reviewed: now, note, final: b.dataset.final || null})})
       .then(() => {
         b.classList.toggle('on', now);
         const sec = b.closest('.sec');
@@ -246,6 +249,31 @@ document.querySelectorAll('.btns button').forEach(b => b.onclick = () => {
       }
       document.getElementById('sv-' + sig.slice(0,12)).textContent = 'saved ✓';
     });
+});
+document.querySelectorAll('h2 .revall').forEach(a => a.onclick = (ev) => {
+  ev.preventDefault(); ev.stopPropagation();
+  const sec = a.closest('h2').nextElementSibling;
+  const todo = [...sec.querySelectorAll('.btns .rvw:not(.on)')];
+  if (!todo.length) return;
+  a.textContent = 'saving 0/' + todo.length;
+  let done = 0;
+  (async () => {
+    for (const b of todo) {
+      await fetch('/api/siglabel', {method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({sig: b.dataset.sig, reviewed: true,
+                              final: b.dataset.final || null})});
+      b.classList.add('on');
+      a.textContent = 'saving ' + (++done) + '/' + todo.length;
+    }
+    a.textContent = 'mark all reviewed';
+    const h2 = a.closest('h2');
+    const total = sec.querySelectorAll('.row').length;
+    const on = sec.querySelectorAll('.btns .rvw.on').length;
+    const p = h2.querySelector('.prog');
+    if (p) { p.style.color = on === total ? '#3e7d4f' : '#888';
+      p.textContent = (on === total ? '✓ ' : '') + on + '/' + total + ' reviewed'; }
+  })();
 });
 function fitInk(scope){
   requestAnimationFrame(() => {
