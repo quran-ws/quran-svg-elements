@@ -433,9 +433,9 @@
   "label": "damma"
  },
  "06a7d045f47ace44": {
-  "label": "hamza+damma",
+  "label": "damma+hamza",
   "auto": false,
-  "note": "composite: ؤ's hamza fused with its damma (p159 e503). Abdullah 2026-08-28: was showing final=hamza — emission must carry the composite."
+  "note": "Abdullah 2026-08-28: the ؤ's fused pair, names top-to-bottom — the damma rides ABOVE the hamza (his e502 verdict corrected the order)."
  },
  "06b323beff5c31d4": {
   "auto": true,

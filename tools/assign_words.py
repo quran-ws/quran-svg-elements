@@ -2057,30 +2057,47 @@ def rewrite(page, assignment):
         a, b = p["d_span"][0] - s, p["d_span"][1] - s
         head, tail = p["text"][:a], p["text"][b:]
 
+        # data-mark carries the SPECIFIC sign; data-mark-family groups the
+        # subtyped families (Abdullah 2026-08-28). Budgets stay family-level
+        # in the audits — the editions disagree on WHICH waqf sign at 424 of
+        # 4,416 positions, so the ink's signature names the subtype while
+        # the count answers to the family.
+        _MFAM = {"wasl-awla": "waqf", "waqf-awla": "waqf",
+                 "waqf-jaiz": "waqf", "waqf-lazim": "waqf",
+                 "muanaqah": "waqf", "pause": "waqf",
+                 "fathatan": "tanween", "kasratan": "tanween",
+                 "dammatan": "tanween",
+                 "dot": "dots", "two-dots": "dots", "three-dots": "dots",
+                 "sifr-mustadir": "sifr", "sifr-mustatil": "sifr",
+                 "sajdah-line": "sajdah", "sajdah-sign": "sajdah",
+                 "saktah": "reading-sign", "seen-reading": "reading-sign",
+                 "imalah": "reading-sign", "ishmam": "reading-sign",
+                 "tashil": "reading-sign"}
+
         def emit(e):
             eid[0] += 1
             extra = '<path data-eid="e%d" data-kind="%s" ' % (eid[0], e["kind"])
-            if e.get("mark"):
-                extra += ('data-mark-part="%s" ' if e.get("mkpart")
-                          else 'data-mark="%s" ') % e["mark"]
+            wq = None
             if e.get("sig"):
-                extra += 'data-sig="%s" ' % e["sig"]
-                # Which pause sign this is. Every waqf comes out of this pipeline
-                # labelled `pause`, so a ۚ (ج) and a ۗ (قلى) are indistinguishable in the
-                # output — and the text cannot tell them apart either, since quran.com's
-                # uthmani and this print disagree about the sign at 424 of 4,416
-                # positions. The shapes are distinct outlines, so the signature settles
-                # it from the ink: `.cache/marks/waqf_types.json` records what
-                # MushafDatabase calls each one, with the count and purity behind it.
+                # Which pause sign this is: the shapes are distinct outlines,
+                # so the signature settles it from the ink
+                # (`.cache/marks/waqf_types.json`), by place as fallback.
                 wq = waqf_types().get(e["sig"])
                 if not wq:
-                    # The muʿānaqah has no signature of ours: we see its triangle of
-                    # three dots as a `two-dots` and a `dot`, so it is recorded by place.
                     _rec = waqf_places().get(_page_no, {}).get(
                         "%.1f,%.1f,%.1f,%.1f" % (e["x1"], e["y1"], e["x2"], e["y2"]))
                     wq = _rec.get("waqf") if isinstance(_rec, dict) else _rec
-                if wq:
-                    extra += 'data-waqf="%s" ' % wq
+            nm = e.get("mark")
+            if nm == "pause" and wq and wq != "muanaqah":
+                nm = wq
+            if nm:
+                extra += ('data-mark-part="%s" ' if e.get("mkpart")
+                          else 'data-mark="%s" ') % nm
+                fam = _MFAM.get(nm)
+                if fam:
+                    extra += 'data-mark-family="%s" ' % fam
+            if e.get("sig"):
+                extra += 'data-sig="%s" ' % e["sig"]
             if e.get("tanform"):
                 extra += 'data-form="%s" ' % e["tanform"]
             if e.get("mnqpair"):

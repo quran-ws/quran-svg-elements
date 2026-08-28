@@ -43,7 +43,7 @@ ALLOWED_MARKS = {
     "sifr-mustadir", "sifr-mustatil", "meem-iqlab",
     "dot", "two-dots", "three-dots",
     "pause", "saktah", "seen-reading", "imalah", "ishmam", "tashil",
-    "muanaqah",
+    "muanaqah", "wasl-awla", "waqf-awla", "waqf-jaiz", "waqf-lazim",
     "sajdah-line", "sajdah-sign", "hizb",
 }
 ALLOWED_KINDS = {"body", "mark", "ayah-marker-ornament", "ayah-number",
@@ -121,9 +121,16 @@ def scan_page(pg):
             if "+" in v or v not in ALLOWED_MARKS:
                 viol.append("vocab: data-mark%s=%r"
                             % ("-part" if part else "", v))
-        wq = at.get("data-waqf")
+        wq = at.get("data-waqf")            # legacy; new emissions put the
+        if wq is None and (mk or mp) in (   # type in data-mark itself
+                "wasl-awla", "waqf-awla", "waqf-jaiz", "waqf-lazim"):
+            wq = mk or mp
         if wq is not None and wq not in ALLOWED_WAQF:
             viol.append("waqf: data-waqf=%r" % wq)
+        mf = at.get("data-mark-family")
+        if mf is not None and mf not in {"waqf", "tanween", "dots", "sifr",
+                                         "sajdah", "reading-sign"}:
+            viol.append("family: data-mark-family=%r" % mf)
         fm = at.get("data-form")
         if fm is not None:
             if fm not in ALLOWED_FORM:
