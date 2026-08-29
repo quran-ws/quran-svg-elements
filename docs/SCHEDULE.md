@@ -135,3 +135,35 @@ Per-page tests overwrote the 604-page file with single-page output.
   decomposition a build input.
 - The shared structural cache — dev speed only.
 - Licensing, the domain choice, and the medallion re-fit values: Abdullah's.
+
+### REJECTED: merging basmalah / surah-name into one path (2026-08-30 00:37)
+
+Asked: "for basmalah shouldn't we merge all of its elements in one path" —
+and the same for surah-name. **Tested, and it BREAKS THE INK. Rejected.**
+
+Each `<g class="basmalah">` holds 28-32 paths (112 groups: 2x28, 21x29, 55x30,
+33x31, 1x32) and every one of them shares a SINGLE transform, so reframing is
+not the obstacle. `fill-rule="evenodd"` is. Merging p50's header groups into
+one path each changed **228 pixels**, all in the basmalah line: the inner loop
+(counter) of the ح in ٱلرَّحْمَٰن FILLS IN as a black blob, because two
+overlapping contours in one path cancel. Measured on that page, 70 contour-box
+pairs overlap — Arabic calligraphy overlaps constantly, since letters connect
+and strokes cross.
+
+Note the two behaved differently in the sample: the surah name (y 57-110)
+merged with NO change while the basmalah (y 203-266) broke. That is luck of
+which letters overlap, not a rule, and is not something to ship on.
+
+**Abdullah's requirement is explicit: "we need pixel 100% as is."** So the
+structure stays as it is.
+
+**And the merge would buy nothing.** The GROUP is already the semantic unit — a
+consumer counts 112 basmalah groups, not paths, and styles them with
+`g.basmalah path { … }` in one selector. Size is not a reason either: path `d`
+data is 80.9% of all bytes, so wrapper elements are not the cost.
+
+This is the third time the same trap has appeared today (the muʿānaqah merge,
+the ظ white-loop split, and now this): **express "these pieces are one thing"
+through the GROUP, never by fusing geometry.** Fusing geometry needed three
+stacked bug fixes and an overlap guard the last time, and here it is simply
+impossible without changing the render.
