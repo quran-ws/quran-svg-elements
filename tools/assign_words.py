@@ -1705,6 +1705,103 @@ def align_segs_atoms(atoms, segs, alpha=None):
     return groups, dp[n][m] / max(mean_seg, 1e-9) / max(1, len(groups))
 
 
+_MDBCUT = os.environ.get("QSVG_MDBCUT", "0") == "1"
+_MDBSTAT = __import__("collections").Counter()
+_MDBRUNS = {}
+
+
+def mdb_runs(page_no):
+    """{element bbox key: "surah:ayah:pos#run"} — MushafDatabase's ligature cut
+    for this page, expressed in our element space by tools/build_mdb_runs.py.
+
+    Empty when the cache is absent, which is the default build: QSVG_MDBCUT is
+    off and nothing reads this.
+    """
+    if "d" not in _MDBRUNS:
+        p = os.path.join(ROOT, ".cache", "mdb_runs.json")
+        try:
+            _MDBRUNS["d"] = json.load(open(p, encoding="utf-8"))
+        except Exception:
+            _MDBRUNS["d"] = {}
+    return _MDBRUNS["d"].get(str(int(page_no)), {})
+
+
+def mdb_recut(cl, runs):
+    """Re-partition ONE word's cluster into atoms by MushafDatabase's runs.
+
+    Our atoms are invented geometrically: `cluster_line` merges contours whose
+    x-intervals overlap, so two runs drawn close together on a justified line
+    become one atom and `align_segs_atoms` can only reconcile the rule-derived
+    segmentation onto that — never override it. That is the mechanism behind
+    the 2,687 words where we emit one `<g class="ligature">` and both the
+    joining rules AND the reference say two.
+
+    The reference's cut is taken as the atom partition instead. Body elements
+    are grouped by the run holding their ink (proof-class: over 790,333
+    contours the paired contours of an element are UNANIMOUS about their run in
+    100% of cases, so an element is never split across two of their runs).
+    Marks are then re-seated by cluster_line's own rule — overlap with the
+    atom's body span first, then centre distance.
+
+    Returns a new atom list, or None when any body element is missing from the
+    reference (p1/p2, and the 2.7% of elements whose contours find no partner),
+    in which case the caller keeps today's cut.
+    """
+    els = [e for a in cl for e in a["els"]]
+    bods = [e for e in els if e["kind"] == "body"]
+    if not bods:
+        return None
+    byrun, loose = {}, []
+    for e in bods:
+        rid = runs.get("%.1f,%.1f,%.1f,%.1f"
+                       % (e["x1"], e["y1"], e["x2"], e["y2"]))
+        if rid is None:
+            loose.append(e)
+        else:
+            byrun.setdefault(rid, []).append(e)
+    if not byrun:
+        return None
+    # READING ORDER comes from the run index, not from x. Two runs can overlap
+    # in x — p6 وَكَانَ draws its و at 139.6-149.5 INSIDE كا's 135.4-149.6 —
+    # and sorting by x2 there puts كا before و, which is the wrong order for
+    # align_segs_atoms' monotone alignment and for the emitted group sequence.
+    atoms = [{"x1": min(e["x1"] for e in g), "x2": max(e["x2"] for e in g),
+              "els": list(g)}
+             for _r, g in sorted(byrun.items(),
+                                 key=lambda kv: int(kv[0].split("#")[1]))]
+    # A body the reference does not cover (2.7% of elements find no contour
+    # partner) keeps an atom of its own unless it is a stacked stroke — the
+    # same 60%-of-its-own-width overlap test cluster_line uses to keep a
+    # lam-alef's second stroke or a ك armature with its base letter.
+    for e in loose:
+        w = max(1e-9, e["x2"] - e["x1"])
+        best = max(atoms, key=lambda a: min(a["x2"], e["x2"]) - max(a["x1"], e["x1"]))
+        if min(best["x2"], e["x2"]) - max(best["x1"], e["x1"]) >= 0.6 * w:
+            best["els"].append(e)
+            best["x1"] = min(best["x1"], e["x1"])
+            best["x2"] = max(best["x2"], e["x2"])
+        else:
+            i = len([a for a in atoms if a["x2"] > e["x2"]])
+            atoms.insert(i, {"x1": e["x1"], "x2": e["x2"], "els": [e]})
+    for mk in els:
+        if mk["kind"] == "body" or mk.get("mkpart"):
+            continue
+        cx = (mk["x1"] + mk["x2"]) / 2
+
+        def fit(a, mk=mk, cx=cx):
+            ov = min(a["x2"], mk["x2"]) - max(a["x1"], mk["x1"])
+            return (-ov, abs((a["x1"] + a["x2"]) / 2 - cx))
+
+        best = min(atoms, key=fit)
+        for _e in [mk] + mk.get("mkmembers", []):
+            if not any(x is _e for x in best["els"]):
+                best["els"].append(_e)
+    placed = {id(e) for a in atoms for e in a["els"]}
+    if any(id(e) not in placed for e in els):
+        return None                             # never drop ink
+    return atoms
+
+
 def put_in_ligature(atoms, e):
     """Place `e` in the ligature group of `atoms` whose ink it actually sits over.
 
@@ -11588,6 +11685,53 @@ def assign_page(edition, page_no, cache_dir):
                         _ref.add(id(_e7))
                     else:
                         _e7["mkpart"] = False
+
+    # QSVG_MDBCUT (experiment, default OFF): take the ligature CUT from
+    # MushafDatabase instead of deriving it geometrically.
+    #
+    # Our atoms come from cluster_line, which merges contours whose x-intervals
+    # overlap, and align_segs_atoms can then only reconcile the rule-derived
+    # segmentation ONTO those atoms — it can never override them. It runs LAST,
+    # after every mover, because the cut is not lost only in cluster_line: a
+    # body arriving from a neighbouring word is appended to an EXISTING atom
+    # (p76 أُو۟لَٰٓئِكَ's ا and و land in the ليك atom), so an early recut is
+    # undone downstream.
+    #
+    # Word OWNERSHIP is untouched — this only re-partitions a word's own
+    # elements — and no mark is renamed, so it is pixel-free by construction.
+    if _MDBCUT:
+        _runs = mdb_runs(page_no)
+        for _wM, _atM in assignment:
+            if not _wM or not _atM:
+                continue
+            _new = mdb_recut(_atM, _runs) if _runs else None
+            if _new is None:
+                _MDBSTAT["fallback"] += 1
+                continue
+            _MDBSTAT["recut"] += 1
+            _MDBSTAT["split" if len(_new) > len(_atM) else
+                     "merged" if len(_new) < len(_atM) else "same"] += 1
+            _sgM = segment_word(_wM["uthmani"])
+            # With the cut taken from the reference, an atom IS a run, so when
+            # the rules produce the same number of pieces the alignment is the
+            # identity and the width-prior DP has nothing to decide. The DP is
+            # kept only for the words where the two counts still differ.
+            if len(_new) == len(_sgM):
+                _grpM = [([_a], [_s]) for _a, _s in zip(_new, _sgM)]
+                _MDBSTAT["align-direct"] += 1
+            else:
+                _grpM = align_segs_atoms(_new, _sgM)[0]
+                _MDBSTAT["align-dp"] += 1
+            for _gi, (_ga, _gs) in enumerate(_grpM):
+                if not _ga:
+                    continue
+                _mg = {"text": "".join(s["text"] for s in _gs),
+                       "marks": [mk for s in _gs for mk in s["marks"]],
+                       "bad": any(s["bad"] for s in _gs)}
+                for _a in _ga:
+                    _a["seg"] = _mg
+                    _a["lig"] = _gi
+            _atM[:] = _new
 
     # LIGATURE RECONCILIATION, after every mover (QSVG_LIGFIX, 2026-08-29).
     #

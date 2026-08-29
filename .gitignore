@@ -36,3 +36,6 @@ mushafs/
 .cache/slashx3/
 .cache/pixel_fails.json
 .playwright-mcp/
+
+# derived: MushafDatabase run table, rebuilt by tools/build_mdb_runs.py
+.cache/mdb_runs.json
