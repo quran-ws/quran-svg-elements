@@ -32,9 +32,13 @@ def word_svg(svg, keys):
     vb = re.search(r'viewBox="[^"]*"', svg)
     body, n = [], 0
     for k in keys:
-        su, ay, wd = k.split(":")
-        i = svg.find('data-surah="%s" data-ayah="%s" data-word="%s"'
-                     % (su, ay, wd))
+        # the emitter now carries one combined key (data-wid="2:6:3");
+        # fall back to the three separate attributes for older builds
+        i = svg.find('data-wid="%s"' % k)
+        if i < 0:
+            su, ay, wd = k.split(":")
+            i = svg.find('data-surah="%s" data-ayah="%s" data-word="%s"'
+                         % (su, ay, wd))
         if i < 0:
             continue
         ws = svg.rfind("<g class=\"word\"", 0, i)
