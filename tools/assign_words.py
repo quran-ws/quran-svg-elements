@@ -10699,114 +10699,22 @@ def assign_page(edition, page_no, cache_dir):
                     else:
                         _eo9["mkpart"] = False
 
-    # SLASHFIX (Abdullah 2026-08-29: "it doesn't need manual work") — the
-    # two species his eye kept finding, automated with two signals each:
-    #   A. NAME INVERSION: fatha/kasra are one stroke named by position
-    #      relative to the word that HOLDS it, so a mis-owned or mis-dealt
-    #      stroke arrives wearing the opposite name. Proof: a "kasra" lying
-    #      ABOVE the word's letter ink (or a "fatha" fully below it) is
-    #      impossible in the script. Direction: the word's own budget
-    #      deficit. Both must agree before renaming (e603 p218, e290 p385,
-    #      e274 p518).
-    #   B. FUSED PAIR: two slash strokes drawn touching share one MARK
-    #      element and count once. Proof: a mark element with side-by-side
-    #      slash-sized contours (never nested — nested = an evenodd hole,
-    #      the p218 ظ-loop trap; and never body elements). Direction: the
-    #      family's budget deficit (e458 p126, e607 p218, e292 p385,
-    #      e312 p459, e180 p552).
-    if os.environ.get("QSVG_SLASHFIX", "1") == "1":
-        for _wf, _atf in assignment:
-            if not _wf:
-                continue
-            _txf = _wf["uthmani"]
-            _wantf = {"fatha": _txf.count("\u064e"),
-                      "kasra": _txf.count("\u0650")}
-            if not (_wantf["fatha"] or _wantf["kasra"]):
-                continue
-            _elf = [e for a in _atf for e in a["els"]]
-            _bods = [e for e in _elf if e.get("kind") == "body"]
-            if not _bods:
-                continue
-            _btop = min(e["y1"] for e in _bods)
-            _bbot = max(e["y2"] for e in _bods)
-
-            def _havef(fam):
-                return [e for e in _elf if e.get("mark") == fam
-                        and not e.get("mkpart")]
-            # A: rename by impossible position + deficit
-            for _fam, _oth, _side in (("fatha", "kasra", "top"),
-                                      ("kasra", "fatha", "bot")):
-                _def = _wantf[_fam] - len(_havef(_fam))
-                if _def <= 0:
-                    continue
-                _cands = [e for e in _havef(_oth)
-                          if len(e["contours"]) == 1
-                          and not e.get("mkmembers")
-                          and not e.get("_ovr")
-                          and ((_side == "top" and e["y2"] <= _btop + 2.0)
-                               or (_side == "bot"
-                                   and e["y1"] >= _bbot - 2.0))]
-                _cands.sort(key=lambda e: e["y1"]
-                            if _side == "top" else -e["y2"])
-                for _e in _cands[:_def]:
-                    _e["mark"] = _fam
-                    _e["lab"] = _fam
-                    _e.pop("tanform", None)
-            # B: split fused side-by-side pairs up to the deficit
-            for _fam in ("fatha", "kasra"):
-                _def = _wantf[_fam] - len(_havef(_fam))
-                if _def <= 0:
-                    continue
-                for _e in list(_havef(_fam)):
-                    if _def <= 0:
-                        break
-                    if len(_e["contours"]) < 2 or _e.get("_ovr"):
-                        continue
-                    _pMf = page.paths[_e["path"]]["M"]
-                    _cbs = []
-                    for _c in _e["contours"]:
-                        sp = _c["sp"]
-                        b = transform_box(_pMf, sp["xmin"], sp["ymin"],
-                                          sp["xmax"], sp["ymax"])
-                        _cbs.append((min(b[0], b[2]), min(b[1], b[3]),
-                                     max(b[0], b[2]), max(b[1], b[3]), _c))
-                    _ok = [cb for cb in _cbs
-                           if 3.0 <= cb[2] - cb[0] <= 11.0
-                           and 2.0 <= cb[3] - cb[1] <= 6.0
-                           and not any(o is not cb
-                                       and o[0] <= cb[0] and o[1] <= cb[1]
-                                       and o[2] >= cb[2] and o[3] >= cb[3]
-                                       for o in _cbs)]
-                    if len(_ok) < 2:
-                        continue
-                    _ok.sort(key=lambda cb: cb[0])
-                    _keep = _ok[0]
-                    for cb in _ok[1:]:
-                        if _def <= 0:
-                            break
-                        if abs(((cb[0] + cb[2]) / 2)
-                               - ((_keep[0] + _keep[2]) / 2)) < 3.0:
-                            continue
-                        _e["contours"] = [c for c in _e["contours"]
-                                          if c is not cb[4]]
-                        _ne = dict(_e)
-                        _ne["contours"] = [cb[4]]
-                        _ne["x1"], _ne["y1"], _ne["x2"], _ne["y2"] = cb[:4]
-                        _ne.pop("mkmembers", None)
-                        _ne.pop("sig", None)
-                        _ne.pop("tanform", None)
-                        _ne["mkpart"] = False
-                        put_in_ligature(_atf, _ne)
-                        _elf.append(_ne)
-                        _def -= 1
-                    _e["x1"] = min(cb[0] for cb in _cbs
-                                   if cb[4] in _e["contours"])
-                    _e["y1"] = min(cb[1] for cb in _cbs
-                                   if cb[4] in _e["contours"])
-                    _e["x2"] = max(cb[2] for cb in _cbs
-                                   if cb[4] in _e["contours"])
-                    _e["y2"] = max(cb[3] for cb in _cbs
-                                   if cb[4] in _e["contours"])
+    # SLASHFIX — REMOVED 2026-08-29 (override-retirement audit).
+    #
+    # It automated the two eye-found species (name inversion; fused pair)
+    # but every site it was written for is pinned by an override, so it
+    # never reached one. Measured mushaf-wide against the same build with
+    # it off: it changed exactly TWO pages, p384 and p579, and on both the
+    # only difference was three BODY paths emitted into the wrong
+    # <g class="word"> — the emitted grouping disagreed with this
+    # function's own `assignment` (p384 27:78 emitted 6/7/8 = 3/3/1 where
+    # the assignment says 2/3/2; p579 76:11 emitted 1/2 = 3/1 where the
+    # assignment says 2/2). Renaming a slash early enough shifts a later
+    # pass's ink mass and flips rewrite()'s "wrapper holding most of the
+    # ink" vote. Mark and interval counts stayed 0 throughout — this is
+    # exactly the blind spot CLAUDE.md warns about, a word losing a letter
+    # with correct mark counts. Deleting it makes both pages agree with
+    # the assignment again; no other page changes at all.
 
     _enforce_overrides()
 
