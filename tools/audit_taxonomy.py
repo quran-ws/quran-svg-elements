@@ -127,10 +127,17 @@ def scan_page(pg):
             wq = mk or mp
         if wq is not None and wq not in ALLOWED_WAQF:
             viol.append("waqf: data-waqf=%r" % wq)
+        # data-mark-family is a SPACE-SEPARATED token list, like `class`: a
+        # mark can belong to more than one family, and the three tanween
+        # belong to two ("diacritic tanween") because they are vowel marks
+        # AND the tanween. Validate each token, never the whole string.
         mf = at.get("data-mark-family")
-        if mf is not None and mf not in {"waqf", "tanween", "dots", "sifr",
-                                         "sajdah", "reading-sign"}:
-            viol.append("family: data-mark-family=%r" % mf)
+        if mf is not None:
+            bad = [t for t in mf.split()
+                   if t not in {"waqf", "tanween", "dots", "sifr",
+                                "sajdah", "reading-sign", "diacritic"}]
+            if bad or not mf.split():
+                viol.append("family: data-mark-family=%r" % mf)
         fm = at.get("data-form")
         if fm is not None:
             if fm not in ALLOWED_FORM:

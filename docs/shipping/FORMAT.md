@@ -28,7 +28,7 @@ ink semantically decomposed:
   distinct `data-wid`, **no duplicates anywhere in the corpus**;
 - every **letter shape** is a `<path data-kind="body">`;
 - every **diacritic and sign** is a `<path data-kind="mark" data-mark="…">`
-  drawn from a closed vocabulary of 34 emitted names (§8).
+  drawn from a closed vocabulary of 35 emitted names (§8).
 
 The pages are **pixel-identical to the original print artwork** — the
 decomposition regroups ink, it never moves or redraws it.
@@ -278,7 +278,7 @@ distinct translates respectively). Always compose
 (x_view, y_view) = PAGE_MATRIX ∘ LINE_TRANSLATE applied to (x_path, y_path)
 ```
 
-`docs/shipping/wordbox_poc.py` is a reference implementation. In a browser,
+`tools/build_bundle.py` is a reference implementation. In a browser,
 `getBBox()` on a `g.word` already returns coordinates in that word's own line
 frame; `getCTM()` composes the rest.
 
@@ -424,8 +424,8 @@ opening frame (§9.2).
 | attribute | count | values | notes |
 |---|---:|---|---|
 | `data-kind` | 616,561 | `mark` 436,629 · `body` 161,778 · `ayah-marker-ornament` 6,248 · `ayah-number` 6,236 · `header-ink` 5,670 | Present on **every** path except the 6,236 `ayahPolygon` and 4 page-ornament paths on p17 (§10.5). `body` = letter ink. |
-| `data-mark` | 436,627 | 34 names, §8 | On every `data-kind="mark"` path but **two**: one unnamed (p1 `e34`) and one carrying `data-mark-part` instead (p146). |
-| `data-mark-family` | 122,191 | `dots` 105,270 · `tanween` 8,554 · `waqf` 4,272 · `sifr` 4,054 · `sajdah` 30 · `reading-sign` 11 | Only on marks that have a family. **Derivable from `mark-taxonomy.v2.json`** — prefer the registry, which also covers `small-noon` (§10.5). |
+| `data-mark` | 436,843 | 35 names, §8 | Attribute occurrences. The **logical** mark count is 436,627 — a mark drawn as more than one path is one mark. On every `data-kind="mark"` path but **two**: one unnamed (p1 `e34`) and one carrying `data-mark-part` instead (p146). |
+| `data-mark-family` | 393,970 | **token list** — `diacritic` 280,333 · `dots` 105,270 · `tanween` 8,554 · `waqf` 4,272 · `sifr` 4,054 · `sajdah` 30 · `reading-sign` 11 | **Space-separated, like `class` — match with `~=`, not `=`.** See below. Only on marks that have a family. **Derivable from `mark-taxonomy.v2.json`** — prefer the registry, which also covers `small-noon` (§10.5). |
 | `data-eid` | 598,407 | `e1`, `e2`, … | **Not stable across builds. Never key on it.** Unique within a page. Only on word/standalone ink — never on marker, header or polygon paths. |
 | `data-sig` | 598,392 | 16 hex | Outline shape signature used by the review loop. **Not an identity** — §8.5. |
 | `data-form` | 8,506 | `staggered` 6,598 · `stacked` 1,908 | Only on the `tanween` family: how the pair of strokes is drawn. 48 of the 8,554 tanween paths have none. |
@@ -439,6 +439,53 @@ opening frame (§9.2).
 `data-eid`, `data-sig` and `data-mark-family` are present in **both** profiles.
 `data-eid` and `data-sig` exist for the review loop; a consumer should not key
 on either.
+
+#### `data-mark-family` is a token list — use `~=`, never `=`
+
+A mark can belong to more than one family, so the attribute holds
+space-separated tokens exactly like `class`:
+
+```css
+[data-mark-family~="diacritic"] { }   /* correct */
+[data-mark-family="diacritic"]  { }   /* WRONG — misses every tanween */
+```
+
+Only the three tanween carry two tokens today (`"diacritic tanween"`, 8,554
+paths). They are vowel marks *and* they are the tanween, and both groupings are
+real: hiding the diacritics must reach them, and §8.2 groups on them. Every
+other family is single-token, so `=` happens to work there — but it is the wrong
+habit and will break the next time a mark needs two families. Always `~=`.
+
+### 6.6 Page identity — nine attributes on the root `<svg>`
+
+Every page states which mushaf it belongs to, so a file downloaded on its own is
+self-describing:
+
+```xml
+<svg data-mushaf="hafs-kfqc" data-qiraa="asim" data-riwaya="hafs"
+     data-edition="kfgqpc-1421"
+     data-mushaf-name-ar="حفص عن عاصم" data-mushaf-name-en="Hafs 'an Asim"
+     data-ayah-numbering="kufi" data-ayah-total="6236" data-page="42" …>
+```
+
+Each appears exactly 604 times, once per page. Values come from the
+`quranpedia/qiraat-ayah-map` dataset; the full records — names, descriptions and
+the provenance of the numbering choice — belong in the bundle's `catalogue.json`
+rather than being repeated on every page.
+
+Three of these are easy to misread:
+
+- **`data-riwaya` is not `data-qiraa`.** Ḥafṣ is a *transmission* of ʿĀṣim's
+  *reading*; Shuʿba is the other. Warsh and Qālūn are both Nāfiʿ. "The Ḥafṣ
+  qiraa" is an error — say the Ḥafṣ riwaya, or the reading of ʿĀṣim.
+- **`data-ayah-numbering` is a property of the printed EDITION, not of the
+  qiraa.** It must never be derived. The King Fahd al-Dūrī edition proves why:
+  its qiraa (Abū ʿAmr) implies the Basran count, but its colophon declares the
+  First Madinan, and its pages agree with First Madinan in 110 of 114 surahs
+  against 72 for Basran.
+- **`data-ayah-total` follows the counting system, not the Quran.** 6,236 is
+  Kufan; Nāfiʿ counts 6,214. Any consumer that hardcodes 6,236 will reject a
+  correct edition of another riwaya.
 
 ### 6.6 On `<g class="surah-name">` and `<g class="basmalah">`
 
@@ -546,7 +593,7 @@ pages** (§11), if you loaded the right page you will always find all N.
 
 ---
 
-## 8. The mark taxonomy — 34 emitted names
+## 8. The mark taxonomy — 35 emitted names
 
 The registry is `.cache/schema/mark-taxonomy.v2.json` (schema `mark-taxonomy`,
 version 2.0). It declares **36** names: **35 active**, 1 reserved-inactive
@@ -570,7 +617,7 @@ registry declares as `data-mark-family`; `category` is the registry's grouping.
 | `sukun` | سكون | U+0652 `ْ`, U+06E1 `ۡ` | — | 37,148 |
 | `shadda` | شدة | U+0651 `ّ` | — | 22,678 |
 
-### 8.2 Tanween — `data-mark-family="tanween"`, `data-form` on all but 48
+### 8.2 Tanween — `data-mark-family~="tanween"`, `data-form` on all but 48
 
 | `data-mark` | Arabic | codepoint | count |
 |---|---|---|---:|
@@ -901,7 +948,7 @@ The tanween of a word-final `ة` floats into the gap toward the next word. p350
 <g class="word" data-wid="24:2:12" data-uthmani="رَأْفَةࣱ" data-rasm="رأفة"
    data-imlaei="رَأْفَةٌ" data-search="رأفة" data-qpc="رَأۡفَةٞ">
   … <path data-eid="e197" data-kind="mark" data-mark="dammatan"
-          data-mark-family="tanween" data-form="staggered" d="…"/></g>
+          data-mark-family="diacritic tanween" data-form="staggered" d="…"/></g>
 ```
 
 **Never assign a mark to a word by nearest ink or by bounding-box
@@ -1036,7 +1083,7 @@ A strict consumer must special-case these:
   `#content` and `#ayah_markers`, passed through from the artwork untouched.
   p17 is the only page with them.
 - **`small-noon` is the only orthographic sign with no `data-mark-family`.**
-  `[data-mark-family="reading-sign"]` also silently drops it — it is not a
+  `[data-mark-family~="reading-sign"]` also silently drops it — it is not a
   reading sign in this registry.
 - **p7 is the only file declaring `xmlns:xlink`.**
 - **p17 and p144 emit one `<g class="ayah">` per WORD**, not per (ayah, line):
@@ -1066,7 +1113,7 @@ About 9 word-level segmentation disagreements with MushafDatabase remain
 
 ### 10.9 The companion index predates `data-search`
 
-`docs/shipping/index_poc.py` builds `words.json` with
+`tools/build_bundle.py` builds `words.json` with
 `fields: ["wid","page","rasm","imlaei"]` — it has no `data-search` column yet,
 and `index.json` still carries the pre-2026-08-30 `basmalah_groups: 113`. **The
 SVGs are authoritative**; always read the index's own `fields` array rather than
@@ -1113,13 +1160,13 @@ const fold = s => s.replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/
   .map(w => w.dataset.wid);
 
 // ---- colour the dots differently from the harakat ----
-doc.querySelectorAll('path[data-mark-family="dots"]')
+doc.querySelectorAll('path[data-mark-family~="dots"]')
    .forEach(p => p.setAttribute('fill', '#b03030'));
 // equivalently, without relying on data-mark-family:
 //   'path[data-mark="dot"],path[data-mark="two-dots"],path[data-mark="three-dots"]'
 
 // ---- every waqf sign on the page, with the word it belongs to ----
-[...doc.querySelectorAll('path[data-mark-family="waqf"]')]
+[...doc.querySelectorAll('path[data-mark-family~="waqf"]')]
   .map(p => [p.closest('g.word')?.dataset.wid, p.dataset.mark]);
 
 // ---- muanaqah partners ----
