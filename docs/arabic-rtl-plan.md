@@ -18,6 +18,13 @@ inside Arabic prose, and the pixel-arithmetic in the selection layer. Those are 
 
 ## 2. What `dir="rtl"` does, and what it does not
 
+**Set it in the HTML, not the CSS.** W3C is explicit: *"Never use CSS to apply the base direction …
+you want the directional information to be available even when the CSS is not. The directional
+information can affect the semantics of your content, and so should be part of the markup. Both the
+CSS and HTML specs echo this same admonition."* So `dir="rtl"` on `<html>`, never `direction: rtl` in
+the stylesheet. (The existing `.ar` and `.quote` rules that set `direction:rtl` in CSS are the
+inherited exception — see §8.)
+
 **Does, automatically:**
 - Sets the base paragraph direction. Arabic runs right-to-left.
 - Right-aligns text where `text-align` is unset.
@@ -134,6 +141,22 @@ without it.
 **Not LTR:** `input#s-all` is an Arabic search box. It should be `dir="auto"` so it follows whatever
 the user types, not forced either way.
 
+### Features added after this plan was first drafted
+
+Keyed to mechanism, since the section numbering is still moving. Each needs the same triage:
+
+| feature | RTL consideration |
+|---|---|
+| **plain JS / library toggles** in every section | Toggle buttons are page chrome → RTL. The code they swap between is code → LTR. The toggle must not restyle the editor's direction. |
+| **library section** | Any API surface, method name or install command stays LTR. |
+| **recitation transport** (`.q-transport`) | `input[type=range]` **reverses under RTL** — the thumb starts right. That is correct for a *reading* position on Arabic text, but verify against the audio's actual direction. Playback controls are the one Material exception that must **not** mirror: play/pause glyphs keep their LTR orientation. |
+| **hover-for-meaning** (`.q-tip`) | Tooltip positioning is viewport-pixel arithmetic — see §7, no change. The tooltip *content* is Arabic prose plus a Latin word key: the key needs `<bdi>` or `dir="ltr"`. |
+| **one-polygon highlight** (replacing stacked bands) | Computed in viewBox space from word boxes. Direction-agnostic; do not touch. Confirm no `scaleX` crept in with it. |
+| **generated Contents** (replacing the sticky nav) | Generated markup, so the LTR/RTL rules must be applied **in the generator**, not by hand-editing output. Section titles are Arabic → RTL; any anchor id stays Latin. |
+| **ayah numbers stamped into copied text** | The stamped numerals are artwork-side content — see the glossary on Arabic-Indic digits. The copy payload is built in a `copy` handler, so its direction is a string question, not a CSS one. |
+| **bidi isolation fixes already in the English page** | Check these are `<bdi>` / `dir` and not `U+202A`-family embedding characters, which W3C deprecates in favour of isolates. |
+| **nine new root attributes** | Attribute names and values stay Latin, always. Their Arabic *prose* names are in the glossary. |
+
 ---
 
 ## 6. The artwork — nothing changes, and one hard prohibition
@@ -166,8 +189,8 @@ Direction is a presentation concern; the schema is not.
 
 ## 7. JavaScript that measures pixels — safe, and why
 
-The selection layer (§7 of the demo) and the tooltip both position absolutely-positioned elements
-from `getBoundingClientRect()`:
+The selection text layer (`hitLayer()`, building `.q-hits > span`) and the tooltip (`.q-tip`) both
+position absolutely-positioned elements from `getBoundingClientRect()`:
 
 ```js
 s.style.left = (b.x0 - origin.left) + 'px';
@@ -219,7 +242,7 @@ Add to the existing `css2?family=…` request (one stylesheet, no second host):
 ```css
 body[dir="rtl"] {
   font-family: "IBM Plex Sans Arabic", "Noto Sans Arabic", "Segoe UI", Tahoma, sans-serif;
-  line-height: 1.85;          /* Latin sits at 1.6 */
+  line-height: 1.8;           /* Latin sits at 1.6 */
 }
 [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3 {
   font-family: "IBM Plex Sans Arabic", "Noto Sans Arabic", serif;
@@ -237,19 +260,29 @@ keeps those spans correct if reused in an LTR context.
 
 **Three rules the design must respect:**
 
-- **`letter-spacing: 0` on all Arabic.** Arabic letters join; spacing them breaks the joins and
-  renders words wrong. The page currently sets `letter-spacing` on `.eyebrow`, `.sec-eyebrow`,
-  `.index a`, `.panel h3`, `.callout h3`, `th` and `.spec-lbl`. **Every one of those must be zeroed
-  for Arabic** — this is the single most common way an Arabic page is visibly botched.
+- **`letter-spacing: 0` on all Arabic.** W3C ALReq §7.2.2 gives the reason: inter-character gaps
+  *"only exist for those letters that join only to the right, such as dal and reh. Adjustment of
+  intra-word space is not relevant where one letter is joined to its neighbors."* Tracking Arabic
+  does not space it evenly — it breaks the joins. The page currently sets `letter-spacing` on
+  `.eyebrow`, `.sec-eyebrow`, `.index a`, `.panel h3`, `.callout h3`, `th` and `.spec-lbl`.
+  **Every one must be zeroed for Arabic** — this is the most common way an Arabic page is visibly
+  botched.
 - **`text-transform: uppercase` does nothing in Arabic.** The same selectors use it for hierarchy.
-  Arabic has no letter case, so that signal vanishes entirely and those labels flatten into the body
-  text. Replace with weight, size or colour before translating, or the visual hierarchy collapses.
+  Arabic has no letter case, so the signal vanishes and those labels flatten into the body text.
+  Replace with weight, size or colour. Where the capitalisation was marking a **UI label**, the
+  Arabic convention is quotation marks instead — Microsoft ar-SA §4.1.5: *"As there's no
+  capitalization in Arabic, English capitalized words can be translated between quotations in order
+  to highlight them."*
+- **No `hyphens: auto`.** ALReq §7.1: Arabic wraps *"between words."* It does not hyphenate.
 - **No italic on Arabic.** `.mast h1 em`, `.quote-en` and `.q-tip`-adjacent italics need a different
   emphasis mechanism. Faux-oblique Arabic is a rendering artefact.
 
-**Expansion.** Arabic runs longer than English. `.mast h1 { max-width:20ch }`, `.plain
-{ max-width:64ch }`, `.callout p { max-width:72ch }` and the `min-width` on buttons and `.lbl` are all
-sized to English. Re-check them against real Arabic, not by converting the numbers.
+**Width.** Arabic string length is unpredictable relative to English — often *shorter* in characters
+(no copula, no auxiliaries, articles and pronouns fuse onto the word), sometimes wider rendered,
+always taller. The "Arabic expands 25%" figure is localisation folklore; do not size to it either.
+`.mast h1 { max-width:20ch }`, `.plain { max-width:64ch }`, `.callout p { max-width:72ch }` and the
+`min-width` on buttons and `.lbl` are all sized to English. Re-check them against **real Arabic**,
+not by scaling the numbers.
 
 ---
 
