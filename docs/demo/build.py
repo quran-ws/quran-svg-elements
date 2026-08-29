@@ -20,7 +20,13 @@ this be mistaken for a statement about what production emits.
 
 Also writes:
   data/gloss-042.json   {wid: [english, transliteration]}  (source: quran.com)
-  data/search-index.json is built separately by build_search_index.py
+
+and inlines, at the /*TIMINGS*/ placeholder, the cached word timings for the
+hero page written by build_timings.py. They are ~2 KB and exist only so the
+audio section still renders and explains itself with no network. The section
+itself fetches live; this is the fallback.
+
+data/search-index.json is built separately by build_search_index.py
 
 Run:  QSVG_ROOT=$PWD python3 docs/demo/build.py
 """
@@ -110,12 +116,21 @@ def main() -> None:
     if "<!--SVG-->" not in tpl:
         raise SystemExit("template.html has no <!--SVG--> placeholder")
     out = tpl.replace("<!--SVG-->", svg)
+
+    timings_path = HERE / f"data/timings-{HERO:03d}.json"
+    if "/*TIMINGS*/null" not in out:
+        raise SystemExit("template.html has no /*TIMINGS*/null placeholder")
+    if not timings_path.exists():
+        raise SystemExit(f"{timings_path.name} missing — run build_timings.py")
+    timings = timings_path.read_text(encoding="utf-8").strip()
+    out = out.replace("/*TIMINGS*/null", timings, 1)
     (HERE / "index.html").write_text(out, encoding="utf-8")
 
     print(f"page {HERO:03d}: {before/1024:.0f} KB dev -> {len(svg)/1024:.0f} KB "
           f"(production profile, less data-eid/data-sig)")
     print(f"index.html   {len(out.encode())/1024:.0f} KB")
     print(f"gloss-{HERO:03d}   {len(gloss)/1024:.1f} KB")
+    print(f"timings-{HERO:03d} {len(timings)/1024:.1f} KB inlined")
 
 
 if __name__ == "__main__":

@@ -66,13 +66,37 @@ a{color:var(--lapis)}
   padding:11px 15px;border-radius:2px;border:1px solid var(--ink);color:var(--panel);background:var(--ink)}
 .cta a.ghost{background:transparent;color:var(--ink);border-color:var(--rule)}
 
-/* sticky index */
-.index{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--ground) 92%,transparent);
-  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
-.index ol{display:flex;gap:0;list-style:none;margin:0;padding:0;overflow-x:auto}
-.index a{display:block;padding:12px 14px;text-decoration:none;color:var(--muted);
-  font:500 12px/1 "IBM Plex Mono",monospace;white-space:nowrap;border-right:1px solid var(--rule)}
-.index a:hover{color:var(--ink);background:var(--panel)}
+/* slim sticky bar — a name, where you are, and a way to the contents.
+   Fifteen section links cannot fit in a bar; they live in §Contents. */
+.index{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--ground) 92%,transparent);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);transition:transform .2s ease}
+.index.away{transform:translateY(-105%)}
+.index .bar{display:flex;align-items:center;gap:14px;height:46px}
+.index .name{font:600 13px/1 "Spectral",Georgia,serif;letter-spacing:.01em;white-space:nowrap}
+.index .here{font:500 12px/1 "IBM Plex Mono",monospace;color:var(--muted);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
+.index .toclink{margin-left:auto;font:500 12px/1 "IBM Plex Mono",monospace;text-decoration:none;
+  color:var(--ink);border:1px solid var(--rule);border-radius:2px;padding:7px 11px;white-space:nowrap}
+.index .toclink:hover{border-color:var(--ink)}
+.index .progress{position:absolute;left:0;bottom:-1px;height:2px;background:var(--gold);width:0}
+@media (max-width:600px){
+  .index .here{display:none}
+  .index .bar{height:42px}
+}
+/* an anchor must never land with its heading under the bar */
+section[id]{scroll-margin-top:62px}
+
+/* the contents */
+.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px}
+.toc h3{font-family:"Public Sans",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li{margin:0 0 12px}
+.toc a{display:block;text-decoration:none;color:var(--ink)}
+.toc a:hover .t{color:var(--gold)}
+.toc .n{font:500 11px/1 "IBM Plex Mono",monospace;color:var(--muted);margin-right:7px}
+.toc .t{font:600 15px/1.3 "Spectral",Georgia,serif}
+.toc .d{display:block;font-size:12.5px;line-height:1.45;color:var(--muted);margin-top:3px}
 
 /* sections */
 section{padding:58px 0;border-bottom:1px solid var(--rule)}
@@ -176,22 +200,65 @@ g.q-hl rect{fill:var(--hl)}
 /* word-by-word reveal. Every ink path ships fill="#231f20" as a presentation
    attribute; a CSS rule beats one, so `fill: inherit` hands the path back to
    its group and the whole word recolours by setting ONE property. */
-.q-reveal g.word{transition:fill var(--fade,220ms) linear}
-.q-reveal g.word path{fill:inherit;transition:fill var(--fade,220ms) linear}
+/* ONE selector over the page's ink, not a list of element types that would
+   drift as the schema grows. Every ink path ships fill="#231f20" as a
+   presentation attribute and a rule beats one, so `fill: inherit` hands each
+   path back to whatever group is colouring it. */
+.q-reveal path{fill:inherit;transition:fill var(--fade,220ms) linear}
+.q-reveal g.word,.q-reveal g.ayah-marker,.q-reveal g.hizb-mark,
+.q-reveal g.sajdah-mark,.q-reveal g.surah-name,.q-reveal g.basmalah{
+  transition:fill var(--fade,220ms) linear}
 @media (prefers-reduced-motion:reduce){
-  .q-reveal g.word,.q-reveal g.word path{transition:none}
+  .q-reveal path,.q-reveal g{transition:none}
 }
-.q-transport{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.q-transport{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 12px}
+.q-transport .q-play{font:600 14px/1 "Public Sans",sans-serif;padding:12px 20px;
+  background:var(--ink);color:var(--panel);border-color:var(--ink);border-radius:3px;
+  display:inline-flex;gap:9px;align-items:center}
+.q-transport .q-play:hover{opacity:.88}
+.q-transport .q-play[disabled]{opacity:.55}
+.q-transport .state{font:500 12.5px/1.4 "IBM Plex Mono",monospace;color:var(--muted)}
+.q-transport .state b{color:var(--gold);font-weight:500}
+.q-dead{font:500 13px/1.5 "Public Sans",sans-serif;color:var(--bad);
+  border:1px solid var(--rule);border-left:3px solid var(--bad);border-radius:2px;
+  padding:10px 12px;margin:0 0 12px}
 .q-transport input[type=range]{flex:1;min-width:120px;accent-color:var(--lapis)}
 .q-transport .val{font:500 12px/1 "IBM Plex Mono",monospace;color:var(--gold);min-width:74px}
 
-/* the selection text layer: real Unicode, painted invisibly, sitting
-   exactly over the ink it names. Same idea as PDF.js's text layer. */
-.seltext{position:absolute;inset:0}
-.seltext span{position:absolute;color:transparent;-webkit-text-fill-color:transparent;
-  white-space:pre;cursor:text}
-.seltext span::selection{background:color-mix(in srgb,var(--lapis) 32%,transparent);color:transparent}
-.seltext span::-moz-selection{background:color-mix(in srgb,var(--lapis) 32%,transparent);color:transparent}
+/* ── THE LAYERING MODEL ──────────────────────────────────────────────
+   band / highlight layer   behind the ink, never takes pointer events
+   the SVG ink              never takes pointer events
+   the per-word hit layer   the ONLY layer that takes pointer events
+   One layer per word serves selection, hover, tap and click together,
+   so the capabilities compose instead of competing. */
+g.q-hl, g.q-hl *{pointer-events:none}
+svg.q-inert, svg.q-inert *{pointer-events:none}
+.q-hits{position:absolute;inset:0}
+.q-hits span{position:absolute;color:transparent;-webkit-text-fill-color:transparent;
+  white-space:pre;cursor:text;transform-origin:left top;border-radius:2px}
+/* the browser paints one box per SPAN, which gives ragged heights and
+   notches at every gap — and it can paint a PARTIAL range. Suppress it and
+   draw one flush rect per line from the fully-selected words instead. */
+.q-hits span::selection{background:transparent;color:transparent}
+.q-hits span::-moz-selection{background:transparent;color:transparent}
+.q-hits span.lit{background:color-mix(in srgb,var(--hl) 30%,transparent)}
+.q-hits span:focus{outline:2px solid var(--lapis);outline-offset:0}
+.q-hits.nosel span{cursor:help;user-select:none}
+
+/* §10 word meanings. The hit areas are rects INSIDE the svg, in viewBox
+   space — not an HTML layer — so they cannot fight §7's text layer, and one
+   rect per word means the tooltip does not flicker across the gaps between
+   letters. */
+.q-tip{position:absolute;z-index:6;pointer-events:none;max-width:min(280px,80%);
+  background:var(--ink);color:var(--ground);border-radius:3px;padding:8px 11px;
+  font:400 13px/1.45 "Public Sans",sans-serif;box-shadow:0 6px 20px -8px rgba(0,0,0,.6);
+  opacity:0;transition:opacity .12s ease}
+.q-tip.on{opacity:1}
+.q-tip b{display:block;font-size:15px;font-weight:600}
+.q-tip i{display:block;font-style:normal;opacity:.72;font-family:"IBM Plex Mono",monospace;
+  font-size:11.5px;margin-top:2px}
+.q-tip u{display:block;text-decoration:none;opacity:.55;font-family:"IBM Plex Mono",monospace;
+  font-size:11px;margin-top:5px}
 
 /* three-way specimen */
 #spec{display:grid;gap:16px;margin:0 0 24px}
@@ -259,7 +326,7 @@ footer p{max-width:74ch}
       <span class="chip"><b>77,432</b> words</span>
       <span class="chip"><b>6,236</b> ayahs</span>
       <span class="chip"><b>436,627</b> named marks</span>
-      <button id="theme" aria-label="Switch colour theme">theme</button>
+      <button id="theme-toggle" aria-label="Switch colour theme">theme</button>
     </div>
     <div class="cta">
       <a href="#start">Show me the code</a>
@@ -269,30 +336,13 @@ footer p{max-width:74ch}
   </div>
 </header>
 
-<nav class="index" aria-label="Sections">
-  <div class="wrap">
-    <ol>
-      <li><a href="#offer">the page</a></li>
-      <li><a href="#why">why</a></li>
-      <li><a href="#start">fetch</a></li>
-      <li><a href="#ayah">highlight an ayah</a></li>
-      <li><a href="#tap">tap targets</a></li>
-      <li><a href="#band">band highlight</a></li>
-      <li><a href="#search">search</a></li>
-      <li><a href="#word">read a word</a></li>
-      <li><a href="#select">select &amp; copy</a></li>
-      <li><a href="#reveal">reveal word by word</a></li>
-      <li><a href="#translate">translations</a></li>
-      <li><a href="#style">marks</a></li>
-      <li><a href="#theme">page theme</a></li>
-      <li><a href="#markers">swap ayah markers</a></li>
-      <li><a href="#spacing">line height</a></li>
-      <li><a href="#crop">crop</a></li>
-      <li><a href="#meta">metadata</a></li>
-      <li><a href="#bundle">the bundle</a></li>
-      <li><a href="#attrs">reference</a></li>
-    </ol>
+<nav class="index" aria-label="Page">
+  <div class="wrap bar">
+    <span class="name">Madinah Mushaf · SVG</span>
+    <span class="here" id="here"></span>
+    <a class="toclink" href="#toc">Contents</a>
   </div>
+  <div class="progress" id="progress"></div>
 </nav>
 
 <main>
@@ -388,9 +438,21 @@ footer p{max-width:74ch}
   </div>
 </section>
 
+<section id="toc">
+  <div class="wrap">
+    <p class="sec-eyebrow">Contents</p>
+    <div class="shead">
+      <h2>What is on this page</h2>
+      <p>Every section below is a live, editable example running against a real page of the mushaf.
+        Change the code and the result changes with it.</p>
+    </div>
+    <div class="toc" id="toc-body"></div>
+  </div>
+</section>
+
 <!-- ═══════════════ HOW TO USE IT ═══════════════ -->
 
-<section id="start">
+<section id="start" data-toc-group="Getting started" data-toc-note="Parse a page and ask it questions.">
   <div class="wrap">
     <p class="sec-eyebrow">How to use it</p>
     <div class="contract">
@@ -419,7 +481,7 @@ footer p{max-width:74ch}
   </div>
 </section>
 
-<section id="ayah">
+<section id="ayah" data-toc-group="Selecting and pointing" data-toc-note="Select a whole ayah without missing five sixths of it.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">svg.querySelectorAll('g.ayah[data-aid="2:255"]')</p>
@@ -439,7 +501,7 @@ footer p{max-width:74ch}
   </div>
 </section>
 
-<section id="tap">
+<section id="tap" data-toc-group="Selecting and pointing" data-toc-note="Make every point on a line belong to a word.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">g.word path { stroke: transparent; pointer-events: all }</p>
@@ -459,7 +521,7 @@ footer p{max-width:74ch}
   </div>
 </section>
 
-<section id="band">
+<section id="band" data-toc-group="Selecting and pointing" data-toc-note="Draw the stripe behind an ayah yourself.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">getBBox() per word, unioned per printed line</p>
@@ -493,7 +555,7 @@ footer p{max-width:74ch}
   </div>
 </section>
 
-<section id="search">
+<section id="search" data-toc-group="Reading and meaning" data-toc-note="Find a word anywhere and land on the printed ink.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">data-search — and why not data-rasm</p>
@@ -559,7 +621,7 @@ footer p{max-width:74ch}
   </div>
 </section>
 
-<section id="word">
+<section id="word" data-toc-group="Reading and meaning" data-toc-note="Read a word’s five text forms and every mark on it.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">w.dataset.uthmani · rasm · imlaei · search · qpc</p>
@@ -579,7 +641,7 @@ footer p{max-width:74ch}
   </div>
 </section>
 
-<section id="select">
+<section id="select" data-toc-group="Selecting and pointing" data-toc-note="Drag over the page and copy real Quranic text.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">one invisible &lt;span&gt; per g.word, over the ink</p>
@@ -614,6 +676,14 @@ footer p{max-width:74ch}
             span. The first makes that span two text lines tall, so its band spills onto the line
             below; the second has its newline collapsed away and never reaches the clipboard. Build
             the payload yourself in a <code>copy</code> handler instead.</li>
+          <li><b>A measured limit, stated rather than hidden.</b> §3, §10 and §11 give each word a
+            box that meets its neighbours, so there are no dead zones at all. This section cannot use
+            those boxes: in Chromium, enlarging them past the word's own ink breaks native
+            drag-selection <i>across a line break</i> — a diagonal drag collapses to a single word,
+            while the same drag along one line still works. Widening the boxes horizontally alone does
+            not avoid it. So the selection layer keeps ink-sized boxes, which means the gaps between
+            words are not selectable here and the first and last word of a range need a deliberate
+            aim. Pointing and selecting share one layer; they do not yet share one box size.</li>
         </ul>
       </div>
       <div>
@@ -653,7 +723,7 @@ footer p{max-width:74ch}
   </div>
 </section>
 
-<section id="reveal">
+<section id="reveal" data-toc-group="Reading and meaning" data-toc-note="Grey the page and bring it in word by word.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">g.word { fill: … } — one property, one word</p>
@@ -706,30 +776,125 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
   </div>
 </section>
 
-<section id="translate">
+<section id="audio" data-toc-group="Reading and meaning" data-toc-note="Follow a recitation, one word at a time.">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">word_number → the third part of data-wid</p>
+      <h2>9 · Follow a recitation, word by word</h2>
+      <p>The same grey-to-ink mechanism as §8, with the tempo replaced by real per-word timings.
+        Press play: the highlight follows the recitation because <b>quran.com publishes word
+        timings under the same key this page uses</b> — <code>word_number</code> is 1-based within
+        the ayah, which is exactly the third component of <code>data-wid</code>. No mapping table,
+        no alignment step.</p>
+    </div>
+    <div class="lab" id="lab-audio"></div>
+
+    <div class="two" style="margin-top:22px">
+      <div class="callout">
+        <h3>Check the word counts before you trust the numbering</h3>
+        <p>Two decompositions can disagree about how many words an ayah has. On page 254,
+          <code>13:37</code> is 19 words to quran.com and 20 in this print, which sets
+          <span class="ar" style="font-size:1em">بَعْدَ مَا</span> as two. Consume the timings
+          blindly and the highlight drifts by one word to the end of that ayah — and drift looks
+          like the geometry is wrong, which is worse than no highlight at all.</p>
+        <p class="note" style="margin:0">Three lines fix it: compare the highest
+          <code>word_number</code> against your own count for that ayah, and fall back to
+          highlighting the ayah whole when they differ. Measured against this build: pages 1, 3, 42,
+          582 and 604 agree exactly across 67 ayahs; page 254 has the one mismatch. The lab prints
+          the check either way, so you can see it pass.</p>
+      </div>
+      <div class="callout">
+        <h3>What this section is, and is not</h3>
+        <p>This streams audio and timings from <b>quran.com</b> for <b>one page</b>, to demonstrate
+          the join between <code>word_number</code> and <code>data-wid</code>. Recitation:
+          <b>Mohamed Siddiq al-Minshawi</b>, Murattal.</p>
+        <p><b>The SVGs carry no audio and no word timings, and none is planned.</b> Nothing about
+          recitation is in the bundle, the format specification or the attribute tables. The audio
+          and the timings are quran.com's, and their terms apply to them — not to these files, and
+          not the other way round.</p>
+        <p class="note" style="margin:0">It is also the one part of this page that talks to the
+          network beyond fetching mushaf pages. If the API is unreachable the section falls back to a
+          2 KB cached copy of this page's timings and says so.</p>
+      </div>
+    </div>
+
+    <p class="note"><b>One MP3 per ayah, not per page</b>, and each ayah's times are relative to its
+      own file — so the player sequences four files across page 42 and resets the clock at each
+      boundary, preloading the next before the current ends. The highlight is driven from
+      <code>currentTime</code> on every frame, never from a chain of timeouts: a chain drifts against
+      the audio, and drift is the failure that makes the geometry look wrong.</p>
+  </div>
+</section>
+
+<section id="translate" data-toc-group="Reading and meaning" data-toc-note="Hover a word and show what it means.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">data-wid === quran.com's word key</p>
-      <h2>9 · Pin a translation to a word</h2>
-      <p><code>data-wid</code> is <code>surah:ayah:word</code>, 1-based — the same key the quran.com API,
-        word-by-word translation sets, morphology data and <code>quran-align</code>'s recitation timings
-        already use. Your existing word-keyed data joins to this ink with no mapping table. The snippet
-        fetches a 5 KB gloss file and hangs a native SVG <code>&lt;title&gt;</code> on every word; rest
-        the cursor on the page and the browser shows it.</p>
+      <h2>10 · Hover a word, see what it means</h2>
+      <p>Move the pointer over any word on the page and its meaning appears. Tap works on touch,
+        and the words are focusable so <kbd>Tab</kbd> and the arrow keys do too.
+        <code>data-wid</code> is <code>surah:ayah:word</code>, 1-based — the same key the quran.com
+        API, word-by-word translation sets, morphology data and recitation timings already use, so a
+        5 KB file of glosses joins to this ink with no mapping table.</p>
+      <p style="margin-top:10px">A word-by-word translation, a tafsir popup, a grammar tag, a
+        vocabulary card: all the same three lines once every word is addressable, and none of them
+        possible on a page image. <b>The gloss here happens to come from quran.com; the mechanism
+        takes any per-word data you already have.</b> These files ship no translations.</p>
     </div>
     <div class="lab" id="lab-translate"></div>
     <p class="note">Word-by-word English and transliteration here come from <b>quran.com</b>. They are
       third-party data, shipped separately from the SVGs and attributed to their source. They are not
       part of this corpus, and neither are translations, tafsir or audio — but they all join on the same
-      key.</p>
+      key. <b>Two implementation notes.</b> The hit areas are transparent
+      <code>&lt;rect&gt;</code>s <i>inside</i> the SVG, one per word: attaching to the paths makes the
+      tooltip flicker as the pointer crosses the gaps between letters. And if you ever combine this
+      with §7's HTML text layer, the layer sits above the SVG and will swallow these events — decide
+      which one owns <code>pointer-events</code> rather than stacking both.</p>
   </div>
 </section>
 
-<section id="style">
+<section id="compose" data-toc-group="Selecting and pointing" data-toc-note="Run hover, copy and highlight together on one page.">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">one hit layer · many capabilities</p>
+      <h2>11 · All of it at once</h2>
+      <p>These are not alternatives. A real reader runs several together, so here they are on one
+        page at the same time: <b>hover a word for its meaning</b>, <b>drag across it and copy real
+        text</b>, and <b>a band behind the ayah you are on</b>. Nothing here is a special case — it
+        is the same three snippets from §7, §10 and §4, sharing one hit layer.</p>
+    </div>
+    <div class="lab" id="lab-compose"></div>
+    <div class="callout">
+      <h3>How they coexist</h3>
+      <p>Three layers, and only one of them takes the pointer. The <b>highlight bands</b> sit behind
+        the ink and the <b>ink itself</b> is <code>pointer-events: none</code>; the <b>per-word hit
+        layer</b> on top is the only thing hit-testing ever reaches. Because that layer is one
+        element per word carrying its <code>data-wid</code>, selection, hover, tap and click all read
+        from the same source instead of stacking competing overlays.</p>
+      <figure class="code" style="margin-top:6px">
+        <button class="copy">copy</button>
+<pre><code><span class="tok-c">/* highlight bands — behind the ink, never hit-tested */</span>
+g.highlight-layer, g.highlight-layer * { pointer-events: none }
+
+<span class="tok-c">/* the ink — beautiful, and inert */</span>
+svg.inert, svg.inert * { pointer-events: none }
+
+<span class="tok-c">/* the per-word hit layer — the only layer that takes the pointer */</span>
+.hits       { position: absolute; inset: <span class="tok-k">0</span> }
+.hits span  { position: absolute; color: transparent; white-space: pre }</code></pre>
+      </figure>
+      <p class="note">The one thing that genuinely cannot be shared is the cursor: selection wants
+        <code>cursor: text</code> and a tooltip target wants <code>cursor: help</code>. Pick one per
+        surface. Everything else composes.</p>
+    </div>
+  </div>
+</section>
+
+<section id="style" data-toc-group="Presentation" data-toc-note="Colour or hide marks by what they mean.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">path[data-kind] · path[data-mark] · path[data-mark-family]</p>
-      <h2>10 · Style or hide marks by meaning</h2>
+      <h2>12 · Style or hide marks by meaning</h2>
       <p>Every ink path in the mushaf is <code>fill="#231f20"</code>, and a CSS rule beats a presentation
         attribute, so recolouring by meaning needs no re-export and no second file. First, the same
         printed line three ways.</p>
@@ -767,11 +932,11 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
   </div>
 </section>
 
-<section id="theme">
+<section id="theme" data-toc-group="Presentation" data-toc-note="Recolour the whole print, including a real dark mode.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">svg path { fill: … }</p>
-      <h2>11 · Theme the page</h2>
+      <h2>13 · Theme the page</h2>
       <p>Every ink path in the whole mushaf is the same colour, <code>#231f20</code>. One rule changes
         all of it. That gives you a real dark mode, a high-contrast print sheet, or a page that matches
         your own palette — and none of it touches the geometry, so the print stays the print. A page
@@ -785,11 +950,11 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
   </div>
 </section>
 
-<section id="markers">
+<section id="markers" data-toc-group="Presentation" data-toc-note="Restyle or swap the ayah medallions.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">g.ayah-marker > path[data-kind="ayah-marker-ornament" | "ayah-number"]</p>
-      <h2>12 · Swap or restyle the ayah end-marker</h2>
+      <h2>14 · Swap or restyle the ayah end-marker</h2>
       <p>The medallion at the end of an ayah is <code>&lt;g class="ayah-marker" id="mk-2-255"&gt;</code>
         holding two paths: the ornament ring, and the printed numeral. <b>They are separate elements</b>
         — which is the whole reason you can restyle the furniture without touching the number. Recolour
@@ -804,11 +969,11 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
   </div>
 </section>
 
-<section id="spacing">
+<section id="spacing" data-toc-group="Presentation" data-toc-note="Open up the leading and fill a phone screen.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">g.line { transform: translate(0, …) }</p>
-      <h2>13 · Open up the leading, and fill a phone screen</h2>
+      <h2>15 · Open up the leading, and fill a phone screen</h2>
       <p>On a phone this is not an accessibility nicety, it is the difference between using the screen
         and wasting it. The page is 345 × 550; a phone is far narrower for its height, so fitting the
         page to the width leaves <b>about a quarter of the display empty</b>. Spreading the lines into
@@ -842,11 +1007,11 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
   </div>
 </section>
 
-<section id="crop">
+<section id="crop" data-toc-group="Presentation" data-toc-note="Cut any word, run, ayah or line into its own SVG.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">clone → filter → getBBox() → new viewBox</p>
-      <h2>14 · Any crop is a component</h2>
+      <h2>16 · Any crop is a component</h2>
       <p>One word for a vocabulary card, a run of words for a quotation, one ayah for a citation, one
         line for a header. Same twelve-line function, different filter. The result is a standalone SVG
         you can drop into a slide, a video or a print layout at any size. Drag <b>from</b> and <b>to</b>
@@ -859,11 +1024,11 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
   </div>
 </section>
 
-<section id="meta">
+<section id="meta" data-toc-group="The data itself" data-toc-note="Read surah, juz, hizb and rubʿ straight off the page.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">data-sid · data-juz-start · data-hizb-start · data-rub-start</p>
-      <h2>15 · Metadata without a database, and a reader in thirty lines</h2>
+      <h2>17 · Metadata without a database, and a reader in thirty lines</h2>
       <p>You do not need to bundle a Quran metadata package to build a reader chrome. Open the page and
         read it off. The snippet runs on whichever page the reader is showing — turn pages with the
         buttons or the <kbd>←</kbd> <kbd>→</kbd> keys and it re-runs on the new one. Try <b>582</b>
@@ -878,7 +1043,7 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
 </section>
 
 <!-- ═══════════════ WHAT YOU GET ═══════════════ -->
-<section id="bundle">
+<section id="bundle" data-toc-group="The data itself" data-toc-note="What you download, what it weighs, and the honest limits.">
   <div class="wrap">
     <p class="sec-eyebrow">What you get, and what it costs</p>
     <div class="shead">
@@ -941,7 +1106,7 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
               paths-only rendering of real calligraphy.</li>
             <li><b>No accessibility metadata in the shipped files yet.</b> No <code>&lt;title&gt;</code>,
               no <code>role</code>, no <code>lang</code>. The ingredients are all there — the snippet in
-              §9 makes a page readable — but it is not baked in, and pretending otherwise would be worse
+              §10 makes a page readable — but it is not baked in, and pretending otherwise would be worse
               than saying so.</li>
             <li><b>No letter-level decomposition.</b> Nothing says where one Arabic letter ends and the
               next begins, so tajwid rules expressed as character ranges cannot be mapped to ink. What
@@ -975,7 +1140,7 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
 </section>
 
 <!-- ═══════════════ REFERENCE ═══════════════ -->
-<section id="attrs">
+<section id="attrs" data-toc-group="The data itself" data-toc-note="Every attribute, with corpus-wide counts.">
   <div class="wrap">
     <p class="sec-eyebrow">Reference</p>
     <div class="shead">
@@ -1044,7 +1209,7 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
       Complex — <span class="ar" style="font-size:1em">مجمع الملك فهد لطباعة المصحف الشريف</span> —
       <a href="https://dm.qurancomplex.gov.sa" rel="noopener">dm.qurancomplex.gov.sa</a>. The Complex did
       not produce, review or approve this decomposition, and nothing here implies endorsement or
-      affiliation. Word-by-word English and transliteration used in §9 are from quran.com and are not
+      affiliation. Word-by-word English and transliteration used in §10 are from quran.com and are not
       part of this corpus. Licence and redistribution terms are not settled and are not stated on this
       page.</p>
   </div>
@@ -1154,6 +1319,205 @@ function band(svg, frags, padX = 1.2, padY = 1.6) {
   return byLine.size;
 }
 
+/* ---------------------------------------------------------------------------
+   THE PER-WORD HIT LAYER — built once, used by every section that needs a
+   pointer.
+
+   One absolutely-positioned <span> per g.word, carrying the word's real
+   Unicode and its data-wid, sized onto that word's own rendered box. It is
+   HTML, not SVG, because native selection needs real text nodes — and that
+   one construction then also serves hover, tap and click. The ink and the
+   highlight bands are put out of the way with pointer-events: none, so there
+   is exactly one layer competing for the pointer: this one.
+
+   Two measurement notes, both of which cost real time to find:
+   • Measure with getBoundingClientRect(), never getBBox(). getBBox() reports
+     a group's own user coordinates and ignores every transform above it,
+     which lands line 1 near the bottom of the page.
+   • Do NOT give the span a width. The fallback font's advances have nothing
+     to do with the ink, so a word set at font-size = box HEIGHT lays out far
+     wider than the word it names, overflows across its neighbours and steals
+     their hits — a drag then selects words you never dragged over. Let the
+     span take its natural width and squeeze it onto the word with scaleX,
+     which is what PDF.js does. Nothing is visible either way; this is only
+     about where the browser thinks the text is.
+--------------------------------------------------------------------------- */
+function hitLayer(svg, stage, opts = {}) {
+  stage.style.position = 'relative';
+  stage.querySelectorAll('.q-hits').forEach(l => l.remove());
+  const layer = document.createElement('div');
+  layer.className = 'q-hits' + (opts.selectable === false ? ' nosel' : '');
+  stage.append(layer);
+  if (opts.inert !== false) svg.classList.add('q-inert');   /* ink stops taking the pointer */
+
+  const mid = a => { const s = [...a].sort((x, y) => x - y); return s[s.length >> 1]; };
+
+  function build() {
+    const origin = layer.getBoundingClientRect();
+    layer.textContent = '';
+
+    /* measure every word once, grouped by its printed line */
+    const rows = new Map();
+    for (const g of svg.querySelectorAll('g.word')) {
+      const r = g.getBoundingClientRect();
+      if (!r.width || !r.height) continue;
+      const ln = g.closest('g.line').dataset.line;
+      if (!rows.has(ln)) rows.set(ln, []);
+      rows.get(ln).push({ g, r });
+    }
+
+    /* VERTICAL: from the line PITCH, not from a line's bounding box. A line
+       group's box includes the ascenders and descenders that overrun into its
+       neighbours, so boxes built from it overlap. Splitting the distance
+       between adjacent lines makes them stack flush, the way selected text
+       does everywhere else. */
+    const lines = [...rows].map(([ln, ws]) => ({
+      ln, ws,
+      top: mid(ws.map(w => w.r.top)),
+      bot: mid(ws.map(w => w.r.bottom))
+    })).sort((a, b) => a.top - b.top);
+    const h = mid(lines.map(l => l.bot - l.top)) || 12;
+    lines.forEach((l, i) => {
+      l.y0 = i === 0 ? l.top - h * 0.25 : (lines[i - 1].bot + l.top) / 2;
+      l.y1 = i === lines.length - 1 ? l.bot + h * 0.25 : (l.bot + lines[i + 1].top) / 2;
+    });
+
+    /* HORIZONTAL: split the gap with each neighbour, so every point on a line
+       belongs to exactly one word and there is nowhere to miss. This is the
+       same gap-aware idea §3 teaches; comfortable drag-selection and
+       tap-in-the-gap are one fix. */
+    const box = new Map();
+    for (const l of lines) {
+      const ws = [...l.ws].sort((a, b) => a.r.left - b.r.left);
+      /* 'x' fills the gaps horizontally but keeps the box at ink height.
+         MEASURED LIMIT: a full line-pitch box breaks Chromium's native
+         drag-selection across a line break — a diagonal drag collapses,
+         while the same drag along one line works. So the selection layer
+         (§7) uses 'x', and the pointer-only layers (§3, §10, §11) use the
+         full-height boxes, which have no dead zones at all. */
+      ws.forEach((w, i) => {
+        const prev = ws[i - 1], next = ws[i + 1];
+        const fill = opts.gapfill !== false;
+        const tall = fill && opts.gapfill !== 'x';
+        box.set(w.g, {
+          x0: fill ? (prev ? (prev.r.right + w.r.left) / 2 : w.r.left - h * 0.3) : w.r.left,
+          x1: fill ? (next ? (w.r.right + next.r.left) / 2 : w.r.right + h * 0.3) : w.r.right,
+          y0: tall ? l.y0 : w.r.top,
+          y1: tall ? l.y1 : w.r.bottom,
+          line: l.ln
+        });
+      });
+    }
+
+    /* append in DOCUMENT order — that is reading order, and native selection
+       depends on it. Sorting by x would hand back Arabic words reversed. */
+    for (const g of svg.querySelectorAll('g.word')) {
+      const b = box.get(g);
+      if (!b) continue;
+      const s = document.createElement('span');
+      s.textContent  = g.dataset.uthmani + ' ';
+      s.dataset.wid  = g.dataset.wid;
+      s.dataset.line = b.line;
+      s.style.left   = (b.x0 - origin.left) + 'px';
+      s.style.top    = (b.y0 - origin.top)  + 'px';
+      s.style.height = (b.y1 - b.y0) + 'px';
+      s.style.fontSize = (b.y1 - b.y0) + 'px';
+      s.style.lineHeight = (b.y1 - b.y0) + 'px';
+      s.dataset.w = b.x1 - b.x0;
+      if (opts.focusable) { s.tabIndex = 0; s.setAttribute('role', 'button'); }
+      layer.append(s);
+    }
+    for (const s of layer.children) {          /* one layout flush */
+      const natural = s.getBoundingClientRect().width;
+      if (natural > 0) s.style.transform = 'scaleX(' + (+s.dataset.w / natural) + ')';
+    }
+  }
+  build();
+
+  /* it is measured in screen pixels, so it must be rebuilt on resize */
+  const ro = new ResizeObserver(build);
+  ro.observe(stage);
+  if (opts.signal) opts.signal.addEventListener('abort', () => {
+    ro.disconnect(); layer.remove(); svg.classList.remove('q-inert');
+  });
+  layer.rebuild = build;
+  return layer;
+}
+
+/* The words a selection FULLY contains — the single source of truth for the
+   painted band, the copied text and the ayah-number boundaries. A word is in
+   or out; there is no partial state, so those three can never disagree. */
+function selectedWords(layer) {
+  const sel = getSelection();
+  if (!sel.rangeCount || sel.isCollapsed) return [];
+  const r = sel.getRangeAt(0);
+  return [...layer.children].filter(s => r.intersectsNode(s));
+}
+
+/* Snap a selection out to whole spans. Inside a span the caret is placed with
+   the FALLBACK FONT's advances, which have nothing to do with the ink, so a
+   drag starting mid-word would otherwise cut it at an arbitrary letter. */
+function snapToWords(layer) {
+  const sel = getSelection();
+  if (!sel.rangeCount || sel.isCollapsed) return;
+  const r = sel.getRangeAt(0);
+  const el = n => (n.nodeType === 1 ? n : n.parentElement)?.closest('.q-hits span');
+  const a = el(r.startContainer), b = el(r.endContainer);
+  if (!a || !b || !layer.contains(a) || !layer.contains(b)) return;
+  const out = document.createRange();
+  out.setStartBefore(a);
+  out.setEndAfter(b);
+  sel.removeAllRanges();
+  sel.addRange(out);
+}
+
+/* One rect per printed line, from the words' INK extents (so the band never
+   overhangs the text at a line end) and the line pitch (so bands stack flush
+   instead of overlapping). Drawn behind the ink, opacity on the group. */
+function bandWords(svg, words) {
+  clearBands(svg);
+  if (!words.length) return 0;
+  const rows = new Map();
+  for (const g of svg.querySelectorAll('g.word')) {
+    const ln = g.closest('g.line').dataset.line;
+    if (!rows.has(ln)) rows.set(ln, []);
+    rows.get(ln).push(toRoot(svg, g));
+  }
+  const mid = a => { const s = [...a].sort((x, y) => x - y); return s[s.length >> 1]; };
+  const lines = [...rows].map(([ln, bs]) => ({
+    ln, top: mid(bs.map(b => b.y0)), bot: mid(bs.map(b => b.y1))
+  })).sort((a, b) => a.top - b.top);
+  const h = mid(lines.map(l => l.bot - l.top)) || 1;
+  const pitch = new Map();
+  lines.forEach((l, i) => pitch.set(l.ln, [
+    i === 0 ? l.top - h * 0.25 : (lines[i - 1].bot + l.top) / 2,
+    i === lines.length - 1 ? l.bot + h * 0.25 : (l.bot + lines[i + 1].top) / 2
+  ]));
+
+  const byLine = new Map();
+  for (const g of words) {
+    const ln = g.closest('g.line').dataset.line;
+    const b = toRoot(svg, g);
+    const c = byLine.get(ln);
+    byLine.set(ln, c ? { x0: Math.min(c.x0, b.x0), x1: Math.max(c.x1, b.x1) }
+                     : { x0: b.x0, x1: b.x1 });
+  }
+  const layer = document.createElementNS(SVGNS, 'g');
+  layer.setAttribute('class', 'q-hl');
+  for (const [ln, x] of byLine) {
+    const [y0, y1] = pitch.get(ln) || [0, 0];
+    const rect = document.createElementNS(SVGNS, 'rect');
+    rect.setAttribute('x', x.x0.toFixed(2));
+    rect.setAttribute('y', y0.toFixed(2));
+    rect.setAttribute('width', (x.x1 - x.x0).toFixed(2));
+    rect.setAttribute('height', (y1 - y0).toFixed(2));
+    layer.append(rect);
+  }
+  svg.prepend(layer);
+  layer.classList.add('on');
+  return byLine.size;
+}
+
 /* clone → filter → getBBox → new viewBox */
 function crop(page, keep, pad = 4) {
   const svg = clonePage(page);
@@ -1192,7 +1556,13 @@ function refit(svg, pad = 4) {
   return vb;
 }
 
-const H = { band, clearBands, fold, crop, refit, getPage, toRoot, clonePage, SVGNS };
+/* Word timings for the hero page only, cached at build time (~2 KB) so §9
+   still renders and explains itself with no network. The section fetches
+   live; this is the fallback. Source: quran.com, reciter 9. */
+const FALLBACK_TIMINGS = /*TIMINGS*/null;
+
+const H = { band, clearBands, fold, crop, refit, getPage, toRoot, clonePage, SVGNS,
+            hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_TIMINGS };
 
 /* ---------------------------------------------------------------------------
    THE LAB — an editable snippet beside the page it runs on.
@@ -1434,9 +1804,71 @@ function bindToggle(ctx, o) {
   return b;
 }
 
+/* ---------- contents, generated from the document ---------- */
+mod('toc', () => {
+  const body = $('#toc-body');
+  const groups = new Map();
+  for (const sec of $$('main section[data-toc-group]')) {
+    const h = sec.querySelector('h2');
+    if (!h) continue;
+    const g = sec.dataset.tocGroup;
+    if (!groups.has(g)) groups.set(g, []);
+    /* the heading carries its own number, so nothing here is hand-maintained
+       and renumbering a section cannot desync the contents */
+    const m = h.textContent.match(/^\s*(\d+)\s*·\s*(.+)$/);
+    groups.get(g).push({ id: sec.id, n: m ? m[1] : '', title: m ? m[2] : h.textContent,
+                         note: sec.dataset.tocNote || '' });
+  }
+  for (const [name, items] of groups) {
+    const col = document.createElement('div');
+    const h3 = document.createElement('h3');
+    h3.textContent = name;
+    const ol = document.createElement('ol');
+    for (const it of items) {
+      const li = document.createElement('li');
+      li.innerHTML = '<a href="#' + it.id + '">' +
+        (it.n ? '<span class="n">' + it.n + '</span>' : '') +
+        '<span class="t">' + it.title + '</span>' +
+        '<span class="d">' + it.note + '</span></a>';
+      ol.append(li);
+    }
+    col.append(h3, ol);
+    body.append(col);
+  }
+});
+
+/* ---------- the sticky bar: where you are, and how far ---------- */
+mod('bar', () => {
+  const bar = $('.index'), here = $('#here'), prog = $('#progress');
+  const secs = $$('main section[id]');
+
+  const io = new IntersectionObserver(es => {
+    for (const e of es) if (e.isIntersecting) {
+      const h = e.target.querySelector('h2');
+      here.textContent = h ? h.textContent.trim() : '';
+    }
+  }, { rootMargin: '-50% 0px -50% 0px' });
+  secs.forEach(s => io.observe(s));
+
+  let last = scrollY, ticking = false;
+  addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      ticking = false;
+      const y = scrollY;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      prog.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+      /* on a phone the page is already tall: give the bar back on the way up */
+      if (innerWidth <= 600) bar.classList.toggle('away', y > last && y > 200);
+      last = y;
+    });
+  }, { passive: true });
+});
+
 /* ---------- theme switch ---------- */
 mod('theme', () => {
-  $('#theme').addEventListener('click', () => {
+  $('#theme-toggle').addEventListener('click', () => {
     const dark = matchMedia('(prefers-color-scheme: dark)').matches;
     const now = document.documentElement.dataset.theme || (dark ? 'dark' : 'light');
     document.documentElement.dataset.theme = now === 'dark' ? 'light' : 'dark';
@@ -1565,44 +1997,46 @@ log('its medallion     ', frags[0].dataset.marker);
 }));
 
 /* 3 · tap in the gap */
-mod('lab-tap', () => makeLab({
+mod('lab-tap', () => bindToggle(makeLab({
   mount: 'lab-tap',
-  label: 'widen the tap target',
+  label: 'remove the dead zones between words',
   stageNote: 'One printed line, cropped. Click it — including the white space between words.',
   stageSvg: () => crop(PRISTINE, w => w.closest('g.line').dataset.line === '5', 2),
   code: `
-// 0 = hit the ink only. Try 1.6. Try 4, and watch neighbouring
-// words start stealing each other's gaps.
-const HALO = 0;
+// The ink is calligraphy: thin strokes with white space between the
+// words, so hit-testing the paths misses a lot of taps. Put ONE
+// transparent element per word over the page and let it own the
+// pointer. With GAPFILL on, each word's box is extended to meet its
+// neighbours and given the full line height, so every point on a line
+// belongs to exactly one word and there is nowhere to miss.
+//
+// The same layer serves selection (§7) and hover (§10) — comfortable
+// drag-selection and tap-in-the-gap are one fix, not two.
+const GAPFILL = false;         // turn it on and the misses stop
 
-svg.querySelectorAll('g.word path').forEach(p => {
-  p.style.stroke        = 'transparent';   // paints nothing
-  p.style.strokeWidth   = HALO;            // page units
-  p.style.paintOrder    = 'stroke fill';
-  p.style.pointerEvents = 'all';           // ...but is still hit-tested
-});
+const hits = H.hitLayer(svg, stage, { gapfill: GAPFILL, selectable: false, signal });
 
-let hits = 0, misses = 0;
-svg.style.cursor = 'crosshair';
-svg.addEventListener('click', e => {
-  const word = e.target.closest('g.word');
-  svg.querySelectorAll('.q-word').forEach(g => g.classList.remove('q-word'));
-  if (!word) {
-    misses++;
-    out('<b>paper</b> — that tap hit no ink.   ' + hits + ' hits, ' + misses + ' misses');
+let hit = 0, miss = 0;
+stage.addEventListener('click', e => {
+  const span = e.target.closest('.q-hits span');
+  hits.querySelectorAll('.lit').forEach(s => s.classList.remove('lit'));
+  if (!span) {
+    miss++;
+    out('<b>paper</b> — that tap hit no word.   ' + hit + ' hits, ' + miss + ' misses');
     return;
   }
-  hits++;
-  word.classList.add('q-word');
+  hit++;
+  span.classList.add('lit');
+  const word = svg.querySelector('g.word[data-wid="' + span.dataset.wid + '"]');
   out('<b>' + word.dataset.wid + '</b> ' + word.dataset.uthmani +
       ' → ayah <b>' + word.closest('g.ayah').dataset.aid + '</b>' +
       ', line ' + word.closest('g.line').dataset.line +
-      '   ' + hits + ' hits, ' + misses + ' misses');
+      '   ' + hit + ' hits, ' + miss + ' misses');
 });
 
-out('halo = ' + HALO + '. Now click the line, aiming at the gaps.');
+out('gapfill = ' + GAPFILL + '. Click the line, aiming at the gaps.');
 `
-}));
+}), { label: 'fill the gaps', name: 'GAPFILL', value: false }));
 
 /* 4 · band highlighting */
 mod('lab-band', () => bindSlider(makeLab({
@@ -1711,110 +2145,78 @@ mod('lab-select', () => {
     stageNote: 'Drag across the page — including across a line break. ' +
                'Then Ctrl/⌘+C, or right-click and Copy.',
     code: `
-// The file has no <text>, so native selection has nothing to grab.
-// Overlay one invisible span per word, carrying the real Unicode,
-// placed on that word's own rendered box. PDF.js does the same.
-const WHICH = 'uthmani';        // what Ctrl+C puts on the clipboard
+// The file has no <text>, so native selection has nothing to grab. The
+// shared per-word hit layer IS the fix — the same layer §3 taps and
+// §10 hovers. It fills the gaps between words, so there is nowhere on
+// a line that belongs to no word and nothing awkward to grab.
+const WHICH = 'uthmani';   // what Ctrl+C puts on the clipboard
+const MARK  = 'arabic';    // ayah numbers: 'arabic' ﴿٢٥٣﴾ | 'latin' (2:253) | 'none'
+const PARTIAL = false;     // label an INCOMPLETE ayah as (2:253:4-9)
 
-stage.style.position = 'relative';
-const layer = document.createElement('div');
-layer.className = 'seltext';
-stage.append(layer);
+const layer = H.hitLayer(svg, stage, { gapfill: false, signal });
+const wordOf = s => svg.querySelector('g.word[data-wid="' + s.dataset.wid + '"]');
+const AR = n => String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 
-function build() {
-  // Measure in SCREEN space. getBBox() gives a group's OWN user
-  // coordinates and ignores every transform above it, which lands
-  // line 1 near the bottom of the page.
-  const origin = layer.getBoundingClientRect();
-  layer.textContent = '';
-  for (const g of svg.querySelectorAll('g.word')) {
-    const r = g.getBoundingClientRect();          // whole transform chain
-    if (!r.width || !r.height) continue;
-    const s = document.createElement('span');
-    s.textContent   = g.dataset.uthmani + ' ';
-    s.dataset.wid   = g.dataset.wid;
-    s.dataset.line  = g.closest('g.line').dataset.line;
-    s.style.left    = (r.left - origin.left) + 'px';
-    s.style.top     = (r.top  - origin.top)  + 'px';
-    // per-WORD box. A line's box includes the ascenders that overrun
-    // into its neighbours, so line-sized bands overlap and darken.
-    // NOTE: no width is set here — see the squeeze below.
-    s.style.height  = r.height + 'px';
-    s.style.fontSize = s.style.lineHeight = r.height + 'px';
-    s.style.transformOrigin = 'left top';
-    s.dataset.w = r.width;
-    layer.append(s);
+// Stamp an ayah number ONLY where the selection holds that ayah whole.
+// A number asserts "this is ayah 253"; putting one after a fragment is
+// a false citation of Quranic text, not a formatting preference.
+function stamp(aid, first, last) {
+  if (MARK === 'none') return '';
+  const all = [...svg.querySelectorAll('g.ayah[data-aid="' + aid + '"] g.word')];
+  const whole = all.length &&
+                all[0].dataset.wid === first.dataset.wid &&
+                all[all.length - 1].dataset.wid === last.dataset.wid;
+  if (!whole) {
+    if (!PARTIAL) return '';                  // silence beats a false citation
+    const a = first.dataset.wid.split(':')[2], b = last.dataset.wid.split(':')[2];
+    return ' (' + aid + ':' + a + (a === b ? '' : '-' + b) + ')';
   }
-
-  // Second pass, one layout flush. The fallback font's advances have
-  // nothing to do with the ink, so a word set at font-size = box HEIGHT
-  // lays out far wider than the word it names. Left alone it overflows
-  // across its neighbours and steals their hits, and a drag then selects
-  // words you never dragged over. Let each span take its natural width,
-  // then squeeze it onto the word with scaleX — which is what PDF.js
-  // does. Nothing is visible either way; this is only about where the
-  // browser thinks the text is.
-  for (const s of layer.children) {
-    const natural = s.getBoundingClientRect().width;
-    if (natural > 0) s.style.transform = 'scaleX(' + (+s.dataset.w / natural) + ')';
-  }
-}
-build();
-
-// it is measured in screen pixels, so it must be rebuilt on resize
-const ro = new ResizeObserver(build);
-ro.observe(stage);
-signal.addEventListener('abort', () => ro.disconnect());
-
-const spans  = () => [...layer.querySelectorAll('span')];
-const spanOf = n => (n.nodeType === 1 ? n : n.parentElement)?.closest('.seltext span');
-
-// Snap out to whole words. Inside a span the caret is placed with the
-// FALLBACK FONT's advances, which have nothing to do with the ink, so
-// a drag starting mid-word cuts it at an arbitrary letter.
-function snap() {
-  const sel = getSelection();
-  if (!sel.rangeCount || sel.isCollapsed) return;
-  const r = sel.getRangeAt(0);
-  const a = spanOf(r.startContainer), b = spanOf(r.endContainer);
-  if (!a || !b) return;
-  const out = document.createRange();
-  out.setStartBefore(a);
-  out.setEndAfter(b);
-  sel.removeAllRanges();
-  sel.addRange(out);
+  return MARK === 'arabic' ? ' ﴿' + AR(aid.split(':')[1]) + '﴾' : ' (' + aid + ')';
 }
 
-// Build the payload from data-wid rather than letting the browser
-// serialise the layer: whitespace between absolutely-positioned spans
-// is not reliable, and this way the SAME drag can yield different text.
+// ONE source of truth: the fully-selected words. The band, the copied
+// text and the ayah boundaries all read this list, so they cannot drift
+// apart. A word is in or out — there is no partial state.
+function words() { return H.selectedWords(layer).map(wordOf); }
+
 function payload(which) {
-  const sel = getSelection();
-  if (!sel.rangeCount || sel.isCollapsed) return '';
-  const r = sel.getRangeAt(0);
-  let text = '', prevLine = null;
-  for (const s of spans()) {
-    if (!r.intersectsNode(s)) continue;
-    const w = svg.querySelector('g.word[data-wid="' + s.dataset.wid + '"]');
+  const picked = H.selectedWords(layer);
+  let text = '', prevLine = null, aid = null, first = null, last = null;
+  for (const s of picked) {
+    const w = wordOf(s);
     const v = w && w.dataset[which];
     if (!v) continue;
+    const a = w.closest('g.ayah').dataset.aid;
+    if (aid && a !== aid) { text += stamp(aid, first, last); aid = null; }
+    if (!aid) { aid = a; first = w; }
+    last = w;
     text += (prevLine !== null && s.dataset.line !== prevLine ? '\\n'
                                                               : (text ? ' ' : '')) + v;
     prevLine = s.dataset.line;   // the mushaf's own line break, preserved
   }
+  if (aid) text += stamp(aid, first, last);
   return text;
 }
 
 function report() {
+  // snap FIRST, then paint. Native painting is suppressed in CSS, so a
+  // partial range can never be drawn at all.
+  H.snapToWords(layer);
+  const ws = words();
+  const lines = H.bandWords(svg, ws);
   const u = payload('uthmani');
   if (!u) { out('drag across the page →'); return; }
-  out('<b>uthmani</b>  ' + u + '\\n\\n' +
+  out('<b>' + ws.length + ' words</b> · ' + lines + ' line band(s)\\n\\n' +
+      '<b>uthmani</b>  ' + u + '\\n\\n' +
       '<b>imlaei</b>   ' + payload('imlaei') + '\\n\\n' +
       '<b>search</b>   ' + payload('search') + '\\n\\n' +
       'Ctrl/⌘+C copies the <b>' + WHICH + '</b> form.');
 }
 
-document.addEventListener('mouseup', () => { snap(); report(); }, { signal });
+document.addEventListener('mouseup', report, { signal });
+document.addEventListener('selectionchange', () => {
+  if (!H.selectedWords(layer).length) H.clearBands(svg);
+}, { signal });
 document.addEventListener('copy', e => {
   const text = payload(WHICH);
   if (!text) return;                  // selection is elsewhere: leave it alone
@@ -1828,29 +2230,34 @@ report();
   });
   if (!ctx) return;
 
-  /* the toolbar control rewrites the WHICH line, so the code on screen
-     stays the code that runs */
-  const label = document.createElement('span');
-  label.className = 'lbl';
-  label.style.minWidth = '0';
-  label.textContent = 'copy as';
-  const pick = document.createElement('select');
-  pick.setAttribute('aria-label', 'which text form Ctrl+C copies');
-  [['uthmani', 'uthmani — as the print sets it'],
-   ['imlaei',  'imlaei — modern spelling'],
-   ['search',  'search — bare, for a search box'],
-   ['qpc',     'qpc — KFGQPC codepoints'],
-   ['rasm',    'rasm — the shapes drawn']].forEach(([v, txt]) => {
-    const o = document.createElement('option');
-    o.value = v; o.textContent = txt;
-    pick.append(o);
-  });
-  pick.addEventListener('change', () => {
-    ctx.ta.value = ctx.ta.value.replace(/const WHICH = '[a-z]+';/,
-                                        "const WHICH = '" + pick.value + "';");
-    ctx.rerun();
-  });
-  ctx.extra.append(label, pick);
+  const sel = (name, label, opts, re) => {
+    const l = document.createElement('span');
+    l.className = 'lbl'; l.style.minWidth = '0'; l.textContent = label;
+    const s = document.createElement('select');
+    s.setAttribute('aria-label', label);
+    opts.forEach(([v, txt]) => {
+      const o = document.createElement('option');
+      o.value = v; o.textContent = txt;
+      s.append(o);
+    });
+    s.addEventListener('change', () => {
+      ctx.ta.value = ctx.ta.value.replace(re, "$1'" + s.value + "'");
+      ctx.rerun();
+    });
+    ctx.extra.append(l, s);
+  };
+  sel('WHICH', 'copy as',
+      [['uthmani', 'uthmani — as the print sets it'],
+       ['imlaei',  'imlaei — modern spelling'],
+       ['search',  'search — bare, for a search box'],
+       ['qpc',     'qpc — KFGQPC codepoints'],
+       ['rasm',    'rasm — the shapes drawn']],
+      /(const WHICH = )'[a-z]+'/);
+  /* independent of WHICH: Arabic-Indic digits suit uthmani, Latin suits the
+     search form, and a reader may want to mix them */
+  sel('MARK', 'ayah no.',
+      [['arabic', '﴿٢٥٣﴾'], ['latin', '(2:253)'], ['none', 'none']],
+      /(const MARK  = )'[a-z]+'/);
 });
 
 /* 8 · reveal the page word by word */
@@ -1858,67 +2265,93 @@ mod('lab-reveal', () => {
   const ctx = makeLab({
     mount: 'lab-reveal',
     label: 'reveal the page word by word',
-    stageNote: 'Play, pause, drag the scrubber. The controls under the page are built by the snippet.',
+    stageNote: 'Play, pause, drag the scrubber. The controls are built by the snippet.',
     code: `
-const GREY = '#c9c4b8';     // words not yet reached
+const GREY = '#c9c4b8';     // not yet reached
 const INK  = '#231f20';     // the print's own colour
 const LIT  = 1;             // how many words stay at full ink
 const FADE = 220;           // ms for one word to fade in
 const MS_PER_WORD = 420;    // the tempo — drag the speed slider
-const BY_AYAH = false;      // true: advance an ayah at a time
+const BY_AYAH = false;      // advance an ayah at a time
 
-// One CSS rule hands every path back to its group (every ink path
-// ships fill="#231f20" as an attribute, and a rule beats one), so a
-// tick sets ONE property on ONE element per word.
+// One rule hands every path back to its group, so colouring a whole
+// word — or a whole medallion — is ONE property on ONE element.
 svg.classList.add('q-reveal');
 svg.style.setProperty('--fade', FADE + 'ms');
 
-// Document order IS reading order: right to left inside a printed
-// line, lines top to bottom. No geometry, no sorting.
+// Document order IS reading order. No geometry, no sorting.
 const words = [...svg.querySelectorAll('g.word')];
 const keyOf = w => BY_AYAH ? w.closest('g.ayah').dataset.aid : w.dataset.wid;
-const steps = [...new Set(words.map(keyOf))];        // what one tick advances
+const steps = [...new Set(words.map(keyOf))];
 
-// THE SCHEDULE. A constant tempo today. Give it an array of per-word
-// start times from a recitation aligner and the same loop follows a
-// recitation — the join key is data-wid, which is what those datasets
-// are published under. Nothing here is synced to audio.
-const schedule = i => i * MS_PER_WORD;
+// A medallion belongs to the ayah it CLOSES, so it lights when that
+// ayah's last word is reached — which also gives the animation a beat
+// at every ayah end. Page furniture that has no reading moment stays
+// grey by design, not by omission:
+//   · hizb / rub rosettes and sajdah signs light with the ayah they
+//     stand at, because data-aid says which one that is;
+//   · the surah banner lights with the FIRST word on the page, since
+//     that is when the reader arrives at it;
+//   · the 12 decorative rosettes on pages 1-2 carry no data-aid and no
+//     ayah to complete, so they stay grey throughout — lighting them
+//     would imply an ayah boundary that does not exist.
+const lastWordOf = new Map();
+for (const w of words) lastWordOf.set(w.closest('g.ayah').dataset.aid, keyOf(w));
+
+const furniture = [];
+for (const g of svg.querySelectorAll('g.ayah-marker[data-aid], g.hizb-mark[data-aid], g.sajdah-mark[data-aid]')) {
+  const at = lastWordOf.get(g.dataset.aid);
+  if (at) furniture.push([g, steps.indexOf(at)]);
+  else g.style.fill = GREY;            // no ayah on this page: stays grey
+}
+for (const g of svg.querySelectorAll('g.ayah-marker:not([data-aid])'))
+  g.style.fill = GREY;                 // decorative rosettes, pages 1-2
+for (const g of svg.querySelectorAll('g.surah-name, g.basmalah'))
+  furniture.push([g, 0]);
+
+// nothing on the page is at full strength before it has been reached
+const everything = [...words, ...svg.querySelectorAll(
+  'g.ayah-marker, g.hizb-mark, g.sajdah-mark, g.surah-name, g.basmalah')];
 
 function paint(at) {
   const lit = new Set(steps.slice(Math.max(0, at - LIT + 1), at + 1));
-  for (const w of words) w.style.fill = lit.has(keyOf(w)) ? INK : GREY;
+  for (const el of everything) el.style.fill = GREY;
+  for (const w of words) if (lit.has(keyOf(w))) w.style.fill = INK;
+  for (const [g, i] of furniture) if (i >= 0 && at >= i) g.style.fill = INK;
 }
 
-// --- transport, built by this snippet ---
+// --- transport, ABOVE the page ---
 const bar = document.createElement('div');
 bar.className = 'q-transport';
 const play = document.createElement('button');
+play.className = 'q-play';
 const scrub = document.createElement('input');
 scrub.type = 'range'; scrub.min = 0; scrub.max = steps.length - 1; scrub.value = 0;
+scrub.style.flex = '1'; scrub.style.minWidth = '120px';
 scrub.setAttribute('aria-label', 'reading position');
 const read = document.createElement('span');
-read.className = 'val';
+read.className = 'state';
 bar.append(play, scrub, read);
-stage.after(bar);
+stage.before(bar);
 signal.addEventListener('abort', () => bar.remove());
 
 let at = 0, playing = true, t0 = performance.now(), raf = 0;
 function label() {
-  read.textContent = (at + 1) + '/' + steps.length + '  ' + steps[at];
-  play.textContent = playing ? 'pause' : 'play';
+  read.innerHTML = '<b>' + (at + 1) + '</b>/' + steps.length + '  ' + steps[at];
+  play.textContent = playing ? '❚❚  Pause' : '▶  Play';
+  play.setAttribute('aria-label', playing ? 'Pause the reveal' : 'Play the reveal');
 }
 function goto(i, restart) {
   at = Math.min(steps.length - 1, Math.max(0, i));
-  if (restart) t0 = performance.now() - schedule(at);
+  if (restart) t0 = performance.now() - at * MS_PER_WORD;
   paint(at); label();
 }
 function tick(now) {
   raf = requestAnimationFrame(tick);
   if (!playing) return;
-  const t = now - t0;
   let i = at;
-  while (i + 1 < steps.length && schedule(i + 1) <= t) i++;
+  const t = now - t0;
+  while (i + 1 < steps.length && (i + 1) * MS_PER_WORD <= t) i++;
   if (i === at) return;
   at = i;
   if (at >= steps.length - 1) playing = false;
@@ -1928,7 +2361,7 @@ function tick(now) {
 play.addEventListener('click', () => {
   playing = !playing;
   if (playing && at >= steps.length - 1) at = 0;
-  t0 = performance.now() - schedule(at);
+  t0 = performance.now() - at * MS_PER_WORD;
   label();
 });
 scrub.addEventListener('input', () => { playing = false; goto(+scrub.value, true); });
@@ -1937,9 +2370,9 @@ signal.addEventListener('abort', () => cancelAnimationFrame(raf));
 goto(0, true);
 raf = requestAnimationFrame(tick);
 
-log(steps.length, BY_AYAH ? 'ayahs' : 'words', 'on this page ·',
-    words.length, 'word groups ·', svg.querySelectorAll('path').length, 'paths');
-log('one tick sets one property on', LIT, 'element(s) — the browser fades the rest');
+log(steps.length, BY_AYAH ? 'ayahs' : 'words', '·', furniture.length,
+    'pieces of furniture that light with their ayah');
+log('nothing is at full strength before the reading position reaches it');
 `
   });
   if (!ctx) return;
@@ -1949,33 +2382,315 @@ log('one tick sets one property on', LIT, 'element(s) — the browser fades the 
   bindToggle(ctx, { label: 'by ayah', name: 'BY_AYAH', value: false });
 });
 
-/* 7 · pin a translation */
-mod('lab-translate', () => makeLab({
-  mount: 'lab-translate',
-  label: 'join a gloss file',
-  stageNote: 'Rest the cursor on a word — the tooltip is a native SVG &lt;title&gt;.',
+/* 9 · follow a recitation */
+mod('lab-audio', () => makeLab({
+  mount: 'lab-audio',
+  label: 'follow a recitation',
+  stageNote: 'The highlight is driven from the audio clock, not a timer.',
   code: `
-// 5 KB for the whole page. data-wid is quran.com's word key, so this
-// joins with no mapping table.
-const gloss = await (await fetch('data/gloss-042.json')).json();
+// Timings and audio: quran.com. Reciter 9 is Mohamed Siddiq
+// al-Minshawi, Murattal. This demo covers ONE page — the SVGs carry
+// no audio and no timings.
+const PAGE = 42, RECITER = 9;
+const API = 'https://api.quran.com/api/v4/recitations/' + RECITER +
+            '/by_page/' + PAGE + '?fields=segments&per_page=60';
+const CDN = 'https://audio.qurancdn.com/';
 
-let joined = 0;
-svg.querySelectorAll('g.word').forEach(w => {
-  const g = gloss[w.dataset.wid];
-  if (!g) return;
-  joined++;
-  const t = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-  t.textContent = g[0] + '  ·  ' + g[1];
-  w.prepend(t);                       // native SVG tooltip, no library
+// --- the control, ABOVE the page: it is what starts the section ---
+const bar = document.createElement('div');
+bar.className = 'q-transport';
+const play = document.createElement('button');
+play.className = 'q-play';
+play.textContent = '▶  Play the recitation';
+play.setAttribute('aria-label', 'Play the recitation');
+const state = document.createElement('span');
+state.className = 'state';
+state.textContent = 'Minshawi · Murattal · page ' + PAGE;
+bar.append(play, state);
+stage.before(bar);
+signal.addEventListener('abort', () => bar.remove());
+
+function dead(msg) {                    // never leave a button that does nothing
+  const box = document.createElement('p');
+  box.className = 'q-dead';
+  box.textContent = msg;
+  bar.replaceWith(box);
+  signal.addEventListener('abort', () => box.remove());
+}
+
+// fields=segments is REQUIRED. Without it the API returns
+// segments: null and no error, which reads as a bug in your own code.
+//
+// And bound the request. An un-timed-out fetch does not fail on a bad
+// network, it HANGS — the await never settles and the section sits
+// blank forever, which is the worst of the three outcomes.
+log('timings   fetching from api.quran.com…');
+let raw = H.FALLBACK_TIMINGS, from = 'cached copy';
+try {
+  const res = await fetch(API, { signal: AbortSignal.timeout(6000) });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  raw = {};
+  for (const e of data.audio_files) {
+    const segs = (e.segments || []).slice().sort((a, b) => a[1] - b[1]);
+    // a segment is [index, word_number, start_ms, end_ms]
+    raw[e.verse_key] = [e.url, segs.map(s => [s[2], s[3]])];
+  }
+  from = 'live from api.quran.com';
+} catch (e) {
+  log('API unreachable (' + (e.name === 'TimeoutError' ? 'timed out' : e.message) +
+      ') — falling back to the cached copy of this page.');
+}
+log('timings  ', from);
+
+// THE GUARD. word_number is 1-based within the ayah, which is the
+// third part of data-wid — a direct join. But two decompositions can
+// count words differently (p254 13:37: 19 theirs, 20 ours), and
+// trusting it blindly drifts the highlight to the end of the ayah.
+const ayahs = [];
+for (const frag of svg.querySelectorAll('g.ayah')) {
+  const aid = frag.dataset.aid;
+  if (ayahs.some(a => a.aid === aid) || !raw[aid]) continue;
+  const words = [...svg.querySelectorAll('g.ayah[data-aid="' + aid + '"] g.word')];
+  const times = raw[aid][1];
+  const perWord = words.length === times.length;
+  if (!perWord) log('MISMATCH', aid, '— ours', words.length,
+                    'theirs', times.length, '· highlighting it whole');
+  ayahs.push({ aid, url: raw[aid][0], times, words, perWord });
+}
+if (!ayahs.length) { dead('No timings for this page, so there is nothing to follow.'); return; }
+log('ayahs    ', ayahs.length, '·',
+    ayahs.reduce((n, a) => n + a.times.length, 0), 'word segments');
+log('counts   ', ayahs.every(a => a.perWord)
+      ? 'agree — using word-level timing' : 'disagree somewhere, see above');
+
+// --- paint ---
+svg.classList.add('q-reveal');
+svg.style.setProperty('--fade', '160ms');
+const all = [...svg.querySelectorAll('g.word')];
+function paint(ayah, i) {
+  for (const w of all) w.style.fill = '#c9c4b8';
+  if (!ayah) return;
+  if (!ayah.perWord) { for (const w of ayah.words) w.style.fill = '#231f20'; return; }
+  const w = ayah.words[i];
+  if (w) w.style.fill = '#231f20';
+}
+paint(null);
+
+// --- one MP3 per AYAH, each with its own time origin ---
+const audio = new Audio(), ahead = new Audio();
+audio.preload = 'auto'; ahead.preload = 'auto';
+let at = 0, raf = 0;
+
+function load(i) {
+  at = i;
+  audio.src = CDN + ayahs[i].url;
+  if (ayahs[i + 1]) { ahead.src = CDN + ayahs[i + 1].url; ahead.load(); }
+}
+audio.addEventListener('ended', () => {
+  if (at + 1 < ayahs.length) { load(at + 1); audio.play().catch(() => {}); }
+  else { paint(null); play.textContent = '▶  Play the recitation'; state.textContent = 'finished'; }
+});
+audio.addEventListener('error', () =>
+  dead('The recitation audio could not be loaded. Everything else on this page still works.'));
+
+// Driven from currentTime every frame. A setTimeout chain drifts
+// against the audio, and drift is what makes the geometry look wrong.
+function frame() {
+  raf = requestAnimationFrame(frame);
+  if (audio.paused) return;
+  const ms = audio.currentTime * 1000, a = ayahs[at];
+  let i = -1;
+  for (let k = 0; k < a.times.length; k++) if (ms >= a.times[k][0]) i = k;
+  paint(a, i);
+  state.innerHTML = 'ayah <b>' + a.aid + '</b> · word ' + (i + 1) + '/' + a.times.length +
+                    ' · file ' + (at + 1) + '/' + ayahs.length;
+}
+
+play.addEventListener('click', () => {
+  if (!audio.paused) {
+    audio.pause();
+    play.textContent = '▶  Play the recitation';
+    play.setAttribute('aria-label', 'Play the recitation');
+    return;
+  }
+  if (!audio.src) load(0);
+  // the audio is fetched from a CDN, so say so rather than looking broken
+  play.disabled = true;
+  play.textContent = '…  Loading';
+  state.textContent = 'fetching ' + ayahs[at].aid + ' from the CDN';
+  audio.play().then(() => {
+    play.disabled = false;
+    play.textContent = '❚❚  Pause';
+    play.setAttribute('aria-label', 'Pause the recitation');
+  }).catch(e => {
+    play.disabled = false;
+    play.textContent = '▶  Play the recitation';
+    dead('Could not play the recitation (' + e.message + '). ' +
+         'Everything else on this page still works.');
+  });
 });
 
-log(joined, 'of', svg.querySelectorAll('g.word').length,
-    'words joined on data-wid — zero misses.');
-log('');
-log('The same key carries recitation timings, so highlighting the');
-log('current word during audio is this same join:');
-log('  quran-align gives (surah, ayah, word) -> [start_ms, end_ms]');
-log('  svg.querySelector(\\'g.word[data-wid="2:255:3"]\\')');
+signal.addEventListener('abort', () => {
+  cancelAnimationFrame(raf); audio.pause(); audio.src = ''; ahead.src = '';
+});
+raf = requestAnimationFrame(frame);
+`
+}));
+
+/* 10 · hover a word, see what it means */
+mod('lab-translate', () => {
+  const ctx = makeLab({
+    mount: 'lab-translate',
+    label: 'word meanings on hover',
+    stageNote: 'Hover a word. On touch, tap it — tap the paper to dismiss. ' +
+               'Or Tab into the page and move with Tab / Shift+Tab.',
+    code: `
+// 5 KB for the whole page: {wid: [english, transliteration]}.
+// data-wid is quran.com's word key, so this joins with no mapping
+// table. Any per-word data of your own works the same way.
+const gloss = await (await fetch('data/gloss-042.json')).json();
+const PIN_TITLES = false;   // also hang a native <title> on every word
+
+// The SHARED per-word hit layer — the same one §3 taps and §7 selects
+// from. One element per word, so the tooltip does not flicker as the
+// pointer crosses the gaps between letters, and hover does not fight
+// selection for the pointer.
+const layer = H.hitLayer(svg, stage, { selectable: false, focusable: true, signal });
+
+const tip = document.createElement('div');
+tip.className = 'q-tip';
+tip.setAttribute('role', 'tooltip');
+stage.append(tip);
+signal.addEventListener('abort', () => tip.remove());
+
+let joined = 0;
+for (const s of layer.children) {
+  const g = gloss[s.dataset.wid];
+  if (g) joined++;
+  const w = svg.querySelector('g.word[data-wid="' + s.dataset.wid + '"]');
+  s.setAttribute('aria-label', w.dataset.uthmani + (g ? ', ' + g[0] : ''));
+  if (PIN_TITLES && g) {                 // the persistent variant
+    const el = document.createElementNS(H.SVGNS, 'title');
+    el.textContent = g[0] + '  ·  ' + g[1];
+    w.prepend(el);
+  }
+}
+
+function show(span) {
+  const g = gloss[span.dataset.wid];
+  const w = svg.querySelector('g.word[data-wid="' + span.dataset.wid + '"]');
+  layer.querySelectorAll('.lit').forEach(x => x.classList.remove('lit'));
+  span.classList.add('lit');
+  tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
+                  (g ? '<i>' + g[1] + '</i>' : '') +
+                  '<u>' + span.dataset.wid + '  ·  ' + w.dataset.uthmani + '</u>';
+  tip.classList.add('on');
+
+  // clear of the word it describes, flipped near the edges, and never
+  // wider than the stage — a tooltip must not cause its own scrollbar
+  const host = stage.getBoundingClientRect(), box = span.getBoundingClientRect();
+  const above = box.top - host.top - tip.offsetHeight - 8;
+  tip.style.top = (above > 4 ? above : box.bottom - host.top + 8) + 'px';
+  const x = box.left - host.left + box.width / 2 - tip.offsetWidth / 2;
+  tip.style.left = Math.max(4, Math.min(x, host.width - tip.offsetWidth - 4)) + 'px';
+}
+function hide() {
+  tip.classList.remove('on');
+  layer.querySelectorAll('.lit').forEach(x => x.classList.remove('lit'));
+}
+
+layer.addEventListener('pointerover', e => {
+  const s = e.target.closest('span'); if (s) show(s);
+});
+layer.addEventListener('pointerout', e => {
+  if (!e.relatedTarget || !e.relatedTarget.closest('.q-hits span')) hide();
+});
+layer.addEventListener('focusin', e => {          // keyboard
+  const s = e.target.closest('span'); if (s) show(s);
+});
+layer.addEventListener('focusout', hide);
+// touch has no hover: tap shows, tapping the paper dismisses
+stage.addEventListener('click', e => {
+  const s = e.target.closest('.q-hits span');
+  s ? show(s) : hide();
+});
+
+log(joined, 'of', layer.children.length, 'words joined on data-wid — zero misses.');
+log('hover, tap, or Tab into the page.');
+`
+  });
+  bindToggle(ctx, { label: 'pin <title> too', name: 'PIN_TITLES', value: false });
+});
+
+/* 11 · all of it at once */
+mod('lab-compose', () => makeLab({
+  mount: 'lab-compose',
+  label: 'several capabilities on one page',
+  stageNote: 'Hover for a meaning · drag and Ctrl/⌘+C to copy · click a word to band its ayah.',
+  code: `
+// Three capabilities, one hit layer. Nothing below is special-cased:
+// it is §10, §7 and §4 running together.
+const gloss = await (await fetch('data/gloss-042.json')).json();
+
+// ONE layer takes the pointer. hitLayer also marks the ink inert, and
+// the bands are pointer-events: none, so nothing competes.
+const layer = H.hitLayer(svg, stage, { signal });
+
+const tip = document.createElement('div');
+tip.className = 'q-tip';
+stage.append(tip);
+signal.addEventListener('abort', () => tip.remove());
+
+const wordOf = s => svg.querySelector('g.word[data-wid="' + s.dataset.wid + '"]');
+
+// --- 1. hover: the meaning -------------------------------------------
+layer.addEventListener('pointerover', e => {
+  const s = e.target.closest('span'); if (!s) return;
+  const g = gloss[s.dataset.wid];
+  tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
+                  '<u>' + s.dataset.wid + '  ·  ' + wordOf(s).dataset.uthmani + '</u>';
+  tip.classList.add('on');
+  const host = stage.getBoundingClientRect(), box = s.getBoundingClientRect();
+  const above = box.top - host.top - tip.offsetHeight - 8;
+  tip.style.top = (above > 4 ? above : box.bottom - host.top + 8) + 'px';
+  const x = box.left - host.left + box.width / 2 - tip.offsetWidth / 2;
+  tip.style.left = Math.max(4, Math.min(x, host.width - tip.offsetWidth - 4)) + 'px';
+});
+layer.addEventListener('pointerout', e => {
+  if (!e.relatedTarget || !e.relatedTarget.closest('.q-hits span')) tip.classList.remove('on');
+});
+
+// --- 2. click: band the ayah that word belongs to ---------------------
+let lit = null;
+stage.addEventListener('click', e => {
+  const s = e.target.closest('.q-hits span');
+  if (!s) return;
+  const aid = wordOf(s).closest('g.ayah').dataset.aid;
+  if (aid === lit) { H.clearBands(svg); lit = null; return; }
+  lit = aid;
+  H.band(svg, svg.querySelectorAll('g.ayah[data-aid="' + aid + '"]'));
+});
+
+// --- 3. drag + Ctrl/⌘+C: real text out of the same layer --------------
+document.addEventListener('copy', e => {
+  const sel = getSelection();
+  if (!sel.rangeCount || sel.isCollapsed) return;
+  const r = sel.getRangeAt(0);
+  let text = '', prev = null;
+  for (const s of layer.children) {
+    if (!r.intersectsNode(s)) continue;
+    text += (prev !== null && s.dataset.line !== prev ? '\\n' : (text ? ' ' : '')) +
+            wordOf(s).dataset.uthmani;
+    prev = s.dataset.line;
+  }
+  if (!text) return;
+  e.clipboardData.setData('text/plain', text);
+  e.preventDefault();
+  out('<b>copied</b>\\n\\n' + text);
+}, { signal });
+
+out('Hover a word · click it to band its ayah · drag and copy. All three, together.');
 `
 }));
 
