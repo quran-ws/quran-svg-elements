@@ -64,14 +64,35 @@ def page(pg):
         key = "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"])
         stats["words"] += 1
 
+        # ONE GROUP IS NOT ONE ATOM (fixed 2026-08-29). The emitter opens a
+        # new <g class="ligature"> only when atom["lig"] changes
+        # (assign_words rewrite(): lig = (id(word), atom.get("lig", ai)), and
+        # the group opens on lig_key change), so consecutive atoms sharing a
+        # lig emit as ONE group — 3.7% of words, 308 of 8,236 in a 64-page
+        # sample. And the group's data-text comes from atom["seg"], never
+        # from segment_word()[i]. Pairing groups to segments BY INDEX
+        # therefore named the wrong piece for every one of those words:
+        # measured against the emitter's real model, `count` was 38%
+        # false-positive AND missed 67% of true mismatches. Build the
+        # emitter's groups, and take each name where the emitter takes it.
         groups = []
-        for a in atoms:
+        for ai, a in enumerate(atoms):
+            lk = a.get("lig", ai)
             els = a.get("els") or []
-            body = [e for e in els if e["kind"] == "body"]
-            groups.append({"n": len(els), "body": body,
-                           "x1": min((e["x1"] for e in body), default=None),
-                           "x2": max((e["x2"] for e in body), default=None),
-                           "marks": [e.get("mark") for e in els if e["kind"] != "body"]})
+            if groups and groups[-1]["lig"] == lk:
+                groups[-1]["els"].extend(els)
+                groups[-1]["atoms"].append(a)
+            else:
+                groups.append({"lig": lk, "els": list(els), "atoms": [a],
+                               "named": (a.get("seg") or {}).get("text", "")})
+        for g in groups:
+            body = [e for e in g["els"] if e["kind"] == "body"]
+            g["n"] = len(g["els"])
+            g["body"] = body
+            g["x1"] = min((e["x1"] for e in body), default=None)
+            g["x2"] = max((e["x2"] for e in body), default=None)
+            g["marks"] = [e.get("mark") for e in g["els"]
+                          if e["kind"] != "body"]
         stats["ligature groups"] += len(groups)
 
         # Groups and segments are paired BY INDEX, which only means anything when the
@@ -80,15 +101,14 @@ def page(pg):
         # nothing downstream of that is reported for the word: it is one defect (`count`),
         # not a group's worth of them. Reporting them anyway put 343 words in the list
         # whose real fault is the count.
-        paired = len(groups) == max(1, len(segs))
+        # No index pairing any more, so no gate: every check below reads the
+        # name the emitted group actually carries.
 
         # a group with no letter ink at all
-        for i, g in enumerate(groups if paired else []):
+        for i, g in enumerate(groups):
             if g["body"]:
                 continue
-            # does its share of the spelling name any letters? groups and segments are
-            # emitted in step, so index i is the piece it stands for
-            named = segs[i]["text"] if i < len(segs) else ""
+            named = g["named"]
             kind = "empty" if named else "marks-only"
             stats[kind] += 1
             if kind == "empty":
@@ -96,11 +116,21 @@ def page(pg):
                              "kind": "empty", "group": i, "names": named,
                              "holds": [m for m in g["marks"] if m]})
 
-        if len(groups) != max(1, len(segs)):
+        # SURPLUS ONLY. Measured over 604 pages: every true count mismatch
+        # is ngroups < nsegs and NOT ONE is a surplus — a deficit is the
+        # joining rule disagreeing with the art, which align_segs_atoms
+        # exists to absorb and which the pipeline already prices as
+        # `ligatures:%d(cost=...)`. Reporting deficits put ~2,000 rows in
+        # the list that no one could act on. A SURPLUS is different: the
+        # word draws more runs than its spelling allows, which is a real
+        # rule violation.
+        if len(groups) > max(1, len(segs)):
             stats["count"] += 1
             rows.append({"page": pg, "key": key, "word": w["uthmani"], "kind": "count",
                          "group": len(groups), "names": "|".join(s["text"] for s in segs),
                          "holds": []})
+        elif len(groups) < max(1, len(segs)):
+            stats["count-deficit(not reported)"] += 1
 
         # A mark drawn over another group's ink than the one holding it.
         #
@@ -109,11 +139,11 @@ def page(pg):
         # side and a mark near a boundary is legitimately nearer the next group's middle.
         # A mark belongs to the letters it touches, so the test is: no horizontal overlap
         # with its own group's ink, and real overlap with another's.
-        for i, a in enumerate(atoms if paired else []):
-            own = groups[i]["body"]
+        for i, g0 in enumerate(groups):
+            own = g0["body"]
             if not own:
                 continue
-            for e in (a.get("els") or []):
+            for e in g0["els"]:
                 if e["kind"] == "body" or e.get("mkpart") or e.get("standalone"):
                     continue
                 if max(min(b["x2"], e["x2"]) - max(b["x1"], e["x1"])
@@ -136,10 +166,18 @@ def page(pg):
                                       % (e.get("mark") or "?", best),
                              "holds": [e.get("mark")]})
 
-        # reading order: right to left, so each group's ink starts left of the one before
+        # reading order: right to left, so each group's ink starts left of
+        # the one before. The 0.6u tolerance made this near-total noise —
+        # a kaf headstroke legitimately overhangs the waw before it
+        # (وَكَانَ, وَكَفَىٰ, فَٱدْعُ were most of the 62 rows). The
+        # overhang is a HIGH stroke: require the offending group's ink to
+        # break the order at the BASELINE too, where letters actually sit,
+        # and demand a real margin rather than 0.6.
         withink = [g for g in groups if g["x1"] is not None]
         for a, b in zip(withink, withink[1:]):
-            if b["x2"] > a["x2"] + 0.6:
+            _alow = max(e["y2"] for e in a["body"])
+            _blow = max(e["y2"] for e in b["body"])
+            if b["x2"] > a["x2"] + 4.0 and abs(_alow - _blow) < 6.0:
                 stats["order"] += 1
                 rows.append({"page": pg, "key": key, "word": w["uthmani"], "kind": "order",
                              "group": withink.index(b),
