@@ -24,3 +24,15 @@ mushafs/
 .cache/confidence/
 .cache/words-dk/
 .cache/marktype/
+
+# one-off experiment caches (regenerable, never inputs to a gate)
+.cache/fusedscan/
+.cache/hdrink/
+.cache/hdrink2/
+.cache/markerink/
+.cache/pausedots/
+.cache/slashx/
+.cache/slashx2/
+.cache/slashx3/
+.cache/pixel_fails.json
+.playwright-mcp/

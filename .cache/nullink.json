@@ -1,0 +1,47 @@
+{
+ "range": [
+  350,
+  351
+ ],
+ "threshold": 0.5,
+ "flags": [
+  {
+   "page": 350,
+   "key": "24:2:26",
+   "word": "ٱلْمُؤْمِنِينَ",
+   "lig": 1,
+   "seg": "لمو",
+   "kind": "mark",
+   "mark": "sukun",
+   "area": 0.000635,
+   "n_null": 1,
+   "n_contours": 2,
+   "whole_element": false,
+   "box": [
+    273.17,
+    191.5,
+    277.47,
+    194.47
+   ]
+  },
+  {
+   "page": 350,
+   "key": "24:6:10",
+   "word": "فَشَهَٰدَةُ",
+   "lig": 0,
+   "seg": "فشهد",
+   "kind": "body",
+   "mark": null,
+   "area": 0.000511,
+   "n_null": 1,
+   "n_contours": 1,
+   "whole_element": true,
+   "box": [
+    75.33,
+    381.53,
+    75.35,
+    381.56
+   ]
+  }
+ ]
+}

@@ -4910,7 +4910,22 @@ def assign_page(edition, page_no, cache_dir):
     # worth keeping. QSVG_WDECIDE=<gain> re-enables it for experiments.
     _WDECIDE = float(os.environ.get("QSVG_WDECIDE", "0"))
 
-    def _omove(e, src, dst):
+    def _omove(e, src, dst, into=None):
+        """Hand `e` from word `src` to word `dst`; returns the atom it left.
+
+        `into` puts it back in a NAMED atom instead of the nearest one. The
+        neighbour-transfer loop below moves a piece, scores, and moves it
+        straight back — and an undo that re-places by nearest CENTRE does not
+        restore the state it undid. Measured 2026-08-29 over pages 1-40: 76 of
+        the 82 marks `audit_ligatures` calls `misplaced` were put in the wrong
+        ligature group by exactly this undo (lines 4992/5019 in the trace), and
+        NOTHING else accounts for more than one. p12 ٱلْكِتَٰبَ is the type
+        case: the sukun of the article (x 100.8-105.2) sits squarely on the
+        لكتب atom (55.0-105.8) and nowhere near the bare alef (107.2-109.9),
+        yet the alef's centre is 5.5u away and لكتب's nearest element 17.6u, so
+        the undo handed it to the alef's group. An undo must restore, not
+        re-decide.
+        """
         if isinstance(e, dict) and e.get("_ovr"):
             return False              # overridden pieces never move again
         # QSVG_TRACE=<x1> prints every hand-off of one piece of ink, which is
@@ -4927,18 +4942,24 @@ def assign_page(edition, page_no, cache_dir):
             sys.stderr.write("MOVE line%-5d %-6s/%s x %.1f-%.1f  %s -> %s\n"
                              % (_fr.lineno, e["kind"], e.get("mark"), e["x1"], e["x2"],
                                 src["w"]["uthmani"], dst["w"]["uthmani"]))
+        home = None
         for a in src["at"]:
             if e in a["els"]:
+                home = a
                 a["els"].remove(e)
                 for m in e.get("mkmembers", []):
                     if m in a["els"]:
                         a["els"].remove(m)
                 break
-        tgt = min(dst["at"], key=lambda a2: min(abs((x["x1"] + x["x2"]) / 2
-                  - (e["x1"] + e["x2"]) / 2) for x in a2["els"])
-                  if a2["els"] else 1e9)
+        if into is not None and any(a2 is into for a2 in dst["at"]):
+            tgt = into
+        else:
+            tgt = min(dst["at"], key=lambda a2: min(abs((x["x1"] + x["x2"]) / 2
+                      - (e["x1"] + e["x2"]) / 2) for x in a2["els"])
+                      if a2["els"] else 1e9)
         tgt["els"].append(e)
         tgt["els"].extend(e.get("mkmembers", []))
+        return home
 
     for _round in range(3):
         improved = False
@@ -4989,7 +5010,7 @@ def assign_page(edition, page_no, cache_dir):
                     if e["kind"] == "body":
                         wj0 = _wdev(r) + _wdev(v)
                         wj0_worst = max(_wdev(r), _wdev(v))
-                    _omove(e, v, r)
+                    _home = _omove(e, v, r)
                     d = _oscore(r) + _oscore(v)
                     ok_w = True
                     if e["kind"] == "body":
@@ -5016,7 +5037,7 @@ def assign_page(edition, page_no, cache_dir):
                             worst_now = max(_wdev(r), _wdev(v))
                             if worst_now > 0.35 and worst_now > wj0_worst:
                                 ok_w = False
-                    _omove(e, r, v)
+                    _omove(e, r, v, into=_home)   # exact undo, see _omove()
                     # The oracle counts marks, so it is flat on a body move
                     # that leaves both words' mark budgets intact — a letter
                     # piece sitting in the wrong word scores exactly like one
@@ -11567,6 +11588,92 @@ def assign_page(edition, page_no, cache_dir):
                         _ref.add(id(_e7))
                     else:
                         _e7["mkpart"] = False
+
+    # LIGATURE RECONCILIATION, after every mover (QSVG_LIGFIX, 2026-08-29).
+    #
+    # A word is emitted as one <g class="ligature"> per run of atoms sharing
+    # atom["lig"], and the mark->atom decision was taken once, in
+    # cluster_line(), from geometry alone. Where a mark sits in the GAP between
+    # two pieces the geometry is a coin toss, and `audit_ligatures` still found
+    # 184 marks with no horizontal overlap at all with the letters of the group
+    # holding them, after the _omove undo above was made exact.
+    #
+    # Two families, and the same two signals settle both: the mark is drawn on
+    # ANOTHER group's letters (geometry), and the text says that group wants it
+    # while this one does not (budget). Neither alone is enough — the damma of
+    # أُ in أُمَّةࣰ overlaps the مة group and belongs to the alef, so geometry
+    # on its own would move it the wrong way; it is not touched because the
+    # alef group is not short of a damma by the audit's overlap test.
+    #
+    #   * small-alef (91 of 184) — the dagger alef after a non-joining ذ/د sits
+    #     past the end of its own piece: p37 ذَٰلِكُمْ's alef spans 168.3-170.3
+    #     with ذ at 170.8-176.2 and لكم at 143.3-167.4, a 0.5u gap to the piece
+    #     that owns it and 0.9u to the one holding it.
+    #   * tanween (87) — the open fathatan/dammatan/kasratan of a final ء or ة
+    #     is drawn over the piece BEFORE it: p85 مَآءࣰ, p20 أُمَّةࣰ.
+    #
+    # Overlap threshold -0.6u is audit_ligatures' own, and the distribution
+    # behind it is in that file: comparing mark centres to group centres called
+    # 26,525 marks misplaced, comparing OVERLAP calls 184. Pixel-free by
+    # construction: this only re-parents an element inside its own word, and
+    # never renames or re-owns one (proved by a full-mushaf element diff, 0
+    # ownership changes over 604 pages).
+    if os.environ.get("QSVG_LIGFIX", "1") == "1":
+        for _wL, _atL in assignment:
+            if not _wL or len(_atL) < 2:
+                continue
+            _gs = []
+            for _i, _a in enumerate(_atL):
+                _lk = _a.get("lig", ("_", _i))
+                if _gs and _gs[-1]["lig"] == _lk:
+                    _gs[-1]["at"].append(_a)
+                else:
+                    _gs.append({"lig": _lk, "at": [_a],
+                                "want": [m for m, _p in
+                                         ((_a.get("seg") or {}).get("marks") or [])]})
+            if len(_gs) < 2:
+                continue
+            for _g in _gs:
+                _g["body"] = [e for a in _g["at"] for e in a["els"]
+                              if e["kind"] == "body"]
+                _g["hold"] = [e for a in _g["at"] for e in a["els"]
+                              if e["kind"] != "body" and not e.get("mkpart")]
+
+            def _ovg(_g, _e):
+                return max((min(b["x2"], _e["x2"]) - max(b["x1"], _e["x1"])
+                            for b in _g["body"]), default=-1e9)
+
+            for _gi, _g0 in enumerate(_gs):
+                if not _g0["body"]:
+                    continue
+                for _e in list(_g0["hold"]):
+                    _lab = _e.get("mark")
+                    if not _lab or _e.get("standalone") or _e.get("_ovr"):
+                        continue
+                    if _ovg(_g0, _e) > -0.6:
+                        continue          # sits on its own group's letters
+                    # its own group must NOT be short of this mark, or the
+                    # mark is simply drawn wide and belongs where it is
+                    if _g0["want"].count(_lab) >= sum(
+                            1 for x in _g0["hold"] if x.get("mark") == _lab):
+                        continue
+                    _cands = [(_j, _g) for _j, _g in enumerate(_gs)
+                              if _j != _gi and _g["body"] and _ovg(_g, _e) > -0.6
+                              and _g["want"].count(_lab) > sum(
+                                  1 for x in _g["hold"] if x.get("mark") == _lab)]
+                    if len(_cands) != 1:
+                        continue          # ambiguous: leave it for the eye
+                    _gt = _cands[0][1]
+                    _dst = max(_gt["at"], key=lambda a: max(
+                        (min(b["x2"], _e["x2"]) - max(b["x1"], _e["x1"])
+                         for b in a["els"] if b["kind"] == "body"), default=-1e9))
+                    for _mv in [_e] + list(_e.get("mkmembers") or []):
+                        for _a in _atL:
+                            if any(x is _mv for x in _a["els"]):
+                                _a["els"] = [x for x in _a["els"] if x is not _mv]
+                        _dst["els"].append(_mv)
+                    _g0["hold"].remove(_e)
+                    _gt["hold"].append(_e)
 
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
