@@ -1,18 +1,5 @@
 [
  {
-  "page": 71,
-  "line": 5,
-  "holder": "غَالِبَ",
-  "key": "3:160:5",
-  "kind": "body",
-  "mark": null,
-  "other_line": 6,
-  "other": "بَعْدِهِۦۗ",
-  "gap_own": 29.7,
-  "gap_other": 0.0,
-  "x_gap": 2.5
- },
- {
   "page": 112,
   "line": 4,
   "holder": "سَنَةࣰۛ",
@@ -23,19 +10,6 @@
   "other": "ٱلْقَوْمِ",
   "gap_own": 15.6,
   "gap_other": 1.6,
-  "x_gap": 0.0
- },
- {
-  "page": 133,
-  "line": 5,
-  "holder": "بَغْتَةً",
-  "key": "6:47:7",
-  "kind": "mark",
-  "mark": "fatha",
-  "other_line": 4,
-  "other": "هُمْ",
-  "gap_own": 9.2,
-  "gap_other": 4.8,
   "x_gap": 0.0
  },
  {
@@ -62,19 +36,6 @@
   "other": "وَأَعْنَٰبࣲ",
   "gap_own": 12.1,
   "gap_other": 7.0,
-  "x_gap": 0.0
- },
- {
-  "page": 535,
-  "line": 7,
-  "holder": "مَقْطُوعَةࣲ",
-  "key": "56:33:2",
-  "kind": "mark",
-  "mark": "fatha",
-  "other_line": 6,
-  "other": "وَظِلࣲّ",
-  "gap_own": 16.4,
-  "gap_other": 0.0,
   "x_gap": 0.0
  }
 ]
