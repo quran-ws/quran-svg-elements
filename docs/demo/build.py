@@ -1,19 +1,110 @@
 #!/usr/bin/env python3
-"""Assemble docs/demo/index.html: template.html with page 003's SVG inlined.
+"""Assemble docs/demo/index.html.
 
-Reads only .cache/words-svg/hafs-kfqc/003.svg. Run after rebuilding page 3.
+Inlines ONE page (the hero, page 42 — Ayat al-Kursi) into template.html.
+Every other page the demo shows is fetched at runtime from PAGES_BASE.
+
+The inlined page is converted to the PRODUCTION profile on the way in:
+  * <path class="ayahPolygon"> removed  (dev-only; different frame, sits on top)
+  * <g class="ligature"> wrappers dissolved, their paths kept in place
+  * data-eid / data-sig stripped (review instruments, not stable across builds)
+That is exactly what QSVG_PROFILE=production emits, and it is what a consumer
+of the bundle gets, so every selector on the demo page is one that ships.
+
+Also writes:
+  data/gloss-042.json   {wid: [english, transliteration]}  (source: quran.com)
+  data/search-index.json is built separately by build_search_index.py
+
+Run:  QSVG_ROOT=$PWD python3 docs/demo/build.py
 """
-import pathlib, sys
+import json
+import os
+import pathlib
+import re
 
 HERE = pathlib.Path(__file__).resolve().parent
-ROOT = HERE.parent.parent
-SVG = ROOT / ".cache/words-svg/hafs-kfqc/003.svg"
+ROOT = pathlib.Path(os.environ.get("QSVG_ROOT") or HERE.parent.parent).resolve()
+SVGDIR = ROOT / ".cache/words-svg/hafs-kfqc"
+HERO = 42
 
-svg = SVG.read_text(encoding="utf-8")
-svg = svg.split("?>", 1)[1].strip()          # drop the XML declaration
-svg = svg.replace("<svg ", '<svg id="master" ', 1)
 
-tpl = (HERE / "template.html").read_text(encoding="utf-8")
-out = tpl.replace("<!--SVG-->", svg)
-(HERE / "index.html").write_text(out, encoding="utf-8")
-print(f"index.html  {len(out)/1024:.0f} KB  (svg {len(svg)/1024:.0f} KB)")
+def strip_polygons(svg: str) -> str:
+    return re.sub(r'<path class="ayahPolygon"[^>]*/>\s*', "", svg)
+
+
+def drop_dev_attrs(svg: str) -> str:
+    """data-eid and data-sig are review instruments, explicitly not stable
+    across builds and explicitly absent from the production profile."""
+    return re.sub(r'\s(?:data-eid|data-sig)="[^"]*"', "", svg)
+
+
+def dissolve_ligatures(svg: str) -> str:
+    """Remove <g class="ligature" …> … </g> wrappers, keeping their children.
+
+    Depth-counts <g>/</g> from each ligature open tag to find its own close.
+    Safe here because the file is machine-generated and well-formed.
+    """
+    out = []
+    i = 0
+    open_rx = re.compile(r'<g class="ligature"[^>]*>')
+    tag_rx = re.compile(r"<g\b|</g>")
+    while True:
+        m = open_rx.search(svg, i)
+        if not m:
+            out.append(svg[i:])
+            break
+        out.append(svg[i:m.start()])
+        depth = 1
+        j = m.end()
+        while depth:
+            t = tag_rx.search(svg, j)
+            if not t:
+                raise ValueError("unbalanced <g> after ligature at %d" % m.start())
+            depth += 1 if t.group(0) == "<g" else -1
+            if depth == 0:
+                out.append(svg[j:t.start()])
+                i = t.end()
+            else:
+                j = t.end()
+    return "".join(out)
+
+
+def build_gloss(page: int) -> bytes:
+    src = ROOT / f".cache/words/page-{page:03d}.json"
+    data = json.loads(src.read_text(encoding="utf-8"))
+    gloss = {}
+    for v in data["verses"]:
+        for w in v["words"]:
+            if w.get("char_type_name") != "word":
+                continue
+            gloss[f"{v['verse_key']}:{w['position']}"] = [
+                w["translation"]["text"],
+                w["transliteration"]["text"],
+            ]
+    return json.dumps(gloss, ensure_ascii=False, separators=(",", ":")).encode()
+
+
+def main() -> None:
+    raw = (SVGDIR / f"{HERO:03d}.svg").read_text(encoding="utf-8")
+    svg = raw.split("?>", 1)[1].strip()
+    before = len(svg)
+    svg = drop_dev_attrs(dissolve_ligatures(strip_polygons(svg)))
+    svg = svg.replace("<svg ", '<svg id="hero" data-page="%d" ' % HERO, 1)
+
+    (HERE / "data").mkdir(exist_ok=True)
+    gloss = build_gloss(HERO)
+    (HERE / f"data/gloss-{HERO:03d}.json").write_bytes(gloss)
+
+    tpl = (HERE / "template.html").read_text(encoding="utf-8")
+    if "<!--SVG-->" not in tpl:
+        raise SystemExit("template.html has no <!--SVG--> placeholder")
+    out = tpl.replace("<!--SVG-->", svg)
+    (HERE / "index.html").write_text(out, encoding="utf-8")
+
+    print(f"page {HERO:03d}: {before/1024:.0f} KB dev -> {len(svg)/1024:.0f} KB production")
+    print(f"index.html   {len(out.encode())/1024:.0f} KB")
+    print(f"gloss-{HERO:03d}   {len(gloss)/1024:.1f} KB")
+
+
+if __name__ == "__main__":
+    main()
