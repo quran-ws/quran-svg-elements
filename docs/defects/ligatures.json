@@ -1,22 +1,11 @@
 [
  {
-  "page": 8,
-  "key": "2:49:15",
-  "word": "بَلَآءࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 1's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 15,
-  "key": "2:98:5",
-  "word": "وَمَلَٰٓئِكَتِهِۦ",
+  "page": 6,
+  "key": "2:35:14",
+  "word": "هَٰذِهِ",
   "kind": "empty",
-  "group": 1,
-  "names": "مليكته",
+  "group": 0,
+  "names": "هذ",
   "holds": []
  },
  {
@@ -29,23 +18,12 @@
   "holds": []
  },
  {
-  "page": 12,
-  "key": "2:80:7",
-  "word": "مَّعْدُودَةࣰۚ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 6,
-  "key": "2:35:14",
-  "word": "هَٰذِهِ",
+  "page": 15,
+  "key": "2:98:5",
+  "word": "وَمَلَٰٓئِكَتِهِۦ",
   "kind": "empty",
-  "group": 0,
-  "names": "هذ",
+  "group": 1,
+  "names": "مليكته",
   "holds": []
  },
  {
@@ -56,61 +34,6 @@
   "group": 2,
   "names": "ة",
   "holds": []
- },
- {
-  "page": 18,
-  "key": "2:113:16",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 20,
-  "key": "2:128:7",
-  "word": "أُمَّةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 26,
-  "key": "2:171:11",
-  "word": "دُعَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 26,
-  "key": "2:171:12",
-  "word": "وَنِدَآءࣰۚ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 3's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 27,
-  "key": "2:179:4",
-  "word": "حَيَوٰةࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 1's letters",
-  "holds": [
-   "dammatan"
-  ]
  },
  {
   "page": 30,
@@ -124,17 +47,6 @@
   ]
  },
  {
-  "page": 30,
-  "key": "2:196:53",
-  "word": "وَسَبْعَةٍ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "kasratan sits on group 1's letters",
-  "holds": [
-   "kasratan"
-  ]
- },
- {
   "page": 41,
   "key": "2:251:14",
   "word": "وَلَوْلَا",
@@ -142,28 +54,6 @@
   "group": 0,
   "names": "و",
   "holds": []
- },
- {
-  "page": 37,
-  "key": "2:232:25",
-  "word": "ذَٰلِكُمْ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 48,
-  "key": "2:282:100",
-  "word": "حَاضِرَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
  },
  {
   "page": 47,
@@ -186,116 +76,6 @@
   ]
  },
  {
-  "page": 55,
-  "key": "3:40:13",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 58,
-  "key": "3:65:10",
-  "word": "وَٱلْإِنجِيلُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": [
-   "fatha"
-  ]
- },
- {
-  "page": 66,
-  "key": "3:123:6",
-  "word": "أَذِلَّةࣱۖ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 2's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 64,
-  "key": "3:113:6",
-  "word": "أُمَّةࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 1's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 63,
-  "key": "3:103:13",
-  "word": "أَعْدَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 3's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 63,
-  "key": "3:103:28",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 74,
-  "key": "3:181:16",
-  "word": "ٱلْأَنۢبِيَآءَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "meem-iqlab sits on group 2's letters",
-  "holds": [
-   "meem-iqlab"
-  ]
- },
- {
-  "page": 74,
-  "key": "3:181:16",
-  "word": "ٱلْأَنۢبِيَآءَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "dot sits on group 2's letters",
-  "holds": [
-   "dot"
-  ]
- },
- {
-  "page": 78,
-  "key": "4:11:11",
-  "word": "نِسَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 86,
-  "key": "4:48:11",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
   "page": 93,
   "key": "4:94:25",
   "word": "كَثِيرَةࣱۚ",
@@ -304,17 +84,6 @@
   "names": "ة",
   "holds": [
    "dammatan"
-  ]
- },
- {
-  "page": 85,
-  "key": "4:43:37",
-  "word": "مَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
   ]
  },
  {
@@ -327,28 +96,6 @@
   "holds": []
  },
  {
-  "page": 95,
-  "key": "4:102:39",
-  "word": "وَٰحِدَةࣰۚ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 92,
-  "key": "4:89:7",
-  "word": "سَوَآءࣰۖ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
   "page": 102,
   "key": "4:149:5",
   "word": "تُخْفُوهُ",
@@ -358,20 +105,18 @@
   "holds": []
  },
  {
-  "page": 90,
-  "key": "4:75:12",
-  "word": "وَٱلْوِلْدَٰنِ",
-  "kind": "misplaced",
-  "group": 4,
-  "names": "small-alef sits on group 3's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
   "page": 104,
   "key": "4:165:3",
   "word": "وَمُنذِرِينَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 101,
+  "key": "4:143:7",
+  "word": "وَلَآ",
   "kind": "empty",
   "group": 0,
   "names": "و",
@@ -387,65 +132,12 @@
   "holds": []
  },
  {
-  "page": 108,
-  "key": "5:6:39",
-  "word": "مَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 101,
-  "key": "4:143:7",
-  "word": "وَلَآ",
+  "page": 118,
+  "key": "5:60:17",
+  "word": "ٱلْقِرَدَةَ",
   "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 106,
-  "key": "4:176:35",
-  "word": "إِخْوَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 106,
-  "key": "4:176:37",
-  "word": "وَنِسَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 123,
-  "key": "5:91:7",
-  "word": "ٱلْعَدَٰوَةَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 123,
-  "key": "5:95:28",
-  "word": "كَفَّٰرَةࣱ",
-  "kind": "empty",
-  "group": 0,
-  "names": "كفر",
+  "group": 3,
+  "names": "ة",
   "holds": []
  },
  {
@@ -460,24 +152,13 @@
   ]
  },
  {
-  "page": 118,
-  "key": "5:60:17",
-  "word": "ٱلْقِرَدَةَ",
+  "page": 123,
+  "key": "5:95:28",
+  "word": "كَفَّٰرَةࣱ",
   "kind": "empty",
-  "group": 3,
-  "names": "ة",
+  "group": 0,
+  "names": "كفر",
   "holds": []
- },
- {
-  "page": 122,
-  "key": "5:89:39",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
  },
  {
   "page": 122,
@@ -489,87 +170,12 @@
   "holds": []
  },
  {
-  "page": 134,
-  "key": "6:53:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 134,
-  "key": "6:54:18",
-  "word": "سُوٓءَۢا",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "meem-iqlab sits on group 1's letters",
-  "holds": [
-   "meem-iqlab"
-  ]
- },
- {
-  "page": 121,
-  "key": "5:82:12",
-  "word": "مَّوَدَّةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 141,
-  "key": "6:108:13",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 142,
-  "key": "6:112:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
   "page": 137,
   "key": "6:79:6",
   "word": "ٱلسَّمَٰوَٰتِ",
   "kind": "empty",
   "group": 2,
   "names": "ت",
-  "holds": []
- },
- {
-  "page": 144,
-  "key": "6:125:21",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 147,
-  "key": "6:144:20",
-  "word": "إِذْ",
-  "kind": "empty",
-  "group": 1,
-  "names": "ذ",
   "holds": []
  },
  {
@@ -582,48 +188,13 @@
   "holds": []
  },
  {
-  "page": 143,
-  "key": "6:122:19",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
+  "page": 147,
+  "key": "6:144:20",
+  "word": "إِذْ",
+  "kind": "empty",
   "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 143,
-  "key": "6:123:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 146,
-  "key": "6:142:3",
-  "word": "حَمُولَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 145,
-  "key": "6:131:1",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
+  "names": "ذ",
+  "holds": []
  },
  {
   "page": 145,
@@ -635,28 +206,6 @@
   "holds": []
  },
  {
-  "page": 145,
-  "key": "6:137:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 148,
-  "key": "6:148:15",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
   "page": 130,
   "key": "6:19:4",
   "word": "أَكْبَرُ",
@@ -664,28 +213,6 @@
   "group": 0,
   "names": "ا",
   "holds": []
- },
- {
-  "page": 130,
-  "key": "6:19:5",
-  "word": "شَهَٰدَةࣰۖ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 130,
-  "key": "6:21:7",
-  "word": "كَذِبًا",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
  },
  {
   "page": 150,
@@ -697,17 +224,6 @@
   "holds": []
  },
  {
-  "page": 160,
-  "key": "7:81:4",
-  "word": "شَهْوَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
   "page": 164,
   "key": "7:108:2",
   "word": "يَدَهُۥ",
@@ -717,28 +233,6 @@
   "holds": []
  },
  {
-  "page": 159,
-  "key": "7:71:8",
-  "word": "وَغَضَبٌۖ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 1's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 163,
-  "key": "7:101:18",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
   "page": 169,
   "key": "7:150:34",
   "word": "ٱلْأَعْدَآءَ",
@@ -746,17 +240,6 @@
   "group": 4,
   "names": "ء",
   "holds": []
- },
- {
-  "page": 169,
-  "key": "7:152:13",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
  },
  {
   "page": 168,
@@ -780,17 +263,6 @@
   ]
  },
  {
-  "page": 172,
-  "key": "7:168:9",
-  "word": "ذَٰلِكَۖ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
   "page": 179,
   "key": "8:24:17",
   "word": "وَقَلْبِهِۦ",
@@ -798,28 +270,6 @@
   "group": 0,
   "names": "و",
   "holds": []
- },
- {
-  "page": 180,
-  "key": "8:32:13",
-  "word": "حِجَارَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 178,
-  "key": "8:11:10",
-  "word": "مَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
  },
  {
   "page": 185,
@@ -851,25 +301,14 @@
   ]
  },
  {
-  "page": 193,
-  "key": "9:37:3",
-  "word": "زِيَادَةࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 2's letters",
+  "page": 202,
+  "key": "9:95:15",
+  "word": "جَزَآءَۢ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ء",
   "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 196,
-  "key": "9:56:9",
-  "word": "قَوْمࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 1's letters",
-  "holds": [
-   "dammatan"
+   "meem-iqlab"
   ]
  },
  {
@@ -882,17 +321,6 @@
   "holds": []
  },
  {
-  "page": 202,
-  "key": "9:95:15",
-  "word": "جَزَآءَۢ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ء",
-  "holds": [
-   "meem-iqlab"
-  ]
- },
- {
   "page": 200,
   "key": "9:82:5",
   "word": "جَزَآءَۢ",
@@ -901,83 +329,6 @@
   "names": "ء",
   "holds": [
    "meem-iqlab"
-  ]
- },
- {
-  "page": 210,
-  "key": "10:19:6",
-  "word": "وَٰحِدَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 209,
-  "key": "10:12:22",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 212,
-  "key": "10:27:8",
-  "word": "ذِلَّةࣱۖ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 1's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 212,
-  "key": "10:32:1",
-  "word": "فَذَٰلِكُمُ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 211,
-  "key": "10:24:39",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 207,
-  "key": "9:124:4",
-  "word": "سُورَةࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 2's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 207,
-  "key": "9:124:11",
-  "word": "إِيمَٰنࣰاۚ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
   ]
  },
  {
@@ -999,72 +350,6 @@
   "holds": []
  },
  {
-  "page": 215,
-  "key": "10:58:5",
-  "word": "فَبِذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 217,
-  "key": "10:74:18",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 222,
-  "key": "11:8:6",
-  "word": "أُمَّةࣲ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "kasratan sits on group 1's letters",
-  "holds": [
-   "kasratan"
-  ]
- },
- {
-  "page": 231,
-  "key": "11:82:9",
-  "word": "حِجَارَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 233,
-  "key": "11:102:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 230,
-  "key": "11:75:4",
-  "word": "أَوَّٰهࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 2's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
   "page": 208,
   "key": "10:4:19",
   "word": "كَفَرُوا۟",
@@ -1076,39 +361,6 @@
   ]
  },
  {
-  "page": 208,
-  "key": "10:6:12",
-  "word": "لَـَٔايَٰتࣲ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "kasratan sits on group 1's letters",
-  "holds": [
-   "kasratan"
-  ]
- },
- {
-  "page": 237,
-  "key": "12:16:3",
-  "word": "عِشَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 237,
-  "key": "12:21:15",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
   "page": 239,
   "key": "12:34:7",
   "word": "إِنَّهُۥ",
@@ -1116,28 +368,6 @@
   "group": 0,
   "names": "ا",
   "holds": []
- },
- {
-  "page": 240,
-  "key": "12:40:6",
-  "word": "أَسْمَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 238,
-  "key": "12:24:11",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
  },
  {
   "page": 244,
@@ -1167,114 +397,6 @@
   "holds": []
  },
  {
-  "page": 249,
-  "key": "13:4:24",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 247,
-  "key": "12:102:1",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 251,
-  "key": "13:17:31",
-  "word": "جُفَآءࣰۖ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 257,
-  "key": "14:14:5",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 254,
-  "key": "13:37:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 258,
-  "key": "14:20:2",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 263,
-  "key": "15:19:6",
-  "word": "وَأَنۢبَتْنَا",
-  "kind": "empty",
-  "group": 1,
-  "names": "ا",
-  "holds": [
-   "meem-iqlab"
-  ]
- },
- {
-  "page": 263,
-  "key": "15:22:7",
-  "word": "مَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 267,
-  "key": "16:6:5",
-  "word": "تُرِيحُونَ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ن",
-  "holds": []
- },
- {
-  "page": 259,
-  "key": "14:32:9",
-  "word": "مَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
   "page": 259,
   "key": "14:32:22",
   "word": "بِأَمْرِهِۦۖ",
@@ -1302,26 +424,24 @@
   "holds": []
  },
  {
-  "page": 269,
-  "key": "16:25:3",
-  "word": "كَامِلَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
+  "page": 263,
+  "key": "15:19:6",
+  "word": "وَأَنۢبَتْنَا",
+  "kind": "empty",
+  "group": 1,
+  "names": "ا",
   "holds": [
-   "fathatan"
+   "meem-iqlab"
   ]
  },
  {
-  "page": 270,
-  "key": "16:33:11",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
+  "page": 267,
+  "key": "16:6:5",
+  "word": "تُرِيحُونَ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ن",
+  "holds": []
  },
  {
   "page": 272,
@@ -1330,28 +450,6 @@
   "kind": "misplaced",
   "group": 0,
   "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 273,
-  "key": "16:61:21",
-  "word": "سَاعَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 281,
-  "key": "16:119:12",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
   "holds": [
    "small-alef"
   ]
@@ -1366,70 +464,13 @@
   "holds": []
  },
  {
-  "page": 277,
-  "key": "16:93:6",
-  "word": "وَٰحِدَةࣰ",
-  "kind": "misplaced",
+  "page": 284,
+  "key": "17:23:6",
+  "word": "إِيَّاهُ",
+  "kind": "empty",
   "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 283,
-  "key": "17:15:13",
-  "word": "وَازِرَةࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 3's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 290,
-  "key": "17:79:5",
-  "word": "نَافِلَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 295,
-  "key": "18:17:19",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 302,
-  "key": "18:81:7",
-  "word": "زَكَوٰةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 299,
-  "key": "18:47:6",
-  "word": "بَارِزَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 3's letters",
-  "holds": [
-   "fathatan"
-  ]
+  "names": "ا",
+  "holds": []
  },
  {
   "page": 299,
@@ -1443,15 +484,6 @@
    "two-dots",
    "kasra"
   ]
- },
- {
-  "page": 284,
-  "key": "17:23:6",
-  "word": "إِيَّاهُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
  },
  {
   "page": 307,
@@ -1483,28 +515,6 @@
   ]
  },
  {
-  "page": 319,
-  "key": "20:99:1",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 324,
-  "key": "21:26:7",
-  "word": "عِبَادࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 1's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
   "page": 324,
   "key": "21:28:4",
   "word": "أَيْدِيهِمْ",
@@ -1514,92 +524,6 @@
   "holds": [
    "hamza",
    "fatha"
-  ]
- },
- {
-  "page": 324,
-  "key": "21:29:8",
-  "word": "فَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 324,
-  "key": "21:29:11",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 327,
-  "key": "21:72:5",
-  "word": "نَافِلَةࣰۖ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 326,
-  "key": "21:48:6",
-  "word": "وَضِيَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 323,
-  "key": "21:16:4",
-  "word": "وَٱلْأَرْضَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "وا",
-  "holds": []
- },
- {
-  "page": 329,
-  "key": "21:82:9",
-  "word": "ذَٰلِكَۖ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 329,
-  "key": "21:88:6",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 330,
-  "key": "21:92:5",
-  "word": "وَٰحِدَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
   ]
  },
  {
@@ -1614,15 +538,22 @@
   ]
  },
  {
-  "page": 334,
-  "key": "22:16:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
+  "page": 323,
+  "key": "21:16:4",
+  "word": "وَٱلْأَرْضَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "وا",
+  "holds": []
+ },
+ {
+  "page": 331,
+  "key": "21:104:11",
+  "word": "نُّعِيدُهُۥۚ",
+  "kind": "empty",
+  "group": 1,
+  "names": "ه",
+  "holds": []
  },
  {
   "page": 332,
@@ -1654,87 +585,21 @@
   ]
  },
  {
-  "page": 331,
-  "key": "21:104:11",
-  "word": "نُّعِيدُهُۥۚ",
-  "kind": "empty",
-  "group": 1,
-  "names": "ه",
-  "holds": []
- },
- {
-  "page": 340,
-  "key": "22:70:11",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 336,
-  "key": "22:32:1",
-  "word": "ذَٰلِكَۖ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 336,
-  "key": "22:37:11",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 335,
-  "key": "22:30:1",
-  "word": "ذَٰلِكَۖ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 339,
-  "key": "22:62:1",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 353,
-  "key": "24:30:8",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
   "page": 345,
   "key": "23:46:3",
   "word": "وَمَلَإِي۟هِۦ",
   "kind": "empty",
   "group": 0,
   "names": "و",
+  "holds": []
+ },
+ {
+  "page": 351,
+  "key": "24:19:20",
+  "word": "تَعْلَمُونَ",
+  "kind": "empty",
+  "group": 1,
+  "names": "ن",
   "holds": []
  },
  {
@@ -1756,15 +621,6 @@
   "holds": []
  },
  {
-  "page": 351,
-  "key": "24:19:20",
-  "word": "تَعْلَمُونَ",
-  "kind": "empty",
-  "group": 1,
-  "names": "ن",
-  "holds": []
- },
- {
   "page": 355,
   "key": "24:37:13",
   "word": "ٱلزَّكَوٰةِ",
@@ -1772,37 +628,6 @@
   "group": 0,
   "names": "ا",
   "holds": []
- },
- {
-  "page": 358,
-  "key": "24:61:70",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 362,
-  "key": "25:21:18",
-  "word": "عُتُوࣰّا",
-  "kind": "empty",
-  "group": 1,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 362,
-  "key": "25:23:8",
-  "word": "هَبَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
  },
  {
   "page": 341,
@@ -1826,76 +651,12 @@
   ]
  },
  {
-  "page": 357,
-  "key": "24:55:35",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 364,
-  "key": "25:49:3",
-  "word": "بَلْدَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 363,
-  "key": "25:38:7",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 360,
-  "key": "25:3:20",
-  "word": "حَيَوٰةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 370,
-  "key": "26:74:5",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 374,
-  "key": "26:172:3",
-  "word": "ٱلْـَٔاخَرِينَ",
+  "page": 362,
+  "key": "25:21:18",
+  "word": "عُتُوࣰّا",
   "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 366,
-  "key": "25:68:20",
-  "word": "ذَٰلِكَ",
-  "kind": "order",
   "group": 1,
-  "names": "257.0..261.9 then 240.1..286.4",
+  "names": "ا",
   "holds": []
  },
  {
@@ -1910,15 +671,13 @@
   ]
  },
  {
-  "page": 367,
-  "key": "26:14:3",
-  "word": "ذَنۢبࣱ",
-  "kind": "misplaced",
+  "page": 374,
+  "key": "26:172:3",
+  "word": "ٱلْـَٔاخَرِينَ",
+  "kind": "empty",
   "group": 0,
-  "names": "dammatan sits on group 1's letters",
-  "holds": [
-   "dammatan"
-  ]
+  "names": "ا",
+  "holds": []
  },
  {
   "page": 378,
@@ -1928,39 +687,6 @@
   "group": 2,
   "names": "ا",
   "holds": []
- },
- {
-  "page": 379,
-  "key": "27:23:3",
-  "word": "ٱمْرَأَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 379,
-  "key": "27:34:11",
-  "word": "أَذِلَّةࣰۚ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 379,
-  "key": "27:34:12",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
  },
  {
   "page": 379,
@@ -1974,6 +700,15 @@
   ]
  },
  {
+  "page": 366,
+  "key": "25:68:20",
+  "word": "ذَٰلِكَ",
+  "kind": "order",
+  "group": 1,
+  "names": "257.0..261.9 then 240.1..286.4",
+  "holds": []
+ },
+ {
   "page": 384,
   "key": "27:78:8",
   "word": "ٱلْعَلِيمُ",
@@ -1983,17 +718,6 @@
   "holds": []
  },
  {
-  "page": 382,
-  "key": "27:60:9",
-  "word": "مَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
   "page": 376,
   "key": "26:209:2",
   "word": "وَمَا",
@@ -2001,125 +725,6 @@
   "group": 0,
   "names": "و",
   "holds": []
- },
- {
-  "page": 388,
-  "key": "28:28:2",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 389,
-  "key": "28:32:15",
-  "word": "فَذَٰنِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 377,
-  "key": "27:3:5",
-  "word": "ٱلزَّكَوٰةَ",
-  "kind": "empty",
-  "group": 3,
-  "names": "ة",
-  "holds": []
- },
- {
-  "page": 399,
-  "key": "29:24:17",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 402,
-  "key": "29:47:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 402,
-  "key": "29:48:11",
-  "word": "إِذࣰا",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 402,
-  "key": "29:51:11",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 406,
-  "key": "30:23:11",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 406,
-  "key": "30:24:10",
-  "word": "مَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 350,
-  "key": "24:3:7",
-  "word": "مُشْرِكَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 350,
-  "key": "24:4:11",
-  "word": "جَلْدَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
  },
  {
   "page": 350,
@@ -2157,6 +762,33 @@
   ]
  },
  {
+  "page": 411,
+  "key": "31:4:5",
+  "word": "ٱلزَّكَوٰةَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 377,
+  "key": "27:3:5",
+  "word": "ٱلزَّكَوٰةَ",
+  "kind": "empty",
+  "group": 3,
+  "names": "ة",
+  "holds": []
+ },
+ {
+  "page": 413,
+  "key": "31:23:5",
+  "word": "كُفْرُهُۥٓۚ",
+  "kind": "empty",
+  "group": 0,
+  "names": "كفر",
+  "holds": []
+ },
+ {
   "page": 407,
   "key": "30:25:5",
   "word": "ٱلسَّمَآءُ",
@@ -2184,57 +816,6 @@
   "holds": []
  },
  {
-  "page": 407,
-  "key": "30:25:11",
-  "word": "دَعْوَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 408,
-  "key": "30:38:8",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 410,
-  "key": "30:55:10",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 413,
-  "key": "31:23:5",
-  "word": "كُفْرُهُۥٓۚ",
-  "kind": "empty",
-  "group": 0,
-  "names": "كفر",
-  "holds": []
- },
- {
-  "page": 411,
-  "key": "31:4:5",
-  "word": "ٱلزَّكَوٰةَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
   "page": 416,
   "key": "32:17:10",
   "word": "جَزَآءَۢ",
@@ -2243,59 +824,6 @@
   "names": "ء",
   "holds": [
    "meem-iqlab"
-  ]
- },
- {
-  "page": 405,
-  "key": "30:9:15",
-  "word": "قُوَّةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 425,
-  "key": "33:53:28",
-  "word": "ذَٰلِكُمْ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 424,
-  "key": "33:50:28",
-  "word": "وَٱمْرَأَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 3's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 417,
-  "key": "32:23:10",
-  "word": "لِّقَآئِهِۦۖ",
-  "kind": "empty",
-  "group": 1,
-  "names": "يه",
-  "holds": []
- },
- {
-  "page": 414,
-  "key": "31:32:21",
-  "word": "خَتَّارࣲ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "kasratan sits on group 1's letters",
-  "holds": [
-   "kasratan"
   ]
  },
  {
@@ -2308,23 +836,21 @@
   "holds": []
  },
  {
-  "page": 420,
-  "key": "33:19:32",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
   "page": 428,
   "key": "34:1:14",
   "word": "ٱلْـَٔاخِرَةِۚ",
   "kind": "empty",
   "group": 3,
   "names": "ة",
+  "holds": []
+ },
+ {
+  "page": 427,
+  "key": "33:67:8",
+  "word": "ٱلسَّبِيلَا۠",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
   "holds": []
  },
  {
@@ -2355,12 +881,12 @@
   "holds": []
  },
  {
-  "page": 427,
-  "key": "33:67:8",
-  "word": "ٱلسَّبِيلَا۠",
+  "page": 417,
+  "key": "32:23:10",
+  "word": "لِّقَآئِهِۦۖ",
   "kind": "empty",
-  "group": 0,
-  "names": "ا",
+  "group": 1,
+  "names": "يه",
   "holds": []
  },
  {
@@ -2380,48 +906,6 @@
   "group": 0,
   "names": "تجر",
   "holds": []
- },
- {
-  "page": 431,
-  "key": "34:28:4",
-  "word": "كَآفَّةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 443,
-  "key": "36:49:5",
-  "word": "وَٰحِدَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 451,
-  "key": "37:136:3",
-  "word": "ٱلْـَٔاخَرِينَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 451,
-  "key": "37:146:1",
-  "word": "وَأَنۢبَتْنَا",
-  "kind": "empty",
-  "group": 1,
-  "names": "ا",
-  "holds": [
-   "meem-iqlab"
-  ]
  },
  {
   "page": 447,
@@ -2454,6 +938,26 @@
   ]
  },
  {
+  "page": 451,
+  "key": "37:136:3",
+  "word": "ٱلْـَٔاخَرِينَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 451,
+  "key": "37:146:1",
+  "word": "وَأَنۢبَتْنَا",
+  "kind": "empty",
+  "group": 1,
+  "names": "ا",
+  "holds": [
+   "meem-iqlab"
+  ]
+ },
+ {
   "page": 456,
   "key": "38:45:7",
   "word": "ٱلْأَيْدِى",
@@ -2472,150 +976,13 @@
   "holds": []
  },
  {
-  "page": 465,
-  "key": "39:59:7",
-  "word": "وَٱسْتَكْبَرْتَ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ت",
-  "holds": []
- },
- {
-  "page": 460,
-  "key": "39:16:10",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 467,
-  "key": "40:6:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 470,
-  "key": "40:28:10",
-  "word": "رَجُلًا",
+  "page": 455,
+  "key": "38:42:6",
+  "word": "وَشَرَابࣱ",
   "kind": "empty",
   "group": 0,
-  "names": "ر",
+  "names": "و",
   "holds": []
- },
- {
-  "page": 471,
-  "key": "40:37:10",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 468,
-  "key": "40:9:2",
-  "word": "ٱلسَّيِّـَٔاتِۚ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ت",
-  "holds": []
- },
- {
-  "page": 468,
-  "key": "40:9:9",
-  "word": "وَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 469,
-  "key": "40:22:1",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 475,
-  "key": "40:74:14",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 475,
-  "key": "40:75:1",
-  "word": "ذَٰلِكُم",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 453,
-  "key": "38:10:5",
-  "word": "وَٱلْأَرْضِ",
-  "kind": "empty",
-  "group": 0,
-  "names": "وا",
-  "holds": []
- },
- {
-  "page": 480,
-  "key": "41:34:14",
-  "word": "عَدَٰوَةࣱ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 483,
-  "key": "42:7:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 483,
-  "key": "42:8:6",
-  "word": "وَٰحِدَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
  },
  {
   "page": 446,
@@ -2657,68 +1024,51 @@
   "holds": []
  },
  {
-  "page": 446,
-  "key": "37:19:4",
-  "word": "وَٰحِدَةࣱ",
+  "page": 465,
+  "key": "39:59:7",
+  "word": "وَٱسْتَكْبَرْتَ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ت",
+  "holds": []
+ },
+ {
+  "page": 468,
+  "key": "40:9:2",
+  "word": "ٱلسَّيِّـَٔاتِۚ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ت",
+  "holds": []
+ },
+ {
+  "page": 468,
+  "key": "40:9:9",
+  "word": "وَذَٰلِكَ",
   "kind": "misplaced",
+  "group": 1,
+  "names": "small-alef sits on group 0's letters",
+  "holds": [
+   "small-alef"
+  ]
+ },
+ {
+  "page": 470,
+  "key": "40:28:10",
+  "word": "رَجُلًا",
+  "kind": "empty",
   "group": 0,
-  "names": "dammatan sits on group 2's letters",
-  "holds": [
-   "dammatan"
-  ]
+  "names": "ر",
+  "holds": []
  },
  {
-  "page": 477,
-  "key": "41:9:12",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 486,
-  "key": "42:23:1",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 486,
-  "key": "42:29:5",
+  "page": 453,
+  "key": "38:10:5",
   "word": "وَٱلْأَرْضِ",
   "kind": "empty",
   "group": 0,
   "names": "وا",
   "holds": []
- },
- {
-  "page": 478,
-  "key": "41:15:22",
-  "word": "قُوَّةࣰۖ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 489,
-  "key": "42:52:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
  },
  {
   "page": 492,
@@ -2730,26 +1080,13 @@
   "holds": []
  },
  {
-  "page": 490,
-  "key": "43:11:11",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 491,
-  "key": "43:23:1",
-  "word": "وَكَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 2,
-  "names": "small-alef sits on group 1's letters",
-  "holds": [
-   "small-alef"
-  ]
+  "page": 486,
+  "key": "42:29:5",
+  "word": "وَٱلْأَرْضِ",
+  "kind": "empty",
+  "group": 0,
+  "names": "وا",
+  "holds": []
  },
  {
   "page": 497,
@@ -2761,34 +1098,14 @@
   "holds": []
  },
  {
-  "page": 498,
-  "key": "44:44:2",
-  "word": "ٱلْأَثِيمِ",
+  "page": 503,
+  "key": "46:14:6",
+  "word": "جَزَآءَۢ",
   "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 498,
-  "key": "44:54:1",
-  "word": "كَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
+  "group": 2,
+  "names": "ء",
   "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 502,
-  "key": "45:35:1",
-  "word": "ذَٰلِكُم",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
+   "meem-iqlab"
   ]
  },
  {
@@ -2810,48 +1127,13 @@
   "holds": []
  },
  {
-  "page": 503,
-  "key": "46:6:6",
-  "word": "أَعْدَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 3's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 503,
-  "key": "46:12:11",
-  "word": "عَرَبِيࣰّا",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 503,
-  "key": "46:14:6",
-  "word": "جَزَآءَۢ",
+  "page": 498,
+  "key": "44:44:2",
+  "word": "ٱلْأَثِيمِ",
   "kind": "empty",
-  "group": 2,
-  "names": "ء",
-  "holds": [
-   "meem-iqlab"
-  ]
- },
- {
-  "page": 514,
-  "key": "48:25:16",
-  "word": "وَنِسَآءࣱ",
-  "kind": "misplaced",
   "group": 0,
-  "names": "dammatan sits on group 2's letters",
-  "holds": [
-   "dammatan"
-  ]
+  "names": "ا",
+  "holds": []
  },
  {
   "page": 514,
@@ -2866,28 +1148,6 @@
  },
  {
   "page": 518,
-  "key": "50:9:4",
-  "word": "مَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 518,
-  "key": "50:13:1",
-  "word": "وَعَادࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 2's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 518,
   "key": "50:13:2",
   "word": "وَفِرْعَوْنُ",
   "kind": "empty",
@@ -2896,15 +1156,40 @@
   "holds": []
  },
  {
-  "page": 512,
-  "key": "48:15:18",
-  "word": "كَذَٰلِكُمْ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
+  "page": 516,
+  "key": "49:10:3",
+  "word": "إِخْوَةࣱ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ة",
+  "holds": []
+ },
+ {
+  "page": 528,
+  "key": "53:60:1",
+  "word": "وَتَضْحَكُونَ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ن",
+  "holds": []
+ },
+ {
+  "page": 529,
+  "key": "54:22:3",
+  "word": "ٱلْقُرْءَانَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 531,
+  "key": "54:50:6",
+  "word": "بِٱلْبَصَرِ",
+  "kind": "empty",
+  "group": 0,
+  "names": "با",
+  "holds": []
  },
  {
   "page": 506,
@@ -2925,115 +1210,6 @@
   "holds": []
  },
  {
-  "page": 520,
-  "key": "50:44:6",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 516,
-  "key": "49:10:3",
-  "word": "إِخْوَةࣱ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ة",
-  "holds": []
- },
- {
-  "page": 516,
-  "key": "49:11:15",
-  "word": "نِسَآءࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 1's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 507,
-  "key": "47:4:22",
-  "word": "وَلَوْ",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 507,
-  "key": "47:4:23",
-  "word": "يَشَآءُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "يشا",
-  "holds": [
-   "two-dots"
-  ]
- },
- {
-  "page": 507,
-  "key": "47:4:24",
-  "word": "ٱللَّهُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 528,
-  "key": "53:60:1",
-  "word": "وَتَضْحَكُونَ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ن",
-  "holds": []
- },
- {
-  "page": 531,
-  "key": "54:50:6",
-  "word": "بِٱلْبَصَرِ",
-  "kind": "empty",
-  "group": 0,
-  "names": "با",
-  "holds": []
- },
- {
-  "page": 531,
-  "key": "54:53:3",
-  "word": "وَكَبِيرࣲ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "kasratan sits on group 1's letters",
-  "holds": [
-   "kasratan"
-  ]
- },
- {
-  "page": 527,
-  "key": "53:30:1",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 529,
-  "key": "54:22:3",
-  "word": "ٱلْقُرْءَانَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
   "page": 526,
   "key": "53:21:4",
   "word": "ٱلْأُنثَىٰ",
@@ -3041,28 +1217,6 @@
   "group": 0,
   "names": "ا",
   "holds": []
- },
- {
-  "page": 525,
-  "key": "52:47:6",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 542,
-  "key": "58:4:17",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
  },
  {
   "page": 535,
@@ -3132,12 +1286,41 @@
   "holds": []
  },
  {
-  "page": 533,
-  "key": "55:69:3",
-  "word": "رَبِّكُمَا",
+  "page": 532,
+  "key": "55:29:4",
+  "word": "ٱلسَّمَٰوَٰتِ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ت",
+  "holds": []
+ },
+ {
+  "page": 507,
+  "key": "47:4:22",
+  "word": "وَلَوْ",
   "kind": "empty",
   "group": 0,
-  "names": "ر",
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 507,
+  "key": "47:4:23",
+  "word": "يَشَآءُ",
+  "kind": "empty",
+  "group": 0,
+  "names": "يشا",
+  "holds": [
+   "two-dots"
+  ]
+ },
+ {
+  "page": 507,
+  "key": "47:4:24",
+  "word": "ٱللَّهُ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
   "holds": []
  },
  {
@@ -3150,35 +1333,31 @@
   "holds": []
  },
  {
-  "page": 547,
-  "key": "59:13:3",
-  "word": "رَهْبَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 532,
-  "key": "55:29:4",
-  "word": "ٱلسَّمَٰوَٰتِ",
+  "page": 533,
+  "key": "55:69:3",
+  "word": "رَبِّكُمَا",
   "kind": "empty",
-  "group": 2,
-  "names": "ت",
+  "group": 0,
+  "names": "ر",
   "holds": []
  },
  {
-  "page": 532,
-  "key": "55:37:5",
-  "word": "وَرْدَةࣰ",
-  "kind": "misplaced",
+  "page": 546,
+  "key": "59:7:25",
+  "word": "ءَاتَىٰكُمُ",
+  "kind": "empty",
   "group": 0,
-  "names": "fathatan sits on group 3's letters",
-  "holds": [
-   "fathatan"
-  ]
+  "names": "ء",
+  "holds": []
+ },
+ {
+  "page": 546,
+  "key": "59:9:3",
+  "word": "ٱلدَّارَ",
+  "kind": "empty",
+  "group": 3,
+  "names": "ر",
+  "holds": []
  },
  {
   "page": 552,
@@ -3208,75 +1387,6 @@
   "holds": []
  },
  {
-  "page": 546,
-  "key": "59:7:25",
-  "word": "ءَاتَىٰكُمُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ء",
-  "holds": []
- },
- {
-  "page": 546,
-  "key": "59:9:3",
-  "word": "ٱلدَّارَ",
-  "kind": "empty",
-  "group": 3,
-  "names": "ر",
-  "holds": []
- },
- {
-  "page": 550,
-  "key": "60:7:10",
-  "word": "مَّوَدَّةࣰۚ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 550,
-  "key": "60:10:48",
-  "word": "ذَٰلِكُمْ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 555,
-  "key": "63:10:8",
-  "word": "يَأْتِىَ",
-  "kind": "empty",
-  "group": 1,
-  "names": "تى",
-  "holds": []
- },
- {
-  "page": 555,
-  "key": "63:10:9",
-  "word": "أَحَدَكُمُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 544,
-  "key": "58:12:11",
-  "word": "صَدَقَةࣰۚ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 1's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
   "page": 544,
   "key": "58:13:14",
   "word": "فَأَقِيمُوا۟",
@@ -3298,58 +1408,11 @@
   ]
  },
  {
-  "page": 560,
-  "key": "66:6:14",
-  "word": "شِدَادࣱ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "dammatan sits on group 2's letters",
-  "holds": [
-   "dammatan"
-  ]
- },
- {
-  "page": 568,
-  "key": "70:4:2",
-  "word": "ٱلْمَلَٰٓئِكَةُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 568,
-  "key": "70:8:3",
-  "word": "ٱلسَّمَآءُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
   "page": 566,
   "key": "68:51:11",
   "word": "إِنَّهُۥ",
   "kind": "empty",
   "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 557,
-  "key": "64:14:13",
-  "word": "وَتَصْفَحُوا۟",
-  "kind": "empty",
-  "group": 2,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 557,
-  "key": "64:14:14",
-  "word": "وَتَغْفِرُوا۟",
-  "kind": "empty",
-  "group": 2,
   "names": "ا",
   "holds": []
  },
@@ -3390,26 +1453,40 @@
   "holds": []
  },
  {
-  "page": 548,
-  "key": "59:22:13",
-  "word": "ٱلرَّحِيمُ",
-  "kind": "misplaced",
+  "page": 568,
+  "key": "70:4:2",
+  "word": "ٱلْمَلَٰٓئِكَةُ",
+  "kind": "empty",
   "group": 0,
-  "names": "kasra sits on group 1's letters",
-  "holds": [
-   "kasra"
-  ]
+  "names": "ا",
+  "holds": []
  },
  {
-  "page": 558,
-  "key": "65:1:40",
-  "word": "ذَٰلِكَ",
-  "kind": "misplaced",
+  "page": 568,
+  "key": "70:8:3",
+  "word": "ٱلسَّمَآءُ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 555,
+  "key": "63:10:8",
+  "word": "يَأْتِىَ",
+  "kind": "empty",
   "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
+  "names": "تى",
+  "holds": []
+ },
+ {
+  "page": 555,
+  "key": "63:10:9",
+  "word": "أَحَدَكُمُ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
  },
  {
   "page": 549,
@@ -3441,24 +1518,6 @@
   "holds": []
  },
  {
-  "page": 574,
-  "key": "73:15:9",
-  "word": "إِلَىٰ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 574,
-  "key": "73:19:2",
-  "word": "هَٰذِهِۦ",
-  "kind": "empty",
-  "group": 1,
-  "names": "ه",
-  "holds": []
- },
- {
   "page": 556,
   "key": "64:3:2",
   "word": "ٱلسَّمَٰوَٰتِ",
@@ -3477,12 +1536,12 @@
   "holds": []
  },
  {
-  "page": 573,
-  "key": "72:20:5",
-  "word": "وَلَآ",
+  "page": 571,
+  "key": "71:24:2",
+  "word": "أَضَلُّوا۟",
   "kind": "empty",
-  "group": 0,
-  "names": "و",
+  "group": 2,
+  "names": "ا",
   "holds": []
  },
  {
@@ -3504,43 +1563,77 @@
   "holds": []
  },
  {
-  "page": 567,
-  "key": "69:9:6",
-  "word": "بِٱلْخَاطِئَةِ",
+  "page": 557,
+  "key": "64:14:13",
+  "word": "وَتَصْفَحُوا۟",
   "kind": "empty",
-  "group": 0,
-  "names": "با",
+  "group": 2,
+  "names": "ا",
   "holds": []
  },
  {
-  "page": 567,
-  "key": "69:12:3",
-  "word": "تَذْكِرَةࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
+  "page": 557,
+  "key": "64:14:14",
+  "word": "وَتَغْفِرُوا۟",
+  "kind": "empty",
+  "group": 2,
+  "names": "ا",
+  "holds": []
  },
  {
-  "page": 567,
-  "key": "69:16:2",
-  "word": "ٱلسَّمَآءُ",
+  "page": 574,
+  "key": "73:15:9",
+  "word": "إِلَىٰ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 574,
+  "key": "73:19:2",
+  "word": "هَٰذِهِۦ",
+  "kind": "empty",
+  "group": 1,
+  "names": "ه",
+  "holds": []
+ },
+ {
+  "page": 581,
+  "key": "77:50:3",
+  "word": "بَعْدَهُۥ",
+  "kind": "empty",
+  "group": 0,
+  "names": "بعد",
+  "holds": []
+ },
+ {
+  "page": 573,
+  "key": "72:20:5",
+  "word": "وَلَآ",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 586,
+  "key": "81:8:2",
+  "word": "ٱلْمَوْءُۥدَةُ",
   "kind": "empty",
   "group": 2,
   "names": "ء",
   "holds": [
-   "damma"
+   "small-waw"
   ]
  },
  {
-  "page": 567,
-  "key": "69:30:2",
-  "word": "فَغُلُّوهُ",
+  "page": 586,
+  "key": "81:21:1",
+  "word": "مُّطَاعࣲ",
   "kind": "empty",
-  "group": 0,
-  "names": "فغلو",
+  "group": 1,
+  "names": "ع",
   "holds": []
  },
  {
@@ -3550,46 +1643,6 @@
   "kind": "empty",
   "group": 0,
   "names": "ا",
-  "holds": []
- },
- {
-  "page": 578,
-  "key": "75:37:1",
-  "word": "أَلَمْ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "hamza sits on group 0's letters",
-  "holds": [
-   "hamza"
-  ]
- },
- {
-  "page": 571,
-  "key": "71:24:2",
-  "word": "أَضَلُّوا۟",
-  "kind": "empty",
-  "group": 2,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 581,
-  "key": "77:26:1",
-  "word": "أَحْيَآءࣰ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "fathatan sits on group 2's letters",
-  "holds": [
-   "fathatan"
-  ]
- },
- {
-  "page": 581,
-  "key": "77:50:3",
-  "word": "بَعْدَهُۥ",
-  "kind": "empty",
-  "group": 0,
-  "names": "بعد",
   "holds": []
  },
  {
@@ -3626,75 +1679,6 @@
   "kind": "empty",
   "group": 0,
   "names": "ا",
-  "holds": []
- },
- {
-  "page": 586,
-  "key": "81:8:2",
-  "word": "ٱلْمَوْءُۥدَةُ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ء",
-  "holds": [
-   "small-waw"
-  ]
- },
- {
-  "page": 586,
-  "key": "81:19:3",
-  "word": "رَسُولࣲ",
-  "kind": "misplaced",
-  "group": 0,
-  "names": "kasratan sits on group 2's letters",
-  "holds": [
-   "kasratan"
-  ]
- },
- {
-  "page": 586,
-  "key": "81:21:1",
-  "word": "مُّطَاعࣲ",
-  "kind": "empty",
-  "group": 1,
-  "names": "ع",
-  "holds": []
- },
- {
-  "page": 583,
-  "key": "78:35:6",
-  "word": "كِذَّٰبࣰا",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 584,
-  "key": "79:20:2",
-  "word": "ٱلْـَٔايَةَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "الا",
-  "holds": []
- },
- {
-  "page": 584,
-  "key": "79:21:2",
-  "word": "وَعَصَىٰ",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 588,
-  "key": "83:6:3",
-  "word": "ٱلنَّاسُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "النا",
   "holds": []
  },
  {
@@ -3845,21 +1829,32 @@
   "holds": []
  },
  {
-  "page": 591,
-  "key": "86:1:1",
-  "word": "وَٱلسَّمَآءِ",
+  "page": 567,
+  "key": "69:9:6",
+  "word": "بِٱلْخَاطِئَةِ",
   "kind": "empty",
-  "group": 2,
-  "names": "ء",
+  "group": 0,
+  "names": "با",
   "holds": []
  },
  {
-  "page": 596,
-  "key": "92:11:5",
-  "word": "إِذَا",
+  "page": 567,
+  "key": "69:16:2",
+  "word": "ٱلسَّمَآءُ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ء",
+  "holds": [
+   "damma"
+  ]
+ },
+ {
+  "page": 567,
+  "key": "69:30:2",
+  "word": "فَغُلُّوهُ",
   "kind": "empty",
   "group": 0,
-  "names": "اذ",
+  "names": "فغلو",
   "holds": []
  },
  {
@@ -3878,6 +1873,51 @@
   "kind": "empty",
   "group": 3,
   "names": "ض",
+  "holds": []
+ },
+ {
+  "page": 596,
+  "key": "92:11:5",
+  "word": "إِذَا",
+  "kind": "empty",
+  "group": 0,
+  "names": "اذ",
+  "holds": []
+ },
+ {
+  "page": 588,
+  "key": "83:6:3",
+  "word": "ٱلنَّاسُ",
+  "kind": "empty",
+  "group": 0,
+  "names": "النا",
+  "holds": []
+ },
+ {
+  "page": 584,
+  "key": "79:20:2",
+  "word": "ٱلْـَٔايَةَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "الا",
+  "holds": []
+ },
+ {
+  "page": 584,
+  "key": "79:21:2",
+  "word": "وَعَصَىٰ",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 591,
+  "key": "86:1:1",
+  "word": "وَٱلسَّمَآءِ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ء",
   "holds": []
  }
 ]

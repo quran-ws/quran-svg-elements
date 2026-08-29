@@ -11624,7 +11624,7 @@ def assign_page(edition, page_no, cache_dir):
                 continue
             _gs = []
             for _i, _a in enumerate(_atL):
-                _lk = _a.get("lig", ("_", _i))
+                _lk = _a.get("lig", _i)   # exactly rewrite()'s group key
                 if _gs and _gs[-1]["lig"] == _lk:
                     _gs[-1]["at"].append(_a)
                 else:
