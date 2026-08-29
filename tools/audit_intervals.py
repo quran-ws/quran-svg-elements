@@ -124,6 +124,30 @@ def scan(pg):
                     _oy2 = max(x["y2"] for x in _ob)
                     if max(_oy1 - e["y2"], e["y1"] - _oy2) > 6.5:
                         continue
+
+                # AND THE MARK MUST BE NEARER THE ACCUSED WORD THAN ITS OWN.
+                # The x-overlap test above ("still touching its own word")
+                # is one-dimensional, so a mark hugging its own word's last
+                # letter slips past it by a fraction of a unit and is then
+                # judged on x alone. Measured as the 2-D gap from the mark's
+                # box to each word's nearest letter box, over every record:
+                #   own-minus-neighbour = -151.4, -3.1, -2.7, -2.2, -1.4,
+                #   -0.7, -0.4  |  +1.0, +1.2, +1.3, +2.0, +4.4, +4.7, +5.0,
+                #   +5.6, +6.6, +6.9
+                # An empty band 1.4u wide. Every record left of it has the
+                # mark TOUCHING its own word (own gap 0.0-2.4) -- يُغَيِّرُ's
+                # own two dots, ٱلْعَزِيزُ's own wasla, and one case whose
+                # "neighbour" is 151u away. Threshold inside the band.
+                def _gap(bx):
+                    g = 1e9
+                    for b in bx:
+                        dx = max(0.0, b["x1"] - e["x2"], e["x1"] - b["x2"])
+                        dy = max(0.0, b["y1"] - e["y2"], e["y1"] - b["y2"])
+                        g = min(g, (dx * dx + dy * dy) ** 0.5)
+                    return g
+                _hb = [x for x in els if x["kind"] == "body"]
+                if _hb and _ob and _gap(_hb) - _gap(_ob) < 0.3:
+                    continue
                 rA, rB = ratio(w), ratio(other)
                 nsegA = max(1, len(aw.segment_word(w["uthmani"])))
                 defA = nsegA - len(meta[id(w)][1])
