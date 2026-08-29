@@ -1,0 +1,1053 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page 3, Taken Apart</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Public+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Amiri:wght@400;700&display=swap">
+<style>
+:root{
+  --ground:#e7e3da; --panel:#f7f5f0; --sunk:#ded9cd;
+  --ink:#191713; --muted:#6b6458; --rule:rgba(25,23,19,.16);
+  --gold:#9a6f13; --lapis:#2d55a0; --paper:#fbf9f4;
+  --code-bg:#201e1a; --code-fg:#e6e1d6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#131419; --panel:#1b1d24; --sunk:#0e0f13;
+    --ink:#e8e4da; --muted:#8f8b81; --rule:rgba(232,228,218,.15);
+    --gold:#dfae51; --lapis:#7ea4e8; --paper:#f4f1e9;
+    --code-bg:#0e0f13; --code-fg:#ddd8cd;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#131419; --panel:#1b1d24; --sunk:#0e0f13;
+  --ink:#e8e4da; --muted:#8f8b81; --rule:rgba(232,228,218,.15);
+  --gold:#dfae51; --lapis:#7ea4e8; --paper:#f4f1e9;
+  --code-bg:#0e0f13; --code-fg:#ddd8cd;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation:none!important;transition:none!important}}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font:400 16px/1.6 "Public Sans","Helvetica Neue",Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:"Spectral",Georgia,serif;font-weight:600;text-wrap:balance;margin:0}
+code,pre,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+.ar{font-family:"Amiri",serif;font-size:1.35em;line-height:1}
+a{color:var(--lapis)}
+:focus-visible{outline:2px solid var(--lapis);outline-offset:3px}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* masthead */
+.mast{border-bottom:1px solid var(--rule);padding:44px 0 30px}
+.eyebrow{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.mast h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-.02em;margin:14px 0 0}
+.mast h1 em{font-style:italic;color:var(--gold)}
+.lede{max-width:62ch;margin:16px 0 0;color:var(--muted);font-size:17px}
+.mast-foot{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;align-items:center}
+.chip{font:500 12px/1 "IBM Plex Mono",monospace;border:1px solid var(--rule);border-radius:999px;padding:7px 11px;color:var(--muted);background:var(--panel)}
+.chip b{color:var(--ink);font-weight:500}
+
+/* sticky index */
+.index{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--ground) 90%,transparent);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.index ol{display:flex;gap:0;list-style:none;margin:0;padding:0;overflow-x:auto}
+.index a{display:block;padding:12px 14px;text-decoration:none;color:var(--muted);
+  font:500 12px/1 "IBM Plex Mono",monospace;white-space:nowrap;border-right:1px solid var(--rule)}
+.index a:hover{color:var(--ink);background:var(--panel)}
+
+/* sections */
+section{padding:64px 0;border-bottom:1px solid var(--rule)}
+.shead{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-bottom:26px}
+.shead .sel{font:500 12px/1 "IBM Plex Mono",monospace;color:var(--gold);letter-spacing:.02em}
+.shead h2{font-size:clamp(24px,3.4vw,33px);letter-spacing:-.015em}
+.shead p{margin:0;color:var(--muted);max-width:66ch}
+
+/* specimen paper */
+.paper{background:var(--paper);border:1px solid var(--rule);border-radius:2px;
+  box-shadow:0 1px 0 rgba(0,0,0,.06),0 14px 34px -22px rgba(0,0,0,.5);padding:14px}
+.paper svg{display:block;width:100%;height:auto}
+.paper.tight{padding:10px}
+
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:820px){.two{grid-template-columns:minmax(0,1fr)}}
+
+/* controls */
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:2px;padding:16px}
+.panel h3{font-family:"Public Sans",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row+.row{margin-top:12px}
+.lbl{font:500 12px/1 "IBM Plex Mono",monospace;color:var(--muted);min-width:88px}
+button,select,input[type=number]{font:500 13px/1 "IBM Plex Mono",monospace;color:var(--ink);
+  background:var(--ground);border:1px solid var(--rule);border-radius:2px;padding:8px 10px;cursor:pointer}
+button:hover,select:hover{border-color:var(--ink)}
+button[aria-pressed=true],button.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+input[type=range]{flex:1;min-width:130px;accent-color:var(--lapis)}
+input[type=color]{width:38px;height:30px;padding:2px;border:1px solid var(--rule);background:var(--ground);border-radius:2px;cursor:pointer}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pills button{padding:7px 9px;font-size:12px}
+.val{font:500 12px/1 "IBM Plex Mono",monospace;color:var(--gold);min-width:52px;text-align:right}
+
+/* code */
+figure.code{margin:16px 0 0;position:relative}
+figure.code pre{margin:0;padding-right:76px;background:var(--code-bg);color:var(--code-fg);border-radius:2px;
+  padding:16px 18px;overflow-x:auto;font-size:13px;line-height:1.65;tab-size:2}
+figure.code .tabs{display:flex;gap:0;margin-bottom:8px}
+figure.code .tabs button{border-radius:0;padding:6px 12px;font-size:11.5px;letter-spacing:.06em;
+  text-transform:uppercase;border-right:none;color:var(--muted)}
+figure.code .tabs button:last-child{border-right:1px solid var(--rule)}
+figure.code .tabs button.on{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+figure.code .copy{top:auto}
+figure.code .cap{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);padding:0 0 8px}
+figure.code .copy{position:absolute;top:8px;right:10px;background:rgba(255,255,255,.08);
+  color:var(--code-fg);border-color:rgba(255,255,255,.18);padding:5px 8px;font-size:11px}
+.tok-k{color:#dfae51}.tok-s{color:#8fc9a8}.tok-c{color:#7d786e}.tok-a{color:#8fb2e8}
+
+/* inspector */
+#hero{padding:44px 0 60px}
+.stage{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(260px,.85fr);gap:26px;align-items:start}
+@media (max-width:900px){.stage{grid-template-columns:minmax(0,1fr)}}
+#master{cursor:crosshair}
+.readout{position:sticky;top:56px}
+.readout dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px 14px;margin:0}
+.readout dt{font:500 11px/1.5 "IBM Plex Mono",monospace;color:var(--muted);letter-spacing:.04em}
+.readout dd{margin:0;font:500 13px/1.5 "IBM Plex Mono",monospace;word-break:break-word}
+.readout .word{font-size:30px;line-height:1.2;margin:2px 0 14px;color:var(--gold)}
+.hintbar{margin-top:12px;font-size:12px;color:var(--muted);line-height:1.5}
+.hl-word path{fill:var(--lapis)!important}
+.hl-lig path{fill:#b3341f!important}
+svg .ayahPolygon{pointer-events:none}
+svg.show-hits .ayahPolygon{fill:var(--lapis);fill-opacity:.11!important;stroke:var(--lapis);stroke-width:.4}
+
+/* attribute table */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font:700 11px/1 "Public Sans",sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+td.mono{font-family:"IBM Plex Mono",monospace;font-size:12.5px;white-space:nowrap;color:var(--gold)}
+.scroll{overflow-x:auto}
+
+footer{padding:40px 0 70px;color:var(--muted);font-size:13.5px}
+footer p{max-width:70ch}
+.hidden-stage{position:absolute;width:1px;height:1px;overflow:hidden;visibility:hidden;pointer-events:none}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <p class="eyebrow">KFGQPC Madani mushaf · V2 1421H · page 3</p>
+    <h1>One page of the mushaf,<br><em>taken apart and still identical</em></h1>
+    <p class="lede">The pipeline reads the printed artwork and gives every stroke a name: which ayah, which
+      word, which ligature, which mark. Nothing is redrawn — the ink below is the print's own outlines,
+      wrapped in structure you can select, crop and recolour. This page shows the ways to use that.</p>
+    <div class="mast-foot">
+      <span class="chip"><b>11</b> ayahs</span>
+      <span class="chip"><b>127</b> words</span>
+      <span class="chip"><b>280</b> ligatures</span>
+      <span class="chip"><b>1010</b> named elements</span>
+      <span class="chip"><b>698</b> marks</span>
+      <button id="theme" aria-label="Switch colour theme">theme</button>
+    </div>
+  </div>
+</header>
+
+<nav class="index" aria-label="Sections">
+  <div class="wrap">
+    <ol>
+      <li><a href="#hero">inspect</a></li>
+      <li><a href="#page">embed a page</a></li>
+      <li><a href="#ayah">embed an ayah</a></li>
+      <li><a href="#words">embed part of an ayah</a></li>
+      <li><a href="#colour">recolour</a></li>
+      <li><a href="#markers">ayah markers</a></li>
+      <li><a href="#lines">spacing</a></li>
+      <li><a href="#markup">the markup</a></li>
+    </ol>
+  </div>
+</nav>
+
+<main>
+
+<section id="hero">
+  <div class="wrap">
+    <div class="stage">
+      <div class="paper"><!--SVG--></div>
+      <div class="readout panel">
+        <h3>Inspector</h3>
+        <div class="word ar" id="ro-word">—</div>
+        <dl>
+          <dt>reference</dt><dd id="ro-ref">hover the ink</dd>
+          <dt>line</dt><dd id="ro-line">—</dd>
+          <dt>ligature</dt><dd id="ro-lig">—</dd>
+          <dt>element</dt><dd id="ro-el">—</dd>
+          <dt>kind</dt><dd id="ro-kind">—</dd>
+          <dt>signature</dt><dd id="ro-sig">—</dd>
+        </dl>
+        <div class="row" style="margin-top:14px">
+          <button id="hits" aria-pressed="false">show ayah hit regions</button>
+        </div>
+        <p class="hintbar">Every path carries its own identity. The blue highlight follows the word under the
+          cursor; the red one is the single ligature you are touching.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="page">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">&lt;svg viewBox="0 0 345 550"&gt;</p>
+      <h2>Embed a whole page</h2>
+      <p>The build writes one file per page. It is an ordinary SVG with a fixed <code>viewBox</code>, so it
+        scales to any width and prints at any size. Drop it in as an image when you only need the picture;
+        inline it when you want to select things inside it.</p>
+    </div>
+    <figure class="code">
+      <figcaption class="cap">embedding the page</figcaption><div class="tabs"><button class="on" data-tab="js">JavaScript</button><button data-tab="css">CSS only</button></div>
+      <button class="copy">copy</button>
+      <pre data-tab="js"><code><span class="tok-k">const</span> res  = <span class="tok-k">await</span> fetch(<span class="tok-s">'003-embed.svg'</span>);
+<span class="tok-k">const</span> host = document.querySelector(<span class="tok-s">'#page'</span>);
+host.innerHTML = <span class="tok-k">await</span> res.text();
+
+<span class="tok-c">// the page is now queryable</span>
+<span class="tok-k">const</span> svg = host.querySelector(<span class="tok-s">'svg'</span>);
+svg.querySelectorAll(<span class="tok-s">'g.word'</span>).length;            <span class="tok-c">// 127</span>
+svg.querySelector(<span class="tok-s">'g.word'</span>).dataset.uthmani;      <span class="tok-c">// "إِنَّ"</span></code></pre>
+      <pre data-tab="css" hidden><code>&lt;<span class="tok-k">img</span> <span class="tok-a">src</span>=<span class="tok-s">"003-embed.svg"</span> <span class="tok-a">alt</span>=<span class="tok-s">"Mushaf page 3"</span> <span class="tok-a">width</span>=<span class="tok-s">"345"</span>&gt;
+
+<span class="tok-c">/* or as a background — same file, no markup at all */</span>
+.page {
+  background: url(003-embed.svg) center / contain no-repeat;
+  aspect-ratio: 345 / 550;
+}</code></pre>
+    </figure>
+  </div>
+</section>
+
+<section id="ayah">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">g.ayah[data-surah][data-ayah]</p>
+      <h2>Embed a single ayah</h2>
+      <p>An ayah is a group — sometimes several, when it runs across a line break. Keep its words, drop the
+        rest, then let the browser measure what is left and write a new <code>viewBox</code>. The crop keeps
+        the print's own line breaks, because that is how the ayah is actually set on the page.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Pick an ayah</h3>
+          <div class="pills" id="ayah-pills"></div>
+          <div class="row" style="margin-top:14px">
+            <span class="lbl">margin</span>
+            <input type="range" id="ayah-pad" min="0" max="20" value="4" step="1">
+            <span class="val" id="ayah-pad-v">4</span>
+          </div>
+          <div class="row">
+            <span class="lbl">end marker</span>
+            <button id="ayah-marker" aria-pressed="false">drop</button>
+          </div>
+          <div class="row">
+            <span class="lbl">framing</span>
+            <button id="ayah-frame" aria-pressed="false">tight around the words</button>
+          </div>
+        </div>
+        <figure class="code">
+          <figcaption class="cap">the whole operation</figcaption><div class="tabs"><button class="on" data-tab="js">JavaScript</button><button data-tab="css">CSS only</button></div>
+          <button class="copy">copy</button>
+          <pre data-tab="js"><code><span class="tok-k">function</span> <span class="tok-a">crop</span>(page, keep, pad = 4) {
+  <span class="tok-k">const</span> svg = page.cloneNode(<span class="tok-k">true</span>);
+
+  <span class="tok-c">// 1. throw away every word we are not keeping</span>
+  svg.querySelectorAll(<span class="tok-s">'g.word'</span>).forEach(w =&gt; keep(w) || w.remove());
+  <span class="tok-c">// 2. and the now-empty wrappers around them</span>
+  svg.querySelectorAll(<span class="tok-s">'g.ayah, g.line'</span>)
+     .forEach(g =&gt; g.querySelector(<span class="tok-s">'g.word'</span>) || g.remove());
+
+  <span class="tok-c">// 3. measure what survived, in the page's own units</span>
+  host.append(svg);
+  <span class="tok-k">const</span> b = svg.getBBox();
+  svg.setAttribute(<span class="tok-s">'viewBox'</span>,
+    `${b.x - pad} ${b.y - pad} ${b.width + 2*pad} ${b.height + 2*pad}`);
+  <span class="tok-k">return</span> svg;
+}
+
+crop(page, w =&gt; w.dataset.ayah === <span class="tok-s">'10'</span>);
+
+<span class="tok-c">// keep the printed line width instead, so the ayah sits</span>
+<span class="tok-c">// exactly where the line starts:</span>
+<span class="tok-k">const</span> line = page.querySelector(<span class="tok-s">'#content'</span>).getBBox();
+svg.setAttribute(<span class="tok-s">'viewBox'</span>,
+  `${line.x} ${b.y - pad} ${line.width} ${b.height + 2*pad}`);</code></pre>
+        <pre data-tab="css" hidden><code><span class="tok-c">/* the file ships one &lt;view&gt; per ayah, so the fragment</span>
+<span class="tok-c">   both frames the ayah and hides everything else */</span>
+&lt;<span class="tok-k">img</span> <span class="tok-a">src</span>=<span class="tok-s">"003-embed.svg#v-ayah-10"</span> <span class="tok-a">alt</span>=<span class="tok-s">"Surah 2, ayah 10"</span>&gt;
+
+<span class="tok-c">/* inline instead? the same rules answer to a class */</span>
+&lt;<span class="tok-k">svg</span> <span class="tok-a">class</span>=<span class="tok-s">"only-ayah-10"</span> …&gt;
+
+<span class="tok-c">/* and this is the rule inside the file that does it */</span>
+svg:has(#v-ayah-10:target) g.word:not([data-ayah=<span class="tok-s">"10"</span>])        { display: none }
+svg:has(#v-ayah-10:target) g.ayah-marker:not([data-closes=<span class="tok-s">"10"</span>]) { display: none }</code></pre></figure>
+      </div>
+      <div>
+        <div class="paper tight" id="ayah-out"></div>
+        <p class="hintbar" id="ayah-note"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="words">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">g.word[data-word]</p>
+      <h2>Embed part of an ayah</h2>
+      <p>Words are numbered inside their ayah, so any run of them crops the same way — one word for a
+        vocabulary card, a phrase for a citation. The words carry their text three ways at once
+        (<code>data-uthmani</code>, <code>data-imlaei</code>, <code>data-qpc</code>), which is what makes a
+        crop searchable rather than just a picture.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Pick a run of words</h3>
+          <div class="row">
+            <span class="lbl">ayah</span>
+            <select id="w-ayah"></select>
+          </div>
+          <div class="row">
+            <span class="lbl">from word</span>
+            <input type="number" id="w-from" min="1" value="1" style="width:76px">
+            <span class="lbl" style="min-width:auto">to</span>
+            <input type="number" id="w-to" min="1" value="3" style="width:76px">
+          </div>
+          <div class="row"><span class="lbl">text</span><span class="ar" id="w-text"></span></div>
+        </div>
+        <figure class="code">
+          <figcaption class="cap">same crop, a different filter</figcaption><div class="tabs"><button class="on" data-tab="js">JavaScript</button><button data-tab="css">CSS only</button></div>
+          <button class="copy">copy</button>
+          <pre data-tab="js"><code><span class="tok-k">const</span> clip = crop(page, w =&gt; {
+  <span class="tok-k">const</span> d = w.dataset;
+  <span class="tok-k">return</span> d.ayah === <span class="tok-s">'2'</span> &amp;&amp; +d.word &gt;= <span class="tok-s">1</span> &amp;&amp; +d.word &lt;= <span class="tok-s">3</span>;
+});
+
+<span class="tok-c">// the crop keeps its own text, for alt or copy-to-clipboard</span>
+[...clip.querySelectorAll(<span class="tok-s">'g.word'</span>)]
+  .map(w =&gt; w.dataset.uthmani).join(<span class="tok-s">' '</span>);</code></pre>
+        <pre data-tab="css" hidden><code><span class="tok-c">/* every word carries two token lists:</span>
+<span class="tok-c">   data-ge = "1 2 … w"  (its index and everything below)</span>
+<span class="tok-c">   data-le = "w … n"    (its index and everything above)</span>
+<span class="tok-c">   so one selector expresses any range — no script, no per-range rule */</span>
+
+svg g.word:not([data-ayah=<span class="tok-s">"13"</span>][data-ge~=<span class="tok-s">"4"</span>][data-le~=<span class="tok-s">"7"</span>]) { display: none }
+
+<span class="tok-c">/* framing an arbitrary box needs no file support either */</span>
+&lt;<span class="tok-k">img</span> <span class="tok-a">src</span>=<span class="tok-s">"003-embed.svg#svgView(viewBox(180,331,150,32))"</span>&gt;</code></pre></figure>
+      </div>
+      <div>
+        <div class="paper tight" id="w-out"></div>
+        <p class="hintbar" id="w-note"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="colour">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">path[data-kind] · path[data-mark-family]</p>
+      <h2>Recolour by what the ink means</h2>
+      <p>Every path in the file is <code>fill="#231f20"</code>, and every path also says what it is. A CSS
+        rule beats the attribute, so colour follows meaning: letters one way, vowel marks another, the dots
+        that distinguish letters another again. No re-export, no second file.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Presets</h3>
+          <div class="pills" id="c-presets"></div>
+        </div>
+        <div class="panel" style="margin-top:14px">
+          <h3>Or set them yourself</h3>
+          <div class="row"><span class="lbl">paper</span><input type="color" id="c-paper" value="#fbf9f4"><code id="c-paper-v"></code></div>
+          <div class="row"><span class="lbl">letters</span><input type="color" id="c-body" value="#231f20"><code id="c-body-v"></code></div>
+          <div class="row"><span class="lbl">marks</span><input type="color" id="c-mark" value="#231f20"><code id="c-mark-v"></code></div>
+          <div class="row"><span class="lbl">dots</span><input type="color" id="c-dots" value="#231f20"><code id="c-dots-v"></code></div>
+          <div class="row"><span class="lbl">ayah ends</span><input type="color" id="c-marker" value="#231f20"><code id="c-marker-v"></code></div>
+          <div class="row"><span class="lbl">emphasis</span><select id="c-focus"></select><input type="color" id="c-focus-col" value="#2d55a0"></div>
+        </div>
+        <figure class="code">
+          <figcaption class="cap">the stylesheet the controls are writing</figcaption><div class="tabs"><button class="on" data-tab="js">CSS only</button><button data-tab="css">JavaScript</button></div>
+          <button class="copy">copy</button>
+          <pre data-tab="js"><code id="c-code"></code></pre>
+        <pre data-tab="css" hidden><code><span class="tok-c">// the same thing, one element at a time</span>
+svg.querySelectorAll(<span class="tok-s">'path[data-kind=\'mark\']'</span>)
+   .forEach(p =&gt; { p.style.fill = <span class="tok-s">'#a07514'</span>; });
+
+<span class="tok-c">// or scoped to one word, by its own id</span>
+svg.querySelector(<span class="tok-s">'#w-13-12'</span>)
+   .style.setProperty(<span class="tok-s">'--ink'</span>, <span class="tok-s">'#2d55a0'</span>);</code></pre></figure>
+      </div>
+      <div>
+        <div class="paper tight" id="c-out"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="markers">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">g.ayah-marker</p>
+      <h2>Swap the ayah end-marker</h2>
+      <p>The marker that closes an ayah is two things in one group: the printed rosette, and the ayah number
+        drawn inside it. They are separate paths, so the ornament can be replaced without touching the
+        number — useful when the mushaf's own rosette is heavier than a screen layout wants.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Ornament</h3>
+          <div class="pills" id="mk-shapes"></div>
+          <div class="row" style="margin-top:14px">
+            <span class="lbl">size</span>
+            <input type="range" id="mk-size" min="0.5" max="1.8" step="0.05" value="1">
+            <span class="val" id="mk-size-v">1.00</span>
+          </div>
+          <div class="row">
+            <span class="lbl">colour</span>
+            <input type="color" id="mk-col" value="#231f20">
+            <span class="lbl" style="min-width:auto">number</span>
+            <input type="color" id="mk-num" value="#231f20">
+          </div>
+        </div>
+        <figure class="code">
+          <figcaption class="cap">replace the ornament, keep the number</figcaption><div class="tabs"><button class="on" data-tab="js">JavaScript</button><button data-tab="css">CSS only</button></div>
+          <button class="copy">copy</button>
+          <pre data-tab="js"><code><span class="tok-k">const</span> orn = marker.querySelector(
+  <span class="tok-s">'[data-kind="ayah-marker-ornament"]'</span>).parentNode;
+
+<span class="tok-c">// the ornament carries its own scale(0.011), so getBBox()</span>
+<span class="tok-c">// reports glyph units — push the box through that matrix first</span>
+<span class="tok-k">const</span> b = boxInParent(orn);
+<span class="tok-k">const</span> cx = b.x + b.width / <span class="tok-s">2</span>, cy = b.y + b.height / <span class="tok-s">2</span>;
+
+<span class="tok-k">const</span> ring = document.createElementNS(SVG_NS, <span class="tok-s">'circle'</span>);
+ring.setAttribute(<span class="tok-s">'cx'</span>, cx);
+ring.setAttribute(<span class="tok-s">'cy'</span>, cy);
+ring.setAttribute(<span class="tok-s">'r'</span>, b.width / <span class="tok-s">2</span>);
+ring.setAttribute(<span class="tok-s">'fill'</span>, <span class="tok-s">'none'</span>);
+ring.setAttribute(<span class="tok-s">'stroke'</span>, <span class="tok-s">'#231f20'</span>);
+ring.setAttribute(<span class="tok-s">'stroke-width'</span>, <span class="tok-s">'0.6'</span>);
+
+orn.replaceWith(ring);   <span class="tok-c">// the number is a sibling — it stays put</span></code></pre>
+        <pre data-tab="css" hidden><code><span class="tok-c">/* the file carries the alternates already, all hidden but one */</span>
+&lt;<span class="tok-k">img</span> <span class="tok-a">src</span>=<span class="tok-s">"003-embed.svg#set-rosette"</span> <span class="tok-a">alt</span>=<span class="tok-s">"Page 3"</span>&gt;
+
+<span class="tok-c">/* inline, with a size to go with it */</span>
+&lt;<span class="tok-k">svg</span> <span class="tok-a">class</span>=<span class="tok-s">"orn-rosette"</span> <span class="tok-a">style</span>=<span class="tok-s">"--osize: 1.25"</span> …&gt;
+
+<span class="tok-c">/* and the rule that answers to either one */</span>
+svg.orn-rosette .alt-rosette,
+svg:has(#set-rosette:target) .alt-rosette { display: inline }</code></pre></figure>
+      </div>
+      <div>
+        <div class="paper tight" id="mk-out"></div>
+        <p class="hintbar">2:15, with its end-marker. The number keeps the print's own digits at the print's
+          own size, whatever the ornament around it becomes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="lines">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">g.line[data-line]</p>
+      <h2>Open up the spacing</h2>
+      <p>The fifteen lines are separate groups and the words inside them are too, so the page can breathe in
+        both directions without touching a single glyph. Lines move as one, words slide apart along their
+        line, the ayah end-markers ride with the line and the word run they belong to, and the
+        <code>viewBox</code> grows to match. Every letter keeps its exact printed shape.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Spacing</h3>
+          <div class="row">
+            <span class="lbl">line gap</span>
+            <input type="range" id="lh" min="0" max="10" step="0.25" value="0">
+            <span class="val" id="lh-v">0.00</span>
+          </div>
+          <div class="row">
+            <span class="lbl">word gap</span>
+            <input type="range" id="wg" min="0" max="8" step="0.25" value="0">
+            <span class="val" id="wg-v">0.00</span>
+          </div>
+          <div class="row">
+            <span class="lbl">show bands</span>
+            <button id="lh-bands" aria-pressed="false">off</button>
+          </div>
+        </div>
+        <figure class="code">
+          <figcaption class="cap">push each line away from the middle one</figcaption><div class="tabs"><button class="on" data-tab="js">JavaScript</button><button data-tab="css">CSS only</button></div>
+          <button class="copy">copy</button>
+          <pre data-tab="js"><code><span class="tok-k">const</span> lines = [...svg.querySelectorAll(<span class="tok-s">'g.line'</span>)];
+<span class="tok-k">const</span> mid   = (lines.length - <span class="tok-s">1</span>) / <span class="tok-s">2</span>;
+
+lines.forEach((line, i) =&gt; {
+  <span class="tok-c">// the page matrix flips y, so +y moves a line up the page</span>
+  line.setAttribute(<span class="tok-s">'transform'</span>, `translate(0 ${(mid - i) * gap})`);
+
+  <span class="tok-c">// words run right to left; spread them about the line's centre</span>
+  <span class="tok-k">const</span> words = [...line.querySelectorAll(<span class="tok-s">'g.word'</span>)];
+  <span class="tok-k">const</span> kmid  = (words.length - <span class="tok-s">1</span>) / <span class="tok-s">2</span>;
+  words.forEach((w, k) =&gt;
+    w.setAttribute(<span class="tok-s">'transform'</span>, `translate(${(kmid - k) * wgap} 0)`));
+});
+
+<span class="tok-c">// give the taller, wider page somewhere to go</span>
+<span class="tok-k">const</span> grow  = mid * gap * <span class="tok-s">1.3333</span>;
+<span class="tok-k">const</span> widen = maxWordsPerLine * wgap * <span class="tok-s">1.3333</span>;
+svg.setAttribute(<span class="tok-s">'viewBox'</span>,
+  `${-widen/2} ${-grow} ${345 + widen} ${550 + 2*grow}`);</code></pre>
+        <pre data-tab="css" hidden><code><span class="tok-c">/* every line knows its index, every word knows its place in the line,</span>
+<span class="tok-c">   so both spacings are one declaration each */</span>
+svg { --gap: 5; --wgap: 2 }
+
+<span class="tok-c">/* what the file does with them */</span>
+g.line { transform: translateY(calc((var(--mid) - var(--i)) * var(--gap) * 1px)) }
+g.word { transform: translateX(calc((var(--kmid) - var(--k)) * var(--wgap) * 1px)) }
+
+<span class="tok-c">/* CSS cannot write a viewBox, so the file sets overflow: visible</span>
+<span class="tok-c">   and the container is given the extra room */</span></code></pre></figure>
+      </div>
+      <div>
+        <div class="paper tight" id="lh-out"></div>
+        <p class="hintbar">The end-markers are stored outside the lines, so they are matched to a line — and
+          to a place in that line's run of words — by position before anything moves. The same trick works
+          for anything you draw on top of the page.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="markup">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">data-*</p>
+      <h2>What the markup carries</h2>
+      <p>Everything above is done with the attributes already in the file. This is all of them, on page 3.</p>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Selector</th><th>On page 3</th><th>What it holds</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">g.line[data-line]</td><td>15</td><td>One group per printed line, in reading order.</td></tr>
+          <tr><td class="mono">g.ayah[data-surah][data-ayah]</td><td>24</td><td>A run of one ayah's words inside one line. An ayah spanning lines has one group per line.</td></tr>
+          <tr><td class="mono">g.word[data-word]</td><td>127</td><td>Numbered within its ayah, and carrying its text as <code>data-uthmani</code>, <code>data-imlaei</code> and <code>data-qpc</code>.</td></tr>
+          <tr><td class="mono">g.ligature[data-text]</td><td>280</td><td>The connected run of letters the joining rules allow, with the letters it draws.</td></tr>
+          <tr><td class="mono">path[data-kind]</td><td>1010</td><td><code>body</code> for letter ink, <code>mark</code> for a diacritic, plus the two parts of an ayah end-marker.</td></tr>
+          <tr><td class="mono">path[data-mark]</td><td>698</td><td>The mark's name: fatha, kasra, damma, sukun, shadda, hamza, maddah, wasla, dot, two-dots, three-dots, small-alef, and the waqf and iqlab signs.</td></tr>
+          <tr><td class="mono">path[data-mark-family]</td><td>184</td><td>The family a mark belongs to — dots, tanween, sifr, waqf — for colouring or counting a whole class at once.</td></tr>
+          <tr><td class="mono">path[data-eid]</td><td>988</td><td>A stable id for one element within the page.</td></tr>
+          <tr><td class="mono">path[data-sig]</td><td>988</td><td>The shape signature: identical ink anywhere in the mushaf shares it, which is how a mark gets named once and everywhere.</td></tr>
+          <tr><td class="mono">path.ayahPolygon</td><td>11</td><td>An invisible hit region per ayah, for click and hover targets. Toggle it on in the inspector above.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Page 3 is one of 604, and every one of them is proved against the original artwork two ways before it
+      ships: nothing added or removed, and nothing moved. The structure on this page costs the print nothing.</p>
+  </div>
+</footer>
+
+<div class="hidden-stage" id="measure"></div>
+
+<script>
+(function () {
+  'use strict';
+  const $  = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  const master = $('#master');
+  const PAGE   = master.cloneNode(true);      // pristine source for every demo
+  PAGE.removeAttribute('id');
+  const measure = $('#measure');
+
+  /* ---------- theme ---------- */
+  $('#theme').addEventListener('click', () => {
+    const now = document.documentElement.getAttribute('data-theme')
+      || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', now === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ---------- code tabs ---------- */
+  $$('figure.code .tabs').forEach(bar => {
+    const fig = bar.parentElement;
+    bar.addEventListener('click', e => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      $$('button', bar).forEach(b => b.classList.toggle('on', b === btn));
+      $$('pre', fig).forEach(pre => { pre.hidden = pre.dataset.tab !== btn.dataset.tab; });
+    });
+  });
+
+  /* ---------- copy buttons ---------- */
+  $$('figure.code .copy').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const text = btn.parentElement.querySelector('pre:not([hidden]) code').innerText;
+      try { await navigator.clipboard.writeText(text); btn.textContent = 'copied'; }
+      catch { btn.textContent = 'select it'; }
+      setTimeout(() => { btn.textContent = 'copy'; }, 1400);
+    });
+  });
+
+  /* ---------- page facts ---------- */
+  const WORDS = $$('g.word', PAGE).map(w => ({
+    ayah: +w.dataset.ayah, word: +w.dataset.word, text: w.dataset.uthmani
+  }));
+  const AYAHS = [...new Set(WORDS.map(w => w.ayah))].sort((a, b) => a - b);
+  const LAST  = {};                     // ayah -> its final word number
+  WORDS.forEach(w => { LAST[w.ayah] = Math.max(LAST[w.ayah] || 0, w.word); });
+  const wordsOf = a => WORDS.filter(w => w.ayah === a).sort((x, y) => x.word - y.word);
+
+  // Markers live outside the lines, so pair each ayah with the marker actually
+  // drawn at the end of its last word: same line band, first one to its left.
+  // getBBox() is local to each element, so compare on screen instead
+  const MARK_BOX = $$('g.ayah-marker', master).map(m => m.getBoundingClientRect());
+  const MARK_OF = {};
+  AYAHS.forEach(a => {
+    const r = master.querySelector(
+      `g.word[data-ayah="${a}"][data-word="${LAST[a]}"]`).getBoundingClientRect();
+    const cy = r.top + r.height / 2;
+    let best = -1, gap = Infinity;
+    MARK_BOX.forEach((m, i) => {
+      if (Math.abs(m.top + m.height / 2 - cy) > r.height) return;  // a different line
+      const d = r.left - m.right;                                  // just to its left
+      if (d > -m.width * 0.5 && d < gap) { gap = d; best = i; }
+    });
+    MARK_OF[a] = best;
+  });
+
+  // the printed line width, in the page's own viewBox units
+  const PAGE_BOX = (() => {
+    const probe = PAGE.cloneNode(true);
+    probe.querySelectorAll('.ayahPolygon').forEach(p => p.remove());
+    measure.append(probe);
+    const b = probe.getBBox();
+    probe.remove();
+    return b;
+  })();
+
+  /* ---------- the crop used by two sections ---------- */
+  function crop(keep, { pad = 4, markers = true, fullLine = false, host } = {}) {
+    const svg = PAGE.cloneNode(true);
+    svg.querySelectorAll('g.word').forEach(w => { if (!keep(w)) w.remove(); });
+    svg.querySelectorAll('g.ayah, g.line').forEach(g => {
+      if (!g.querySelector('g.word')) g.remove();
+    });
+    svg.querySelectorAll('.ayahPolygon').forEach(p => p.remove());
+
+    // keep an end-marker only where the ayah it closes still has its last word
+    const wanted = new Set();
+    if (markers) {
+      AYAHS.forEach(a => {
+        if (svg.querySelector(`g.word[data-ayah="${a}"][data-word="${LAST[a]}"]`)) {
+          wanted.add(MARK_OF[a]);
+        }
+      });
+    }
+    svg.querySelectorAll('g.ayah-marker').forEach((m, i) => {
+      if (!wanted.has(i)) m.remove();
+    });
+
+    (host || measure).append(svg);
+    const b = svg.getBBox();
+    const x = fullLine ? PAGE_BOX.x : b.x - pad;
+    const w = fullLine ? PAGE_BOX.width : b.width + 2 * pad;
+    svg.setAttribute('viewBox', `${x} ${b.y - pad} ${w} ${b.height + 2 * pad}`);
+    svg.removeAttribute('width'); svg.removeAttribute('height');
+    return svg;
+  }
+
+  /* ---------- inspector ---------- */
+  const ro = {
+    word: $('#ro-word'), ref: $('#ro-ref'), line: $('#ro-line'),
+    lig: $('#ro-lig'), el: $('#ro-el'), kind: $('#ro-kind'), sig: $('#ro-sig')
+  };
+  let hlWord = null, hlLig = null;
+  const clear = () => {
+    if (hlWord) hlWord.classList.remove('hl-word');
+    if (hlLig) hlLig.classList.remove('hl-lig');
+    hlWord = hlLig = null;
+  };
+
+  master.addEventListener('pointermove', e => {
+    const path = e.target.closest('path');
+    const word = path && path.closest('g.word');
+    if (!word) return;
+    const lig = path.closest('g.ligature');
+    if (word !== hlWord || lig !== hlLig) {
+      clear();
+      hlWord = word; hlLig = lig;
+      word.classList.add('hl-word');
+      if (lig) lig.classList.add('hl-lig');
+    }
+    const d = path.dataset, w = word.dataset;
+    ro.word.textContent = w.uthmani;
+    ro.ref.textContent  = `${w.surah}:${w.ayah}  word ${w.word} of ${LAST[+w.ayah]}`;
+    ro.line.textContent = word.closest('g.line').dataset.line;
+    ro.lig.innerHTML    = lig ? `<span class="ar">${lig.dataset.text}</span>` : '—';
+    ro.el.textContent   = d.eid || '—';
+    ro.kind.textContent = d.kind === 'mark'
+      ? `mark · ${d.mark}${d.markFamily ? ' · ' + d.markFamily : ''}`
+      : (d.kind || '—');
+    ro.sig.textContent  = d.sig || '—';
+  });
+  master.addEventListener('pointerleave', clear);
+
+  const hitsBtn = $('#hits');
+  hitsBtn.addEventListener('click', () => {
+    const on = hitsBtn.getAttribute('aria-pressed') === 'true';
+    hitsBtn.setAttribute('aria-pressed', String(!on));
+    master.classList.toggle('show-hits', !on);
+    hitsBtn.textContent = on ? 'show ayah hit regions' : 'hide ayah hit regions';
+  });
+
+  /* ---------- section: embed an ayah ---------- */
+  const aOut = $('#ayah-out'), aNote = $('#ayah-note'), aPad = $('#ayah-pad');
+  const aMark = $('#ayah-marker'), aFrame = $('#ayah-frame');
+  let ayahPick = 10;
+
+  const pills = $('#ayah-pills');
+  AYAHS.forEach(a => {
+    const b = document.createElement('button');
+    b.textContent = a;
+    b.setAttribute('aria-pressed', String(a === ayahPick));
+    b.addEventListener('click', () => {
+      ayahPick = a;
+      $$('button', pills).forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+      drawAyah();
+    });
+    pills.append(b);
+  });
+
+  function drawAyah() {
+    aOut.textContent = '';
+    const keepMarker = aMark.getAttribute('aria-pressed') === 'true';
+    const fullLine = aFrame.getAttribute('aria-pressed') === 'true';
+    crop(w => +w.dataset.ayah === ayahPick,
+         { pad: +aPad.value, markers: keepMarker, fullLine, host: aOut });
+    const ws = wordsOf(ayahPick);
+    const lines = new Set($$('g.line', aOut).map(l => l.dataset.line));
+    aNote.textContent =
+      `2:${ayahPick} — ${ws.length} words, set across ${lines.size} line`
+      + (lines.size === 1 ? '' : 's') + ` of the page (line ${[...lines].join(', ')}).`
+      + (fullLine ? ' Framed to the printed line width, so it keeps its indent.' : '');
+  }
+  aPad.addEventListener('input', () => { $('#ayah-pad-v').textContent = aPad.value; drawAyah(); });
+  aMark.addEventListener('click', () => {
+    const on = aMark.getAttribute('aria-pressed') === 'true';
+    aMark.setAttribute('aria-pressed', String(!on));
+    aMark.textContent = on ? 'drop' : 'keep';
+    drawAyah();
+  });
+  aFrame.addEventListener('click', () => {
+    const on = aFrame.getAttribute('aria-pressed') === 'true';
+    aFrame.setAttribute('aria-pressed', String(!on));
+    aFrame.textContent = on ? 'tight around the words' : 'the full printed line';
+    drawAyah();
+  });
+  drawAyah();
+
+  /* ---------- section: embed part of an ayah ---------- */
+  const wSel = $('#w-ayah'), wFrom = $('#w-from'), wTo = $('#w-to');
+  const wOut = $('#w-out'), wNote = $('#w-note'), wText = $('#w-text');
+  AYAHS.forEach(a => {
+    const o = document.createElement('option');
+    o.value = a; o.textContent = `2:${a}  (${LAST[a]} words)`;
+    wSel.append(o);
+  });
+  wSel.value = '13'; wFrom.value = '1'; wTo.value = '4';
+
+  function drawWords() {
+    const a = +wSel.value;
+    wFrom.max = wTo.max = LAST[a];
+    let f = Math.min(Math.max(1, +wFrom.value || 1), LAST[a]);
+    let t = Math.min(Math.max(f, +wTo.value || f), LAST[a]);
+    wFrom.value = f; wTo.value = t;
+    wOut.textContent = '';
+    crop(w => +w.dataset.ayah === a && +w.dataset.word >= f && +w.dataset.word <= t,
+         { pad: 3, markers: false, host: wOut });
+    const picked = wordsOf(a).filter(w => w.word >= f && w.word <= t);
+    wText.textContent = picked.map(w => w.text).join(' ');
+    wNote.textContent = `2:${a} · words ${f}–${t} of ${LAST[a]}`
+      + ' — a fragment carries no end-marker.';
+  }
+  [wSel, wFrom, wTo].forEach(el => el.addEventListener('input', drawWords));
+  drawWords();
+
+  /* ---------- section: recolour ---------- */
+  const cOut = $('#c-out'), cCode = $('#c-code');
+  const cSvg = PAGE.cloneNode(true);
+  cSvg.querySelectorAll('.ayahPolygon').forEach(p => p.remove());
+  cOut.append(cSvg);
+  const cStyle = document.createElement('style');
+  document.head.append(cStyle);
+
+  const fields = {
+    paper: $('#c-paper'), body: $('#c-body'), mark: $('#c-mark'),
+    dots: $('#c-dots'), marker: $('#c-marker'),
+    focus: $('#c-focus'), focusCol: $('#c-focus-col')
+  };
+  const PRESETS = {
+    'as printed':  { paper:'#fbf9f4', body:'#231f20', mark:'#231f20', dots:'#231f20', marker:'#231f20' },
+    'ink & gold':  { paper:'#fdf8ec', body:'#1d1a16', mark:'#a07514', dots:'#a07514', marker:'#c2921f' },
+    'teaching':    { paper:'#ffffff', body:'#111111', mark:'#c2410c', dots:'#0f766e', marker:'#7c3aed' },
+    'lapis':       { paper:'#f3f5fb', body:'#16305c', mark:'#4676c8', dots:'#9aa8c4', marker:'#16305c' },
+    'night':       { paper:'#14161c', body:'#e8e6df', mark:'#e2b25c', dots:'#7fb3a8', marker:'#e2b25c' },
+    'letters only':{ paper:'#fbf9f4', body:'#231f20', mark:'#d9d3c4', dots:'#d9d3c4', marker:'#d9d3c4' }
+  };
+  const cPills = $('#c-presets');
+  Object.keys(PRESETS).forEach(name => {
+    const b = document.createElement('button');
+    b.textContent = name;
+    b.addEventListener('click', () => {
+      Object.entries(PRESETS[name]).forEach(([k, v]) => { fields[k].value = v; });
+      $$('button', cPills).forEach(x => x.classList.toggle('on', x === b));
+      paint();
+    });
+    cPills.append(b);
+  });
+
+  const oFocus = document.createElement('option');
+  oFocus.value = ''; oFocus.textContent = 'none';
+  fields.focus.append(oFocus);
+  AYAHS.forEach(a => {
+    const o = document.createElement('option');
+    o.value = a; o.textContent = `ayah 2:${a}`;
+    fields.focus.append(o);
+  });
+
+  function paint() {
+    const v = k => fields[k].value;
+    cOut.style.background = v('paper');
+    let css =
+`#c-out                              { background: ${v('paper')} }
+#c-out path[data-kind="body"]       { fill: ${v('body')} }
+#c-out path[data-kind="mark"]       { fill: ${v('mark')} }
+#c-out path[data-mark-family="dots"]{ fill: ${v('dots')} }
+#c-out .ayah-marker path            { fill: ${v('marker')} }`;
+    if (fields.focus.value) {
+      css += `\n#c-out g.ayah[data-ayah="${fields.focus.value}"] path { fill: ${fields.focusCol.value} }`;
+    }
+    cStyle.textContent = css;
+    cCode.textContent = css;
+    ['paper', 'body', 'mark', 'dots', 'marker'].forEach(k => {
+      const out = $(`#c-${k}-v`); if (out) out.textContent = v(k);
+    });
+  }
+  Object.values(fields).forEach(el => el.addEventListener('input', paint));
+  $$('button', cPills)[1].classList.add('on');
+  Object.entries(PRESETS['ink & gold']).forEach(([k, v]) => { fields[k].value = v; });
+  paint();
+
+  /* ---------- section: ayah markers ---------- */
+  const NS = 'http://www.w3.org/2000/svg';
+  const mkOut = $('#mk-out');
+  const mkSvg = crop(w => +w.dataset.ayah === 15, { pad: 4, host: mkOut });
+  // getBBox() reports an element's own units — the ornament carries a scale(0.011),
+  // so its box has to be pushed through that transform to land in the marker's space.
+  function boxInParent(el) {
+    const b = el.getBBox();
+    const m = el.transform.baseVal.consolidate();
+    if (!m) return b;
+    const pts = [[b.x, b.y], [b.x + b.width, b.y],
+                 [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]
+      .map(([x, y]) => new DOMPoint(x, y).matrixTransform(m.matrix));
+    const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+    return {
+      x: Math.min(...xs), y: Math.min(...ys),
+      width: Math.max(...xs) - Math.min(...xs),
+      height: Math.max(...ys) - Math.min(...ys)
+    };
+  }
+
+  const mkMarkers = $$('g.ayah-marker', mkSvg).map(m => {
+    const orn = m.querySelector('[data-kind="ayah-marker-ornament"]').parentNode;
+    const b = boxInParent(orn);
+    const slot = document.createElementNS(NS, 'g');
+    orn.replaceWith(slot);
+    return { slot, orn, cx: b.x + b.width / 2, cy: b.y + b.height / 2,
+             r: Math.max(b.width, b.height) / 2 };
+  });
+
+  const el = (name, attrs) => {
+    const n = document.createElementNS(NS, name);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    return n;
+  };
+  const SHAPES = {
+    'as printed': (m, r, s) => m.orn,
+    'ring': (m, r, s) => el('circle', { cx: m.cx, cy: m.cy, r, fill: 'none', stroke: s.col, 'stroke-width': r * 0.11 }),
+    'double ring': (m, r, s) => {
+      const g = el('g', {});
+      g.append(el('circle', { cx: m.cx, cy: m.cy, r, fill: 'none', stroke: s.col, 'stroke-width': r * 0.09 }));
+      g.append(el('circle', { cx: m.cx, cy: m.cy, r: r * 0.78, fill: 'none', stroke: s.col, 'stroke-width': r * 0.05 }));
+      return g;
+    },
+    'diamond': (m, r, s) => el('path', {
+      d: `M ${m.cx} ${m.cy - r} L ${m.cx + r} ${m.cy} L ${m.cx} ${m.cy + r} L ${m.cx - r} ${m.cy} Z`,
+      fill: 'none', stroke: s.col, 'stroke-width': r * 0.11, 'stroke-linejoin': 'round'
+    }),
+    'star': (m, r, s) => {
+      const g = el('g', {});
+      [0, 45].forEach(a => g.append(el('rect', {
+        x: m.cx - r * 0.72, y: m.cy - r * 0.72, width: r * 1.44, height: r * 1.44,
+        fill: 'none', stroke: s.col, 'stroke-width': r * 0.09,
+        transform: `rotate(${a} ${m.cx} ${m.cy})`
+      })));
+      return g;
+    },
+    'rosette': (m, r, s) => {
+      // a scalloped outline, so the number keeps a clear centre
+      const N = 8, rb = r * 0.8, lobe = r * 0.34;
+      let d = '';
+      for (let i = 0; i <= N; i++) {
+        const a = (i / N) * Math.PI * 2;
+        const x = m.cx + Math.cos(a) * rb, y = m.cy + Math.sin(a) * rb;
+        d += i === 0 ? `M ${x} ${y}` : ` A ${lobe} ${lobe} 0 0 1 ${x} ${y}`;
+      }
+      return el('path', { d: d + ' Z', fill: 'none', stroke: s.col,
+                          'stroke-width': r * 0.08, 'stroke-linejoin': 'round' });
+    },
+    'brackets': (m, r, s) => {
+      const g = el('g', {});
+      [1, -1].forEach(d => g.append(el('path', {
+        d: `M ${m.cx + d * r * 0.55} ${m.cy - r} Q ${m.cx + d * r * 1.05} ${m.cy} `
+         + `${m.cx + d * r * 0.55} ${m.cy + r}`,
+        fill: 'none', stroke: s.col, 'stroke-width': r * 0.13, 'stroke-linecap': 'round'
+      })));
+      return g;
+    },
+    'number only': () => el('g', {})
+  };
+
+  const mkState = { shape: 'as printed', size: 1, col: '#231f20' };
+  const mkPills = $('#mk-shapes');
+  Object.keys(SHAPES).forEach(name => {
+    const b = document.createElement('button');
+    b.textContent = name;
+    b.classList.toggle('on', name === mkState.shape);
+    b.addEventListener('click', () => {
+      mkState.shape = name;
+      $$('button', mkPills).forEach(x => x.classList.toggle('on', x === b));
+      drawMarkers();
+    });
+    mkPills.append(b);
+  });
+
+  function drawMarkers() {
+    mkState.size = +$('#mk-size').value;
+    mkState.col = $('#mk-col').value;
+    $('#mk-size-v').textContent = mkState.size.toFixed(2);
+    mkMarkers.forEach(m => {
+      m.slot.textContent = '';
+      m.slot.append(SHAPES[mkState.shape](m, m.r * mkState.size, mkState));
+    });
+    $$('[data-kind="ayah-number"]', mkSvg).forEach(p => { p.style.fill = $('#mk-num').value; });
+    $$('[data-kind="ayah-marker-ornament"]', mkSvg).forEach(p => { p.style.fill = mkState.col; });
+  }
+  ['#mk-size', '#mk-col', '#mk-num'].forEach(s => $(s).addEventListener('input', drawMarkers));
+  drawMarkers();
+
+  /* ---------- section: line height ---------- */
+  const lOut = $('#lh-out'), lRange = $('#lh'), lBands = $('#lh-bands');
+  const lSvg = PAGE.cloneNode(true);
+  lSvg.querySelectorAll('.ayahPolygon').forEach(p => p.remove());
+  lOut.append(lSvg);
+
+  const lLines   = $$('g.line', lSvg);
+  const lMarkers = $$('g.ayah-marker', lSvg);
+  const centres  = lLines.map(l => { const b = l.getBBox(); return b.y + b.height / 2; });
+  // each marker rides with the line it sits nearest
+  const owner = lMarkers.map(m => {
+    const b = m.getBBox(), y = b.y + b.height / 2;
+    let best = 0;
+    centres.forEach((c, i) => { if (Math.abs(c - y) < Math.abs(centres[best] - y)) best = i; });
+    return best;
+  });
+  const band = lSvg.ownerDocument.createElementNS('http://www.w3.org/2000/svg', 'g');
+  lLines[0].parentNode.insertBefore(band, lLines[0]);
+  lLines.forEach(l => {
+    const b = l.getBBox();
+    const r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    r.setAttribute('x', b.x - 2); r.setAttribute('y', b.y - 1);
+    r.setAttribute('width', b.width + 4); r.setAttribute('height', b.height + 2);
+    r.setAttribute('fill', '#2d55a0'); r.setAttribute('fill-opacity', '.07');
+    band.append(r);
+  });
+  const bandRects = $$('rect', band);
+  band.style.display = 'none';
+
+  // words per line, and where each marker sits in its line's word run
+  const lWords = lLines.map(l => $$('g.word', l));
+  const MAXW = Math.max(...lWords.map(w => w.length)) - 1;
+  const mkK = lMarkers.map((m, i) => {
+    const r = m.getBoundingClientRect();
+    const row = lWords[owner[i]];
+    return row.filter(w => w.getBoundingClientRect().left > r.left).length;
+  });
+
+  const MID = (lLines.length - 1) / 2;
+  const wRange = $('#wg');
+  function spread() {
+    const gap = +lRange.value, wgap = +wRange.value;
+    const dy = i => (MID - i) * gap;
+    lLines.forEach((l, i) => {
+      l.setAttribute('transform', `translate(0 ${dy(i)})`);
+      const kmid = (lWords[i].length - 1) / 2;
+      lWords[i].forEach((w, k) =>
+        w.setAttribute('transform', `translate(${(kmid - k) * wgap} 0)`));
+    });
+    bandRects.forEach((r, i) => r.setAttribute('transform', `translate(0 ${dy(i)})`));
+    lMarkers.forEach((m, i) => {
+      const kmid = (lWords[owner[i]].length - 1) / 2;
+      m.setAttribute('transform',
+        `translate(${(kmid - mkK[i]) * wgap} ${dy(owner[i])})`);
+    });
+    const grow = MID * gap * 1.3333, widen = MAXW * wgap * 1.3333;
+    lSvg.setAttribute('viewBox',
+      `${-widen / 2} ${-grow} ${345 + widen} ${550 + 2 * grow}`);
+    $('#lh-v').textContent = gap.toFixed(2);
+    $('#wg-v').textContent = wgap.toFixed(2);
+  }
+  lRange.addEventListener('input', spread);
+  wRange.addEventListener('input', spread);
+  lBands.addEventListener('click', () => {
+    const on = lBands.getAttribute('aria-pressed') === 'true';
+    lBands.setAttribute('aria-pressed', String(!on));
+    lBands.textContent = on ? 'off' : 'on';
+    band.style.display = on ? 'none' : '';
+  });
+  spread();
+})();
+</script>
+</body>
+</html>
