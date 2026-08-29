@@ -222,7 +222,11 @@ def build_page(pg):
     # ayah -> marker. The medallions are tagged after rewrite() (they live in
     # their own artwork layer), so they are read back off the emitted SVG. Each
     # one is bound to the ayah it CLOSES, by position — see tag_ayah_markers.
-    for aid in re.findall(r'<g class="ayah-marker" data-aid="([^"]*)"', svg):
+    # Attribute-order independent: the marker group gained an `id` between the
+    # class and the aid (the ayah->marker link), and a pattern that assumed
+    # they were adjacent silently matched nothing on all 604 pages.
+    for aid in re.findall(r'<g class="ayah-marker"[^>]*?\bdata-aid="([^"]*)"',
+                          svg):
         relations.append({"type": "ayah-marker", "aid": aid})
 
     # ---- metadata --------------------------------------------------------

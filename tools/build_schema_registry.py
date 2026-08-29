@@ -187,12 +187,16 @@ def edition():
             "rub_starts": divisions,
         },
         "expectations": {
-            # surah 9 carries no basmalah, so 113 banners for 114 surahs
-            "basmalah_groups": 113,
-            "surah_name_groups_emitted": 108,
-            "surah_name_groups_note":
-                "6 surah names are drawn on a page whose DK header line the "
-                "layout DB carries on the previous page; measured, not a rule",
+            # One banner per surah — 114. Two surahs carry no basmalah of
+            # their own: al-Fatiha, whose basmalah IS ayah 1:1, and at-Tawba,
+            # which has none at all. So 112 basmalah groups. Both numbers are
+            # measured on the emitted pages AND declared independently by the
+            # DK layout DB (2026-08-29). The earlier 113/108 encoded the
+            # header-mapping defect as if it were the edition: four banners
+            # were emitted as basmalahs and surah 17's basmalah was split in
+            # two, which cancelled out to 113.
+            "basmalah_groups": 112,
+            "surah_name_groups_emitted": 114,
             "sifr_mustadir_words": 3970,
             "sifr_mustatil_words": 66,
             "muanaqah_pairs": 3,

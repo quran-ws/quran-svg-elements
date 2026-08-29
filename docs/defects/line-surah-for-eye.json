@@ -1,0 +1,5 @@
+{
+ "note": "Eye queue for the line-membership and header-group fixes (docs/defects/LINE-SURAH-FIX-2026-08-29.md). The full-mushaf element diff keyed by (group class, owner, data-kind, data-mark, line) x d-string produced 615 changed rows on 57 pages, and every one classified as RIGHT: 406 elements whose <g class=\"line\" > wrapper was corrected with nothing else changed, 120 bare header paths that joined their basmalah group, and 89 elements regrouped from a mislabelled basmalah into the surah-name group. Element totals identical (622,801 before and after), no element changed owner, kind or mark, and audit_pixels reports 0 failures over all 604 pages. Nothing is left for Abdullah's eye.",
+ "generated": "2026-08-30",
+ "unclear": []
+}

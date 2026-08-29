@@ -352,6 +352,30 @@ def dk_header_lines():
     return _DK_HEADERS
 
 
+_DK_HDR_SURAHS = None
+
+
+def dk_header_surahs():
+    """{surah: {"surah-name", "basmalah"}} — WHICH surahs the DK layout DB
+    declares a banner and a basmalah for, with the DB's line numbers dropped.
+
+    The line numbers are the part of dk_header_lines() that this artwork does
+    not agree with (see rewrite(): four banners sit on the previous page in the
+    DB). The surah sets are the part that is solid: 114 banners for 114 surahs,
+    112 basmalahs — every surah but al-Fatiha, whose basmalah is ayah 1:1, and
+    at-Tawba, which has none. Used as the confirming signal for the header
+    lines the art itself identifies.
+    """
+    global _DK_HDR_SURAHS
+    if _DK_HDR_SURAHS is None:
+        out = {}
+        for _pg, lns in dk_header_lines().items():
+            for _ln, (kind, su) in lns.items():
+                out.setdefault(int(su), set()).add(kind)
+        _DK_HDR_SURAHS = out
+    return _DK_HDR_SURAHS
+
+
 # ---------------------------------------------------------------------------
 # The print's own segmentation of the بَعْدَ مَا compounds (QSVG_DKSEG)
 # ---------------------------------------------------------------------------
@@ -1919,50 +1943,128 @@ def rewrite(page, assignment):
     _page_no = str(int(os.path.splitext(page.name)[0].split("-")[0].lstrip("0") or 0))
     from add_line_structure import build_d
 
-    # Surah-header and basmalah lines: the DK layout DB says which lines they
-    # are (dk_header_lines()); their ink otherwise comes out as anonymous bare
-    # paths. Map DK line numbers to art lines through the words already
-    # assigned — on 114 of the 116 header pages the numberings are identical,
-    # but the ornate spreads' art omits DK line 1 (p1, p2), so every art line
-    # runs one behind there. Majority vote over (dk_line - art_line) of all
-    # anchored words settles the page's offset without any per-page rule.
+    # Surah-header and basmalah lines, taken from the ART and confirmed against
+    # the DK layout DB (2026-08-29 — this replaces a DK-line-number mapping
+    # that silently lost four banners).
+    #
+    # WHY NOT DK'S LINE NUMBERS. dk_header_lines() is right about WHICH surahs
+    # have a banner and a basmalah, but its line numbering is a rendering of
+    # the page, not this artwork's line cut, and the two differ on six pages.
+    # For surahs 27, 33, 37 and 47 the DB carries the banner as line 15 of the
+    # PREVIOUS page (376/417/445/506) while the art draws it as line 1 of
+    # 377/418/446/507 — so a page-local read of the DB never sees it at all,
+    # and the page's remaining 14 DK text lines have to be squeezed into 13 art
+    # lines. The old majority vote over (dk_line - art_line) then measured a
+    # shift that is not uniform down the page (p377: 80 words vote 0, 58 vote
+    # -1), landed on 0, and labelled the BANNER line "basmalah" while the real
+    # basmalah below it came out as bare paths. Result: 110 surah-name groups
+    # for 114 surahs, 113 basmalah groups for 112, and every named mark on
+    # those four basmalah lines orphaned.
+    #
+    # WHAT THE ART SAYS, measured over all 604 pages of the 2026-08-29 build:
+    # a line that holds no word is a header line, and those lines come in
+    # runs — 114 runs in the whole mushaf, 112 of LENGTH 2 and 2 of LENGTH 1,
+    # with nothing else at all (no run of 3, no run that is not immediately
+    # followed by word 1 of ayah 1 of a surah: 114 of 114). The two singletons
+    # are exactly the two surahs that have no basmalah of their own — al-Fatiha
+    # (p1, its basmalah IS ayah 1:1) and at-Tawba (p187). So the run reads
+    # top-down as [surah-name, basmalah], or [surah-name] alone when it is one
+    # line, and its surah is the surah of the first word beneath it. 114
+    # banners and 112 basmalahs — which is exactly what the mushaf has.
+    #
+    # TWO SIGNALS. The art gives the LINES, the DK DB gives the SURAHS that
+    # are allowed to carry each kind; a run is only labelled when both agree.
+    # QSVG_HDRART=0 restores the DK-line-number mapping described above, for
+    # A/B only.
     hdr_art = {}
-    _hdr_dk = (dk_header_lines().get(int(_page_no) if _page_no.isdigit()
-                                     else 0, {})
-               if os.environ.get("QSVG_HDR", "1") == "1" else {})
-    if _hdr_dk:
-        _wtab = _qcf_lines().get(_page_no, {})
-        _votes = {}
-        for word, atoms in assignment:
-            if not word:
-                continue
-            dk_ln = _wtab.get("%d:%d:%d" % (word["surah"], word["ayah"],
-                                            word["pos"]))
-            if dk_ln is None:
-                continue
-            arts = [e["line"] for a in atoms for e in a["els"] if e.get("line")]
-            if not arts:
-                continue
-            art_ln = max(set(arts), key=arts.count)
-            _votes[dk_ln - art_ln] = _votes.get(dk_ln - art_ln, 0) + 1
-        _off = max(_votes, key=_votes.get) if _votes else 0
-        hdr_art = {ln - _off: v for ln, v in _hdr_dk.items() if ln - _off >= 1}
-        # the art draws a surah BANNER line that DK carries on the previous
-        # page (p453-style): a wordless art line directly above a mapped
-        # basmalah is that banner — map it as the surah-name line
-        _wlines = set()
+    if (os.environ.get("QSVG_HDR", "1") == "1"
+            and os.environ.get("QSVG_HDRART", "1") == "1"):
+        _all_lines, _wlines = set(), set()
+        _line_words = {}
         for _wv, _av in assignment:
-            if not _wv:
-                continue
             for _aa in _av:
                 for e in _aa["els"]:
-                    if e.get("line"):
-                        _wlines.add(e["line"])
-        for _lnb, (_knd, _su) in list(hdr_art.items()):
-            if _knd == "basmalah" and _lnb - 1 >= 1 \
-                    and _lnb - 1 not in _wlines \
-                    and _lnb - 1 not in hdr_art:
-                hdr_art[_lnb - 1] = ("surah-name", _su)
+                    _ln = e.get("line")
+                    if not _ln:
+                        continue
+                    _all_lines.add(_ln)
+                    # BODY ink only. A word's MARK can legitimately carry a
+                    # header line's tag — the ۦ after the basmalah on p359 and
+                    # p570 is override-pinned to its word and HDRGUARD is
+                    # forbidden to evict it — and counting that as "this line
+                    # has words" hid three banners and three basmalahs
+                    # (surahs 25, 37, 71). No text line is bodyless.
+                    if _wv and e.get("kind") == "body":
+                        _wlines.add(_ln)
+                        _line_words.setdefault(_ln, set()).add(
+                            (_wv["surah"], _wv["ayah"], _wv["pos"]))
+        _runs, _cur = [], []
+        for _ln in sorted(_all_lines):
+            if not _wlines or _ln in _wlines:
+                if _cur:
+                    _runs.append(_cur)
+                _cur = []
+                continue
+            if _cur and _ln != _cur[-1] + 1:
+                _runs.append(_cur)
+                _cur = []
+            _cur.append(_ln)
+        if _cur:
+            _runs.append(_cur)
+        _dkh = dk_header_surahs()
+        for _run in _runs:
+            _below = [w for ln, ws in _line_words.items() if ln > _run[-1]
+                      for w in ws]
+            if not _below:
+                continue
+            _su, _ay, _ps = min(_below)
+            if (_ay, _ps) != (1, 1):
+                continue                    # not a surah opening: not a header
+            _kinds = _dkh.get(_su, set())
+            if "surah-name" not in _kinds:
+                continue                    # DK does not confirm a banner
+            if len(_run) == 1:
+                hdr_art[_run[0]] = ("surah-name", _su)
+            elif len(_run) == 2 and "basmalah" in _kinds:
+                hdr_art[_run[0]] = ("surah-name", _su)
+                hdr_art[_run[1]] = ("basmalah", _su)
+    elif os.environ.get("QSVG_HDR", "1") == "1":
+        # LEGACY (QSVG_HDRART=0): the DK line-number mapping, kept only so the
+        # change above can be measured against it.
+        _hdr_dk = dk_header_lines().get(
+            int(_page_no) if _page_no.isdigit() else 0, {})
+        if _hdr_dk:
+            _wtab = _qcf_lines().get(_page_no, {})
+            _votes = {}
+            for word, atoms in assignment:
+                if not word:
+                    continue
+                dk_ln = _wtab.get("%d:%d:%d" % (word["surah"], word["ayah"],
+                                                word["pos"]))
+                if dk_ln is None:
+                    continue
+                arts = [e["line"] for a in atoms for e in a["els"]
+                        if e.get("line")]
+                if not arts:
+                    continue
+                art_ln = max(set(arts), key=arts.count)
+                _votes[dk_ln - art_ln] = _votes.get(dk_ln - art_ln, 0) + 1
+            _off = max(_votes, key=_votes.get) if _votes else 0
+            hdr_art = {ln - _off: v for ln, v in _hdr_dk.items()
+                       if ln - _off >= 1}
+            _wlines = set()
+            for _wv, _av in assignment:
+                if not _wv:
+                    continue
+                for _aa in _av:
+                    for e in _aa["els"]:
+                        if e.get("line"):
+                            _wlines.add(e["line"])
+            for _lnb, (_knd, _su) in list(hdr_art.items()):
+                if _knd == "basmalah" and _lnb - 1 >= 1 \
+                        and _lnb - 1 not in _wlines \
+                        and _lnb - 1 not in hdr_art:
+                    hdr_art[_lnb - 1] = ("surah-name", _su)
 
     # Header ink is inviolable: a word may never hold an element drawn on a
     # header/basmalah line, unless the word itself lives on that line (p1/p2,
@@ -2025,6 +2127,29 @@ def rewrite(page, assignment):
                     ln = e.get("line")
                     if ln in hdr_art:
                         _btop[ln] = min(_btop.get(ln, 1e9), e["y1"])
+        # Where the header line's OWN ink actually is — the wordless elements
+        # tagged to it, which is the banner or the basmalah itself. Header ink
+        # is inviolable, but only ink that is drawn IN the header can be header
+        # ink, and a stale line tag is not evidence of anything. Measured over
+        # all 604 pages: exactly 5 word elements in the whole mushaf carry a
+        # header line's tag, and every one of them clears that line's own ink
+        # by 21.0-31.5 units (p446 37:2:1's ت dots 21.0 below the basmalah,
+        # p570 71:1:5 22.3, p570 70:44:5 23.1, p359 25:1:6 23.7, p570 70:44:4
+        # 31.5). NOT ONE overlaps it, so requiring overlap evicts nothing that
+        # was being evicted for a reason — and it stops the p446 dots, which
+        # are the ت of فَٱلزَّٰجِرَٰتِ sitting on its own body, being taken for
+        # basmalah ink now that p446's basmalah line is correctly identified.
+        _hink = {}
+        for word, atoms in assignment:
+            if word:
+                continue
+            for a in atoms:
+                for e in a["els"]:
+                    ln = e.get("line")
+                    if ln in hdr_art:
+                        b = _hink.setdefault(ln, [1e9, -1e9])
+                        b[0] = min(b[0], e["y1"])
+                        b[1] = max(b[1], e["y2"])
         _evicted = []
         for word, atoms in assignment:
             if not word:
@@ -2058,7 +2183,11 @@ def rewrite(page, assignment):
                         # HDRGUARD never overrules it (p359/p570: the ۦ
                         # after a basmalah, stale header line-tag, seated
                         # by eye).
-                        (keep if dip or e.get("_ovr") else _evicted).append(e)
+                        _hb = _hink.get(ln)
+                        clear = _hb is not None and (e["y2"] <= _hb[0]
+                                                     or e["y1"] >= _hb[1])
+                        (keep if dip or clear or e.get("_ovr")
+                         else _evicted).append(e)
                     else:
                         keep.append(e)
                 a["els"] = keep
@@ -2074,17 +2203,107 @@ def rewrite(page, assignment):
     # Nothing about the picture changes: each element is written as its own
     # <path> either way, and every path in this art is the same colour, so
     # coverage composites to the same result whatever order it arrives in.
+    #
+    # WHICH WRAPPER, though (2026-08-29). "Most of the word's ink" was measured
+    # over SOURCE PATHS, and a source path is not a line: this artwork keeps one
+    # compound <path> per line group, but a handful of contours per page are
+    # drawn inside the NEIGHBOURING line's compound path while
+    # add_line_structure tags them — geometrically, from the band they are
+    # drawn in — to the line they actually belong to (p2: the line-7 path holds
+    # 2 contours tagged line 6, the line-5 path holds 2 more). A word whose
+    # heaviest source path is one of those is emitted inside a <g class="line">
+    # it is not drawn in. Measured over the product, all 604 pages, 77,432
+    # words: 58 words on 51 pages, and the band is EMPTY — every other word's
+    # own line band beats its best rival by more than 8 units, every one of the
+    # 58 loses to its rival by more than 8 units, and NOTHING lies in between
+    # (tools/audit_wordline.py --hist). The two signals: that geometry, and the
+    # page's reading order, which the same 58 moves repair on all 51 broken
+    # pages and disturb on none of the other 553.
+    #
+    # So pick the LINE first, by the same ink weight but over the geometric
+    # line tag, and only then the heaviest source path INSIDE that line's
+    # group. QSVG_LINEHOME=0 restores the path-only choice for A/B.
+    _path_line = {}
+    for _pi3, _p3 in enumerate(page.paths):
+        for _g3 in _p3.get("chain", ()):
+            _m3 = re.search(r'data-line="(\d+)"', _g3)
+            if _m3:
+                _path_line[_pi3] = int(_m3.group(1))
+    _line_paths = {}
+    for _pi3, _ln3 in _path_line.items():
+        _line_paths.setdefault(_ln3, []).append(_pi3)
+    _linehome = (os.environ.get("QSVG_LINEHOME", "1") == "1"
+                 and bool(_path_line))
+
     home = {}
+    _wbox = {}
     for word, atoms in assignment:
         if not word:
             continue
         weight = {}
+        box = None
         for atom in atoms:
             for e in atom["els"]:
                 area = max(e["x2"] - e["x1"], 0.01) * max(e["y2"] - e["y1"], 0.01)
                 weight[e["path"]] = weight.get(e["path"], 0.0) + area
-        if weight:
-            home[id(word)] = max(weight, key=weight.get)
+                box = ((min(box[0], e["y1"]), max(box[1], e["y2"]))
+                       if box else (e["y1"], e["y2"]))
+        if not weight:
+            continue
+        home[id(word)] = max(weight, key=weight.get)
+        if box:
+            _wbox[id(word)] = box
+
+    if _linehome:
+        # Neither label on an element is trustworthy on its own: the source
+        # path's line GROUP is wrong for the 58 words above, and the geometric
+        # `line` TAG is wrong for three more (p59 3:75:19, p549 60:4:22, p577
+        # 74:53:1 each hold one body tagged a line above the one it is drawn
+        # in). So decide it the way the audit does, on the ink itself — every
+        # line's band from the MEDIAN top and bottom of the words provisionally
+        # in it, then each word to the band its own box overlaps most. Robust
+        # by construction: at most a couple of words per page are misfiled, so
+        # they cannot move a median. The proof that this is a decision and not
+        # a guess is the distribution — over 77,432 words the winning band
+        # beats the runner-up by more than 8 units for every word but the ~60
+        # defects, which lose by more than 8, and NOTHING falls in the gap
+        # between (tools/audit_wordline.py --hist).
+        _prov = {}
+        for word, atoms in assignment:
+            if not word or id(word) not in _wbox:
+                continue
+            _ln4 = _path_line.get(home[id(word)])
+            if _ln4 is not None:
+                _prov.setdefault(_ln4, []).append(_wbox[id(word)])
+        _bands = {}
+        for _ln4, _bs in _prov.items():
+            _tp = sorted(b[0] for b in _bs)
+            _bt = sorted(b[1] for b in _bs)
+            _bands[_ln4] = (_tp[len(_tp) // 2], _bt[len(_bt) // 2])
+        for word, atoms in assignment:
+            if not word or id(word) not in _wbox:
+                continue
+            y1, y2 = _wbox[id(word)]
+            _best, _bl = None, None
+            for _ln4, (_t4, _b4) in _bands.items():
+                _ov = min(y2, _b4) - max(y1, _t4)
+                if _best is None or _ov > _best:
+                    _best, _bl = _ov, _ln4
+            if _bl is None or _bl == _path_line.get(home[id(word)]):
+                continue
+            _cand = {}
+            for atom in atoms:
+                for e in atom["els"]:
+                    if _path_line.get(e["path"]) == _bl:
+                        a4 = (max(e["x2"] - e["x1"], 0.01)
+                              * max(e["y2"] - e["y1"], 0.01))
+                        _cand[e["path"]] = _cand.get(e["path"], 0.0) + a4
+            if not _cand:
+                # none of the word's own paths is in that line's group — take
+                # the group's path and let _reframe compensate the frame.
+                _cand = {pi: 0.0 for pi in _line_paths.get(_bl, ())}
+            if _cand:
+                home[id(word)] = max(_cand, key=_cand.get)
 
     # Policy P5 (Abdullah): the sajdah overline and ۩ are ONE standalone sign,
     # grouped with the sajdah word on the line below the bar — so the whole
@@ -2256,6 +2475,49 @@ def rewrite(page, assignment):
                     _a5["els"] = [x for x in _a5["els"]
                                   if not x.get("_absorbed")]
 
+    # How many FRAGMENTS each ayah is emitted as, counted the way the emitter
+    # will actually walk — an ayah group opens whenever the ayah key changes
+    # while stepping through per_path in emission order, so the count and the
+    # per-fragment index must be derived from that same walk. Deriving them
+    # any other way (e.g. from the assignment order, or from line numbers)
+    # would number the fragments in an order the document does not have.
+    # Filled in below, once per_path exists and is ordered.
+    _ayah_parts, _ayah_seen = {}, {}
+
+    # Header ink follows the same rule as a word: a banner or basmalah is ONE
+    # group, so every element of a header line must reach the wrapper of that
+    # line. Without this, a single stray contour drawn inside the neighbouring
+    # line's compound path opens a SECOND <g class="basmalah"> — which is
+    # exactly the p282 split that made the corpus count 113 basmalah groups for
+    # 112 surahs (one group of 1 path in line 1's wrapper, one of 31 in line
+    # 2's).
+    hdr_home = {}
+    if _linehome and hdr_art:
+        _hdr_els = []
+        _hdr_w = {}
+        for word, atoms in assignment:
+            if word:
+                continue
+            for atom in atoms:
+                if atom.get("sa"):
+                    continue
+                for e in atom["els"]:
+                    ln = e.get("line")
+                    if ln not in hdr_art:
+                        continue
+                    _hdr_els.append((ln, e))
+                    if _path_line.get(e["path"]) == ln:
+                        _hdr_w.setdefault(ln, {})
+                        _hdr_w[ln][e["path"]] = _hdr_w[ln].get(e["path"], 0) + 1
+        for ln, e in _hdr_els:
+            if _path_line.get(e["path"]) == ln:
+                continue
+            w = _hdr_w.get(ln)
+            tgt = (max(w, key=w.get) if w
+                   else (_line_paths.get(ln) or [None])[0])
+            if tgt is not None:
+                hdr_home[id(e)] = tgt
+
     per_path = {}
     consumed = set(locals().get("_absorbed_paths") or ())
     for word, atoms in assignment:
@@ -2265,7 +2527,8 @@ def rewrite(page, assignment):
             lig = (id(word), atom.get("lig", ai))
             for e in atom["els"]:
                 consumed.add(e["path"])
-                per_path.setdefault(e["path"] if tgt_a is None else tgt_a,
+                _t = tgt_a if tgt_a is not None else hdr_home.get(id(e))
+                per_path.setdefault(e["path"] if _t is None else _t,
                                     []).append((word, lig, atom, e))
 
     # READING ORDER (Abdullah 2026-08-29): "the order of elements should match
@@ -2366,6 +2629,25 @@ def rewrite(page, assignment):
                 pass
         _ae.register(_dump_eidmap)
     out, pos = [], 0
+    # Count the fragments by REPLAYING the emitter's own walk: step through
+    # every path in the same order and every element in the same order, and
+    # count how many times each ayah key OPENS. That is exactly what the loop
+    # below does, so data-part numbers fragments in reading order and
+    # data-ayah-parts is the true total. Deriving it from the assignment
+    # order or from line numbers would number them in an order the document
+    # does not have.
+    for _pi2 in range(len(page.paths)):
+        # open_ayah is reset at the START OF EVERY PATH in the loop below, so
+        # an ayah continuing across a path boundary opens a NEW group there.
+        # The replay has to reset too, or it under-counts (p3 2:13 counted 1
+        # where the document has 3).
+        _prev_ak = None
+        for _w2, _lg2, _a2, _e2 in per_path.get(_pi2, ()):
+            _ak2 = ((_w2["surah"], _w2["ayah"]) if _w2 else None)
+            if _ak2 != _prev_ak:
+                if _ak2 is not None:
+                    _ayah_parts[_ak2] = _ayah_parts.get(_ak2, 0) + 1
+                _prev_ak = _ak2
     for pi, p in enumerate(page.paths):
         s, t = p["span"]
         out.append(svg[pos:s])
@@ -2541,8 +2823,15 @@ def rewrite(page, assignment):
                         # attributes appear on every fragment of it; the
                         # division-start flags below therefore mark the ayah,
                         # not one fragment of it.
-                        out.append('<g class="ayah" data-aid="%d:%d"%s>'
-                                   % (akey[0], akey[1], _ayah_start_attrs(akey)))
+                        _npart = _ayah_parts.get(akey, 0)
+                        _ipart = _ayah_seen.get(akey, 0) + 1
+                        _ayah_seen[akey] = _ipart
+                        out.append('<g class="ayah" data-aid="%d:%d" '
+                                   'data-marker="mk-%d-%d" data-part="%d" '
+                                   'data-ayah-parts="%d"%s>'
+                                   % (akey[0], akey[1], akey[0], akey[1],
+                                      _ipart, _npart,
+                                      _ayah_start_attrs(akey)))
                         open_ayah = akey
                 if word:
                     # data-qpc is the King Fahd Complex's own text of THIS print, which
@@ -3350,7 +3639,14 @@ def tag_ayah_markers(svg, polys_json, anchors=None):
             su, ay = label.get(idx, (None, None))
         else:
             su, ay = seen[idx] if idx < len(seen) else (None, None)
-        ident = (' data-aid="%d:%d"' % (su, ay)) if su else ""
+        # A stable id so an ayah can REACH its medallion. An ayah is emitted
+        # once per LINE and is therefore several nodes, so the relation cannot
+        # be expressed by nesting the marker inside "the" ayah — there is no
+        # single node that is the ayah. Linking costs no ink movement, so the
+        # numeral cannot drift and pixel identity is untouched (Abdullah
+        # 2026-08-29: link, do not nest).
+        ident = ((' id="mk-%d-%d" data-aid="%d:%d"' % (su, ay, su, ay))
+                 if su else "")
         out.append(block[pos:orn.start()])
         piece = orn.group(0).replace(
             "<path ", '<path data-kind="ayah-marker-ornament" ', 1)
