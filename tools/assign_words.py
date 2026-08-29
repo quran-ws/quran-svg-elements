@@ -1932,6 +1932,9 @@ def _ayah_start_attrs(akey):
 
 
 def rewrite(page, assignment):
+    # Which profile is being emitted. DEV (default) carries everything the
+    # audits need; PRODUCTION carries what a consumer needs and nothing else.
+    _PROD = os.environ.get("QSVG_PROFILE", "dev") == "production"
     """Wrap elements in <g class="word"> / <g class="ligature"> with full metadata.
 
     Regrouping reorders elements within one original path; ink pieces never overlap
@@ -2657,6 +2660,18 @@ def rewrite(page, assignment):
             # fall back to its original text: that re-draws every contour a
             # second time (the unlabelled قلى duplicates on p17).
             if pi not in consumed:
+                # PRODUCTION drops the invisible ayah polygons. They were how
+                # ayah highlighting and click-detection worked before there
+                # were word elements; word level supersedes both and is EXACT,
+                # while the polygon is a rectangular band cut on a straight
+                # line where the real boundary between two ayahs sharing a
+                # line is jagged. Measured over six pages: 8 of 6,243 elements
+                # (0.13%) have ink sitting inside a NEIGHBOURING ayah's
+                # polygon, so polygon highlighting paints part of the wrong
+                # ayah. They stay in DEV, and the pipeline still reads them
+                # from the SOURCE artwork to derive ayah membership.
+                if _PROD and "ayahPolygon" in p["text"]:
+                    continue
                 out.append(p["text"])
             continue
         a, b = p["d_span"][0] - s, p["d_span"][1] - s
@@ -2874,7 +2889,16 @@ def rewrite(page, assignment):
                                   (' data-qpc="%s"' % esc(word["qpc"]))
                                   if word.get("qpc") else ""))
                     open_word = wkey
-            if word and lig_key != open_lig:
+            if word and lig_key != open_lig and not _PROD:
+                # PRODUCTION PROFILE (QSVG_PROFILE=production): one group per
+                # WORD, marks kept as their own paths inside it. The ligature
+                # layer is a DEV instrument — it is what detects stolen
+                # letters (an empty ligature group) and misplaced diacritics
+                # — not a product feature. Measured: path `d` data is 80.9%
+                # of all bytes, so dropping the groups changes size barely at
+                # all; this is a semantics decision. Collapsing a word to a
+                # single <path> was rejected: it buys 6.8% brotli and deletes
+                # all 436,708 named marks.
                 if open_lig is not None:
                     out.append("</g>")
                 seg = atom.get("seg")
@@ -12367,6 +12391,14 @@ def assign_page(edition, page_no, cache_dir):
     out_svg = tag_ayah_markers(
         out_svg, polys_all,
         {k: (v[1], v[2]) for k, v in _mk_anchor.items()})
+    if os.environ.get("QSVG_PROFILE", "dev") == "production":
+        # The ayah polygons are NOT in page.paths — they ride through as part
+        # of the untouched document text — so they are stripped here, on the
+        # finished SVG. They are invisible (fill-opacity="0"), so removing
+        # them cannot change the render; only the contour multiset differs,
+        # which is why the production profile is gated on the RASTER half of
+        # audit_pixels and not on contour conservation.
+        out_svg = re.sub(r'<path class="ayahPolygon"[^>]*/>', '', out_svg)
     # COVERAGE IS MEASURED ON THE OUTPUT, not mid-pipeline (2026-08-29).
     # `apply_shape_labels` runs long before the ORNAMENT demotion and the
     # null-mark pass, so it graded an intermediate state: when the restored
