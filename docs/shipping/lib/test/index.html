@@ -205,11 +205,64 @@ try {
   show(p42);
   const band = p42.band('2:255');
   eq('5.1 one band per printed line the ayah occupies', band.bands, a255.lines.length);
-  eq('5.2 the band group carries ONE opacity, not per-rect',
-     [band.el.getAttribute('opacity'), band.rects.every(r => !r.hasAttribute('opacity'))],
-     ['0.3', true]);
+  eq('5.2 the band group carries ONE opacity', band.el.getAttribute('opacity'), '0.3');
   ok('5.3 the band is painted first (behind the ink)', p42.el.firstElementChild === band.el);
-  ok('5.4 band rects have positive area', band.rects.every(r => +r.getAttribute('width') > 0 && +r.getAttribute('height') > 0));
+
+  /* ---- ONE POLYGON, NOT A STACK OF LINES ---- */
+  eq('5.3a a multi-line band is ONE <path>, not one rect per line',
+     [band.el.children.length, band.el.children[0].tagName.toLowerCase(),
+      band.el.querySelectorAll('rect').length],
+     [1, 'path', 0]);
+  ok('5.3b the ayah really does span several lines', band.bands > 1, band.bands);
+  eq('5.3c one subpath per printed line',
+     (band.d.match(/M/g) || []).length, band.bands);
+  /* fill-rule MUST be declared. The page ink is evenodd, where overlapping
+     contours in one path CANCEL - inheriting it would punch holes. */
+  eq('5.3d fill-rule="nonzero" is set explicitly on the path element',
+     band.path.getAttribute('fill-rule'), 'nonzero');
+  eq('5.3e and it is on the element, not inherited from the page',
+     getComputedStyle(band.path).fillRule, 'nonzero');
+  /* the rendered shape must cover exactly the union of the per-line extents */
+  {
+    const u = band.boxes.reduce((a, b) => ({
+      x0: Math.min(a.x0, b.x0), y0: Math.min(a.y0, b.y0),
+      x1: Math.max(a.x1, b.x1), y1: Math.max(a.y1, b.y1) }), band.boxes[0]);
+    const bb = band.path.getBBox();
+    const off = Math.max(Math.abs(bb.x - u.x0), Math.abs(bb.y - u.y0),
+                         Math.abs(bb.x + bb.width - u.x1), Math.abs(bb.y + bb.height - u.y1));
+    ok('5.3f the rendered bbox is the union of the per-line extents',
+       off <= band.seam / 2 + 0.01,
+       { off, seam: band.seam, bbox: [bb.x, bb.y, bb.width, bb.height], union: u });
+    ok('5.3g the path has real area', bb.width > 10 && bb.height > 10, [bb.width, bb.height]);
+  }
+  /* adjacent subpaths must OVERLAP, or an antialiasing hairline shows as a seam */
+  {
+    const ys = [...band.d.matchAll(/M[-\d.]+ ([-\d.]+)H[-\d.]+V([-\d.]+)/g)]
+                 .map(m => [Number(m[1]), Number(m[2])]).sort((a, b) => a[0] - b[0]);
+    let touching = 0, overlapping = 0;
+    for (let i = 0; i < ys.length - 1; i++) {
+      if (ys[i][1] > ys[i + 1][0] + 1e-9) overlapping++;
+      if (Math.abs(band.boxes.length) && Math.abs(ys[i][1] - ys[i + 1][0]) < 1) touching++;
+    }
+    ok('5.3h neighbouring subpaths overlap, killing the seam hairline',
+       overlapping === ys.length - 1, { overlapping, of: ys.length - 1 });
+    near('5.3i the overlap is exactly the seam allowance',
+         ys[0][1] - ys[1][0], band.seam, 0.001);
+  }
+
+  /* a band on NON-ADJACENT lines must not grow tails into the lines between */
+  {
+    const far = p42.band([...p42.words({ line: 3 }), ...p42.words({ line: 9 })]);
+    const ys = [...far.d.matchAll(/M[-\d.]+ ([-\d.]+)H[-\d.]+V([-\d.]+)/g)]
+                 .map(m => [Number(m[1]), Number(m[2])]).sort((a, b) => a[0] - b[0]);
+    eq('5.3j two far-apart lines still give one path with two subpaths',
+       [far.el.children.length, ys.length], [1, 2]);
+    ok('5.3k and they are NOT joined by a seam overlap',
+       ys[0][1] < ys[1][0] - 1, [ys[0][1], ys[1][0]]);
+    const pb = far.boxes.slice().sort((a, b) => a.y0 - b.y0);
+    near('5.3l their edges are the untouched line pitch', ys[0][1], pb[0].y1, 0.001);
+    far.remove();
+  }
   band.remove();
   eq('5.5 band.remove() leaves nothing', p42.el.querySelectorAll('g.mushaf-band').length, 0);
 

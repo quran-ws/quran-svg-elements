@@ -239,30 +239,56 @@ page.highlight(page.search('الله').map(m => m.word), {fill: '#c0392b'});
 
 ### `page.band(target, options)` → handle
 
-**One rectangle per printed line** the target occupies. Mutates the page.
+**ONE `<path>`** covering every printed line the target occupies — not one rectangle
+per line. Mutates the page.
 
 | option | default | |
 |---|---|---|
 | `padX` | `1.2` | viewBox units, horizontal only |
-| `fill`, `opacity`, `rx` | `'#d6a326'`, `0.30`, `1.2` | |
+| `fill`, `opacity` | `'#d6a326'`, `0.30` | |
 | `height` | `'pitch'` | `'ink'` to use the words' own heights plus `padY` |
 | `padY` | `0` | only with `height: 'ink'` |
+| `seam` | `0.25` | vertical overlap between neighbouring lines, in viewBox units |
 | `className` | `'mushaf-band'` | |
 
-Handle: `{el, bands, boxes, rects, remove()}`. `boxes` is `{line, x0, x1, y0, y1}[]`
-in viewBox units.
+Handle: **`{el, path, d, bands, boxes, seam, remove()}`**. `el` is the group (it carries
+the `opacity` and `pointer-events: none`); `path` is the single `<path>`; `boxes` is
+`{line, x0, x1, y0, y1}[]` in viewBox units, **before** the seam overlap is applied.
 
-Horizontal extent comes from the words' **ink**, so a band never overhangs the text.
-Vertical extent comes from the **line pitch**, so bands on adjacent lines stack flush
-instead of overlapping and darkening at the seam. All rects sit in one group with one
-`opacity` and `pointer-events: none`, as the first child of `<svg>` — behind the ink,
-and unable to eat a click.
+> **Changed.** This used to return `rects` — an array of `<rect>` elements, one per
+> line. It now returns `path` and `d`. `rects` is gone.
+
+Why one path:
+
+- A stack of separate rects shows an **antialiasing hairline at every join** — two
+  abutting antialiased edges do not add up to opaque — so a six-line ayah reads as six
+  stripes rather than one highlight.
+- Each line is a **subpath**, all wound the same direction, and the path declares
+  **`fill-rule="nonzero"`**, which *unions* them. That is what lets neighbouring
+  subpaths overlap by `seam` to kill the hairline without the overlap painting twice
+  and darkening.
+- **`fill-rule` is set explicitly on the element and must stay that way.** The page's
+  own ink is `evenodd`, where overlapping contours inside one path *cancel*; inheriting
+  it would turn every overlap into a hole — the same trap that once filled the counter
+  of a ح as a solid blob. There is a test asserting the attribute is present, because
+  this is the regression most likely to be reintroduced by tidying.
+- The seam overlap is applied **only where two bands actually meet**, so a highlight on
+  lines 3 and 9 does not grow tails into the untouched lines between them.
+
+Horizontal extent still comes from the words' **ink**, so a band never overhangs the
+text at a line end; vertical extent still comes from the **line pitch**. The group is
+the first child of `<svg>` — behind the ink, and unable to eat a click.
 
 ```js
 const b = page.band('2:255', {fill: '#d6a326'});
-b.bands;      // 6 on page 42 — the ayah occupies six printed lines (8-13)
+b.bands;                            // 6 on page 42 — six printed lines (8-13)
+b.el.children.length;               // 1
+b.path.getAttribute('fill-rule');   // 'nonzero'
 b.remove();
 ```
+
+Every band the library draws goes through this one method — ayah highlight, word
+highlight and the selection band alike.
 
 ### `page.highlight(target, {className, fill, opacity})` → handle
 
@@ -534,7 +560,8 @@ The layer also emits a bubbling **`mushaf:copy`** event with `{detail: {text}}`.
 **Selection is whole-word, always.** The range is snapped out before anything reads
 it, so the painted band, the copied text and any ayah logic derive from one word list
 and cannot disagree; native `::selection` is suppressed so a partial-word range cannot
-even be painted. Sub-word selection would be a separate opt-in mode; it does not
+even be painted. The band is drawn through [`page.band`](#pagebandtarget-options), so a
+multi-line selection is **one path**, seams and all handled there. Sub-word selection would be a separate opt-in mode; it does not
 exist today.
 
 ---
