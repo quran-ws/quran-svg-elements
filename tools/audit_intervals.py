@@ -105,6 +105,25 @@ def scan(pg):
                 if len(owners) != 1 or owners[0][2] is w:
                     continue
                 other = owners[0][2]
+                # X-OVERLAP IS NOT TERRITORY (Abdullah 2026-08-29, "what are
+                # the issues here, I can't see it"). A damma/dammatan riding
+                # on a final أ or ة sits high above the line and overhangs
+                # the next word's x-range while clearing its LETTERS by a
+                # wide margin -- it is over that word's empty air, not its
+                # ink. Measured over every surviving record: vertical
+                # clearance runs 0.0, 0.0 x7, 0.4, 0.7, 1.1, 1.4, 1.4, 2.9,
+                # 3.1, 3.9, 4.4 -- then NOTHING until 9.2, 10.5, 11.2, 13.5.
+                # An empty band 4.8u wide, and every record above it is that
+                # same overhang shape (ٱلْمَلَأُ↔مِن twice, مَلَأࣱ↔مِّن,
+                # مَلَٰٓئِكَةࣰۖ↔وَمَا), each with BOTH words' counts exact.
+                # Threshold inside the band, not at its edge.
+                _ob = [x for x in meta[id(other)][0]
+                       if x["kind"] == "body"]
+                if _ob:
+                    _oy1 = min(x["y1"] for x in _ob)
+                    _oy2 = max(x["y2"] for x in _ob)
+                    if max(_oy1 - e["y2"], e["y1"] - _oy2) > 6.5:
+                        continue
                 rA, rB = ratio(w), ratio(other)
                 nsegA = max(1, len(aw.segment_word(w["uthmani"])))
                 defA = nsegA - len(meta[id(w)][1])
