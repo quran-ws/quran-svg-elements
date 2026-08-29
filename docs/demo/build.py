@@ -4,12 +4,19 @@
 Inlines ONE page (the hero, page 42 — Ayat al-Kursi) into template.html.
 Every other page the demo shows is fetched at runtime from PAGES_BASE.
 
-The inlined page is converted to the PRODUCTION profile on the way in:
+The inlined page is brought to the PRODUCTION profile on the way in:
   * <path class="ayahPolygon"> removed  (dev-only; different frame, sits on top)
   * <g class="ligature"> wrappers dissolved, their paths kept in place
-  * data-eid / data-sig stripped (review instruments, not stable across builds)
-That is exactly what QSVG_PROFILE=production emits, and it is what a consumer
-of the bundle gets, so every selector on the demo page is one that ships.
+Those two ARE the production profile, so every selector on the demo page is one
+that ships.
+
+One further strip goes BEYOND production, and only for size:
+  * data-eid / data-sig removed  (~45 KB on this page)
+FORMAT.md §2 and §6.5 are explicit that both attributes are present in BOTH
+profiles — a shipped production page still carries them. They are review
+instruments, `data-eid` is documented as not stable across builds, and nothing
+in the demo reads either, so dropping them costs the demo nothing. Do not let
+this be mistaken for a statement about what production emits.
 
 Also writes:
   data/gloss-042.json   {wid: [english, transliteration]}  (source: quran.com)
@@ -33,8 +40,12 @@ def strip_polygons(svg: str) -> str:
 
 
 def drop_dev_attrs(svg: str) -> str:
-    """data-eid and data-sig are review instruments, explicitly not stable
-    across builds and explicitly absent from the production profile."""
+    """Strip data-eid / data-sig from the inlined page.
+
+    NOT a production-profile property: shipped production pages keep both
+    (FORMAT.md §2, §6.5). This is a size-only saving for the demo, which reads
+    neither attribute. See the module docstring.
+    """
     return re.sub(r'\s(?:data-eid|data-sig)="[^"]*"', "", svg)
 
 
@@ -101,7 +112,8 @@ def main() -> None:
     out = tpl.replace("<!--SVG-->", svg)
     (HERE / "index.html").write_text(out, encoding="utf-8")
 
-    print(f"page {HERO:03d}: {before/1024:.0f} KB dev -> {len(svg)/1024:.0f} KB production")
+    print(f"page {HERO:03d}: {before/1024:.0f} KB dev -> {len(svg)/1024:.0f} KB "
+          f"(production profile, less data-eid/data-sig)")
     print(f"index.html   {len(out.encode())/1024:.0f} KB")
     print(f"gloss-{HERO:03d}   {len(gloss)/1024:.1f} KB")
 

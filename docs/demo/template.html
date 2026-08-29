@@ -167,6 +167,32 @@ g.q-hl rect{fill:var(--hl)}
 @media (prefers-reduced-motion:reduce){g.q-hl{transition:none}}
 .q-word path{fill:#b3341f}
 
+.lab-extra input[type=range]{width:130px;accent-color:var(--lapis);cursor:pointer;flex:0 0 auto}
+.lab-extra .val{font:500 12px/1 "IBM Plex Mono",monospace;color:var(--gold);min-width:34px;
+  text-align:right}
+.lab-extra label{display:flex;gap:6px;align-items:center;
+  font:500 12px/1 "IBM Plex Mono",monospace;color:var(--muted)}
+
+/* word-by-word reveal. Every ink path ships fill="#231f20" as a presentation
+   attribute; a CSS rule beats one, so `fill: inherit` hands the path back to
+   its group and the whole word recolours by setting ONE property. */
+.q-reveal g.word{transition:fill var(--fade,220ms) linear}
+.q-reveal g.word path{fill:inherit;transition:fill var(--fade,220ms) linear}
+@media (prefers-reduced-motion:reduce){
+  .q-reveal g.word,.q-reveal g.word path{transition:none}
+}
+.q-transport{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.q-transport input[type=range]{flex:1;min-width:120px;accent-color:var(--lapis)}
+.q-transport .val{font:500 12px/1 "IBM Plex Mono",monospace;color:var(--gold);min-width:74px}
+
+/* the selection text layer: real Unicode, painted invisibly, sitting
+   exactly over the ink it names. Same idea as PDF.js's text layer. */
+.seltext{position:absolute;inset:0}
+.seltext span{position:absolute;color:transparent;-webkit-text-fill-color:transparent;
+  white-space:pre;cursor:text}
+.seltext span::selection{background:color-mix(in srgb,var(--lapis) 32%,transparent);color:transparent}
+.seltext span::-moz-selection{background:color-mix(in srgb,var(--lapis) 32%,transparent);color:transparent}
+
 /* three-way specimen */
 #spec{display:grid;gap:16px;margin:0 0 24px}
 .spec-lbl{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;text-transform:uppercase;
@@ -219,6 +245,15 @@ footer p{max-width:74ch}
       selected, searched or linked. Text set in a font is alive, but it is not this print, and you have
       to rebuild the line breaks page by page so a reader still recognises the page they memorised
       from. These files give you both at once.</p>
+    <p class="plain"><b>It also replaces your Quran metadata database.</b> Most apps ship page images
+      alongside a database that says what is on them. Here that information is on the elements
+      themselves — the surah's number, its name in Arabic, Latin and English, where it was revealed and
+      how many ayahs it has; the ayah key <code>2:255</code> and which parts of it fall on this page;
+      the word key <code>2:255:4</code> with its text in five forms; juz, hizb, rubʿ and nisf and where
+      each begins; the page and line number; and every mark named, sajdah signs and iqlab meems
+      included. So <i>"ayah 2:255 is on page 42, line 3"</i> is a CSS selector rather than a query — and
+      because the geometry is in the same file, you also get the one thing a database cannot give you:
+      where each of those sits on the page.</p>
     <div class="mast-foot">
       <span class="chip"><b>604</b> pages</span>
       <span class="chip"><b>77,432</b> words</span>
@@ -245,10 +280,12 @@ footer p{max-width:74ch}
       <li><a href="#band">band highlight</a></li>
       <li><a href="#search">search</a></li>
       <li><a href="#word">read a word</a></li>
+      <li><a href="#select">select &amp; copy</a></li>
+      <li><a href="#reveal">reveal word by word</a></li>
       <li><a href="#translate">translations</a></li>
       <li><a href="#style">marks</a></li>
       <li><a href="#theme">page theme</a></li>
-      <li><a href="#markers">ayah markers</a></li>
+      <li><a href="#markers">swap ayah markers</a></li>
       <li><a href="#spacing">line height</a></li>
       <li><a href="#crop">crop</a></li>
       <li><a href="#meta">metadata</a></li>
@@ -362,9 +399,11 @@ footer p{max-width:74ch}
       restores both the snippet and an untouched copy of the page. Each editor has its own copy of the
       file, so one section cannot disturb another. Inside a snippet you have <code>svg</code> (that
       section's page), <code>stage</code> (the paper it sits on), <code>out(html)</code> and
-      <code>log(…)</code> to report, and <code>H</code> — a few helpers defined on this page:
+      <code>log(…)</code> to report, <code>H</code> — a few helpers defined on this page:
       <code>H.band</code>, <code>H.fold</code>, <code>H.crop</code>, <code>H.getPage</code>,
-      <code>H.toRoot</code>. Everything else is plain DOM.
+      <code>H.toRoot</code> — and <code>signal</code>, an <code>AbortSignal</code> that fires when
+      the snippet is re-run, so a listener or an observer you attach outside the page is cleaned up
+      for you. Everything else is plain DOM.
     </div>
     <div class="shead">
       <p class="sel">fetch → DOMParser → querySelectorAll</p>
@@ -540,11 +579,138 @@ footer p{max-width:74ch}
   </div>
 </section>
 
+<section id="select">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">one invisible &lt;span&gt; per g.word, over the ink</p>
+      <h2>7 · Drag across the page and copy real text</h2>
+      <p>Drag over the page with the mouse, then <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>C</kbd>, or
+        right-click and Copy. You get the Quranic text. There are no
+        <code>&lt;text&gt;</code> elements in the file, so native selection has nothing to grab —
+        the fix is to overlay a text layer, one absolutely-positioned span per word, carrying the
+        real Unicode and painted with <code>color: transparent</code> on top of the word's own
+        rendered box. It is the same trick PDF.js uses, it needs no library, and the ink underneath
+        is untouched.</p>
+    </div>
+    <div class="lab" id="lab-select"></div>
+
+    <div class="two" style="margin-top:22px">
+      <div class="callout">
+        <h3>Four things that go wrong, and what to do instead</h3>
+        <ul class="plain-list" style="margin-top:0">
+          <li><b><code>getBBox()</code> is the wrong measurement.</b> It reports a group's own
+            user-space coordinates and ignores every transform above it, which puts line 1 near the
+            bottom of the page. Use <code>getBoundingClientRect()</code> on the word and subtract the
+            layer's own rect — it is already through the whole transform chain. Worst residual
+            misalignment across all 127 words of page 3 is then <b>0.016 px</b>.</li>
+          <li><b>Caret placement inside a span uses the fallback font's advances</b>, which have
+            nothing to do with the ink, so a drag starting mid-word cuts it at an arbitrary letter.
+            Snap the range out to whole spans on <code>mouseup</code>. Word granularity is what a
+            mushaf reader wants anyway.</li>
+          <li><b>Do not size a span to its LINE's box.</b> A line group's rect includes the
+            ascenders and descenders that overrun into its neighbours, so the bands overlap and
+            darken. Per-word boxes look right.</li>
+          <li><b>Do not put a newline inside a span</b>, and do not use a separate zero-size break
+            span. The first makes that span two text lines tall, so its band spills onto the line
+            below; the second has its newline collapsed away and never reaches the clipboard. Build
+            the payload yourself in a <code>copy</code> handler instead.</li>
+        </ul>
+      </div>
+      <div>
+        <div class="callout">
+          <h3>Why building the payload yourself is the good part</h3>
+          <p>Because the text is looked up from <code>data-wid</code> rather than serialised out of
+            the layer, <b>the same drag can yield different text</b>. Quote it as the print sets it,
+            take the modern spelling, or take the bare form to paste into a search box. Change the
+            <code>WHICH</code> line in the editor, or use the selector in the toolbar.</p>
+          <p class="note" style="margin:0">Neither a page image nor text set in a font can offer
+            this. An image has nothing to select; a font gives you one spelling, the one it was set
+            in. Here the selection is a set of word ids, and the spelling is chosen at copy time.</p>
+        </div>
+        <figure class="code">
+          <button class="copy">copy</button>
+<pre><code><span class="tok-c">/* the layer. The glyphs must never paint — only the</span>
+<span class="tok-c">   selection band behind them. */</span>
+.seltext { position: absolute; inset: <span class="tok-k">0</span> }
+.seltext span {
+  position: absolute;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  white-space: pre;
+  cursor: text;
+}
+.seltext span::selection { background: rgba(<span class="tok-k">45</span>,<span class="tok-k">85</span>,<span class="tok-k">160</span>,.<span class="tok-k">32</span>); color: transparent }</code></pre>
+        </figure>
+      </div>
+    </div>
+
+    <p class="note"><b>What is verified, and what is not.</b> The <code>copy</code> event and the
+      payload it produces are tested: a real mouse drag across a line break, the highlighted band and
+      the copied word set agreeing at both boundaries, and the mushaf's own line break preserved as a
+      newline. The handoff to the <b>operating system clipboard</b> was not testable in the headless
+      browser used here — it has no clipboard backing — so that last step is the one part of this
+      section proven only by hand.</p>
+  </div>
+</section>
+
+<section id="reveal">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">g.word { fill: … } — one property, one word</p>
+      <h2>8 · Reveal the page word by word</h2>
+      <p>Every word on the page starts light grey. The reading position is full ink, and it advances,
+        each word fading in as it is reached. This is what a <b>memorisation prompt</b>, a
+        <b>reading-along view</b> and a <b>"you are here" indicator</b> all reduce to, and once words
+        are addressable all three are one property away. A page image cannot do it at all — recolouring
+        one word at a time needs per-word ink.</p>
+    </div>
+    <div class="lab" id="lab-reveal"></div>
+
+    <div class="two" style="margin-top:22px">
+      <div class="callout">
+        <h3>Set the colour on the group, not on 1,000 paths</h3>
+        <p>Every ink path ships <code>fill="#231f20"</code> as a presentation attribute, so a
+          <code>&lt;g&gt;</code>'s inherited fill will not reach it on its own. A CSS rule beats a
+          presentation attribute, so one rule hands each path back to its group — and then recolouring a
+          whole word is setting <b>one</b> property on <b>one</b> element per tick, whatever the word is
+          made of.</p>
+        <figure class="code" style="margin-top:6px">
+          <button class="copy">copy</button>
+<pre><code>.reveal g.word path { fill: inherit; transition: fill <span class="tok-k">220</span>ms linear }
+
+<span class="tok-c">// then, per tick:</span>
+word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-s">'#c9c4b8'</span>;</code></pre>
+        </figure>
+        <p class="note">Measured on this page: 147 words over 1,061 paths, and the transition is on
+          <code>fill</code>. It stays smooth because a tick touches one element, not a thousand — the
+          browser does the interpolation. If you ever need it cheaper, transition
+          <code>opacity</code> on the group instead.</p>
+      </div>
+      <div class="callout">
+        <h3>The schedule is pluggable, and it is not audio</h3>
+        <p>The advance is driven by a <code>schedule(i)</code> function returning the millisecond at
+          which word <i>i</i> lights. Today that is a constant tempo. Swap in an array of per-word start
+          times from a recitation aligner and the same loop follows a recitation — same code, different
+          source.</p>
+        <p class="note" style="margin:0"><b>Nothing here is synced to a recitation.</b> These files
+          carry no audio and no word timings, and the animation you are watching is a metronome. The
+          reason it is worth showing anyway is that <code>data-wid</code> is
+          <code>surah:ayah:word</code> — the same key word-level timing datasets are published under —
+          so the join needs no mapping table.</p>
+      </div>
+    </div>
+
+    <p class="note">Word order is <b>document order</b>: right to left within a printed line, lines top
+      to bottom, correct on all 8,820 lines of the mushaf that hold words. The loop below never sorts
+      by geometry, and it does not need to.</p>
+  </div>
+</section>
+
 <section id="translate">
   <div class="wrap">
     <div class="shead">
       <p class="sel">data-wid === quran.com's word key</p>
-      <h2>7 · Pin a translation to a word</h2>
+      <h2>9 · Pin a translation to a word</h2>
       <p><code>data-wid</code> is <code>surah:ayah:word</code>, 1-based — the same key the quran.com API,
         word-by-word translation sets, morphology data and <code>quran-align</code>'s recitation timings
         already use. Your existing word-keyed data joins to this ink with no mapping table. The snippet
@@ -563,7 +729,7 @@ footer p{max-width:74ch}
   <div class="wrap">
     <div class="shead">
       <p class="sel">path[data-kind] · path[data-mark] · path[data-mark-family]</p>
-      <h2>8 · Style or hide marks by meaning</h2>
+      <h2>10 · Style or hide marks by meaning</h2>
       <p>Every ink path in the mushaf is <code>fill="#231f20"</code>, and a CSS rule beats a presentation
         attribute, so recolouring by meaning needs no re-export and no second file. First, the same
         printed line three ways.</p>
@@ -605,7 +771,7 @@ footer p{max-width:74ch}
   <div class="wrap">
     <div class="shead">
       <p class="sel">svg path { fill: … }</p>
-      <h2>9 · Theme the page</h2>
+      <h2>11 · Theme the page</h2>
       <p>Every ink path in the whole mushaf is the same colour, <code>#231f20</code>. One rule changes
         all of it. That gives you a real dark mode, a high-contrast print sheet, or a page that matches
         your own palette — and none of it touches the geometry, so the print stays the print. A page
@@ -623,7 +789,7 @@ footer p{max-width:74ch}
   <div class="wrap">
     <div class="shead">
       <p class="sel">g.ayah-marker > path[data-kind="ayah-marker-ornament" | "ayah-number"]</p>
-      <h2>10 · Restyle or swap the ayah end-marker</h2>
+      <h2>12 · Swap or restyle the ayah end-marker</h2>
       <p>The medallion at the end of an ayah is <code>&lt;g class="ayah-marker" id="mk-2-255"&gt;</code>
         holding two paths: the ornament ring, and the printed numeral. <b>They are separate elements</b>
         — which is the whole reason you can restyle the furniture without touching the number. Recolour
@@ -642,17 +808,37 @@ footer p{max-width:74ch}
   <div class="wrap">
     <div class="shead">
       <p class="sel">g.line { transform: translate(0, …) }</p>
-      <h2>11 · Open up the leading</h2>
-      <p>A mushaf page is fixed geometry and cannot reflow. But every printed line is its own group, so
-        the lines can be moved apart without touching a single glyph. That is a large-print or
-        low-vision reading mode on a page that still has the print's own line breaks — and it is
-        something a page image cannot offer at all.</p>
+      <h2>13 · Open up the leading, and fill a phone screen</h2>
+      <p>On a phone this is not an accessibility nicety, it is the difference between using the screen
+        and wasting it. The page is 345 × 550; a phone is far narrower for its height, so fitting the
+        page to the width leaves <b>about a quarter of the display empty</b>. Spreading the lines into
+        that space fills the screen with the same page — same line breaks, same glyph positions,
+        nothing scaled or stretched. A page image can only zoom, which crops or distorts.</p>
+      <p style="margin-top:10px">It is also a large-print and low-vision reading mode, on a page that
+        still has the print's own line breaks. Drag the slider, or press <b>fill a phone screen</b> to
+        let the snippet compute the gap from the page's own <code>viewBox</code> and line count.</p>
     </div>
     <div class="lab" id="lab-spacing"></div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>device</th><th class="mono">viewport</th><th class="mono">aspect</th>
+          <th>wasted height, page fitted to width</th><th class="mono">gap to fill it</th></tr></thead>
+        <tbody>
+          <tr><td>iPhone SE</td><td class="mono">375×667</td><td class="mono">0.562</td><td>10.4%</td><td class="mono">4.5</td></tr>
+          <tr><td>iPhone 14</td><td class="mono">390×844</td><td class="mono">0.462</td><td>26.3%</td><td class="mono">14.0</td></tr>
+          <tr><td>iPhone 14 Pro Max</td><td class="mono">430×932</td><td class="mono">0.461</td><td>26.4%</td><td class="mono">14.1</td></tr>
+          <tr><td>Pixel 7</td><td class="mono">412×915</td><td class="mono">0.450</td><td>28.2%</td><td class="mono">15.4</td></tr>
+          <tr><td>Galaxy S21</td><td class="mono">360×800</td><td class="mono">0.450</td><td>28.3%</td><td class="mono">15.5</td></tr>
+          <tr><td>iPad 10.9, portrait</td><td class="mono">820×1180</td><td class="mono">0.695</td><td class="no">fits by height</td><td class="no">—</td></tr>
+        </tbody>
+      </table>
+    </div>
     <p class="note">Whole lines move; nothing is scaled, stretched or re-set. The words inside a line
       keep their exact printed positions relative to each other, so the page you are reading is still
-      the page you memorised from, just further apart. The snippet grows the
-      <code>viewBox</code> to match, so nothing is cropped.</p>
+      the page you memorised from, just further apart. The snippet grows the <code>viewBox</code> to
+      match, so nothing is cropped. <b>Derive the gap from the page, never from a constant</b> — pages
+      1 and 2 are the opening spread, with 8 printed lines and a different <code>viewBox</code>, so a
+      figure computed for a 15-line page is wrong there.</p>
   </div>
 </section>
 
@@ -660,10 +846,11 @@ footer p{max-width:74ch}
   <div class="wrap">
     <div class="shead">
       <p class="sel">clone → filter → getBBox() → new viewBox</p>
-      <h2>12 · Any crop is a component</h2>
+      <h2>14 · Any crop is a component</h2>
       <p>One word for a vocabulary card, a run of words for a quotation, one ayah for a citation, one
         line for a header. Same twelve-line function, different filter. The result is a standalone SVG
-        you can drop into a slide, a video or a print layout at any size. Edit the filter.</p>
+        you can drop into a slide, a video or a print layout at any size. Drag <b>from</b> and <b>to</b>
+        to pick a run out of Ayat al-Kursi, or edit the filter for anything else.</p>
     </div>
     <div class="lab" id="lab-crop"></div>
     <p class="note">Read the <code>viewBox</code> off the file rather than hardcoding
@@ -676,7 +863,7 @@ footer p{max-width:74ch}
   <div class="wrap">
     <div class="shead">
       <p class="sel">data-sid · data-juz-start · data-hizb-start · data-rub-start</p>
-      <h2>13 · Metadata without a database, and a reader in thirty lines</h2>
+      <h2>15 · Metadata without a database, and a reader in thirty lines</h2>
       <p>You do not need to bundle a Quran metadata package to build a reader chrome. Open the page and
         read it off. The snippet runs on whichever page the reader is showing — turn pages with the
         buttons or the <kbd>←</kbd> <kbd>→</kbd> keys and it re-runs on the new one. Try <b>582</b>
@@ -720,7 +907,8 @@ footer p{max-width:74ch}
         <h3 style="font-size:19px;margin-bottom:10px">Two profiles</h3>
         <p class="note" style="margin-top:0">The same page is emitted two ways. <b>Production</b> is what
           you want: one <code>&lt;g class="word"&gt;</code> per word, every mark its own path. <b>Dev</b>
-          adds a <code>&lt;g class="ligature"&gt;</code> layer and a legacy invisible polygon per ayah.
+          adds a <code>&lt;g class="ligature"&gt;</code> layer and a legacy invisible polygon per ayah,
+          and those two are the whole difference — every attribute in the reference below is in both.
           They render identically. Tell them apart in one line:</p>
         <figure class="code" style="margin-top:12px">
           <button class="copy">copy</button>
@@ -753,7 +941,7 @@ footer p{max-width:74ch}
               paths-only rendering of real calligraphy.</li>
             <li><b>No accessibility metadata in the shipped files yet.</b> No <code>&lt;title&gt;</code>,
               no <code>role</code>, no <code>lang</code>. The ingredients are all there — the snippet in
-              §7 makes a page readable — but it is not baked in, and pretending otherwise would be worse
+              §9 makes a page readable — but it is not baked in, and pretending otherwise would be worse
               than saying so.</li>
             <li><b>No letter-level decomposition.</b> Nothing says where one Arabic letter ends and the
               next begins, so tajwid rules expressed as character ranges cannot be mapped to ink. What
@@ -764,8 +952,11 @@ footer p{max-width:74ch}
             <li><b>Two pages break the uniform layout.</b> Pages 1 and 2 are the opening spread: a
               different <code>viewBox</code>, a different page matrix, 8 lines, and 12 decorative
               rosettes that carry no ayah. Read the attributes rather than assuming.</li>
-            <li><b>No audio, no translation, no tafsir, no word timings.</b> Out of scope, and joinable
-              — <code>data-wid</code> and <code>data-aid</code> are the keys those datasets already
+            <li><b>Scope: the printed page and what is on it.</b> The metadata these files carry is
+              the mushaf's own — surah, ayah, word, line, page, the juz/hizb/rubʿ/nisf divisions, and
+              every named mark. Translation, tafsir, audio and word timings, transliteration, and the
+              ruku and manzil divisions are a consumer's own data, and they join straight on:
+              <code>data-wid</code> and <code>data-aid</code> are the keys those datasets already
               use.</li>
           </ul>
         </div>
@@ -837,10 +1028,11 @@ footer p{max-width:74ch}
         </tbody>
       </table>
     </div>
-    <p class="note"><code>data-eid</code> and <code>data-sig</code> also appear on paths. They are review
-      instruments: <code>data-eid</code> is <b>not stable across builds</b> and <code>data-sig</code> is a
-      shape signature, not an identity — 98 signatures serve more than one mark name. <b>Never key on
-      either.</b></p>
+    <p class="note"><code>data-eid</code> and <code>data-sig</code> also appear on paths, in
+      <b>both</b> profiles. They are review instruments: <code>data-eid</code> is <b>not stable across
+      builds</b> and <code>data-sig</code> is a shape signature, not an identity — 98 signatures serve
+      more than one mark name. <b>Never key on either.</b> (The page inlined at the top of this
+      document has them stripped, purely to save 45 KB. A file you download will have them.)</p>
   </div>
 </section>
 
@@ -852,7 +1044,7 @@ footer p{max-width:74ch}
       Complex — <span class="ar" style="font-size:1em">مجمع الملك فهد لطباعة المصحف الشريف</span> —
       <a href="https://dm.qurancomplex.gov.sa" rel="noopener">dm.qurancomplex.gov.sa</a>. The Complex did
       not produce, review or approve this decomposition, and nothing here implies endorsement or
-      affiliation. Word-by-word English and transliteration used in §7 are from quran.com and are not
+      affiliation. Word-by-word English and transliteration used in §9 are from quran.com and are not
       part of this corpus. Licence and redistribution terms are not settled and are not stated on this
       page.</p>
   </div>
@@ -1073,7 +1265,7 @@ function makeLab(cfg) {
   side.append(bar, ed, out);
   if (cfg.reverse) mount.append(side, stageWrap); else mount.append(stageWrap, side);
 
-  const ctx = { paper, out, ta, extra, svg: null, basePage: null, state: {} };
+  const ctx = { paper, out, ta, extra, svg: null, basePage: null, state: {}, onReset: [] };
 
   let sheet = null;
   if (cfg.lang === 'css') {
@@ -1094,9 +1286,15 @@ function makeLab(cfg) {
     }
   };
 
-  let running = 0;
+  let running = 0, abort = null;
   async function run() {
     const token = ++running;
+    /* a re-run cancels the one before it, so anything a snippet attached
+       outside its own copy of the page (a document listener, a
+       ResizeObserver) is torn down instead of piling up */
+    if (abort) abort.abort();
+    abort = new AbortController();
+    const signal = abort.signal;
     out.dataset.fresh = '0';
     if (cfg.lang === 'css') {
       try {
@@ -1110,13 +1308,13 @@ function makeLab(cfg) {
     }
     let fn;
     try {
-      fn = new AsyncFunction('svg', 'stage', 'out', 'log', 'H', ta.value);
+      fn = new AsyncFunction('svg', 'stage', 'out', 'log', 'H', 'signal', ta.value);
     } catch (e) {
       report('<b>' + e.name + '</b>  ' + esc(e.message), 'err');
       return;
     }
     try {
-      await fn(ctx.svg, paper, api.out, api.log, H);
+      await fn(ctx.svg, paper, api.out, api.log, H, signal);
       if (token === running && out.textContent === 'not run yet') report('ran, no output', 'ok');
     } catch (e) {
       if (token === running) report('<b>' + e.name + '</b>  ' + esc(e.message), 'err');
@@ -1146,8 +1344,15 @@ function makeLab(cfg) {
     if (e.key === 'Escape') { e.preventDefault(); runBtn.focus(); }
   });
   runBtn.addEventListener('click', kick);
-  resetBtn.addEventListener('click', () => { ta.value = cfg.code.trim(); kick(); });
+  resetBtn.addEventListener('click', () => {
+    ta.value = cfg.code.trim();
+    /* a control left pointing somewhere the code does not is worse than no
+       control, so every bound widget goes back with it */
+    ctx.onReset.forEach(fn => fn());
+    kick();
+  });
   ctx.rerun = kick;
+  ctx.runNow = () => { clearTimeout(t); freshStage(); run(); };
 
   /* build on first sight, so the DOM never holds a dozen pages at once */
   let built = false;
@@ -1165,6 +1370,68 @@ function makeLab(cfg) {
   }, { rootMargin: '400px' });
   io.observe(mount);
   return ctx;
+}
+
+/* the page a lab started from, before any snippet touched it */
+function cfgPage(ctx) { return ctx.basePage || PRISTINE; }
+
+/* A range control bound to a `const NAME = <number>;` line in the snippet.
+   The slider writes the number into the code, and the code is what runs — so
+   the reader watches the effect AND reads the line that produced it. Dragging
+   re-renders on `input`, throttled to one animation frame, because a redraw
+   here re-clones ~1,000 paths and can also rewrite the viewBox. */
+function bindSlider(ctx, o) {
+  if (!ctx) return;
+  const wrap = document.createElement('label');
+  const name = document.createElement('span');
+  name.textContent = o.label;
+  const input = document.createElement('input');
+  input.type = 'range';
+  input.min = o.min; input.max = o.max; input.step = o.step; input.value = o.value;
+  input.setAttribute('aria-label', o.label);
+  const val = document.createElement('span');
+  val.className = 'val';
+  const digits = o.digits ?? 2;
+  /* normalise without eating an integer's trailing zeros: a naive
+     /\.?0+$/ strip turns 40 into 4 */
+  const show = v => String(+(+v).toFixed(digits));
+  val.textContent = show(o.value);
+  wrap.append(name, input, val);
+  ctx.extra.append(wrap);
+
+  const rx = new RegExp('(const\\s+' + o.name + '\\s*=\\s*)-?[0-9.]+');
+  let queued = false;
+  function apply() {
+    val.textContent = show(input.value);
+    if (!rx.test(ctx.ta.value)) return;      // the reader edited the line away
+    ctx.ta.value = ctx.ta.value.replace(rx, '$1' + show(input.value));
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; ctx.runNow(); });
+  }
+  input.addEventListener('input', apply);
+  ctx.onReset.push(() => { input.value = o.value; val.textContent = show(o.value); });
+  return input;
+}
+
+/* A toggle bound to a `const NAME = true|false;` line, for the genuinely
+   discrete things a slider would only obscure. */
+function bindToggle(ctx, o) {
+  if (!ctx) return;
+  const b = document.createElement('button');
+  b.textContent = o.label;
+  b.setAttribute('aria-pressed', String(!!o.value));
+  const rx = new RegExp('(const\\s+' + o.name + '\\s*=\\s*)(?:true|false)');
+  b.addEventListener('click', () => {
+    const on = b.getAttribute('aria-pressed') !== 'true';
+    b.setAttribute('aria-pressed', String(on));
+    if (!rx.test(ctx.ta.value)) return;
+    ctx.ta.value = ctx.ta.value.replace(rx, '$1' + on);
+    ctx.runNow();
+  });
+  ctx.extra.append(b);
+  ctx.onReset.push(() => b.setAttribute('aria-pressed', String(!!o.value)));
+  return b;
 }
 
 /* ---------- theme switch ---------- */
@@ -1338,12 +1605,15 @@ out('halo = ' + HALO + '. Now click the line, aiming at the gaps.');
 }));
 
 /* 4 · band highlighting */
-mod('lab-band', () => makeLab({
+mod('lab-band', () => bindSlider(makeLab({
   mount: 'lab-band',
   label: 'band highlighting',
   code: `
-// The whole thing. Change the ayah, the padding or the colour.
-const AID = '2:255', PAD_X = 1.2, PAD_Y = 1.6, FILL = '#d6a326';
+// The whole thing. Change the ayah, the padding or the colour —
+// or drag the padding slider in the toolbar and watch it move.
+const AID = '2:255', FILL = '#d6a326';
+const PAD = 1.2;                       // page units, around the band
+const PAD_X = PAD, PAD_Y = PAD + 0.4;
 const NS = 'http://www.w3.org/2000/svg';
 
 const byLine = new Map();
@@ -1376,7 +1646,7 @@ svg.prepend(layer);          // first child of <svg> = behind everything
 log(byLine.size, 'bands for ayah', AID, '— one per printed line.');
 log('The ink was never touched: no fill, no stroke, no filter.');
 `
-}));
+}), { label: 'padding', name: 'PAD', min: 0, max: 6, step: 0.2, value: 1.2, digits: 1 }));
 
 /* 5 · search this page */
 mod('lab-search', () => makeLab({
@@ -1432,6 +1702,252 @@ svg.addEventListener('pointermove', e => {
 out('hover the page →');
 `
 }));
+
+/* 7 · select and copy real text */
+mod('lab-select', () => {
+  const ctx = makeLab({
+    mount: 'lab-select',
+    label: 'select and copy the page',
+    stageNote: 'Drag across the page — including across a line break. ' +
+               'Then Ctrl/⌘+C, or right-click and Copy.',
+    code: `
+// The file has no <text>, so native selection has nothing to grab.
+// Overlay one invisible span per word, carrying the real Unicode,
+// placed on that word's own rendered box. PDF.js does the same.
+const WHICH = 'uthmani';        // what Ctrl+C puts on the clipboard
+
+stage.style.position = 'relative';
+const layer = document.createElement('div');
+layer.className = 'seltext';
+stage.append(layer);
+
+function build() {
+  // Measure in SCREEN space. getBBox() gives a group's OWN user
+  // coordinates and ignores every transform above it, which lands
+  // line 1 near the bottom of the page.
+  const origin = layer.getBoundingClientRect();
+  layer.textContent = '';
+  for (const g of svg.querySelectorAll('g.word')) {
+    const r = g.getBoundingClientRect();          // whole transform chain
+    if (!r.width || !r.height) continue;
+    const s = document.createElement('span');
+    s.textContent   = g.dataset.uthmani + ' ';
+    s.dataset.wid   = g.dataset.wid;
+    s.dataset.line  = g.closest('g.line').dataset.line;
+    s.style.left    = (r.left - origin.left) + 'px';
+    s.style.top     = (r.top  - origin.top)  + 'px';
+    // per-WORD box. A line's box includes the ascenders that overrun
+    // into its neighbours, so line-sized bands overlap and darken.
+    // NOTE: no width is set here — see the squeeze below.
+    s.style.height  = r.height + 'px';
+    s.style.fontSize = s.style.lineHeight = r.height + 'px';
+    s.style.transformOrigin = 'left top';
+    s.dataset.w = r.width;
+    layer.append(s);
+  }
+
+  // Second pass, one layout flush. The fallback font's advances have
+  // nothing to do with the ink, so a word set at font-size = box HEIGHT
+  // lays out far wider than the word it names. Left alone it overflows
+  // across its neighbours and steals their hits, and a drag then selects
+  // words you never dragged over. Let each span take its natural width,
+  // then squeeze it onto the word with scaleX — which is what PDF.js
+  // does. Nothing is visible either way; this is only about where the
+  // browser thinks the text is.
+  for (const s of layer.children) {
+    const natural = s.getBoundingClientRect().width;
+    if (natural > 0) s.style.transform = 'scaleX(' + (+s.dataset.w / natural) + ')';
+  }
+}
+build();
+
+// it is measured in screen pixels, so it must be rebuilt on resize
+const ro = new ResizeObserver(build);
+ro.observe(stage);
+signal.addEventListener('abort', () => ro.disconnect());
+
+const spans  = () => [...layer.querySelectorAll('span')];
+const spanOf = n => (n.nodeType === 1 ? n : n.parentElement)?.closest('.seltext span');
+
+// Snap out to whole words. Inside a span the caret is placed with the
+// FALLBACK FONT's advances, which have nothing to do with the ink, so
+// a drag starting mid-word cuts it at an arbitrary letter.
+function snap() {
+  const sel = getSelection();
+  if (!sel.rangeCount || sel.isCollapsed) return;
+  const r = sel.getRangeAt(0);
+  const a = spanOf(r.startContainer), b = spanOf(r.endContainer);
+  if (!a || !b) return;
+  const out = document.createRange();
+  out.setStartBefore(a);
+  out.setEndAfter(b);
+  sel.removeAllRanges();
+  sel.addRange(out);
+}
+
+// Build the payload from data-wid rather than letting the browser
+// serialise the layer: whitespace between absolutely-positioned spans
+// is not reliable, and this way the SAME drag can yield different text.
+function payload(which) {
+  const sel = getSelection();
+  if (!sel.rangeCount || sel.isCollapsed) return '';
+  const r = sel.getRangeAt(0);
+  let text = '', prevLine = null;
+  for (const s of spans()) {
+    if (!r.intersectsNode(s)) continue;
+    const w = svg.querySelector('g.word[data-wid="' + s.dataset.wid + '"]');
+    const v = w && w.dataset[which];
+    if (!v) continue;
+    text += (prevLine !== null && s.dataset.line !== prevLine ? '\\n'
+                                                              : (text ? ' ' : '')) + v;
+    prevLine = s.dataset.line;   // the mushaf's own line break, preserved
+  }
+  return text;
+}
+
+function report() {
+  const u = payload('uthmani');
+  if (!u) { out('drag across the page →'); return; }
+  out('<b>uthmani</b>  ' + u + '\\n\\n' +
+      '<b>imlaei</b>   ' + payload('imlaei') + '\\n\\n' +
+      '<b>search</b>   ' + payload('search') + '\\n\\n' +
+      'Ctrl/⌘+C copies the <b>' + WHICH + '</b> form.');
+}
+
+document.addEventListener('mouseup', () => { snap(); report(); }, { signal });
+document.addEventListener('copy', e => {
+  const text = payload(WHICH);
+  if (!text) return;                  // selection is elsewhere: leave it alone
+  e.clipboardData.setData('text/plain', text);
+  e.preventDefault();
+  out('<b>copied (' + WHICH + ')</b>\\n\\n' + text);
+}, { signal });
+
+report();
+`
+  });
+  if (!ctx) return;
+
+  /* the toolbar control rewrites the WHICH line, so the code on screen
+     stays the code that runs */
+  const label = document.createElement('span');
+  label.className = 'lbl';
+  label.style.minWidth = '0';
+  label.textContent = 'copy as';
+  const pick = document.createElement('select');
+  pick.setAttribute('aria-label', 'which text form Ctrl+C copies');
+  [['uthmani', 'uthmani — as the print sets it'],
+   ['imlaei',  'imlaei — modern spelling'],
+   ['search',  'search — bare, for a search box'],
+   ['qpc',     'qpc — KFGQPC codepoints'],
+   ['rasm',    'rasm — the shapes drawn']].forEach(([v, txt]) => {
+    const o = document.createElement('option');
+    o.value = v; o.textContent = txt;
+    pick.append(o);
+  });
+  pick.addEventListener('change', () => {
+    ctx.ta.value = ctx.ta.value.replace(/const WHICH = '[a-z]+';/,
+                                        "const WHICH = '" + pick.value + "';");
+    ctx.rerun();
+  });
+  ctx.extra.append(label, pick);
+});
+
+/* 8 · reveal the page word by word */
+mod('lab-reveal', () => {
+  const ctx = makeLab({
+    mount: 'lab-reveal',
+    label: 'reveal the page word by word',
+    stageNote: 'Play, pause, drag the scrubber. The controls under the page are built by the snippet.',
+    code: `
+const GREY = '#c9c4b8';     // words not yet reached
+const INK  = '#231f20';     // the print's own colour
+const LIT  = 1;             // how many words stay at full ink
+const FADE = 220;           // ms for one word to fade in
+const MS_PER_WORD = 420;    // the tempo — drag the speed slider
+const BY_AYAH = false;      // true: advance an ayah at a time
+
+// One CSS rule hands every path back to its group (every ink path
+// ships fill="#231f20" as an attribute, and a rule beats one), so a
+// tick sets ONE property on ONE element per word.
+svg.classList.add('q-reveal');
+svg.style.setProperty('--fade', FADE + 'ms');
+
+// Document order IS reading order: right to left inside a printed
+// line, lines top to bottom. No geometry, no sorting.
+const words = [...svg.querySelectorAll('g.word')];
+const keyOf = w => BY_AYAH ? w.closest('g.ayah').dataset.aid : w.dataset.wid;
+const steps = [...new Set(words.map(keyOf))];        // what one tick advances
+
+// THE SCHEDULE. A constant tempo today. Give it an array of per-word
+// start times from a recitation aligner and the same loop follows a
+// recitation — the join key is data-wid, which is what those datasets
+// are published under. Nothing here is synced to audio.
+const schedule = i => i * MS_PER_WORD;
+
+function paint(at) {
+  const lit = new Set(steps.slice(Math.max(0, at - LIT + 1), at + 1));
+  for (const w of words) w.style.fill = lit.has(keyOf(w)) ? INK : GREY;
+}
+
+// --- transport, built by this snippet ---
+const bar = document.createElement('div');
+bar.className = 'q-transport';
+const play = document.createElement('button');
+const scrub = document.createElement('input');
+scrub.type = 'range'; scrub.min = 0; scrub.max = steps.length - 1; scrub.value = 0;
+scrub.setAttribute('aria-label', 'reading position');
+const read = document.createElement('span');
+read.className = 'val';
+bar.append(play, scrub, read);
+stage.after(bar);
+signal.addEventListener('abort', () => bar.remove());
+
+let at = 0, playing = true, t0 = performance.now(), raf = 0;
+function label() {
+  read.textContent = (at + 1) + '/' + steps.length + '  ' + steps[at];
+  play.textContent = playing ? 'pause' : 'play';
+}
+function goto(i, restart) {
+  at = Math.min(steps.length - 1, Math.max(0, i));
+  if (restart) t0 = performance.now() - schedule(at);
+  paint(at); label();
+}
+function tick(now) {
+  raf = requestAnimationFrame(tick);
+  if (!playing) return;
+  const t = now - t0;
+  let i = at;
+  while (i + 1 < steps.length && schedule(i + 1) <= t) i++;
+  if (i === at) return;
+  at = i;
+  if (at >= steps.length - 1) playing = false;
+  scrub.value = at;
+  paint(at); label();
+}
+play.addEventListener('click', () => {
+  playing = !playing;
+  if (playing && at >= steps.length - 1) at = 0;
+  t0 = performance.now() - schedule(at);
+  label();
+});
+scrub.addEventListener('input', () => { playing = false; goto(+scrub.value, true); });
+signal.addEventListener('abort', () => cancelAnimationFrame(raf));
+
+goto(0, true);
+raf = requestAnimationFrame(tick);
+
+log(steps.length, BY_AYAH ? 'ayahs' : 'words', 'on this page ·',
+    words.length, 'word groups ·', svg.querySelectorAll('path').length, 'paths');
+log('one tick sets one property on', LIT, 'element(s) — the browser fades the rest');
+`
+  });
+  if (!ctx) return;
+  bindSlider(ctx, { label: 'ms/word', name: 'MS_PER_WORD', min: 90, max: 1200, step: 10,
+                    value: 420, digits: 0 });
+  bindSlider(ctx, { label: 'lit', name: 'LIT', min: 1, max: 12, step: 1, value: 1, digits: 0 });
+  bindToggle(ctx, { label: 'by ayah', name: 'BY_AYAH', value: false });
+});
 
 /* 7 · pin a translation */
 mod('lab-translate', () => makeLab({
@@ -1545,7 +2061,8 @@ svg path { fill: #231f20 }         /* the ink */
 });
 
 /* 10 · ayah markers */
-mod('lab-markers', () => makeLab({
+mod('lab-markers', () => {
+  const ctx = makeLab({
   mount: 'lab-markers',
   label: 'restyle the ayah markers',
   code: `
@@ -1555,7 +2072,7 @@ const markers = svg.querySelectorAll('g.ayah-marker[data-aid]');
 
 const RING   = '#b08d2e';   // the ornament ring
 const NUMBER = '#231f20';   // the printed numeral — the print's own drawing
-const SCALE  = 1.0;         // try 1.6
+const SCALE  = 1;          // drag the slider, or type a number
 const RE_RING = false;      // true: replace the ring with a plain circle
 const HIDE_ALL = false;     // true: a plain reading view, no markers
 
@@ -1592,18 +2109,37 @@ log('');
 log('Set RE_RING = true to swap the ring and keep the number.');
 log('Set HIDE_ALL = true for a reading view with no markers.');
 `
-}));
+  });
+  /* SCALE is continuous, so it gets a slider; the other two are genuinely
+     either/or, and a slider would only obscure them. */
+  bindSlider(ctx, { label: 'scale', name: 'SCALE', min: 0.5, max: 1.8, step: 0.05,
+                    value: 1, digits: 2 });
+  bindToggle(ctx, { label: 'swap the ring', name: 'RE_RING', value: false });
+  bindToggle(ctx, { label: 'hide all', name: 'HIDE_ALL', value: false });
+});
 
 /* 11 · line height */
-mod('lab-spacing', () => makeLab({
+mod('lab-spacing', () => {
+  const ctx = makeLab({
   mount: 'lab-spacing',
   label: 'open up the leading',
   code: `
 // Every printed line is its own group, so the lines can be moved
 // apart without touching a glyph. Nothing is scaled or re-set.
-const GAP = 6;               // extra leading, in page units. Try 0, 3, 12.
+const GAP = 6;               // extra leading, in page units. Drag the slider.
 
 const lines = [...svg.querySelectorAll('g.line')];
+
+// To fill a viewport, derive the gap from the page rather than guessing
+// (the refit below pads to the ink, so the fit is close, not exact).
+// Read both numbers off the file: pages 1 and 2 have 8 lines
+// and a different viewBox, so a constant computed for a 15-line page is
+// wrong there.
+//   const [ , , W, H ] = svg.getAttribute('viewBox').split(/\\s+/).map(Number);
+//   const needed = W * screenH / screenW;   // viewBox height that fills it
+//   const gap    = (needed - H) / (lines.length - 1);
+// On a 390x844 phone that is about 14 units, and it reclaims roughly a
+// quarter of the screen that fitting-to-width leaves empty.
 const mid = (lines.length - 1) / 2;
 const shift = new Map();
 
@@ -1631,33 +2167,74 @@ log('lines   ', lines.length, 'moved apart by', GAP, 'units each');
 log('markers ', svg.querySelectorAll('g.ayah-marker[data-aid]').length, 'carried with their line');
 log('glyphs  ', svg.querySelectorAll('path').length, 'untouched');
 `
-}));
+  });
+  if (!ctx) return;
+  const slider = bindSlider(ctx, { label: 'line gap', name: 'GAP',
+                                   min: 0, max: 18, step: 0.25, value: 6, digits: 2 });
+
+  /* The gap that fills a phone screen is ~14-15 units, past the old
+     maximum. Compute it from the page rather than hardcoding it: pages 1
+     and 2 have 8 printed lines and a different viewBox. */
+  const PHONE = { w: 390, h: 844, name: 'iPhone 14, 390x844' };
+  const fill = document.createElement('button');
+  fill.textContent = 'fill a phone screen';
+  fill.addEventListener('click', () => {
+    /* measure the page as PRINTED. ctx.svg has already had a gap applied and
+       its viewBox grown, so reading it back would compound. */
+    const svg = cfgPage(ctx);
+    if (!svg) return;
+    const [, , W, H] = svg.getAttribute('viewBox').trim().split(/\s+/).map(Number);
+    const lines = svg.querySelectorAll('g.line').length;
+    if (lines < 2) return;
+    const needed = W * PHONE.h / PHONE.w;         // viewBox height that fills it
+    const gap = Math.max(0, (needed - H) / (lines - 1));
+    const shown = gap.toFixed(2);
+    ctx.ta.value = ctx.ta.value.replace(/(const\s+GAP\s*=\s*)-?[0-9.]+/,
+                                        '$1' + shown);
+    if (slider) { slider.value = Math.min(+slider.max, gap); slider.dispatchEvent(new Event('input')); }
+    else ctx.runNow();
+  });
+  ctx.extra.append(fill);
+});
 
 /* 12 · crop */
-mod('lab-crop', () => makeLab({
+mod('lab-crop', () => {
+  const ctx = makeLab({
   mount: 'lab-crop',
   label: 'crop to a component',
   code: `
-// Change the filter. Everything else stays the same.
-const keep = w => w.dataset.wid.startsWith('2:255:');           // one ayah
+// A RUN of words. Drag FROM and TO in the toolbar, or edit them here.
+const AID = '2:255';
+const FROM = 1, TO = 50;       // word numbers within that ayah
 
+const keep = w => {
+  const [s, a, n] = w.dataset.wid.split(':').map(Number);
+  return s + ':' + a === AID && n >= FROM && n <= TO;
+};
+
+// other filters, same function:
 // const keep = w => w.dataset.wid === '2:255:1';                // one word
 // const keep = w => w.closest('g.line').dataset.line === '4';   // one line
-// a RUN of words — 2:255:1 through 2:255:5:
-// const keep = w => { const [s,a,n] = w.dataset.wid.split(':').map(Number);
-//                     return s === 2 && a === 255 && n >= 1 && n <= 5; };
+// const keep = w => w.closest('g.ayah').dataset.aid === '2:255';// one ayah
 
-const cropped = H.crop(svg, keep, 4);
+const PAD = 4;                 // page units around the crop
+const cropped = H.crop(svg, keep, PAD);
 stage.replaceChildren(cropped);
 
 const words = [...cropped.querySelectorAll('g.word')];
-log('words   ', words.length);
+log('words   ', words.length, '(' + AID + ':' + FROM + '..' + TO + ')');
 log('paths   ', cropped.querySelectorAll('path').length);
 log('viewBox ', cropped.getAttribute('viewBox'));
 log('');
 log(words.map(w => w.dataset.uthmani).join(' '));
 `
-}));
+  });
+  if (!ctx) return;
+  /* the old demo's from/to word pickers, now driving the same snippet */
+  bindSlider(ctx, { label: 'from', name: 'FROM', min: 1, max: 50, step: 1, value: 1, digits: 0 });
+  bindSlider(ctx, { label: 'to',   name: 'TO',   min: 1, max: 50, step: 1, value: 50, digits: 0 });
+  bindSlider(ctx, { label: 'padding', name: 'PAD', min: 0, max: 20, step: 1, value: 4, digits: 0 });
+});
 
 /* 13 · metadata + a small reader */
 mod('lab-meta', () => {
