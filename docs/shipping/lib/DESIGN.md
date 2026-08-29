@@ -120,10 +120,17 @@ the wrong choice for a search box.
 
 - `page.highlight(target, {className, fill, opacity})` — recolours ink; handle `.remove()`
   restores the exact previous inline value.
-- `page.band(target, {padX, padY, fill, opacity, rx})` — one rect per printed line, in a
-  **single group carrying one `opacity`**, so bands that overlap where an ascender overruns
-  stay one flat tone (the demo's §4 finding). Painted as the first child of `<svg>`, so the
-  ink is never touched.
+- `page.band(target, {padX, fill, opacity, seam, height})` — **ONE `<path>`**, one
+  subpath per printed line, all wound the same direction and unioned by an explicit
+  `fill-rule="nonzero"`, with neighbouring subpaths overlapping by `seam` (0.25u).
+  A stack of separate rects shows an antialiasing hairline at every join — two abutting
+  antialiased edges do not add up to opaque — so a six-line ayah reads as six stripes
+  instead of one highlight; nonzero makes the overlap that removes it visually free.
+  **`fill-rule` is declared on the element and never inherited**: the page ink is
+  `evenodd`, where overlapping contours inside one path cancel, which is the trap that
+  once filled the counter of a ح as a solid blob. Horizontal extent from the ink boxes,
+  vertical from the line pitch, painted as the first child of `<svg>` with
+  `pointer-events: none` — behind the ink, unable to eat a click.
 - `page.highlightAyah(aid, opts)` = band + highlight, the common case.
 - `page.clearHighlights()`.
 

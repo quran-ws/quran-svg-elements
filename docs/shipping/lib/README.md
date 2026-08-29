@@ -85,11 +85,14 @@ Two details that are load-bearing:
   the ink box grown sideways to meet its neighbours and vertically to the full line
   band, so the layer has **no dead zones** — every point on a printed line belongs to
   exactly one word, and a tap between two words still lands on one.
-- **Selection is whole-word, always.** Native `::selection` is suppressed and the
-  band is drawn as one rectangle per printed line, from the line **pitch** (the
-  midpoints between neighbouring lines) rather than from a line's bounding box, which
-  includes ascenders that overrun into its neighbour. So bands stack flush instead of
-  overlapping, and a partial-word selection cannot be painted at all.
+- **Selection is whole-word, always.** Native `::selection` is suppressed, so a
+  partial-word range cannot even be painted.
+- **A highlight is ONE path, not a stack of lines.** Every band — ayah, words,
+  selection — is a single `<path>` with one subpath per printed line, all wound the
+  same way and unioned by an explicit `fill-rule="nonzero"`, with neighbouring
+  subpaths overlapping slightly. That kills the antialiasing hairline that otherwise
+  makes a six-line ayah read as six stripes. Vertical extent is the line **pitch**,
+  not a line's bounding box, which includes ascenders overrunning its neighbour.
 
 If you want none of this, ignore `overlay.mjs`: `page.hitTest()` is pure geometry and
 touches no DOM, and `page.onTap()` works with or without a layer.
