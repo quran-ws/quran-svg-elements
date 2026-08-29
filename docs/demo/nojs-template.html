@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Page Without Script</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Public+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#e7e3da; --panel:#f7f5f0; --ink:#191713; --muted:#6b6458;
+  --rule:rgba(25,23,19,.16); --gold:#9a6f13; --lapis:#2d55a0; --paper:#fbf9f4;
+  --code-bg:#201e1a; --code-fg:#e6e1d6;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ground:#131419; --panel:#1b1d24; --ink:#e8e4da; --muted:#8f8b81;
+  --rule:rgba(232,228,218,.15); --gold:#dfae51; --lapis:#7ea4e8; --paper:#f4f1e9;
+  --code-bg:#0e0f13; --code-fg:#ddd8cd;
+}}
+:root[data-theme="dark"]{
+  --ground:#131419; --panel:#1b1d24; --ink:#e8e4da; --muted:#8f8b81;
+  --rule:rgba(232,228,218,.15); --gold:#dfae51; --lapis:#7ea4e8; --paper:#f4f1e9;
+  --code-bg:#0e0f13; --code-fg:#ddd8cd;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font:400 16px/1.6 "Public Sans","Helvetica Neue",Arial,sans-serif}
+h1,h2{font-family:"Spectral",Georgia,serif;font-weight:600;margin:0;text-wrap:balance}
+code,pre{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+a{color:var(--lapis)}
+:focus-visible{outline:2px solid var(--lapis);outline-offset:3px}
+.wrap{max-width:1020px;margin:0 auto;padding:0 24px}
+.mast{border-bottom:1px solid var(--rule);padding:44px 0 30px}
+.eyebrow{font:500 11px/1 "IBM Plex Mono",monospace;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.mast h1{font-size:clamp(32px,5.5vw,52px);line-height:1.04;letter-spacing:-.02em;margin:14px 0 0}
+.mast h1 em{font-style:italic;color:var(--gold)}
+.lede{max-width:64ch;margin:16px 0 0;color:var(--muted)}
+section{padding:56px 0;border-bottom:1px solid var(--rule)}
+.shead{margin-bottom:24px}
+.shead .sel{font:500 12px/1 "IBM Plex Mono",monospace;color:var(--gold)}
+.shead h2{font-size:clamp(22px,3.2vw,30px);margin:8px 0}
+.shead p{margin:0;color:var(--muted);max-width:66ch}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px;align-items:start}
+@media (max-width:860px){.two{grid-template-columns:minmax(0,1fr)}}
+.paper{background:var(--paper);border:1px solid var(--rule);padding:14px;
+  box-shadow:0 14px 34px -22px rgba(0,0,0,.5)}
+.paper svg,.paper img{display:block;width:100%;height:auto}
+.panel{background:var(--panel);border:1px solid var(--rule);padding:16px}
+.panel h3{font:700 11px/1 "Public Sans",sans-serif;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 12px}
+pre{margin:14px 0 0;background:var(--code-bg);color:var(--code-fg);padding:14px 16px;
+  overflow-x:auto;font-size:12.5px;line-height:1.6}
+.tok-c{color:#7d786e}.tok-s{color:#8fc9a8}.tok-k{color:#dfae51}
+.note{font-size:13px;color:var(--muted);margin-top:10px;line-height:1.5}
+
+/* ---- the only mechanism this page uses: a radio, and sibling selectors ---- */
+.ctl{position:absolute;opacity:0;pointer-events:none}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pills label{font:500 12px/1 "IBM Plex Mono",monospace;border:1px solid var(--rule);
+  padding:8px 10px;cursor:pointer;color:var(--muted);background:var(--ground);user-select:none}
+.pills label:hover{border-color:var(--ink);color:var(--ink)}
+.ctl:checked+label{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.ctl:focus-visible+label{outline:2px solid var(--lapis);outline-offset:2px}
+
+/* Radios are not siblings of the frames they drive, so each rule asks the
+   section itself: does it contain this checked input? */
+.frame img{display:none}
+<!--CROP-CSS-->
+<!--ORN-CSS-->
+
+/* spacing — the inline copy, two custom properties */
+#spread:has(#sp0:checked) .frame svg{--gap:0;--wgap:0}
+#spread:has(#sp1:checked) .frame svg{--gap:4;--wgap:0}
+#spread:has(#sp2:checked) .frame svg{--gap:0;--wgap:3}
+#spread:has(#sp3:checked) .frame svg{--gap:4;--wgap:3}
+#spread .frame{padding:40px 32px}
+
+/* colour — presets over the same inline copy */
+#paint:has(#c1:checked) .frame path[data-kind="mark"],
+#paint:has(#c1:checked) .frame path[data-mark-family="dots"]{fill:#a07514}
+#paint:has(#c1:checked) .frame .ayah-marker path{fill:#c2921f}
+#paint:has(#c2:checked) .frame path[data-kind="mark"]{fill:#c2410c}
+#paint:has(#c2:checked) .frame path[data-mark-family="dots"]{fill:#0f766e}
+#paint:has(#c2:checked) .frame .ayah-marker path{fill:#7c3aed}
+#paint:has(#c3:checked) .frame path[data-kind="mark"],
+#paint:has(#c3:checked) .frame path[data-mark-family="dots"],
+#paint:has(#c3:checked) .frame .ayah-marker path{fill:#d9d3c4}
+
+/* a run of words, from the two token lists every word carries */
+#run:has(#w1:checked) .frame g.word:not([data-ayah="13"][data-ge~="1"][data-le~="4"]),
+#run:has(#w2:checked) .frame g.word:not([data-ayah="13"][data-ge~="5"][data-le~="9"]),
+#run:has(#w3:checked) .frame g.word:not([data-ayah="13"][data-ge~="12"][data-le~="19"]),
+#run:has(.ctl:checked) .frame g.ayah-marker{display:none}
+
+footer{padding:40px 0 70px;color:var(--muted);font-size:13.5px}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <p class="eyebrow">page 3 · 003-embed.svg · no script anywhere on this page</p>
+    <h1>The same page,<br><em>steered without a line of JavaScript</em></h1>
+    <p class="lede">Everything below is a radio button, a sibling selector and a URL fragment. The file carries
+      a <code>&lt;view&gt;</code> per ayah, line and word, a stylesheet that answers to <code>:target</code>,
+      and a spacing index on every line and every word. Nothing on this page runs.
+      <a href="index.html">The scripted demo is here.</a></p>
+  </div>
+</header>
+
+<main>
+
+<section id="crop">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">&lt;img src="003-embed.svg#v-ayah-10"&gt;</p>
+      <h2>Crop and isolate an ayah</h2>
+      <p>A <code>&lt;view&gt;</code> sets the frame; a <code>:target</code> rule inside the file hides the
+        neighbours. The browser does both from the fragment, in a plain image tag.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Ayah</h3>
+          <div class="pills"><!--AYAH-PILLS--></div>
+        </div>
+        <pre><span class="tok-c">&lt;!-- the whole thing --&gt;</span>
+&lt;<span class="tok-k">img</span> src=<span class="tok-s">"003-embed.svg#v-ayah-10"</span>&gt;
+
+<span class="tok-c">/* what the file does with it, internally */</span>
+svg:has(#v-ayah-10:target) g.word:not([data-ayah=<span class="tok-s">"10"</span>])
+  { display: none }</pre>
+      </div>
+      <div class="frame paper"><!--AYAH-IMGS--></div>
+    </div>
+    <p class="note">Eleven image tags, one per ayah, all hidden but the checked one — the file is fetched once
+      and the fragment does the rest.</p>
+  </div>
+</section>
+
+<section id="orn">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">&lt;img src="003-embed.svg#set-rosette"&gt;</p>
+      <h2>Swap the ayah ornament</h2>
+      <p>The alternates ride along inside the file as <code>&lt;use&gt;</code> references, all hidden but one.
+        The fragment picks which; the printed rosette steps aside. The ayah numbers never move.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Ornament</h3>
+          <div class="pills"><!--ORN-PILLS--></div>
+        </div>
+        <pre>&lt;<span class="tok-k">img</span> src=<span class="tok-s">"003-embed.svg#set-rosette"</span>&gt;
+
+<span class="tok-c">/* one rule serves the fragment and the class alike */</span>
+svg.orn-rosette .alt-rosette,
+svg:has(#set-rosette:target) .alt-rosette { display: inline }</pre>
+      </div>
+      <div class="frame paper"><!--ORN-IMGS--></div>
+    </div>
+  </div>
+</section>
+
+<section id="spread">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">--gap · --wgap</p>
+      <h2>Open up the spacing</h2>
+      <p>Each line carries its own index, each word its place in the line. Two custom properties move all of
+        it — and the ayah end-markers, which carry both indices too.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Spacing</h3>
+          <div class="pills"><!--SPACE-PILLS--></div>
+        </div>
+        <pre>svg { <span class="tok-k">--gap</span>: 4; <span class="tok-k">--wgap</span>: 3 }
+
+<span class="tok-c">/* the file's own rules */</span>
+g.line { transform: translateY(calc((var(--mid) - var(--i)) * var(--gap) * 1px)) }
+g.word { transform: translateX(calc((var(--kmid) - var(--k)) * var(--wgap) * 1px)) }</pre>
+        <p class="note">CSS cannot rewrite a <code>viewBox</code>, so the file sets
+          <code>overflow: visible</code> and the frame is given the extra room. This is the one place where
+          the scripted version does something CSS cannot.</p>
+      </div>
+      <div class="frame paper"><!--INLINE-SVG-1--></div>
+    </div>
+  </div>
+</section>
+
+<section id="paint">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">path[data-kind] · path[data-mark-family]</p>
+      <h2>Recolour by meaning</h2>
+      <p>This one never needed script. Every path says what it is, and a CSS rule outranks the
+        <code>fill</code> attribute it was written with.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Preset</h3>
+          <div class="pills"><!--COLOUR-PILLS--></div>
+        </div>
+        <pre>path[data-kind=<span class="tok-s">"mark"</span>]        { fill: #a07514 }
+path[data-mark-family=<span class="tok-s">"dots"</span>] { fill: #a07514 }
+.ayah-marker path             { fill: #c2921f }</pre>
+      </div>
+      <div class="frame paper"><!--INLINE-SVG-2--></div>
+    </div>
+  </div>
+</section>
+
+<section id="run">
+  <div class="wrap">
+    <div class="shead">
+      <p class="sel">[data-ge~] · [data-le~]</p>
+      <h2>Any run of words, in one selector</h2>
+      <p>CSS has no way to say "between 4 and 7". So every word carries the two lists that make it sayable:
+        <code>data-ge</code> holds its index and everything below, <code>data-le</code> its index and
+        everything above. A word is in the run when both lists contain the ends.</p>
+    </div>
+    <div class="two">
+      <div>
+        <div class="panel">
+          <h3>Words of 2:13</h3>
+          <div class="pills"><!--RUN-PILLS--></div>
+        </div>
+        <pre>g.word:not([data-ayah=<span class="tok-s">"13"</span>][data-ge~=<span class="tok-s">"4"</span>][data-le~=<span class="tok-s">"7"</span>])
+  { display: none }</pre>
+        <p class="note">Framing an arbitrary run still needs a viewBox, which the URL can carry:
+          <code>#svgView(viewBox(180,331,150,32))</code>. Only the isolation is done here.</p>
+      </div>
+      <div class="frame paper"><!--INLINE-SVG-3--></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Built by <code>build_embed.py</code> from <code>003.svg</code>: 153 views, 306 isolation rules, six
+      ornaments, one spacing index per line and per word. 793 KB, up from 733.</p>
+  </div>
+</footer>
+
+</body>
+</html>
