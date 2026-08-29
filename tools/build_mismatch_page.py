@@ -29,7 +29,7 @@ def word_snippet(page, key):
         return None
     svg = open(f, encoding="utf-8").read()
     s, a, w = key.split(":")
-    m = re.search(r'<g class="word"[^>]*data-surah="%s"[^>]*data-ayah="%s"[^>]*data-word="%s"[^>]*>' % (s, a, w), svg)
+    m = re.search(r'<g class="word" data-wid="%s:%s:%s"[^>]*>' % (s, a, w), svg)
     if not m:
         return None
     g0 = m.start()

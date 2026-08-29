@@ -280,7 +280,7 @@ async function renderAudit(page) {
 
   const groups = new Map();          // wid -> [wrapper groups]
   svg.querySelectorAll("g.word").forEach(g => {
-    const key = `${g.dataset.surah}:${g.dataset.ayah}:${g.dataset.word}`;
+    const key = g.dataset.wid;
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(g);
   });
@@ -507,7 +507,7 @@ async function renderPage(page, step) {
   let mergeMode = false, mergePick = null;
   const words = [...svg.querySelectorAll("g.word")];
   words.forEach((w, i) => w.classList.add("wc" + (i % 6)));
-  const wid = w => `${w.dataset.surah}:${w.dataset.ayah}:${w.dataset.word}`;
+  const wid = w => w.dataset.wid;
 
   // Forgiving hit areas: a transparent rect behind each word so gaps between
   // strokes still hover/click. Ink always wins over a box (see pickTarget).

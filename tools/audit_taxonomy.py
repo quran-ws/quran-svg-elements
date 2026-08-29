@@ -146,8 +146,7 @@ def scan_page(pg):
                 mnq_paired += 1
         w = word_ctx()
         if w is not None and (mk or mp):
-            key = (w.get("data-surah"), w.get("data-ayah"),
-                   w.get("data-word"))
+            key = w.get("data-wid")
             word_marks.setdefault((key, w.get("data-uthmani", "")),
                                   set()).add(mk or mp)
 
@@ -167,7 +166,9 @@ def scan_page(pg):
     # small noon U+06E8) must hold the job-named tag
     rare_hit = []
     for (key, uth), mks in word_marks.items():
-        ref = "%s:%s" % (key[0], key[1])
+        # key is the word's data-wid, "surah:ayah:word"; the rare-site table is
+        # keyed "surah:ayah"
+        ref = ":".join((key or "").split(":")[:2])
         if "ۜ" in uth and ref in rare_refs:
             name = rare_refs[ref]
             rare_hit.append(ref)

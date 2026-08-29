@@ -231,8 +231,7 @@ def extract_context(page, payload):
             if eid and el.get("data-eid") == eid:
                 targets.append(el)
             elif el.get("class") == "word" and wanted_words:
-                saw = "%s:%s:%s" % (el.get("data-surah"), el.get("data-ayah"),
-                                    el.get("data-word"))
+                saw = el.get("data-wid") or ""
                 if saw in wanted_words:
                     targets.append(el)
         if not targets:
@@ -447,12 +446,11 @@ class Handler(BaseHTTPRequestHandler):
                     grp = grp.replace('data-eid="%s" ' % eid,
                                       'data-eid="%s" style="fill:#c22" ' % eid)
                     wt = re.search(r'data-uthmani="([^"]*)"', grp)
-                    km = re.search(r'data-surah="(\d+)"[^>]*data-ayah="(\d+)"'
-                                   r'[^>]*data-word="(\d+)"', grp)
+                    km = re.search(r'data-wid="([^"]*)"', grp)
                     root = re.search(r'<g transform="matrix[^"]*">', svg)
                     vb = re.search(r'viewBox="[^"]*"', svg)
                     out.append({"page": pg, "mark": mk, "eid": eid,
-                                "key": ("%s:%s:%s" % km.groups()) if km else "",
+                                "key": km.group(1) if km else "",
                                 "word": wt.group(1) if wt else "",
                                 "svg": '<svg xmlns="http://www.w3.org/2000/svg" %s>%s%s</g></svg>'
                                        % (vb.group(0) if vb else 'viewBox="0 0 345 550"',

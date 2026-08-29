@@ -94,7 +94,7 @@ def _group(s, start):
 
 def _slim(t):
     return re.sub(r'\s(?:fill|fill-rule|data-sig|data-imlaei|data-qpc|'
-                  r'data-mark-family)="[^"]*"', "", t)
+                  r'data-rasm|data-mark-family)="[^"]*"', "", t)
 
 
 def ours_svg(pg, key):
@@ -104,7 +104,7 @@ def ours_svg(pg, key):
     if not s:
         return "", 0
     su, ay, pos = key.split(":")
-    i = s.find('<g class="word" data-surah="%s" data-ayah="%s" data-word="%s"'
+    i = s.find('<g class="word" data-wid="%s:%s:%s"'
                % (su, ay, pos))
     if i < 0:
         return "", 0

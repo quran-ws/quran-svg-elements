@@ -39,3 +39,5 @@ mushafs/
 
 # derived: MushafDatabase run table, rebuilt by tools/build_mdb_runs.py
 .cache/mdb_runs.json
+# derived: the per-page annotation graph, rebuilt by tools/build_annotations.py
+.cache/annotations/
