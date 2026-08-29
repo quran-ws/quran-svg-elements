@@ -51,6 +51,18 @@ from split_line_elements import group_elements, PATH_RE
 
 ROOT = (os.environ.get("QSVG_ROOT")
         or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+def _ovr_file():
+    """Where the human geometry overrides live.
+
+    QSVG_OVR points the four reader sites at an alternative file so a build
+    can be A/B'd with a subset (or none) of the overrides without touching
+    the real one — this is how the retirement audit proves an entry inert.
+    """
+    return (os.environ.get("QSVG_OVR")
+            or os.path.join(ROOT, ".cache", "review", "overrides.json"))
+
+
 API = ("https://api.quran.com/api/v4/verses/by_page/%d?words=true&mushaf=2"
        "&word_fields=line_number,text_uthmani,text_imlaei&per_page=50")
 
@@ -1982,6 +1994,7 @@ def rewrite(page, assignment):
     # contour conservation is untouched). Cross-path members keep their own
     # path with _reframe, as before.
     if os.environ.get("QSVG_DOTMERGE", "1") == "1":
+        _absorbed_paths = set()
         # generalized (Abdullah 2026-08-28): EVERY welded sign is ONE mark —
         # a kasratan pair, the ج with its dot, the hizb with its ornament —
         # so occurrence counts are exact. Same-source-frame merge only;
@@ -1998,23 +2011,100 @@ def rewrite(page, assignment):
                             # because the twin lived one atom over)
                             _hostm = next((a2 for a2 in atoms
                                            if m in a2["els"]), None)
-                            if (m.get("path") == e.get("path")
-                                    and _hostm is not None):
-                                e["contours"] = list(e["contours"]) + \
-                                    list(m["contours"])
-                                if _hostm is atom:
-                                    m["_absorbed"] = True
-                                else:
-                                    _hostm["els"].remove(m)
+                            _same = m.get("path") == e.get("path")
+                            _shift = None
+                            if (not _same and _hostm is not None
+                                    and m.get("path") is not None
+                                    and page.paths[m["path"]]["M"]
+                                    != page.paths[e["path"]]["M"]):
+                                # Frames that differ ONLY by translation can
+                                # still be merged exactly (p144 وَشَهِدُوا۟:
+                                # master on path 140, its third dot on 137).
+                                # build_d writes a separated contour as an
+                                # absolute moveto followed by RELATIVE
+                                # segments, and relative segments are
+                                # translation-invariant — so shifting the
+                                # start point alone moves the contour and
+                                # nothing else. inv(M_tgt).M_src reduces to
+                                # dx=(e_src-e_tgt)/s, dy=-(f_src-f_tgt)/s
+                                # when the linear parts are equal. Any other
+                                # difference (rotation/scale) is refused:
+                                # one <path> carries one transform.
+                                _ms = page.paths[m["path"]]["M"]
+                                _mt = page.paths[e["path"]]["M"]
+                                if _ms[:4] == _mt[:4] and _ms[0]:
+                                    _shift = ((_ms[4] - _mt[4]) / _ms[0],
+                                              -(_ms[5] - _mt[5]) / _ms[0])
+                            if (not _same and _hostm is not None
+                                    and m.get("path") is not None
+                                    and (page.paths[m["path"]]["M"]
+                                         == page.paths[e["path"]]["M"]
+                                         or _shift is not None)):
+                                _dx, _dy = _shift or (0.0, 0.0)
+
+                                def _bx(el, d=(0.0, 0.0)):
+                                    return [(c["sp"]["xmin"] + d[0],
+                                             c["sp"]["ymin"] + d[1],
+                                             c["sp"]["xmax"] + d[0],
+                                             c["sp"]["ymax"] + d[1])
+                                            for c in el["contours"]]
+                                _same = not any(
+                                    a[0] <= b[2] and b[0] <= a[2]
+                                    and a[1] <= b[3] and b[1] <= a[3]
+                                    for a in _bx(e)
+                                    for b in _bx(m, (_dx, _dy)))
+                            if _same and _hostm is not None:
+                                _mc = list(m["contours"])
+                                if _shift:
+                                    _sx, _sy = _shift
+                                    _shifted = []
+                                    for _c6 in _mc:
+                                        _sp6 = dict(_c6["sp"])
+                                        _ax, _ay = _sp6["abs_start"]
+                                        _sp6["abs_start"] = (_ax + _sx,
+                                                             _ay + _sy)
+                                        _sp6["xmin"] += _sx
+                                        _sp6["xmax"] += _sx
+                                        _sp6["ymin"] += _sy
+                                        _sp6["ymax"] += _sy
+                                        # force build_d's absolute-moveto
+                                        # branch: this contour no longer
+                                        # follows its source predecessor
+                                        _sp6["index"] = -1
+                                        _n6 = dict(_c6)
+                                        _n6["sp"] = _sp6
+                                        _shifted.append(_n6)
+                                    _mc = _shifted
+                                e["contours"] = list(e["contours"]) + _mc
+                                # A member can be listed by an atom of a
+                                # DIFFERENT word as well as its own (p17:
+                                # خَيْرࣲ's kasratan half was also in
+                                # هُودًا's atom, so absorbing it from one
+                                # left the other drawing it a second time —
+                                # one extra contour, 37 bad pixels). Mark it
+                                # and purge EVERY reference after the walk:
+                                # removing from a list mid-iteration skips
+                                # entries and silently un-merges other signs.
+                                m["_absorbed"] = True
+                                if m.get("path") != e.get("path"):
+                                    # its source path may now hold no element
+                                    # at all; the emitter re-draws such a path
+                                    # from its original text, which would draw
+                                    # this contour a SECOND time (p17 خَيْرࣲ).
+                                    _absorbed_paths.add(m["path"])
                             else:
                                 keepm.append(m)
                         e["mkmembers"] = keepm
-                if any(x.get("_absorbed") for x in atom["els"]):
-                    atom["els"] = [x for x in atom["els"]
-                                   if not x.pop("_absorbed", False)]
+        # one global purge, after the whole walk: an absorbed member is
+        # dropped from every atom of every word that still lists it.
+        for _w5, _at5 in assignment:
+            for _a5 in _at5:
+                if any(x.get("_absorbed") for x in _a5["els"]):
+                    _a5["els"] = [x for x in _a5["els"]
+                                  if not x.get("_absorbed")]
 
     per_path = {}
-    consumed = set()
+    consumed = set(locals().get("_absorbed_paths") or ())
     for word, atoms in assignment:
         tgt = home.get(id(word)) if word else None
         for ai, atom in enumerate(atoms):
@@ -7113,7 +7203,7 @@ def assign_page(edition, page_no, cache_dir):
                     if _n < _VAL[_el["mark"]] and _n in _BYN:
                         _el["mark"] = _BYN[_n]
 
-    _ovr_path = os.path.join(ROOT, ".cache", "review", "overrides.json")
+    _ovr_path = _ovr_file()
     if os.path.exists(_ovr_path):
         try:
             _ovr = json.load(open(_ovr_path)).get(str(page_no), {})
@@ -9157,9 +9247,8 @@ def assign_page(edition, page_no, cache_dir):
         # -- human decisions are inputs -----------------------------------
         _ls_skip = set()          # geometry keys that must not move
         try:
-            for _k in json.load(open(os.path.join(
-                    ROOT, ".cache", "review", "overrides.json"))).get(
-                        str(_ls_page), {}):
+            for _k in json.load(open(_ovr_file())).get(
+                    str(_ls_page), {}):
                 _ls_skip.add(_k)
         except Exception:
             pass
@@ -10474,7 +10563,7 @@ def assign_page(edition, page_no, cache_dir):
     # human weld verdict (p85 e298 "|kasra") feeds the pair welds that run
     # after this point.
     def _enforce_overrides(rename=True):
-        _ovp = os.path.join(ROOT, ".cache", "review", "overrides.json")
+        _ovp = _ovr_file()
         if os.path.exists(_ovp):
             try:
                 _ov2 = json.load(open(_ovp)).get(str(page_no), {})
@@ -10578,16 +10667,36 @@ def assign_page(edition, page_no, cache_dir):
     # ORPHANED-PART REPAIR: an element flagged mkpart whose master no
     # longer references it counts for NOBODY (p85: the ة pair after its
     # master was renamed by override). Free it — it is its own mark.
-        _allm = set()
-        for _wo9, _ato9 in assignment:
-            for _ao9 in _ato9:
-                for _eo9 in _ao9["els"]:
-                    for _mm9 in (_eo9.get("mkmembers") or []):
-                        _allm.add(id(_mm9))
-        for _wo9, _ato9 in assignment:
-            for _ao9 in _ato9:
-                for _eo9 in _ao9["els"]:
-                    if _eo9.get("mkpart") and id(_eo9) not in _allm:
+    # It used to sit INSIDE the override block, so it only ever ran
+    # on pages that happened to carry an override (p146's ش dot was
+    # never repaired). It runs for every page now.
+    _allm = set()
+    for _wo9, _ato9 in assignment:
+        for _ao9 in _ato9:
+            for _eo9 in _ao9["els"]:
+                for _mm9 in (_eo9.get("mkmembers") or []):
+                    _allm.add(id(_mm9))
+    for _wo9, _ato9 in assignment:
+        for _ao9 in _ato9:
+            for _eo9 in _ao9["els"]:
+                if _eo9.get("mkpart") and id(_eo9) not in _allm:
+                    # Prefer ADOPTION over freeing (Abdullah 2026-08-29,
+                    # p146 مُتَشَٰبِهࣰا): the ش's third dot was flagged
+                    # a part with nothing referencing it, so it counted
+                    # for nobody AND emitted as a second path for one
+                    # sign. If the same word holds a master of the same
+                    # mark, hand it back — one sign, one element. Only
+                    # when no such master exists is it freed to stand
+                    # alone.
+                    _own = next(
+                        (m for _a8 in _ato9 for m in _a8["els"]
+                         if m is not _eo9
+                         and m.get("mark") == _eo9.get("mark")
+                         and not m.get("mkpart")), None)
+                    if _own is not None:
+                        _own.setdefault("mkmembers", []).append(_eo9)
+                        _allm.add(id(_eo9))
+                    else:
                         _eo9["mkpart"] = False
 
     # SLASHFIX (Abdullah 2026-08-29: "it doesn't need manual work") — the
@@ -11489,7 +11598,7 @@ def assign_page(edition, page_no, cache_dir):
     # instead. This runs AFTER every pair pass — narrowly, touching only
     # elements a human named — so it cannot be undone. It changes counting
     # only: the piece becomes a member of the family's existing master.
-    _wvp = os.path.join(ROOT, ".cache", "review", "overrides.json")
+    _wvp = _ovr_file()
     if os.path.exists(_wvp):
         try:
             _wv = json.load(open(_wvp)).get(str(page_no), {})
@@ -11522,6 +11631,34 @@ def assign_page(edition, page_no, cache_dir):
                     _eW["lab"] = _fam
                     _eW["mkpart"] = True
                     _m.setdefault("mkmembers", []).append(_eW)
+
+    # ORPHANED-PART SWEEP, LAST (Abdullah 2026-08-29, p146 مُتَشَٰبِهࣰا):
+    # the early repair runs before the weld and rename passes, so a part
+    # stranded BY those passes is never seen — its master had still listed
+    # it when the repair looked. Re-run the same adopt-or-free rule here,
+    # after every mover: a part nothing references is handed back to a
+    # same-mark master in its own word (one sign, one element), or freed to
+    # stand alone if there is none. Counting-only; no ink moves.
+    _ref = set()
+    for _w7, _at7 in assignment:
+        for _a7 in _at7:
+            for _e7 in _a7["els"]:
+                for _m7 in (_e7.get("mkmembers") or []):
+                    _ref.add(id(_m7))
+    for _w7, _at7 in assignment:
+        for _a7 in _at7:
+            for _e7 in _a7["els"]:
+                if _e7.get("mkpart") and id(_e7) not in _ref:
+                    _own7 = next(
+                        (m for _a8 in _at7 for m in _a8["els"]
+                         if m is not _e7
+                         and m.get("mark") == _e7.get("mark")
+                         and not m.get("mkpart")), None)
+                    if _own7 is not None:
+                        _own7.setdefault("mkmembers", []).append(_e7)
+                        _ref.add(id(_e7))
+                    else:
+                        _e7["mkpart"] = False
 
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
