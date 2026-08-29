@@ -61,6 +61,34 @@ never from its own output.
 If band-highlighting later proves to matter, the right answer is PER-LINE BOXES
 in the annotation graph, not invisible paths in every page.
 
+**The decisive argument is ACCURACY, not size (Abdullah 00:08: "they are not
+100% accurate for highlighting, but our approach is"). Measured and
+confirmed:** over six sample pages, 8 of 6,243 elements — 0.13%, about one in
+750 — have ink sitting inside a NEIGHBOURING ayah's polygon:
+
+    p3    2:8   ink 22.1 x 1.0 inside 2:9's polygon
+    p3    2:12  ink 19.0 x 2.6 inside 2:13's polygon
+    p42   2:256 ink 23.4 x 0.5 inside 2:255's polygon
+    p100  4:137 ink 18.8 x 2.4 inside 4:138's polygon
+
+The polygon is a rectangular band cut at a straight vertical line, while the
+real boundary between two ayahs sharing a line is jagged — letters interleave
+and marks overhang. So polygon highlighting paints part of the wrong ayah or
+misses ink of its own. **Word-level highlighting is EXACT by construction: the
+ayah's ink IS its words.** We are replacing a 99.87% approximation with a
+certainty, which is a stronger reason to drop them than saving 0.27% of bytes.
+
+### Demo requirements that follow (Abdullah 00:09)
+The demo must SHOW that nothing is lost, then retire the old approach:
+1. **Tap-in-the-gap** — an example proving a tap between two words of one ayah
+   still selects the ayah, without polygons.
+2. **Band highlighting** — an example computing the coloured stripe from the
+   word boxes per line, so the reader sees the ~10 lines of JS that replace it.
+3. **Then REMOVE the polygon-based ayah highlighter from the demo** entirely,
+   so the page only shows the approach that ships.
+Both examples must be real, runnable code against the shipped file — the
+ayah-crop proof of concept already computes that union without polygons.
+
 ## 4. Refresh `docs/shipping/FORMAT.md`
 Already 930 lines and already stale — it has no `data-search` (added 23:40).
 After steps 2 and 3 it also needs: the marker-link attributes, BOTH profiles
