@@ -36,7 +36,7 @@ from multiprocessing import Pool
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from page import Page                                                     # noqa: E402
-from svg_lines import (band_index, clusters, fmt, segment,
+from svg_lines import (band_index, clusters, fmt, segment, segment_opening,
                        segment_valleys)                                   # noqa: E402
 
 ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "mushafs")
@@ -50,6 +50,10 @@ BODY_LINES = 15
 # first six lines of Al-Baqarah. Counted off rendered images of pages 1 and 2 of all five
 # editions — and cross-checked by the segmentation itself, which refused to cut shubah/002
 # into eight when eight was first assumed.
+#
+# This counts lines of TEXT. These pages also carry the surah name, high above the text
+# block; on artwork where it is not cropped away it is segmented as one further band and
+# the expected count goes up by one. See `segment_opening`.
 OPENING_LINES = {1: 7, 2: 7}
 
 # Every cut must fall in clear space: ink within ±0.5 units of a cut, as a fraction of one
@@ -106,7 +110,7 @@ def segment_page(page, contours, expected, method):
     boxes = ink_boxes(page, contours)
     if not boxes:
         return None, None, "no visible ink"
-    fn = segment_valleys if method == "valleys" else segment
+    fn = {"opening": segment_opening, "valleys": segment_valleys}.get(method, segment)
     bands, info = fn(boxes, expected)
     if not bands or "cut_ink" not in info:
         return None, None, info.get("reason", "no fit")
@@ -390,7 +394,7 @@ def plan_for(name, viewbox, body_viewbox):
     if viewbox is not None and body_viewbox is not None and viewbox == body_viewbox:
         return BODY_LINES, "grid", None
     if n in OPENING_LINES:
-        return OPENING_LINES[n], "valleys", "opening page"
+        return OPENING_LINES[n], "opening", "opening page"
     return None, None, "non-standard viewBox"
 
 
@@ -443,6 +447,10 @@ def process(job):
             if note:
                 res["note"] = note
             bands, info, err = segment_page(page, contours, expected, method)
+            if info and info.get("header"):
+                # The surah name is drawn on this page, so it is one band of its own.
+                expected += 1
+                res["note"] = "opening page, with surah name"
 
         if err:
             res["error"] = err

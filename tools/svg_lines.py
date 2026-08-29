@@ -463,6 +463,75 @@ def segment_valleys(boxes, expected):
     return best
 
 
+def blank_rows(prof):
+    """[(top, bottom)] of the runs down the page that carry no ink at all."""
+    runs, start, y = [], None, prof.ylo
+    while y <= prof.yhi:
+        if prof.ink(y, y + ROW) <= 0.0:
+            if start is None:
+                start = y
+        elif start is not None:
+            runs.append((start, y))
+            start = None
+        y += ROW
+    if start is not None:
+        runs.append((start, prof.yhi))
+    return runs
+
+
+def segment_opening(boxes, text_lines):
+    """Cut an opening page into its surah-name band plus `text_lines` lines of text.
+
+    Pages 1 and 2 carry the surah name far above the text block - about sixty page units
+    on hafs, with nothing but paper between - because the name is set inside an ornamental
+    cartouche this artwork does not carry. That gap is several times any inter-line gap,
+    so a valley fit spanning the whole page spends its cuts inside it and leaves bands
+    empty, which is how these pages came to be rejected once the name stopped being
+    clipped away by the old 235x235 crop.
+
+    So the name is split off first, on the widest blank run, and only the text block below
+    it is fitted for lines. `info["header"]` says whether that happened, so the caller can
+    require one more band than it asked for.
+
+    A page whose name is still cropped out has no such gap and is fitted exactly as
+    before, which keeps the older artwork working unchanged.
+    """
+    if not boxes:
+        return [], {"reason": "no ink"}
+    prof = Profile(boxes)
+    gaps = [g for g in blank_rows(prof) if g[0] > prof.ylo and g[1] < prof.yhi]
+    if gaps:
+        top, bottom = max(gaps, key=lambda g: g[1] - g[0])
+        above = [b for b in boxes if (b[0] + b[1]) / 2 <= top]
+        below = [b for b in boxes if (b[0] + b[1]) / 2 >= bottom]
+        if above and below:
+            body = max(b[1] for b in below) - min(b[0] for b in below)
+            # A real line gap is a fraction of the pitch; the cartouche gap exceeds it.
+            if (bottom - top) > body / text_lines:
+                lower, info = segment_valleys(below, text_lines)
+                if lower:
+                    cut = (top + bottom) / 2
+                    bands = [(prof.ylo, cut), (cut, lower[0][1])] + lower[1:]
+                    cuts = [cut] + list(info["cuts"])
+                    line_ink = prof.total / len(bands)
+                    band_ink = [prof.ink(a, b) for a, b in bands]
+                    median = sorted(band_ink)[len(band_ink) // 2]
+                    return bands, {
+                        "pitch": info["pitch"],
+                        "cuts": cuts,
+                        "drift": 0.0,
+                        "min_sep": info.get("min_sep", 0.0),
+                        "cut_ink": [prof.at(c) / line_ink if line_ink else 0.0
+                                    for c in cuts],
+                        "band_fill": min(band_ink) / median if median else 0.0,
+                        "header": True,
+                    }
+    bands, info = segment_valleys(boxes, text_lines)
+    if info is not None:
+        info["header"] = False
+    return bands, info
+
+
 def band_index(bands, y):
     """Band containing `y`, else the nearest one."""
     best, bestd = 0, None
