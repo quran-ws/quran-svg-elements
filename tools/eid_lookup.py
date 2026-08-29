@@ -36,8 +36,8 @@ def main():
         want[m.group(1)] = eid
         i = svg.rfind('<g class="word"', 0, m.start())
         j = svg.rfind('<g class=', 0, m.start())
-        h = re.search(r'data-surah="(\d+)" data-ayah="(\d+)" '
-                      r'data-word="(\d+)" data-uthmani="([^"]*)"',
+        h = re.search(r'data-wid="([^"]*)" '
+                      r'data-uthmani="([^"]*)"',
                       svg[i:i + 300])
         print("%s: shown inside %s" % (
             eid, ":".join(h.groups()) if h and j <= i

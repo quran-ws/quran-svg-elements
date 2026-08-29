@@ -200,8 +200,7 @@ def ours(pg, paths=False):
     def keyof(g):
         if g.get("class") != "word":
             return None
-        return "%s:%s:%s" % (g.get("data-surah"), g.get("data-ayah"),
-                             g.get("data-word"))
+        return g.get("data-wid") or ""
 
     out = []
     root = ET.fromstring(svg)

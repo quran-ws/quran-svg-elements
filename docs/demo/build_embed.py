@@ -23,7 +23,7 @@ svg = SRC.read_text(encoding="utf-8").split("?>", 1)[1].strip()
 line_of, k_of, per_line = {}, {}, {}
 cur_line = None
 for m in re.finditer(r'<g class="line" data-line="(\d+)">|'
-                     r'<g class="word" data-surah="\d+" data-ayah="(\d+)" data-word="(\d+)"', svg):
+                     r'<g class="word" data-wid="\d+:(\d+):(\d+)"', svg):
     if m.group(1):
         cur_line = int(m.group(1))
         per_line[cur_line] = 0
@@ -57,11 +57,15 @@ def word_tag(m):
     le = " ".join(str(i) for i in range(int(w), n + 1))     # index <= any of these
     text = re.search(r'data-uthmani="([^"]*)"', head).group(1)
     return (head[:-1]
-            + f' id="w-{key}" data-ge="{ge}" data-le="{le}"'
+            # data-ayah is a DEMO-LOCAL attribute: the emitted schema carries
+            # one identity attribute, data-wid="surah:ayah:word", and CSS has
+            # no substring match on it, so the isolation rules below need the
+            # ayah number split back out here.
+            + f' id="w-{key}" data-ayah="{a}" data-ge="{ge}" data-le="{le}"'
             + f' style="--k:{k_of[key]}">'
             + f'<title>{text}</title>')
 
-svg = re.sub(r'<g class="word" data-surah="\d+" data-ayah="(\d+)" data-word="(\d+)"[^>]*(>)',
+svg = re.sub(r'<g class="word" data-wid="\d+:(\d+):(\d+)"[^>]*(>)',
              word_tag, svg)
 
 idx = -1
@@ -79,7 +83,7 @@ def marker_tag(m):
             + f' data-closes="{a}" data-line="{ln}"'
             + f' style="--i:{ln};--k:{k};--kmid:{kmid:g}">')
 
-svg = re.sub(r'<g class="ayah-marker" data-surah="\d+" data-ayah="\d+"(>)', marker_tag, svg)
+svg = re.sub(r'<g class="ayah-marker" data-aid="[^"]*"(>)', marker_tag, svg)
 
 # ornament alternates, dropped in beside the printed one
 def ornament_slot(m):
