@@ -1,0 +1,91 @@
+<meta charset="utf-8"><title>What needs Abdullah's eye</title>
+<style>
+body{font-family:system-ui;margin:24px auto;max-width:900px;line-height:1.5;color:#222}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:#777;font-size:13px;margin:0 0 22px}
+.item{border:1px solid #e4e4e4;border-radius:10px;padding:14px 16px;margin:0 0 14px}
+.item h2{font-size:16px;margin:0 0 6px}
+.n{display:inline-block;background:#333;color:#fff;border-radius:20px;
+   padding:1px 9px;font-size:12.5px;margin-left:6px;vertical-align:2px}
+.why{color:#555;font-size:14px;margin:6px 0}
+a{color:#2a6ebb}
+.go{display:inline-block;margin-top:8px;font-size:14px}
+.w{font-family:"KFGQPC Uthmanic Script HAFS",serif;font-size:20px}
+.done{border-color:#cde6cd;background:#f6fbf6}
+.done h2::after{content:" — done";color:#3a7d3a;font-weight:normal;font-size:13px}
+code{background:#f3f3f3;padding:1px 5px;border-radius:4px;font-size:13px}
+</style>
+
+<h1>What needs your eye</h1>
+<p class="sub">Everything open, in one place. Ordered by how much one verdict buys.
+Nothing here is guessed — each item says why only an eye can settle it.</p>
+
+<div class="item">
+<h2>1. Disputed marks on adjacent lines<span class="n">7</span></h2>
+<p class="why">A mark sits between two lines and each decomposition gives it to a
+different one. The joining rules cannot decide — both readings are legal — so
+only the ink can say which line owns it.</p>
+<a class="go" href="/docs/defects/ligature_cuts.html#tierC">Open Tier C on the comparison page →</a>
+</div>
+
+<div class="item">
+<h2>2. Two cases where I believe <em>they</em> are wrong<span class="n">2</span></h2>
+<p class="why">p587 and p277. The same outline to 0.02u, drawn 1.4u and 2.6u from
+where we put it. If you confirm we are right, it is recorded as a reference
+defect instead of ours — so it needs your word before it goes in.</p>
+<a class="go" href="/docs/defects/ligature_cuts.html#tierB">Open Tier B →</a>
+</div>
+
+<div class="item">
+<h2>3. <span class="w">مَوْلَىٰكُمْ</span>-shaped words where BOTH sides are wrong<span class="n">17</span></h2>
+<p class="why">The rules allow three runs (<span class="w">مو | لى | كم</span>).
+We merge through <span class="w">و</span>, they merge through
+<span class="w">ى</span>; neither is legal. Same shape every time —
+<span class="w">هَدَىٰنَا، نَجْوَىٰكُمْ، بُشْرَىٰكُمُ، ذِكْرَىٰهَآ</span>.
+Confirm the reading once and it becomes one systematic fix, not 17 verdicts.</p>
+<a class="go" href="/docs/defects/ligature_cuts.html#tierC">In Tier C →</a>
+</div>
+
+<div class="item">
+<h2>4. Words too tall for their own form<span class="n">11</span></h2>
+<p class="why">Each is 1.6x–2.5x the height of the same word elsewhere in the
+mushaf, which means it holds ink from another line. This family has a proven
+hit rate: p71 <span class="w">غَالِبَ</span> came from this list and was a real
+theft you confirmed.</p>
+<a class="go" href="/docs/defects/remaining.html">On the board, "Too tall for this word elsewhere" →</a>
+</div>
+
+<div class="item">
+<h2>5. Regroup cases where the CUT is wrong<span class="n">3</span></h2>
+<p class="why">p244 <span class="w">قَالُوا۟</span>, p375
+<span class="w">ٱلْأَوَّلِينَ</span>, p447 <span class="w">إِذَا</span>. A body
+the cut put in the wrong atom used to be moved to a better one by accident; the
+exact fix hands it back. The defect is the cut — exposed, not introduced.</p>
+<a class="go" href="/docs/defects/ligature-regroup-for-eye.json">ligature-regroup-for-eye.json →</a>
+</div>
+
+<div class="item">
+<h2>6. The 14 line-error sites<span class="n">88 overrides</span></h2>
+<p class="why">The biggest structural one. 88 of the 250 remaining overrides are
+not artwork facts but 14 (page, ayah, direction) sites where every word draws
+its neighbour's ink, 3–13 entries each, all shifting the same way. Three of the
+14 — p131 6:34, p341 22:73, p543 58:7 — are exactly the line errors
+MushafDatabase found independently. <b>One boundary fix retires all 88</b>, but
+it moves body ink on live pages, so it needs your eye before any rule is
+written.</p>
+<a class="go" href="/docs/defects/overrides-kept-2026-08-29.json">overrides-kept-2026-08-29.json →</a>
+</div>
+
+<h1 style="font-size:18px;margin-top:28px">Reference</h1>
+<p class="sub">
+<a href="/docs/defects/remaining.html">remaining.html</a> — the board (mark counts, intervals, position laws) &nbsp;·&nbsp;
+<a href="/docs/defects/ligature_cuts.html">ligature_cuts.html</a> — us vs MushafDatabase, side by side &nbsp;·&nbsp;
+<a href="/docs/TASKS.md">TASKS.md</a> — the full ordered work list &nbsp;·&nbsp;
+<a href="/docs/defects/reported.html">reported.html</a> — everything you have reported by eye
+</p>
+<p class="sub">Gates right now: pixel identity 604/604 &nbsp;·&nbsp; taxonomy OK &nbsp;·&nbsp;
+bench SCORE 137 &nbsp;·&nbsp; mark flags 0 &nbsp;·&nbsp; open interval records 0 &nbsp;·&nbsp;
+misplaced diacritics 6 (was 1206) &nbsp;·&nbsp; overrides 250 (was 426).</p>
+<p class="sub">The ink drawn on the comparison page is built in-process, so it
+cannot go stale. <b>Read eids from the review platform</b>, never from a board —
+<code>data-eid</code> is not stable across builds.</p>
