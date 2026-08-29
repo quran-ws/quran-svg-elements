@@ -167,14 +167,33 @@ def main():
             ("wordheight", "Taller than its line's pitch",
              "worst first — most of this tail sits 5-10% over the "
              "threshold and is measurement noise, not defects")):
-        f = os.path.join(ROOT, ".cache", "%s.json" % cachename)
-        if not os.path.exists(f):
+        # audit_crossline writes to docs/defects/, the rest to .cache/ —
+        # reading only .cache/ silently showed "crossline 0" while the tool
+        # itself had printed 4 findings, one of them the p71 body theft
+        # Abdullah then found by eye. Look in both places, newest wins.
+        cands = [os.path.join(ROOT, ".cache", "%s.json" % cachename),
+                 os.path.join(ROOT, "docs", "defects", "%s.json" % cachename)]
+        cands = [c for c in cands if os.path.exists(c)]
+        if not cands:
             continue
+        f = max(cands, key=os.path.getmtime)
         try:
             data = json.load(open(f))
         except Exception:
             continue
         rows = []
+        # crossline writes a LIST of dicts; the others write {page:[rows]}
+        if isinstance(data, list):
+            data = {}
+            for rec in json.load(open(f)):
+                data.setdefault(str(rec.get("page")), []).append([
+                    rec.get("key", ""), rec.get("holder", "?"),
+                    rec.get("mark") or rec.get("kind") or "",
+                    "drawn with %s on line %s (%.1fu away vs %.1fu from its "
+                    "own word)" % (rec.get("other", "?"),
+                                   rec.get("other_line"),
+                                   rec.get("gap_other", 0.0),
+                                   rec.get("gap_own", 0.0))])
         # worst first: the ratio is the row's first number
         flat = [(pg, r) for pg in data for r in data[pg]]
         flat.sort(key=lambda t: -next(
