@@ -1051,8 +1051,7 @@ const NS = "http://www.w3.org/2000/svg";
 async function renderInk(c){
   const holder = await pageHolder(+c.dataset.page);
   const svg = holder.querySelector("svg");
-  const sel = `g.word[data-surah="${c.dataset.s}"][data-ayah="${c.dataset.a}"]` +
-              `[data-word="${c.dataset.w}"]`;
+  const sel = `g.word[data-wid="${c.dataset.s}:${c.dataset.a}:${c.dataset.w}"]`;
   const gs = [...svg.querySelectorAll(sel)];
   const box = c.querySelector(".ink");
   if (!gs.length) { box.innerHTML = "<span class=wait>not in build</span>"; return; }

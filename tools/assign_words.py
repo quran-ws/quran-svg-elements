@@ -48,6 +48,7 @@ _TAN_STAG = {"fathatan": 1.5, "kasratan": 1.05, "dammatan": 1.5}
 TAN_DUMP = [] if os.environ.get("QSVG_TANDUMP") else None
 from svg_lines import transform_box
 from split_line_elements import group_elements, PATH_RE
+import quran_meta                       # surah / juz / hizb metadata + rasm
 
 ROOT = (os.environ.get("QSVG_ROOT")
         or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -1863,6 +1864,49 @@ def esc(s):
     return s.replace("&", "&amp;").replace('"', "&quot;").replace("<", "&lt;")
 
 
+def _surah_attrs(su):
+    """Surah metadata for a `<g class="surah-name">` / `"basmalah">` banner.
+
+    Number, Arabic name, English name and translated meaning, revelation place
+    and ayah count — all read from `.cache/meta/chapters.json`, the cached
+    quran.com chapter list. The SVG is meant to stand in for a metadata
+    database (Abdullah 2026-08-29), so the banner carries the surah's card.
+    """
+    try:
+        c = quran_meta.chapters().get(int(su))
+    except Exception:
+        c = None
+    if not c:
+        return ""
+    return (' data-surah-name-ar="%s" data-surah-name-latin="%s"'
+            ' data-surah-name-en="%s" data-revelation-place="%s"'
+            ' data-ayah-count="%d"'
+            % (esc(c["name_arabic"]), esc(c["name_simple"]),
+               esc(c["name_english"]), esc(c["revelation_place"]),
+               c["ayah_count"]))
+
+
+def _ayah_start_attrs(akey):
+    """`data-juz-start` / `-hizb-start` / `-nisf-start` / `-rub-start`.
+
+    Emitted only on the ayah that BEGINS a division, so "where does juz 15
+    start" is answerable from the pages alone. The numbers come from the
+    cached quran.com verse records (juz/hizb/rubʿ per ayah); see
+    tools/quran_meta.py.
+    """
+    try:
+        st = quran_meta.starts_at(akey[0], akey[1])
+    except Exception:
+        return ""
+    if not st:
+        return ""
+    out = ""
+    for k in ("juz", "hizb", "nisf", "rub"):
+        if k in st:
+            out += ' data-%s-start="%d"' % (k, st[k])
+    return out
+
+
 def rewrite(page, assignment):
     """Wrap elements in <g class="word"> / <g class="ligature"> with full metadata.
 
@@ -2212,6 +2256,55 @@ def rewrite(page, assignment):
                 per_path.setdefault(e["path"] if tgt_a is None else tgt_a,
                                     []).append((word, lig, atom, e))
 
+    # READING ORDER (Abdullah 2026-08-29): "the order of elements should match
+    # the order in arabic RTL, so if a word has three dammas the tags for them
+    # should start right to left." One rule for letter bodies and marks alike —
+    # inside a word its ligature groups come out right to left, and inside each
+    # ligature group its elements come out right to left, by x descending.
+    #
+    # Pixel-safe by the same property that lets rewrite() regroup at all: every
+    # path in this artwork is fill #231f20, so same-colour coverage composites
+    # order-independently. The CONTOURS inside an element are NEVER touched —
+    # build_d() keeps a contour's source text while it still follows its
+    # predecessor and only writes an absolute moveto when it does not, so
+    # re-ordering contours would change d-strings and can move ink. Elements
+    # only; build_d is called per element and depends on nothing outside it,
+    # so every d-string is byte-identical before and after.
+    #
+    # Word-less entries are left exactly where they are: header ink and the
+    # standalone sajdah/hizb groups are emitted after their own ayah on
+    # purpose, and word blocks keep their document order so the <g class="ayah">
+    # runs are unchanged.
+    if os.environ.get("QSVG_RTL", "1") == "1":
+        def _rtl_key(t):
+            _e = t[3]
+            return (-_e["x2"], -_e["x1"])
+
+        for _pi, _lst in per_path.items():
+            _ord, _i, _n = [], 0, len(_lst)
+            while _i < _n:
+                _w = _lst[_i][0]
+                if _w is None:
+                    _ord.append(_lst[_i])
+                    _i += 1
+                    continue
+                _j = _i
+                while _j < _n and _lst[_j][0] is _w:
+                    _j += 1
+                _blk, _k = _lst[_i:_j], 0
+                _subs = []
+                while _k < len(_blk):
+                    _m = _k
+                    while _m < len(_blk) and _blk[_m][1] == _blk[_k][1]:
+                        _m += 1
+                    _subs.append(sorted(_blk[_k:_m], key=_rtl_key))
+                    _k = _m
+                _subs.sort(key=lambda b: _rtl_key(b[0]))
+                for _b in _subs:
+                    _ord.extend(_b)
+                _i = _j
+            _lst[:] = _ord
+
     if os.environ.get("QSVG_EMDBG"):
         for _pi, _lst in per_path.items():
             for _w4, _lg4, _a4, _e4 in _lst:
@@ -2247,6 +2340,11 @@ def rewrite(page, assignment):
     svg = page.svg
     eid = [0]
     _EIDMAP = []
+    # Always published on the module so an in-process caller (phase 1's
+    # tools/build_annotations.py) can link its records to the paths that draw
+    # them without waiting for the atexit dump. The list is only FILLED when
+    # QSVG_EIDMAP is set, so the default build pays nothing.
+    globals()["LAST_EIDMAP"] = _EIDMAP
     if os.environ.get("QSVG_EIDMAP"):
         import atexit as _ae
         def _dump_eidmap(_l=_EIDMAP):
@@ -2326,7 +2424,7 @@ def rewrite(page, assignment):
             if e.get("fused"):
                 extra += 'data-fused="1" '
             if e.get("standalone"):
-                extra += ('data-standalone="1" data-surah="%d" data-ayah="%d" '
+                extra += ('data-standalone="1" data-aid="%d:%d" '
                           % e["standalone"])
             if e["path"] != pi:
                 extra += _reframe(e["path"], pi)
@@ -2362,7 +2460,15 @@ def rewrite(page, assignment):
                     if open_ayah is not None:
                         out.append("</g>")
                         open_ayah = None
-                    out.append('<g class="%s" data-surah="%d">' % hd)
+                    # The banner is where the surah's own metadata belongs:
+                    # the group already IS the surah's title, so a consumer
+                    # that walks the page finds number, both names, the
+                    # revelation place and the ayah count without a second
+                    # database. Fields come verbatim from the cached
+                    # quran.com chapter list (tools/quran_meta.py) — nothing
+                    # here is hand-typed.
+                    out.append('<g class="%s" data-sid="%d"%s>'
+                               % (hd[0], hd[1], _surah_attrs(hd[1])))
                     open_hdr = hd
                 # ONE ITEM per header (Abdullah 2026-08-28): inside a surah
                 # name or basmalah the block is the semantic unit — emit the
@@ -2383,10 +2489,25 @@ def rewrite(page, assignment):
                 if open_ayah is not None:
                     out.append("</g>")
                     open_ayah = None
-                out.append('<g class="%s-mark" data-mark="%s"%s>'
+                # A hizb rosette carries WHICH division it opens: its rubʿ
+                # (1-240 global and 1-4 inside the hizb), its nisf half, its
+                # hizb and its juz — all derived from the cached quran.com
+                # verse records, which give every ayah its juz/hizb/rubʿ.
+                # Measured: all 199 rosettes in this print sit exactly on a
+                # rubʿ start, so the ayah under the ornament IS the division.
+                _dv = ""
+                if sa[0] == "hizb" and sa[1]:
+                    _p = quran_meta.starts_at(sa[1], sa[2])
+                    if _p.get("rub"):
+                        _q = quran_meta.rub_position(_p["rub"])
+                        _dv = (' data-rub="%d" data-rub-in-hizb="%d"'
+                               ' data-nisf="%d" data-hizb="%d" data-juz="%d"'
+                               % (_q["rub"], _q["rub_in_hizb"], _q["nisf"],
+                                  _q["hizb"], _q["juz"]))
+                out.append('<g class="%s-mark" data-mark="%s"%s%s>'
                            % (sa[0], sa[0],
-                              (' data-surah="%d" data-ayah="%d"'
-                               % (sa[1], sa[2])) if sa[1] else ""))
+                              (' data-aid="%d:%d"' % (sa[1], sa[2]))
+                              if sa[1] else "", _dv))
                 open_sa = id(atom)
                 emit(e)
                 continue
@@ -2403,18 +2524,38 @@ def rewrite(page, assignment):
                         out.append("</g>")
                     open_ayah = None
                     if akey:
-                        out.append('<g class="ayah" data-surah="%d" data-ayah="%d">'
-                                   % akey)
+                        # data-aid replaces data-surah/data-ayah. An ayah is
+                        # emitted once per LINE it occupies, so these
+                        # attributes appear on every fragment of it; the
+                        # division-start flags below therefore mark the ayah,
+                        # not one fragment of it.
+                        out.append('<g class="ayah" data-aid="%d:%d"%s>'
+                                   % (akey[0], akey[1], _ayah_start_attrs(akey)))
                         open_ayah = akey
                 if word:
                     # data-qpc is the King Fahd Complex's own text of THIS print, which
                     # is not the same edition as quran.com's uthmani — see qpc_words().
                     # Emitted alongside rather than instead of, so nothing downstream
                     # that reads data-uthmani changes behaviour.
-                    out.append('<g class="word" data-surah="%d" data-ayah="%d" '
-                               'data-word="%d" data-uthmani="%s" data-imlaei="%s"%s>'
+                    # ONE identity attribute (Abdullah 2026-08-29): data-wid
+                    # "surah:ayah:word" replaces data-surah/data-ayah/
+                    # data-word. Breaking on purpose — every consumer was
+                    # migrated in the same change.
+                    #
+                    # data-rasm is the SEARCH key: the uthmani spelling with
+                    # every combining mark, tatweel and small letter removed
+                    # (tools/quran_meta.rasm). Nothing is FOLDED — ا/أ/إ/آ/ٱ,
+                    # ى/ي and ة/ه all stay as written, per Abdullah's ruling —
+                    # so this is the letter skeleton of THIS spelling, not a
+                    # normalised form. data-imlaei is the second search form
+                    # and is unchanged.
+                    out.append('<g class="word" data-wid="%d:%d:%d" '
+                               'data-uthmani="%s" data-rasm="%s" '
+                               'data-imlaei="%s"%s>'
                                % (word["surah"], word["ayah"], word["pos"],
-                                  esc(word["uthmani"]), esc(word["imlaei"]),
+                                  esc(word["uthmani"]),
+                                  esc(quran_meta.rasm(word["uthmani"])),
+                                  esc(word["imlaei"]),
                                   (' data-qpc="%s"' % esc(word["qpc"]))
                                   if word.get("qpc") else ""))
                     open_word = wkey
@@ -3078,14 +3219,47 @@ def anchored_reflow(words_by_line, art_widths):
     return {ln: flow[j:i] for ln, (j, i) in zip(text_lines, bounds)}
 
 
-def tag_ayah_markers(svg, polys_json):
+def tag_ayah_markers(svg, polys_json, anchors=None):
     """Give every ayah medallion its own identified group.
 
     The art draws each marker as two sibling groups inside #ayah_markers — the
-    ornament ring (a scaled glyph) followed by the numeral ink. Markers appear
-    in ayah order, so pairing them with the page's sorted ayah list names them.
-    The pair is wrapped in <g class="ayah-marker" data-surah data-ayah>, with
-    data-kind on the ornament and the numeral separately.
+    ornament ring (a scaled glyph) followed by the numeral ink.
+
+    A medallion is bound to its ayah BY POSITION: it closes the ayah whose last
+    word it follows. It used to be bound by ORDER — the Nth marker in document
+    order got the Nth ayah of the page's sorted ayah list — on the docstring's
+    claim that "markers appear in ayah order". **That claim is false and it
+    mislabelled 5,881 of the mushaf's 6,236 medallions** (Abdullah, 2026-08-29).
+    The artwork's marker layer is usually ordered BOTTOM-TO-TOP, so on p3 the
+    first marker in the file closes 2:16 and was labelled 2:6.
+
+    Measured over all 604 pages, marker centre (the `ayah:x`/`ayah:y` the
+    artwork carries) against each ayah's end (its last word's leftmost body
+    ink, at that word's vertical centre), Manhattan distance:
+
+        nearest ayah end   min 5.5  p50 13.3  p90 15.7  p99 18.3  max 25.5
+        margin to the 2nd  min 14.6  p1 22.2  p10 31.7  p50 73.7
+        two markers claiming the same ayah: 0 pages out of 604
+
+    So every medallion's own ayah end is at most 25.5 units away and the
+    runner-up is never closer than 14.6 units behind it — no near-tie anywhere
+    in the mushaf, and the assignment is 1:1 on every page without a threshold
+    being needed at all.
+
+    Second, independent signal: plain REVERSAL of the sorted ayah list gives
+    the same answer on 6,172 of 6,236 markers. The 64 it differs on are the
+    reason reversal is not the fix — the layer order is not uniform. p1, p2,
+    p84, p162 and p175 are drawn FORWARD (and were already correct), and p313,
+    p507, p577 are MIXED: p313 draws 20:13's marker first and then 20:37 down
+    to 20:14. Only position explains all three shapes.
+
+    `anchors` is {(surah, ayah): (x, y)} of each ayah's end, from the final
+    assignment. Without it the old order-based pairing is used, so callers that
+    do not have an assignment still work.
+
+    The pair is wrapped in <g class="ayah-marker" data-aid="surah:ayah">, with
+    data-kind on the ornament and the numeral separately. Nothing moves: this
+    writes attributes only.
     """
     i = svg.find('<g id="ayah_markers"')
     if i < 0 or not polys_json:
@@ -3118,11 +3292,39 @@ def tag_ayah_markers(svg, polys_json):
             pairs.append((kids[k], None))
             k += 1
 
+    # Position binding. Each marker takes its nearest ayah end; a marker whose
+    # nearest end is already taken by a closer marker falls through to its next
+    # nearest, so the assignment stays 1:1 (measured: never needed on any page,
+    # but a silent double-claim would be a wrong label, not a crash).
+    label = {}
+    if anchors:
+        cand = []
+        for idx, (orn, dig) in enumerate(pairs):
+            txt = block[orn.start():(dig.end() if dig is not None
+                                     else orn.end())]
+            mm = re.search(r'ayah:x="([-\d.]+)"\s+ayah:y="([-\d.]+)"', txt)
+            if not mm:
+                cand = None
+                break
+            mx, my = float(mm.group(1)), float(mm.group(2))
+            for key, (ax, ay) in anchors.items():
+                cand.append((abs(mx - ax) + abs(my - ay), idx, key))
+        if cand:
+            used = set()
+            for _d, idx, key in sorted(cand):
+                if idx in label or key in used:
+                    continue
+                label[idx] = key
+                used.add(key)
+
     out = []
     pos = 0
     for idx, (orn, dig) in enumerate(pairs):
-        su, ay = seen[idx] if idx < len(seen) else (None, None)
-        ident = (' data-surah="%d" data-ayah="%d"' % (su, ay)) if su else ""
+        if label:
+            su, ay = label.get(idx, (None, None))
+        else:
+            su, ay = seen[idx] if idx < len(seen) else (None, None)
+        ident = (' data-aid="%d:%d"' % (su, ay)) if su else ""
         out.append(block[pos:orn.start()])
         piece = orn.group(0).replace(
             "<path ", '<path data-kind="ayah-marker-ornament" ', 1)
@@ -11819,9 +12021,30 @@ def assign_page(edition, page_no, cache_dir):
                     _g0["hold"].remove(_e)
                     _gt["hold"].append(_e)
 
+    # Where each ayah ENDS, for binding the medallions by position rather than
+    # by document order (see tag_ayah_markers). In RTL the last word of an ayah
+    # is its leftmost, and the medallion follows it further left on the same
+    # line — so the anchor is that word's leftmost body ink at its vertical
+    # centre. Taken from the FINAL assignment, after every mover.
+    _mk_anchor = {}
+    for _wA, _atA in assignment:
+        if not _wA:
+            continue
+        _bA = [e for a in _atA for e in a["els"] if e["kind"] == "body"]
+        if not _bA:
+            continue
+        _kA = (_wA["surah"], _wA["ayah"])
+        _cur = _mk_anchor.get(_kA)
+        if _cur is None or _wA["pos"] > _cur[0]:
+            _mk_anchor[_kA] = (_wA["pos"], min(e["x1"] for e in _bA),
+                               (min(e["y1"] for e in _bA)
+                                + max(e["y2"] for e in _bA)) / 2.0)
+
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
-    out_svg = tag_ayah_markers(out_svg, polys_all)
+    out_svg = tag_ayah_markers(
+        out_svg, polys_all,
+        {k: (v[1], v[2]) for k, v in _mk_anchor.items()})
     return page, out_svg, report, coverage
 
 
