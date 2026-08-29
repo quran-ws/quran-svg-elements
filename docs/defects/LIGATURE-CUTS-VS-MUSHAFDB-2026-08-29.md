@@ -335,3 +335,43 @@ ink on both sides, different bookkeeping. Not counted as a disagreement.
   (alif limb), p455 38:42:4→5→6 (a two-step shift).
 * `audit_ligatures.py` shares the atom-per-group modelling error and its
   `empty` count should be re-measured.
+
+---
+
+## CORRECTION (added after review, 2026-08-29 05:45)
+
+**The claim "p71 غَالِبَ / بَعْدِهِۦ, p413 يَحْزُنكَ, p546 وَمَآ and the
+p384/p579 alifs are NOT thefts" is WRONG, and it inverts its own evidence.**
+
+This comparison ran 05:07-05:39. Every one of those defects had ALREADY BEEN
+FIXED before it started: the p384 and p579 alifs at commit 689936e (~04:47),
+and p71 / p413 / p546 earlier still, from Abdullah's eye. So the build it
+compared was the CORRECTED build. Finding that our extents match
+MushafDatabase there does not show the defects were imaginary — it shows the
+REFERENCE AGREES WITH THE FIX.
+
+Proved directly with the `QSVG_OVR` switch this agent itself added, by
+rebuilding p71 with the one override removed:
+
+```
+3:160:14 بَعْدِهِۦ   WITH the fix   x 302.7 .. 330.7
+3:160:14 بَعْدِهِۦ   WITHOUT the fix x 310.0 .. 330.7
+```
+
+The word's left edge moves by 7.3u — exactly the 302.7-307.5 body piece
+Abdullah identified as stolen (e295). Before the fix our boundary was 310.0;
+after it, 302.7; and the reference matches the FIXED value. Two independent
+decompositions agreeing on the corrected state is the strongest confirmation
+available that the correction was right.
+
+**Method lesson, worth more than the finding:** when comparing against an
+outside reference, record WHICH BUILD was measured. A reference comparison run
+after a fix cannot say anything about whether the defect existed — it can only
+say whether the fix agrees with the reference. To test a past defect, rebuild
+with the fix disabled (`QSVG_OVR` makes that a one-liner) and compare BOTH
+states.
+
+Everything else in this report stands: the three new Tier-A thefts (p58, p324,
+p455), the 2 THEIRS-WRONG cases, the 2,687 emitter grouping defect, the
+proof-class registration, and the correction that "~12% of words split
+differently" is really 9 words in 77,431.
