@@ -2685,8 +2685,30 @@ def rewrite(page, assignment):
         _MFAM = {"wasl-awla": "waqf", "waqf-awla": "waqf",
                  "waqf-jaiz": "waqf", "waqf-lazim": "waqf",
                  "muanaqah": "waqf", "pause": "waqf",
-                 "fathatan": "tanween", "kasratan": "tanween",
-                 "dammatan": "tanween",
+                 # DIACRITIC family (Abdullah 2026-08-30): the vowel marks
+                 # share one family so "hide the diacritics" is ONE selector.
+                 # It covers exactly the marks a reader means by التشكيل and
+                 # NOTHING else — the letter dots are letter identity (ب ت ث
+                 # differ only by dots) and the waqf signs are recitation, so
+                 # hiding either is not undiacritised text, it is damage.
+                 # hamza/wasla/small-alef stay out: they carry letter identity
+                 # or sound, and hiding hamza turns أ into ا.
+                 # A mark can belong to MORE THAN ONE family, so this is a
+                 # space-separated token list, like `class` — match it with
+                 # `[data-mark-family~="tanween"]`, not `=`.
+                 # The three tanween need both: they are vowel marks, so
+                 # "hide the diacritics" must reach them, AND they are the
+                 # tanween, which the audits and §8.2 group on. Giving them
+                 # only `diacritic` silently emptied `tanween` and left
+                 # selecting it a three-name `data-mark` list instead of one
+                 # selector. Single-family marks keep one token, so `=` still
+                 # works for `dots`, `waqf`, `sifr` and the rest.
+                 "fatha": "diacritic", "kasra": "diacritic",
+                 "damma": "diacritic", "sukun": "diacritic",
+                 "shadda": "diacritic", "maddah": "diacritic",
+                 "fathatan": "diacritic tanween",
+                 "kasratan": "diacritic tanween",
+                 "dammatan": "diacritic tanween",
                  "dot": "dots", "two-dots": "dots", "three-dots": "dots",
                  "sifr-mustadir": "sifr", "sifr-mustatil": "sifr",
                  "sajdah-line": "sajdah", "sajdah-sign": "sajdah",
@@ -3684,6 +3706,56 @@ def tag_ayah_markers(svg, polys_json, anchors=None):
         out.append('<g class="ayah-marker"%s>%s</g>' % (ident, piece))
     out.append(block[pos:])
     return svg[:i] + "".join(out) + svg[j:]
+
+
+# Which mushaf a page belongs to, stamped on the root <svg> so that a file
+# downloaded on its own can say what it is. Nine attributes on one element per
+# page: the size cost across the corpus is nil.
+#
+# The identity is a TRIPLE — qiraa, riwaya, edition. The directory name is the
+# RIWAYA, not the qiraa: hafs and shubah are both transmissions of Asim, warsh
+# and qalon both of Nafi'. Recording only "hafs" cannot answer "both
+# transmissions of Asim", and calling it a qiraa is simply wrong.
+#
+# Values come from the vendored quranpedia/qiraat-ayah-map dataset
+# (qiraat.json, counting-systems.json) in the artwork repo. Nothing here is
+# invented; the full records live in the bundle's catalogue.json.
+#
+# `ayah_numbering` is a property of the printed EDITION, never derived from the
+# qiraa. The King Fahd al-Duri edition proves it: its qiraa (abu-amr) implies
+# the Basran count, but its own colophon declares the First Madinan, and the
+# pages agree with First Madinan in 110 of 114 surahs against 72 for Basran.
+# Deriving it would mislabel 604 pages.
+#
+# `ayah_total` follows the counting system, NOT the Quran: kufi 6,236 vs
+# madani-last 6,214. Any consumer — or validator — that treats 6,236 as
+# universal will call a correct Warsh build broken.
+_MUSHAF_META = {
+    "hafs/kfqc": {
+        "mushaf": "hafs-kfqc", "qiraa": "asim", "riwaya": "hafs",
+        "edition": "kfgqpc-1421",
+        "name_ar": "حفص عن عاصم", "name_en": "Hafs 'an Asim",
+        "ayah_numbering": "kufi", "ayah_total": 6236,
+    },
+}
+
+
+def _stamp_identity(svg, edition, page_no):
+    """Put the mushaf identity on the root <svg>, once per page."""
+    m = _MUSHAF_META.get(edition)
+    if not m:
+        return svg                      # an edition we have no record for
+    attrs = (
+        ' data-mushaf="%s" data-qiraa="%s" data-riwaya="%s" data-edition="%s"'
+        ' data-mushaf-name-ar="%s" data-mushaf-name-en="%s"'
+        ' data-ayah-numbering="%s" data-ayah-total="%d" data-page="%d"'
+        % (m["mushaf"], m["qiraa"], m["riwaya"], m["edition"],
+           esc(m["name_ar"]), esc(m["name_en"]),
+           m["ayah_numbering"], m["ayah_total"], page_no))
+    # Only the ROOT element, and only once — `<svg` also matches a nested one.
+    if ' data-mushaf="' in svg:
+        return svg
+    return re.sub(r'(<svg\b)', lambda mo: mo.group(1) + attrs, svg, count=1)
 
 
 def assign_page(edition, page_no, cache_dir):
@@ -12399,6 +12471,7 @@ def assign_page(edition, page_no, cache_dir):
         # which is why the production profile is gated on the RASTER half of
         # audit_pixels and not on contour conservation.
         out_svg = re.sub(r'<path class="ayahPolygon"[^>]*/>', '', out_svg)
+    out_svg = _stamp_identity(out_svg, edition, page_no)
     # COVERAGE IS MEASURED ON THE OUTPUT, not mid-pipeline (2026-08-29).
     # `apply_shape_labels` runs long before the ORNAMENT demotion and the
     # null-mark pass, so it graded an intermediate state: when the restored
