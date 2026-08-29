@@ -187,8 +187,16 @@ def word_audit_state(page, payload):
     w = payload.get("word") or payload.get("from") or payload.get("to")
     if not w:
         return None
+    # The sweep directory is NOT fixed: each measurement run makes a new one
+    # (tax1, tax2, r12 ... r27). Hardcoding two old names meant this queue
+    # reported flags from a months-old build — on 2026-08-29 it still showed
+    # p208 10:2:26 as "damma held 2, expected 1" hours after the word was
+    # fixed and the live audit called the page clean. Take the NEWEST sweep
+    # that has this page, so the queue can never age behind the pipeline.
     import glob
-    for d in ("tax2", "tax1"):
+    _dirs = sorted(glob.glob(os.path.join(ROOT, ".cache", "sweeps", "*")),
+                   key=lambda p: os.path.getmtime(p), reverse=True)
+    for d in [os.path.basename(x) for x in _dirs]:
         f = os.path.join(ROOT, ".cache", "sweeps", d, "%03d.json" % int(page))
         if not os.path.exists(f):
             continue
