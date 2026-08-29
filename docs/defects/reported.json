@@ -442,6 +442,14 @@
    "what": "أَيْدِيهِمْ hamza 0/1 at 21:28:4 (p324, e236) and 22:76:4 (p341, e373): the hamza is DRAWN CONNECTED to the alif — one 4.4x19.8 contour carries both letter and hamza. No separate hamza ink exists; a contour split would cut ink and break pixel identity.",
    "verdict": "ART FACT — the print fuses hamza+alif at these two sites. The two flags stand explained. Encoding belongs to schema v2 (a logical hamza mark whose geometry is shared with the letter), same seam as the letter-dot bridge ruling in attr_schema_v3.md §5a.",
    "status": "DECIDED by Abdullah 2026-08-29: mark the fused contour as hamza — applied as overrides on both sites"
+  },
+  {
+   "id": 42,
+   "date": "2026-08-29",
+   "reporter": "Abdullah (eye)",
+   "what": "Interval record p350 24:2:12 رَأْفَةࣱ ↔ فِى [dammatan]: 'I don't see issue with it'.",
+   "verdict": "NOT A DEFECT — the print draws the dammatan of a word-final ة floating in the gap toward the next word. Both words' counts are exact; only the audit's territory model is too crude here. Recorded in .cache/review/explained.json and shown on remaining.html under 'Examined by eye', NOT suppressed in the audit — if the ink ever moves, the record returns to the open list.",
+   "status": "explained"
   }
  ]
 }
