@@ -88,7 +88,19 @@ def main():
         out.append('<h2>Ungrouped — %d words</h2><table>%s</table>'
                    % (len(other), "".join(other)))
 
-    ivr = []
+    # Records a human has examined and confirmed as correct ink are not
+    # deleted — deleting them would hide a regression at the same site. They
+    # move to their own section, keyed tightly enough that any change to the
+    # record brings it straight back to the open list.
+    expp = os.path.join(ROOT, ".cache", "review", "explained.json")
+    explained = {}
+    if os.path.exists(expp):
+        try:
+            explained = json.load(open(expp))
+        except Exception:
+            explained = {}
+
+    ivr, ivx = [], []
     for pg, r in intervals:
         kind = r.get("kind", r.get("type", "?"))
         wtxt = r.get("holder") or r.get("word") or "?"
@@ -96,7 +108,9 @@ def main():
         key = r.get("key", "")
         fam = r.get("mark") or r.get("fam") or ""
         ink = snippet(pg, wtxt, [fam] if fam else [])
-        ivr.append('<tr><td>%s</td><td class="ink">%s</td>'
+        ekey = "%d|%s|%s|%s" % (pg, key, kind, fam)
+        (ivx if ekey in explained else ivr).append(
+                   '<tr><td>%s</td><td class="ink">%s</td>'
                    '<td class="w">%s%s</td><td>%s</td>'
                    '<td><a href="/?page=%d&step=audit&user=abdullah'
                    '&word=%s">open highlighted</a></td></tr>'
@@ -104,6 +118,12 @@ def main():
                       (" ↔ " + n) if n else "", key, pg, key))
     out.append('<h2>Interval records — %d</h2><table>%s</table>'
                % (len(ivr), "".join(ivr)))
+    if ivx:
+        out.append('<h2>Examined by eye, confirmed correct ink — %d</h2>'
+                   '<p style="color:#666;font-size:13px;margin:2px 0 6px">'
+                   'Kept, not deleted: if the ink ever moves, these return '
+                   'to the open list above.</p><table>%s</table>'
+                   % (len(ivx), "".join(ivx)))
 
     # POSITION dimension — the counting audits are blind to a mark of the
     # right name in the WRONG PLACE, which is most of what Abdullah's eye
@@ -167,8 +187,8 @@ def main():
 
     dst = os.path.join(ROOT, "docs", "defects", "remaining.html")
     open(dst, "w", encoding="utf-8").write("\n".join(out))
-    print("wrote %s — %d mark flags, %d interval records, %d position"
-          % (dst, len(marks), len(intervals), npos))
+    print("wrote %s — %d mark flags, %d interval records (%d examined), "
+          "%d position" % (dst, len(marks), len(ivr), len(ivx), npos))
 
 
 if __name__ == "__main__":
