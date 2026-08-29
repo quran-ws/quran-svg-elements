@@ -211,14 +211,23 @@ def main():
                     why = " · ".join(
                         ("%.2fx" % x) if isinstance(x, float) else str(x)
                         for x in r[2:])
-                rows.append(
+                rows.append((pg, r,
                     '<tr><td class="ink">%s</td><td class="w">%s</td>'
                     '<td>%s</td>'
                     '<td><a href="/?page=%s&step=audit&user=abdullah'
                     '&word=%s">open highlighted</a></td>'
                     '<td class="b">%s</td></tr>'
                     % (snippet(int(pg), wtxt, [fam] if fam else []),
-                       wtxt, key, pg, key, html.escape(str(why))))
+                       wtxt, key, pg, key, html.escape(str(why)))))
+        # examined-by-eye records move out of the open list here too,
+        # keyed page|word|detector|family so they come back if the ink moves
+        keep, seen = [], []
+        for pg2, r2, htm in rows:
+            ek = "%s|%s|%s|%s" % (pg2, r2[0], cachename,
+                                  r2[2] if len(r2) > 2
+                                  and isinstance(r2[2], str) else "")
+            (seen if ek in explained else keep).append(htm)
+        rows, exrows = keep, seen
         npos += len(rows)
         if not rows:
             out.append('<h2>%s — 0</h2>' % title)
@@ -228,6 +237,10 @@ def main():
                           ('<p style="color:#666;font-size:13px;'
                            'margin:2px 0 6px">%s</p>' % note) if note else "",
                           "".join(rows)))
+        if exrows:
+            out.append('<h2>%s — examined by eye, correct ink (%d)</h2>'
+                       '<table>%s</table>' % (title, len(exrows),
+                                              "".join(exrows)))
 
     out.append('<script>document.querySelectorAll(".ink svg").forEach(s=>{'
                'try{const bb=s.getBBox();if(bb.width&&bb.height)'

@@ -1,0 +1,641 @@
+{
+ "range": [
+  1,
+  604
+ ],
+ "min_n": 20,
+ "max_k": 1,
+ "flags": [
+  {
+   "page": 203,
+   "key": "9:102:6",
+   "form": "صَٰلِحࣰا",
+   "axis": "CONTOURS",
+   "n": 4,
+   "mode": 3,
+   "dev": 1,
+   "form_n": 28,
+   "spread": [
+    [
+     3,
+     14
+    ],
+    [
+     2,
+     13
+    ],
+    [
+     4,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "HAPAX"
+  },
+  {
+   "page": 324,
+   "key": "21:30:18",
+   "form": "يُؤْمِنُونَ",
+   "axis": "CONTOURS",
+   "n": 7,
+   "mode": 6,
+   "dev": 1,
+   "form_n": 86,
+   "spread": [
+    [
+     6,
+     85
+    ],
+    [
+     7,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "HAPAX"
+  },
+  {
+   "page": 384,
+   "key": "27:78:6",
+   "form": "وَهُوَ",
+   "axis": "CONTOURS",
+   "n": 7,
+   "mode": 6,
+   "dev": 1,
+   "form_n": 169,
+   "spread": [
+    [
+     6,
+     168
+    ],
+    [
+     7,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "HAPAX"
+  },
+  {
+   "page": 384,
+   "key": "27:78:8",
+   "form": "ٱلْعَلِيمُ",
+   "axis": "CONTOURS",
+   "n": 2,
+   "mode": 3,
+   "dev": -1,
+   "form_n": 28,
+   "spread": [
+    [
+     3,
+     27
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [
+    {
+     "key": "27:87:11",
+     "form": "ٱلْأَرْضِ",
+     "axis": "runs",
+     "dev": 1
+    }
+   ],
+   "grade": "PAIRED"
+  },
+  {
+   "page": 435,
+   "key": "35:6:3",
+   "form": "لَكُمْ",
+   "axis": "CONTOURS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 143,
+   "spread": [
+    [
+     2,
+     142
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "HAPAX"
+  },
+  {
+   "page": 579,
+   "key": "76:11:2",
+   "form": "ٱللَّهُ",
+   "axis": "CONTOURS",
+   "n": 2,
+   "mode": 3,
+   "dev": -1,
+   "form_n": 660,
+   "spread": [
+    [
+     3,
+     659
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "HAPAX"
+  },
+  {
+   "page": 579,
+   "key": "76:15:2",
+   "form": "عَلَيْهِم",
+   "axis": "CONTOURS",
+   "n": 3,
+   "mode": 4,
+   "dev": -1,
+   "form_n": 42,
+   "spread": [
+    [
+     4,
+     41
+    ],
+    [
+     3,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "HAPAX"
+  },
+  {
+   "page": 579,
+   "key": "76:19:2",
+   "form": "عَلَيْهِمْ",
+   "axis": "CONTOURS",
+   "n": 3,
+   "mode": 4,
+   "dev": -1,
+   "form_n": 120,
+   "spread": [
+    [
+     4,
+     119
+    ],
+    [
+     3,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "HAPAX"
+  },
+  {
+   "page": 35,
+   "key": "2:221:26",
+   "form": "يَدْعُونَ",
+   "axis": "RUNS",
+   "n": 2,
+   "mode": 1,
+   "dev": 1,
+   "form_n": 23,
+   "spread": [
+    [
+     1,
+     22
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 146,
+   "key": "6:139:1",
+   "form": "وَقَالُوا۟",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 49,
+   "spread": [
+    [
+     2,
+     48
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 219,
+   "key": "10:94:11",
+   "form": "ٱلْكِتَٰبَ",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 74,
+   "spread": [
+    [
+     2,
+     73
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 234,
+   "key": "11:113:14",
+   "form": "أَوْلِيَآءَ",
+   "axis": "RUNS",
+   "n": 3,
+   "mode": 2,
+   "dev": 1,
+   "form_n": 20,
+   "spread": [
+    [
+     2,
+     14
+    ],
+    [
+     1,
+     5
+    ],
+    [
+     3,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 250,
+   "key": "13:11:6",
+   "form": "وَمِنْ",
+   "axis": "RUNS",
+   "n": 2,
+   "mode": 1,
+   "dev": 1,
+   "form_n": 28,
+   "spread": [
+    [
+     1,
+     27
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [
+    {
+     "key": "13:7:2",
+     "form": "ٱلَّذِينَ",
+     "axis": "runs",
+     "dev": -1
+    }
+   ],
+   "grade": "PAIRED"
+  },
+  {
+   "page": 271,
+   "key": "16:38:16",
+   "form": "ٱلنَّاسِ",
+   "axis": "RUNS",
+   "n": 2,
+   "mode": 3,
+   "dev": -1,
+   "form_n": 84,
+   "spread": [
+    [
+     3,
+     83
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 292,
+   "key": "17:98:3",
+   "form": "بِأَنَّهُمْ",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 24,
+   "spread": [
+    [
+     2,
+     23
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 315,
+   "key": "20:59:7",
+   "form": "ٱلنَّاسُ",
+   "axis": "RUNS",
+   "n": 2,
+   "mode": 3,
+   "dev": -1,
+   "form_n": 42,
+   "spread": [
+    [
+     3,
+     41
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 324,
+   "key": "21:30:18",
+   "form": "يُؤْمِنُونَ",
+   "axis": "RUNS",
+   "n": 2,
+   "mode": 1,
+   "dev": 1,
+   "form_n": 86,
+   "spread": [
+    [
+     1,
+     85
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 332,
+   "key": "22:2:14",
+   "form": "ٱلنَّاسَ",
+   "axis": "RUNS",
+   "n": 2,
+   "mode": 3,
+   "dev": -1,
+   "form_n": 47,
+   "spread": [
+    [
+     3,
+     46
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 337,
+   "key": "22:41:15",
+   "form": "وَلِلَّهِ",
+   "axis": "RUNS",
+   "n": 2,
+   "mode": 1,
+   "dev": 1,
+   "form_n": 27,
+   "spread": [
+    [
+     1,
+     26
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 384,
+   "key": "27:78:7",
+   "form": "ٱلْعَزِيزُ",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 46,
+   "spread": [
+    [
+     2,
+     45
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 384,
+   "key": "27:78:8",
+   "form": "ٱلْعَلِيمُ",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 28,
+   "spread": [
+    [
+     2,
+     27
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [
+    {
+     "key": "27:87:11",
+     "form": "ٱلْأَرْضِ",
+     "axis": "runs",
+     "dev": 1
+    }
+   ],
+   "grade": "PAIRED"
+  },
+  {
+   "page": 445,
+   "key": "36:83:7",
+   "form": "وَإِلَيْهِ",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 22,
+   "spread": [
+    [
+     2,
+     19
+    ],
+    [
+     3,
+     2
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 499,
+   "key": "45:6:7",
+   "form": "فَبِأَىِّ",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 35,
+   "spread": [
+    [
+     2,
+     34
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 556,
+   "key": "64:3:3",
+   "form": "وَٱلْأَرْضَ",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 3,
+   "dev": -2,
+   "form_n": 39,
+   "spread": [
+    [
+     3,
+     20
+    ],
+    [
+     2,
+     18
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 590,
+   "key": "85:2:1",
+   "form": "وَٱلْيَوْمِ",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 21,
+   "spread": [
+    [
+     2,
+     20
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 598,
+   "key": "98:4:4",
+   "form": "أُوتُوا۟",
+   "axis": "RUNS",
+   "n": 1,
+   "mode": 2,
+   "dev": -1,
+   "form_n": 31,
+   "spread": [
+    [
+     2,
+     30
+    ],
+    [
+     1,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  },
+  {
+   "page": 604,
+   "key": "113:3:1",
+   "form": "وَمِن",
+   "axis": "RUNS",
+   "n": 2,
+   "mode": 1,
+   "dev": 1,
+   "form_n": 31,
+   "spread": [
+    [
+     1,
+     30
+    ],
+    [
+     2,
+     1
+    ]
+   ],
+   "paired_with": [],
+   "grade": "REVIEW"
+  }
+ ]
+}
