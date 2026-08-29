@@ -42,10 +42,36 @@ GREY = "#bbb"
 _pages, _refs = {}, {}
 
 
+def _build(pg):
+    """One page, built IN PROCESS. assign_page returns the emitted SVG, so the
+    page shown is the current build and never a cache snapshot — the mistake
+    that made the first version of this comparison report on a build three
+    fixes old."""
+    import contextlib
+    import sys as _s
+    _s.path.insert(0, os.path.join(ROOT, "tools"))
+    import assign_words as aw
+    try:
+        with contextlib.redirect_stdout(io.StringIO()):
+            return pg, aw.assign_page("hafs/kfqc", pg,
+                                      os.path.join(ROOT, ".cache", "words"))[1]
+    except Exception:
+        return pg, ""
+
+
+def prebuild(pages, jobs=32):
+    from multiprocessing import Pool
+    todo = [p for p in sorted(set(pages)) if p not in _pages]
+    if not todo:
+        return
+    with Pool(min(jobs, len(todo)), maxtasksperchild=6) as pool:
+        for pg, svg in pool.imap_unordered(_build, todo):
+            _pages[pg] = svg
+
+
 def _ourpage(pg):
     if pg not in _pages:
-        p = os.path.join(CACHE, "%03d.svg" % pg)
-        _pages[pg] = io.open(p, encoding="utf-8").read() if os.path.exists(p) else ""
+        _pages[pg] = _build(pg)[1]
     return _pages[pg]
 
 
@@ -177,6 +203,9 @@ def theirs_for(row):
 
 
 TIERS = [
+    ("0", "PER-WORD INK IDENTITY — the word does not hold the same ink as "
+          "theirs (tools/audit_inkidentity.py)",
+     lambda r: r.get("kind") == "ink"),
     ("A", "INK CHANGED HANDS — the word's edge disagrees past the empty band. "
           "This is the family no audit here can see: a stolen body piece",
      lambda r: r["kind"] in ("boundary", "extent")
@@ -253,6 +282,24 @@ def render_row(r, ours, nours, theirs, ntheirs, extra=""):
         html.escape(r.get("detail", "")))
 
 
+_HAFS = {}
+
+
+def _hafs(pg, key):
+    """The word's text, from the reference page (it carries data-hafs on every
+    word group and its numbering is folded to ours by audit_ligcuts)."""
+    if pg not in _HAFS:
+        import sys as _s
+        _s.path.insert(0, os.path.join(ROOT, "tools"))
+        try:
+            import audit_ligcuts as L
+            _HAFS[pg] = {"%d:%d:%d" % k: v["hafs"]
+                         for k, v in L.ref_page(pg, L.DEFAULT_REF).items()}
+        except Exception:
+            _HAFS[pg] = {}
+    return _HAFS[pg].get(key, "")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--patterns", type=int, default=160,
@@ -260,9 +307,41 @@ def main():
     args = ap.parse_args()
 
     rows = json.load(open(SRC, encoding="utf-8"))
+    ink = []
+    inkp = os.path.join(ROOT, "docs", "defects", "ink_identity.json")
+    if os.path.exists(inkp):
+        SKIP = {"subpath-split", "region-differs", "ours-null-contour",
+                "their-sajdah-rule"}
+        for r in json.load(open(inkp, encoding="utf-8")):
+            if r.get("class") in SKIP:
+                continue
+            if r["page"] in (262, 451):        # the known incomparable sites
+                continue
+            if r["page"] == 574 and r["class"] == "position-differs":
+                continue                        # a 0.6u whole-word registration offset
+            moved = [e for e in r["ours_extra"] + r["theirs_extra"]
+                     if e["other"] != "UNPAIRED"]
+            r["word"] = _hafs(r["page"], r["key"])
+            r["our_runs"] = r["ref_runs"] = []
+            r["verdict"] = "UNDECIDED"
+            r["evidence"] = ("%d contour(s) of this word's ink are given to a "
+                             "different word by the two sides: %s"
+                             % (len(moved), ", ".join(
+                                 "%.1fx%.1f -> %s" % (e["w"], e["h"], e["other"])
+                                 for e in r["ours_extra"]
+                                 if e["other"] != "UNPAIRED")) if moved
+                             else "class: %s" % r.get("class"))
+            r["detail"] = ("%d contours agree; ours has %d the other side puts "
+                           "elsewhere, theirs has %d"
+                           % (r["same"], len(r["ours_extra"]),
+                              len(r["theirs_extra"])))
+            r["kind"] = "ink"
+            ink.append(r)
+    rows = ink + rows
     for r in rows:
         r.setdefault("verdict", "UNDECIDED")
     seen, tiered = set(), []
+    prebuild([r["page"] for r in rows[:400]] + [r["page"] for r in ink])
     for code, title, test in TIERS:
         sel = [r for r in rows if id(r) not in seen and test(r)]
         for r in sel:
@@ -277,14 +356,12 @@ def main():
            "<h1>Our ligature cut vs MushafDatabase's</h1>",
            '<p class="sub">%d disagreements over %s comparable words '
            '(pages 1-604). Each ligature run is drawn in its own colour; marks '
-           'are grey. Built %s. <b>The ink shown is a snapshot</b> — ours comes '
-           'from the cached page SVGs, oldest written %s, so a row is only as '
-           'fresh as that cache. Their coordinates are mapped into ours by the '
-           'page transform (scale 4/3, per-page offset); the fit residual is '
-           '0.10u median over ~130 words a page.</p>'
-           % (len(rows), "{:,}".format(77422), stamp,
-              datetime.datetime.fromtimestamp(ourfresh).strftime("%Y-%m-%d")
-              if ourfresh else "unknown")]
+           'are grey. Built %s from a FRESH in-process build — every page here '
+           'is rendered by the current pipeline, not read from the page cache. '
+           'Their coordinates are mapped into ours by the page transform '
+           '(scale 4/3, per-page offset); the fit residual is 0.10u median '
+           'over ~130 words a page.</p>'
+           % (len(rows), "{:,}".format(77422), stamp)]
 
     for code, title, sel in tiered:
         if not sel:

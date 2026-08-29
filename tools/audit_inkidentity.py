@@ -7,10 +7,16 @@ INK assigned to a word identical on the two sides?
 
 It is answered EXACTLY, not by rasterising. The two decompositions trace the
 same outlines: on p3 both sides emit 1,354 word-assigned contours, the median
-contour has 28 points on both sides, and one uniform affine (scale 1.33330 in x
-and 1.33328 in y) carries their ink bbox onto ours. So every contour on one
-side has a partner on the other, and the test is whether the two sides give the
-partners to the same word.
+contour has 28 points on each side, and one uniform affine at scale 4/3 in BOTH
+axes carries theirs onto ours with a centroid residual of 0.010u median and
+0.083u worst. So every contour on one side has a partner on the other, and the
+test is which word each side gives the pair to.
+
+Rasterising was tried as a cross-check and is too blunt to adjudicate: 150
+control words this test proves ink-identical still differ by up to 467 pixels
+(4.4% of their ink) at 10 px/unit, because the two sides' curve decompositions
+put edges on different sides of a sample. That measure has no empty band; this
+one does. `raster_page()` is kept for spot checks.
 
   registration  their ink -> ours, per page, refined by least squares on the
                 contour pairs themselves. Residual is printed by --proof.
@@ -19,10 +25,11 @@ partners to the same word.
                 TOL = 0.6u. NOT by point count: the two sides write the same
                 outline with different command decompositions, so their point
                 counts differ by 2-4 on 27% of contours while width and height
-                agree to 0.01u. Measured margin, p3/p58/p455: the correct
-                partner is 0.025u away (median), 0.35u at p99, 0.94u at worst;
-                the NEXT nearest size-compatible contour is never closer than
-                2.0u. Empty band 0.94u..2.0u, so 0.6 is inside a gap and the
+                agree to 0.01u. Measured margin over 4,108 contours on
+                p3/p58/p455: 4,106 find their partner within 0.1u (median
+                0.010u, p99 0.036u) and 2 have no partner at all, while the
+                NEXT nearest size-compatible contour is never closer than
+                2.025u. EMPTY BAND 0.1u..2.0u, so 0.6 sits in a gap and the
                 pairing is proof-class, not a guess.
   verdict       for each word, the multiset of contours ours holds vs theirs.
                 Symmetric difference 0 = the word's ink is identical.
@@ -140,6 +147,19 @@ def _walk(node, M, word, out, keyof):
                                    for x, y in sp]))
 
 
+def _walk_paths(node, M, word, out, keyof):
+    """Same walk, but one row per PATH with its accumulated matrix, so a word's
+    ink can be re-rendered exactly as the source drew it."""
+    for ch in node:
+        tag = ch.tag.split("}")[-1]
+        M2 = _mul(M, _mat(ch.get("transform"))) if ch.get("transform") else M
+        if tag == "g":
+            k = keyof(ch)
+            _walk_paths(ch, M2, k if k is not None else word, out, keyof)
+        elif tag == "path" and ch.get("d"):
+            out.append((word, ch.get("d"), M2))
+
+
 def _sig(pts):
     """(bbox centre x, bbox centre y, width, height, point count).
 
@@ -169,7 +189,7 @@ def _load():
     spec.loader.exec_module(AW)
 
 
-def ours(pg):
+def ours(pg, paths=False):
     """FRESH build, in process — assign_page returns the emitted SVG text, so
     nothing is read from (or written to) the page cache."""
     _load()
@@ -184,7 +204,11 @@ def ours(pg):
                              g.get("data-word"))
 
     out = []
-    _walk(ET.fromstring(svg), (1, 0, 0, 1, 0, 0), None, out, keyof)
+    root = ET.fromstring(svg)
+    if paths:
+        _walk_paths(root, (1, 0, 0, 1, 0, 0), None, out, keyof)
+        return out
+    _walk(root, (1, 0, 0, 1, 0, 0), None, out, keyof)
     return [(w, _sig(p)) for w, p in out]
 
 
@@ -233,7 +257,7 @@ def their_positions(root):
     return out
 
 
-def theirs(pg, refdir):
+def theirs(pg, refdir, paths=False):
     p = os.path.join(refdir, "%03d.svg" % pg)
     if not os.path.exists(p):
         return None
@@ -245,6 +269,9 @@ def theirs(pg, refdir):
         return pos.get(gid) if gid.startswith("md-word-") else None
 
     out = []
+    if paths:
+        _walk_paths(root, (1, 0, 0, 1, 0, 0), None, out, keyof)
+        return out
     _walk(root, (1, 0, 0, 1, 0, 0), None, out, keyof)
     return [(w, _sig(p)) for w, p in out]
 
@@ -255,14 +282,29 @@ def theirs(pg, refdir):
 def estimate(ow, tw):
     """(sx, tx, sy, ty) from the two word-ink bounding boxes, then refined on
     the contour pairs the first estimate finds."""
-    def bb(sigs):
-        xs = [s[0] for s in sigs]
-        ys = [s[1] for s in sigs]
-        return min(xs), max(xs), min(ys), max(ys)
-    a, b = bb(ow), bb(tw)
-    sx = (a[1] - a[0]) / (b[1] - b[0])
-    sy = (a[3] - a[2]) / (b[3] - b[2])
-    T = (sx, a[0] - sx * b[0], sy, a[2] - sy * b[2])
+    # The scale is 4/3 on every page — it is our own emitted root matrix. Do
+    # NOT derive it from the two ink bounding boxes: on the ornate spreads p1
+    # and p2 the frame ink differs between the two sources and the bbox
+    # estimate came out at 1.15, which pairs 38 of 302 contours. The offset is
+    # a MODAL VOTE over size-compatible contour pairs, which cannot be dragged
+    # by ink one side has and the other does not.
+    S = 4.0 / 3.0
+    bysize = defaultdict(list)
+    for s in ow:
+        bysize[(round(s[2], 1), round(s[3], 1))].append(s)
+    votes = Counter()
+    for s in tw:
+        key = (round(S * s[2], 1), round(S * s[3], 1))
+        cand = bysize.get(key) or []
+        if not 1 <= len(cand) <= 3:
+            continue
+        for o in cand:
+            votes[(round((o[0] - S * s[0]) * 4) / 4.0,
+                   round((o[1] - S * s[1]) * 4) / 4.0)] += 1
+    if not votes:
+        return None
+    (tx, ty), _ = votes.most_common(1)[0]
+    T = (S, tx, S, ty)
     for _ in range(2):
         pairs = match(ow, tw, T, tol=1.5)[0]
         if len(pairs) < 50:
@@ -337,7 +379,18 @@ def page(args):
     if len(ow) < 50 or len(tw) < 50:
         return pg, {"err": "too few word contours"}
     T = estimate([s for _, s in ow], [s for _, s in tw])
+    if T is None:
+        return pg, {"err": "registration failed"}
     pairs, o_only, t_only = match([s for _, s in ow], [s for _, s in tw], T)
+    if len(pairs) < 0.5 * len(ow):
+        # p1 and p2 only. The ornate opening spread is set at a DIFFERENT SIZE
+        # in the reference: our contour widths are 1.03-1.15x theirs across the
+        # quantiles and no single scale aligns them, against a flat 1.3333 on
+        # every other page. The two sources are not drawing the same artwork
+        # there, so the words are excluded rather than reported as differing.
+        return pg, {"err": "artwork differs (paired %d of %d contours)"
+                    % (len(pairs), len(ow)), "excluded_words": len(set(
+                        w for w, _ in ow))}
     sx, tx, sy, ty = T
     res = sorted(max(abs(ow[i][1][0] - (sx * tw[j][1][0] + tx)),
                      abs(ow[i][1][1] - (sy * tw[j][1][1] + ty)))
@@ -375,6 +428,16 @@ def page(args):
                 "ours_unpaired": len(o_only), "theirs_unpaired": len(t_only),
                 "resid": res, "rows": rows,
                 "T": [round(x, 5) for x in T]}
+
+
+def _same_box(a, b, tol):
+    def ub(es):
+        return (min(e["x"] - e["w"] / 2 for e in es),
+                min(e["y"] - e["h"] / 2 for e in es),
+                max(e["x"] + e["w"] / 2 for e in es),
+                max(e["y"] + e["h"] / 2 for e in es))
+    p, q = ub(a), ub(b)
+    return max(abs(p[i] - q[i]) for i in range(4)) <= tol
 
 
 def main(argv=None):
@@ -418,6 +481,7 @@ def main(argv=None):
                 continue
             if "err" in r:
                 tot["page-error"] += 1
+                tot["excluded_words"] += r.get("excluded_words", 0)
                 bad.append((pg, r["err"]))
                 continue
             tot["pages"] += 1
@@ -428,7 +492,8 @@ def main(argv=None):
             tot["theirs_unpaired"] += r["theirs_unpaired"]
             rows += r["rows"]
             resid += r["resid"][-3:]
-    print("pages %d (errors %d)" % (tot["pages"], tot["page-error"]))
+    print("pages %d (excluded %d, %d words)"
+          % (tot["pages"], tot["page-error"], tot["excluded_words"]))
     for p, e in bad[:8]:
         print("   p%-4d %s" % (p, e))
     print("word-assigned contours %d | paired %d | unpaired ours %d theirs %d"
@@ -445,6 +510,45 @@ def main(argv=None):
             if h[i]:
                 print("   %2d-%2du %5d %s" % (i, i + 1, h[i],
                                               "#" * min(60, h[i])))
+    # ------------------------------------------------------------------
+    # classify. A word can differ for three quite different reasons and only
+    # one of them is a defect.
+    for r in rows:
+        o = r["ours_extra"]
+        t = r["theirs_extra"]
+        moved = [e for e in o + t if e["other"] != "UNPAIRED"]
+        if moved:
+            r["class"] = "ownership"
+        elif not o and t and all(e["h"] < 1.2 and e["w"] > 8 for e in t):
+            # a long hairline rule: the sajdah underline, which they put
+            # INSIDE the word group and we do not
+            r["class"] = "their-sajdah-rule"
+        elif (len(o) == len(t)
+              and all(abs(a["w"] - b["w"]) < 0.15 and abs(a["h"] - b["h"]) < 0.15
+                      for a, b in zip(sorted(o, key=lambda e: (e["w"], e["h"])),
+                                      sorted(t, key=lambda e: (e["w"], e["h"]))))
+              and not _same_box(o, t, 0.6)):
+            # the SAME shape drawn in a different PLACE. Our pages are proven
+            # pixel-identical to the artwork (audit_pixels), so the artwork has
+            # it where we have it.
+            r["class"] = "position-differs"
+        elif o and t and _same_box(o, t, 1.5):
+            # both sides draw the same region, cut into a different number of
+            # subpaths (their three-dot glyph is 2 subpaths, ours is 3)
+            r["class"] = "subpath-split"
+        elif not o and t:
+            r["class"] = "theirs-only-ink"
+        elif o and not t and max(max(e["w"], e["h"]) for e in o) < 0.5:
+            # a degenerate contour that draws nothing: the QSVG_NULLMARK
+            # family. We carry it, they dropped it. Not ink.
+            r["class"] = "ours-null-contour"
+        elif o and not t:
+            r["class"] = "ours-only-ink"
+        else:
+            r["class"] = "region-differs"
+    print("")
+    for k, n in Counter(r["class"] for r in rows).most_common():
+        print("   %-20s %5d word(s)" % (k, n))
     os.makedirs(os.path.dirname(args.out), exist_ok=True)
     rows.sort(key=lambda r: -max([max(e["w"], e["h"])
                                   for e in r["ours_extra"] + r["theirs_extra"]]
@@ -457,3 +561,86 @@ def main(argv=None):
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# ---------------------------------------------------------------- stage 2: pixels
+#
+# 667 of the 699 words the contour test separates differ ONLY because the two
+# sides cut the same ink into different subpaths — their three-dot glyph is two
+# subpaths where ours is three contours, so two of ours find no 1:1 partner even
+# though the ink is the same and both sides give it to the same word. That is a
+# tracing difference, not an ownership one, and only pixels can say so. Stage 2
+# renders each such word's ink from BOTH sides into the same box and diffs.
+
+RASTER_SCALE = 10.0        # px per unit; a 30u word renders ~300 px wide
+RASTER_TOL = 100           # 0-255; above the 24 audit_pixels uses for AA
+
+
+def _wordsvg(items, box, scale):
+    x0, y0, x1, y1 = box
+    body = "".join(
+        '<path d="%s" transform="matrix(%s)" fill="#000" fill-rule="evenodd"/>'
+        % (d, " ".join("%.6f" % v for v in M)) for d, M in items)
+    return ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" '
+            'viewBox="%.3f %.3f %.3f %.3f"><rect x="%.3f" y="%.3f" width="%.3f" '
+            'height="%.3f" fill="#fff"/>%s</svg>'
+            % (max(4, int((x1 - x0) * scale)), max(4, int((y1 - y0) * scale)),
+               x0, y0, x1 - x0, y1 - y0, x0, y0, x1 - x0, y1 - y0, body))
+
+
+def raster_page(args):
+    """[(key, differing-pixels, total-ink-pixels, box)] for the listed words."""
+    import subprocess
+    import tempfile
+    from PIL import Image, ImageChops
+    pg, refdir, keys, scale = args
+    keys = set(keys)
+    op = ours(pg, paths=True)
+    tp = theirs(pg, refdir, paths=True)
+    ow = [(w, s) for w, s in ours(pg) if w]
+    tw = [(w, s) for w, s in theirs(pg, refdir) if w]
+    T = estimate([s for _, s in ow], [s for _, s in tw])
+    sx, tx, sy, ty = T
+    R = (sx, 0.0, 0.0, sy, tx, ty)
+    mine, ref = defaultdict(list), defaultdict(list)
+    for w, d, M in op:
+        if w in keys:
+            mine[w].append((d, M))
+    for w, d, M in tp:
+        if w in keys:
+            ref[w].append((d, _mul(R, M)))
+    out = []
+    with tempfile.TemporaryDirectory() as td:
+        for k in sorted(keys):
+            items = mine.get(k, []) + ref.get(k, [])
+            if not items:
+                continue
+            xs, ys = [], []
+            for w, s in ow:
+                if w == k:
+                    xs += [s[0] - s[2] / 2, s[0] + s[2] / 2]
+                    ys += [s[1] - s[3] / 2, s[1] + s[3] / 2]
+            for w, s in tw:
+                if w == k:
+                    xs += [sx * s[0] + tx - sx * s[2] / 2,
+                           sx * s[0] + tx + sx * s[2] / 2]
+                    ys += [sy * s[1] + ty - sy * s[3] / 2,
+                           sy * s[1] + ty + sy * s[3] / 2]
+            if not xs:
+                continue
+            box = (min(xs) - 1, min(ys) - 1, max(xs) + 1, max(ys) + 1)
+            png = []
+            for side, items in (("a", mine.get(k, [])), ("b", ref.get(k, []))):
+                f = os.path.join(td, "%s.svg" % side)
+                open(f, "w", encoding="utf-8").write(_wordsvg(items, box, scale))
+                g = os.path.join(td, "%s.png" % side)
+                subprocess.run(["rsvg-convert", f, "-o", g], check=True)
+                png.append(Image.open(g).convert("L"))
+            if png[0].size != png[1].size:
+                out.append((k, -1, 0, box))
+                continue
+            diff = ImageChops.difference(png[0], png[1]).histogram()
+            bad = sum(diff[RASTER_TOL + 1:])
+            ink = sum(1 for v in png[0].getdata() if v < 128)
+            out.append((k, bad, ink, box))
+    return pg, out
