@@ -596,8 +596,8 @@
      * <svg> with pointer-events:none — behind the ink, and unable to eat a click.
      */
     band(target, {
-      padX = 1.2, padY = 0, fill = '#d6a326', opacity = 0.30, rx = 1.2,
-      className = 'mushaf-band', height = 'pitch'
+      padX = 1.2, padY = 0, fill = '#d6a326', opacity = 0.30,
+      className = 'mushaf-band', height = 'pitch', seam = 0.25
     } = {}) {
       const byLine = new Map();
       for (const w of this.resolve(target)) {
@@ -606,23 +606,52 @@
         byLine.set(w.line, c ? unionBox([c, b]) : b);
       }
       const bands = height === 'pitch' ? this.lineBands() : null;
-      const layer = svgEl('g', { class: className, opacity, 'pointer-events': 'none' });
-      const rects = [];
+
+      const boxes = [];
       for (const [ln, b] of byLine) {
         const v = bands && bands.get(ln);
-        const y0 = v ? v.y0 : b.y0 - padY;
-        const y1 = v ? v.y1 : b.y1 + padY;
-        rects.push({ line: ln, x0: b.x0 - padX, x1: b.x1 + padX, y0, y1 });
-        layer.appendChild(svgEl('rect', {
-          x: (b.x0 - padX).toFixed(3), y: y0.toFixed(3),
-          width: (b.x1 - b.x0 + 2 * padX).toFixed(3),
-          height: (y1 - y0).toFixed(3), rx, fill
-        }));
+        boxes.push({
+          line: ln, x0: b.x0 - padX, x1: b.x1 + padX,
+          y0: v ? v.y0 : b.y0 - padY, y1: v ? v.y1 : b.y1 + padY
+        });
       }
+
+      /* ONE PATH, one subpath per printed line.
+       *
+       * A stack of separate rects shows a hairline seam at every join — the
+       * antialiased edges of two abutting shapes do not add up to opaque — so a
+       * five-line ayah reads as five stripes instead of one highlight.
+       *
+       * The subpaths are all wound the SAME direction and the path declares
+       * fill-rule="nonzero", which UNIONS them. That is what lets neighbouring
+       * subpaths overlap by `seam` to kill the hairline without the overlap
+       * painting twice and darkening.
+       *
+       * fill-rule is set EXPLICITLY and never inherited. The page's own ink is
+       * evenodd, where overlapping contours inside one path CANCEL — inheriting
+       * it here would turn every overlap into a hole, which is the same trap
+       * that once filled the counter of a ح as a solid blob. */
+      const order = boxes.slice().sort((a, b) => a.y0 - b.y0);
+      const draw = order.map(b => ({ ...b }));
+      for (let i = 0; i < draw.length - 1; i++) {
+        /* only where two bands actually meet — a highlight on lines 3 and 7
+         * must not grow tails into the untouched lines between them */
+        if (Math.abs(draw[i + 1].y0 - draw[i].y1) < 0.5) {
+          draw[i].y1 += seam / 2;
+          draw[i + 1].y0 -= seam / 2;
+        }
+      }
+      const n = v => v.toFixed(3);
+      /* every subpath clockwise: same winding, so nonzero unions them */
+      const d = draw.map(b =>
+        `M${n(b.x0)} ${n(b.y0)}H${n(b.x1)}V${n(b.y1)}H${n(b.x0)}Z`).join('');
+
+      const layer = svgEl('g', { class: className, opacity, 'pointer-events': 'none' });
+      const path = svgEl('path', { d, fill, 'fill-rule': 'nonzero', class: className + '-shape' });
+      layer.appendChild(path);
       this.el.insertBefore(layer, this.el.firstChild);
       return {
-        el: layer, bands: byLine.size, boxes: rects,
-        rects: [...layer.children],
+        el: layer, path, d, bands: byLine.size, boxes, seam,
         remove() { layer.remove(); }
       };
     }
