@@ -11,6 +11,7 @@ import html
 import json
 import os
 import sys
+import time
 
 ROOT = (os.environ.get("QSVG_ROOT")
         or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -62,6 +63,22 @@ def main():
         else:
             other.append(h)
 
+    # STALENESS STAMP (Abdullah 2026-08-29): the ink previews are captured
+    # from the cached page svgs AT BUILD TIME, so the board silently ages the
+    # moment a page is rebuilt — he read p552 off this page and sent eids
+    # that had already renumbered. Show both times; if the pages are newer
+    # than the board, say so in red.
+    import datetime
+    cachedir = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
+    newest = max((os.path.getmtime(os.path.join(cachedir, f))
+                  for f in os.listdir(cachedir) if f.endswith(".svg")),
+                 default=0)
+    now = time.time()
+    fmt = "%H:%M:%S"
+    stamp = ('built %s · newest page build %s'
+             % (datetime.datetime.fromtimestamp(now).strftime(fmt),
+                datetime.datetime.fromtimestamp(newest).strftime(fmt)))
+
     out = ['<meta charset="utf-8"><title>Remaining issues</title>',
            '<style>body{font-family:system-ui;margin:20px auto;'
            'max-width:1100px}',
@@ -78,7 +95,10 @@ def main():
            '<h1>Everything that remains</h1>',
            '<p id="tally"></p>',
            '<p>Red ink = the flagged mark family. Every link opens the '
-           'review page with the word highlighted.</p>']
+           'review page with the word highlighted.</p>',
+           '<p style="font-size:12px;color:#888">%s — the ink shown here is '
+           'a snapshot; if you are sending eids, open the review page and '
+           'read them there.</p>' % stamp]
     for title, _ in GROUPS:
         rows = grouped[title]
         if rows:
