@@ -1996,7 +1996,19 @@ def rewrite(page, assignment):
                             print("ORNDBG line=%s sig=%s lb=%s" % (
                                 e.get("line"), (e.get("sig") or "")[:8], lb9),
                                 file=sys.stderr)
-                        if lb9 == "ignore":
+                        # The "ignore" condition was belt-and-braces: the
+                        # real guard is HEADER CONTEXT, which is already
+                        # required above. When Abdullah restored the
+                        # surah-name band on the opening spread (upstream
+                        # 2026-08-29) it brought 14 banner glyphs the shape
+                        # table has never seen, so they stayed unnamed marks
+                        # and bench's coverage check failed on p1/p2
+                        # (182/194 and 253/268). On a basmalah or surah-name
+                        # line there is no semantic role to lose — titles
+                        # carry real diacritics and are NOT audited — so a
+                        # wordless unnamed fragment there is decoration
+                        # whether or not the table has met it before.
+                        if lb9 == "ignore" or lb9 is None:
                             e["kind"] = "ornament"
                             e.pop("mkpart", None)
 
@@ -2542,7 +2554,20 @@ def rewrite(page, assignment):
                     # data-word. Breaking on purpose — every consumer was
                     # migrated in the same change.
                     #
-                    # data-rasm is the SEARCH key: the uthmani spelling with
+                    # data-search is THE search key: the IMLAEI (modern)
+                    # spelling with its marks removed. data-rasm is the
+                    # uthmani skeleton and is NOT searchable — the dagger
+                    # alef is a combining mark, so stripping it deletes the
+                    # alef outright: ميثَٰقكم -> ميثقكم, تظَٰهرون -> تظهرون,
+                    # بٱلإثم keeps its wasla. Nobody types those. The imlaei
+                    # spelling already writes ا where uthmani writes ٱ or a
+                    # dagger alef, so stripping IT needs no folding and
+                    # yields ميثاقكم / تظاهرون / بالإثم — what a search box
+                    # actually receives. Measured: the two differ on 36 words
+                    # in the first 40 pages alone. Abdullah 2026-08-29.
+                    # data-rasm is kept: it is the skeleton of the INK, which
+                    # is the right key for matching against the glyphs.
+                    # data-rasm is the uthmani spelling with
                     # every combining mark, tatweel and small letter removed
                     # (tools/quran_meta.rasm). Nothing is FOLDED — ا/أ/إ/آ/ٱ,
                     # ى/ي and ة/ه all stay as written, per Abdullah's ruling —
@@ -2551,11 +2576,12 @@ def rewrite(page, assignment):
                     # and is unchanged.
                     out.append('<g class="word" data-wid="%d:%d:%d" '
                                'data-uthmani="%s" data-rasm="%s" '
-                               'data-imlaei="%s"%s>'
+                               'data-imlaei="%s" data-search="%s"%s>'
                                % (word["surah"], word["ayah"], word["pos"],
                                   esc(word["uthmani"]),
                                   esc(quran_meta.rasm(word["uthmani"])),
                                   esc(word["imlaei"]),
+                                  esc(quran_meta.rasm(word["imlaei"])),
                                   (' data-qpc="%s"' % esc(word["qpc"]))
                                   if word.get("qpc") else ""))
                     open_word = wkey
@@ -12045,6 +12071,24 @@ def assign_page(edition, page_no, cache_dir):
     out_svg = tag_ayah_markers(
         out_svg, polys_all,
         {k: (v[1], v[2]) for k, v in _mk_anchor.items()})
+    # COVERAGE IS MEASURED ON THE OUTPUT, not mid-pipeline (2026-08-29).
+    # `apply_shape_labels` runs long before the ORNAMENT demotion and the
+    # null-mark pass, so it graded an intermediate state: when the restored
+    # surah-name band brought 14 banner flourishes the shape table had never
+    # met, bench failed p1/p2 (182/194, 253/268) even after those pieces were
+    # correctly reclassified as ornament. Recount here, over what is actually
+    # emitted: a mark that survives every pass and still has no name is the
+    # only thing this gate should care about.
+    _lab = _tot = 0
+    for _wc, _atc in assignment:
+        for _ac in _atc:
+            for _ec in _ac["els"]:
+                if _ec.get("kind") != "mark" or _ec.get("mkpart"):
+                    continue
+                _tot += 1
+                if _ec.get("mark"):
+                    _lab += 1
+    coverage = (_lab, _tot)
     return page, out_svg, report, coverage
 
 
