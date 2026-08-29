@@ -39,6 +39,60 @@ English. That rule is absolute and the translation does not relax it.
 
 ---
 
+## 1a. Qiraa, riwaya and the counting system
+
+The nine new root attributes need these. **Every one of these terms is a technical term of the
+Quranic sciences with a settled Arabic form** — there is nothing to coin, and no transliteration is
+ever correct in the Arabic text. Use the Arabic; keep the attribute name and value Latin.
+
+| English | Arabic | attribute | notes |
+|---|---|---|---|
+| qiraa / reading | **قراءة** (ج. **قراءات**) | `data-qiraa` | The reading tradition, named for its imam. Value stays Latin (`asim`); prose says **عاصم**. |
+| riwaya / transmission | **رواية** (ج. **روايات**) | `data-riwaya` | The transmission from that imam. Value Latin (`hafs`); prose says **حفص**. |
+| Hafs from Asim | **رواية حفص عن عاصم** | — | The full standard formula. Use it in full on first mention; `رواية حفص` after. Note `عن`, not `من`. |
+| Warsh from Nafi | **رواية ورش عن نافع** | — | Same pattern, for the portability note. |
+| ayah numbering system | **نظام عدّ الآي** | `data-ayah-numbering` | Also **العدّ** alone once introduced. `عدّ الآي` is the established term of the discipline (علم الفواصل); `ترقيم` is a printing word and is weaker here. |
+| total ayahs | **إجمالي الآيات** | `data-ayah-total` | |
+| edition | **الطبعة** | `data-edition` | |
+| mushaf name | **اسم المصحف** | `data-mushaf-name-ar` / `-en` | The `-ar` value is the official Arabic name; never re-translate it from the English. |
+| mushaf | **المصحف** | `data-mushaf` | |
+| page | **الصفحة** | `data-page` | |
+
+### The counting systems
+
+`data-ayah-numbering` names which madhhab of ayah-division the edition follows. The Madinah Mushaf
+uses the **Kufan** count, which is why the total is 6,236.
+
+| system | Arabic | value |
+|---|---|---|
+| Kufan | **العدّ الكوفي** | `kufi` |
+| Madani first | **العدّ المدني الأول** | `madani-first` |
+| Madani last | **العدّ المدني الأخير** | `madani-last` |
+| Basran | **العدّ البصري** | `basri` |
+| Meccan | **العدّ المكي** | `makki` |
+| Damascene | **العدّ الشامي** | `shami` |
+
+**Translated, not transliterated, and here is the reason.** These are ordinary Arabic nisba
+adjectives — `كوفي` is simply "of Kufa". Writing `كوفي` is not a translation choice at all, it is the
+word. Transliterating the English back (`كوفي` ← *kufi*) would arrive at the same place by a worse
+route; treating them as opaque identifiers (`العدّ kufi`) would be wrong. **The attribute values
+stay Latin** (`kufi`, `madani-first`) because they are machine keys.
+
+Write the ordinal in `madani-first` / `madani-last` as **الأول** / **الأخير** — not `الثاني`. The
+pair is "first" and "last", not "first" and "second".
+
+### The trap here
+
+`قراءة` and `رواية` are **not interchangeable**, and English-language sources routinely blur them —
+"the Hafs qiraa" is a common error. A `قراءة` is the reading of one of the imams; a `رواية` is one
+transmitter's line from that imam. **Hafs is a riwaya, Asim is the qiraa.** The English demo may
+be loose about this; the Arabic must not be, because an Arabic reader will notice immediately.
+
+Likewise `عدّ` (counting the ayahs, a science with named madhhabs) is not `ترقيم` (putting numbers on
+them, a printing operation). The attribute is about the former.
+
+---
+
 ## 2. Structure terms
 
 | English | Arabic | notes |
@@ -84,6 +138,19 @@ English. That rule is absolute and the translation does not relax it.
 | pixel-identical | **مطابق بالبكسل** | |
 | decomposition | **التفكيك** | What this project does to a page. |
 | audit / gate | **تدقيق** / **بوابة** | |
+| recitation | **تلاوة** | The act. `التلاوة` for the section title. |
+| reciter | **القارئ** | |
+| murattal | **المرتَّل** | The measured style, as against `المجوَّد`. A technical term — do not translate it as "slow" or "simple". |
+| al-Minshawi | **الشيخ محمد صدّيق المنشاوي** | Use the reciter's name as Arabic sources write it; do not transliterate back from the English. |
+| play / pause | **تشغيل** / **إيقاف مؤقت** | Buttons → maṣdar. |
+| follow along | **المتابعة** | |
+| tooltip | **تلميح** | |
+| word meaning | **معنى الكلمة** | |
+| contents | **المحتويات** | The generated section list. `فهرس` is reserved for the search index above — do not use it for both. |
+| library | **مكتبة** | |
+| plain JS / library toggle | **بدون مكتبة** / **بمكتبة** | Proposed. Avoids transliterating "JS"; the code itself stays Latin either way. |
+| polygon | **مضلّع** | The single highlight polygon. |
+| completeness rule | **قاعدة الاكتمال** | For the ayah-number stamping rule. |
 
 ---
 
@@ -154,6 +221,10 @@ Reproduce byte-for-byte. These are what a reader searches for and what the produ
 
 - Every attribute name: `data-wid`, `data-aid`, `data-search`, `data-rasm`, `data-imlaei`,
   `data-uthmani`, `data-qpc`, `data-kind`, `data-line`, `data-part`, `data-marker`, `viewBox`.
+- The nine root attributes: `data-mushaf`, `data-qiraa`, `data-riwaya`, `data-edition`,
+  `data-mushaf-name-ar`, `data-mushaf-name-en`, `data-ayah-numbering`, `data-ayah-total`,
+  `data-page` — **and their values**: `asim`, `hafs`, `kufi`, `madani-first`. The Arabic prose names
+  the concept (§1a); the attribute keeps the Latin key.
 - Every attribute *value* and key: `2:255`, `2:255:4`, `#231f20`.
 - Every class name: `g.word`, `g.ayah`, `g.ligature`, `.q-hits`.
 - All code: `querySelectorAll`, `getBBox`, `getBoundingClientRect`, `DOMParser`, `fetch`,
@@ -235,3 +306,24 @@ Note `أجاب عن` in that last block, not `أجاب على` — the guide's t
    English exactly and drifts whenever the English changes. If it is an Arabic edition it can drop
    English-reader framing that an Arabic reader does not need. This changes the amount of ongoing
    work and should be decided before the translation starts, not after.
+5. **`plain JS` / `library` toggle labels** — §3 proposes `بدون مكتبة` / `بمكتبة` to avoid
+   transliterating "JS". Confirm, or supply preferred wording.
+6. **If the English says "the Hafs qiraa" anywhere, that is an error worth fixing in the English
+   too** — Hafs is a riwaya. See §1a. The Arabic cannot reproduce the mistake, so the two pages
+   would silently disagree unless the English is corrected.
+
+---
+
+## 10. Keeping this current
+
+The English demo is still growing. **This file is the long pole for the translation**, so extend it
+as sections land rather than at translation time — consistency across a long technical page comes
+from the glossary, not from care while translating.
+
+When a new section appears, add its recurring nouns here **before** translating it, and decide for
+each: translated, kept Latin, or glossed once and then Arabic. Record the reason, as the rows above
+do. A term decided twice is a term that will appear two ways on the page.
+
+The language authority for everything except this vocabulary is the global `arabic-writer` skill
+(`~/.claude/skills/arabic-writer/`), whose `SOURCES.md` carries the citations and a list of
+plausible-sounding rules that failed verification.
