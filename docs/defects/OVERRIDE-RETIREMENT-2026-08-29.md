@@ -6,7 +6,15 @@ geometry overrides, by fixing causes, breaking nothing.
 **Headline: `.cache/review/overrides.json` went 426 → 247 entries (152 → 114
 pages). All 604 emitted pages are BYTE-IDENTICAL to the 426-entry build.**
 Separately, `QSVG_SLASHFIX` was deleted — its only effect mushaf-wide was to
-emit three body paths into the wrong `<g class="word">` on two pages.
+emit three body paths into the wrong `<g class="word">` on two pages, and
+Abdullah's eye independently pinned those same three paths the same night.
+
+> **Concurrency note.** A second agent worked the same tree throughout, and
+> after my reduction landed it added three eye-confirmed overrides (p384 ×2,
+> p579 ×1) and corrected two names on p337. The file on disk is therefore
+> **250** entries: my 247 plus their 3. Every number below was **re-measured
+> against the current code and the current 250-entry file** after that
+> landed; the re-measurement is in "Re-verification on the current code".
 
 ---
 
@@ -178,15 +186,56 @@ slash early enough shifts a later pass's ink mass and flips `rewrite()`'s
 "wrapper holding most of the ink" vote. **Mark and interval counts stayed 0
 through all of it** — precisely the blind spot CLAUDE.md names.
 
-**Verdict: deleted.** The three elements it was mis-emitting go back to the
-word the pipeline assigned them to. Nothing else changes.
+**Independent confirmation, the same night.** While this was being measured,
+the review session reached the same two pages by eye and committed three
+overrides (689936e, "p384 27:78 alif chain and p579 ٱللَّهُ's alif returned
+by eye") pinning **exactly** the three alif paths this measurement had
+flagged from the assignment. Two methods, one answer, arrived at
+independently.
+
+**Verdict: deleted.** Because those three overrides now pin the same result,
+the deletion is, on today's code, a complete no-op — see below.
+
+---
+
+## Re-verification on the current code
+
+The concurrent agent changed `assign_words.py` (welded-sign emission, orphan
+repair) and `overrides.json` while this work was in flight, so both claims
+were re-measured from scratch against the code and the override file as they
+stand now. Both are full-mushaf byte diffs, 604 pages each side.
+
+**1. Is the retirement still inert?**
+Before-set = the original 426 entries **plus** the concurrent agent's 3 new
+ones (429). After-set = the shipped 250. Result: **1 page differs — p337.**
+And p337 has **zero** retired overrides. Its difference is the concurrent
+agent's own correction in 689936e, which swapped two names on p337:
+
+```
+265.6,483.9,271.8,487.2   22:46:8|fatha     ->  22:46:8|two-dots
+268.1,499.1,272.6,501.9   22:46:8|two-dots  ->  22:46:8|kasra
+```
+
+My before-snapshot predates that fix, so p337 differs for their reason, not
+mine. **Net effect of retiring the 179: zero pages, zero elements.**
+
+**2. Is deleting SLASHFIX still safe?**
+Rebuilt the pre-deletion file by reverse-patching my diff off HEAD, then
+built all 604 both ways with the current 250-entry file: **1 page differs —
+p548**, and comparing the element multiset with `data-eid` stripped gives a
+**symmetric difference of 0**. The only change is two eids swapping, the
+`id()`-ordering artefact disclosed below. **Semantically the deletion is a
+complete no-op on today's code.**
 
 ---
 
 ## Collateral changes
 
-Full-mushaf element-level diff, final code + reduced overrides against the
-426-entry baseline. Every changed element, enumerated:
+Full-mushaf element-level diff of the SLASHFIX deletion, measured against the
+code and override file as they stood when the deletion was made (before the
+concurrent agent's 3 eye overrides landed). Every changed element, enumerated
+— and on today's file the same three are pinned by Abdullah's overrides, so
+the deletion now changes nothing at all:
 
 | page | element | old state | new state | class | evidence |
 |---|---|---|---|---|---|
@@ -289,5 +338,5 @@ Measured on the final code with the reduced overrides file (sweep
 | `bench.py` | SCORE 137, no failures | **SCORE 137, FAILURES none**, pixelfail 0, budget-mismatch 0/2706 |
 | mark flags (sweep, 604 pages) | 0 | **0** |
 | open interval records | 1 (p350, pre-existing) | **1 (p350, pre-existing)** |
-| overrides | 426 on 152 pages | **247 on 114 pages** |
-| pages differing from the 426-entry build | — | **0** (except the 3 SLASHFIX elements above) |
+| overrides | 426 on 152 pages | **247 on 114 pages** (250 on disk incl. the concurrent session's 3) |
+| pages differing from the baseline build | — | **0** |
