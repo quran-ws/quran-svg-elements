@@ -36,6 +36,7 @@ TEXT_WANT = {
     "pause": ("ۖ", "ۗ", "ۘ", "ۙ", "ۚ"),
     "muanaqah": ("ۛ",),
     "small-noon": ("ۨ",),
+    "meem-iqlab": ("ۢ", "ۭ"),
     "saktah": ("ۜ",), "seen-reading": ("ۜ", "ۣ"),
     # phase-3 rare dots (Abdullah 2026-08-28): each is ONE site mushaf-wide
     "imalah": ("۪",), "ishmam": ("۬", "۫"), "tashil": ("۬",),
@@ -56,8 +57,17 @@ RARE_SITES = {(18, 1): "saktah", (36, 52): "saktah", (75, 27): "saktah",
 # legacy input names (an older build under QSVG_PIPE) fold into the new family
 # the word's own text selects
 _LEGACY_ZERO = "small-circle"
-# the iqlab meem is fused into the tanween glyph in this art (measured), so it
-# is not demanded as a separate mark
+# The iqlab meem WAS excluded here on the grounds that it is "fused into the
+# tanween glyph in this art". That is true of the LOW form (U+06ED ۭ, often
+# fused) but NOT of the HIGH form (U+06E2 ۢ), which CLAUDE.md itself records as
+# "a separate glyph". The exclusion therefore left every iqlab site unguarded,
+# and on 2026-08-29 p455 مُغْتَسَلُۢ was found holding NO meem at all — its
+# sign was sitting in بَارِدࣱ as anonymous body ink, invisible to every audit.
+# MushafDatabase caught the ownership; Abdullah's eye named the ink.
+# Measured before adding it: 510 words carry the high form and 99 the low, and
+# ALL 609 hold their mark today, so demanding it costs zero flags and buys a
+# permanent gate. It is demanded as a FAMILY (either form) because the print
+# and the reference text disagree about which form a site uses.
 
 
 def dot_want(txt, aw):
