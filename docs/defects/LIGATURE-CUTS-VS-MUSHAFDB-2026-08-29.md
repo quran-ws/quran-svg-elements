@@ -1,8 +1,12 @@
 # Our ligature cut vs MushafDatabase's — 2026-08-29
 
 **Three real thefts found, five words, on p58, p324 and p455.** They are the
-first stolen body pieces found by anything other than Abdullah's eye, and every
-audit in this repo is green on all three pages. Two disagreements go against
+first stolen body pieces found by anything other than Abdullah's eye. Four of
+the five words are clean in every existing audit; the fifth, p58
+`وَٱلْإِنجِيلُ`, is one of the 195 rows `audit_ligatures.py` calls `empty` —
+a class that cannot say whether the ink went to the neighbouring GROUP or to the
+neighbouring WORD, and which is 34-to-1 the former. This comparison is what
+separates them. Two disagreements go against
 MushafDatabase. Everything else is one systematic emitter defect (2,687 words)
 plus 157 cases neither side's rules can settle.
 
@@ -170,6 +174,12 @@ Three independent signals agree:
 * **Our own mark says so.** The waw's fatha sits at 226.1–232.4, directly over
   the disputed stroke at 223.0–232.9 and nowhere near anything else.
 
+`audit_ligatures.py` does flag this word as `empty` — but it flags 195 words
+that way and 34 of the other 35 in this comparison turn out to be ink in the
+neighbouring group of the SAME word, which is harmless. The `empty` class on its
+own cannot tell the two apart. `ٱلتَّوْرَىٰةُ`, the word that actually holds the
+ink, is clean in every audit.
+
 This word IS in `stolen_letters.json` — but ranked 0.198 on ink ratio, far down
 a 453-row list with no empty band, which is exactly why that hunt could not use
 it. The other two sites are not in that list at all.
@@ -210,8 +220,9 @@ group holds a second detached contour at 86.5–89.8 — high (y 514.7–524.2),
 `مُغْتَسَلُۢ`'s span, which they give to `مُغْتَسَلُۢ`. `با` is a connected run
 and cannot be two contours.
 
-Nothing in our own geometry could see this: every mark count is right and both
-words hold plausible ink.
+Nothing in our own geometry could see this: every mark count is right, both
+words hold plausible ink, and `audit_ligatures.py`, `audit_intervals.py` and
+the chunk-fit flags are all clean on 38:42:4, 5 and 6.
 
 ### 4. p546 `ءَاتَىٰكُمُ` 59:7:25 — THEIRS-WRONG
 
