@@ -1,174 +1,5 @@
 [
  {
-  "page": 455,
-  "key": "38:42:6",
-  "word": "وَشَرَابࣱ",
-  "hafs": "وَشَرَابٞ",
-  "line": 15,
-  "ref_runs": [
-   "و",
-   "شر",
-   "ا",
-   "ب"
-  ],
-  "our_runs": [
-   "و",
-   "شر",
-   "اب"
-  ],
-  "segs": [
-   "و",
-   "شر",
-   "ا",
-   "ب"
-  ],
-  "ref_raw": [
-   "و",
-   "شر",
-   "ا",
-   "ب"
-  ],
-  "our_raw": [
-   "و",
-   "شر",
-   "اب"
-  ],
-  "our_bodies": [
-   1,
-   3,
-   1
-  ],
-  "unemitted": [],
-  "segs_match_ref": true,
-  "d_left": -0.04,
-  "d_right": 7.66,
-  "ours_x": [
-   25.2,
-   69.6
-  ],
-  "theirs_x": [
-   25.3,
-   61.9
-  ],
-  "kind": "boundary",
-  "verdict": "OURS-WRONG",
-  "evidence": "the WORD EDGE moves too: our word's ink reaches 7.7u past theirs, past the 4u empty band — a piece has changed hands, not just a group",
-  "sev": 307.66,
-  "detail": "ref 4 run(s) [و|شر|ا|ب] vs ours 3 [و|شر|اب]; our own segment_word agrees with them"
- },
- {
-  "page": 455,
-  "key": "38:42:5",
-  "word": "بَارِدࣱ",
-  "hafs": "بَارِدٞ",
-  "line": 15,
-  "ref_runs": [
-   "با",
-   "ر",
-   "د"
-  ],
-  "our_runs": [
-   "با",
-   "رد"
-  ],
-  "segs": [
-   "با",
-   "ر",
-   "د"
-  ],
-  "ref_raw": [
-   "با",
-   "ر",
-   "د"
-  ],
-  "our_raw": [
-   "با",
-   "رد"
-  ],
-  "our_bodies": [
-   2,
-   1
-  ],
-  "unemitted": [],
-  "segs_match_ref": true,
-  "d_left": 1.88,
-  "d_right": 5.72,
-  "ours_x": [
-   66.2,
-   89.8
-  ],
-  "theirs_x": [
-   64.3,
-   84.1
-  ],
-  "kind": "boundary",
-  "verdict": "OURS-WRONG",
-  "evidence": "the WORD EDGE moves too: our word's ink reaches 5.7u past theirs, past the 4u empty band — a piece has changed hands, not just a group",
-  "sev": 305.72,
-  "detail": "ref 3 run(s) [با|ر|د] vs ours 2 [با|رد]; our own segment_word agrees with them"
- },
- {
-  "page": 58,
-  "key": "3:65:10",
-  "word": "وَٱلْإِنجِيلُ",
-  "hafs": "وَٱلۡإِنجِيلُ",
-  "line": 7,
-  "ref_runs": [
-   "و",
-   "ا",
-   "لا",
-   "نجيل"
-  ],
-  "our_runs": [
-   "و",
-   "ا",
-   "لا",
-   "نجيل"
-  ],
-  "segs": [
-   "و",
-   "ا",
-   "لا",
-   "نجيل"
-  ],
-  "ref_raw": [
-   "و",
-   "ٱ",
-   "لإ",
-   "نجيل"
-  ],
-  "our_raw": [
-   "و",
-   "ا",
-   "لا",
-   "نجيل"
-  ],
-  "our_bodies": [
-   0,
-   1,
-   1,
-   1
-  ],
-  "unemitted": [],
-  "segs_match_ref": true,
-  "d_left": 0.1,
-  "d_right": -7.62,
-  "ours_x": [
-   176.5,
-   225.4
-  ],
-  "theirs_x": [
-   176.4,
-   233.0
-  ],
-  "kind": "missing-ink",
-  "sev": 201,
-  "left_word": true,
-  "verdict": "OURS-WRONG",
-  "evidence": "the letter has LEFT THE WORD: they draw it, we hold no ink for it, and our word is short by more than the 4u empty band",
-  "detail": "run(s) [0] named ['و'] are drawn by them and hold no ink in ours; our word's ink is 7.6u SHORTER than theirs"
- },
- {
   "page": 54,
   "key": "3:37:5",
   "word": "وَأَنۢبَتَهَا",
@@ -634,7 +465,7 @@
   ],
   "unemitted": [],
   "segs_match_ref": true,
-  "d_left": 0.19,
+  "d_left": 0.2,
   "d_right": -3.41,
   "ours_x": [
    80.8,
@@ -1999,121 +1830,6 @@
   "detail": "run(s) [1] named ['ه'] are drawn by them and hold no ink in ours; our word's ink is 0.3u SHORTER than theirs"
  },
  {
-  "page": 58,
-  "key": "3:65:9",
-  "word": "ٱلتَّوْرَىٰةُ",
-  "hafs": "ٱلتَّوۡرَىٰةُ",
-  "line": 7,
-  "ref_runs": [
-   "ا",
-   "لتو",
-   "ر",
-   "ية"
-  ],
-  "our_runs": [
-   "ا",
-   "لتو",
-   "ر",
-   "ية"
-  ],
-  "segs": [
-   "ا",
-   "لتو",
-   "ر",
-   "ي",
-   "ة"
-  ],
-  "ref_raw": [
-   "ٱ",
-   "لتو",
-   "ر",
-   "ىة"
-  ],
-  "our_raw": [
-   "ا",
-   "لتو",
-   "ر",
-   "ىة"
-  ],
-  "our_bodies": [
-   1,
-   1,
-   1,
-   2
-  ],
-  "unemitted": [],
-  "segs_match_ref": false,
-  "d_left": -12.81,
-  "d_right": -0.01,
-  "ours_x": [
-   223.0,
-   277.1
-  ],
-  "theirs_x": [
-   235.8,
-   277.1
-  ],
-  "kind": "extent",
-  "sev": 12.81,
-  "verdict": "UNDECIDED",
-  "evidence": "word-edge disagreement past the 4u empty band; adjudicate against the neighbour on the same line",
-  "detail": "our ink overruns the left edge by 12.8u (ours 223.0..277.1, theirs 235.8..277.1)"
- },
- {
-  "page": 324,
-  "key": "21:30:18",
-  "word": "يُؤْمِنُونَ",
-  "hafs": "يُؤۡمِنُونَ",
-  "line": 9,
-  "ref_runs": [
-   "يو",
-   "منو",
-   "ن"
-  ],
-  "our_runs": [
-   "يو",
-   "منو",
-   "ن"
-  ],
-  "segs": [
-   "يو",
-   "منو",
-   "ن"
-  ],
-  "ref_raw": [
-   "يؤ",
-   "منو",
-   "ن"
-  ],
-  "our_raw": [
-   "يو",
-   "منو",
-   "ن"
-  ],
-  "our_bodies": [
-   2,
-   1,
-   1
-  ],
-  "unemitted": [],
-  "segs_match_ref": true,
-  "d_left": -0.05,
-  "d_right": 12.64,
-  "ours_x": [
-   138.9,
-   193.6
-  ],
-  "theirs_x": [
-   138.9,
-   181.0
-  ],
-  "kind": "extent",
-  "sev": 12.64,
-  "verdict": "UNDECIDED",
-  "evidence": "word-edge disagreement past the 4u empty band; adjudicate against the neighbour on the same line",
-  "detail": "our ink overruns the right edge by 12.6u (ours 138.9..193.6, theirs 138.9..181.0)"
- },
- {
   "page": 76,
   "key": "3:199:22",
   "word": "أُو۟لَٰٓئِكَ",
@@ -3376,6 +3092,62 @@
   "evidence": "both cuts are legal under the joining rules",
   "sev": 2,
   "detail": "ref 5 run(s) [و|ا|لا|ر|ض] vs ours 3 [لا|ر|ض]; our own segment_word agrees with them"
+ },
+ {
+  "page": 455,
+  "key": "38:42:6",
+  "word": "وَشَرَابࣱ",
+  "hafs": "وَشَرَابٞ",
+  "line": 15,
+  "ref_runs": [
+   "و",
+   "شر",
+   "ا",
+   "ب"
+  ],
+  "our_runs": [
+   "شر",
+   "اب"
+  ],
+  "segs": [
+   "و",
+   "شر",
+   "ا",
+   "ب"
+  ],
+  "ref_raw": [
+   "و",
+   "شر",
+   "ا",
+   "ب"
+  ],
+  "our_raw": [
+   "شر",
+   "اب"
+  ],
+  "our_bodies": [
+   3,
+   1
+  ],
+  "unemitted": [
+   "و"
+  ],
+  "segs_match_ref": true,
+  "d_left": 0.0,
+  "d_right": -0.22,
+  "ours_x": [
+   25.2,
+   61.6
+  ],
+  "theirs_x": [
+   25.2,
+   61.9
+  ],
+  "kind": "cut",
+  "verdict": "OURS-WRONG",
+  "evidence": "our run(s) join through ا, which never joins to the letter after it",
+  "sev": 2,
+  "detail": "ref 4 run(s) [و|شر|ا|ب] vs ours 2 [شر|اب]; our own segment_word agrees with them"
  },
  {
   "page": 465,
@@ -81260,7 +81032,7 @@
   ],
   "unemitted": [],
   "segs_match_ref": true,
-  "d_left": 0.14,
+  "d_left": 0.15,
   "d_right": -0.38,
   "ours_x": [
    9.1,
@@ -113109,7 +112881,7 @@
   "unemitted": [],
   "segs_match_ref": true,
   "d_left": -0.03,
-  "d_right": -0.11,
+  "d_right": -0.12,
   "ours_x": [
    233.0,
    272.2
@@ -113165,8 +112937,8 @@
   ],
   "unemitted": [],
   "segs_match_ref": true,
-  "d_left": -0.13,
-  "d_right": -0.33,
+  "d_left": -0.12,
+  "d_right": -0.32,
   "ours_x": [
    188.9,
    221.1
@@ -113222,14 +112994,14 @@
   ],
   "unemitted": [],
   "segs_match_ref": true,
-  "d_left": 0.07,
-  "d_right": -0.47,
+  "d_left": 0.09,
+  "d_right": -0.46,
   "ours_x": [
    150.7,
    185.9
   ],
   "theirs_x": [
-   150.7,
+   150.6,
    186.4
   ],
   "kind": "cut",
@@ -113275,7 +113047,7 @@
   ],
   "theirs_x": [
    216.7,
-   249.3
+   249.4
   ],
   "kind": "cut",
   "verdict": "OURS-WRONG",
@@ -113320,7 +113092,7 @@
    "با"
   ],
   "segs_match_ref": true,
-  "d_left": 0.18,
+  "d_left": 0.19,
   "d_right": -0.17,
   "ours_x": [
    186.1,
@@ -113378,7 +113150,7 @@
   "unemitted": [],
   "segs_match_ref": true,
   "d_left": 0.89,
-  "d_right": -0.16,
+  "d_right": -0.17,
   "ours_x": [
    246.6,
    290.3
@@ -113435,7 +113207,7 @@
   "unemitted": [],
   "segs_match_ref": true,
   "d_left": 0.19,
-  "d_right": -0.16,
+  "d_right": -0.17,
   "ours_x": [
    249.3,
    282.5
@@ -113449,6 +113221,59 @@
   "evidence": "our run(s) join through و, which never joins to the letter after it",
   "sev": 1,
   "detail": "ref 4 run(s) [و|ا|ذ|كر] vs ours 3 [وا|ذ|كر]; our own segment_word agrees with them"
+ },
+ {
+  "page": 455,
+  "key": "38:42:5",
+  "word": "بَارِدࣱ",
+  "hafs": "بَارِدٞ",
+  "line": 15,
+  "ref_runs": [
+   "با",
+   "ر",
+   "د"
+  ],
+  "our_runs": [
+   "با",
+   "رد"
+  ],
+  "segs": [
+   "با",
+   "ر",
+   "د"
+  ],
+  "ref_raw": [
+   "با",
+   "ر",
+   "د"
+  ],
+  "our_raw": [
+   "با",
+   "رد"
+  ],
+  "our_bodies": [
+   1,
+   2
+  ],
+  "unemitted": [
+   "با"
+  ],
+  "segs_match_ref": true,
+  "d_left": -0.15,
+  "d_right": -0.51,
+  "ours_x": [
+   64.2,
+   83.5
+  ],
+  "theirs_x": [
+   64.3,
+   84.0
+  ],
+  "kind": "cut",
+  "verdict": "OURS-WRONG",
+  "evidence": "our run(s) join through ر, which never joins to the letter after it",
+  "sev": 1,
+  "detail": "ref 3 run(s) [با|ر|د] vs ours 2 [با|رد]; our own segment_word agrees with them"
  },
  {
   "page": 456,
