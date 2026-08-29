@@ -49,5 +49,13 @@
   "verdict": "STAY WITH OURS. This is NOT an ownership defect on either side and should not be recorded as 'theirs-wrong' either: it is a difference between the two SOURCE ARTWORKS. The shapes agree to 0.01-0.02u, so the same glyph is simply drawn in a different place in the two files.",
   "evidence": "audit_pixels proves our emitted page is pixel-identical to OUR artwork on all 604 pages — the pipeline regroups ink, it never moves it. And the page-wide registration residual is 0.010u median, so a 1.4-2.6u offset is 140-260x the noise floor and cannot be registration error. The only remaining explanation is that their source differs from ours here.",
   "action": "none — recorded so the pair is not re-litigated. Treat as a source difference, not a defect on either side."
+ },
+ "BOARD|remaining.html|2026-08-29|all-correct": {
+  "date": "2026-08-29 21:07",
+  "by": "Abdullah (eye, whole board)",
+  "what": "Reviewed docs/defects/remaining.html in full: 11 words flagged 'too tall for this word elsewhere' (1.59x-2.46x: p129 بِخَيْرࣲ, p267 ٱلْمَلَٰٓئِكَةَ/أَنْ/ٱلسَّمَٰوَٰتِ, p418 وَكَفَىٰ, p531 مُّدَّكِرࣲ, p164 إِنَّ, p577 يَخَافُونَ/إِلَّآ, p437 ٱلصَّلَوٰةَ, p77 مِّن) and 94 words over their line's pitch, plus the 1 open crossline row.",
+  "verdict": "ALL CORRECT — 'all of those are correct'. None is a defect.",
+  "consequence": "The height detectors are now confirmed as PRIORS with no surviving true positives on this build. p71 غَالِبَ (1.42x) was the family's one real hit and it is fixed. Do NOT spend eye-time on these rows again unless the underlying build changes; if a NEW word appears in either list it is worth a look, but the current members are settled.",
+  "action": "none — recorded so the board can show them as examined rather than open."
  }
 }
