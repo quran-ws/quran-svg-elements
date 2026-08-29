@@ -78,7 +78,43 @@ Zero ink moves, so the numeral cannot drift and the pixel gate is untouched —
 which also dissolves the earlier conflict about re-centring the medallion.
 **Abdullah has not yet confirmed this replaces the nesting plan — ask first.**
 
-## 5. The 2,687-word emitter grouping defect (586 pages)
+## 5. The 2,687-word emitter grouping defect (586 pages)  ← RE-PRIORITISED
+
+**Abdullah 2026-08-29 20:43, and it changes the weight of this task:** production
+will emit ONE element per word, not per ligature — so on the surface every cut
+disagreement (Tier C 157, Tier E 2,687) becomes invisible in the product. The
+measurement supports that exactly: `missing-ink 0 | boundary 0 | extent 0` —
+NOT ONE cut disagreement changes which ink a word holds or where it starts and
+ends.
+
+**But the ligature layer is the stepping stone to LETTER-level decomposition,
+which he intends to attempt later and calls "a very hard task".** A run is a
+connected stroke sequence, and letters can only be split WITHIN a run. So a
+wrong run boundary poisons the foundation of that harder task:
+
+- **Tier E is now the priority, not a curiosity.** We emit one group where the
+  joining rules AND MushafDatabase both say two (`data-text="اوليك"` — a run
+  the script cannot draw). Splitting that into letters later would mean
+  splitting a run that should not exist. It is OURS ALONE and it is a bug, not
+  a knowledge gap: our own `segment_word()` agrees with the reference in
+  **2,685 of 2,687** — only the emitter loses it.
+- **Tier C's "both wrong" family matters too** — the 17 مَوْلَىٰكُمْ-shaped
+  words emit runs joining through ى or و, which the script cannot draw.
+  Impossible runs; letters inside them would be meaningless.
+- **The rest of Tier C can wait.** Two legal cuts disagreeing, neither
+  violating a rule, is a convention difference — it describes letters
+  differently, it does not block them.
+
+**Order:** production ships one element per word now; the ligature layer stays
+in schema v2's DEV profile where the audits live; Tier E is fixed as a RULE
+VIOLATION (by rule, not by eye); undecided Tier C rows are left alone until
+letters are actually on the table.
+
+**Do not spend Abdullah's eye on Tier C rows that leave word extents
+unchanged** — 157 rows that cannot affect the product and do not violate a
+rule.
+
+### The original note
 
 MushafDatabase and our own `segment_word()` agree in 2,685 of 2,687 cases that
 a word should emit TWO ligature groups where our emitter emits one (e.g.
