@@ -11482,6 +11482,47 @@ def assign_page(edition, page_no, cache_dir):
                     e["mark"] = nm
                     e["lab"] = nm
 
+    # WELD OVERRIDES — value "s:a:w|weld:<family>" (Abdullah 2026-08-29,
+    # p552 تِجَٰرَةࣲ: "this is a part of the kasratan, should combine with
+    # it"). The pair passes weld by proximity, so a half drawn 20u from its
+    # master is out of their reach and gets demoted back to a single vowel
+    # instead. This runs AFTER every pair pass — narrowly, touching only
+    # elements a human named — so it cannot be undone. It changes counting
+    # only: the piece becomes a member of the family's existing master.
+    _wvp = os.path.join(ROOT, ".cache", "review", "overrides.json")
+    if os.path.exists(_wvp):
+        try:
+            _wv = json.load(open(_wvp)).get(str(page_no), {})
+        except Exception:
+            _wv = {}
+        _wv = {k: v for k, v in _wv.items() if "|weld:" in v}
+        if _wv:
+            for _wW, _atW in assignment:
+                if not _wW:
+                    continue
+                _kW = "%d:%d:%d" % (_wW["surah"], _wW["ayah"], _wW["pos"])
+                _elW = [e for a in _atW for e in a["els"]]
+                for _eW in _elW:
+                    _kk = "%.1f,%.1f,%.1f,%.1f" % (
+                        _eW["x1"], _eW["y1"], _eW["x2"], _eW["y2"])
+                    _vv = _wv.get(_kk)
+                    if not _vv or not _vv.startswith(_kW + "|weld:"):
+                        continue
+                    _fam = _vv.split("|weld:", 1)[1]
+                    _mst = [m for m in _elW
+                            if m.get("mark") == _fam and m is not _eW
+                            and not m.get("mkpart")]
+                    if not _mst:
+                        continue
+                    _m = min(_mst, key=lambda m: abs(
+                        (m["x1"] + m["x2"]) / 2 - (_eW["x1"] + _eW["x2"]) / 2))
+                    for _mm in (_eW.pop("mkmembers", None) or []):
+                        _mm["mkpart"] = False
+                    _eW["mark"] = _fam
+                    _eW["lab"] = _fam
+                    _eW["mkpart"] = True
+                    _m.setdefault("mkmembers", []).append(_eW)
+
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_markers(out_svg, polys_all)
