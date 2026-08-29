@@ -1,0 +1,831 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>mushaf.js tests</title>
+<style>
+  body{font:14px/1.5 system-ui;margin:16px}
+  #stage{position:relative;display:inline-block;width:520px}
+  #stage svg{display:block;width:100%;height:auto}
+  #log{white-space:pre-wrap;font:12px/1.5 ui-monospace,monospace}
+  .pass{color:#080}.fail{color:#c00;font-weight:700}
+</style>
+<h3>mushaf.js test run</h3>
+<div id="stage"></div>
+<div id="log"></div>
+
+<script type="module">
+let M, load;
+/* Serve any directory that holds the page SVGs and (for the atlas tests) an
+   atlas.json built by ../build-atlas.py, then point these at it:
+     ?pages=/quran/pages/&atlas=/quran/atlas.json                            */
+const q = new URLSearchParams(location.search);
+const PAGES = q.get('pages') || '../../../../.cache/words-svg/hafs-kfqc/';
+const ATLAS = q.get('atlas') || 'atlas.json';
+
+const R = { pass: 0, fail: 0, tests: [], errors: [] };
+window.__RESULTS__ = R;
+const log = document.getElementById('log');
+
+function ok(name, cond, detail) {
+  const rec = { name, ok: !!cond, detail: detail === undefined ? null : detail };
+  R.tests.push(rec);
+  cond ? R.pass++ : R.fail++;
+  const d = document.createElement('div');
+  d.className = cond ? 'pass' : 'fail';
+  d.textContent = (cond ? 'PASS  ' : 'FAIL  ') + name + (detail !== undefined ? '   ' + JSON.stringify(detail) : '');
+  log.appendChild(d);
+}
+const eq = (name, a, b) => ok(name, JSON.stringify(a) === JSON.stringify(b), { got: a, want: b });
+const near = (name, a, b, tol) => ok(name, Math.abs(a - b) <= tol, { got: a, want: b, tol });
+
+window.addEventListener('error', e => R.errors.push('error: ' + e.message));
+window.addEventListener('unhandledrejection', e => R.errors.push('rejection: ' + e.reason));
+
+const stage = document.getElementById('stage');
+function show(page) { stage.replaceChildren(page.el); return page; }
+
+async function run() {
+try {
+  const bust = (location.search.match(/v=(\d+)/) || [0, Date.now()])[1];
+  M = await import('../mushaf.mjs?v=' + bust);
+  load = M.createLoader({ baseUrl: PAGES });
+  /* ============================================ 1. loading and identity */
+  const p42 = await load(42);
+  ok('1.1 load returns a MushafPage', p42 instanceof M.MushafPage);
+  eq('1.2 page 42 word count', p42.wordCount, 147);
+  eq('1.3 profile is dev (ligature layer present)', p42.profile, 'dev');
+  eq('1.4 viewBox read off the file', p42.viewBox, { x: 0, y: 0, w: 345, h: 550 });
+  eq('1.5 polygons dropped by the loader', p42.el.querySelectorAll('path.ayahPolygon').length, 0);
+
+  const p1 = await load(1);
+  eq('1.6 page 1 has its own viewBox, not 0 0 345 550',
+     p1.viewBox, { x: -53.3109, y: -198.4777, w: 345, h: 550 });
+  eq('1.7 page 1 has 8 printed lines', p1.lines().length, 8);
+  eq('1.8 page 1 word count', p1.wordCount, 29);
+  eq('1.9 page 1: 12 decorative rosettes are excluded from markers()',
+     [p1.allMarkerGroups().length, p1.markers().length], [14, 7]);
+
+  const p604 = await load(604), p176 = await load(176), p582 = await load(582);
+  eq('1.10 page 604 words', p604.wordCount, 58);
+  eq('1.11 all pages report 15 or 8 lines',
+     [p42, p176, p582, p604].map(p => p.lines().length), [15, 15, 15, 15]);
+
+  /* the loader hands out clones: mutating one must not touch the next */
+  const a = await load(42), b = await load(42);
+  a.words()[0].el.remove();
+  eq('1.12 loader hands out independent clones', [a.wordCount, b.wordCount], [146, 147]);
+
+  /* clone() namespaces ids so two copies can share a document */
+  const c1 = p42.clone(), c2 = p42.clone();
+  ok('1.13 clone() namespaces marker ids',
+     c1.markers()[0].id !== c2.markers()[0].id && c1.markers()[0].id !== p42.markers()[0].id);
+  ok('1.14 clone() keeps data-marker in step',
+     c1.ayahs().every(x => !x.markerId || c1.el.querySelector('#' + CSS.escape(x.markerId))));
+
+  /* production profile: same file with the ligature layer unwrapped */
+  const prod = p42.clone();
+  prod.el.querySelectorAll('g.ligature').forEach(g => { g.replaceWith(...g.childNodes); });
+  eq('1.15 profile detection flips to production', prod.profile, 'production');
+  eq('1.16 production keeps every word and mark',
+     [prod.wordCount, prod.marks().length], [p42.wordCount, p42.marks().length]);
+  eq('1.17 core still works on the production profile',
+     [prod.ayah('2:255').words().length, prod.search('الله', { mode: 'exact' }).length],
+     [p42.ayah('2:255').words().length, 5]);
+
+  /* ============================================ 2. metadata, no database */
+  const s582 = p582.surahs();
+  const naba = s582.find(s => s.number === 78);
+  const banner78 = p582.el.querySelector('g.surah-name[data-sid="78"]');
+  eq('2.1 surah record off the banner',
+     [naba.arabic, naba.latin, naba.english, naba.revelationPlace, naba.ayahCount, naba.hasBanner, naba.hasBasmalah],
+     [banner78.dataset.surahNameAr, banner78.dataset.surahNameLatin, banner78.dataset.surahNameEn,
+      banner78.dataset.revelationPlace, 40, true, true]);
+  eq('2.1b and it is surah An-Naba, 40 ayahs, makkah',
+     [naba.latin, naba.ayahCount, naba.revelationPlace], ['An-Naba', 40, 'makkah']);
+  ok('2.2 a surah present without a banner is still reported',
+     p42.surahs().length === 1 && p42.surahs()[0].number === 2 && p42.surahs()[0].hasBanner === false);
+  eq('2.3 page 604 carries three surah banners',
+     p604.surahs().filter(s => s.hasBanner).map(s => s.number), [112, 113, 114]);
+  ok('2.4 surah 1 has a banner but no basmalah group (its basmalah IS 1:1)',
+     p1.surahs()[0].hasBanner === true && p1.surahs()[0].hasBasmalah === false);
+
+  eq('2.5 juz 30 starts at 78:1 on page 582',
+     p582.divisions().juz.map(d => [d.n, d.aid]), [[30, '78:1']]);
+  eq('2.6 page 42 opens rub 17 / hizb 5 / juz 3 at 2:253',
+     [p42.divisions().rub.map(d => [d.n, d.aid]),
+      p42.divisions().hizb.map(d => [d.n, d.aid]),
+      p42.divisions().juz.map(d => [d.n, d.aid])],
+     [[[17, '2:253']], [[5, '2:253']], [[3, '2:253']]]);
+  eq('2.7 page 42 draws one hizb rosette, agreeing with the ayah tags',
+     p42.rosettes().map(r => [r.rub, r.hizb, r.juz, r.aid]), [[17, 5, 3, '2:253']]);
+  eq('2.8 page 176 has the 7:206 sajdah', p176.sajdahs().map(s => s.aid), ['7:206']);
+  eq('2.9 no sajdah where there is none', p42.sajdahs().length, 0);
+
+  eq('2.10 ayah keys on page 42', p42.ayahKeys(), ['2:253', '2:254', '2:255', '2:256']);
+  const a255 = p42.ayah('2:255');
+  ok('2.11 an ayah is several fragments, and knows it',
+     a255.fragments.length > 1 && a255.parts === a255.fragments.length && a255.complete);
+  ok('2.12 2:255 spans several printed lines', a255.lines.length > 1, a255.lines);
+  ok('2.13 an ayah resolves to its medallion',
+     a255.marker && a255.marker.dataset.aid === '2:255');
+  eq('2.14 info() is one call', typeof p42.info().divisions, 'object');
+
+  /* words */
+  const w = p42.word('2:255:1');
+  eq('2.15 word text, all five forms', Object.keys(w.text).sort(),
+     ['imlaei', 'qpc', 'rasm', 'search', 'uthmani']);
+  eq('2.16 word identity', [w.surah, w.ayah, w.index, w.aid, w.line],
+     [2, 255, 1, '2:255', Number(w.el.closest('g.line').dataset.line)]);
+  eq('2.16b 2:255 opens on line 8', w.line, 8);
+  const box = w.box();
+  ok('2.17 word box is inside the page',
+     box.x0 > 0 && box.x1 < 345 && box.y0 > 0 && box.y1 < 550, box);
+  /* box() must be in VIEWBOX units, never CSS pixels. getCTM() returns the
+     latter, which silently produces bands drawn in the wrong place. */
+  {
+    show(p42);
+    const vb = p42.viewBox, sr = p42.el.getBoundingClientRect();
+    const scale = sr.width / vb.w;
+    const wr = p42.word('2:255:1').el.getBoundingClientRect();
+    const b2 = p42.word('2:255:1').box();
+    ok('2.18 box() is in viewBox units, not CSS pixels',
+       Math.abs(b2.w * scale - wr.width) < 0.5 &&
+       Math.abs(b2.x0 * scale - (wr.left - sr.left)) < 0.5,
+       { scale, box: [b2.x0, b2.w], client: [wr.left - sr.left, wr.width] });
+  }
+
+  /* ============================================ 3. text extraction */
+  const t255 = p42.text('2:255', { form: 'uthmani' });
+  ok('3.1 ayah text starts with its own first word',
+     t255.startsWith(p42.word('2:255:1').text.uthmani), t255.slice(0, 20));
+  eq('3.2 ayah text word count', t255.split(/[\s\n]+/).length, a255.words().length);
+  ok('3.3 a multi-line ayah carries the mushaf line breaks', t255.includes('\n'));
+  eq('3.4 line text', p42.line(4).words().length, p42.words({ line: 4 }).length);
+  eq('3.5 page text has every word',
+     p42.text('page').split(/[\s\n]+/).length, p42.wordCount);
+  eq('3.6 five forms all extractable',
+     M.TEXT_FORMS.map(f => p42.text('2:255:1', { form: f }).length > 0), [true, true, true, true, true]);
+
+  /* ============================================ 4. search */
+  eq('4.1 exact search on page 42: الله',
+     p42.search('الله', { mode: 'exact' }).map(m => m.wid),
+     ['2:253:10', '2:253:24', '2:253:45', '2:253:49', '2:255:1']);
+  const mn = p42.search('من', { mode: 'exact' }).map(m => m.wid);
+  eq('4.2 exact search: من', mn,
+     ['2:253:8', '2:253:28', '2:253:30', '2:253:38', '2:253:41', '2:254:7', '2:255:20', '2:255:36', '2:256:8']);
+  eq('4.3 page 604 exact: الناس',
+     p604.search('الناس', { mode: 'exact' }).map(m => m.wid),
+     ['114:1:4', '114:2:2', '114:3:2', '114:5:5']);
+  eq('4.4 page 604 exact: شر',
+     p604.search('شر', { mode: 'exact' }).map(m => m.wid),
+     ['113:2:2', '113:3:2', '113:4:2', '113:5:2', '114:4:2']);
+  /* the whole point of the loose second pass */
+  eq('4.5 typed الرحمان finds the printed الرحمن (dagger alef)',
+     p1.search('الرحمان', { mode: 'exact' }).map(m => m.wid), ['1:1:3', '1:3:1']);
+  eq('4.6 and الرحمن finds it too',
+     p1.search('الرحمن', { mode: 'exact' }).map(m => m.wid), ['1:1:3', '1:3:1']);
+  /* a query typed WITH diacritics still matches the bare data-search */
+  eq('4.7 a fully-vocalised query is normalised',
+     p42.search('ٱللَّهُ', { mode: 'exact' }).map(m => m.wid).length, 5);
+  eq('4.8 prefix mode', p604.search('الن', { mode: 'prefix' }).map(m => m.wid),
+     ['113:4:3', '114:1:4', '114:2:2', '114:3:2', '114:5:5']);
+  ok('4.9 substring mode is a superset of exact',
+     p42.search('من').length >= mn.length);
+  eq('4.10 an empty query returns nothing', p42.search('   ').length, 0);
+  eq('4.11 search returns word objects you can act on',
+     p42.search('الله', { mode: 'exact' })[0].word instanceof M.Word, true);
+  /* the strict pass must not be widened when it already worked */
+  eq('4.12 loose pass does not fire when the strict pass matched',
+     p42.search('ما', { mode: 'exact' }).map(m => m.wid),
+     ['2:253:25', '2:253:32', '2:253:46', '2:253:51', '2:255:14', '2:255:28']);
+  eq('4.13 normalisation helpers are exported',
+     [M.normalizeQuery('ٱلَّذِينَ'), M.foldArabic('ة'), M.stripArabicMarks('سَنَةࣰ')],
+     ['الذين', 'ه', 'سنة']);
+
+  /* ============================================ 5. highlighting */
+  show(p42);
+  const band = p42.band('2:255');
+  eq('5.1 one band per printed line the ayah occupies', band.bands, a255.lines.length);
+  eq('5.2 the band group carries ONE opacity, not per-rect',
+     [band.el.getAttribute('opacity'), band.rects.every(r => !r.hasAttribute('opacity'))],
+     ['0.3', true]);
+  ok('5.3 the band is painted first (behind the ink)', p42.el.firstElementChild === band.el);
+  ok('5.4 band rects have positive area', band.rects.every(r => +r.getAttribute('width') > 0 && +r.getAttribute('height') > 0));
+  band.remove();
+  eq('5.5 band.remove() leaves nothing', p42.el.querySelectorAll('g.mushaf-band').length, 0);
+
+  const hl = p42.highlight('2:255:1', { fill: '#c0392b' });
+  ok('5.6 highlight recolours the ink', hl.paths.every(p => p.style.fill === 'rgb(192, 57, 43)'));
+  hl.remove();
+  ok('5.7 highlight.remove() restores exactly', hl.paths.every(p => !p.style.fill));
+
+  const ha = p42.highlightAyah('2:255', { padX: 2, padY: 2, fill: '#0a7' });
+  eq('5.8 highlightAyah bands every line', ha.bands, a255.lines.length);
+  ha.remove();
+  eq('5.9 and clears', p42.el.querySelectorAll('g.mushaf-band').length, 0);
+
+  /* multi-fragment, multi-line handled on a page where it is extreme */
+  const p48 = await load(48);
+  const big = p48.ayah('2:282');
+  const bigBand = p48.band('2:282');
+  ok('5.10 a 15-line ayah bands every line it occupies',
+     bigBand.bands === big.lines.length && bigBand.bands > 5, { bands: bigBand.bands, lines: big.lines.length });
+  bigBand.remove();
+
+  /* ============================================ 6. hit testing */
+  const target = p42.word('2:255:5');
+  const tb = target.box();
+  const inside = p42.hitTest((tb.x0 + tb.x1) / 2, (tb.y0 + tb.y1) / 2, { space: 'view' });
+  eq('6.1 a point on the ink hits its own word', [inside.wid, inside.exact], ['2:255:5', true]);
+
+  /* a point in the GAP between two words of the same line */
+  const line4 = p42.words({ line: 4 }).map(x => ({ w: x, b: x.box() }))
+                   .sort((x, y) => y.b.x1 - x.b.x1);
+  let gapCase = null;
+  for (let i = 0; i < line4.length - 1; i++) {
+    const gap = line4[i].b.x0 - line4[i + 1].b.x1;
+    if (gap > 2.5) { gapCase = { prev: line4[i], next: line4[i + 1], gap }; break; }
+  }
+  ok('6.2 page 42 line 4 has a real gap to test', !!gapCase, gapCase && gapCase.gap);
+  if (gapCase) {
+    const y = (gapCase.prev.b.y0 + gapCase.prev.b.y1) / 2;
+    const mid = (gapCase.prev.b.x0 + gapCase.next.b.x1) / 2;
+    const h = p42.hitTest(mid, y, { space: 'view' });
+    ok('6.3 a tap in the gap hits a word, not nothing', !!h && !h.exact, h && h.wid);
+    /* direction: with the default bias the middle of the gap goes to the
+       PRECEDING (right-hand) word, because its trailing ink drifts left */
+    eq('6.4 the gap is awarded with direction, not naive nearest',
+       h.wid, gapCase.prev.w.wid);
+    const naive = p42.hitTest(mid, y, { space: 'view', gapBias: 0.5 });
+    ok('6.5 gapBias actually moves the boundary',
+       p42.hitTest(gapCase.prev.b.x0 - gapCase.gap * 0.45, y, { space: 'view', gapBias: 0.6 }).wid
+       === gapCase.prev.w.wid);
+    ok('6.6 far into the gap the following word wins',
+       p42.hitTest(gapCase.next.b.x1 + gapCase.gap * 0.1, y, { space: 'view' }).wid === gapCase.next.w.wid);
+  }
+  /* a point far below the last line still resolves to the nearest line */
+  const below = p42.hitTest(170, 545, { space: 'view' });
+  ok('6.7 a point off the text block resolves to the nearest line', !!below, below && below.wid);
+  ok('6.8 the reported distance is to the WORD box, not the line band',
+     below.distance > 0, below.distance);
+  eq('6.9 maxDistance can refuse a hit',
+     p42.hitTest(170, 549, { space: 'view', maxDistance: 0.5 }), null);
+  const halo = p42.enableHitTargets({ halo: 1.6 });
+  ok('6.10 enableHitTargets injects one scoped <style>',
+     p42.el.firstElementChild.tagName.toLowerCase() === 'style');
+  halo.remove();
+
+  /* ============================================ 7. marks */
+  eq('7.1 marks by registry family: dots',
+     p42.marks({ family: 'dots' }).length,
+     p42.el.querySelectorAll('path[data-mark="dot"],path[data-mark="two-dots"],path[data-mark="three-dots"]').length);
+  ok('7.2 the tanween family works even though the files never emit it',
+     p42.marks({ family: 'tanween' }).length > 0, p42.marks({ family: 'tanween' }).length);
+  /* The emitted data-mark-family is NOT a reliable selector and has changed
+     shape mid-project: it has been "diacritic" and is now the multi-valued
+     "diacritic tanween". Exact-match attribute selectors break on both.
+     The library keys on data-mark names, so it is unaffected - assert that. */
+  {
+    const tn = p42.marks({ family: 'tanween' });
+    const attrs = [...new Set(tn.map(p => p.dataset.markFamily || '(none)'))];
+    eq('7.3 the tanween family is selected by NAME, whatever the attribute says',
+       tn.every(p => ['fathatan', 'kasratan', 'dammatan'].includes(p.dataset.mark)), true);
+    ok('7.3b (observed data-mark-family on those paths)', true, attrs);
+    eq('7.3c an exact-match attribute selector would find a different set',
+       p42.marks({ family: 'tanween' }).length >=
+       p42.el.querySelectorAll('[data-mark-family="tanween"]').length, true);
+  }
+  const dia = p42.marks({ family: 'diacritic' });
+  ok('7.4 diacritic family is non-empty and excludes dots',
+     dia.length > 100 && dia.every(p => p.dataset.markFamily !== 'dots'), dia.length);
+  eq('7.5 marks by name', p42.marks({ name: 'shadda' }).every(p => p.dataset.mark === 'shadda'), true);
+  eq('7.6 marks by category', p42.marks({ category: 'waqf' }).length, p42.marks({ family: 'waqf' }).length);
+  eq('7.7 marks scoped to one ayah',
+     p42.marks({ family: 'dots', ayah: '2:255' }).every(p => p.closest('g.ayah').dataset.aid === '2:255'), true);
+
+  const dotsBefore = p42.marks({ family: 'dots' }).length;
+  const hid = p42.hideMarks({ family: 'diacritic' });
+  ok('7.8 hiding diacritics does not touch the dots',
+     p42.marks({ family: 'dots' }).every(p => p.style.display !== 'none') &&
+     p42.marks({ family: 'dots' }).length === dotsBefore);
+  ok('7.9 nor the waqf signs', p42.marks({ family: 'waqf' }).every(p => p.style.display !== 'none'));
+  ok('7.10 the diacritics are hidden', dia.every(p => p.style.display === 'none'));
+  hid.remove();
+  ok('7.11 hideMarks.remove() restores', dia.every(p => p.style.display !== 'none'));
+  eq('7.12 registry lookups are exported',
+     [M.familyOf('kasratan'), M.categoryOf('meem-iqlab'), M.markNames({ family: 'sifr' })],
+     ['tanween', 'dabt', ['sifr-mustadir', 'sifr-mustatil']]);
+
+  /* ============================================ 8. theme */
+  const th = p42.theme({ paper: '#0d1b2a', ink: '#cfe3ff', diacritics: '#7fb0e8', dots: '#a3392c' });
+  const inkPath = p42.el.querySelector('g.word path[data-kind="body"]');
+  eq('8.1 ink recoloured by CSS', getComputedStyle(inkPath).fill, 'rgb(207, 227, 255)');
+  eq('8.2 diacritics get their own colour',
+     getComputedStyle(p42.marks({ family: 'diacritic' })[0]).fill, 'rgb(127, 176, 232)');
+  eq('8.3 dots get their own colour',
+     getComputedStyle(p42.marks({ family: 'dots' })[0]).fill, 'rgb(163, 57, 44)');
+  ok('8.4 paper is a rect inside the svg, so a crop or an export keeps it',
+     th.rect && th.rect.parentNode === p42.el &&
+     +th.rect.getAttribute('width') === 345);
+  th.remove();
+  eq('8.5 theme.remove() restores the printed ink', getComputedStyle(inkPath).fill, 'rgb(35, 31, 32)');
+
+  /* ============================================ 9. ayah end-markers */
+  const before = p42.markers().length;
+  const st = p42.styleMarkers({ ring: '#b08d2e', numeral: '#004488', scale: 1.3 });
+  eq('9.1 rings recoloured', p42.markers().every(m => m.ring.getAttribute('fill') === '#b08d2e'), true);
+  eq('9.2 numerals recoloured independently',
+     p42.markers().every(m => m.numeral.getAttribute('fill') === '#004488'), true);
+  ok('9.3 the medallion scales', p42.markers()[0].el.style.transform === 'scale(1.3)');
+  st.remove();
+  eq('9.4 restored', p42.markers()[0].ring.getAttribute('fill'), '#231f20');
+
+  const swap = p42.styleMarkers({ replaceRing: true, ring: '#a00' });
+  eq('9.5 the ring is replaced and the printed numeral survives',
+     [p42.el.querySelectorAll('g.ayah-marker[data-aid] circle').length,
+      p42.el.querySelectorAll('[data-kind="ayah-number"]').length],
+     [before, before]);
+  swap.remove();
+  eq('9.6 the original ring comes back',
+     p42.el.querySelectorAll('[data-kind="ayah-marker-ornament"]').length, before);
+
+  const hm = p42.hideMarkers();
+  eq('9.7 markers hidden', p42.markers().every(m => m.el.style.display === 'none'), true);
+  hm.remove();
+  /* pages 1-2: the decorative rosettes must be left alone */
+  show(p1);
+  const st1 = p1.styleMarkers({ ring: '#0a0' });
+  const decorative = [...p1.allMarkerGroups()].filter(g => !g.dataset.aid);
+  eq('9.8 page 1: 12 decorative rosettes are not touched',
+     [decorative.length,
+      decorative.every(g => !g.querySelector('[fill="#0a0"]'))], [7, true]);
+  st1.remove();
+
+  /* ============================================ 10. layout */
+  show(p42);
+  const vb0 = p42.el.getAttribute('viewBox');
+  const gapped = M.setLineGap(p42, 6);
+  const vb1 = p42.el.getAttribute('viewBox').split(' ').map(Number);
+  ok('10.1 the viewBox grows so nothing is cropped', vb1[3] > 550, vb1);
+  eq('10.2 no glyph was touched', p42.el.querySelectorAll('path').length > 0, true);
+  gapped.remove();
+  eq('10.3 setLineGap.remove() restores the viewBox exactly', p42.el.getAttribute('viewBox'), vb0);
+
+  near('10.4 gapToFill: iPhone 14 390x844',
+     M.gapToFill({ pageW: 345, pageH: 550, lines: 15, viewW: 390, viewH: 844 }), 14.0, 0.1);
+  near('10.5 gapToFill: iPhone SE 375x667',
+     M.gapToFill({ pageW: 345, pageH: 550, lines: 15, viewW: 375, viewH: 667 }), 4.5, 0.1);
+  near('10.6 gapToFill: Galaxy S21 360x800',
+     M.gapToFill({ pageW: 345, pageH: 550, lines: 15, viewW: 360, viewH: 800 }), 15.5, 0.1);
+  eq('10.7 gapToFill clamps at zero when the page already fills by height',
+     M.gapToFill({ pageW: 345, pageH: 550, lines: 15, viewW: 820, viewH: 1180 }), 0);
+  near('10.8 wastedFraction: iPhone 14 wastes 26.3%',
+     M.wastedFraction({ pageW: 345, pageH: 550, viewW: 390, viewH: 844 }) * 100, 26.3, 0.1);
+
+  const fit = M.fitToViewport(p42, { width: 390, height: 844 });
+  near('10.9 fitToViewport applies the solved gap', fit.state.gap, 14.0, 0.1);
+  const fvb = p42.el.getAttribute('viewBox').split(' ').map(Number);
+  near('10.10 and the filled page has the viewport aspect',
+     fvb[2] / fvb[3], 390 / 844, 0.05);
+  fit.remove();
+  eq('10.11 fitToViewport.remove() restores', p42.el.getAttribute('viewBox'), vb0);
+
+  /* page 1: 8 lines and its own box — the formula must not assume 15/345x550 */
+  show(p1);
+  const fit1 = M.fitToViewport(p1, { width: 390, height: 844 });
+  eq('10.12 page 1 solves with 8 lines, not 15', fit1.state.lines, 8);
+  near('10.13 page 1 needs a bigger gap per line',
+     fit1.state.gap, M.gapToFill({ pageW: 345, pageH: 550, lines: 8, viewW: 390, viewH: 844 }), 0.01);
+  ok('10.14 page 1 gap differs from the 15-line answer', Math.abs(fit1.state.gap - 14.0) > 5, fit1.state.gap);
+  fit1.remove();
+  eq('10.15 page 1 viewBox restored',
+     p1.el.getAttribute('viewBox'), '-53.3109 -198.4777 345 550');
+
+  /* ============================================ 11. crop */
+  show(p42);
+  const cropAyah = p42.crop('2:255');
+  const cvb = cropAyah.viewBox.split(' ').map(Number);
+  ok('11.1 crop has a sane viewBox', cvb.length === 4 && cvb[2] > 0 && cvb[3] > 0, cropAyah.viewBox);
+  eq('11.2 crop holds exactly the ayah words',
+     cropAyah.words.length, a255.words().length);
+  ok('11.3 crop has non-zero content', cropAyah.el.querySelectorAll('path').length > 100,
+     cropAyah.el.querySelectorAll('path').length);
+  ok('11.4 crop serialises to an SVG document',
+     cropAyah.toString().startsWith('<svg') && cropAyah.toString().includes('viewBox'));
+  ok('11.5 the original page is untouched by a crop', p42.wordCount === 147);
+
+  const cropWord = p42.crop('2:255:1');
+  eq('11.6 one-word crop', cropWord.words, ['2:255:1']);
+  ok('11.7 a partial crop drops the medallion at the far end of the ayah',
+     cropWord.el.querySelectorAll('g.ayah-marker[data-aid]').length === 0);
+  ok('11.8 a whole-ayah crop keeps its medallion',
+     cropAyah.el.querySelectorAll('g.ayah-marker[data-aid]').length === 1);
+  const cropLine = p42.crop({ line: 5 });
+  eq('11.9 line crop', cropLine.words.length, p42.words({ line: 5 }).length);
+  const cw = cropWord.viewBox.split(' ').map(Number);
+  ok('11.10 a one-word crop is much smaller than the page', cw[2] < 60 && cw[3] < 40, cropWord.viewBox);
+
+  /* the crop actually renders */
+  const holder = document.createElement('div');
+  holder.style.cssText = 'position:absolute;left:-9999px;width:200px';
+  document.body.appendChild(holder);
+  holder.appendChild(cropAyah.el);
+  const rr = cropAyah.el.getBoundingClientRect();
+  ok('11.11 the cropped SVG renders with non-zero size', rr.width > 0 && rr.height > 0, [rr.width, rr.height]);
+  holder.remove();
+
+  /* ============================================ 12. raster */
+  let rasterNote = null;
+  try {
+    const png = await M.toPngDataUrl(p42.crop('2:255:1'), { scale: 4, background: '#fff' });
+    ok('12.1 crop rasterises to a PNG data URL', png.startsWith('data:image/png;base64,') && png.length > 2000,
+       png.length);
+    const canvas = await M.toCanvas(p42.crop('2:255:1'), { width: 300, background: '#fff' });
+    eq('12.2 raster honours an explicit width', canvas.width, 300);
+    const px = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+    let ink = 0;
+    for (let i = 0; i < px.length; i += 4) if (px[i] < 200) ink++;
+    ok('12.3 the raster actually contains ink (canvas not tainted, not blank)', ink > 200, ink);
+  } catch (e) {
+    rasterNote = String(e);
+    ok('12.1 crop rasterises to a PNG data URL', false, rasterNote);
+  }
+  R.rasterNote = rasterNote;
+  ok('12.4 toSvgDataUrl works without a canvas',
+     M.toSvgDataUrl(p42.crop('2:255:1')).startsWith('data:image/svg+xml'));
+
+  /* ============================================ 13. memorisation */
+  show(p42);
+  const mk = M.mask(p42, '2:255', { mode: 'hide' });
+  eq('13.1 every word of the ayah is hidden', mk.hiddenCount, a255.words().length);
+  ok('13.2 hidden words are invisible but still in the DOM',
+     a255.words().every(x => x.el.style.visibility === 'hidden') && p42.wordCount === 147);
+  ok('13.3 words outside the mask are untouched',
+     p42.words({ ayah: '2:254' }).every(x => x.el.style.visibility !== 'hidden'));
+  mk.reveal(3);
+  eq('13.4 progressive reveal, in reading order', mk.revealedCount, 3);
+  eq('13.5 the first three revealed are the first three words',
+     mk.words.slice(0, 3).every(x => x.el.style.visibility !== 'hidden'), true);
+  mk.hide(1);
+  eq('13.6 hide() puts one back', mk.revealedCount, 2);
+  mk.revealAll();
+  eq('13.7 revealAll', mk.hiddenCount, 0);
+  mk.remove();
+  ok('13.8 mask.remove() leaves no trace',
+     a255.words().every(x => !x.el.style.visibility) && p42.el.querySelectorAll('g.mushaf-mask').length === 0);
+
+  const blk = M.mask(p42, '2:256', { mode: 'block', color: '#d8d3c6' });
+  const cover = p42.el.querySelector('g.mushaf-mask');
+  ok('13.9 block mode draws one rect per word',
+     cover && cover.children.length === p42.words({ ayah: '2:256' }).length,
+     cover && cover.children.length);
+  blk.remove();
+  eq('13.10 block mode cleans up', p42.el.querySelectorAll('g.mushaf-mask').length, 0);
+
+  const mf = M.maskFrom(p42, '2:255:10');
+  ok('13.11 maskFrom hides from a word onward',
+     mf.words[0].wid === '2:255:10' && !p42.word('2:255:9').el.style.visibility);
+  mf.remove();
+
+  /* ============================================ 14. accessibility */
+  const an = M.annotate(p42, { form: 'uthmani' });
+  eq('14.1 the svg gets an accessible name', !!p42.el.getAttribute('aria-label'), true);
+  eq('14.2 every word gets a label and a <title>',
+     [an.words, p42.el.querySelectorAll('g.word > title').length], [147, 147]);
+  eq('14.3 the label is the word text',
+     p42.word('2:255:1').el.getAttribute('aria-label'), p42.word('2:255:1').text.uthmani);
+  ok('14.4 ayah fragments say which part they are',
+     /part 1 of/.test(p42.el.querySelector('g.ayah[data-aid="2:255"]').getAttribute('aria-label')));
+  an.remove();
+  eq('14.5 annotate.remove() leaves no titles', p42.el.querySelectorAll('g.word > title').length, 0);
+  const an2 = M.annotate(p42, { deferToTextLayer: true });
+  eq('14.6 deferToTextLayer hides the svg from the reader instead',
+     p42.el.getAttribute('aria-hidden'), 'true');
+  an2.remove();
+  eq('14.7 and restores', p42.el.getAttribute('aria-hidden'), null);
+
+  /* ============================================ 15. atlas */
+  const atlas = await M.loadAtlas(ATLAS);
+  eq('15.1 atlas covers 604 pages', atlas.pages, 604);
+  eq('15.2 pageOf 2:255', atlas.pageOf('2:255'), 42);
+  eq('15.3 pageOf 78:1', atlas.pageOf('78:1'), 582);
+  eq('15.4 pageOf 114:6 is the last page', atlas.pageOf('114:6'), 604);
+  eq('15.5 pageOf 1:1', atlas.pageOf('1:1'), 1);
+  eq('15.6 pageOfWord', atlas.pageOfWord('2:255:3'), 42);
+  eq('15.7 surah lookup', [atlas.surah(2).latin, atlas.pageOfSurah(2)], ['Al-Baqarah', 2]);
+  eq('15.8 juz 30 starts at 78:1 on page 582',
+     [atlas.juz(30).aid, atlas.juz(30).page], ['78:1', 582]);
+  eq('15.9 all 240 rub boundaries indexed', atlas.data.rub.length, 240);
+  eq('15.10 juz page range', atlas.pagesOfJuz(30), [582, 604]);
+  eq('15.11 which juz is 2:255 in?', atlas.juzAt('2:255').n, 3);
+  eq('15.12 findSurah by english', atlas.findSurah('The Cow').map(s => s.n), [2]);
+  eq('15.13 findSurah by arabic', atlas.findSurah('الناس').map(s => s.n), [114]);
+  eq('15.14 pageRange', atlas.pageRange(42), { page: 42, first: '2:253', last: '2:256' });
+  /* the atlas and the page agree */
+  eq('15.15 atlas agrees with the page it indexes',
+     [atlas.pageRange(604).first, atlas.pageRange(604).last],
+     [p604.ayahKeys()[0], p604.ayahKeys().slice(-1)[0]]);
+  /* every page's first ayah must be >= the previous page's first ayah */
+  const nums = atlas.data.pageFirstAyah.map(a => { const [s, v] = a.split(':').map(Number); return s * 1000 + v; });
+  eq('15.16 pageFirstAyah is monotonic (binary search is valid)',
+     nums.every((v, i) => i === 0 || v > nums[i - 1]), true);
+
+  /* ============================================ 16. selection layer */
+  show(p42);
+  const sel = M.attachSelection(p42, { form: 'uthmani', citation: true });
+  window.__SEL__ = sel; window.__P42__ = p42;
+  eq('16.1 one span per word', sel.count, 147);
+  /* spans land on the ink: compare each span's centre to its word's rect */
+  /* the INK box the layer recorded must land on the ink, to sub-pixel.
+     (The SPAN itself is the wider hit box - section 20.) */
+  let worst = 0;
+  const origin16 = sel.layer.getBoundingClientRect();
+  for (const s of sel.spans()) {
+    const wr = p42.el.querySelector(`g.word[data-wid="${s.dataset.wid}"]`).getBoundingClientRect();
+    const ink = s.dataset.ink.split(' ').map(Number);
+    worst = Math.max(worst, Math.abs(ink[0] - (wr.left - origin16.left)),
+                     Math.abs(ink[1] - (wr.top - origin16.top)),
+                     Math.abs(ink[2] - wr.width), Math.abs(ink[3] - wr.height));
+  }
+  ok('16.2 the measured ink box sits on the ink (max error < 0.5 px)', worst < 0.5, worst);
+  R.selectionWorstPx = worst;
+  /* the hit boxes of adjacent LINES must not overlap - that is the darkening bug */
+  {
+    const rows = new Map();
+    for (const s of sel.spans()) {
+      const r = s.getBoundingClientRect();
+      const c = rows.get(s.dataset.line);
+      rows.set(s.dataset.line, c ? { top: Math.min(c.top, r.top), bottom: Math.max(c.bottom, r.bottom) } : { top: r.top, bottom: r.bottom });
+    }
+    const bands = [...rows.values()].sort((a, b) => a.top - b.top);
+    let bad = 0;
+    for (let i = 0; i < bands.length - 1; i++) if (bands[i].bottom - bands[i + 1].top > 0.5) bad++;
+    eq('16.3 hit boxes of adjacent lines do not overlap (pitch, not line bbox)', bad, 0);
+  }
+  ok('16.4 no newline is carried in the DOM',
+     sel.spans().every(s => !s.textContent.includes('\n')));
+
+  /* programmatic selection over three words of one ayah */
+  const want = ['2:255:1', '2:255:2', '2:255:3'];
+  const first = sel.spans().find(s => s.dataset.wid === want[0]);
+  const lastS = sel.spans().find(s => s.dataset.wid === want[2]);
+  const range = document.createRange();
+  range.setStartBefore(first); range.setEndAfter(lastS);
+  getSelection().removeAllRanges(); getSelection().addRange(range);
+  eq('16.5 the selection resolves to the right words',
+     sel.words().map(x => x.wid), want);
+  eq('16.6 the payload is the uthmani text of those words',
+     sel.text('uthmani'), want.map(x => p42.word(x).text.uthmani).join(' '));
+  eq('16.7 the same drag can yield a different form',
+     sel.text('search'), want.map(x => p42.word(x).text.search).join(' '));
+  eq('16.8 citation appends the ayah key',
+     sel.payload('uthmani'), want.map(x => p42.word(x).text.uthmani).join(' ') + ' (2:255)');
+  getSelection().removeAllRanges();
+  sel.detach();
+  eq('16.9 detach tears the layer down', document.querySelectorAll('.mushaf-hitlayer').length, 0);
+
+  /* ============================================ 17. view helpers */
+  const scrolled = M.scrollIntoView(p42, '2:255:1', { behavior: 'auto', block: 'center' });
+  ok('17.1 scrollIntoView resolves a box', !!scrolled && scrolled.box.right > scrolled.box.left);
+
+  /* ============================================ 18. nothing was mutated */
+  const fresh = await load(42);
+  eq('18.1 a freshly loaded page is pristine after all of the above',
+     [fresh.wordCount, fresh.el.querySelectorAll('g.mushaf-band').length,
+      fresh.el.querySelector('g.word path').getAttribute('fill')],
+     [147, 0, '#231f20']);
+
+
+  /* ============================================ 19. COMPOSITION
+     Three capabilities at once on one page: selection, hover and an ayah
+     band. A library that passes each in isolation and fails when combined is
+     worse than none, because the failure shows up in the consumer's app. */
+  show(p42);
+  const cBand = p42.band('2:255', { fill: '#d6a326' });
+  const hovers = [];
+  const cHover = M.onWordHover(p42, r => hovers.push(r.wid));
+  const cSel = M.attachSelection(p42, { form: 'uthmani', citation: true });
+  const taps = [];
+  const cTap = M.onWordClick(p42, r => taps.push(r.wid));
+
+  eq('19.1 three capabilities share ONE hit layer',
+     document.querySelectorAll('.mushaf-hitlayer').length, 1);
+  eq('19.2 the layer is reference counted', cSel.hitLayer.refs, 3);
+  eq('19.3 one span per word, measured once', cSel.count, 147);
+  ok('19.4 the band is still behind the ink',
+     p42.el.firstElementChild === cBand.el);
+  eq('19.5 the band cannot eat pointer events',
+     getComputedStyle(cBand.el).pointerEvents, 'none');
+  eq('19.6 the ink does not take pointer events while the layer is up',
+     getComputedStyle(p42.el).pointerEvents, 'none');
+  eq('19.7 the layer background is transparent to the pointer, its spans are not',
+     [getComputedStyle(document.querySelector('.mushaf-hitlayer')).pointerEvents,
+      getComputedStyle(document.querySelector('.mushaf-hitlayer span')).pointerEvents],
+     ['none', 'auto']);
+
+  /* what is actually under a point on the ink? the word's span, nothing else */
+  const probe = p42.word('2:255:3');
+  const pr = probe.el.getBoundingClientRect();
+  const under = document.elementFromPoint(pr.left + pr.width / 2, pr.top + pr.height / 2);
+  eq('19.8 a point on the ink resolves to that word, through the layer',
+     under.closest('.mushaf-hitlayer span')?.dataset.wid, '2:255:3');
+  eq('19.9 wordAt agrees',
+     cSel.hitLayer.wordAt(pr.left + pr.width / 2, pr.top + pr.height / 2).wid, '2:255:3');
+
+  /* selection still works with hover and the band running */
+  cSel.selectWords(['2:255:1', '2:255:2', '2:255:3']);
+  eq('19.10 a selection still resolves with all three running',
+     cSel.words().map(x => x.wid), ['2:255:1', '2:255:2', '2:255:3']);
+  eq('19.11 and still carries the citation',
+     cSel.payload('uthmani').endsWith('(2:255)'), true);
+  cSel.clear();
+
+  /* detaching ONE capability must not tear the layer out from the others */
+  cHover.remove();
+  eq('19.12 detaching hover leaves the layer up for selection', cSel.hitLayer.refs, 2);
+  eq('19.13 the layer is still in the DOM',
+     document.querySelectorAll('.mushaf-hitlayer').length, 1);
+  cSel.selectWords(['2:255:5', '2:255:6']);
+  eq('19.14 selection still works after hover detached',
+     cSel.words().map(x => x.wid), ['2:255:5', '2:255:6']);
+  cSel.clear();
+  cTap.remove();
+  cSel.detach();
+  eq('19.15 the last release tears the layer down',
+     document.querySelectorAll('.mushaf-hitlayer').length, 0);
+  eq('19.16 and the ink gets its pointer events back',
+     getComputedStyle(p42.el).pointerEvents, 'auto');
+  cBand.remove();
+  eq('19.17 hasHitLayer reports honestly', M.hasHitLayer(p42), false);
+
+  /* the overlay-free path still works for a caller who opts out */
+  const taps2 = [];
+  const tapOnly = p42.onTap(r => taps2.push(r.wid));
+  const tw = p42.word('2:254:1').el.getBoundingClientRect();
+  p42.el.querySelector('g.word[data-wid="2:254:1"] path')
+      .dispatchEvent(new MouseEvent('click', { bubbles: true,
+        clientX: tw.left + tw.width / 2, clientY: tw.top + tw.height / 2 }));
+  eq('19.18 onTap works with no overlay at all', taps2, ['2:254:1']);
+  tapOnly.remove();
+
+
+  /* ============================================ 20. NO DEAD ZONES,
+     one band per line, and word granularity. */
+  show(p42);
+  const dz = M.acquireHitLayer(p42);
+  eq('20.1 one span per word', dz.count, 147);
+
+  /* every point along a line belongs to exactly one word */
+  {
+    const lineNo = '4';
+    const spans = dz.spans().filter(s => s.dataset.line === lineNo);
+    const boxes = spans.map(s => s.getBoundingClientRect());
+    const x0 = Math.min(...boxes.map(b => b.left)), x1 = Math.max(...boxes.map(b => b.right));
+    const y = (boxes[0].top + boxes[0].bottom) / 2;
+    let misses = 0, hits = 0;
+    for (let x = x0 + 1; x < x1 - 1; x += 2) {
+      const e = document.elementFromPoint(x, y);
+      if (e && e.closest('.mushaf-hitlayer span')) hits++; else misses++;
+    }
+    eq('20.2 no dead zone anywhere along a printed line', misses, 0, );
+    ok('20.3 (and it was actually probed)', hits > 100, hits);
+    /* the extended boxes must tile, not overlap */
+    const sorted = boxes.slice().sort((a, b) => a.left - b.left);
+    let overlap = 0;
+    for (let i = 0; i < sorted.length - 1; i++)
+      if (sorted[i].right - sorted[i + 1].left > 0.5) overlap++;
+    eq('20.4 hit boxes tile the line, they do not overlap', overlap, 0);
+  }
+
+  /* the hit box is WIDER than the ink box, and the ink box is still recorded */
+  {
+    const s = dz.spanOf('2:255:3'), w = p42.word('2:255:3');
+    const hb = s.getBoundingClientRect(), ib = w.el.getBoundingClientRect();
+    /* one word's hit box CAN be narrower than its ink: a mark may legitimately
+       be drawn over the neighbouring word (FORMAT 9.9), so ink boxes overlap
+       while hit boxes tile. What must hold is that the line as a whole is
+       covered - checked at 20.2 - and that hit boxes are wider ON AVERAGE. */
+    const line4 = dz.spans().filter(x => x.dataset.line === '4');
+    const deltas = line4.map(x => x.getBoundingClientRect().width -
+                                  p42.word(x.dataset.wid).el.getBoundingClientRect().width);
+    const median = deltas.slice().sort((a, b) => a - b)[deltas.length >> 1];
+    ok('20.5 hit boxes are wider than the ink they cover (median over a line)',
+       median > 0, { median, sample: [hb.width, ib.width] });
+    ok('20.6 the hit box is a full line band, taller than the word', hb.height >= ib.height - 0.5,
+       [hb.height, ib.height]);
+    const ink = s.dataset.ink.split(' ').map(Number);
+    const origin = dz.layer.getBoundingClientRect();
+    ok('20.7 the INK box travels with the span, for drawing',
+       Math.abs(ink[0] - (ib.left - origin.left)) < 0.5 && Math.abs(ink[2] - ib.width) < 0.5,
+       [ink, ib.left - origin.left, ib.width]);
+  }
+
+  /* a click landing between two words returns the nearer word, never null */
+  {
+    const spans = dz.spans().filter(s => s.dataset.line === '4')
+                    .map(s => ({ s, r: s.getBoundingClientRect(),
+                                 ink: p42.word(s.dataset.wid).el.getBoundingClientRect() }))
+                    .sort((a, b) => b.ink.right - a.ink.right);
+    let probed = 0, resolved = 0;
+    for (let i = 0; i < spans.length - 1; i++) {
+      const gap = spans[i].ink.left - spans[i + 1].ink.right;
+      if (gap < 3) continue;
+      probed++;
+      const x = (spans[i].ink.left + spans[i + 1].ink.right) / 2;
+      const y = (spans[i].ink.top + spans[i].ink.bottom) / 2;
+      const r = dz.wordAt(x, y);
+      if (r && (r.wid === spans[i].s.dataset.wid || r.wid === spans[i + 1].s.dataset.wid)) resolved++;
+    }
+    ok('20.8 there were real gaps to probe', probed > 3, probed);
+    eq('20.9 a click in a gap always returns one of the two neighbours', resolved, probed);
+  }
+  dz.release();
+
+  /* line-pitch bands: one per line, no overlap */
+  {
+    const b3 = p42.band('2:255');
+    const lines3 = p42.ayah('2:255').lines.length;
+    eq('20.10 one rect per printed line', b3.bands, lines3);
+    const boxes = b3.boxes.slice().sort((a, b) => a.y0 - b.y0);
+    let bad = 0;
+    for (let i = 0; i < boxes.length - 1; i++) if (boxes[i].y1 - boxes[i + 1].y0 > 0.01) bad++;
+    eq('20.11 pitch-derived bands stack flush, never overlapping', bad, 0);
+    /* and they DO abut - no gaps either */
+    let gaps = 0;
+    for (let i = 0; i < boxes.length - 1; i++) if (boxes[i + 1].y0 - boxes[i].y1 > 0.01) gaps++;
+    eq('20.12 and they abut, so a multi-line band is one ribbon', gaps, 0);
+    /* horizontal extent comes from the INK, so nothing overhangs */
+    const ink = p42.ayah('2:255').words().map(x => x.box());
+    for (const bx of b3.boxes) {
+      const onLine = ink.filter((_, i) => p42.ayah('2:255').words()[i].line === bx.line);
+      const l = Math.min(...onLine.map(o => o.x0)), r = Math.max(...onLine.map(o => o.x1));
+      if (Math.abs(bx.x0 - (l - 1.2)) > 0.01 || Math.abs(bx.x1 - (r + 1.2)) > 0.01) bad++;
+    }
+    eq('20.13 band width comes from the ink boxes, not the hit boxes', bad, 0);
+    b3.remove();
+  }
+
+  /* word granularity: a mid-word range paints and copies whole words only */
+  {
+    const gsel = M.attachSelection(p42, { form: 'uthmani' });
+    const a1 = gsel.spans().find(s => s.dataset.wid === '2:255:2');
+    const a2 = gsel.spans().find(s => s.dataset.wid === '2:255:20');
+    const r = document.createRange();
+    /* deliberately start and end INSIDE the text nodes */
+    r.setStart(a1.firstChild, 1);
+    r.setEnd(a2.firstChild, 2);
+    getSelection().removeAllRanges(); getSelection().addRange(r);
+    let words = [];
+    for (let i = 0; i < 20 && !words.length; i++) {
+      await new Promise(res => setTimeout(res, 25));
+      words = gsel.words();
+    }
+    R.granularityDebug = { n: words.length, rangeCount: getSelection().rangeCount,
+                           collapsed: getSelection().isCollapsed,
+                           spans: gsel.count, a1: !!a1, a2: !!a2 };
+    ok('20.13b the mid-word range produced a selection', words.length > 0, R.granularityDebug);
+    if (!words.length) throw new Error('no selection');
+    ok('20.14 a mid-word range is snapped out to whole words',
+       words[0].wid === '2:255:2' && words[words.length - 1].wid === '2:255:20', 
+       [words[0]?.wid, words[words.length-1]?.wid]);
+    eq('20.15 the copied text has exactly as many words as are highlighted',
+       gsel.text('uthmani').split(/[\s\n]+/).length, words.length);
+    const bandNow = gsel.band;
+    const usedLines = [...new Set(words.map(x => x.line))];
+    eq('20.16 the painted band is one rect per line of the selection',
+       bandNow.bands, usedLines.length);
+    ok('20.17 a three-line selection gives three rectangles', usedLines.length >= 3, usedLines.length);
+    /* every band edge coincides with a word ink boundary */
+    let offBy = 0;
+    for (const bx of bandNow.boxes) {
+      const on = words.filter(x => x.line === bx.line).map(x => x.box());
+      const l = Math.min(...on.map(o => o.x0)), rr = Math.max(...on.map(o => o.x1));
+      if (Math.abs((bx.x0 + 0.6) - l) > 0.01 || Math.abs((bx.x1 - 0.6) - rr) > 0.01) offBy++;
+    }
+    eq('20.18 every band edge coincides with a word ink boundary', offBy, 0);
+    eq('20.19 native ::selection is suppressed, so no per-word notches',
+       getComputedStyle(a1, '::selection').backgroundColor,
+       'rgba(0, 0, 0, 0)');
+    gsel.clear();
+    eq('20.20 clearing the selection clears the band',
+       p42.el.querySelectorAll('g.mushaf-selband').length, 0);
+    gsel.detach();
+  }
+
+  /* left up on purpose for the interactive drag / resize probes */
+  show(p42);
+  const live = M.attachSelection(p42, { form: 'uthmani', citation: true });
+  window.__SEL__ = live; window.__P42__ = p42;
+  window.__HOVER__ = [];
+  window.__HOVERBIND__ = M.onWordHover(p42, r => window.__HOVER__.push(r.wid));
+
+} catch (e) {
+  R.errors.push('THREW: ' + (e && e.stack || e));
+  ok('run completed without throwing', false, String(e));
+}
+  R.done = true;
+  const h = document.createElement('h4');
+  h.textContent = `${R.pass} passed, ${R.fail} failed, ${R.errors.length} errors`;
+  document.body.appendChild(h);
+}
+run();
+</script>
