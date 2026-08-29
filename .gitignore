@@ -16,6 +16,11 @@ tools/interval_flags.json
 sudo.txt
 mushafs/
 
+# the shippable bundle and its page staging cache, both rebuilt by
+# tools/build_bundle.py — 786 MB of derived output, never committed
+dist/
+.cache/bundle-pages/
+
 # backups of the human-confirmed data (the live files ARE committed)
 .cache/review/*.bak*
 # the KFGQPC word text, fetched from quran.com on first use like .cache/words/
