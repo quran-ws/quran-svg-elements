@@ -462,11 +462,92 @@ than silently invalidating the thresholds written into these comments.
 
 ---
 
-## 8. What I did not get to
+## 8. `audit_ligatures.py` is NOT sound — verdict, with the fix
 
-- **`audit_ligatures.py` soundness** — investigated separately; see the note
-  appended by that review. Its `data-text`-holds-its-ink question overlaps §2,
-  and §2 should be read as answering the *geometric* half of it only.
+Asked as part of this task, since §2 covers neighbouring ground. Verdict:
+**not trustworthy as-is.** It has never been run clean over 604 pages, and now
+we know why.
+
+**Full-mushaf run** (`python3 tools/audit_ligatures.py 1 604 --jobs 32`,
+2 min 32 s, 0 page errors) — **3,951 rows over 598 of 604 pages**:
+
+```
+empty        670      count      2038      order        62
+misplaced   1181      marks-only    0   <- dead code, can never fire
+```
+
+**The defect.** The tool treats **one atom = one `<g class="ligature">`** and
+pairs `atoms[i]` with `segment_word(uthmani)[i]` by index. It *does* guard the
+index pairing with a count check — but the guard is aimed at the wrong
+quantity, because the emitter does not emit one group per atom:
+
+- `assign_words.py:2064` — `lig = (id(word), atom.get("lig", ai))`, and `:2275`
+  opens a new group only when `lig_key` changes, so **several atoms sharing
+  `atom["lig"]` emit as ONE group**.
+- `:3666-3677` — the `data-text` written at `:2279` comes from
+  **`atom["seg"]`**, assigned by `align_segs_atoms`, never from `segs[i]`.
+
+So the audit's group list is the *atom* list and its `segs[i]` is not the
+`data-text` the group actually carries. Its docstring has the diagnosis
+backwards: `data-text` is correct by construction; it is the audit that pairs
+by index. **3.7% of words (308 of 8,236 in a 64-page sample) have more than one
+atom in one emitted group, and every one of them breaks the pairing.**
+
+**Artefact rate, measured** — the three geometric checks re-run over a 64-page
+random sample under the audit's model and under the emitter's real model:
+
+| check | audit says | truth | audit-only (false +) | missed (false −) |
+|---|---|---|---|---|
+| `count` | 188 | 347 | **72 (38%)** | **231 (67% of truth)** |
+| `empty` | 53 | 51 | 9 (17%) | 7 |
+| `misplaced` | 118 | 120 | 2 (1.7%) | 4 |
+
+Scaled to the full run: **≈900 of the 3,951 rows are artefacts (~23%)**,
+concentrated in `count`. Worse, **all 347 true count-mismatches are
+`ngroups < nsegs`; zero are surplus** — so `count` never finds a group-surplus
+defect at all. It only finds the joining rule disagreeing with the art, which
+`align_segs_atoms` exists to absorb and which the pipeline already prices as
+`ligatures:%d(cost=…)`.
+
+`order` (62 rows) is also unsound and is **not** gated by the count check: it
+compares atom `x2` with 0.6 tolerance, so a kaf headstroke overhanging *above*
+a preceding waw reads as a reading-order violation. Most of that family is
+`وَكَانَ` / `وَكَفَىٰ` / `فَٱدْعُ` — the same overhang, all false. (§2 LAW 1
+asks a similar question and is clean because its threshold sits inside a
+21-unit empty band instead of at 0.6.)
+
+**Where the value actually is:** `misplaced` (1,181 rows, **98% precision**)
+and `empty` (670 rows, **83%**). Two real defects found while adjudicating five
+random hits, both from `misplaced`:
+
+- **p115 5:44:25 `تَخْشَوُا۟`** — group 1 is the bare `ا` (48.1–50.7) and holds
+  a damma at 51.9–57.3, no overlap with its own body, full overlap with group
+  0's `تخشو` (46.9–87.7) where the waw's damma belongs.
+- **p267 16:2:2 `ٱلْمَلَٰٓئِكَةَ`** — group 0 is the alef (292.2–295.2) and
+  holds the `wasla` (correct) **plus** a `sukun` at 285.0–289.4 **and** a
+  `fatha` at 277.5–284.5, both drawn over group 1's body (220.0–290.2). Two
+  marks in the wrong group; the audit named one. **Under-reported, not
+  over-reported.**
+- One real `count` hit worth keeping: **p588 83:6:2 `يَقُومُ`**, whose single
+  atom holds two body elements (210.1–232.2 and 203.8–214.7) — two ink runs
+  collapsed into one `data-text="يقوم"`. A genuine cut defect, but upstream in
+  atom clustering.
+
+**The one change that makes it sound.** Stop reconstructing the grouping and
+read the emitter's own: bucket atoms by `atom["lig"]` (falling back to the atom
+index, exactly as `assign_words.py:2064` does) and take each group's name from
+`atom["seg"]["text"]` instead of `segs[i]`. That deletes the index pairing
+entirely, so the count gate becomes unnecessary and `empty`/`misplaced` become
+exact. `count` should then be dropped or renamed, since every instance is the
+aligner legitimately absorbing a rule/art disagreement. `order` needs its own
+fix: compare group `x1`, or require non-overlap, not `x2` at 0.6.
+
+*(For what it is worth, `audit_ligorder.py` in §2 already uses the emitter's
+real model — it buckets by `atom["lig"]` — which is why its two hits survived
+ink inspection.)*
+
+## 9. What I did not get to
+
 - **Cross-checking DigitalKhatt's layout DB or MushafDatabase at the
   LIGATURE level.** Both were compared at word level long ago (99.994% on line
   placement, statistically even on word metrics) but neither has ever been
