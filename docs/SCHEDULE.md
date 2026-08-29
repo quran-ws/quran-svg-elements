@@ -40,6 +40,27 @@ find stolen letters and misplaced diacritics live.
 Deliverable: a profile switch, both profiles gated, and the size of each
 measured on real pages.
 
+**Also decided (Abdullah 2026-08-30 00:07): DROP `class="ayahPolygon"` from the
+production profile, keep it in dev.** They were how ayah highlighting and
+click-detection worked before there were word elements. Word level supersedes
+both: a click lands on a word path and walks up to `<g class="ayah" data-aid>`
+— which also says WHICH WORD, something the polygon never could — and
+`[data-aid="2:6"]` selects every fragment for styling.
+Measured cost if kept: 6,236 paths, 1.23 MiB, **0.27% of the corpus** — so this
+is a semantics decision, not a size one.
+What a consumer loses, and it is real: the polygon is a CONTINUOUS BAND across
+the full line width, while words are ink only. So (a) tapping in the gap
+BETWEEN two words of one ayah now hits nothing, which matters on touch, and
+(b) band-style highlighting must be computed from the word boxes per line
+rather than handed over. Both are ~10 lines of JS, and the ayah-crop proof of
+concept already computes that union without polygons — so a convenience is
+being removed, not a capability.
+The pipeline itself is unaffected: it reads polygons from the SOURCE artwork to
+derive ayah membership (`assign_words.py` skips them when building elements),
+never from its own output.
+If band-highlighting later proves to matter, the right answer is PER-LINE BOXES
+in the annotation graph, not invisible paths in every page.
+
 ## 4. Refresh `docs/shipping/FORMAT.md`
 Already 930 lines and already stale — it has no `data-search` (added 23:40).
 After steps 2 and 3 it also needs: the marker-link attributes, BOTH profiles
