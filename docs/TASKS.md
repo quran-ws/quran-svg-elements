@@ -189,3 +189,92 @@ rebuild, and `reference_confirmed.json`'s 4th entry (p599 `لَهَا`).
 7. **Verify agent results independently** before adopting — two agent
    conclusions were wrong tonight and both were caught this way.
 8. **Never commit Claude attribution** to anything pushed.
+
+---
+
+# UPDATE — 2026-08-29 22:27
+
+Gates re-verified mid-migration: **pixel 604/604 · taxonomy OK · marks 0 ·
+intervals 1 (p350, examined) · overrides 270**.
+
+## Reframing that changed the priorities
+
+**"The goal is not to publish the pipeline, the product is the SVGs."**
+So pipeline independence stopped being a blocker. The 270 overrides are how we
+PRODUCED correct files; nobody consumes the pipeline. The word-boundary fix
+dropped from "biggest blocker" to optional — it only matters if the artwork is
+re-pulled (as pages 1-2 just were) or if Warsh comes into scope, where Hafs
+overrides buy nothing.
+
+**Production emits ONE ELEMENT PER WORD**, so the ligature layer is a DEV
+instrument. Measured consequence: NOT ONE of the 2,848 cut disagreements
+changes which ink a word holds (`missing-ink 0 | boundary 0 | extent 0`), so
+Tier C and Tier E are invisible in the product. They matter only as the
+foundation for LETTER-level decomposition later.
+
+**Path data is 80.9% of all bytes** — so collapsing a word to a single
+`<path>` buys 6.8% brotli and destroys all 436,708 named marks. One GROUP per
+word with marks kept as paths is the recommendation.
+
+## Defects found today, proved, not yet all fixed
+
+1. **Ayah-marker labels REVERSED on 441 of 604 pages.** `tag_ayah_markers`
+   pairs the Nth marker in document order with the Nth ayah ascending, but the
+   artwork's marker layer runs BOTTOM-TO-TOP. Proved on p3 in ONE coordinate
+   space: each ayah's true marker is 10-17u from where that ayah ends and the
+   index sequence is 10,9,8...0, eleven for eleven. Visible in the product —
+   an ayah-crop of 2:255 draws a medallion reading ٢٥٤. **Assigned to the
+   metadata agent; must be fixed BY POSITION, not by reversing the list** (163
+   pages are already correct, so ordering is not uniform).
+2. **54 words on 51 pages are in the wrong `<g class="line">`** — found by a
+   pure reading-order test (within-line order is 9,046/9,046 correct; the
+   sequence only breaks across line boundaries). A cheap new whole-corpus
+   detector needing no reference and no eye. NOT yet fixed.
+3. **Surahs 27, 33, 37, 47 have no `<g class="surah-name">` at all** — the
+   banner is mislabelled `basmalah`, which is also the source of all 79 orphan
+   named marks. Surah 17's basmalah is split in two (113 groups for 112
+   surahs). NOT yet fixed.
+4. **The demo page is dead against the new schema** — `template.html` still
+   reads `data-surah`/`data-ayah`/`data-word`.
+
+## Corrections to things previously believed
+
+- **No ayah crosses a page boundary** — 6,236 ayahs, 6,236 (page, ayah) pairs,
+  confirmed independently in the DigitalKhatt layout DB. TASKS §4 assumed
+  otherwise.
+- **`data-wid` matches quran.com's word keys EXACTLY** (77,432 words), so any
+  word-keyed dataset in that ecosystem joins with no mapping table.
+- **CLAUDE.md's "~12% of words split differently" is an encoding artefact** —
+  the real number is 9 words in 77,431.
+- **p71 غَالِبَ, p413 يَحْزُنكَ, p546 وَمَآ ARE thefts** — a reference
+  comparison run AFTER a fix cannot testify about whether the defect existed.
+  Proved by rebuilding p71 with the one override disabled: بَعْدِهِۦ's left
+  edge moves 7.3u.
+- **p587/p277 are SOURCE differences**, not a defect on either side: same shape
+  to 0.01-0.02u, drawn 1.4-2.6u apart, and our output is pixel-identical to
+  OUR artwork.
+
+## Delivered today (design, not yet built)
+
+- `docs/shipping/SHIPPED-ARTIFACT-2026-08-29.md` — bundle manifest, profiles,
+  capability matrix, publishing, licensing FACTS (upstream is CC0 + a KFGQPC
+  grant; this repo has no licence file — Abdullah's decision).
+- `docs/shipping/FORMAT.md` — the consumer spec that ships WITH the bundle.
+- `docs/shipping/DEVELOPER-SERVICES-2026-08-29.md` — the ayah-embed API, with a
+  WORKING proof of concept (`poc/ayah_crop_poc.py`, verified by rendering
+  2:255). Pre-generating all 6,236 ayahs = 88 MiB brotli, so the flagship is a
+  CDN path, not a server; words stay dynamic (149 MiB). PNG after pngquant is
+  14.0 KiB mean — same bandwidth as brotli SVG.
+- `docs/demo/DEMO-PLAN.md` — developer-facing: what we offer / why they need it
+  / how to use it. Provenance (King Fahd Complex) and the pixel guarantee are
+  REQUIRED above the fold. Visual design deferred to Claude's design skill.
+
+## Order from here
+
+1. Both agents land → **I re-run all four gates myself** (nothing is trusted
+   until then).
+2. Fix defects 2 and 3 (line grouping, missing surah-name groups).
+3. Build the production profile (one group per word).
+4. Ayah-marker linking by id.
+5. Rebuild the demo with the design skill.
+6. Regenerate `docs/defects/ink_identity.json` — per-page tests overwrote it.
