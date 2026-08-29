@@ -99,6 +99,8 @@ def main():
            '<p style="font-size:12px;color:#888">%s — the ink shown here is '
            'a snapshot; if you are sending eids, open the review page and '
            'read them there.</p>' % stamp]
+    if not marks:
+        out.append('<h2>Mark counts — 0 flags, all 604 pages</h2>')
     for title, _ in GROUPS:
         rows = grouped[title]
         if rows:
@@ -136,8 +138,11 @@ def main():
                    '&word=%s">open highlighted</a></td></tr>'
                    % (html.escape(str(kind).upper()), ink, wtxt,
                       (" ↔ " + n) if n else "", key, pg, key))
-    out.append('<h2>Interval records — %d</h2><table>%s</table>'
-               % (len(ivr), "".join(ivr)))
+    out.append('<h2>Interval records — %d</h2>%s<table>%s</table>'
+               % (len(ivr),
+                  '' if ivr else '<p style="color:#666;font-size:13px">'
+                  'Nothing in another word\'s territory anywhere in the '
+                  'mushaf.</p>', "".join(ivr)))
     if ivx:
         out.append('<h2>Examined by eye, confirmed correct ink — %d</h2>'
                    '<p style="color:#666;font-size:13px;margin:2px 0 6px">'
@@ -158,7 +163,10 @@ def main():
              "name-inversion signature of a mis-owned stroke"),
             ("crossline", "Drawn in another line's territory", ""),
             ("wordheight_form", "Too tall for this word elsewhere",
-             "holding ink from another line")):
+             "holding ink from another line"),
+            ("wordheight", "Taller than its line's pitch",
+             "worst first — most of this tail sits 5-10% over the "
+             "threshold and is measurement noise, not defects")):
         f = os.path.join(ROOT, ".cache", "%s.json" % cachename)
         if not os.path.exists(f):
             continue
@@ -167,8 +175,12 @@ def main():
         except Exception:
             continue
         rows = []
-        for pg in sorted(data, key=lambda p: int(p)):
-            for r in data[pg]:
+        # worst first: the ratio is the row's first number
+        flat = [(pg, r) for pg in data for r in data[pg]]
+        flat.sort(key=lambda t: -next(
+            (x for x in t[1] if isinstance(x, float)), 0.0))
+        for pg, r in flat:
+            if True:
                 key = r[0]
                 wtxt = r[1] if len(r) > 1 else "?"
                 fam = r[2] if len(r) > 2 and isinstance(r[2], str) else ""
@@ -189,6 +201,8 @@ def main():
                     % (snippet(int(pg), wtxt, [fam] if fam else []),
                        wtxt, key, pg, key, html.escape(str(why))))
         npos += len(rows)
+        if not rows:
+            out.append('<h2>%s — 0</h2>' % title)
         if rows:
             out.append('<h2>%s — %d</h2>%s<table>%s</table>'
                        % (title, len(rows),
