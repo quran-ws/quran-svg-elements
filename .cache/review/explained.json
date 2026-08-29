@@ -33,5 +33,21 @@
   "what": "The other half of the p315 20:58:2 ↔ 20:58:3 mutual swap: a 6.3x3.4 stroke we give to 20:58:3 and they give to 20:58:2.",
   "verdict": "OURS IS CORRECT. THEIRS-WRONG — same single verdict as 20:58:2. A mutual exchange cannot be right for one word and wrong for the other, so the pair is ONE decision, not two.",
   "action": "none."
+ },
+ "587|82:14:4|ink-identity|position-differs": {
+  "date": "2026-08-29",
+  "by": "Abdullah (eye) — 'I think stay with ours'",
+  "what": "p587 82:14:4 جَحِيمٖ: we draw a mark 7.85x3.73 at (259.1, 303.5); MushafDatabase draws the same-shaped mark 7.84x3.73 at (261.7, 306.1) — 2.6u diagonally away. The contour pairing (tolerance 0.6u) could not match them, so each side reported its own as unpaired.",
+  "verdict": "STAY WITH OURS. This is NOT an ownership defect on either side and should not be recorded as 'theirs-wrong' either: it is a difference between the two SOURCE ARTWORKS. The shapes agree to 0.01-0.02u, so the same glyph is simply drawn in a different place in the two files.",
+  "evidence": "audit_pixels proves our emitted page is pixel-identical to OUR artwork on all 604 pages — the pipeline regroups ink, it never moves it. And the page-wide registration residual is 0.010u median, so a 1.4-2.6u offset is 140-260x the noise floor and cannot be registration error. The only remaining explanation is that their source differs from ours here.",
+  "action": "none — recorded so the pair is not re-litigated. Treat as a source difference, not a defect on either side."
+ },
+ "277|16:88:8|ink-identity|position-differs": {
+  "date": "2026-08-29",
+  "by": "Abdullah (eye) — 'I think stay with ours'",
+  "what": "p277 16:88:8 عَذَابٗا: we draw a mark 2.44x2.43 at (12.9, 36.2); MushafDatabase draws the same-shaped mark 2.44x2.41 at (14.3, 36.1) — 1.4u away. The contour pairing (tolerance 0.6u) could not match them, so each side reported its own as unpaired.",
+  "verdict": "STAY WITH OURS. This is NOT an ownership defect on either side and should not be recorded as 'theirs-wrong' either: it is a difference between the two SOURCE ARTWORKS. The shapes agree to 0.01-0.02u, so the same glyph is simply drawn in a different place in the two files.",
+  "evidence": "audit_pixels proves our emitted page is pixel-identical to OUR artwork on all 604 pages — the pipeline regroups ink, it never moves it. And the page-wide registration residual is 0.010u median, so a 1.4-2.6u offset is 140-260x the noise floor and cannot be registration error. The only remaining explanation is that their source differs from ours here.",
+  "action": "none — recorded so the pair is not re-litigated. Treat as a source difference, not a defect on either side."
  }
 }
