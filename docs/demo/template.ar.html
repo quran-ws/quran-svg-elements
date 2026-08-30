@@ -1911,7 +1911,12 @@ function refit(svg, pad = 4) {
 const FALLBACK_TIMINGS = /*TIMINGS*/null;
 
 const H = { band, clearBands, fold, crop, refit, getPage, toRoot, clonePage, SVGNS,
-            hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_TIMINGS };
+            hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_TIMINGS,
+            /* Where the pages live. A snippet must never hardcode the dev
+               checkout path: the same page is served from the bundle, from a
+               folder on the network, and from file:// on a copy, and only
+               PAGES resolves in all three. */
+            PAGES };
 
 /* ---------------------------------------------------------------------------
    THE LAB — an editable snippet beside the page it runs on.
@@ -2557,7 +2562,7 @@ mod('lab-start', () => makeLab({
   label: 'جلب صفحة',
   code: `
 // جلب حقيقي للملف. غيّر 003 إلى أي صفحة من 001 إلى 604.
-const res = await fetch('../../.cache/words-svg/hafs-kfqc/003.svg');
+const res = await fetch(H.PAGES + '003.svg');
 const doc = new DOMParser()
   .parseFromString(await res.text(), 'image/svg+xml');
 
@@ -2580,7 +2585,7 @@ stage.replaceChildren(doc.documentElement);
 // يخزّن createLoader الصفحات المحلَّلة ويسلّم نسخة مستقلة في كل مرة،
 // فلا يفسد أحد المستدعين على الآخر، ويحذف عنك طبقة المضلّعات
 // المخصصة للتطوير وحدها.
-const load = M.createLoader({ baseUrl: '../../.cache/words-svg/hafs-kfqc/' });
+const load = M.createLoader({ baseUrl: H.PAGES });
 const page = await load(3);
 
 log('words          ', page.wordCount);
