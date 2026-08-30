@@ -57,5 +57,14 @@
   "verdict": "ALL CORRECT — 'all of those are correct'. None is a defect.",
   "consequence": "The height detectors are now confirmed as PRIORS with no surviving true positives on this build. p71 غَالِبَ (1.42x) was the family's one real hit and it is fixed. Do NOT spend eye-time on these rows again unless the underlying build changes; if a NEW word appears in either list it is worth a look, but the current members are settled.",
   "action": "none — recorded so the board can show them as examined rather than open."
+ },
+ "LINE-PARTITION|13-sites|2026-08-29|abdullah-confirmed": {
+  "date": "2026-08-29 21:25",
+  "by": "Abdullah (eye, docs/defects/line_errors.html — every site, both columns)",
+  "what": "The 13 line-partition sites carrying 88 of the 250 surviving overrides: p131 p145 p341 p367 p413 p418 p506 p535 p543 p548 p555 p576 p586. Each was rendered twice — WITH its overrides (today's build) and WITHOUT them.",
+  "verdict": "IN ALL CASES OURS (with the overrides) IS CORRECT; WITHOUT THEM IT IS NOT. So the overrides hold the right answer and the WORD-BOUNDARY STAGE is genuinely wrong at every one of these sites.",
+  "second_signal": "Independent confirmation on p131: rebuilding it with only its line-partition overrides stripped makes MushafDatabase report 4 OWNERSHIP disagreements where there were none. With the overrides applied the reference agrees with every word on all 13 pages.",
+  "consequence": "A fix at the word-boundary stage is now WARRANTED and has two independent signals behind it (his eye on all 13, the reference on p131). Success is defined as: remove all 88 line-partition overrides and the emitted pages stay identical to today's. Until then the overrides must NOT be retired.",
+  "action": "queued — the boundary fix cannot start while the metadata agent is editing tools/assign_words.py."
  }
 }

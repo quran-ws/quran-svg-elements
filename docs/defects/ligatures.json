@@ -1,5 +1,14 @@
 [
  {
+  "page": 17,
+  "key": "2:110:2",
+  "word": "ٱلصَّلَوٰةَ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ة",
+  "holds": []
+ },
+ {
   "page": 15,
   "key": "2:98:5",
   "word": "وَمَلَٰٓئِكَتِهِۦ",
@@ -25,26 +34,6 @@
   "group": 1,
   "names": "ة",
   "holds": []
- },
- {
-  "page": 17,
-  "key": "2:110:2",
-  "word": "ٱلصَّلَوٰةَ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ة",
-  "holds": []
- },
- {
-  "page": 30,
-  "key": "2:194:4",
-  "word": "ٱلْحَرَامِ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": [
-   "wasla"
-  ]
  },
  {
   "page": 41,
@@ -96,6 +85,15 @@
   ]
  },
  {
+  "page": 101,
+  "key": "4:143:7",
+  "word": "وَلَآ",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
   "page": 102,
   "key": "4:149:5",
   "word": "تُخْفُوهُ",
@@ -105,9 +103,9 @@
   "holds": []
  },
  {
-  "page": 101,
-  "key": "4:143:7",
-  "word": "وَلَآ",
+  "page": 104,
+  "key": "4:165:3",
+  "word": "وَمُنذِرِينَ",
   "kind": "empty",
   "group": 0,
   "names": "و",
@@ -121,26 +119,6 @@
   "group": 0,
   "names": "ا",
   "holds": []
- },
- {
-  "page": 104,
-  "key": "4:165:3",
-  "word": "وَمُنذِرِينَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 124,
-  "key": "5:97:9",
-  "word": "ٱلْحَرَامَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": [
-   "wasla"
-  ]
  },
  {
   "page": 122,
@@ -179,21 +157,21 @@
   "holds": []
  },
  {
-  "page": 147,
-  "key": "6:144:20",
-  "word": "إِذْ",
-  "kind": "empty",
-  "group": 1,
-  "names": "ذ",
-  "holds": []
- },
- {
   "page": 143,
   "key": "6:120:8",
   "word": "ٱلْإِثْمَ",
   "kind": "empty",
   "group": 0,
   "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 147,
+  "key": "6:144:20",
+  "word": "إِذْ",
+  "kind": "empty",
+  "group": 1,
+  "names": "ذ",
   "holds": []
  },
  {
@@ -206,21 +184,30 @@
   "holds": []
  },
  {
-  "page": 130,
-  "key": "6:19:4",
-  "word": "أَكْبَرُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
   "page": 150,
   "key": "6:164:10",
   "word": "وَلَا",
   "kind": "empty",
   "group": 0,
   "names": "و",
+  "holds": []
+ },
+ {
+  "page": 168,
+  "key": "7:147:5",
+  "word": "ٱلْـَٔاخِرَةِ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 130,
+  "key": "6:19:4",
+  "word": "أَكْبَرُ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
   "holds": []
  },
  {
@@ -233,12 +220,12 @@
   "holds": []
  },
  {
-  "page": 168,
-  "key": "7:147:5",
-  "word": "ٱلْـَٔاخِرَةِ",
+  "page": 169,
+  "key": "7:150:34",
+  "word": "ٱلْأَعْدَآءَ",
   "kind": "empty",
-  "group": 0,
-  "names": "ا",
+  "group": 4,
+  "names": "ء",
   "holds": []
  },
  {
@@ -252,24 +239,6 @@
    "meem-iqlab",
    "dot"
   ]
- },
- {
-  "page": 169,
-  "key": "7:150:34",
-  "word": "ٱلْأَعْدَآءَ",
-  "kind": "empty",
-  "group": 4,
-  "names": "ء",
-  "holds": []
- },
- {
-  "page": 190,
-  "key": "9:24:28",
-  "word": "بِأَمْرِهِۦۗ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ه",
-  "holds": []
  },
  {
   "page": 179,
@@ -301,6 +270,26 @@
   ]
  },
  {
+  "page": 190,
+  "key": "9:24:28",
+  "word": "بِأَمْرِهِۦۗ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ه",
+  "holds": []
+ },
+ {
+  "page": 200,
+  "key": "9:82:5",
+  "word": "جَزَآءَۢ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ء",
+  "holds": [
+   "meem-iqlab"
+  ]
+ },
+ {
   "page": 202,
   "key": "9:95:15",
   "word": "جَزَآءَۢ",
@@ -321,15 +310,13 @@
   "holds": []
  },
  {
-  "page": 200,
-  "key": "9:82:5",
-  "word": "جَزَآءَۢ",
+  "page": 239,
+  "key": "12:34:7",
+  "word": "إِنَّهُۥ",
   "kind": "empty",
-  "group": 2,
-  "names": "ء",
-  "holds": [
-   "meem-iqlab"
-  ]
+  "group": 0,
+  "names": "ا",
+  "holds": []
  },
  {
   "page": 207,
@@ -370,24 +357,6 @@
   "holds": []
  },
  {
-  "page": 248,
-  "key": "12:110:14",
-  "word": "وَلَا",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 239,
-  "key": "12:34:7",
-  "word": "إِنَّهُۥ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
   "page": 242,
   "key": "12:56:14",
   "word": "وَلَا",
@@ -397,13 +366,24 @@
   "holds": []
  },
  {
-  "page": 267,
-  "key": "16:6:5",
-  "word": "تُرِيحُونَ",
+  "page": 248,
+  "key": "12:110:14",
+  "word": "وَلَا",
   "kind": "empty",
-  "group": 2,
-  "names": "ن",
+  "group": 0,
+  "names": "و",
   "holds": []
+ },
+ {
+  "page": 263,
+  "key": "15:19:6",
+  "word": "وَأَنۢبَتْنَا",
+  "kind": "empty",
+  "group": 1,
+  "names": "ا",
+  "holds": [
+   "meem-iqlab"
+  ]
  },
  {
   "page": 259,
@@ -433,15 +413,13 @@
   "holds": []
  },
  {
-  "page": 263,
-  "key": "15:19:6",
-  "word": "وَأَنۢبَتْنَا",
+  "page": 267,
+  "key": "16:6:5",
+  "word": "تُرِيحُونَ",
   "kind": "empty",
-  "group": 1,
-  "names": "ا",
-  "holds": [
-   "meem-iqlab"
-  ]
+  "group": 2,
+  "names": "ن",
+  "holds": []
  },
  {
   "page": 272,
@@ -477,24 +455,6 @@
   ]
  },
  {
-  "page": 284,
-  "key": "17:23:6",
-  "word": "إِيَّاهُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 309,
-  "key": "19:54:10",
-  "word": "رَسُولࣰا",
-  "kind": "empty",
-  "group": 0,
-  "names": "ر",
-  "holds": []
- },
- {
   "page": 307,
   "key": "19:26:18",
   "word": "إِنسِيࣰّا",
@@ -513,6 +473,33 @@
   "holds": [
    "small-alef"
   ]
+ },
+ {
+  "page": 284,
+  "key": "17:23:6",
+  "word": "إِيَّاهُ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 323,
+  "key": "21:16:4",
+  "word": "وَٱلْأَرْضَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "وا",
+  "holds": []
+ },
+ {
+  "page": 309,
+  "key": "19:54:10",
+  "word": "رَسُولࣰا",
+  "kind": "empty",
+  "group": 0,
+  "names": "ر",
+  "holds": []
  },
  {
   "page": 324,
@@ -536,33 +523,6 @@
   "holds": [
    "pause"
   ]
- },
- {
-  "page": 323,
-  "key": "21:16:4",
-  "word": "وَٱلْأَرْضَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "وا",
-  "holds": []
- },
- {
-  "page": 331,
-  "key": "21:104:11",
-  "word": "نُّعِيدُهُۥۚ",
-  "kind": "empty",
-  "group": 1,
-  "names": "ه",
-  "holds": []
- },
- {
-  "page": 345,
-  "key": "23:46:3",
-  "word": "وَمَلَإِي۟هِۦ",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
  },
  {
   "page": 332,
@@ -594,6 +554,24 @@
   ]
  },
  {
+  "page": 331,
+  "key": "21:104:11",
+  "word": "نُّعِيدُهُۥۚ",
+  "kind": "empty",
+  "group": 1,
+  "names": "ه",
+  "holds": []
+ },
+ {
+  "page": 351,
+  "key": "24:19:20",
+  "word": "تَعْلَمُونَ",
+  "kind": "empty",
+  "group": 1,
+  "names": "ن",
+  "holds": []
+ },
+ {
   "page": 349,
   "key": "23:116:10",
   "word": "ٱلْعَرْشِ",
@@ -612,21 +590,12 @@
   "holds": []
  },
  {
-  "page": 351,
-  "key": "24:19:20",
-  "word": "تَعْلَمُونَ",
+  "page": 345,
+  "key": "23:46:3",
+  "word": "وَمَلَإِي۟هِۦ",
   "kind": "empty",
-  "group": 1,
-  "names": "ن",
-  "holds": []
- },
- {
-  "page": 362,
-  "key": "25:21:18",
-  "word": "عُتُوࣰّا",
-  "kind": "empty",
-  "group": 1,
-  "names": "ا",
+  "group": 0,
+  "names": "و",
   "holds": []
  },
  {
@@ -639,24 +608,13 @@
   "holds": []
  },
  {
-  "page": 374,
-  "key": "26:172:3",
-  "word": "ٱلْـَٔاخَرِينَ",
+  "page": 362,
+  "key": "25:21:18",
+  "word": "عُتُوࣰّا",
   "kind": "empty",
-  "group": 0,
+  "group": 1,
   "names": "ا",
   "holds": []
- },
- {
-  "page": 375,
-  "key": "26:196:4",
-  "word": "ٱلْأَوَّلِينَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "الا",
-  "holds": [
-   "wasla"
-  ]
  },
  {
   "page": 341,
@@ -680,11 +638,40 @@
   ]
  },
  {
+  "page": 374,
+  "key": "26:172:3",
+  "word": "ٱلْـَٔاخَرِينَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
   "page": 378,
   "key": "27:21:3",
   "word": "شَدِيدًا",
   "kind": "empty",
   "group": 2,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 375,
+  "key": "26:196:4",
+  "word": "ٱلْأَوَّلِينَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "الا",
+  "holds": [
+   "wasla"
+  ]
+ },
+ {
+  "page": 384,
+  "key": "27:78:8",
+  "word": "ٱلْعَلِيمُ",
+  "kind": "empty",
+  "group": 0,
   "names": "ا",
   "holds": []
  },
@@ -700,30 +687,21 @@
   ]
  },
  {
-  "page": 376,
-  "key": "26:209:2",
-  "word": "وَمَا",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 384,
-  "key": "27:78:8",
-  "word": "ٱلْعَلِيمُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
   "page": 366,
   "key": "25:68:20",
   "word": "ذَٰلِكَ",
   "kind": "order",
   "group": 1,
   "names": "257.0..261.9 then 240.1..286.4",
+  "holds": []
+ },
+ {
+  "page": 376,
+  "key": "26:209:2",
+  "word": "وَمَا",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
   "holds": []
  },
  {
@@ -783,6 +761,15 @@
   ]
  },
  {
+  "page": 428,
+  "key": "34:1:14",
+  "word": "ٱلْـَٔاخِرَةِۚ",
+  "kind": "empty",
+  "group": 3,
+  "names": "ة",
+  "holds": []
+ },
+ {
   "page": 377,
   "key": "27:3:5",
   "word": "ٱلزَّكَوٰةَ",
@@ -801,12 +788,21 @@
   "holds": []
  },
  {
-  "page": 415,
-  "key": "32:4:4",
-  "word": "ٱلسَّمَٰوَٰتِ",
+  "page": 437,
+  "key": "35:22:4",
+  "word": "وَلَا",
   "kind": "empty",
-  "group": 2,
-  "names": "ت",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 437,
+  "key": "35:29:14",
+  "word": "تِجَٰرَةࣰ",
+  "kind": "empty",
+  "group": 0,
+  "names": "تجر",
   "holds": []
  },
  {
@@ -819,12 +815,59 @@
   "holds": []
  },
  {
-  "page": 428,
-  "key": "34:1:14",
-  "word": "ٱلْـَٔاخِرَةِۚ",
+  "page": 415,
+  "key": "32:4:4",
+  "word": "ٱلسَّمَٰوَٰتِ",
   "kind": "empty",
-  "group": 3,
-  "names": "ة",
+  "group": 2,
+  "names": "ت",
+  "holds": []
+ },
+ {
+  "page": 451,
+  "key": "37:136:3",
+  "word": "ٱلْـَٔاخَرِينَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 451,
+  "key": "37:146:1",
+  "word": "وَأَنۢبَتْنَا",
+  "kind": "empty",
+  "group": 1,
+  "names": "ا",
+  "holds": [
+   "meem-iqlab"
+  ]
+ },
+ {
+  "page": 418,
+  "key": "33:3:4",
+  "word": "وَكَفَىٰ",
+  "kind": "empty",
+  "group": 1,
+  "names": "كفى",
+  "holds": []
+ },
+ {
+  "page": 418,
+  "key": "33:3:5",
+  "word": "بِٱللَّهِ",
+  "kind": "empty",
+  "group": 0,
+  "names": "با",
+  "holds": []
+ },
+ {
+  "page": 418,
+  "key": "33:3:6",
+  "word": "وَكِيلࣰا",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
   "holds": []
  },
  {
@@ -863,60 +906,6 @@
   ]
  },
  {
-  "page": 437,
-  "key": "35:22:4",
-  "word": "وَلَا",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 437,
-  "key": "35:29:14",
-  "word": "تِجَٰرَةࣰ",
-  "kind": "empty",
-  "group": 0,
-  "names": "تجر",
-  "holds": []
- },
- {
-  "page": 418,
-  "key": "33:3:4",
-  "word": "وَكَفَىٰ",
-  "kind": "empty",
-  "group": 1,
-  "names": "كفى",
-  "holds": []
- },
- {
-  "page": 418,
-  "key": "33:3:5",
-  "word": "بِٱللَّهِ",
-  "kind": "empty",
-  "group": 0,
-  "names": "با",
-  "holds": []
- },
- {
-  "page": 418,
-  "key": "33:3:6",
-  "word": "وَكِيلࣰا",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 456,
-  "key": "38:45:7",
-  "word": "ٱلْأَيْدِى",
-  "kind": "empty",
-  "group": 3,
-  "names": "ى",
-  "holds": []
- },
- {
   "page": 447,
   "key": "37:31:6",
   "word": "لَذَآئِقُونَ",
@@ -947,24 +936,69 @@
   ]
  },
  {
-  "page": 451,
-  "key": "37:136:3",
-  "word": "ٱلْـَٔاخَرِينَ",
+  "page": 455,
+  "key": "38:36:5",
+  "word": "بِأَمْرِهِۦ",
   "kind": "empty",
   "group": 0,
-  "names": "ا",
+  "names": "با",
   "holds": []
  },
  {
-  "page": 451,
-  "key": "37:146:1",
-  "word": "وَأَنۢبَتْنَا",
+  "page": 455,
+  "key": "38:42:6",
+  "word": "وَشَرَابࣱ",
   "kind": "empty",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 456,
+  "key": "38:45:7",
+  "word": "ٱلْأَيْدِى",
+  "kind": "empty",
+  "group": 3,
+  "names": "ى",
+  "holds": []
+ },
+ {
+  "page": 470,
+  "key": "40:28:10",
+  "word": "رَجُلًا",
+  "kind": "empty",
+  "group": 0,
+  "names": "ر",
+  "holds": []
+ },
+ {
+  "page": 468,
+  "key": "40:9:2",
+  "word": "ٱلسَّيِّـَٔاتِۚ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ت",
+  "holds": []
+ },
+ {
+  "page": 468,
+  "key": "40:9:9",
+  "word": "وَذَٰلِكَ",
+  "kind": "misplaced",
   "group": 1,
-  "names": "ا",
+  "names": "small-alef sits on group 0's letters",
   "holds": [
-   "meem-iqlab"
+   "small-alef"
   ]
+ },
+ {
+  "page": 465,
+  "key": "39:59:7",
+  "word": "وَٱسْتَكْبَرْتَ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ت",
+  "holds": []
  },
  {
   "page": 446,
@@ -1006,86 +1040,12 @@
   "holds": []
  },
  {
-  "page": 455,
-  "key": "38:36:5",
-  "word": "بِأَمْرِهِۦ",
-  "kind": "empty",
-  "group": 0,
-  "names": "با",
-  "holds": []
- },
- {
-  "page": 455,
-  "key": "38:42:6",
-  "word": "وَشَرَابࣱ",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 465,
-  "key": "39:59:7",
-  "word": "وَٱسْتَكْبَرْتَ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ت",
-  "holds": []
- },
- {
-  "page": 470,
-  "key": "40:28:10",
-  "word": "رَجُلًا",
-  "kind": "empty",
-  "group": 0,
-  "names": "ر",
-  "holds": []
- },
- {
-  "page": 468,
-  "key": "40:9:2",
-  "word": "ٱلسَّيِّـَٔاتِۚ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ت",
-  "holds": []
- },
- {
-  "page": 468,
-  "key": "40:9:9",
-  "word": "وَذَٰلِكَ",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "small-alef sits on group 0's letters",
-  "holds": [
-   "small-alef"
-  ]
- },
- {
-  "page": 453,
-  "key": "38:10:5",
-  "word": "وَٱلْأَرْضِ",
-  "kind": "empty",
-  "group": 0,
-  "names": "وا",
-  "holds": []
- },
- {
   "page": 492,
   "key": "43:46:7",
   "word": "وَمَلَإِي۟هِۦ",
   "kind": "empty",
   "group": 0,
   "names": "و",
-  "holds": []
- },
- {
-  "page": 486,
-  "key": "42:29:5",
-  "word": "وَٱلْأَرْضِ",
-  "kind": "empty",
-  "group": 0,
-  "names": "وا",
   "holds": []
  },
  {
@@ -1098,6 +1058,24 @@
   "holds": []
  },
  {
+  "page": 486,
+  "key": "42:29:5",
+  "word": "وَٱلْأَرْضِ",
+  "kind": "empty",
+  "group": 0,
+  "names": "وا",
+  "holds": []
+ },
+ {
+  "page": 453,
+  "key": "38:10:5",
+  "word": "وَٱلْأَرْضِ",
+  "kind": "empty",
+  "group": 0,
+  "names": "وا",
+  "holds": []
+ },
+ {
   "page": 497,
   "key": "44:39:4",
   "word": "بِٱلْحَقِّ",
@@ -1107,22 +1085,15 @@
   "holds": []
  },
  {
-  "page": 509,
-  "key": "47:20:20",
-  "word": "إِلَيْكَ",
+  "page": 503,
+  "key": "46:14:6",
+  "word": "جَزَآءَۢ",
   "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 504,
-  "key": "46:18:14",
-  "word": "وَٱلْإِنسِۖ",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
+  "group": 2,
+  "names": "ء",
+  "holds": [
+   "meem-iqlab"
+  ]
  },
  {
   "page": 514,
@@ -1131,17 +1102,6 @@
   "kind": "empty",
   "group": 1,
   "names": "ة",
-  "holds": [
-   "meem-iqlab"
-  ]
- },
- {
-  "page": 503,
-  "key": "46:14:6",
-  "word": "جَزَآءَۢ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ء",
   "holds": [
    "meem-iqlab"
   ]
@@ -1156,6 +1116,15 @@
   "holds": []
  },
  {
+  "page": 509,
+  "key": "47:20:20",
+  "word": "إِلَيْكَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
   "page": 518,
   "key": "50:13:2",
   "word": "وَفِرْعَوْنُ",
@@ -1165,27 +1134,47 @@
   "holds": []
  },
  {
-  "page": 506,
-  "key": "46:32:13",
-  "word": "دُونِهِۦٓ",
+  "page": 504,
+  "key": "46:18:14",
+  "word": "وَٱلْإِنسِۖ",
   "kind": "empty",
-  "group": 2,
-  "names": "نه",
+  "group": 0,
+  "names": "و",
   "holds": []
  },
  {
-  "page": 506,
-  "key": "46:32:14",
-  "word": "أَوْلِيَآءُۚ",
+  "page": 528,
+  "key": "53:60:1",
+  "word": "وَتَضْحَكُونَ",
   "kind": "empty",
   "group": 2,
-  "names": "ء",
+  "names": "ن",
   "holds": []
  },
  {
-  "page": 529,
-  "key": "54:22:3",
-  "word": "ٱلْقُرْءَانَ",
+  "page": 507,
+  "key": "47:4:22",
+  "word": "وَلَوْ",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 507,
+  "key": "47:4:23",
+  "word": "يَشَآءُ",
+  "kind": "empty",
+  "group": 0,
+  "names": "يشا",
+  "holds": [
+   "two-dots"
+  ]
+ },
+ {
+  "page": 507,
+  "key": "47:4:24",
+  "word": "ٱللَّهُ",
   "kind": "empty",
   "group": 0,
   "names": "ا",
@@ -1201,12 +1190,39 @@
   "holds": []
  },
  {
-  "page": 528,
-  "key": "53:60:1",
-  "word": "وَتَضْحَكُونَ",
+  "page": 532,
+  "key": "55:29:4",
+  "word": "ٱلسَّمَٰوَٰتِ",
   "kind": "empty",
   "group": 2,
-  "names": "ن",
+  "names": "ت",
+  "holds": []
+ },
+ {
+  "page": 529,
+  "key": "54:22:3",
+  "word": "ٱلْقُرْءَانَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 533,
+  "key": "55:69:3",
+  "word": "رَبِّكُمَا",
+  "kind": "empty",
+  "group": 0,
+  "names": "ر",
+  "holds": []
+ },
+ {
+  "page": 526,
+  "key": "53:21:4",
+  "word": "ٱلْأُنثَىٰ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
   "holds": []
  },
  {
@@ -1277,50 +1293,21 @@
   "holds": []
  },
  {
-  "page": 538,
-  "key": "57:5:3",
-  "word": "ٱلسَّمَٰوَٰتِ",
+  "page": 506,
+  "key": "46:32:13",
+  "word": "دُونِهِۦٓ",
   "kind": "empty",
   "group": 2,
-  "names": "ت",
+  "names": "نه",
   "holds": []
  },
  {
-  "page": 507,
-  "key": "47:4:22",
-  "word": "وَلَوْ",
+  "page": 506,
+  "key": "46:32:14",
+  "word": "أَوْلِيَآءُۚ",
   "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 507,
-  "key": "47:4:23",
-  "word": "يَشَآءُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "يشا",
-  "holds": [
-   "two-dots"
-  ]
- },
- {
-  "page": 507,
-  "key": "47:4:24",
-  "word": "ٱللَّهُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 533,
-  "key": "55:69:3",
-  "word": "رَبِّكُمَا",
-  "kind": "empty",
-  "group": 0,
-  "names": "ر",
+  "group": 2,
+  "names": "ء",
   "holds": []
  },
  {
@@ -1342,20 +1329,11 @@
   "holds": []
  },
  {
-  "page": 532,
-  "key": "55:29:4",
-  "word": "ٱلسَّمَٰوَٰتِ",
+  "page": 543,
+  "key": "58:7:40",
+  "word": "عَمِلُوا۟",
   "kind": "empty",
-  "group": 2,
-  "names": "ت",
-  "holds": []
- },
- {
-  "page": 526,
-  "key": "53:21:4",
-  "word": "ٱلْأُنثَىٰ",
-  "kind": "empty",
-  "group": 0,
+  "group": 1,
   "names": "ا",
   "holds": []
  },
@@ -1378,29 +1356,29 @@
   "holds": []
  },
  {
-  "page": 543,
-  "key": "58:7:40",
-  "word": "عَمِلُوا۟",
+  "page": 538,
+  "key": "57:5:3",
+  "word": "ٱلسَّمَٰوَٰتِ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ت",
+  "holds": []
+ },
+ {
+  "page": 555,
+  "key": "63:10:8",
+  "word": "يَأْتِىَ",
   "kind": "empty",
   "group": 1,
-  "names": "ا",
+  "names": "تى",
   "holds": []
  },
  {
-  "page": 557,
-  "key": "64:14:13",
-  "word": "وَتَصْفَحُوا۟",
+  "page": 555,
+  "key": "63:10:9",
+  "word": "أَحَدَكُمُ",
   "kind": "empty",
-  "group": 2,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 557,
-  "key": "64:14:14",
-  "word": "وَتَغْفِرُوا۟",
-  "kind": "empty",
-  "group": 2,
+  "group": 0,
   "names": "ا",
   "holds": []
  },
@@ -1441,6 +1419,60 @@
   "holds": []
  },
  {
+  "page": 566,
+  "key": "68:51:11",
+  "word": "إِنَّهُۥ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 571,
+  "key": "71:24:2",
+  "word": "أَضَلُّوا۟",
+  "kind": "empty",
+  "group": 2,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 557,
+  "key": "64:14:13",
+  "word": "وَتَصْفَحُوا۟",
+  "kind": "empty",
+  "group": 2,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 557,
+  "key": "64:14:14",
+  "word": "وَتَغْفِرُوا۟",
+  "kind": "empty",
+  "group": 2,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 574,
+  "key": "73:15:9",
+  "word": "إِلَىٰ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 574,
+  "key": "73:19:2",
+  "word": "هَٰذِهِۦ",
+  "kind": "empty",
+  "group": 1,
+  "names": "ه",
+  "holds": []
+ },
+ {
   "page": 544,
   "key": "58:13:14",
   "word": "فَأَقِيمُوا۟",
@@ -1462,12 +1494,59 @@
   ]
  },
  {
-  "page": 566,
-  "key": "68:51:11",
-  "word": "إِنَّهُۥ",
+  "page": 581,
+  "key": "77:50:3",
+  "word": "بَعْدَهُۥ",
   "kind": "empty",
   "group": 0,
+  "names": "بعد",
+  "holds": []
+ },
+ {
+  "page": 575,
+  "key": "74:16:4",
+  "word": "لِـَٔايَٰتِنَا",
+  "kind": "empty",
+  "group": 0,
+  "names": "لا",
+  "holds": []
+ },
+ {
+  "page": 575,
+  "key": "74:17:2",
+  "word": "صَعُودًا",
+  "kind": "empty",
+  "group": 2,
   "names": "ا",
+  "holds": []
+ },
+ {
+  "page": 573,
+  "key": "72:20:5",
+  "word": "وَلَآ",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 586,
+  "key": "81:8:2",
+  "word": "ٱلْمَوْءُۥدَةُ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ء",
+  "holds": [
+   "small-waw"
+  ]
+ },
+ {
+  "page": 586,
+  "key": "81:21:1",
+  "word": "مُّطَاعࣲ",
+  "kind": "empty",
+  "group": 1,
+  "names": "ع",
   "holds": []
  },
  {
@@ -1507,80 +1586,6 @@
   "holds": []
  },
  {
-  "page": 555,
-  "key": "63:10:8",
-  "word": "يَأْتِىَ",
-  "kind": "empty",
-  "group": 1,
-  "names": "تى",
-  "holds": []
- },
- {
-  "page": 555,
-  "key": "63:10:9",
-  "word": "أَحَدَكُمُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 571,
-  "key": "71:24:2",
-  "word": "أَضَلُّوا۟",
-  "kind": "empty",
-  "group": 2,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 549,
-  "key": "60:2:11",
-  "word": "وَوَدُّوا۟",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 549,
-  "key": "60:4:14",
-  "word": "بُرَءَٰٓؤُا۟",
-  "kind": "misplaced",
-  "group": 1,
-  "names": "maddah sits on group 2's letters",
-  "holds": [
-   "maddah"
-  ]
- },
- {
-  "page": 549,
-  "key": "60:4:52",
-  "word": "ٱلْمَصِيرُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 574,
-  "key": "73:15:9",
-  "word": "إِلَىٰ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 574,
-  "key": "73:19:2",
-  "word": "هَٰذِهِۦ",
-  "kind": "empty",
-  "group": 1,
-  "names": "ه",
-  "holds": []
- },
- {
   "page": 567,
   "key": "69:9:6",
   "word": "بِٱلْخَاطِئَةِ",
@@ -1610,33 +1615,6 @@
   "holds": []
  },
  {
-  "page": 581,
-  "key": "77:50:3",
-  "word": "بَعْدَهُۥ",
-  "kind": "empty",
-  "group": 0,
-  "names": "بعد",
-  "holds": []
- },
- {
-  "page": 575,
-  "key": "74:16:4",
-  "word": "لِـَٔايَٰتِنَا",
-  "kind": "empty",
-  "group": 0,
-  "names": "لا",
-  "holds": []
- },
- {
-  "page": 575,
-  "key": "74:17:2",
-  "word": "صَعُودًا",
-  "kind": "empty",
-  "group": 2,
-  "names": "ا",
-  "holds": []
- },
- {
   "page": 577,
   "key": "74:53:5",
   "word": "ٱلْـَٔاخِرَةَ",
@@ -1649,71 +1627,6 @@
   "page": 577,
   "key": "75:10:2",
   "word": "ٱلْإِنسَٰنُ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 573,
-  "key": "72:20:5",
-  "word": "وَلَآ",
-  "kind": "empty",
-  "group": 0,
-  "names": "و",
-  "holds": []
- },
- {
-  "page": 589,
-  "key": "84:10:6",
-  "word": "ظَهْرِهِۦ",
-  "kind": "empty",
-  "group": 1,
-  "names": "ه",
-  "holds": [
-   "small-ya"
-  ]
- },
- {
-  "page": 589,
-  "key": "84:21:6",
-  "word": "يَسْجُدُونَ۩",
-  "kind": "empty",
-  "group": 2,
-  "names": "ن",
-  "holds": []
- },
- {
-  "page": 591,
-  "key": "86:1:1",
-  "word": "وَٱلسَّمَآءِ",
-  "kind": "empty",
-  "group": 2,
-  "names": "ء",
-  "holds": []
- },
- {
-  "page": 578,
-  "key": "75:21:2",
-  "word": "ٱلْـَٔاخِرَةَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "ا",
-  "holds": []
- },
- {
-  "page": 576,
-  "key": "74:37:5",
-  "word": "يَتَقَدَّمَ",
-  "kind": "empty",
-  "group": 0,
-  "names": "يتقد",
-  "holds": []
- },
- {
-  "page": 576,
-  "key": "74:37:6",
-  "word": "أَوْ",
   "kind": "empty",
   "group": 0,
   "names": "ا",
@@ -1847,6 +1760,35 @@
   ]
  },
  {
+  "page": 549,
+  "key": "60:2:11",
+  "word": "وَوَدُّوا۟",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 549,
+  "key": "60:4:14",
+  "word": "بُرَءَٰٓؤُا۟",
+  "kind": "misplaced",
+  "group": 1,
+  "names": "maddah sits on group 2's letters",
+  "holds": [
+   "maddah"
+  ]
+ },
+ {
+  "page": 549,
+  "key": "60:4:52",
+  "word": "ٱلْمَصِيرُ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
+  "holds": []
+ },
+ {
   "page": 588,
   "key": "83:6:3",
   "word": "ٱلنَّاسُ",
@@ -1856,23 +1798,30 @@
   "holds": []
  },
  {
-  "page": 586,
-  "key": "81:8:2",
-  "word": "ٱلْمَوْءُۥدَةُ",
+  "page": 578,
+  "key": "75:21:2",
+  "word": "ٱلْـَٔاخِرَةَ",
   "kind": "empty",
-  "group": 2,
-  "names": "ء",
-  "holds": [
-   "small-waw"
-  ]
+  "group": 0,
+  "names": "ا",
+  "holds": []
  },
  {
-  "page": 586,
-  "key": "81:21:1",
-  "word": "مُّطَاعࣲ",
+  "page": 576,
+  "key": "74:37:5",
+  "word": "يَتَقَدَّمَ",
   "kind": "empty",
-  "group": 1,
-  "names": "ع",
+  "group": 0,
+  "names": "يتقد",
+  "holds": []
+ },
+ {
+  "page": 576,
+  "key": "74:37:6",
+  "word": "أَوْ",
+  "kind": "empty",
+  "group": 0,
+  "names": "ا",
   "holds": []
  },
  {
@@ -1882,6 +1831,33 @@
   "kind": "empty",
   "group": 0,
   "names": "اذ",
+  "holds": []
+ },
+ {
+  "page": 584,
+  "key": "79:20:2",
+  "word": "ٱلْـَٔايَةَ",
+  "kind": "empty",
+  "group": 0,
+  "names": "الا",
+  "holds": []
+ },
+ {
+  "page": 584,
+  "key": "79:21:2",
+  "word": "وَعَصَىٰ",
+  "kind": "empty",
+  "group": 0,
+  "names": "و",
+  "holds": []
+ },
+ {
+  "page": 591,
+  "key": "86:1:1",
+  "word": "وَٱلسَّمَآءِ",
+  "kind": "empty",
+  "group": 2,
+  "names": "ء",
   "holds": []
  },
  {
@@ -1903,21 +1879,23 @@
   "holds": []
  },
  {
-  "page": 584,
-  "key": "79:20:2",
-  "word": "ٱلْـَٔايَةَ",
+  "page": 589,
+  "key": "84:10:6",
+  "word": "ظَهْرِهِۦ",
   "kind": "empty",
-  "group": 0,
-  "names": "الا",
-  "holds": []
+  "group": 1,
+  "names": "ه",
+  "holds": [
+   "small-ya"
+  ]
  },
  {
-  "page": 584,
-  "key": "79:21:2",
-  "word": "وَعَصَىٰ",
+  "page": 589,
+  "key": "84:21:6",
+  "word": "يَسْجُدُونَ۩",
   "kind": "empty",
-  "group": 0,
-  "names": "و",
+  "group": 2,
+  "names": "ن",
   "holds": []
  }
 ]

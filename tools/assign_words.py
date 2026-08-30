@@ -3766,7 +3766,7 @@ def _stamp_identity(svg, edition, page_no):
         return svg                      # an edition we have no record for
     attrs = (
         ' data-mushaf="%s" data-qiraa="%s" data-riwaya="%s" data-edition="%s"'
-        ' data-mushaf-name-ar="%s" data-mushaf-name-en="%s"'
+        ' data-riwaya-name-ar="%s" data-riwaya-name-en="%s"'
         ' data-ayah-numbering="%s" data-ayah-total="%d" data-page="%d"'
         % (m["mushaf"], m["qiraa"], m["riwaya"], m["edition"],
            esc(m["name_ar"]), esc(m["name_en"]),

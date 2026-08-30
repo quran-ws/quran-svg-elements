@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-30T02:41:40",
+ "generated": "2026-08-30T04:54:32",
  "pages": 604,
  "rows": [
   {
@@ -59,7 +59,7 @@
   {
    "scope": "g.ayah",
    "attr": "data-hizb-start",
-   "count": 140,
+   "count": 60,
    "distinct": 60,
    "distinct_capped": false,
    "samples": [
@@ -76,7 +76,7 @@
   {
    "scope": "g.ayah",
    "attr": "data-juz-start",
-   "count": 72,
+   "count": 30,
    "distinct": 30,
    "distinct_capped": false,
    "samples": [
@@ -110,7 +110,7 @@
   {
    "scope": "g.ayah",
    "attr": "data-nisf-start",
-   "count": 168,
+   "count": 60,
    "distinct": 60,
    "distinct_capped": false,
    "samples": [
@@ -144,7 +144,7 @@
   {
    "scope": "g.ayah",
    "attr": "data-rub-start",
-   "count": 669,
+   "count": 240,
    "distinct": 240,
    "distinct_capped": false,
    "samples": [
@@ -463,8 +463,8 @@
     "ة",
     "ت",
     "ج",
-    "د",
-    "ذ"
+    "ح",
+    "خ"
    ]
   },
   {
@@ -657,11 +657,11 @@
     "أَن",
     "إِن",
     "الم",
-    "بَل",
-    "ذَا",
-    "ذُو",
+    "ذِي",
+    "عَن",
     "فِي",
-    "قَد"
+    "لَا",
+    "مَا"
    ]
   },
   {
@@ -673,12 +673,12 @@
    "samples": [
     "أَن",
     "إِن",
-    "بَل",
-    "ذَا",
-    "ذُو",
+    "ذِي",
+    "عَن",
     "فِي",
-    "قَد",
-    "كَم"
+    "لَا",
+    "مَا",
+    "مَن"
    ]
   },
   {
@@ -691,11 +691,11 @@
     "أم",
     "أن",
     "أو",
-    "إذ",
     "إن",
     "بل",
     "به",
-    "تر"
+    "ثم",
+    "ذى"
    ]
   },
   {
@@ -708,11 +708,11 @@
     "أم",
     "أن",
     "أو",
-    "إذ",
     "إن",
     "بل",
     "به",
-    "تر"
+    "ذي",
+    "رب"
    ]
   },
   {
@@ -724,12 +724,12 @@
    "samples": [
     "أَن",
     "إِن",
-    "بَل",
-    "ذَا",
-    "ذُو",
+    "ذِى",
+    "عَن",
     "فِى",
-    "قَد",
-    "كَم"
+    "لَا",
+    "مَا",
+    "مَن"
    ]
   },
   {
@@ -976,26 +976,6 @@
   },
   {
    "scope": "svg",
-   "attr": "data-mushaf-name-ar",
-   "count": 604,
-   "distinct": 1,
-   "distinct_capped": false,
-   "samples": [
-    "حفص عن عاصم"
-   ]
-  },
-  {
-   "scope": "svg",
-   "attr": "data-mushaf-name-en",
-   "count": 604,
-   "distinct": 1,
-   "distinct_capped": false,
-   "samples": [
-    "Hafs 'an Asim"
-   ]
-  },
-  {
-   "scope": "svg",
    "attr": "data-page",
    "count": 604,
    "distinct": 500,
@@ -1029,6 +1009,26 @@
    "distinct_capped": false,
    "samples": [
     "hafs"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-riwaya-name-ar",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "حفص عن عاصم"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-riwaya-name-en",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "Hafs 'an Asim"
    ]
   }
  ]

@@ -477,7 +477,7 @@ self-describing:
 ```xml
 <svg data-mushaf="hafs-kfqc" data-qiraa="asim" data-riwaya="hafs"
      data-edition="kfgqpc-1421"
-     data-mushaf-name-ar="حفص عن عاصم" data-mushaf-name-en="Hafs 'an Asim"
+     data-riwaya-name-ar="حفص عن عاصم" data-riwaya-name-en="Hafs 'an Asim"
      data-ayah-numbering="kufi" data-ayah-total="6236" data-page="42" …>
 ```
 
@@ -488,6 +488,11 @@ rather than being repeated on every page.
 
 Three of these are easy to misread:
 
+- **`data-riwaya-name-*` names the RIWAYA, not the mushaf.** `حفص عن عاصم` is
+  the conventional designation of a transmission — rawi عن qiraa — so it belongs
+  with `data-riwaya`, not with `data-mushaf`. (It was briefly called
+  `data-mushaf-name-*`; that was wrong and the name was corrected before
+  publication.)
 - **`data-riwaya` is not `data-qiraa`.** Ḥafṣ is a *transmission* of ʿĀṣim's
   *reading*; Shuʿba is the other. Warsh and Qālūn are both Nāfiʿ. "The Ḥafṣ
   qiraa" is an error — say the Ḥafṣ riwaya, or the reading of ʿĀṣim.
