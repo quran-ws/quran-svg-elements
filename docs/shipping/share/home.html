@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>hafs-svg — the Madinah Mushaf as SVG</title>
+<style>
+ :root{--ink:#231f20;--paper:#fbf9f4;--rule:#ddd8cc;--accent:#8a6d3b;--muted:#6c6559}
+ @media(prefers-color-scheme:dark){
+   :root{--ink:#e8e4da;--paper:#14161b;--rule:#2c313a;--accent:#c8a25a;--muted:#9a9384}}
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--paper);color:var(--ink);
+      font:16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+ main{max-width:46rem;margin:0 auto;padding:3rem 1.25rem 5rem}
+ h1{font-size:1.75rem;margin:0 0 .3rem}
+ .sub{color:var(--muted);margin:0 0 2.5rem}
+ h2{font-size:1rem;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--muted);margin:2.5rem 0 .75rem;font-weight:600}
+ ul{list-style:none;padding:0;margin:0}
+ li{border-top:1px solid var(--rule)}
+ li:last-child{border-bottom:1px solid var(--rule)}
+ a.row{display:flex;gap:1rem;align-items:baseline;padding:.85rem .25rem;
+       text-decoration:none;color:inherit}
+ a.row:hover{background:rgba(128,128,128,.08)}
+ .name{font-weight:600;color:var(--accent)}
+ .what{color:var(--muted);font-size:.92rem}
+ .size{margin-inline-start:auto;color:var(--muted);font-size:.85rem;
+       font-family:ui-monospace,Menlo,monospace;white-space:nowrap}
+ code{font-family:ui-monospace,Menlo,monospace;font-size:.88em;
+      background:rgba(128,128,128,.14);padding:.1em .35em;border-radius:3px}
+ .note{margin-top:2.5rem;padding:1rem 1.1rem;border:1px solid var(--rule);
+       border-radius:6px;color:var(--muted);font-size:.92rem}
+</style></head><body><main>
+
+<h1>hafs-svg</h1>
+<p class="sub">The Madinah Mushaf, 604 pages, every word and mark addressable.
+Served from this machine — open any link from any device on the network.</p>
+
+<h2>Look at it</h2>
+<ul>
+  <li><a class="row" href="index.html">
+    <span class="name">Demo — English</span>
+    <span class="what">what it is, and 17 things you can do with it</span>
+    <span class="size">222 KiB</span></a></li>
+  <li><a class="row" href="index.ar.html">
+    <span class="name">النسخة العربية — Demo</span>
+    <span class="what">the same page, right-to-left</span>
+    <span class="size">260 KiB</span></a></li>
+  <li><a class="row" href="FORMAT.html">
+    <span class="name">FORMAT</span>
+    <span class="what">the specification: every attribute, every special case, every known limit</span>
+    <span class="size">87 KiB</span></a></li>
+  <li><a class="row" href="reference/mushaf-signs.html">
+    <span class="name">Mushaf signs</span>
+    <span class="what">the print's own sign system — waqf, ḍabṭ, tanwīn, sajdah, page furniture</span>
+    <span class="size">79 entries</span></a></li>
+</ul>
+
+<h2>Reference</h2>
+<ul>
+  <li><a class="row" href="reference/mushaf-signs.html">
+    <span class="name">mushaf-signs.html</span>
+    <span class="what">readable catalogue of the signs, with the concordance</span>
+    <span class="size">—</span></a></li>
+  <li><a class="row" href="reference/mushaf-signs.json">
+    <span class="name">mushaf-signs.json</span>
+    <span class="what">the same catalogue as data: 6 waqf signs, 14 ḍabṭ marks, 13 single-place
+      marks, 15 sajdah locations, 9 page-furniture items</span>
+    <span class="size">—</span></a></li>
+</ul>
+
+<h2>The files</h2>
+<ul>
+  <li><a class="row" href="pages/042.svg">
+    <span class="name">pages/</span>
+    <span class="what">604 page SVGs, production profile — <code>001.svg</code> … <code>604.svg</code></span>
+    <span class="size">457 MiB</span></a></li>
+  <li><a class="row" href="index/">
+    <span class="name">index/</span>
+    <span class="what">pages, surahs, divisions, words, and one sidecar per page</span>
+    <span class="size">18 MiB</span></a></li>
+  <li><a class="row" href="schema/">
+    <span class="name">schema/</span>
+    <span class="what">FORMAT.md, the mark taxonomy, and JSON Schemas</span>
+    <span class="size">380 KiB</span></a></li>
+  <li><a class="row" href="lib/">
+    <span class="name">lib/</span>
+    <span class="what">the zero-dependency JavaScript library, with its API reference</span>
+    <span class="size">92 KiB</span></a></li>
+</ul>
+
+<h2>Take it away</h2>
+<ul>
+  <li><a class="row" href="quran-svg-hafs-kfgqpc.tar.gz">
+    <span class="name">quran-svg-hafs-kfgqpc.tar.gz</span>
+    <span class="what">the whole bundle in one file</span>
+    <span class="size">108 MiB</span></a></li>
+  <li><a class="row" href="CHECKSUMS.txt">
+    <span class="name">CHECKSUMS.txt</span>
+    <span class="what">sha256 of every file — verify with <code>sha256sum -c</code></span>
+    <span class="size">—</span></a></li>
+  <li><a class="row" href="VERSION.json">
+    <span class="name">VERSION.json</span>
+    <span class="what">what this build is, and which artwork commit it came from</span>
+    <span class="size">—</span></a></li>
+  <li><a class="row" href="LICENSE">
+    <span class="name">LICENSE · NOTICE.md</span>
+    <span class="what">CC0 for the decomposition; the publishers' terms for the ink</span>
+    <span class="size">—</span></a></li>
+</ul>
+
+<p class="note">
+  Every path here is relative, so the demo works over this address, over the
+  tailnet, or straight off a copy of the folder — no rebuild needed. The pages
+  are the production profile: one group per word, no ligature groups, no ayah
+  polygons, and none of the review-loop attributes.
+</p>
+
+<p class="note">
+  <b>On the sign catalogue.</b> It was read out of the King Fahd Complex's own
+  PDF of the <b>1441 AH</b> printing, while the artwork here is the
+  <b>1421 H V2</b> print. The sign system is the same and the catalogue is the
+  best description of it we have — but where the two ever disagree, the ink in
+  <code>pages/</code> is what this project treats as authoritative, because
+  every page is verified pixel-identical to it.
+</p>
+
+</main></body></html>
