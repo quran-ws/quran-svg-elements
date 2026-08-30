@@ -272,8 +272,13 @@ jump sides — the CSS for that is in `docs/arabic-rtl-plan.md` §5 and §9.
 
 ## 8. UI strings
 
-Buttons and labels take the **verbal noun (المصدر)**; prose instructions take the **imperative**. The
-rule and its rationale are in the `arabic-writer` skill (`technical-writing.md` §6).
+Buttons, labels and tooltips take the **verbal noun (المصدر)**. A **step list** takes a lead-in plus
+maṣdar (`يمكنك اتّباع الخطوات التالية:`), not a run of imperatives. A **flowing prose instruction**
+may use the imperative. The rule and its sources are in the `arabic-writer` skill
+(`technical-writing.md` §6).
+
+The demo has several numbered procedures, so the step-list row is the one that will come up — do not
+render those as strings of imperatives.
 
 | English | Arabic | form |
 |---|---|---|
