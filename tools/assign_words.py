@@ -2716,7 +2716,41 @@ def rewrite(page, assignment):
                  "imalah": "reading-sign", "ishmam": "reading-sign",
                  "tashil": "reading-sign"}
 
+        # Which member elements have been folded into their master's path (see
+        # the merge in emit()). They must not be emitted a second time: drawing
+        # the same contours twice duplicates ink, and audit_pixels' contour
+        # conservation half would catch it — as it should.
+        _merged_in = {}
+        for _w9, _at9 in assignment:
+            for _a9 in _at9:
+                _els9 = _a9["els"]
+                # masters that already name their members
+                for _e9 in _els9:
+                    for _m9 in (_e9.get("mkmembers") or []):
+                        if _m9.get("path") == _e9.get("path"):
+                            _merged_in[id(_m9)] = _e9
+                # A part whose master never listed it. The mkpart flag and the
+                # mkmembers list are set together at the two places that pair
+                # marks, but the master can be copied by a later pass and lose
+                # the list, leaving the part orphaned and emitted on its own as
+                # data-mark-part. Re-bind it to the element in the same atom
+                # carrying the same mark name in the same source path — the
+                # only candidate that can be its master.
+                for _e9 in _els9:
+                    if not _e9.get("mkpart") or id(_e9) in _merged_in:
+                        continue
+                    for _c9 in _els9:
+                        if (_c9 is not _e9 and not _c9.get("mkpart")
+                                and _c9.get("mark")
+                                and _c9.get("mark") == _e9.get("mark")
+                                and _c9.get("path") == _e9.get("path")):
+                            _merged_in[id(_e9)] = _c9
+                            _c9.setdefault("mkmembers", []).append(_e9)
+                            break
+
         def emit(e):
+            if id(e) in _merged_in:
+                return
             eid[0] += 1
             if os.environ.get("QSVG_EIDMAP"):
                 _EIDMAP.append({"eid": "e%d" % eid[0],
@@ -2748,8 +2782,23 @@ def rewrite(page, assignment):
             if nm == "pause" and wq and wq != "muanaqah":
                 nm = wq
             if nm:
-                extra += ('data-mark-part="%s" ' if e.get("mkpart")
-                          else 'data-mark="%s" ') % nm
+                # data-mark-part is RETIRED (Abdullah 2026-08-30). A mark is now
+                # always one path: the members' contours are folded into the
+                # primary above, so nothing can be "part of" a mark drawn
+                # elsewhere. The attribute had exactly one occurrence in the
+                # corpus and now has none.
+                #
+                # A part that survives unmerged would be a real defect — its
+                # master is in a different source path, which the fold cannot
+                # cross. Say so loudly rather than emitting a lone fragment that
+                # looks like an ordinary mark and inflates every count.
+                if e.get("mkpart"):
+                    sys.stderr.write(
+                        "WARNING p%s: %r is flagged as part of a mark but its "
+                        "master is in another source path, so it could not be "
+                        "merged; emitting it as a mark in its own right.\n"
+                        % (_page_no, nm))
+                extra += 'data-mark="%s" ' % nm
                 fam = _MFAM.get(nm)
                 if fam:
                     extra += 'data-mark-family="%s" ' % fam
@@ -2768,7 +2817,24 @@ def rewrite(page, assignment):
                           % e["standalone"])
             if e["path"] != pi:
                 extra += _reframe(e["path"], pi)
-            out.append(head.replace("<path ", extra, 1) + build_d(e["contours"]) + tail)
+            # ONE MARK, ONE PATH (Abdullah 2026-08-30). Where the artwork draws
+            # a mark across several source paths — p146 6:141:14 splits the ش
+            # three-dot cluster into a 2-contour path and a 1-contour path — the
+            # members' contours are emitted INSIDE the primary's path, so the
+            # cluster is a single element carrying data-mark="three-dots".
+            #
+            # Pixel-safe here, and the reason matters: these are separate dots
+            # that do not overlap, so `evenodd` has nothing to cancel. That is
+            # what distinguishes this from the merges this project has rejected
+            # (the basmalah band, the muʿānaqah, the ظ white loop), where the
+            # contours DID overlap and fusing them filled a counter solid. Never
+            # merge on the assumption it is safe — merge only where the contours
+            # are disjoint, which audit_pixels then proves page by page.
+            _cons = list(e["contours"])
+            for _mem in (e.get("mkmembers") or []):
+                if _mem.get("path") == e.get("path"):
+                    _cons.extend(_mem.get("contours") or [])
+            out.append(head.replace("<path ", extra, 1) + build_d(_cons) + tail)
 
         open_word = open_lig = None
         open_ayah = None
@@ -3755,6 +3821,17 @@ _MUSHAF_META = {
         "edition": "kfgqpc-1421",
         "name_ar": "حفص عن عاصم", "name_en": "Hafs 'an Asim",
         "ayah_numbering": "kufi", "ayah_total": 6236,
+        # How far this edition is decomposed. "ayah" is what quranpedia/quran-svg
+        # publishes today for every mushaf: page ink plus ayah polygons and
+        # markers, and nothing below the ayah. "word" is this pipeline's output:
+        # every word, ligature and named mark addressable.
+        #
+        # It is stated PER EDITION and on the page itself because the two will
+        # coexist for a while — Hafs ships at "word" while Warsh, Qalun, Duri and
+        # Shuba are still at "ayah". A consumer must be able to ask a file what it
+        # holds rather than infer it from which mushaf it is, or from whether a
+        # querySelector happened to return null.
+        "decomposition": "word",
     },
 }
 
@@ -3767,10 +3844,11 @@ def _stamp_identity(svg, edition, page_no):
     attrs = (
         ' data-mushaf="%s" data-qiraa="%s" data-riwaya="%s" data-edition="%s"'
         ' data-riwaya-name-ar="%s" data-riwaya-name-en="%s"'
-        ' data-ayah-numbering="%s" data-ayah-total="%d" data-page="%d"'
+        ' data-ayah-numbering="%s" data-ayah-total="%d"'
+        ' data-decomposition="%s" data-page="%d"'
         % (m["mushaf"], m["qiraa"], m["riwaya"], m["edition"],
            esc(m["name_ar"]), esc(m["name_en"]),
-           m["ayah_numbering"], m["ayah_total"], page_no))
+           m["ayah_numbering"], m["ayah_total"], m["decomposition"], page_no))
     # Only the ROOT element, and only once — `<svg` also matches a nested one.
     if ' data-mushaf="' in svg:
         return svg
