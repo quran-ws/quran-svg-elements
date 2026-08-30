@@ -2724,7 +2724,16 @@ def rewrite(page, assignment):
                                 "x2": round(e["x2"], 1), "y2": round(e["y2"], 1),
                                 "kind": e["kind"], "mark": e.get("mark"),
                                 "part": bool(e.get("mkpart"))})
-            extra = '<path data-eid="e%d" data-kind="%s" ' % (eid[0], e["kind"])
+            # data-eid and data-sig are REVIEW-LOOP handles, dev profile only
+            # (Abdullah 2026-08-30). data-eid is not stable across builds — the
+            # emitter's ordering depends on Python id() — so shipping it invites
+            # a consumer to key on it, and we would then either support an
+            # unstable id forever or break them. data-sig is an outline shape
+            # hash with no meaning outside the review loop, and 85 signatures
+            # serve both fatha and kasra, so it is not an identity either.
+            # Together they are ~1.2M attributes across the corpus.
+            extra = ('<path data-kind="%s" ' % e["kind"] if _PROD else
+                     '<path data-eid="e%d" data-kind="%s" ' % (eid[0], e["kind"]))
             wq = None
             if e.get("sig"):
                 # Which pause sign this is: the shapes are distinct outlines,
@@ -2744,7 +2753,7 @@ def rewrite(page, assignment):
                 fam = _MFAM.get(nm)
                 if fam:
                     extra += 'data-mark-family="%s" ' % fam
-            if e.get("sig"):
+            if e.get("sig") and not _PROD:
                 extra += 'data-sig="%s" ' % e["sig"]
             if e.get("tanform"):
                 extra += 'data-form="%s" ' % e["tanform"]
