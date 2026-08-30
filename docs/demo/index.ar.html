@@ -306,7 +306,12 @@ ul.plain-list b{color:var(--ink);font-weight:500}
 
 footer{padding:40px 0 70px;color:var(--muted);font-size:13.5px}
 footer p{max-width:74ch}
-.offstage{position:absolute;left:-99999px;top:0;width:400px;opacity:0;pointer-events:none}
+.offstage{position:fixed;left:0;top:-99999px;width:400px;opacity:0;pointer-events:none}
+/* Offset VERTICALLY, not horizontally. Under dir=rtl the scroll origin is the
+   right edge, so a box at left:-99999px is 99999px of real scrollable overflow
+   — the English page never sees it because leftward overflow is clipped in LTR.
+   Negative top creates no scrollable area in either direction, and offstage
+   still renders at its full 400px width, which is all the measuring needs. */
 
 /* ══════════════════ ARABIC / RTL ══════════════════════════════════════
    Added for the Arabic edition. Everything above is the English page's own
@@ -371,10 +376,34 @@ pre,textarea,.lab-editor textarea{text-align:left}
    base direction decides which end that trailing space sits at. The box, and
    therefore the lit band and the scaleX fit, are identical either way — this
    is belt and braces, not a fix. */
-.q-hits{direction:ltr}
+.q-hits,.mushaf-hitlayer{direction:ltr}
+/* .mushaf-hitlayer is the LIBRARY's own text/hit layer (shipping/lib/core.mjs).
+   It uses the same construction as .q-hits — one shrink-to-fit span per word,
+   positioned in viewport pixels — but it does not pin its own direction. Under
+   dir=rtl its spans take an RTL base direction, the trailing space in each span
+   lands on the other side, and the layer measured 70px wider than the page it
+   covers: 45px of document-level horizontal overflow in three sections.
+   Pinning it LTR is the same remedy §7 already applies to .q-hits, and it
+   belongs upstream in the library rather than here. */
 
 /* Arabic does not hyphenate; it wraps between words (ALReq 7.1). */
 body{hyphens:none}
+
+/* ── MITIGATION, NOT A FIX — remove this once the library is corrected ──
+   docs/shipping/lib/core.mjs:136 (and its bundle, mushaf.global.js:140)
+   create an off-screen measuring element with
+     position:absolute;left:-99999px;top:0;width:1px;height:1px
+   In an LTR page that is invisible: overflow past the left edge is clipped
+   and never becomes scrollable. In an RTL page the scroll origin is the RIGHT
+   edge, so the SAME element is 99999px of real, scrollable horizontal
+   overflow — a full-width scrollbar and a page that pans into blank space.
+
+   This affects EVERY RTL consumer of the library, not just this page. The
+   real fix belongs in core.mjs: offset the probe vertically (top:-99999px)
+   or make it position:fixed, either of which is inert in both directions.
+   Until then, neutralise it here without touching the shipped library. */
+body > div[style*="left:-99999px"],
+body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
 </style>
 </head>
 <body>
@@ -2475,7 +2504,7 @@ log('fragments matched ', frags.length);
 log('data-ayah-parts   ', frags[0].dataset.ayahParts);
 log('words highlighted ',
     [...frags].reduce((n, f) => n + f.querySelectorAll('g.word').length, 0),
-    'of', svg.querySelectorAll('g.ayah[data-aid="2:255"] g.word').length);
+    'من', svg.querySelectorAll('g.ayah[data-aid="2:255"] g.word').length);
 log('its medallion     ', frags[0].dataset.marker);
 `,
   lib: { code: `
@@ -2491,7 +2520,7 @@ page.band(ayah, { fill: '#d6a326' });   // مسار واحد يغطي الأسط
 
 log('fragments matched ', ayah.fragments.length);
 log('data-ayah-parts   ', ayah.parts);
-log('complete          ', ayah.complete, '— did we get the lot?');
+log('complete          ', ayah.complete, '— هل حصلنا عليها كلها؟');
 log('words highlighted ', ayah.words().length);
 log('printed lines     ', ayah.lines.join(', '));
 log('its medallion     ', ayah.markerId);
@@ -2530,12 +2559,12 @@ stage.addEventListener('click', e => {
   span.classList.add('lit');
   const word = svg.querySelector('g.word[data-wid="' + span.dataset.wid + '"]');
   out('<b>' + word.dataset.wid + '</b> ' + word.dataset.uthmani +
-      ' → ayah <b>' + word.closest('g.ayah').dataset.aid + '</b>' +
-      ', line ' + word.closest('g.line').dataset.line +
-      '   ' + hit + ' hits, ' + miss + ' misses');
+      ' → آية <b>' + word.closest('g.ayah').dataset.aid + '</b>' +
+      '، سطر ' + word.closest('g.line').dataset.line +
+      '   ' + hit + ' إصابة، ' + miss + ' إخفاق');
 });
 
-out('ملء الفجوات = ' + GAPFILL + '. Click the line, aiming at the gaps.');
+out('ملء الفجوات = ' + GAPFILL + '. انقر على السطر، مستهدفاً الفجوات بين الكلمات.');
 `,
   lib: { code: `
 // لا تحتاج page.onTap إلى أي طبقة فوقية. تحوّل النقرة إلى الكلمة التي
@@ -2560,12 +2589,12 @@ const tap = page.onTap(r => {
   }
   hit++;
   out('<b>' + r.wid + '</b> ' + r.word.text.uthmani +
-      ' → ayah <b>' + r.aid + '</b>, line ' + r.line +
-      '   ' + hit + ' hits, ' + miss + ' misses');
+      ' → آية <b>' + r.aid + '</b>، سطر ' + r.line +
+      '   ' + hit + ' إصابة، ' + miss + ' إخفاق');
 }, { root: stage });
 signal.addEventListener('abort', () => tap.remove());
 
-out('ملء الفجوات = ' + GAPFILL + '. Click the line, aiming at the gaps.');
+out('ملء الفجوات = ' + GAPFILL + '. انقر على السطر، مستهدفاً الفجوات بين الكلمات.');
 ` }
 }), { label: 'ملء الفراغات', name: 'GAPFILL', value: false }));
 
@@ -2622,10 +2651,10 @@ path.setAttribute('fill-rule', 'nonzero');
 layer.append(path);
 svg.prepend(layer);          // أول ابن لعنصر <svg> = خلف كل شيء
 
-log(boxes.length, 'printed lines for ayah', AID,
-    '— drawn as', svg.querySelector('g > path') ? 1 : 0, 'path.');
+log(boxes.length, 'أسطر مطبوعة للآية', AID,
+    '— مرسومة في', svg.querySelector('g > path') ? 1 : 0, 'مسار.');
 log('subpaths ', d.split('Z').length - 1, '· fill-rule', path.getAttribute('fill-rule'));
-log('The ink was never touched: no fill, no stroke, no filter.');
+log('لم يُمسّ الحبر إطلاقاً: لا fill ولا stroke ولا filter.');
 `,
   lib: { code: `
 // كل ما سبق هو page.band(): امتداد الحبر في كل سطر مطبوع، وخطوة
@@ -2638,15 +2667,15 @@ const PAD = 1.2;
 const page = new M.MushafPage(svg);
 const b = page.band(AID, { fill: FILL, padX: PAD, seam: 0.25 });
 
-log(b.bands, 'printed lines for ayah', AID);
-log('elements  ', b.el.children.length, '— one <' + b.path.tagName + '>');
+log(b.bands, 'أسطر مطبوعة للآية', AID);
+log('elements  ', b.el.children.length, '— عنصر واحد <' + b.path.tagName + '>');
 log('subpaths  ', (b.d.match(/Z/g) || []).length);
 log('fill-rule ', b.path.getAttribute('fill-rule'),
-    '  <- NEVER inherit: the page ink is evenodd');
+    '  <- لا ترثه أبداً: حبر الصفحة evenodd');
 log('');
-log('b.boxes gives the per-line rectangles in viewBox units,');
-log('before the seam, if you want to draw something else on them.');
-log('b.remove() undoes exactly this and nothing else.');
+log('b.boxes يعطي مستطيلات كل سطر بوحدات viewBox،');
+log('قبل تراكب الحواف، إن أردت أن ترسم عليها شيئاً آخر.');
+log('b.remove() يتراجع عن هذا بالضبط ولا شيء غيره.');
 ` }
 }), { label: 'الهامش', name: 'PAD', min: 0, max: 6, step: 0.2, value: 1.2, digits: 1 }));
 
@@ -2666,7 +2695,7 @@ const hits = [...svg.querySelectorAll('g.word')]
 
 hits.forEach(w => w.classList.add('q-word'));   // بالأحمر على الصفحة
 
-log(hits.length, 'match(es) on this page for', QUERY);
+log(hits.length, 'مطابقة في هذه الصفحة للكلمة', QUERY);
 log('');
 hits.slice(0, 10).forEach(w =>
   log(w.dataset.wid.padEnd(10), w.dataset.uthmani,
@@ -2685,13 +2714,13 @@ const hits = page.search(QUERY);
 
 hits.forEach(m => m.word.el.classList.add('q-word'));   // بالأحمر على الصفحة
 
-log(hits.length, 'match(es) on this page for', QUERY);
+log(hits.length, 'مطابقة في هذه الصفحة للكلمة', QUERY);
 log('');
 hits.slice(0, 10).forEach(m =>
   log(m.wid.padEnd(10), m.word.text.uthmani,
       '  rasm:', m.word.text.rasm, '  search:', m.word.text.search));
 log('');
-log('page.text(hits.map(h => h.word)) gives just what you found:');
+log('page.text(hits.map(h => h.word)) يعطي ما وجدته فقط:');
 log(page.text(hits.map(h => h.word)));
 ` }
 }));
@@ -2748,7 +2777,7 @@ svg.addEventListener('pointermove', e => {
     'qpc      ' + w.text.qpc     + '\\n' +
     'ayah     ' + w.aid + '   line ' + w.line + '   word ' + w.index + '\\n' +
     'box      ' + b.x.toFixed(1) + ' ' + b.y.toFixed(1) +
-        '  ' + b.w.toFixed(1) + '×' + b.h.toFixed(1) + '  (viewBox units)\\n' +
+        '  ' + b.w.toFixed(1) + '×' + b.h.toFixed(1) + '  (بوحدات viewBox)\\n' +
     'path     ' + (path ? [path.dataset.kind, path.dataset.mark,
                            path.dataset.markFamily].filter(Boolean).join(' · ') : '—')
   );
@@ -2832,11 +2861,11 @@ function report() {
   const lines = H.bandWords(svg, ws);
   const u = payload('uthmani');
   if (!u) { out('اسحب فوق الصفحة ←'); return; }
-  out('<b>' + ws.length + ' words</b> · ' + lines + ' line band(s)\\n\\n' +
+  out('<b>' + ws.length + ' كلمة</b> · ' + lines + ' نطاق سطر\\n\\n' +
       '<b>uthmani</b>  ' + u + '\\n\\n' +
       '<b>imlaei</b>   ' + payload('imlaei') + '\\n\\n' +
       '<b>search</b>   ' + payload('search') + '\\n\\n' +
-      'Ctrl/⌘+C copies the <b>' + WHICH + '</b> form.');
+      'Ctrl/⌘+C ينسخ صيغة <b>' + WHICH + '</b>.');
 }
 
 document.addEventListener('mouseup', report, { signal });
@@ -2868,11 +2897,11 @@ const sel = M.attachSelection(page, {
   citation: true,          // "…نص… (2:253)" أو مرّر دالتك أنت
   onSelect: s => {
     if (!s.words.length) { out('اسحب فوق الصفحة ←'); return; }
-    out('<b>' + s.words.length + ' words</b> · ayahs ' + s.aids.join(', ') + '\\n\\n' +
+    out('<b>' + s.words.length + ' كلمة</b> · الآيات ' + s.aids.join(', ') + '\\n\\n' +
         '<b>uthmani</b>  ' + sel.text('uthmani') + '\\n\\n' +
         '<b>imlaei</b>   ' + sel.text('imlaei')  + '\\n\\n' +
         '<b>search</b>   ' + sel.text('search')  + '\\n\\n' +
-        'Ctrl/⌘+C copies the <b>' + WHICH + '</b> form, with its citation:\\n' +
+        'Ctrl/⌘+C ينسخ صيغة <b>' + WHICH + '</b> مع العزو:\\n' +
         sel.payload());
   }
 });
@@ -3030,9 +3059,9 @@ signal.addEventListener('abort', () => cancelAnimationFrame(raf));
 goto(0, true);
 raf = requestAnimationFrame(tick);
 
-log(steps.length, BY_AYAH ? 'ayahs' : 'words', '·', furniture.length,
-    'pieces of furniture that light with their ayah');
-log('nothing is at full strength before the reading position reaches it');
+log(steps.length, BY_AYAH ? 'آية' : 'كلمة', '·', furniture.length,
+    'من عناصر الصفحة تُضاء مع آيتها');
+log('لا شيء بكامل قوته قبل أن يبلغه موضع القراءة');
 `,
     lib: { code: `
 const GREY = '#c9c4b8';     // not yet reached
@@ -3123,10 +3152,10 @@ signal.addEventListener('abort', () => cancelAnimationFrame(raf));
 goto(0, true);
 raf = requestAnimationFrame(tick);
 
-log(steps.length, BY_AYAH ? 'ayahs' : 'words', '·', closes.size,
-    'medallions that light with the ayah they close');
-log('page.theme() greys everything; page.highlight() re-inks the');
-log('reading position, and its remove() puts back what was there.');
+log(steps.length, BY_AYAH ? 'آية' : 'كلمة', '·', closes.size,
+    'علامة رأس آية تُضاء مع الآية التي تختمها');
+log('page.theme() يجعل كل شيء رمادياً، ثم page.highlight() يعيد الحبر إلى');
+log('موضع القراءة، وتعيد remove() ما كان هناك.');
 ` }
   });
   if (!ctx) return;
@@ -3178,8 +3207,8 @@ function dead(msg) {                    // لا تترك زراً بلا أثر
 // وحُدّ الطلب بمهلة. الطلب بلا مهلة لا يفشل على شبكة رديئة، بل
 // يتجمّد: لا ينتهي await ويبقى القسم فارغاً إلى الأبد، وهذا أسوأ
 // الاحتمالات الثلاثة.
-log('timings   fetching from api.quran.com…');
-let raw = H.FALLBACK_TIMINGS, from = 'cached copy';
+log('timings   يجري الجلب من api.quran.com…');
+let raw = H.FALLBACK_TIMINGS, from = 'نسخة مخزَّنة';
 try {
   const res = await fetch(API, { signal: AbortSignal.timeout(6000) });
   if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -3190,10 +3219,10 @@ try {
     // المقطع هو [index, word_number, start_ms, end_ms]
     raw[e.verse_key] = [e.url, segs.map(s => [s[2], s[3]])];
   }
-  from = 'live from api.quran.com';
+  from = 'مباشرة من api.quran.com';
 } catch (e) {
-  log('API unreachable (' + (e.name === 'TimeoutError' ? 'timed out' : e.message) +
-      ') — falling back to the cached copy of this page.');
+  log('تعذّر الوصول إلى API (' + (e.name === 'TimeoutError' ? 'انتهت المهلة' : e.message) +
+      ') — الرجوع إلى النسخة المخزَّنة من هذه الصفحة.');
 }
 log('timings  ', from);
 
@@ -3208,15 +3237,15 @@ for (const frag of svg.querySelectorAll('g.ayah')) {
   const words = [...svg.querySelectorAll('g.ayah[data-aid="' + aid + '"] g.word')];
   const times = raw[aid][1];
   const perWord = words.length === times.length;
-  if (!perWord) log('MISMATCH', aid, '— ours', words.length,
-                    'theirs', times.length, '· highlighting it whole');
+  if (!perWord) log('عدم تطابق', aid, '— لدينا', words.length,
+                    'لديهم', times.length, '· سيُظلَّل كاملاً');
   ayahs.push({ aid, url: raw[aid][0], times, words, perWord });
 }
-if (!ayahs.length) { dead('No timings for this page, so there is nothing to follow.'); return; }
+if (!ayahs.length) { dead('لا توجد توقيتات لهذه الصفحة، فليس ثمة ما يُتابَع.'); return; }
 log('ayahs    ', ayahs.length, '·',
-    ayahs.reduce((n, a) => n + a.times.length, 0), 'word segments');
+    ayahs.reduce((n, a) => n + a.times.length, 0), 'مقطعاً للكلمات');
 log('counts   ', ayahs.every(a => a.perWord)
-      ? 'agree — using word-level timing' : 'disagree somewhere, see above');
+      ? 'متطابقة — سيُستخدم التوقيت على مستوى الكلمة' : 'مختلفة في موضع ما، انظر أعلاه');
 
 // --- التلوين ---
 svg.classList.add('q-reveal');
@@ -3246,7 +3275,7 @@ audio.addEventListener('ended', () => {
   else { paint(null); play.textContent = '▶  تشغيل التلاوة'; state.textContent = 'انتهت'; }
 });
 audio.addEventListener('error', () =>
-  dead('The recitation audio could not be loaded. Everything else on this page still works.'));
+  dead('تعذّر تحميل صوت التلاوة. وكل ما عدا ذلك في هذه الصفحة يعمل.'));
 
 // يُقاد من currentTime في كل إطار. سلسلة setTimeout تنحرف عن
 // الصوت، والانحراف هو ما يجعل الهندسة تبدو خاطئة.
@@ -3280,7 +3309,7 @@ play.addEventListener('click', () => {
   }).catch(e => {
     play.disabled = false;
     play.textContent = '▶  تشغيل التلاوة';
-    dead('Could not play the recitation (' + e.message + '). ' +
+    dead('تعذّر تشغيل التلاوة (' + e.message + '). ' +
          'Everything else on this page still works.');
   });
 });
@@ -3323,8 +3352,8 @@ function dead(msg) {
   signal.addEventListener('abort', () => box.remove());
 }
 
-log('timings   fetching from api.quran.com…');
-let raw = H.FALLBACK_TIMINGS, from = 'cached copy';
+log('timings   يجري الجلب من api.quran.com…');
+let raw = H.FALLBACK_TIMINGS, from = 'نسخة مخزَّنة';
 try {
   const res = await fetch(API, { signal: AbortSignal.timeout(6000) });
   if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -3334,10 +3363,10 @@ try {
     const segs = (e.segments || []).slice().sort((a, b) => a[1] - b[1]);
     raw[e.verse_key] = [e.url, segs.map(s => [s[2], s[3]])];
   }
-  from = 'live from api.quran.com';
+  from = 'مباشرة من api.quran.com';
 } catch (e) {
-  log('API unreachable (' + (e.name === 'TimeoutError' ? 'timed out' : e.message) +
-      ') — falling back to the cached copy of this page.');
+  log('تعذّر الوصول إلى API (' + (e.name === 'TimeoutError' ? 'انتهت المهلة' : e.message) +
+      ') — الرجوع إلى النسخة المخزَّنة من هذه الصفحة.');
 }
 log('timings  ', from);
 
@@ -3349,15 +3378,15 @@ for (const aid of page.ayahKeys()) {
   const a = page.ayah(aid);
   const times = raw[aid][1];
   const perWord = a.words().length === times.length;
-  if (!perWord) log('MISMATCH', aid, '— ours', a.words().length,
-                    'theirs', times.length, '· highlighting it whole');
+  if (!perWord) log('عدم تطابق', aid, '— لدينا', a.words().length,
+                    'لديهم', times.length, '· سيُظلَّل كاملاً');
   ayahs.push({ aid, ayah: a, url: raw[aid][0], times, perWord });
 }
-if (!ayahs.length) { dead('No timings for this page, so there is nothing to follow.'); return; }
+if (!ayahs.length) { dead('لا توجد توقيتات لهذه الصفحة، فليس ثمة ما يُتابَع.'); return; }
 log('ayahs    ', ayahs.length, '·',
-    ayahs.reduce((n, a) => n + a.times.length, 0), 'word segments');
+    ayahs.reduce((n, a) => n + a.times.length, 0), 'مقطعاً للكلمات');
 log('counts   ', ayahs.every(a => a.perWord)
-      ? 'agree — using word-level timing' : 'disagree somewhere, see above');
+      ? 'متطابقة — سيُستخدم التوقيت على مستوى الكلمة' : 'مختلفة في موضع ما، انظر أعلاه');
 
 const theme = page.theme({ ink: '#c9c4b8' });
 signal.addEventListener('abort', () => theme.remove());
@@ -3383,7 +3412,7 @@ audio.addEventListener('ended', () => {
   else { paint(null); play.textContent = '▶  تشغيل التلاوة'; state.textContent = 'انتهت'; }
 });
 audio.addEventListener('error', () =>
-  dead('The recitation audio could not be loaded. Everything else on this page still works.'));
+  dead('تعذّر تحميل صوت التلاوة. وكل ما عدا ذلك في هذه الصفحة يعمل.'));
 
 function frame() {
   raf = requestAnimationFrame(frame);
@@ -3412,7 +3441,7 @@ play.addEventListener('click', () => {
   }).catch(e => {
     play.disabled = false;
     play.textContent = '▶  تشغيل التلاوة';
-    dead('Could not play the recitation (' + e.message + '). ' +
+    dead('تعذّر تشغيل التلاوة (' + e.message + '). ' +
          'Everything else on this page still works.');
   });
 });
@@ -3502,8 +3531,8 @@ stage.addEventListener('click', e => {
   s ? show(s) : hide();
 });
 
-log(joined, 'of', layer.children.length, 'words joined on data-wid — zero misses.');
-log('hover, tap, or Tab into the page.');
+log(joined, 'من', layer.children.length, 'كلمة مرتبطة عبر data-wid — دون أي إخفاق.');
+log('مرّر المؤشر أو انقر أو ادخل الصفحة بمفتاح Tab.');
 `,
     lib: { code: `
 const gloss = await (await fetch('data/gloss-042.json')).json();
@@ -3547,9 +3576,9 @@ if (PIN_TITLES) {
 }
 
 const joined = page.words().filter(w => gloss[w.wid]).length;
-log(joined, 'of', page.wordCount, 'words joined on data-wid — zero misses.');
-log('hover or tap the page.');
-if (a11y) log('annotate(): the page now has a title and a label per word.');
+log(joined, 'من', page.wordCount, 'كلمة مرتبطة عبر data-wid — دون أي إخفاق.');
+log('مرّر المؤشر فوق الصفحة أو انقرها.');
+if (a11y) log('annotate(): صار للصفحة عنوان ولكل كلمة تسمية.');
 ` }
   });
   bindToggle(ctx, { label: 'تثبيت <title> أيضاً', name: 'PIN_TITLES', value: false });
@@ -3619,7 +3648,7 @@ document.addEventListener('copy', e => {
   if (!text) return;
   e.clipboardData.setData('text/plain', text);
   e.preventDefault();
-  out('<b>copied</b>\\n\\n' + text);
+  out('<b>نُسخ</b>\\n\\n' + text);
 }, { signal });
 
 out('مرّر المؤشر على كلمة · انقرها لتظليل آيتها · اسحب وانسخ. الثلاثة معاً.');
@@ -3664,9 +3693,9 @@ const click = M.onWordClick(page, ({ aid }) => {
 const sel = M.attachSelection(page, {
   mount: stage,
   paintBand: false,            // التظليل بالنقر أعلاه هو من يملك التلوين هنا
-  onSelect: s => { if (s.words.length) out('<b>selected</b>\\n\\n' + s.text); }
+  onSelect: s => { if (s.words.length) out('<b>محدَّد</b>\\n\\n' + s.text); }
 });
-stage.addEventListener('mushaf:copy', e => out('<b>copied</b>\\n\\n' + e.detail.text));
+stage.addEventListener('mushaf:copy', e => out('<b>نُسخ</b>\\n\\n' + e.detail.text));
 
 signal.addEventListener('abort', () => {
   hover.remove(); click.remove(); sel.detach();
@@ -3740,12 +3769,12 @@ page.styleMarks({ name: 'maddah' },     { fill: '#3b6fc4' });
 
 log('vowel marks ', page.marks({ family: 'diacritic' }).length);
 log('  of which tanween', page.marks({ family: 'tanween' }).length,
-    '— they are BOTH, which is why data-mark-family is a token list');
+    '— وهي من الاثنتين معاً، ولهذا كانت data-mark-family قائمة رموز');
 log('letter dots ', page.marks({ family: 'dots' }).length);
 log('waqf signs  ', page.marks({ family: 'waqf' }).length);
 log('');
-log('every styleMarks() handle has .remove(), which restores the');
-log('exact inline style that was there before — not a guess at it.');
+log('لكل مقبض من styleMarks() دالة .remove() تعيد النمط السطري');
+log('الذي كان قبلها بالضبط — لا تخميناً له.');
 ` }
 }));
 
@@ -3784,10 +3813,10 @@ const theme = page.theme({
 });
 
 log('paths themed ', page.el.querySelectorAll('path').length);
-log('paper        ', 'a <rect> in the viewBox, not a container background');
+log('paper        ', '<rect> داخل viewBox، لا خلفية حاوية');
 log('');
-log('theme.remove() puts the page back exactly as it was.');
-log('Because it is inside the <svg>, this also survives:');
+log('theme.remove() يعيد الصفحة إلى ما كانت عليه بالضبط.');
+log('ولأنه داخل <svg>، فإن هذا يصمد أيضاً مع:');
 log('   await M.toPngDataUrl(page.crop("2:255"), { scale: 4 })');
 ` }
   });
@@ -3855,12 +3884,12 @@ markers.forEach(m => {
   ring.replaceWith(c);
 });
 
-log(markers.length, 'medallions on this page');
+log(markers.length, 'علامة رأس آية في هذه الصفحة');
 log('rings  ', svg.querySelectorAll('[data-kind="ayah-marker-ornament"]').length);
 log('numerals', svg.querySelectorAll('[data-kind="ayah-number"]').length);
 log('');
-log('Set RE_RING = true to swap the ring and keep the number.');
-log('Set HIDE_ALL = true for a reading view with no markers.');
+log('اضبط RE_RING = true لاستبدال الحلقة مع الإبقاء على الرقم.');
+log('اضبط HIDE_ALL = true لعرض قراءة بلا علامات.');
 `,
     lib: { code: `
 const RING   = '#b08d2e';   // حلقة الزخرفة
@@ -3884,13 +3913,13 @@ const h = page.styleMarkers({
   replaceRing: RE_RING
 });
 
-log(page.markers().length, 'real medallions on this page');
+log(page.markers().length, 'علامة رأس آية حقيقية في هذه الصفحة');
 log('marker groups ', page.allMarkerGroups().length,
-    '— the difference is decorative rosettes');
+    '— والفرق هو الورود الزخرفية');
 log('');
-log('Set RE_RING = true to swap the ring and keep the number.');
-log('Set HIDE_ALL = true for a reading view with no markers.');
-log('h.remove() restores every one of them.');
+log('اضبط RE_RING = true لاستبدال الحلقة مع الإبقاء على الرقم.');
+log('اضبط HIDE_ALL = true لعرض قراءة بلا علامات.');
+log('h.remove() يعيدها جميعاً.');
 ` }
   });
   /* SCALE is continuous, so it gets a slider; the other two are genuinely
@@ -3945,9 +3974,9 @@ svg.querySelectorAll('g.ayah-marker[data-aid]').forEach(m => {
 
 // وسّع viewBox حتى لا يُقتطع شيء
 log('viewBox ', H.refit(svg, 6));
-log('lines   ', lines.length, 'moved apart by', GAP, 'units each');
-log('markers ', svg.querySelectorAll('g.ayah-marker[data-aid]').length, 'carried with their line');
-log('glyphs  ', svg.querySelectorAll('path').length, 'untouched');
+log('lines   ', lines.length, 'أُبعدت بمقدار', GAP, 'وحدة لكل سطر');
+log('markers ', svg.querySelectorAll('g.ayah-marker[data-aid]').length, 'محمولة مع سطرها');
+log('glyphs  ', svg.querySelectorAll('path').length, 'دون مساس');
 `,
     lib: { code: `
 const GAP = 6;               // تباعد إضافي بوحدات الصفحة. اسحب المنزلق.
@@ -3959,8 +3988,8 @@ const page = new M.MushafPage(svg);
 const h = M.setLineGap(page, GAP);
 
 log('viewBox ', h.viewBox);
-log('lines   ', h.lines, 'moved apart by', h.gap, 'units each');
-log('glyphs  ', page.el.querySelectorAll('path').length, 'untouched');
+log('lines   ', h.lines, 'أُبعدت بمقدار', h.gap, 'وحدة لكل سطر');
+log('glyphs  ', page.el.querySelectorAll('path').length, 'دون مساس');
 log('');
 
 // دالة gapToFill حساب محض بلا DOM، فتستطيع أن تحسب لجهاز لست
@@ -3969,13 +3998,13 @@ const vb = page.viewBox, lines = page.lines().length;
 for (const [name, w, hgt] of [['iPhone SE', 375, 667], ['iPhone 14', 390, 844],
                               ['Pixel 7', 412, 915], ['iPad 10.9', 820, 1180]]) {
   const g = M.gapToFill({ pageW: vb.w, pageH: vb.h, lines, viewW: w, viewH: hgt });
-  log(name.padEnd(11), w + '×' + hgt, ' gap', g.toFixed(1),
-      ' wastes', (M.wastedFraction({ pageW: vb.w, pageH: vb.h, viewW: w, viewH: hgt }) * 100).toFixed(1) + '%');
+  log(name.padEnd(11), w + '×' + hgt, ' فجوة', g.toFixed(1),
+      ' هدر', (M.wastedFraction({ pageW: vb.w, pageH: vb.h, viewW: w, viewH: hgt }) * 100).toFixed(1) + '%');
 }
 log('');
-log('Clamped at zero: the iPad is already taller for its width than');
-log('the page, so it needs no leading — and a negative gap would');
-log('overlap the lines.  fitToViewport() measures and applies it.');
+log('محدود عند الصفر: نسبة ارتفاع iPad إلى عرضه أكبر أصلاً من');
+log('نسبة الصفحة، فلا يحتاج إلى تباعد — والفجوة السالبة كانت');
+log('ستُراكب الأسطر.  fitToViewport() يقيسها ويطبّقها.');
 ` }
   });
   if (!ctx) return;
@@ -4072,10 +4101,10 @@ log('viewBox ', c.viewBox);
 log('');
 log(c.page.text('page'));
 log('');
-log('c.toDataUrl() gives an <img src> for this crop, no canvas and no');
-log('rasterising, so it still scales.  M.toPngDataUrl(c, {scale: 4})');
-log('gives a PNG — the pages reference nothing external, so the');
-log('canvas is never tainted.');
+log('c.toDataUrl() يعطي <img src> لهذا الاقتطاع، بلا canvas وبلا');
+log('ترقيم نقطي، فيظل قابلاً للتحجيم.  M.toPngDataUrl(c, {scale: 4})');
+log('يعطي PNG — والصفحات لا تشير إلى أي مورد خارجي، فلا');
+log('يتلوّث canvas أبداً.');
 ` }
   });
   if (!ctx) return;
@@ -4099,31 +4128,31 @@ if (banner) {
   log('surah    ', banner.dataset.sid, banner.dataset.surahNameAr,
       '·', banner.dataset.surahNameLatin, '·', banner.dataset.surahNameEn);
   log('revealed ', banner.dataset.revelationPlace);
-  log('ayahs    ', banner.dataset.ayahCount, 'in the surah');
+  log('ayahs    ', banner.dataset.ayahCount, 'في السورة');
 } else {
   // لا يظهر عنوان السورة إلا في صفحتها الأولى
-  log('no banner here — surah',
+  log('لا عنوان هنا — السورة',
       svg.querySelector('g.word').dataset.wid.split(':')[0],
-      '(read out of data-wid)');
+      '(مقروء من data-wid)');
 }
 
 const aids = [...svg.querySelectorAll('g.ayah')].map(g => g.dataset.aid);
 log('on page  ', aids[0], '→', aids[aids.length - 1],
-    '(' + svg.querySelectorAll('g.word').length + ' words)');
+    '(' + svg.querySelectorAll('g.word').length + ' كلمة)');
 
 // التقسيمات موسومة على الآية التي تفتتحها: الأجزاء الثلاثون
 // والأحزاب الستون و240 رُبعاً، منها 41 بلا وردة مرسومة
 const j = svg.querySelector('g.ayah[data-juz-start]');
-if (j) log('juz      ', j.dataset.juzStart, 'opens at', j.dataset.aid);
+if (j) log('juz      ', j.dataset.juzStart, 'يبدأ عند', j.dataset.aid);
 const h = svg.querySelector('g.ayah[data-hizb-start]');
-if (h) log('hizb     ', h.dataset.hizbStart, 'opens at', h.dataset.aid);
+if (h) log('hizb     ', h.dataset.hizbStart, 'يبدأ عند', h.dataset.aid);
 [...svg.querySelectorAll('g.ayah[data-rub-start]')].forEach(g =>
-  log('rub      ', g.dataset.rubStart, 'opens at', g.dataset.aid));
-log('rosettes ', svg.querySelectorAll('g.hizb-mark').length, 'drawn on the page');
+  log('rub      ', g.dataset.rubStart, 'يبدأ عند', g.dataset.aid));
+log('rosettes ', svg.querySelectorAll('g.hizb-mark').length, 'مرسومة على الصفحة');
 
 // مواضع السجدة: 15 في المصحف، مستقلة، ولا تقع داخل كلمة قط
 const sj = [...svg.querySelectorAll('g.sajdah-mark')].map(g => g.dataset.aid);
-log('sajdah   ', sj.length ? sj.join(', ') : 'none');
+log('sajdah   ', sj.length ? sj.join(', ') : 'لا شيء');
 `,
     lib: { code: `
 // كل ما يلي مقروء من الملف. بلا قاعدة بيانات، وبلا حالة خاصة
@@ -4136,30 +4165,30 @@ const page = new M.MushafPage(svg);
 for (const s of page.surahs()) {
   if (s.hasBanner) {
     log('surah    ', s.number, s.arabic, '·', s.latin, '·', s.english);
-    log('revealed ', s.revelationPlace, '·', s.ayahCount, 'ayahs in the surah');
+    log('revealed ', s.revelationPlace, '·', s.ayahCount, 'آية في السورة');
   } else {
-    log('surah    ', s.number, '— continues here, so no banner and no name');
+    log('surah    ', s.number, '— تكمل هنا، فلا عنوان ولا اسم');
   }
 }
 
 const keys = page.ayahKeys();
 log('on page  ', keys[0], '→', keys[keys.length - 1],
-    '(' + page.wordCount + ' words, ' + page.lines().length + ' printed lines)');
+    '(' + page.wordCount + ' كلمة، ' + page.lines().length + ' سطراً مطبوعاً)');
 
 // تعطي divisions() الحدود التي تبدأ هنا، كلها، ومنها 41 رُبعاً بلا
 // وردة مرسومة. وتعطي rosettes() المرسومة وحدها. سؤالان مختلفان
 // ودالتان مختلفتان.
 const d = page.divisions();
 for (const k of ['juz', 'hizb', 'nisf', 'rub'])
-  for (const x of d[k]) log(k.padEnd(9), x.n, 'opens at', x.aid, '· line', x.line);
-log('rosettes ', page.rosettes().length, 'drawn on the page');
+  for (const x of d[k]) log(k.padEnd(9), x.n, 'يبدأ عند', x.aid, '· سطر', x.line);
+log('rosettes ', page.rosettes().length, 'مرسومة على الصفحة');
 
 // العدّ بـ data-mark لا بالمجموعة: موضعان في المدونة مقسومان إلى
 // مجموعتين بـ data-aid غير موثوق
 const sj = page.sajdahs();
-log('sajdah   ', sj.length ? sj.map(s => s.aid).join(', ') : 'none');
+log('sajdah   ', sj.length ? sj.map(s => s.aid).join(', ') : 'لا شيء');
 log('');
-log('page.info() gives all of that at once.');
+log('page.info() يعطي ذلك كله دفعة واحدة.');
 ` }
   });
   if (!ctx) return;

@@ -21,6 +21,29 @@ untouched (`viewBox` unchanged, no transform, no negative `scaleX` anywhere in t
 on word `2:254:21`, and the English page shows **26.778 px on the same word**: pre-existing, not a
 regression. That second figure is worth a look on its own merits, but it is not RTL's doing.
 
+### Two RTL bugs in the shipped library, found by this work
+
+Both live in `docs/shipping/lib/` — **out of scope for this change and NOT fixed there.** The Arabic
+page carries a narrowly-scoped, clearly-commented mitigation for each; both mitigations should be
+deleted once the library is corrected.
+
+They share a root cause worth stating once: **in an LTR page, overflow past the LEFT edge is clipped
+and never becomes scrollable. In an RTL page the scroll origin is the RIGHT edge, so the identical
+markup becomes real, scrollable horizontal overflow.** Anything hidden by parking it at a large
+negative `left` is an RTL bug waiting to happen.
+
+| where | what | effect in RTL | upstream fix |
+|---|---|---|---|
+| `shipping/lib/core.mjs:136` (and its bundle `mushaf.global.js:140`) | an off-screen measuring probe at `position:absolute;left:-99999px;top:0` | **99999 px** of horizontal scroll — a full-width scrollbar and a page that pans into blank space | offset it vertically (`top:-99999px`) or make it `position:fixed`; either is inert in both directions |
+| `shipping/lib/` — the `.mushaf-hitlayer` text/hit layer | same construction as the demo's `.q-hits` (one shrink-to-fit span per word, positioned in viewport pixels) but it does not pin its own direction | spans take an RTL base direction, the trailing space moves to the other side, and the layer measures **70 px wider** than the page it covers — 45 px of document overflow in three sections | `.mushaf-hitlayer{direction:ltr}`, the same remedy §7 already applies to `.q-hits` |
+
+This is the strongest argument for the §7 rule in this document: the layer's geometry is
+viewport-physical and must be pinned, not inherited. The demo got that right; the library did not.
+
+**This also corrects §4 of this plan.** It previously listed `.offstage{left:-99999px}` under "keep
+physical — safe in both directions". That was wrong, the browser caught it, and `.offstage` is now
+`position:fixed;left:0;top:-99999px`.
+
 Scope: `docs/demo/template.html` (the source of truth; `build.py` produces `index.html` from it).
 
 ---
@@ -104,7 +127,7 @@ them.**
 | `.q-hits span { transform-origin: left top }` | `left top` | Paired with `s.style.left`, computed from `getBoundingClientRect()`. Both are **viewport-physical** and direction-agnostic. See §7. |
 | `figure.code .copy { top:10px; right:10px }` | `right` | The copy button decorates a code block that stays LTR. Its correct home is the block's top-right corner in both directions. |
 | `.lab-badge` — *if* it labels the LTR editor | reconsider | Listed in §3 as logical, but if it sits over the `textarea` it should follow the code, not the page. Decide once the rewrite settles; the two are mutually exclusive. |
-| `.offstage { left:-99999px }` | `left` | Off-screen hiding. Physical is correct and safe in both directions. |
+| ~~`.offstage { left:-99999px }`~~ | **WRONG — see above** | This row said "physical is correct and safe in both directions". **It is not.** Leftward overflow is clipped in LTR but scrollable in RTL, so this produced 99999 px of horizontal scroll. Now `position:fixed;left:0;top:-99999px`. Never park anything off-screen with a large negative `left` in a page that may become RTL. |
 | `scaleX(...)` in `hitLayer()` | untouched | A **fitting** transform that squeezes a span onto its word's measured width. It is not a mirror and has nothing to do with direction. |
 
 ---
