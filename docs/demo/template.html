@@ -1841,7 +1841,12 @@ function refit(svg, pad = 4) {
 const FALLBACK_TIMINGS = /*TIMINGS*/null;
 
 const H = { band, clearBands, fold, crop, refit, getPage, toRoot, clonePage, SVGNS,
-            hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_TIMINGS };
+            hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_TIMINGS,
+            /* Where the pages live. A snippet must never hardcode the dev
+               checkout path: the same page is served from the bundle, from a
+               folder on the network, and from file:// on a copy, and only
+               PAGES resolves in all three. */
+            PAGES };
 
 /* ---------------------------------------------------------------------------
    THE LAB — an editable snippet beside the page it runs on.
@@ -2487,7 +2492,7 @@ mod('lab-start', () => makeLab({
   label: 'fetch a page',
   code: `
 // really fetches the file. Change 003 to any page from 001 to 604.
-const res = await fetch('../../.cache/words-svg/hafs-kfqc/003.svg');
+const res = await fetch(H.PAGES + '003.svg');
 const doc = new DOMParser()
   .parseFromString(await res.text(), 'image/svg+xml');
 
@@ -2510,7 +2515,7 @@ stage.replaceChildren(doc.documentElement);
 // createLoader caches parsed pages and hands out a CLONE every time,
 // so two callers can never disturb each other. It also drops the
 // dev-only polygon layer for you.
-const load = M.createLoader({ baseUrl: '../../.cache/words-svg/hafs-kfqc/' });
+const load = M.createLoader({ baseUrl: H.PAGES });
 const page = await load(3);
 
 log('words          ', page.wordCount);
