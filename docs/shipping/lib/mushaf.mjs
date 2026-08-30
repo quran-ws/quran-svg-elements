@@ -15,3 +15,4 @@ export * from './a11y.mjs';
 export * from './view.mjs';
 export * from './raster.mjs';
 export * from './atlas.mjs';
+export * from './markers.mjs';
