@@ -436,7 +436,7 @@ opening frame (§9.2).
 
 | attribute | count | values | notes |
 |---|---:|---|---|
-| `data-kind` | 616,561 | `mark` 436,629 · `body` 161,778 · `ayah-marker-ornament` 6,248 · `ayah-number` 6,236 · `header-ink` 5,670 | Present on **every** path except the 6,236 `ayahPolygon` and 4 page-ornament paths on p17 (§10.5). `body` = letter ink. |
+| `data-kind` | 616,561 | `mark` 436,629 · `body` 161,778 · `ayah-marker-ornament` 6,248 · `ayah-number` 6,236 · `header-ink` 5,670 | Present on **every** path except the 6,236 `ayahPolygon` and 4 paths on p17 that lie **entirely outside the viewBox** and are therefore invisible (measured: y 583.7..588.2 on a 550-tall page, and y -62.2..-7.1). Ink the viewBox clips is kept out of classification but still re-emitted, so that no ink is ever silently dropped — §10.5. `body` = letter ink. |
 | `data-mark` | 436,843 | 35 names, §8 | Attribute occurrences. The **logical** mark count is 436,627 — a mark drawn as more than one path is one mark. On every `data-kind="mark"` path but **two**: one unnamed (p1 `e34`) and one carrying `data-mark-part` instead (p146). |
 | `data-mark-family` | 393,970 | **token list** — `diacritic` 280,333 · `dots` 105,270 · `tanween` 8,554 · `waqf` 4,272 · `sifr` 4,054 · `sajdah` 30 · `reading-sign` 11 | **Space-separated, like `class` — match with `~=`, not `=`.** See below. Only on marks that have a family. **Derivable from `mark-taxonomy.v2.json`** — prefer the registry, which also covers `small-noon` (§10.5). |
 | `data-eid` | 598,407 | `e1`, `e2`, … | **Not stable across builds. Never key on it.** Unique within a page. Only on word/standalone ink — never on marker, header or polygon paths. |

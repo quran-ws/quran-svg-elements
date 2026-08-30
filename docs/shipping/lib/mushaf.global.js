@@ -136,8 +136,14 @@
     if (hiddenHost && hiddenHost.isConnected) return hiddenHost;
     hiddenHost = document.createElement('div');
     hiddenHost.setAttribute('aria-hidden', 'true');
+    // Parked ABOVE the viewport, not to the left of it. In an LTR page,
+    // `left:-99999px` is clipped and harmless; in an RTL page the scroll origin
+    // is the right edge, so the same rule becomes 99,999 px of real horizontal
+    // scroll — a full-width scrollbar and a page that pans into blank space.
+    // Negative `top` is safe in both directions because a document never scrolls
+    // above its origin. Found by rendering the Arabic page, 2026-08-30.
     hiddenHost.style.cssText =
-      'position:absolute;left:-99999px;top:0;width:1px;height:1px;overflow:hidden';
+      'position:absolute;left:0;top:-99999px;width:1px;height:1px;overflow:hidden';
     document.body.appendChild(hiddenHost);
     return hiddenHost;
   }
