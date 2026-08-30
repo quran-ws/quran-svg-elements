@@ -1,0 +1,882 @@
+{
+  "source": {
+    "file": "quran.pdf",
+    "edition": "King Fahd Complex for the Printing of the Holy Quran, Madinah",
+    "riwayah": "Hafs 'an 'Asim (Shatibiyyah route)",
+    "calligrapher": "Uthman Taha",
+    "printed": "1441 AH",
+    "pdf_pages": 640,
+    "mushaf_pages": 604,
+    "page_offset_note": "pdf_page = mushaf_page + 3",
+    "appendix_pdf_range": [
+      607,
+      640
+    ],
+    "appendix_folio_sequence": [
+      "أ",
+      "ب",
+      "ج",
+      "د",
+      "ه",
+      "و",
+      "ز",
+      "ح",
+      "ط",
+      "ي",
+      "ك",
+      "ل",
+      "م",
+      "ن",
+      "س",
+      "ع",
+      "ف",
+      "ص",
+      "ق",
+      "ر",
+      "ش",
+      "ت",
+      "ث"
+    ]
+  },
+  "waqf_signs": [
+    {
+      "id": "waqf_lazim",
+      "glyph": "ۘ",
+      "codepoint": "U+06D8",
+      "name_ar": "الوقف اللازم",
+      "name_en": "Compulsory stop",
+      "rule": "Stopping is required.",
+      "example": {
+        "ref": "6:36",
+        "text": "إِنَّمَا يَسْتَجِيبُ ٱلَّذِينَ يَسْمَعُونَ ۘ وَٱلْمَوْتَىٰ يَبْعَثُهُمُ ٱللَّهُ"
+      },
+      "folio": "ث",
+      "appendix_pdf_page": 630
+    },
+    {
+      "id": "waqf_awla",
+      "glyph": "ۗ",
+      "codepoint": "U+06D7",
+      "name_ar": "الوقف الجائز مع كون الوقف أولى",
+      "name_en": "Stopping preferred",
+      "rule": "Both permitted; stopping is better.",
+      "example": {
+        "ref": "13:28",
+        "text": "وَتَطْمَئِنُّ قُلُوبُهُم بِذِكْرِ ٱللَّهِ ۗ أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ"
+      },
+      "folio": "ث",
+      "appendix_pdf_page": 630
+    },
+    {
+      "id": "waqf_jaiz",
+      "glyph": "ۚ",
+      "codepoint": "U+06DA",
+      "name_ar": "الوقف الجائز جوازا مستوي الطرفين",
+      "name_en": "Permissible stop, both equal",
+      "rule": "Stopping and continuing are equally sound.",
+      "example": {
+        "ref": "18:13",
+        "text": "نَّحْنُ نَقُصُّ عَلَيْكَ نَبَأَهُم بِٱلْحَقِّ ۚ إِنَّهُمْ فِتْيَةٌ ءَامَنُواْ بِرَبِّهِمْ"
+      },
+      "folio": "ث",
+      "appendix_pdf_page": 630
+    },
+    {
+      "id": "wasl_awla",
+      "glyph": "ۖ",
+      "codepoint": "U+06D6",
+      "name_ar": "الوقف الجائز مع كون الوصل أولى",
+      "name_en": "Continuing preferred",
+      "rule": "Both permitted; continuing is better.",
+      "example": {
+        "ref": "27:79",
+        "text": "فَتَوَكَّلْ عَلَى ٱللَّهِ ۖ إِنَّكَ عَلَى ٱلْحَقِّ ٱلْمُبِينِ"
+      },
+      "folio": "ث",
+      "appendix_pdf_page": 630
+    },
+    {
+      "id": "muanaqah",
+      "glyph": "ۛ ۛ",
+      "codepoint": "U+06DB (always in pairs)",
+      "name_ar": "تعانق الوقف (المعانقة)",
+      "name_en": "Embracing pause",
+      "rule": "Two candidate stops; stopping at one forbids stopping at the other.",
+      "example": {
+        "ref": "2:2",
+        "text": "ذَٰلِكَ ٱلْكِتَٰبُ لَا رَيْبَ ۛ فِيهِ ۛ هُدًى لِّلْمُتَّقِينَ"
+      },
+      "folio": "ث",
+      "appendix_pdf_page": 630
+    },
+    {
+      "id": "la_not_used",
+      "glyph": "ۙ",
+      "codepoint": "U+06D9",
+      "name_ar": "لا",
+      "name_en": "No-stop sign",
+      "rule": "NOT USED in this mushaf. Present in many Indo-Pak and Egyptian editions.",
+      "folio": null,
+      "appendix_pdf_page": null
+    }
+  ],
+  "dabt_marks": [
+    {
+      "id": "sifr_mustadir",
+      "codepoint": "U+06DF",
+      "name_ar": "الصفر المستدير",
+      "name_en": "Round zero",
+      "rule": "Letter present in the rasm but never pronounced, in wasl or waqf.",
+      "count": 3988,
+      "folio": "و",
+      "appendix_pdf_page": 613
+    },
+    {
+      "id": "sifr_mustatil",
+      "codepoint": "U+06E0",
+      "name_ar": "الصفر المستطيل القائم",
+      "name_en": "Upright rectangular zero",
+      "rule": "Alif dropped in wasl, pronounced in waqf.",
+      "count": 66,
+      "note": "Almost all occurrences are أَنَا۠; the exceptions are لَّٰكِنَّا۠ 18:38, ٱلظُّنُونَا۠ 33:10, ٱلرَّسُولَا۠ 33:66, ٱلسَّبِيلَا۠ 33:67, قَوَارِيرَا۠ 76:15.",
+      "folio": "و",
+      "appendix_pdf_page": 613
+    },
+    {
+      "id": "bare_alif",
+      "codepoint": null,
+      "name_ar": "إهمال الألف التي بعدها ساكن",
+      "name_en": "Deliberately unmarked alif",
+      "rule": "Alif followed by a sakin letter is left bare — no circle, no oval. The absence is the convention.",
+      "folio": "و",
+      "appendix_pdf_page": 613
+    },
+    {
+      "id": "sukun",
+      "codepoint": "U+0652 (printed as the head of a dotless khah, cf. U+06E1)",
+      "name_ar": "رأس خاء صغيرة بدون نقطة",
+      "name_en": "Sukun",
+      "rule": "Quiescent and clearly articulated letter.",
+      "folio": "ز",
+      "appendix_pdf_page": 614
+    },
+    {
+      "id": "idgham_kamil",
+      "codepoint": null,
+      "name_ar": "تعرية الحرف مع تشديد التالي",
+      "name_en": "Complete assimilation",
+      "rule": "Bare letter + shadda on the next: the first letter vanishes entirely, body and quality.",
+      "folio": "ز",
+      "appendix_pdf_page": 614
+    },
+    {
+      "id": "idgham_naqis",
+      "codepoint": null,
+      "name_ar": "تعرية الحرف مع عدم تشديد التالي",
+      "name_en": "Incomplete assimilation / ikhfa",
+      "rule": "Bare letter, no shadda: body goes, quality remains — or ikhfa (oral or labial).",
+      "folio": "ز، ح",
+      "appendix_pdf_page": 614
+    },
+    {
+      "id": "iqlab_high",
+      "codepoint": "U+06E2",
+      "name_ar": "الميم الصغيرة (فوق)",
+      "name_en": "Small high meem — iqlab",
+      "rule": "Nun sound turns into meem. Used above the line.",
+      "count": 510,
+      "folio": "ط",
+      "appendix_pdf_page": 616
+    },
+    {
+      "id": "iqlab_low",
+      "codepoint": "U+06ED",
+      "name_ar": "الميم الصغيرة (تحت)",
+      "name_en": "Small low meem — iqlab",
+      "rule": "Same rule, placed below the line when the tanwin is a kasratan.",
+      "count": 99,
+      "folio": "ط",
+      "appendix_pdf_page": 616
+    },
+    {
+      "id": "small_letters",
+      "codepoint": "U+0670 and others",
+      "name_ar": "الحروف الصغيرة",
+      "name_en": "Miniature letters",
+      "rule": "Letters omitted from the Uthmani rasm but obligatory in pronunciation. Historically inserted in red at full size; reduced to small black because early presses could not print colour.",
+      "count": 9726,
+      "note": "count is for the dagger alif U+0670 only",
+      "folio": "ط، ي",
+      "appendix_pdf_page": 616
+    },
+    {
+      "id": "substitute_override",
+      "codepoint": null,
+      "name_ar": "الحرف المتروك له بدل في الكتابة",
+      "name_en": "Small letter overrides written substitute",
+      "rule": "Where the rasm writes a substitute, pronunciation follows the miniature letter — ٱلصَّلَوٰةَ, كَمِشْكَوٰةٍ, ٱلرِّبَوٰا۟.",
+      "folio": "ك",
+      "appendix_pdf_page": 618
+    },
+    {
+      "id": "hamzat_wasl",
+      "codepoint": "U+0671",
+      "name_ar": "رأس صاد صغيرة فوق ألف الوصل",
+      "name_en": "Hamzat al-wasl",
+      "rule": "Connecting hamzah, dropped when the word is reached in continuation.",
+      "count": 13483,
+      "folio": "ن",
+      "appendix_pdf_page": 621
+    },
+    {
+      "id": "silah_waw",
+      "codepoint": "U+06E5",
+      "name_ar": "الواو الصغيرة — صلة هاء الضمير",
+      "name_en": "Small waw (silah)",
+      "rule": "After the pronoun ha with dammah; two-count natural madd, four or five if a hamzah follows.",
+      "count": 1257,
+      "folio": "ف",
+      "appendix_pdf_page": 624
+    },
+    {
+      "id": "silah_ya",
+      "codepoint": "U+06E6",
+      "name_ar": "الياء الصغيرة المردودة — صلة هاء الضمير",
+      "name_en": "Small yeh (silah)",
+      "rule": "After the pronoun ha with kasrah; same lengths.",
+      "count": 995,
+      "folio": "ف",
+      "appendix_pdf_page": 624
+    },
+    {
+      "id": "madd",
+      "codepoint": "U+0653",
+      "name_ar": "علامة المد",
+      "name_en": "Madd sign",
+      "rule": "Lengthening beyond the natural two counts; exact duration is a tajwid matter.",
+      "count": 5376,
+      "note": "This mushaf deliberately does NOT use the madd over an alif to stand in for a dropped alif — ءَامَنُوا۟, never آمَنُوا۟.",
+      "folio": "ك، ل",
+      "appendix_pdf_page": 618
+    }
+  ],
+  "structural_marks": [
+    {
+      "id": "ayah_medallion",
+      "codepoint": "U+06DD",
+      "name_ar": "الدائرة المحلاة",
+      "name_en": "Ayah medallion",
+      "rule": "Marks the END of a verse and carries its number. The appendix forbids placing it before the verse.",
+      "count": 6236,
+      "folio": "ن",
+      "appendix_pdf_page": 621
+    },
+    {
+      "id": "hizb_divider",
+      "codepoint": "U+06DE",
+      "printed_glyph": "٭",
+      "name_ar": "علامة بداية الأجزاء والأحزاب وأنصافها وأرباعها",
+      "name_en": "Juz / hizb divider",
+      "rule": "Inline star marks the exact word; a named medallion in the outer margin carries the label.",
+      "folio": "س",
+      "appendix_pdf_page": 622
+    },
+    {
+      "id": "sajdah",
+      "codepoint": "U+06E9",
+      "name_ar": "خط أفقي فوق الكلمة + علامة المحراب",
+      "name_en": "Sajdah — overline plus mihrab",
+      "rule": "Overline identifies the word making prostration due; the mihrab glyph marks where you prostrate. The two can sit on different verses.",
+      "count": 15,
+      "folio": "س",
+      "appendix_pdf_page": 622
+    },
+    {
+      "id": "saktah",
+      "codepoint": "U+06DC",
+      "name_ar": "السين فوق الحرف الأخير — السكتة",
+      "name_en": "Saktah",
+      "rule": "Brief pause, no breath, then continue.",
+      "count": 5,
+      "folio": "س، ع",
+      "appendix_pdf_page": 622
+    }
+  ],
+  "single_place_marks": [
+    {
+      "mark": "Imalah — filled dot below",
+      "word": "مَجْر۪ىٰهَا",
+      "ref": "11:41",
+      "mushaf_page": 226,
+      "pdf_page": 229,
+      "codepoint": "U+06EA",
+      "folio": "ل"
+    },
+    {
+      "mark": "Ishmam — filled dot above the meem",
+      "word": "تَأْمَ۫نَّا",
+      "ref": "12:11",
+      "mushaf_page": 236,
+      "pdf_page": 239,
+      "codepoint": "U+06EB",
+      "folio": "ل، م"
+    },
+    {
+      "mark": "Tashil — dot with no vowel for the hamzah",
+      "word": "ءَا۬عْجَمِىٌّ",
+      "ref": "41:44",
+      "mushaf_page": 481,
+      "pdf_page": 484,
+      "codepoint": "U+06EC",
+      "folio": "ن"
+    },
+    {
+      "mark": "Seen above sad — read with seen",
+      "word": "وَيَبْصُۜطُ",
+      "ref": "2:245",
+      "mushaf_page": 39,
+      "pdf_page": 42,
+      "codepoint": "U+06DC",
+      "folio": "ك"
+    },
+    {
+      "mark": "Seen above sad — read with seen",
+      "word": "بَصْۜطَةً",
+      "ref": "7:69",
+      "mushaf_page": 159,
+      "pdf_page": 162,
+      "codepoint": "U+06DC",
+      "folio": "ك"
+    },
+    {
+      "mark": "Seen below sad — read with sad",
+      "word": "ٱلْمُصَۣيْطِرُونَ",
+      "ref": "52:37",
+      "mushaf_page": 525,
+      "pdf_page": 528,
+      "codepoint": "U+06E3",
+      "folio": "ك"
+    },
+    {
+      "mark": "Bare sad, no seen at all",
+      "word": "بِمُصَيْطِرٍ",
+      "ref": "88:22",
+      "mushaf_page": 592,
+      "pdf_page": 595,
+      "codepoint": null,
+      "folio": "ك"
+    },
+    {
+      "mark": "Small high noon restored from rasm",
+      "word": "نُۨجِى",
+      "ref": "21:88",
+      "mushaf_page": 329,
+      "pdf_page": 332,
+      "codepoint": "U+06E8",
+      "folio": "ط"
+    },
+    {
+      "mark": "Saktah on an alif",
+      "word": "عِوَجَا",
+      "ref": "18:1",
+      "mushaf_page": 293,
+      "pdf_page": 296,
+      "codepoint": "U+06DC",
+      "folio": "س"
+    },
+    {
+      "mark": "Saktah on an alif",
+      "word": "مَّرْقَدِنَا",
+      "ref": "36:52",
+      "mushaf_page": 443,
+      "pdf_page": 446,
+      "codepoint": "U+06DC",
+      "folio": "ع"
+    },
+    {
+      "mark": "Saktah on a noon",
+      "word": "مَنْ رَاقٍ",
+      "ref": "75:27",
+      "mushaf_page": 578,
+      "pdf_page": 581,
+      "codepoint": "U+06DC",
+      "folio": "ع"
+    },
+    {
+      "mark": "Saktah on a lam",
+      "word": "بَلْ رَانَ",
+      "ref": "83:14",
+      "mushaf_page": 588,
+      "pdf_page": 591,
+      "codepoint": "U+06DC",
+      "folio": "ع"
+    },
+    {
+      "mark": "Saktah on a ha (optional)",
+      "word": "مَالِيَهْ",
+      "ref": "69:28-29",
+      "mushaf_page": 567,
+      "pdf_page": 570,
+      "codepoint": "U+06DC",
+      "folio": "ع"
+    }
+  ],
+  "tanbihat": [
+    {
+      "item": "ا",
+      "word": "ءَآلذَّكَرَيْنِ",
+      "refs": [
+        "6:143",
+        "6:144"
+      ],
+      "mushaf_page": 147,
+      "pdf_page": 150,
+      "issue": "Interrogative hamzah over hamzat al-wasl",
+      "ways": [
+        "substitute a full alif with six-count madd (how this mushaf points it, preferred in performance)",
+        "tashil"
+      ]
+    },
+    {
+      "item": "ا",
+      "word": "ءَآلْـَٰٔنَ",
+      "refs": [
+        "10:51"
+      ],
+      "mushaf_page": 214,
+      "pdf_page": 217,
+      "issue": "Interrogative hamzah over hamzat al-wasl"
+    },
+    {
+      "item": "ا",
+      "word": "ءَآللَّهُ",
+      "refs": [
+        "10:59"
+      ],
+      "mushaf_page": 215,
+      "pdf_page": 218,
+      "issue": "Interrogative hamzah over hamzat al-wasl"
+    },
+    {
+      "item": "ا",
+      "word": "ءَآلْـَٰٔنَ",
+      "refs": [
+        "10:91"
+      ],
+      "mushaf_page": 219,
+      "pdf_page": 222,
+      "issue": "Interrogative hamzah over hamzat al-wasl"
+    },
+    {
+      "item": "ا",
+      "word": "ءَآللَّهُ",
+      "refs": [
+        "27:59"
+      ],
+      "mushaf_page": 382,
+      "pdf_page": 385,
+      "issue": "Interrogative hamzah over hamzat al-wasl"
+    },
+    {
+      "item": "ب",
+      "word": "ضَعْفٍ / ضَعْفًا",
+      "refs": [
+        "30:54"
+      ],
+      "mushaf_page": 410,
+      "pdf_page": 413,
+      "issue": "Dad may take fathah or dammah",
+      "ways": [
+        "fathah (how this mushaf points it, preferred in performance)",
+        "dammah"
+      ]
+    },
+    {
+      "item": "ج",
+      "word": "ءَاتَىٰنِۦَ",
+      "refs": [
+        "27:36"
+      ],
+      "mushaf_page": 380,
+      "pdf_page": 383,
+      "issue": "Two ways when stopping",
+      "ways": [
+        "keep a sakin ya",
+        "drop it and stop on a sakin noon"
+      ]
+    },
+    {
+      "item": "د",
+      "word": "سَلَٰسِلَا۟",
+      "refs": [
+        "76:4"
+      ],
+      "mushaf_page": 578,
+      "pdf_page": 581,
+      "issue": "Two ways when stopping",
+      "ways": [
+        "keep the final alif",
+        "drop it and stop on a sakin lam"
+      ]
+    }
+  ],
+  "silah_exceptions": [
+    {
+      "word": "يَرْضَهُ",
+      "ref": "39:7",
+      "mushaf_page": 459,
+      "pdf_page": 462,
+      "pointing": "plain dammah, no small waw — read without silah"
+    },
+    {
+      "word": "أَرْجِهْ",
+      "ref": "7:111",
+      "mushaf_page": 164,
+      "pdf_page": 167,
+      "pointing": "bare ha with sukun"
+    },
+    {
+      "word": "أَرْجِهْ",
+      "ref": "26:36",
+      "mushaf_page": 368,
+      "pdf_page": 371,
+      "pointing": "bare ha with sukun"
+    },
+    {
+      "word": "فَأَلْقِهْ",
+      "ref": "27:28",
+      "mushaf_page": 379,
+      "pdf_page": 382,
+      "pointing": "bare ha with sukun"
+    },
+    {
+      "word": "فِيهِۦ مُهَانًا",
+      "ref": "25:69",
+      "mushaf_page": 366,
+      "pdf_page": 369,
+      "pointing": "kasrah plus small ya — silah present against the general pattern"
+    }
+  ],
+  "sajdah_locations": [
+    {
+      "n": 1,
+      "surah": "al-A'raf",
+      "overline_ayah": "7:206",
+      "glyph_ayah": "7:206",
+      "mushaf_page": 176,
+      "pdf_page": 179
+    },
+    {
+      "n": 2,
+      "surah": "al-Ra'd",
+      "overline_ayah": "13:15",
+      "glyph_ayah": "13:15",
+      "mushaf_page": 251,
+      "pdf_page": 254
+    },
+    {
+      "n": 3,
+      "surah": "al-Nahl",
+      "overline_ayah": "16:49",
+      "glyph_ayah": "16:50",
+      "mushaf_page": 272,
+      "pdf_page": 275
+    },
+    {
+      "n": 4,
+      "surah": "al-Isra",
+      "overline_ayah": "17:107",
+      "glyph_ayah": "17:109",
+      "mushaf_page": 293,
+      "pdf_page": 296
+    },
+    {
+      "n": 5,
+      "surah": "Maryam",
+      "overline_ayah": "19:58",
+      "glyph_ayah": "19:58",
+      "mushaf_page": 309,
+      "pdf_page": 312
+    },
+    {
+      "n": 6,
+      "surah": "al-Hajj",
+      "overline_ayah": "22:18",
+      "glyph_ayah": "22:18",
+      "mushaf_page": 334,
+      "pdf_page": 337
+    },
+    {
+      "n": 7,
+      "surah": "al-Hajj (second)",
+      "overline_ayah": "22:77",
+      "glyph_ayah": "22:77",
+      "mushaf_page": 341,
+      "pdf_page": 344
+    },
+    {
+      "n": 8,
+      "surah": "al-Furqan",
+      "overline_ayah": "25:60",
+      "glyph_ayah": "25:60",
+      "mushaf_page": 365,
+      "pdf_page": 368
+    },
+    {
+      "n": 9,
+      "surah": "al-Naml",
+      "overline_ayah": "27:25",
+      "glyph_ayah": "27:26",
+      "mushaf_page": 379,
+      "pdf_page": 382
+    },
+    {
+      "n": 10,
+      "surah": "al-Sajdah",
+      "overline_ayah": "32:15",
+      "glyph_ayah": "32:15",
+      "mushaf_page": 416,
+      "pdf_page": 419
+    },
+    {
+      "n": 11,
+      "surah": "Sad",
+      "overline_ayah": "38:24",
+      "glyph_ayah": "38:24",
+      "mushaf_page": 454,
+      "pdf_page": 457
+    },
+    {
+      "n": 12,
+      "surah": "Fussilat",
+      "overline_ayah": "41:37",
+      "glyph_ayah": "41:38",
+      "mushaf_page": 480,
+      "pdf_page": 483
+    },
+    {
+      "n": 13,
+      "surah": "al-Najm",
+      "overline_ayah": "53:62",
+      "glyph_ayah": "53:62",
+      "mushaf_page": 528,
+      "pdf_page": 531
+    },
+    {
+      "n": 14,
+      "surah": "al-Inshiqaq",
+      "overline_ayah": "84:21",
+      "glyph_ayah": "84:21",
+      "mushaf_page": 589,
+      "pdf_page": 592
+    },
+    {
+      "n": 15,
+      "surah": "al-'Alaq",
+      "overline_ayah": "96:19",
+      "glyph_ayah": "96:19",
+      "mushaf_page": 598,
+      "pdf_page": 601
+    }
+  ],
+  "page_furniture": [
+    {
+      "element": "Decorative border",
+      "ar": "الإطار الزخرفي",
+      "description": "Green ground, white arabesque, pink blossoms, distinct corner motifs"
+    },
+    {
+      "element": "Inner rules",
+      "ar": "الجدول",
+      "description": "Thin dark rule plus pale-green rule enclosing the text block"
+    },
+    {
+      "element": "Running header",
+      "ar": "الترويسة",
+      "description": "Outside the frame: juz name at the outer end, then names of the suras on the page. No juz digit."
+    },
+    {
+      "element": "Sura banner",
+      "ar": "عنوان السورة",
+      "description": "Green band with lobed cartouche and flanking rosettes. Sura name only — no ayah count, no Makki/Madani label."
+    },
+    {
+      "element": "Basmalah line",
+      "ar": "البسملة",
+      "description": "Own centred line under each sura banner, extended calligraphic form"
+    },
+    {
+      "element": "Ayah medallions",
+      "ar": "فواصل الآي",
+      "description": "Pale-green disc, dark rim, green Arabic-Indic digits, small pink floret above and below"
+    },
+    {
+      "element": "Margin medallions",
+      "ar": "علامات الأحزاب والسجدات",
+      "description": "Hizb/half/quarter ornaments and the sajdah mihrab. Merged into one ornament on mushaf pages 272, 309, 334, 379."
+    },
+    {
+      "element": "Page number",
+      "ar": "رقم الصفحة",
+      "description": "Arabic-Indic numerals, centred below and outside the frame"
+    },
+    {
+      "element": "Text block",
+      "ar": "المسطرة",
+      "description": "15 justified lines per page; banners and basmalah lines occupy line slots"
+    }
+  ],
+  "digital_notes": [
+    "U+06DC serves two unrelated functions: seen above a sad (2 places, alternative letter reading) and the saktah marker (5 places). Classification requires inspecting the base character.",
+    "Tanwin shape is not in the encoding. U+064B/064C/064D each cover both the stacked and the staggered arrangement, so a codepoint-level diff will call two texts identical while one prints the wrong tajwid ruling. Unicode's U+08F0-U+08F2 open forms exist for the distinction but are unused by mainstream Uthmani corpora — normalising between the two conventions destroys it. Test by rendering, not by string comparison.",
+    "Unicode names can contradict the printed form. U+06EA is named 'Empty Centre Low Stop' but the appendix specifies a filled dot (نقطة كبيرة مطموسة) and that is how it prints.",
+    "The widely circulated Tanzil 'uthmani' text contains zero U+06D6-U+06DB characters — the waqf signs are stripped. Verify a corpus before building pause-aware features on it.",
+    "The sajdah has two anchors. In 4 of 15 cases the overline and the mihrab glyph sit on different verses, up to two lines apart."
+  ],
+  "tanwin": {
+    "principle": "A tanwin is always two marks. Their ARRANGEMENT encodes the tajwid ruling; the letter that follows decides the arrangement. Defined on appendix folio ح (PDF 615), which prints both arrangements as bracketed specimens for all three tanwins.",
+    "codepoints": {
+      "fathatan": "U+064B",
+      "dammatan": "U+064C",
+      "kasratan": "U+064D",
+      "note": "The same codepoint is used for BOTH arrangements. Stacked vs staggered exists only in the glyph the font selects from context. Unicode does encode separate open forms (U+08F0 Arabic Open Fathatan, U+08F1 Arabic Open Dammatan, U+08F2 Arabic Open Kasratan) but mainstream Uthmani corpora do not use them.",
+      "counts_in_uthmani_text": {
+        "U+064B": 3741,
+        "U+064C": 2519,
+        "U+064D": 2633,
+        "U+08F0": 0,
+        "U+08F1": 0,
+        "U+08F2": 0
+      }
+    },
+    "shapes": [
+      {
+        "tanwin": "dammatan",
+        "glyph": "ــٌ",
+        "stacked": "Second dammah nested on top of the first, sharing its tail — reads as one compound curl.",
+        "staggered": "Two separate loops side by side, each with its own tail — reads as وو.",
+        "legibility": "unmistakable"
+      },
+      {
+        "tanwin": "fathatan",
+        "glyph": "ــً",
+        "stacked": "Two strokes vertically aligned, one directly above the other.",
+        "staggered": "Two strokes offset, trailing one after the other diagonally.",
+        "legibility": "clear"
+      },
+      {
+        "tanwin": "kasratan",
+        "glyph": "ــٍ",
+        "stacked": "Two strokes vertically aligned below the line, one under the other.",
+        "staggered": "Two strokes offset diagonally below the line.",
+        "legibility": "subtlest — look at alignment vs offset"
+      }
+    ],
+    "trigger_rules": [
+      {
+        "next_letters": "ء ه ع ح غ خ",
+        "treatment": "izhar",
+        "shape": "stacked",
+        "example": "عَزِيزٌ عَلَيْهِ"
+      },
+      {
+        "next_letters": "ب",
+        "treatment": "iqlab",
+        "shape": "second mark replaced by a small meem (U+06E2 above, U+06ED below after kasratan)",
+        "example": "صُمٌّۢ بُكْمٌ"
+      },
+      {
+        "next_letters": "ن م",
+        "treatment": "complete idgham with ghunnah",
+        "shape": "staggered + shadda on the next letter",
+        "example": "رَسُولٌ مِّنْ"
+      },
+      {
+        "next_letters": "ل ر",
+        "treatment": "complete idgham without ghunnah",
+        "shape": "staggered + shadda on the next letter",
+        "example": "رَءُوفٌ رَّحِيمٌ"
+      },
+      {
+        "next_letters": "ي و",
+        "treatment": "incomplete idgham with ghunnah",
+        "shape": "staggered, no shadda",
+        "example": "جَنَّٰتٍ وَعُيُونٍ"
+      },
+      {
+        "next_letters": "the other 15",
+        "treatment": "ikhfa",
+        "shape": "staggered, no shadda",
+        "example": "شِهَابٌ ثَاقِبٌ"
+      }
+    ],
+    "verified_specimens": [
+      {
+        "tanwin": "dammatan",
+        "ref": "9:128",
+        "surah": "al-Tawbah",
+        "mushaf_page": 207,
+        "pdf_page": 210,
+        "stacked_words": [
+          "عَزِيزٌ عَلَيْهِ",
+          "حَرِيصٌ عَلَيْكُم"
+        ],
+        "staggered_words": [
+          "رَسُولٌ مِّنْ",
+          "رَءُوفٌ رَّحِيمٌ"
+        ],
+        "note": "Four dammatans in one verse, two of each kind — the single best specimen in the mushaf."
+      },
+      {
+        "tanwin": "fathatan",
+        "ref": "78:36",
+        "surah": "al-Naba",
+        "mushaf_page": 583,
+        "pdf_page": 586,
+        "stacked_words": [
+          "عَطَآءً حِسَابًا"
+        ],
+        "staggered_words": [
+          "جَزَآءً مِّن"
+        ]
+      },
+      {
+        "tanwin": "kasratan",
+        "ref": "96:16",
+        "surah": "al-Alaq",
+        "mushaf_page": 598,
+        "pdf_page": 601,
+        "stacked_words": [
+          "كَٰذِبَةٍ خَاطِئَةٍ"
+        ],
+        "staggered_words": [
+          "نَاصِيَةٍ كَٰذِبَةٍ"
+        ]
+      },
+      {
+        "tanwin": "dammatan + iqlab",
+        "ref": "2:18",
+        "surah": "al-Baqarah",
+        "mushaf_page": 4,
+        "pdf_page": 7,
+        "stacked_words": [
+          "بُكْمٌ عُمْىٌ"
+        ],
+        "staggered_words": [
+          "عُمْىٌ فَهُمْ"
+        ],
+        "iqlab_words": [
+          "صُمٌّۢ بُكْمٌ"
+        ],
+        "note": "All three treatments within five words."
+      },
+      {
+        "tanwin": "appendix specimens",
+        "ref": "folio ح",
+        "mushaf_page": null,
+        "pdf_page": 615,
+        "note": "The mushaf prints both arrangements itself, in brackets, for all three tanwins."
+      }
+    ]
+  }
+}
