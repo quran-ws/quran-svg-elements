@@ -644,6 +644,138 @@ img.src = await toPngDataUrl(page.crop('2:255'), {scale: 4, background: '#fbf9f4
 
 ---
 
+## Swappable ayah end-markers (`markers.mjs`)
+
+Replace the printed ornament **ring** on every medallion with an outline from an
+external marker set, recolour it part by part, and put the print back exactly.
+
+**The numeral never changes.** It is the print's own drawing of the number, not a font
+rendering of it, and it is not touched by anything in this module. The replacement is
+*fitted into the box the ring occupied*, so whatever centred the number still centres
+it.
+
+**Nothing is redistributed.** No outline ships with this library. `loadMarkerSet()`
+takes a base URL and fetches at runtime. The reference set is
+[`quranpedia/ayah-markers`](https://github.com/quranpedia/ayah-markers), which traces
+its 47 markers (20 designs across weights) from twenty type families — fifteen from
+Google Fonts, five from fonts.quran.ws. **They carry those families' licences, which
+differ from one another**; every marker names its own `sources` in that repository's
+`collection.json`. Read it before you redistribute anything. This library states no
+licence terms and grants none: it is the mechanism, not the material.
+
+### `loadMarkerSet(baseUrl, {fetch, cache})` → `Promise<MarkerSet>`
+
+Fetches `collection.json` and `annotations.json` once. Cached per URL; a *failed* load
+is not cached, so a retry when the network returns works. Rejects with the URL in the
+message — catch it and say so rather than showing a dead pane.
+
+```js
+const set = await loadMarkerSet('https://quranpedia.github.io/ayah-markers/');
+set.list();       // [{id, family, weight, codepoint, width, upem, sources[], parts[]}, …]
+set.families();   // [{family: '017', weights: [...]}, …]  — what a picker wants
+set.record('017-regular').sources;   // the licence trail
+```
+
+### `set.outline(id)` → `Promise<{id, viewBox, box, layers, generated, parts, contours}>`
+
+Fetches one marker SVG and cuts it into one path per colourable part. Cached per id.
+`box` is the outline's **measured** bounding box, not the padded `viewBox`.
+
+### `setAyahMarker(page, outline, options)` → handle
+
+| option | | |
+|---|---|---|
+| `target` | `'page'` | `'page'`, an ayah key `'2:255'`, an `Ayah`, or an array of those |
+| `size` | `1` | factor on the fitted size; `1` matches the ring's box |
+| `colours` | `null` | `{part: colour}` — becomes each part's fallback, so it paints with no CSS at all |
+| `ink` | the ring's own fill | fallback for the `ink-*` layers |
+| `fills` | `'none'` | fallback for the `fill-*` layers |
+| `decorative` | `false` | include the `g.ayah-marker` groups with **no** `data-aid` |
+
+**Decorative rosettes are left alone by default.** Pages 1–2 carry 12 `g.ayah-marker`
+groups with no `data-aid` — the frame of the opening spread, closing no ayah. Only
+`g.ayah-marker[data-aid]` is touched unless you ask for them.
+
+`handle.remove()` restores the printed rings exactly — the original `<path>` node is
+kept, not re-serialised.
+
+### `resetAyahMarkers(page, {decorative})` → `{count}`
+### `hasSwappedMarkers(page)` → `boolean`
+### `colourAyahMarkers(page, colours)` → handle
+
+Recolours what is already on the page by setting the custom properties on the `<svg>`,
+without rebuilding anything.
+
+### `MARKER_PARTS` · `partVar(part)` · `splitContours(d)` · `cutOutline(svgText, annotation)` · `fitTransform(from, to, size)`
+
+The primitives, exported for building your own.
+
+### Recolouring
+
+Seven parts, painted in this order: `fill-base`, `fill-1`, `fill-2`, `fill-3`,
+`ink-base`, `ink-1`, `ink-2`. Each becomes one `<path>` carrying
+`style="fill:var(--ayah-marker-<part>, <fallback>)"`, so a custom property on any
+ancestor wins over the fallback, live:
+
+```js
+const set = await loadMarkerSet(BASE);
+const h = setAyahMarker(page, await set.outline('017-regular'),
+                        { colours: { 'ink-base': '#b08d2e' } });
+colourAyahMarkers(page, { 'ink-1': '#8a6d1f' });     // or from CSS:
+// .my-page { --ayah-marker-ink-base: #b08d2e; }
+h.remove();                                          // the print is back
+```
+
+The upstream files hardcode `fill="#0b7771"` on their root `<svg>`. Only the `d` is
+ever read, so that colour cannot reach the page — asserted in the tests.
+
+The colour goes in an inline **style**, not the `fill` attribute: `var()` inside a
+presentation attribute is not reliably substituted; inside a style declaration it
+always is.
+
+### The trap this module exists to get right
+
+Every upstream file is **one `<path>` holding every contour**, and the counters — the
+holes that make a ring a ring rather than a disc — are **winding-based**. Splitting
+that path into one path per part destroys them, because a hole and the shape it
+punches routinely sit in *different* parts by design (`ink-2` is a petal outline,
+`fill-1` is the region inside it).
+
+Measured over all 47 markers, rasterised at 320 px and diffed against the original:
+
+| | differing pixels |
+|---|---|
+| naive split, document order preserved | **1,499,224** |
+| each layer takes back the earlier layers' contours inside it, `fill-rule="evenodd"` | **18,582** |
+| the same, widened to *any* other layer | 21,955 |
+
+45 of the 47 land at 24 differing pixels or fewer — antialiasing on the seams. The
+exception is `014-regular-bold`, whose lower flourish draws solid rather than outlined
+because its counters are annotated into a *later* layer; the upstream customizer
+renders it the same way, so this is the annotation and not the port.
+
+Containment is decided by `isPointInFill` on a real rendered path, never by arithmetic.
+
+### Two things about the annotation format
+
+- **A contour listed in no part is drawn as `ink-base`.** Eight of the 47 files
+  annotate nothing at all, and six more leave two contours out. They still have to be
+  drawn.
+- **A marker with no annotations of its own borrows another weight of the same numeric
+  family's** (`003-black` takes `003-thin`'s). Without that, a third of the set would
+  offer one colour.
+
+`generatedFills` — shapes the annotation *synthesises* rather than takes from the
+file — are drawn behind everything, and are invisible while `fill-*` defaults to
+`none`. Five markers declare one.
+
+**Every path command in the reference set is absolute** (322 contours, zero lowercase),
+which is why a contour can be split off on `M` and stay in place. `cutOutline()` does
+not handle relative commands; it *asserts* their absence and throws, so a future file
+that breaks the assumption fails loudly instead of drawing something wrong.
+
+---
+
 ## Atlas (cross-page lookup)
 
 A single page file cannot answer "which page is 2:255 on". **Nothing in the core
@@ -737,12 +869,19 @@ narrower than the ink it names. Trust `data-wid`, never geometry, for ownership.
 
 ## Testing
 
-217 assertions run in Chromium against real pages — **1** (opening spread, 8 lines,
+271 assertions run in Chromium against real pages (275 with `?markers=<url>`) — **1** (opening spread, 8 lines,
 decorative rosettes), **42** (rubʿ rosette, 2:255), **48** (2:282, fifteen fragments),
 **176** (sajdah), **582** (juz 30 opens, banner + basmalah), **604** (last page, three
 banners) — plus the interactive checks: a genuine mouse drag across a line break,
 Ctrl+C, hover, a click in a 6.96 px gap, and a window resize. Zero console errors, no
 failed requests.
+
+The end-marker assertions run against a **synthetic** marker set served by a stub
+`fetch` — a square ring whose counter is annotated into a different part, which is
+exactly the shape of the real trap — because no outline may ship here. Point the page
+at a real set with `?markers=<url>` and it additionally checks that set for
+conformance: every marker cuts into at least one layer, every command is absolute, and
+`#0b7771` survives nowhere.
 
 Measured, not asserted loosely: the layer's ink boxes sit on the ink to **0.005 px**
 across 147 words, and to **0.002 px** after a resize.

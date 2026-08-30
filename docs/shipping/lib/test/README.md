@@ -1,6 +1,7 @@
 # Running the tests
 
-217 assertions in a real browser. No test framework, no install.
+271 assertions in a real browser — 275 with `?markers=<url>`. No test framework,
+no install.
 
 ```bash
 # from a directory that contains lib/ and the page SVGs
@@ -20,6 +21,12 @@ http://127.0.0.1:8931/lib/test/?pages=/pages/&atlas=/atlas.json
 await page.waitForFunction(() => window.__RESULTS__?.done);
 const r = await page.evaluate(() => window.__RESULTS__);
 ```
+
+Add `&markers=<url>` — for example
+`https://quranpedia.github.io/ayah-markers/` — to additionally check a real marker
+set for conformance (§21.50+). Without it the end-marker tests still run in full
+against a synthetic set served by a stub `fetch`, because no marker outline may ship
+in this repository.
 
 Defaults point at this repository's own cache
 (`.cache/words-svg/hafs-kfqc/`) and an `atlas.json` beside this file — build one

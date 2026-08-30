@@ -320,6 +320,11 @@ ul.plain-list b{color:var(--ink);font-weight:500}
 footer{padding:40px 0 70px;color:var(--muted);font-size:13.5px}
 footer p{max-width:74ch}
 .offstage{position:absolute;left:-99999px;top:0;width:400px;opacity:0;pointer-events:none}
+
+.lab-parts{display:inline-flex;gap:6px;flex-wrap:wrap;align-items:center}
+.lab-parts label.color{display:inline-flex;gap:3px;align-items:center;font-size:11px}
+.lab-parts input[type=color]{width:24px;height:20px;padding:0;border:1px solid var(--rule,#ccc);background:none}
+.lab-extra select{font:inherit;font-size:12px;max-width:14em}
 </style>
 </head>
 <body>
@@ -1016,6 +1021,7 @@ svg.inert, svg.inert * { pointer-events: none }
         with a shape of your own, or drop the markers entirely for a plain reading view.</p>
     </div>
     <div class="lab" id="lab-markers"></div>
+    <p class="note"><b>The outlines are not part of this page.</b> The designs in the picker are fetched at runtime from <a href="https://github.com/quranpedia/ayah-markers">quranpedia/ayah-markers</a>, which traces them from twenty type families — fifteen from Google Fonts, five from fonts.quran.ws. They carry <b>those families' licences</b>, which differ from one another; every marker names its own <code>sources</code> in that repository's <code>collection.json</code>. Read it before you redistribute anything. Neither this page nor the library ships a single outline, and neither states any licence terms. If the fetch fails the section says so and the printed rings stay.</p>
     <p class="note">The numeral is the print's own drawing of the number, not a font rendering of it, so
       it stays exactly as printed however you dress the ring around it. On pages 1 and 2 there are also
       <b>12 decorative rosettes with no ayah at all</b> — the frame of the opening spread — so select
@@ -2180,6 +2186,101 @@ function bindToggle(ctx, o) {
   ctx.extra.append(b);
   ctx.onReset.push(() => b.setAttribute('aria-pressed', String(!!o.value)));
   return b;
+}
+
+/* A <select> bound to a `const NAME = '<string>';` line. Same contract as
+   bindSlider: the control writes into the code, and the code is what runs. */
+function bindChoice(ctx, o) {
+  if (!ctx) return;
+  const wrap = document.createElement('label');
+  const name = document.createElement('span');
+  name.textContent = o.label;
+  const sel = document.createElement('select');
+  sel.setAttribute('aria-label', o.label);
+  const rx = new RegExp("(const\\s+" + o.name + "\\s*=\\s*)'[^']*'");
+  wrap.append(name, sel);
+  ctx.extra.append(wrap);
+
+  sel.addEventListener('change', () => {
+    if (!rx.test(ctx.ta.value)) return;             // the reader edited it away
+    ctx.ta.value = ctx.ta.value.replace(rx, "$1'" + sel.value + "'");
+    o.onChange && o.onChange(sel.value);
+    ctx.runNow();
+  });
+  ctx.onReset.push(() => { sel.value = o.value; o.onChange && o.onChange(sel.value); });
+
+  return {
+    el: sel,
+    set options(list) {
+      sel.replaceChildren();
+      for (const it of list) {
+        const opt = document.createElement('option');
+        opt.value = it.value;
+        opt.textContent = it.label;
+        sel.append(opt);
+      }
+      sel.value = o.value;
+    },
+    get value() { return sel.value; }
+  };
+}
+
+/* Colour inputs bound to a `const NAME = {"part":"#rrggbb"};` object literal.
+   The set of parts changes with the marker, so the controls are rebuilt rather
+   than fixed — a control pointing at a part this design does not have would be
+   a lie about the drawing. */
+function bindPartColours(ctx, o) {
+  if (!ctx) return;
+  const box = document.createElement('span');
+  box.className = 'lab-parts';
+  ctx.extra.append(box);
+  const rx = new RegExp('(const\\s+' + o.name + '\\s*=\\s*)\\{[^}]*\\}');
+  let current = { ...(o.value || {}) };
+
+  function write() {
+    if (!rx.test(ctx.ta.value)) return;
+    ctx.ta.value = ctx.ta.value.replace(rx, '$1' + JSON.stringify(current));
+    ctx.runNow();
+  }
+  function show(parts, defaults) {
+    current = {};
+    for (const p of parts) current[p] = (defaults && defaults[p]) || (p.startsWith('fill') ? '#f4ecd8' : '#b08d2e');
+    box.replaceChildren();
+    for (const p of parts) {
+      const l = document.createElement('label');
+      l.className = 'color';
+      const t = document.createElement('span');
+      t.textContent = p;
+      const i = document.createElement('input');
+      i.type = 'color';
+      i.value = current[p];
+      i.setAttribute('aria-label', p);
+      i.addEventListener('input', () => { current[p] = i.value; write(); });
+      l.append(t, i);
+      box.append(l);
+    }
+    write();
+  }
+  /* No onReset hook here on purpose. Reset and the plain/library switch both
+     re-fire the picker's onChange, which calls show() again — clearing here
+     as well would run AFTER that and leave the reader with no swatches. */
+  return { show, hide() { box.replaceChildren(); } };
+}
+
+/* Which parts of a marker are colourable. A design with no annotations of its
+   own borrows another weight of the same family's, which is how the eight
+   unannotated files still colour. Mirrors markers.mjs annotationFor(). */
+function markerParts(annotations, id, ids) {
+  const ORDER = ['fill-base', 'fill-1', 'fill-2', 'fill-3', 'ink-base', 'ink-1', 'ink-2'];
+  const has = a => a && Object.values(a.parts || {}).some(v => v.length);
+  const all = (annotations && annotations.markers) || {};
+  let a = all[id];
+  if (!has(a)) {
+    const family = String(id).split('-')[0];
+    a = ids.map(x => all[x]).find((x, i) => String(ids[i]).split('-')[0] === family && has(x)) || a;
+  }
+  if (!has(a)) return ['ink-base'];
+  return ORDER.filter(p => (a.parts[p] || []).length);
 }
 
 /* ---------------------------------------------------------------------------
@@ -3894,89 +3995,202 @@ log('   await M.toPngDataUrl(page.crop("2:255"), { scale: 4 })');
 
 /* 10 · ayah markers */
 mod('lab-markers', () => {
+  let picker = null, colours = null, index = null;
   const ctx = makeLab({
   mount: 'lab-markers',
-  label: 'restyle the ayah markers',
+  label: 'swap the ayah end-marker',
+  /* The set is fetched once, here, so the picker can be built from what
+     the URL really holds rather than a list baked into this page. If it
+     cannot be reached the section says so and keeps the printed rings. */
+  setup: async ctx2 => {
+    const BASE = 'https://quranpedia.github.io/ayah-markers/';
+    try {
+      const [coll, ann] = await Promise.all([
+        fetch(BASE + 'collection.json').then(r => r.json()),
+        fetch(BASE + 'annotations.json').then(r => r.json())]);
+      index = { coll, ann, ids: coll.markers.map(m => m.id) };
+      picker.options = [{ value: '', label: '— the printed ring —' }].concat(
+        coll.markers.map(m => ({ value: m.id,
+          label: m.id + '  ·  ' + (m.sources[0] ? m.sources[0].family : '') })));
+      onMarker(picker.value);
+    } catch (e) {
+      picker.options = [{ value: '', label: 'the marker set could not be reached; the printed rings stay' }];
+      picker.el.disabled = true;
+    }
+  },
   code: `
 // The medallion is a GROUP of two paths: the ring, and the numeral.
-// That is why the furniture can change and the number cannot.
+// ONLY THE RING IS REPLACED. The number is the print's own drawing of
+// itself and is never swapped for a font's digits.
+//
+// The outlines are FETCHED AT RUNTIME from quranpedia/ayah-markers. None
+// of them ships with this page, and each carries the licence of the type
+// family it was traced from — read collection.json before redistributing.
+const SET     = 'https://quranpedia.github.io/ayah-markers/';
+const MARKER  = '017-regular';   // '' keeps the printed ring
+const COLOURS = {"ink-base":"#b08d2e"};
+const SIZE    = 1;
+const HIDE_ALL = false;
+
 const markers = svg.querySelectorAll('g.ayah-marker[data-aid]');
+if (HIDE_ALL) { markers.forEach(m => m.style.display = 'none'); log('markers hidden — a plain reading view'); }
+else if (!MARKER) {
+  markers.forEach(m => {
+    const ring = m.querySelector('[data-kind="ayah-marker-ornament"]');
+    if (ring) ring.setAttribute('fill', COLOURS['ink-base'] || '#b08d2e');
+  });
+  log('the printed ring, recoloured. Pick a design to swap it.');
+}
 
-const RING   = '#b08d2e';   // the ornament ring
-const NUMBER = '#231f20';   // the printed numeral — the print's own drawing
-const SCALE  = 1;          // drag the slider, or type a number
-const RE_RING = false;      // true: replace the ring with a plain circle
-const HIDE_ALL = false;     // true: a plain reading view, no markers
+if (!HIDE_ALL && MARKER) try {
+  const [coll, ann] = await Promise.all([
+    fetch(SET + 'collection.json').then(r => r.json()),
+    fetch(SET + 'annotations.json').then(r => r.json())]);
+  const rec = coll.markers.find(m => m.id === MARKER);
+  const file = await fetch(SET + rec.file).then(r => r.text());
+  if (signal.aborted) return;   // a newer run already replaced this stage
+  const src = new DOMParser().parseFromString(file, 'image/svg+xml');
 
-markers.forEach(m => {
-  if (HIDE_ALL) { m.style.display = 'none'; return; }
+  // ONE <path> holds every contour. Split on M; every command is absolute,
+  // so a contour cut off here is still in the right place.
+  const cs = src.querySelector('path').getAttribute('d').match(/M[^M]*/g);
 
-  m.style.transformBox    = 'fill-box';
-  m.style.transformOrigin = 'center';
-  m.style.transform       = 'scale(' + SCALE + ')';
+  // Which part each contour belongs to. Anything unlisted is ink-base — and
+  // a design with no annotations of its own borrows another weight of the
+  // same family's, which is how the eight unannotated files still colour.
+  const ORDER = ['fill-base','fill-1','fill-2','fill-3','ink-base','ink-1','ink-2'];
+  const named = id => Object.values((ann.markers[id] || {}).parts || {}).some(v => v.length);
+  const key = named(MARKER) ? MARKER : coll.markers.map(m => m.id).find(
+    id => id.split('-')[0] === MARKER.split('-')[0] && named(id)) || MARKER;
+  const parts = (ann.markers[key] || {}).parts || {};
+  const owner = cs.map(() => 'ink-base');
+  for (const p in parts) for (const id of parts[p]) owner[+id.split('-').pop()] = p;
 
-  const ring = m.querySelector('[data-kind="ayah-marker-ornament"]');
-  const num  = m.querySelector('[data-kind="ayah-number"]');
-  if (num) num.setAttribute('fill', NUMBER);
+  // THE TRAP, and it is worth the twelve lines. The counters — the holes
+  // that make a ring a ring — are winding-based, and a hole and the shape
+  // it punches routinely sit in DIFFERENT parts. Give each part its own
+  // path and 39 of the 47 designs fill in solid. So every layer takes back
+  // the earlier-layer contours that lie inside it, and draws evenodd.
+  // A hidden <g>, not a nested <svg>: a nested svg with no size establishes a
+  // 0x0 viewport and getBBox() then measures the viewport, not the outlines.
+  const probe = document.createElementNS(H.SVGNS, 'g');
+  probe.setAttribute('style', 'visibility:hidden');
+  svg.append(probe);
+  const at = cs.map((d, i) => {
+    const p = document.createElementNS(H.SVGNS, 'path');
+    p.setAttribute('d', d);
+    p.setAttribute('fill-rule', 'evenodd');
+    probe.append(p);
+    return { d, part: owner[i], el: p };
+  });
+  for (const a of at) {                       // a point genuinely inside it
+    const b = a.el.getBBox();
+    a.pt = { x: b.x + b.width / 2, y: b.y + b.height / 2 };
+    for (let k = 1; k < 8 && !a.el.isPointInFill(a.pt); k++)
+      a.pt = { x: b.x + b.width * k / 8, y: b.y + b.height * k / 8 };
+  }
+  const layers = ORDER.map(part => {
+    const own = at.filter(a => a.part === part);
+    if (!own.length) return null;
+    const inside = at.filter(o => o.part !== part
+      && ORDER.indexOf(o.part) < ORDER.indexOf(part)
+      && own.some(a => a.el.isPointInFill(o.pt)));
+    const holes = inside.filter(o => !inside.some(q => q !== o && q.el.isPointInFill(o.pt)));
+    return { part, d: [...own, ...holes].map(a => a.d).join(' ') };
+  }).filter(Boolean);
+  const box = probe.getBBox();
+  probe.remove();
 
-  if (!ring) return;
-  if (!RE_RING) { ring.setAttribute('fill', RING); return; }
+  // A FIT, not a redraw: map the outline's box onto the box the ring had.
+  markers.forEach(m => {
+    const ring = m.querySelector('[data-kind="ayah-marker-ornament"]');
+    if (!ring) return;
+    const b = ring.getBBox();
+    const s = Math.min(b.width / box.width, b.height / box.height) * SIZE;
+    const g = document.createElementNS(H.SVGNS, 'g');
+    g.setAttribute('data-kind', 'ayah-marker-ornament');
+    g.setAttribute('transform',
+      'translate(' + (b.x + b.width / 2 - s * (box.x + box.width / 2)) + ' ' +
+                     (b.y + b.height / 2 - s * (box.y + box.height / 2)) +
+      ') scale(' + s + ')');
+    for (const l of layers) {
+      const p = document.createElementNS(H.SVGNS, 'path');
+      p.setAttribute('d', l.d);
+      p.setAttribute('fill-rule', 'evenodd');       // the counters need it
+      p.setAttribute('fill', COLOURS[l.part] ||
+        (l.part.startsWith('fill') ? 'none' : '#b08d2e'));
+      g.append(p);
+    }
+    ring.replaceWith(g);          // the NUMERAL is not touched, ever
+  });
 
-  // swap the ring for a shape of your own, keeping the numeral
-  const b = ring.getBBox();
-  const c = document.createElementNS(H.SVGNS, 'circle');
-  c.setAttribute('cx', b.x + b.width / 2);
-  c.setAttribute('cy', b.y + b.height / 2);
-  c.setAttribute('r',  Math.max(b.width, b.height) / 2);
-  c.setAttribute('fill', 'none');
-  c.setAttribute('stroke', RING);
-  c.setAttribute('stroke-width', Math.max(b.width, b.height) / 14);
-  ring.replaceWith(c);
-});
-
-log(markers.length, 'medallions on this page');
-log('rings  ', svg.querySelectorAll('[data-kind="ayah-marker-ornament"]').length);
-log('numerals', svg.querySelectorAll('[data-kind="ayah-number"]').length);
-log('');
-log('Set RE_RING = true to swap the ring and keep the number.');
-log('Set HIDE_ALL = true for a reading view with no markers.');
+  log(markers.length, 'medallions redrawn with', MARKER);
+  log('parts   ', layers.map(l => l.part).join(', '));
+  log('traced from', rec.sources.map(s => s.family).join(', '));
+  log('');
+  log('Nothing above was bundled: the outline arrived over the network.');
+} catch (e) {
+  log('could not fetch the marker set from');
+  log(SET);
+  log(e.message);
+  log('');
+  log('The printed rings are untouched, and every other section still works. The outlines are not part of this page.');
+}
 `,
     lib: { code: `
-const RING   = '#b08d2e';   // the ornament ring
-const NUMBER = '#231f20';   // the printed numeral — the print's own drawing
-const SCALE  = 1;          // drag the slider, or type a number
-const RE_RING = false;      // true: replace the ring with a plain circle
-const HIDE_ALL = false;     // true: a plain reading view, no markers
+// Outlines are FETCHED AT RUNTIME from quranpedia/ayah-markers. Nothing
+// here ships them; each carries the licence of the family it was traced
+// from. The library is the mechanism and states no licence terms.
+const SET     = 'https://quranpedia.github.io/ayah-markers/';
+const MARKER  = '017-regular';   // '' keeps the printed ring
+const COLOURS = {"ink-base":"#b08d2e"};
+const SIZE    = 1;
+const HIDE_ALL = false;
 
 const page = new M.MushafPage(svg);
 
-// styleMarkers touches ONLY g.ayah-marker[data-aid]. The 12 decorative
-// rosettes framing pages 1-2 carry no data-aid — they close no ayah —
-// and are left alone without you having to know that.
-const h = page.styleMarkers({
-  ring: RING,
-  numeral: NUMBER,        // independently, which is the whole point
-  scale: SCALE,
-  hide: HIDE_ALL,
-  // a function gets the ring's box and returns your own shape,
-  // KEEPING the printed numeral
-  replaceRing: RE_RING
-});
+if (HIDE_ALL) {
+  page.styleMarkers({ hide: true });
+  log('markers hidden — a plain reading view');
+} else if (!MARKER) {
+  page.styleMarkers({ ring: COLOURS['ink-base'] || '#b08d2e' });
+  log('the printed ring, recoloured. Pick a design to swap it.');
+} else try {
+  // fetched once per URL however many designs you try
+  const set = await M.loadMarkerSet(SET);
+  const outline = await set.outline(MARKER);
+  if (signal.aborted) return;   // a newer run already replaced this stage
 
-log(page.markers().length, 'real medallions on this page');
-log('marker groups ', page.allMarkerGroups().length,
-    '— the difference is decorative rosettes');
-log('');
-log('Set RE_RING = true to swap the ring and keep the number.');
-log('Set HIDE_ALL = true for a reading view with no markers.');
-log('h.remove() restores every one of them.');
+  // Replaces the RING on g.ayah-marker[data-aid] only — the 12 decorative
+  // rosettes framing pages 1-2 close no ayah and are left alone — fits it
+  // into the box the ring had, and does not touch the numeral.
+  const h = M.setAyahMarker(page, outline, { size: SIZE, colours: COLOURS });
+
+  log(h.count, 'medallions redrawn with', MARKER);
+  log('parts   ', outline.parts.join(', '));
+  log('traced from', set.record(MARKER).sources.map(s => s.family).join(', '));
+  log('');
+  log('Each part reads --ayah-marker-<part>, so CSS can recolour it live.');
+  log('M.resetAyahMarkers(page) puts the printed rings back, exactly.');
+} catch (e) {
+  log('could not fetch the marker set from');
+  log(SET);
+  log(e.message);
+  log('');
+  log('The printed rings are untouched, and every other section still works. The outlines are not part of this page.');
+}
 ` }
   });
-  /* SCALE is continuous, so it gets a slider; the other two are genuinely
-     either/or, and a slider would only obscure them. */
-  bindSlider(ctx, { label: 'scale', name: 'SCALE', min: 0.5, max: 1.8, step: 0.05,
-                    value: 1, digits: 2 });
-  bindToggle(ctx, { label: 'swap the ring', name: 'RE_RING', value: false });
+  function onMarker(id) {
+    if (!colours) return;
+    if (!id || !index) { colours.hide(); return; }
+    colours.show(markerParts(index.ann, id, index.ids), { 'ink-base': '#b08d2e' });
+  }
+  picker = bindChoice(ctx, { label: 'design', name: 'MARKER',
+                            value: '017-regular', onChange: onMarker });
+  colours = bindPartColours(ctx, { name: 'COLOURS', value: { 'ink-base': '#b08d2e' } });
+  bindSlider(ctx, { label: 'size', name: 'SIZE', min: 0.4, max: 1.8,
+                    step: 0.05, value: 1, digits: 2 });
   bindToggle(ctx, { label: 'hide all', name: 'HIDE_ALL', value: false });
 });
 
