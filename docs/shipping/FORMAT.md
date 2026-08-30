@@ -278,7 +278,9 @@ distinct translates respectively). Always compose
 (x_view, y_view) = PAGE_MATRIX ∘ LINE_TRANSLATE applied to (x_path, y_path)
 ```
 
-`tools/build_bundle.py` is a reference implementation. In a browser,
+`tools/bundle_geom.py` (exact Bezier extents) and `tools/bundle_extract.py`
+are the reference implementation — note they honour a path's own `transform`,
+which 72 ink paths on p17 and p144 carry. In a browser,
 `getBBox()` on a `g.word` already returns coordinates in that word's own line
 frame; `getCTM()` composes the rest.
 
@@ -389,14 +391,25 @@ whitespace.
 | `data-ayah-parts` | 13,489 | `N` | how many fragments the ayah has on this page |
 | `data-juz-start` | 30 ayahs | `1`..`30` | this ayah begins that juz |
 | `data-hizb-start` | 60 ayahs | `1`..`60` | begins that hizb |
-| `data-nisf-start` | 60 ayahs | `1` / `2` | begins that half-hizb |
+| `data-nisf-start` | 60 ayahs | `1`..`60` | begins that half-hizb boundary, numbered 1..60 through the mushaf |
 | `data-rub-start` | 240 ayahs | `1`..`240` | begins that rubʿ |
 
-The four division attributes are **repeated on every fragment of the ayah**
-(72, 140, 168 and 669 attribute instances for 30, 60, 60 and 240 ayahs), so any
-one fragment answers the question. They are complete: all 30 juz, all 60 hizb,
-all 240 rubʿ boundaries are marked, including the 41 that have no drawn rosette
-(§9.6).
+Each appears **once**, on `data-part="1"` of the ayah that opens the division —
+so the attribute counts ARE the division counts: 30, 60, 60 and 240.
+
+They used to be repeated on every fragment (72, 140, 168 and 669 instances),
+which made a consumer looping over `[data-rub-start]` print the same rubʿ seven
+times on p575, where 73:20 spans seven lines. A division opens once. An ayah
+never spans pages (6,236 ayahs, 6,236 page-ayah pairs), so part 1 is always on
+the page the division opens on.
+
+They are complete: all 30 juz, all 60 hizb, all 240 rubʿ boundaries are marked,
+including the 41 that have no drawn rosette (§9.6).
+
+`data-nisf-start` is NOT the `1`/`2` half-index — that is `data-nisf` on the
+hizb rosette (§6.4). It numbers the 60 half-hizb BOUNDARIES through the mushaf,
+1 at 2:44 to 60 at 94:1, and lands on exactly the ayahs whose `rub_in_hizb` is
+3, i.e. the start of each hizb's second half.
 
 ```js
 // where does juz 30 begin?

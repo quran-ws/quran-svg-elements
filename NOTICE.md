@@ -1,0 +1,66 @@
+# NOTICE — Sources, Attribution & Usage Terms
+
+This repository contains a **semantic decomposition** of Qur'an muṣḥaf pages: the
+publisher's own page artwork, unchanged, with every page's ink grouped into ayahs,
+words and named marks, plus companion index files and a JavaScript library.
+
+**No ink is altered.** Every page is verified pixel-identical to the publisher's
+artwork by an automated gate (contour conservation plus a raster diff against the
+source). The glyphs you see are the publisher's; what this project adds is the
+structure around them.
+
+The source editions and their terms below are therefore exactly those of
+`quranpedia/quran-svg`, from which the artwork is taken. Please read the
+following before using the material.
+
+## 1. The Qur'anic text itself
+
+The text of the Holy Qur'an (the ʿUthmānī rasm) is the revealed Word of Allah. It is **not
+subject to copyright** and may be freely reproduced. However, it **must never be altered,
+truncated, or misrepresented**, and it must be handled with the respect (ḥurmah) due to it
+under Islamic rulings.
+
+## 2. Source editions & their terms
+
+The mushaf pages are derived from the following publishers' editions. All rights in the
+original editions remain with their respective publishers.
+
+### 2.1 King Fahd Glorious Qur'an Printing Complex (KFQC) — مجمع الملك فهد لطباعة المصحف الشريف
+Covers: `hafs/kfqc`, `warsh/kfqc`, `qalon/kfqc`, `douri/kfqc`, `shubah/kfqc`.
+
+The Complex publishes a **complete free digital copy** of Muṣḥaf al‑Madinah (as Adobe
+Illustrator files, PDF, high‑quality images, and a TrueType font). Per the Complex's stated
+usage rights:
+
+> Based on the approval of His Excellency the Minister of Islamic Affairs, Daʿwah and
+> Guidance, General Supervisor of the King Fahd Qur'an Printing Complex — the Complex is
+> honored to present to the Muslim public a complete free digital copy of Muṣḥaf al‑Madinah.
+> These formats **can be used for free** in all personal and individual businesses, in works
+> of governmental departments & agencies, in the publications of both private and national
+> institutions; it also allows **Qur'an printing\***, **digital publishing**, **media use**,
+> and use in **websites, software, and other similar intermediates**.
+>
+> \* The printing of the Qur'an inside the Kingdom and importing it from abroad **for the
+> purpose of commercial sale** is subject to Royal Decree No. 136/8 (1/2/1406 AH) and Royal
+> Decree No. 9/B/46356 (28/9/1424 AH), which prohibit printing the Qur'an inside the Kingdom
+> anywhere other than the King Fahd Glorious Qur'an Printing Complex, and prohibit importing
+> it from abroad for the purpose of commercial sale.
+
+**In practice:** free for essentially every personal, commercial, governmental, digital,
+media, web, and software use — worldwide. The **only** restriction is the physical
+**print‑for‑commercial‑sale** trade of muṣḥafs, which is reserved to the Complex.
+Source: <https://qurancomplex.gov.sa>.
+
+## 3. This repository's own contribution — CC0 1.0 (public domain)
+
+Everything **we** authored — the ayah‑polygon hit‑layer, the JSON metadata (per‑page
+polygons, `surah.json`, `markers.json` — the per‑riwaya ayah counts, ayah↔page mapping, and
+hit‑region coordinates), and the repository structure/tooling — is dedicated to the public
+domain under **CC0 1.0** (see `LICENSE`). Reuse freely, including commercially, with no
+attribution required (attribution to *Quranpedia — quran‑svg* is appreciated). This makes the
+data a clean foundation for an open, shared Qur'anic‑data standard.
+
+## 4. Disclaimer
+
+The material is provided "as is", for the service of the Book of Allah. If you find any error
+in a page or its metadata, please open an issue so it can be corrected promptly.
