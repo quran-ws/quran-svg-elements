@@ -1,153 +1,218 @@
 # For Abdullah's review
 
-Everything that needs your decision or your eye, in one place.
-Started 2026-08-30 02:30, while you were away. Appended to, never rewritten.
+Everything needing your decision or your eye, in one place.
+Written overnight 2026-08-29/30. Nothing here was decided on your behalf; where
+I acted it says so, and every action is reversible.
 
-Nothing in this file has been decided on your behalf. Where I acted, it says so
-and why, and the action is reversible.
+**State of the build, verified after every change:**
+604/604 pixel-identical · bench SCORE 137, no failures, pixelfail 0 ·
+audit_taxonomy OK · validate_annotations OK · sweep marks 0, intervals 1 (p350).
 
 ---
 
-## A. Decisions only you can make
+## A. Decisions still open
 
-### A1. Licensing — blocking publication
-The upstream artwork repo is CC0 with a King Fahd Complex grant. **This
-repository has no LICENSE file**, and the library, the bundle and the demo all
-need one before anything is published. Agents have been instructed throughout
-never to choose a licence, never to copy one in, and never to state terms — so
-every artefact currently carries a marked placeholder.
+### A1. Where the site lives
+quran.ws, quranpedia.net, or GitHub Pages. It sets the base URLs in the demo and
+the bundle README. Wired through single constants (`FORMAT_BASE`, `PAGES`) so it
+is one edit — but it cannot stay unset at publication.
 
-You need to decide: the SVG corpus, the JS library, and the documentation may
-each want a different answer (data vs code vs prose).
-
-### A2. Where the site lives
-quran.ws, quranpedia.net, or GitHub Pages on the repo. This determines the base
-URLs in the demo and the bundle README, so it is wired through one constant and
-can be changed once — but it cannot stay unset at publication.
-
-### A3. Push the medallion correction upstream
+### A2. Push the medallion correction upstream
 Branch `centre-ayah-medallion-rings`, commit `fa8dd398`, in your
-`quranpedia/quran-svg` clone. 2,879 files across all five mushafs. I deliberately
-did not push to your upstream. Details in §C1.
+`quranpedia/quran-svg` clone. 2,879 files across all five mushafs. I did not push
+to your upstream. Detail in §C1.
 
-### A4. Should the production profile strip `data-eid` / `data-sig`?
-Today both ship in **both** profiles (`FORMAT.md:439`). My recommendation is to
+### A3. Should the production profile strip `data-eid` / `data-sig`?
+Today both ship in **both** profiles (`FORMAT.md` §6.5). My recommendation is to
 strip them in production:
 
-- `data-eid` is explicitly **not stable across builds** — shipping an unstable
-  identifier invites consumers to key on it, and we would then have to support
-  it forever or break them.
-- `data-sig` is a review-loop shape hash with no meaning to a consumer.
-- Both are large: 598,407 and 598,392 occurrences.
+- `data-eid` is explicitly **not stable across builds**. Shipping an unstable
+  identifier invites consumers to key on it, and we then support it forever or
+  break them.
+- `data-sig` is a review-loop shape hash meaningless to a consumer.
+- They are large: 598,407 and 598,392 occurrences.
 
-Against: they are useful for anyone doing their own analysis, and removing them
-later is a breaking change while adding them back is not.
+Against: useful to anyone doing their own analysis, and removing later is a
+breaking change while adding back is not.
 
-The demo's `build.py` already strips them from its inlined page, so the demo is
-currently *cleaner than what ships* — that inconsistency needs resolving either
-way.
+### A4. The demo is 65 KiB over its size target
+**965 KiB raw / 266 KiB gzipped**, against a 900 KiB target. All the growth is
+scaffolding from the sections added tonight.
+
+The only meaningful lever: **stop inlining the hero page.** It is 745 of the 965
+KiB. Fetching page 42 like every other page takes the file to roughly **220 KiB
+raw / 55 KiB gzipped** — a 4.4× cut — at the cost of the hero arriving one
+round-trip after load. Nothing else is within an order of magnitude.
+
+A judgement about first impressions, so it is yours.
+
+### A5. Make `quranpedia/quran-svg` the home?
+You suggested it, and I think yes. Our pages are the same pages plus structure,
+pixel-identical, so they **replace** the published SVGs rather than sitting
+beside them — measured cost **+33% raw, +22% gzip, +18% brotli** for the whole
+semantic layer. The repo already has the `mushafs/<riwaya>/<edition>/` layout,
+already carries `qiraat_map.py` and the ayah-count dataset, and is already public
+under CC0 with the KFGQPC grant.
+
+**One condition, and it is not optional.** Our pixel gate proves each page
+identical *against the artwork*. If the decomposed page replaces the artwork
+file, the gate compares our output to itself and the proof becomes circular.
+Before any release lands there, pin a pristine pre-decomposition baseline — a
+tag, a branch, or a preserved `svg-plain/` — and re-point `audit_pixels` at it.
+
+Lesser cautions: the repo is already ~2.5 GB across five mushafs, so release per
+mushaf version rather than per build; and keeping the pipeline private is a
+separate decision this one does not force.
+
+### A6. `data-mark-part` — real schema, or a leftover?
+It appears **exactly once in the whole mushaf** (p146, `6:141:14`). Documented and
+flagged as not-to-key-on. Somebody should decide whether it earns its place.
 
 ---
 
 ## B. Things that need your eye
 
-### B1. p82 `4:25:49` — the last MushafDatabase ink difference
-The one remaining per-word ink disagreement with the outside reference. Everything
-else reconciled to 99.968%.
-
-### B2. Four paths on p17 with no `data-kind`
-Unclassified ink. Small, but unexplained.
-
-### B3. Qālūn: 11 ayah numerals with no ink
-Found during the medallion pass on pages 141, 381, 589 and their variants: the
-ring is drawn, the number group is empty. This is a defect in the source artwork,
-not in our decomposition. Reported, not fixed.
-
-### B4. 12 duplicate ayah rings on the opening spread of every mushaf
-Two identical rings drawn on top of each other. The centring pass moved every
-copy by the same delta so they stay superimposed — moving one would have made an
-invisible duplicate visible. Deleting the duplicates is worth its own pass.
+- **p82 `4:25:49`** — the last per-word ink disagreement with MushafDatabase.
+  Everything else reconciled to 99.968%.
+- **Four paths on p17 with no `data-kind`** — unclassified ink, unexplained.
+- **Qālūn: 11 ayah numerals with no ink** (pages 141, 381, 589 and variants). The
+  ring is drawn, the number group is empty. A defect in the source artwork, not
+  in our decomposition. Reported, not fixed.
+- **12 duplicate ayah rings on every mushaf's opening spread.** The centring pass
+  moved each duplicate by the same delta so they stay superimposed — moving one
+  would have made an invisible duplicate visible. Deleting them deserves its own
+  pass.
 
 ---
 
-## C. What I changed while you were away
+## C. What changed while you were away
 
 ### C1. Medallion ring centring — all five mushafs
 **12,290 of 41,396 markers were off-centre; now 0.** douri 1,348 · hafs 377 ·
 qalon 3,448 · shubah 1,350 · warsh 3,079.
 
-The rule is derived, not tabulated: measure the numeral's ink box and the ring's,
-shift the ring so the centres coincide. **The numeral never moves** — it is the
-print's own ink. The derived rule reproduces all 228 deltas from the original
-measured table to 0.0000 and then fixes 12,062 more.
+Derived, not tabulated: measure the numeral's ink box and the ring's, shift the
+ring so the centres coincide. **The numeral never moves** — it is the print's own
+ink. The rule reproduces all 228 hand-measured deltas to 0.0000 and then fixes
+12,062 more.
 
 Cause: the Arabic-Indic digit **٥** has a different glyph origin, so any number
-containing it drifts inside its ring. In Hafs a number without a ٥ is misplaced
-0.1% of the time; one with a ٥, **37.7%**. Qālūn and Warsh differ — about half of
-all their rings are loose regardless, a continuum with no empty band, meaning
-cruder placement rather than the digit bug. The same fix serves both.
+containing it drifts inside its ring. In Hafs, a number without a ٥ is misplaced
+0.1% of the time; with a ٥, **37.7%**. Qālūn and Warsh differ — about half of all
+their rings are loose regardless, a continuum with no empty band, so cruder
+placement rather than the digit bug. Same fix serves both.
 
-Every one of the 2,879 changed files is byte-identical to its committed version
-outside the ring's `translate(...)`, verified programmatically on all of them.
-
-Gates after the change: **604/604 pixel-identical · bench 137 · taxonomy OK ·
-sweep marks 0, intervals 1** (p350, previously examined by eye).
+All 2,879 changed files verified byte-identical outside the ring's `translate()`.
 
 ### C2. Artwork pulled to `1b427fab`
-The clone was 5 commits behind. They touch only pages 1 and 2 of every mushaf
-(the opening-spread surah name, drawn twice then fixed) plus `tools/`. Hafs 1-2
-were rebuilt and the full gate re-run green.
+Five commits, touching only pages 1-2 of each mushaf (the opening-spread surah
+name, drawn twice then fixed) plus `tools/`. Hafs 1-2 rebuilt, full gate green.
 
-### C3. `data-mark-family` is now a space-separated token list
-**This corrects a regression I introduced earlier the same night.**
+### C3. `data-mark-family` is now a token list — **corrects a regression I caused**
+Adding the `diacritic` family gave `fathatan`/`kasratan`/`dammatan` the value
+`diacritic`, which silently **emptied the `tanween` family** documented in §8.2.
+`[data-mark-family="tanween"]` matched nothing.
 
-Adding the `diacritic` family gave `fathatan`, `kasratan` and `dammatan` the value
-`diacritic`, which silently **emptied the `tanween` family** that `FORMAT.md` §8.2
-documents. `[data-mark-family="tanween"]` returned nothing.
-
-Both groupings are real — a fathatan is a vowel mark *and* a tanween — so the
-attribute now carries both tokens, the way `class` does:
+Both groupings are real, so the attribute carries both, like `class`:
 
     data-mark-family="diacritic tanween"
 
-Match with `[data-mark-family~="tanween"]`, not `=`. Single-family marks keep one
-token, so `=` still works for `dots`, `waqf`, `sifr`, `sajdah` and `reading-sign`.
+Match with `~=`, not `=`. Single-family marks keep one token. `tanween` is back to
+**8,554** — the exact figure it had before, which is what tells us the old
+semantics were restored rather than new ones invented.
 
-Nothing has shipped yet, so this is the right moment to fix it rather than
-document a dead family.
+### C4. Page identity on the root `<svg>`
+Nine attributes per page, so a file downloaded alone is self-describing:
+`data-mushaf`, `data-qiraa`, `data-riwaya`, `data-edition`,
+`data-mushaf-name-ar`, `data-mushaf-name-en`, `data-ayah-numbering`,
+`data-ayah-total`, `data-page`. Values from the vendored
+`quranpedia/qiraat-ayah-map` dataset. See `docs/MULTI-MUSHAF-DESIGN.md`.
+
+### C5. A division opens once — **the bug you spotted**
+`rub 230 opens at 73:20` printed seven times because 73:20 spans seven lines and
+every fragment carried `data-rub-start`. Emitted on `data-part="1"` alone, the
+attribute counts become the division counts exactly:
+
+| | before | after | canonical |
+|---|---:|---:|---:|
+| juz | 72 | **30** | 30 |
+| hizb | 140 | **60** | 60 |
+| rubʿ | 669 | **240** | 240 |
+| nisf | 168 | **60** | 60 |
+
+That the part-1 subset already matched the canonical totals is what makes this a
+correction rather than a preference.
+
+It also exposed a documentation error: **`data-nisf-start` is a 1..60 ordinal**
+through the mushaf, not the `1`/`2` half-index the table claimed — that is
+`data-nisf` on the hizb rosette. Measured: 60 sites, 1 at 2:44 to 60 at 94:1.
+
+### C6. Licensing — your instruction, implemented
+`LICENSE` and `NOTICE.md` follow `quran-svg`'s model: CC0 for our own
+contribution, the publishers' terms untouched for the ink. One line upstream
+cannot state: since **no ink is altered** and every page is gate-verified
+pixel-identical, the KFGQPC grant applies to the glyphs exactly as it does
+upstream, and what is dedicated is the structure placed around them.
+
+### C7. The shipping bundle
+`tools/build_bundle.py` — one deterministic builder, byte-identical across runs.
+Verified: 3,647 checksums, JSON Schema validation, and a cross-reference over all
+604 pages confirming every index word id resolves to the right word group in
+document order.
+
+Measured: **457.0 MiB raw / 110.3 gzip / 69.7 brotli**. Showing page 42 costs
+**126.5 KiB** brotli; searching the whole corpus **506.8 KiB**. Pre-compressed
+`.br`/`.gz` ship beside each file for static hosts.
+
+It found a real box bug: 72 ink paths on p17 and p144 carry their own
+`transform`, which both retired proof-of-concept scripts ignored.
+
+### C8. The JavaScript library
+`docs/shipping/lib/` — zero dependencies, ES module plus a `<script>` build.
+**228 assertions, zero failures**, verified in Chromium against six pages. One
+shared reference-counted hit layer, so selection, hover, click and hit-testing
+compose instead of fighting. Highlight bands are one path with `fill-rule`
+`nonzero`.
+
+### C9. The demo
+18 sections, 17 live labs, each with a `plain JS` / `library` switch. The
+cross-line drag bug was **mis-diagnosed in the notes, and by me** — cross-line
+drags were never broken. A `mousedown` on already-selected text starts a native
+drag-and-drop, freezing the old selection; it bites on the second attempt. Found
+by measuring a drag step by step.
+
+### C10. The `arabic-writer` skill
+Installed globally, built on `kamalyaser31/arabic-guide` (MIT, derived from
+Aramco's Arabic Editing Guide). **Arabeyes removed entirely at your instruction.**
+
+A research agent fabricated a quotation during this work. It was caught on
+verification and never reached the skill; the skill now records it in a
+do-not-cite table so it cannot be reintroduced. That prompted a re-check of all
+seven Microsoft quotes against the PDF — all verbatim, but the check found a real
+flaw: Microsoft's maṣdar rule is scoped to **tooltips**, and an ellipsis had
+quietly widened it to buttons. The wider scope is licensed by the §5.4.6 menu
+table instead, now cited explicitly.
 
 ---
 
-## D. Still in flight when this was written
+## D. Still running
 
-- **The demo** — grey-to-ink reveal, audio-synced recitation (al-Minshawi
-  Murattal), hover-for-meaning, select-and-copy with ayah numbers, one selection
-  band per line, the shared hit layer so sections compose, plain-JS/library
-  toggles, a TOC replacing the crowded sticky nav.
-- **The JS library** — zero-dependency ES module, 193 tests passing at last
-  check, owns the overlay model so capabilities compose.
-- **The shipping bundle** — layout, file formats and granularity being
-  reconsidered, with measurements.
-- **`arabic-writer` skill and the Arabic RTL demo** — skill built on
-  `kamalyaser31/arabic-guide` (MIT, derived from Aramco's Arabic Editing Guide).
-  Translation waits until the English demo settles.
+The Arabic translation of the demo, against the now-frozen English page.
 
 ---
 
-## E. Deferred deliberately, with reasons
+## E. Deferred deliberately
 
-Carried from `SCHEDULE.md`; unchanged.
-
-- **The word-boundary fix (88 overrides)** — not a blocker now that the product
-  is the SVGs; matters only if the artwork is re-pulled or Warsh comes into scope.
-- **Tier C's 157 undecided cut rows** — invisible in the production profile, no
-  rule violated.
-- **Tier E's 2,687 under-cut words** — matters for letter-level decomposition
-  later.
+- **The word-boundary fix (88 overrides)** — not a blocker now the product is the
+  SVGs; matters only if the artwork is re-pulled or Warsh comes into scope.
+- **Tier C's 157 undecided cut rows** — invisible in production, no rule violated.
+- **Tier E's 2,687 under-cut words** — matters for letter-level decomposition.
 - **The shared structural cache** — dev speed only.
-- **Merging basmalah / surah-name into one path** — tested and REJECTED: it
-  breaks the ink. `fill-rule="evenodd"` makes overlapping contours in one path
-  cancel, filling the counter of the ح in ٱلرَّحْمَٰن as a black blob (228 pixels
-  changed on p50). The group is already the semantic unit. Third appearance of the
-  same trap: express "these pieces are one thing" through the GROUP, never by
-  fusing geometry.
+- **Merging basmalah / surah-name into one path** — tested and REJECTED: it breaks
+  the ink. `fill-rule="evenodd"` makes overlapping contours cancel, filling the
+  counter of the ح in ٱلرَّحْمَٰن as a black blob (228 pixels changed on p50).
+  The group is already the semantic unit. Third appearance of the same trap:
+  express "these pieces are one thing" through the GROUP, never by fusing
+  geometry.
+- **Cross-riwaya word alignment** — a real research problem; a half-correct
+  mapping would be worse than none. See `docs/MULTI-MUSHAF-DESIGN.md` §3.
