@@ -112,23 +112,32 @@ def main() -> None:
     gloss = build_gloss(HERO)
     (HERE / f"data/gloss-{HERO:03d}.json").write_bytes(gloss)
 
-    tpl = (HERE / "template.html").read_text(encoding="utf-8")
-    if "<!--SVG-->" not in tpl:
-        raise SystemExit("template.html has no <!--SVG--> placeholder")
-    out = tpl.replace("<!--SVG-->", svg)
-
     timings_path = HERE / f"data/timings-{HERO:03d}.json"
-    if "/*TIMINGS*/null" not in out:
-        raise SystemExit("template.html has no /*TIMINGS*/null placeholder")
     if not timings_path.exists():
         raise SystemExit(f"{timings_path.name} missing — run build_timings.py")
     timings = timings_path.read_text(encoding="utf-8").strip()
-    out = out.replace("/*TIMINGS*/null", timings, 1)
-    (HERE / "index.html").write_text(out, encoding="utf-8")
+
+    def assemble(tpl_name: str, out_name: str) -> None:
+        """Inline the hero page and the cached timings into one template.
+
+        Runs over template.html and, when it exists, template.ar.html — the
+        Arabic edition. Both carry the same placeholders, so the Arabic page
+        gets the identical artwork: the translation never touches the SVG.
+        """
+        tpl = (HERE / tpl_name).read_text(encoding="utf-8")
+        if "<!--SVG-->" not in tpl:
+            raise SystemExit(f"{tpl_name} has no <!--SVG--> placeholder")
+        if "/*TIMINGS*/null" not in tpl:
+            raise SystemExit(f"{tpl_name} has no /*TIMINGS*/null placeholder")
+        out = tpl.replace("<!--SVG-->", svg).replace("/*TIMINGS*/null", timings, 1)
+        (HERE / out_name).write_text(out, encoding="utf-8")
+        print(f"{out_name:15s} {len(out.encode())/1024:.0f} KB")
 
     print(f"page {HERO:03d}: {before/1024:.0f} KB dev -> {len(svg)/1024:.0f} KB "
           f"(production profile, less data-eid/data-sig)")
-    print(f"index.html   {len(out.encode())/1024:.0f} KB")
+    assemble("template.html", "index.html")
+    if (HERE / "template.ar.html").exists():
+        assemble("template.ar.html", "index.ar.html")
     print(f"gloss-{HERO:03d}   {len(gloss)/1024:.1f} KB")
     print(f"timings-{HERO:03d} {len(timings)/1024:.1f} KB inlined")
 

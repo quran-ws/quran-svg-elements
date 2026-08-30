@@ -54,7 +54,7 @@ ever correct in the Arabic text. Use the Arabic; keep the attribute name and val
 | ayah numbering system | **نظام عدّ الآي** | `data-ayah-numbering` | Also **العدّ** alone once introduced. `عدّ الآي` is the established term of the discipline (علم الفواصل); `ترقيم` is a printing word and is weaker here. |
 | total ayahs | **إجمالي الآيات** | `data-ayah-total` | |
 | edition | **الطبعة** | `data-edition` | |
-| mushaf name | **اسم المصحف** | `data-mushaf-name-ar` / `-en` | The `-ar` value is the official Arabic name; never re-translate it from the English. |
+| ~~mushaf name~~ **riwaya name** | **تسمية الرواية** | `data-mushaf-name-ar` / `-en` | **Corrected 2026-08-30 against the actual data.** An earlier version of this row said `اسم المصحف`, guessing from the attribute's *name*. The attribute does not hold a mushaf name: page 042 carries `data-mushaf-name-ar="حفص عن عاصم"` and `data-mushaf-name-en="Hafs 'an Asim"` — the riwaya formula. Never re-translate the `-ar` value; reproduce it. **The attribute name is misleading and is worth raising against the schema, not papering over in translation.** |
 | mushaf | **المصحف** | `data-mushaf` | |
 | page | **الصفحة** | `data-page` | |
 
@@ -151,6 +151,61 @@ them, a printing operation). The attribute is about the former.
 | plain JS / library toggle | **بدون مكتبة** / **بمكتبة** | Proposed. Avoids transliterating "JS"; the code itself stays Latin either way. |
 | polygon | **مضلّع** | The single highlight polygon. |
 | completeness rule | **قاعدة الاكتمال** | For the ayah-number stamping rule. |
+
+---
+
+## 3a. Terms settled during the translation
+
+These were **not** in the glossary when the demo was translated; each was decided by a translator and
+then reconciled across the whole page. They are binding now. Where two translators disagreed, the
+resolution and its reason are recorded.
+
+| English | Arabic | note |
+|---|---|---|
+| production / dev **profile** | **وضع الإنتاج** / **وضع التطوير** | "both profiles" → `الوضعان معاً`. **Resolved conflict:** one translator used `الصيغة الإنتاجية`, another `وضع الإنتاج`, and the page shipped both. Standardised on `وضع` (mode) so `صيغة` stays free for its ordinary sense of *form* — which the page also needs, in `الصيغة search` and `بصيغة إملائية أخرى`. |
+| format (the spec) | **مواصفة الصيغة** | `FORMAT.md`. Distinct concept from profile; no collision now that profile is `وضع`. |
+| lab (the interactive box) | **المختبر** | |
+| snippet | **مقتطف** | Deliberately **not** `مقطع`, which is reserved for an ayah fragment. |
+| stage | **المسرح** | The paper the page is drawn on, beside the editor. |
+| contour | **كفاف** | Glossed once as `الكفافات (contours)`. Recurs in the pixel-identity audits. |
+| raster comparison | **مقارنة نقطية (raster)** | |
+| bounding box | **المربع المحيط** | |
+| hit-testing / hit layer | **اختبار الإصابة** / **طبقة اللمس** | Extends the existing `منطقة اللمس`. |
+| stroke / fill (SVG) | **الحدّ** / **التعبئة** | |
+| halo | **الهالة** | The transparent stroke that widens a tap target. |
+| subpath | **مسار فرعي** | |
+| antialiasing | **تنعيم الحواف** | |
+| seam | **حدّ ظاهر** | |
+| leading | **تباعد الأسطر** | |
+| crop | **اقتصاص** | |
+| payload | **الحمولة** | |
+| clipboard | **الحافظة** | |
+| caret | **مؤشر الكتابة** | |
+| ascenders / descenders | **الصواعد والنوازل** | |
+| transform chain | **سلسلة التحويلات** | |
+| fallback font | **الخط الاحتياطي** | |
+| headless browser | **متصفح بلا واجهة رسومية** | |
+| combining marks | **علامات متراكبة** | |
+| long vowels | **حروف المدّ** | |
+| stroke (of a fatha/kasra) | **شَرطة** | Avoids `رسم`, which is reserved. |
+| rosette | **وردة** | `ورود الأرباع`, `وردة حزب`. |
+| signature (`data-sig`) | **بصمة شكل** | |
+| slider | **منزلق** | |
+| preset | **إعداد مسبق** | |
+| taxonomy | **تصنيف** | |
+| tick (of a clock) | **نبضة** | |
+| transport (play/scrub bar) | **شريط التحكم** | |
+| memorisation prompt | **مُلقِّن الحفظ** | From `التلقين`, the actual hifz practice. |
+| the ground (paper behind ink) | **الأرضية** | |
+| furniture (decorative surround) | **الزخرفة** | A printing-trade idiom with no Arabic equivalent; the dry register is lost. |
+| fold / normalise (search forms) | **توحيد الصور** | A paraphrase, not a term of art. |
+| spelling (one of the five forms) | **الصورة الإملائية** | Deliberately **not** bare `الرسم`. |
+| bundler | **المُحزِّم** | |
+| paint / recolour | **التلوين** | Never `رسم`. |
+
+**Left in English on purpose:** aligned readout labels inside the output panes (`words`,
+`ayah fragments`, `viewBox`, `profile`), because they are a column format in a left-to-right
+monospace pane, not prose. Sentences in those same panes **are** translated.
 
 ---
 

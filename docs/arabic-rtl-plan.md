@@ -1,8 +1,25 @@
 # RTL conversion plan for the demo page
 
-**Status: plan only. Nothing has been changed.** `docs/demo/template.html` is being rewritten by
-another agent as this is written, so this document is keyed to **CSS selectors and mechanisms**, not
-to line numbers — the line numbers moved twice while it was being researched and will move again.
+**Status: IMPLEMENTED, 2026-08-30.** The plan below was executed against the final English page
+(`fdb0183`). It is kept as the rationale for what was done, and as the checklist for the next time
+the English page changes.
+
+- Output: `docs/demo/template.ar.html` → `docs/demo/index.ar.html`. The English page is untouched.
+- `build.py` builds both from the same inlined artwork; the Arabic template carries the same
+  `<!--SVG-->` and `/*TIMINGS*/null` placeholders.
+- The translation was applied as **verified replacement pairs**, never by hand-editing the HTML, so
+  no pair could alter markup or break a JS template literal. 615 pairs, zero failures, and the
+  only structural drift in the whole file is two escaped backticks removed from one code comment —
+  accounted for by the pair that did it.
+
+**Verified in a browser** at 360 / 768 / 1280 px, both themes: 17 labs × 2 variants = 34 runs, all
+green; zero console errors; zero horizontal overflow at every width; code panes LTR; artwork
+untouched (`viewBox` unchanged, no transform, no negative `scaleX` anywhere in the document).
+
+**The acceptance test in §7 passed exactly.** Worst span-alignment residual in the selection layer is
+**0.016 px** in `lab-tap` — the same figure the English page documents. `lab-select` shows 26.778 px
+on word `2:254:21`, and the English page shows **26.778 px on the same word**: pre-existing, not a
+regression. That second figure is worth a look on its own merits, but it is not RTL's doing.
 
 Scope: `docs/demo/template.html` (the source of truth; `build.py` produces `index.html` from it).
 
