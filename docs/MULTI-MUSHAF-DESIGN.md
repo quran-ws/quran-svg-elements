@@ -51,9 +51,10 @@ ten qiraat, their rawis, and the counting systems. **Nothing here is invented.**
     data-riwaya-name-en="Hafs 'an Asim"
     data-ayah-numbering="kufi"           see §2 — must be explicit
     data-ayah-total="6236"               a PROPERTY of the counting system
+    data-decomposition="word"            how far this edition is decomposed
     data-page="42"
 
-Nine attributes on one element per page. 604 elements in the whole corpus, so
+Ten attributes on one element per page. 604 elements in the whole corpus, so
 the size cost is nil, and every file becomes self-describing: a page downloaded
 on its own can say what it is, in both languages, without fetching anything.
 
@@ -63,6 +64,36 @@ The page carries stable machine ids plus the one display string a consumer
 actually renders; the catalogue carries the rest — `name_ar`/`name_en` for the
 qiraa, the rawi and the counting system, the totals, the descriptions, and the
 provenance of the numbering choice (§2).
+
+### Editions ship at different DEPTHS, and the file must say which
+
+**Abdullah, 2026-08-30: until every mushaf is released, the README and the
+structure must say which editions are ayah-level and which are v2-ready.**
+
+Two depths exist and will coexist for some time:
+
+| `data-decomposition` | what the file holds | which editions |
+|---|---|---|
+| `ayah` | page ink, ayah polygons and markers; nothing below the ayah | what `quranpedia/quran-svg` publishes today |
+| `word` | every word, ligature and named mark addressable | Hafs, from this pipeline |
+
+**Put it on the page, not only in the catalogue.** A consumer holding one file
+must be able to ask what it contains. The alternative is inferring depth from
+which mushaf it is — which breaks the day an edition is upgraded — or from
+whether a `querySelector('g.word')` happened to return null, which cannot
+distinguish "this edition is ayah-level" from "this page failed to load".
+
+Consequences to carry through:
+
+- **`catalogue.json` lists the depth per edition**, so a consumer can choose what
+  to fetch before fetching it.
+- **The README states it in a table**, prominently. Someone arriving expecting
+  word-level Warsh should learn that in the README, not from an empty selector.
+- **The library degrades honestly.** `page.words()` on an ayah-level file should
+  say the edition is ayah-level, not return an empty array — an empty array is
+  indistinguishable from a bug.
+- **Upgrading an edition changes this value**, and that is a version bump for
+  that edition alone. It is not a breaking change: `ayah` -> `word` only adds.
 
 ### The ayah total is not a constant
 

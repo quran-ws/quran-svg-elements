@@ -437,7 +437,7 @@ opening frame (§9.2).
 | attribute | count | values | notes |
 |---|---:|---|---|
 | `data-kind` | 616,561 | `mark` 436,629 · `body` 161,778 · `ayah-marker-ornament` 6,248 · `ayah-number` 6,236 · `header-ink` 5,670 | Present on **every** path except the 6,236 `ayahPolygon` and 4 paths on p17 that lie **entirely outside the viewBox** and are therefore invisible (measured: y 583.7..588.2 on a 550-tall page, and y -62.2..-7.1). Ink the viewBox clips is kept out of classification but still re-emitted, so that no ink is ever silently dropped — §10.5. `body` = letter ink. |
-| `data-mark` | 436,843 | 35 names, §8 | Attribute occurrences. The **logical** mark count is 436,627 — a mark drawn as more than one path is one mark. On every `data-kind="mark"` path but **two**: one unnamed (p1 `e34`) and one carrying `data-mark-part` instead (p146). |
+| `data-mark` | 436,843 | 35 names, §8 | Attribute occurrences. The **logical** mark count is 436,627 — a mark drawn as more than one path is one mark. On every `data-kind="mark"` path but **one**, which is unnamed (p1 `e34`). |
 | `data-mark-family` | 393,970 | **token list** — `diacritic` 280,333 · `dots` 105,270 · `tanween` 8,554 · `waqf` 4,272 · `sifr` 4,054 · `sajdah` 30 · `reading-sign` 11 | **Space-separated, like `class` — match with `~=`, not `=`.** See below. Only on marks that have a family. **Derivable from `mark-taxonomy.v2.json`** — prefer the registry, which also covers `small-noon` (§10.5). |
 | `data-eid` | 598,407 | `e1`, `e2`, … | **Not stable across builds. Never key on it.** Unique within a page. Only on word/standalone ink — never on marker, header or polygon paths. |
 | `data-sig` | 598,392 | 16 hex | Outline shape signature used by the review loop. **Not an identity** — §8.5. |
@@ -446,7 +446,6 @@ opening frame (§9.2).
 | `data-pair` | 6 | `mnq-<surah>-<ayah>-<n>` | Links the two halves of a muʿānaqah. Exactly 6 in the corpus (§9.3). |
 | `data-standalone` | 229 | `1` | Marks that belong to no word: 199 hizb + 30 sajdah. |
 | `data-aid` | 229 | `surah:ayah` | On those same 229 standalone paths. |
-| `data-mark-part` | 1 | `three-dots` | A path that is part of a mark named on another path (p146 `6:141:14`). §10.5. |
 | `fill` / `fill-rule` | all ink | `#231f20` / `evenodd` | Every ink path in the mushaf is the same colour. |
 
 `data-eid`, `data-sig` and `data-mark-family` are present in **both** profiles.
@@ -478,7 +477,8 @@ self-describing:
 <svg data-mushaf="hafs-kfqc" data-qiraa="asim" data-riwaya="hafs"
      data-edition="kfgqpc-1421"
      data-riwaya-name-ar="حفص عن عاصم" data-riwaya-name-en="Hafs 'an Asim"
-     data-ayah-numbering="kufi" data-ayah-total="6236" data-page="42" …>
+     data-ayah-numbering="kufi" data-ayah-total="6236"
+     data-decomposition="word" data-page="42" …>
 ```
 
 Each appears exactly 604 times, once per page. Values come from the
@@ -488,6 +488,13 @@ rather than being repeated on every page.
 
 Three of these are easy to misread:
 
+- **`data-decomposition` says how deep this file goes.** `word` means every word,
+  ligature and named mark is addressable — what this specification describes.
+  `ayah` means page ink with ayah polygons and markers and nothing below the
+  ayah, which is what `quranpedia/quran-svg` publishes for editions this pipeline
+  has not yet processed. **Check it before selecting `g.word`**: on an
+  `ayah`-level file that selector legitimately returns nothing, and an empty
+  result there means "not decomposed", not "broken".
 - **`data-riwaya-name-*` names the RIWAYA, not the mushaf.** `حفص عن عاصم` is
   the conventional designation of a transmission — rawi عن qiraa — so it belongs
   with `data-riwaya`, not with `data-mushaf`. (It was briefly called
@@ -759,9 +766,10 @@ marks (`fatha+hamza`, `damma+shadda`). These are resolved internally and **no
 occurrences.
 
 **(d) Path count ≠ sign count.** Two slash strokes drawn touching share one
-path, so the pair counts once. A sign whose contours the artwork put in
-different paths emits as more than one path — exactly one such case survives
-(`data-mark-part`, p146; §10.5). And muʿānaqah is ONE sign of three dots that
+path, so the pair counts once. Where the artwork puts a sign's contours in
+different paths, the emitter folds them into one path, so **a mark is always
+exactly one path** — the last exception (p146) was merged 2026-08-30 and the
+`data-mark-part` attribute retired with it. And muʿānaqah is ONE sign of three dots that
 comes in **pairs** across two words: three pairs mushaf-wide = 6 emitted
 `muanaqah` paths. **Do not count six signs, and do not count three dots per
 sign.**
@@ -1089,11 +1097,6 @@ A strict consumer must special-case these:
 
 - **1 unnamed mark** — p1 `1:2:1` `ٱلْحَمْدُ`, `data-eid="e34"`:
   `data-kind="mark"` with no `data-mark`.
-- **1 `data-mark-part`** — p146 `6:141:14` `مُتَشَٰبِهࣰا`: the ش's third dot
-  emits as a second path carrying `data-mark-part="three-dots"` (and
-  `data-mark-family="dots"`) instead of `data-mark`. A consumer selecting
-  `[data-mark]` misses its ink; one selecting `[data-kind="mark"]` finds a path
-  with no name.
 - **15 paths of 598,407 have no `data-sig`** (split or synthesised outlines):
   p37, p38, p126 ×2, p146, p159, p342, p362, p431 ×2, p460, p485, p556, p567,
   p577.
