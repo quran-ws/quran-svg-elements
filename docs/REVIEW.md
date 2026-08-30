@@ -64,9 +64,33 @@ Lesser cautions: the repo is already ~2.5 GB across five mushafs, so release per
 mushaf version rather than per build; and keeping the pipeline private is a
 separate decision this one does not force.
 
-### A6. `data-mark-part` — real schema, or a leftover?
-It appears **exactly once in the whole mushaf** (p146, `6:141:14`). Documented and
-flagged as not-to-key-on. Somebody should decide whether it earns its place.
+### A6. `data-mark-part` — RESOLVED: the mark was merged, the attribute retired
+
+Investigated on your instruction, and then you overruled the conclusion — rightly.
+
+On p146 `6:141:14` (مُتَشَٰبِهࣰا) the ش three-dot cluster was drawn across **two
+source paths**: one holding two of the dots, the other holding the third. My first
+finding was that flagging the second as `data-mark-part` was correct. Your
+instruction was that all three dots should be **one mark, not split**.
+
+That is now what happens. The members' contours are folded into the primary's
+path, so the cluster is a single element carrying `data-mark="three-dots"` with
+three contours, and `data-mark-part` is **retired** — zero occurrences in the
+corpus, removed from the specification.
+
+**Why this merge is safe when three earlier ones were not.** The basmalah band,
+the muʿānaqah and the ظ white loop all had **overlapping** contours, where
+`fill-rule="evenodd"` cancels and fusing filled a counter solid. Three dots are
+disjoint, so there is nothing to cancel — and `audit_pixels` proves it page by
+page rather than the argument being taken on trust.
+
+Verified: **604/604 pixel-identical**, and **436,627 logical marks — the same
+count as before the merge**, which is what shows the change altered how a mark is
+drawn and not how many marks exist.
+
+If a part ever survives unmerged — its master in a different source path, which
+the fold cannot cross — the emitter now prints a warning rather than emitting a
+lone fragment that would look like an ordinary mark and inflate every count.
 
 ---
 
