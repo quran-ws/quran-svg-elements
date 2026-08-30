@@ -71,7 +71,18 @@ def check_page(pg, reg, edition):
             if cls == "word":
                 words_svg[at.get("data-wid")] = at
             elif cls == "ayah":
-                ayah_attrs[at.get("data-aid")] = at
+                # An ayah is emitted once per LINE, and the division-start
+                # flags are carried ONLY by data-part="1" (a division opens
+                # once, not once per line). Keeping the last fragment seen
+                # would therefore lose them on every multi-line ayah. Merge
+                # across fragments so the check sees the ayah, not a fragment.
+                _prev = ayah_attrs.get(at.get("data-aid"))
+                if _prev:
+                    _merged = dict(_prev)
+                    _merged.update(at)
+                    ayah_attrs[at.get("data-aid")] = _merged
+                else:
+                    ayah_attrs[at.get("data-aid")] = at
             elif cls in ("surah-name", "basmalah"):
                 surah_attrs[at.get("data-sid")] = at
             elif cls == "hizb-mark":
