@@ -475,7 +475,8 @@ const hits = idx.rows.filter(r => fold(r[col.search]).includes(fold('الرحم�
 | `schema/*.schema.json` | JSON Schema (2020-12) for every data file above |
 | `VERSION.json` | schema version, build date, source commits, corpus counts |
 | `CHECKSUMS.txt` | sha256 of every other file — `sha256sum -c CHECKSUMS.txt` |
-| `LICENSE` | **placeholder — see the file** |
+| `LICENSE` | CC0 1.0 for this project's own contribution; the publishers' terms for the ink |
+| `NOTICE.md` | source editions, attribution and the publishers' grants |
 {lib_row}
 ## Naming rules
 
@@ -664,8 +665,20 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     tax["schema_version"] = SCHEMA_VERSION
     tax["edition"] = EDITION_ID
     jdump(tax, os.path.join(bundle, "schema", "mark-taxonomy.json"))
-    with open(os.path.join(bundle, "LICENSE"), "w", encoding="utf-8") as fh:
-        fh.write(LICENSE_PLACEHOLDER)
+    # The real licence, decided by Abdullah 2026-08-30: follow quran-svg's
+    # model — CC0 for our own contribution, the publishers' terms untouched for
+    # the ink. Copied from the repository root so there is ONE source of truth;
+    # the placeholder below is kept only as the fallback for a checkout that
+    # somehow lacks them, and a bundle built that way says so plainly.
+    _lic = os.path.join(ROOT, "LICENSE")
+    _notice = os.path.join(ROOT, "NOTICE.md")
+    if os.path.exists(_lic):
+        shutil.copyfile(_lic, os.path.join(bundle, "LICENSE"))
+    else:
+        with open(os.path.join(bundle, "LICENSE"), "w", encoding="utf-8") as fh:
+            fh.write(LICENSE_PLACEHOLDER)
+    if os.path.exists(_notice):
+        shutil.copyfile(_notice, os.path.join(bundle, "NOTICE.md"))
 
     # optional: the JS library, when there is one to ship (--lib DIR)
     if lib and os.path.isdir(lib):
