@@ -286,6 +286,38 @@ exactly what a caller gets wrong.
 `toPngDataUrl(svgEl, {scale, background})`, `toPngBlob(…)` — serialise, `Image`, `canvas`.
 Verified headless before being promised (test 12).
 
+### `markers.mjs`
+
+- `loadMarkerSet(baseUrl)` / `set.outline(id)` / `setAyahMarker(page, outline, …)` /
+  `resetAyahMarkers(page)` / `colourAyahMarkers(page, colours)`.
+
+Three decisions worth the words:
+
+1. **The library takes a base URL and ships nothing.** The reference set
+   (`quranpedia/ayah-markers`) has no licence file and grants none for the outlines,
+   which are traced from twenty type families with twenty licences. Bundling even one
+   would make this repository the redistributor of material it has no terms for. So the
+   module is a mechanism: it fetches, and it says so in the API docs and on the demo
+   page. That is also why the tests run against a *synthetic* set — the assertions must
+   not need the real one to exist.
+2. **The ring is replaced, the numeral is not.** The number is the print's own ink. The
+   replacement is fitted into the box the ring occupied rather than composed with the
+   numeral, so the numeral needs no handling at all: whatever centred it still does.
+   Uniform scale, not stretch — the outlines' aspect ratios differ marker to marker and
+   distorting an ornament to fill a box is worse than leaving air around it.
+3. **Per-part paths, with the counters re-punched.** Recolouring needs one element per
+   colourable part, but the upstream files are a single path whose holes are
+   winding-based, and a hole and its outer shape routinely belong to different parts.
+   Splitting naively wrecks 39 of 47 designs (1,499,224 differing pixels, ~31% of the
+   raster); each layer taking back the earlier layers' contours that lie inside it, drawn
+   `evenodd`, brings that to 18,582, of which 18,555 is one marker the upstream
+   customizer draws the same way. Widening the rule to *any* other layer was measured and
+   is worse. Containment is decided by `isPointInFill` on a rendered path, because the
+   renderer is the authority on what is inside what.
+
+Colours are inline `style="fill:var(--ayah-marker-<part>, <fallback>)"`, not `fill`
+attributes: `var()` in a presentation attribute is not reliably substituted.
+
 ---
 
 ## 4. What was proposed and dropped, and why
