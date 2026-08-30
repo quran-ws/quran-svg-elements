@@ -612,7 +612,8 @@ def human(n):
 
 
 def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
-          brotli_pages=True, archive=True, lib=None, quiet=False):
+          brotli_pages=True, archive=True, lib=None, reuse_pages=False,
+          quiet=False):
     if brotli is None and brotli_pages:
         raise SystemExit("brotli module not installed; --no-brotli to skip")
 
@@ -623,8 +624,14 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
 
     # ---- 1. pages -----------------------------------------------------
     say = (lambda *a: None) if quiet else print
-    say("1/7 emitting %s-profile pages…" % profile)
-    stage = emit_pages.emit(EDITION, profile, 1, 604, jobs=jobs, quiet=quiet)
+    # Re-emit by default. The staging cache cannot tell that the emitter has
+    # changed since it was filled, and a bundle built from half-old pages is
+    # the worst possible failure — silent and plausible. Emission is a few
+    # minutes; --reuse-pages is for iterating on the packaging alone.
+    say("1/7 emitting %s-profile pages%s…"
+        % (profile, "" if not reuse_pages else " (reusing the cache)"))
+    stage = emit_pages.emit(EDITION, profile, 1, 604, jobs=jobs,
+                            force=not reuse_pages, quiet=quiet)
     for p in range(1, 605):
         shutil.copyfile(os.path.join(stage, "%03d.svg" % p),
                         os.path.join(bundle, "pages", "%03d.svg" % p))
@@ -723,7 +730,8 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     def sz(rel):
         return human(os.path.getsize(os.path.join(bundle, rel)))
 
-    nfiles = sum(len(fn) for _dp, _dn, fn in os.walk(bundle)) + 2  # +README/+CHECKSUMS
+    nfiles = 2 + sum(1 for _dp, _dn, fn in os.walk(bundle) for f in fn
+                     if not f.endswith((".br", ".gz")))   # +README/+CHECKSUMS
     archive_section = "" if not archive else ARCHIVE_SECTION.format(
         bundle=BUNDLE_NAME, file_count="{:,}".format(nfiles))
     lib_row = ("| `lib/` | the JavaScript helper library |\n"
@@ -812,13 +820,17 @@ def main(argv=None):
     ap.add_argument("--no-gzip", dest="gzip", action="store_false")
     ap.add_argument("--no-brotli", dest="brotli", action="store_false")
     ap.add_argument("--no-archive", dest="archive", action="store_false")
+    ap.add_argument("--reuse-pages", action="store_true",
+                    help="trust the staged pages instead of re-emitting; only "
+                         "safe when the pipeline has not changed since")
     ap.add_argument("--lib", default=None,
                     help="directory of JS library files to ship as lib/")
     ap.add_argument("--quiet", action="store_true")
     a = ap.parse_args(argv)
     os.makedirs(a.out, exist_ok=True)
     build(a.out, profile=a.profile, jobs=a.jobs, gzip_pages=a.gzip,
-          brotli_pages=a.brotli, archive=a.archive, lib=a.lib, quiet=a.quiet)
+          brotli_pages=a.brotli, archive=a.archive, lib=a.lib,
+          reuse_pages=a.reuse_pages, quiet=a.quiet)
 
 
 if __name__ == "__main__":
