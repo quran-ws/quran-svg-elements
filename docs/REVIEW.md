@@ -124,7 +124,7 @@ semantics were restored rather than new ones invented.
 ### C4. Page identity on the root `<svg>`
 Nine attributes per page, so a file downloaded alone is self-describing:
 `data-mushaf`, `data-qiraa`, `data-riwaya`, `data-edition`,
-`data-mushaf-name-ar`, `data-mushaf-name-en`, `data-ayah-numbering`,
+`data-riwaya-name-ar`, `data-riwaya-name-en`, `data-ayah-numbering`,
 `data-ayah-total`, `data-page`. Values from the vendored
 `quranpedia/qiraat-ayah-map` dataset. See `docs/MULTI-MUSHAF-DESIGN.md`.
 

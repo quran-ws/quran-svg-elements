@@ -47,8 +47,8 @@ ten qiraat, their rawis, and the counting systems. **Nothing here is invented.**
     data-qiraa="asim"
     data-riwaya="hafs"
     data-edition="kfgqpc-1421"
-    data-mushaf-name-ar="حفص عن عاصم"    the conventional name: rawi عن qiraa
-    data-mushaf-name-en="Hafs 'an Asim"
+    data-riwaya-name-ar="حفص عن عاصم"    the conventional name: rawi عن qiraa
+    data-riwaya-name-en="Hafs 'an Asim"
     data-ayah-numbering="kufi"           see §2 — must be explicit
     data-ayah-total="6236"               a PROPERTY of the counting system
     data-page="42"

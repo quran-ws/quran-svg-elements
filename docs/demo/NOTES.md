@@ -215,7 +215,7 @@ Applied at: the `<select>` options (character-level isolation, because CSS and
 `dir` are unreliable inside `<option>`), every lab readout (`out()` and `log()`
 wrap Arabic runs automatically — `log()` escapes first, so this is safe), the
 word tooltips in §10 and §11, the hero's text readout, the attribute table's
-sample values including `data-mushaf-name-ar`, and the mushaf-wide search's
+sample values including `data-riwaya-name-ar`, and the mushaf-wide search's
 no-match message.
 
 One deliberate exception: **the copy payload gets no isolates.** It is data
