@@ -114,6 +114,18 @@ section{padding:58px 0;border-bottom:1px solid var(--rule)}
 .paper.tight{padding:8px}
 .paper.empty{min-height:130px;display:flex;align-items:center;justify-content:center;
   color:var(--muted);font:500 12px/1 "IBM Plex Mono",monospace;text-align:center}
+/* The hero page is fetched, not inlined. Reserve its exact printed proportion
+   from the viewBox (345 x 550 on 602 of the 604 pages) so nothing on the page
+   moves when the file lands. Never a dead area: it says what it is doing, and
+   it says so again if the fetch fails. */
+.hero-ph{aspect-ratio:345/550;display:grid;place-items:center;
+  padding:0 18px;text-align:center;color:var(--muted);font-size:13px;line-height:1.9}
+.hero-ph b{font-weight:600}
+.hero-ph.loading{animation:ph-pulse 1.6s ease-in-out infinite}
+/* the paper stays light in both themes, so this colour is literal, not a token */
+.hero-ph.failed{color:#8c2f20}
+@keyframes ph-pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.hero-ph.loading{animation:none}}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px;align-items:start}
 @media (max-width:900px){.two{grid-template-columns:minmax(0,1fr)}}
 .stage{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);gap:26px;align-items:start}
@@ -460,18 +472,21 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
   <div class="wrap">
     <div class="stage">
       <div>
-        <div class="paper"><!--SVG--></div>
-        <p class="note" id="hero-caption">الصفحة 42 من المصحف، حيّةً داخل هذا المستند.</p>
+        <div class="paper" id="hero-paper">
+          <div class="hero-ph loading" id="hero-ph"><span>يجري جلب الصفحة 42 · <b>794 KiB</b><br>
+            والطلب نفسه يخدم كل قسم آخر في هذه الصفحة</span></div>
+        </div>
+        <p class="note" id="hero-caption">الصفحة 42 من المصحف، تصل عبر الشبكة إلى هذا المستند.</p>
       </div>
       <div class="readout panel">
         <h3>التجربة</h3>
         <div class="pills" id="hero-buttons">
-          <button id="hero-lit" aria-pressed="false">تظليل الآية الأولى</button>
-          <button id="hero-marks" aria-pressed="false">إخفاء الحركات</button>
-          <button id="hero-text" aria-pressed="false">استخراج النص منها</button>
-          <button id="hero-crop" aria-pressed="false">الاقتصار على آية واحدة</button>
-          <button id="hero-spread" aria-pressed="false">مباعدة الأسطر</button>
-          <button id="hero-reset">إعادة تعيين</button>
+          <button id="hero-lit" aria-pressed="false" disabled>تظليل الآية الأولى</button>
+          <button id="hero-marks" aria-pressed="false" disabled>إخفاء الحركات</button>
+          <button id="hero-text" aria-pressed="false" disabled>استخراج النص منها</button>
+          <button id="hero-crop" aria-pressed="false" disabled>الاقتصار على آية واحدة</button>
+          <button id="hero-spread" aria-pressed="false" disabled>مباعدة الأسطر</button>
+          <button id="hero-reset" disabled>إعادة تعيين</button>
         </div>
         <div class="out" id="hero-out">خمسة أزرار تعمل كلها على هذا الملف الواحد داخل المتصفح،
           وتتراكب آثارها، فاضغط منها ما شئت.</div>
@@ -768,7 +783,7 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
 
     <div class="two" style="margin-top:22px">
       <div class="callout">
-        <h3>أربعة أمور تسوء، وما يُفعل بدلاً منها</h3>
+        <h3>خمسة أمور تسوء، وما يُفعل بدلاً منها</h3>
         <ul class="plain-list" style="margin-top:0">
           <li><b><code>getBBox()</code> قياس خاطئ.</b> فهو يعطي إحداثيات المجموعة نفسها في فضاء
             المستخدم ويتجاهل كل تحويل فوقها، فيضع السطر الأول قرب أسفل الصفحة. استخدم
@@ -932,20 +947,21 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
   </div>
 </section>
 
-<section id="translate" data-toc-group="القراءة والمعنى" data-toc-note="تمرير المؤشّر على كلمة لعرض معناها.">
+<section id="translate" data-toc-group="القراءة والمعنى" data-toc-note="ربط بياناتك الخاصة بكل كلمة على حدة.">
   <div class="wrap">
     <div class="shead">
       <p class="sel">data-wid === مفتاح الكلمة في quran.com</p>
-      <h2>10 · تمرير المؤشّر على كلمة لعرض معناها</h2>
-      <p>مرّر المؤشّر على أي كلمة في الصفحة يظهر معناها. واللمس يعمل على الشاشات اللمسية،
-        والكلمات قابلة للتركيز فيعمل <kbd>Tab</kbd> ومفاتيح الأسهم كذلك. و<code>data-wid</code>
-        هو <code>surah:ayah:word</code> ويبدأ من 1، وهو المفتاح نفسه الذي تستعمله أصلاً API
-        موقع quran.com ومجموعات الترجمة كلمةً كلمة وبيانات الصرف وتوقيتات التلاوة، فيرتبط
-        بهذا الحبر ملفٌ حجمه 5 KB من معاني الكلمات دون جدول مطابقة.</p>
-      <p style="margin-top:10px">ترجمة كلمةً كلمة، ونافذة تفسير منبثقة، ووسم نحوي، وبطاقة
-        مفردات: كلها الأسطر الثلاثة نفسها متى صارت كل كلمة قابلة للاستهداف، ولا شيء منها ممكن
-        على صورة صفحة. <b>ومعاني الكلمات هنا مأخوذة من quran.com اتفاقاً، أما الآلية فتقبل أي
-        بيانات لكل كلمة تملكها أصلاً.</b> وهذه الملفات لا تتضمّن أي ترجمة.</p>
+      <h2>10 · ربط أي بيانات تملكها بكل كلمة</h2>
+      <p>مرّر المؤشّر على أي كلمة في الصفحة تظهر البيانات المرتبطة بها. واللمس يعمل على الشاشات
+        اللمسية، والكلمات قابلة للتركيز فيعمل <kbd>Tab</kbd> ومفاتيح الأسهم كذلك.
+        و<code>data-wid</code> هو <code>surah:ayah:word</code> ويبدأ من 1، وهو المفتاح نفسه الذي
+        تستعمله أصلاً API موقع quran.com ومجموعات الترجمة كلمةً كلمة وبيانات الصرف وتوقيتات
+        التلاوة، فيرتبط بهذا الحبر ملفٌ حجمه 5 KB دون جدول مطابقة.</p>
+      <p style="margin-top:10px"><b>وما يظهر هنا مثال، لا ميزة.</b> فالمعروض ترجمة إنجليزية
+        كلمةً كلمة مصدرها quran.com، وهي بيانات جاهزة مفتوحة يسهل التحقق منها؛ والمقصود هو
+        الربط لا اللغة. ضع مكانها تفسيراً أو وسماً نحوياً أو بطاقة مفردات أو أي بيانات تملكها
+        أصلاً لكل كلمة، فالأسطر الثلاثة نفسها لا تتغير، ولا شيء من ذلك ممكن على صورة صفحة.
+        <b>وملفات SVG لا تتضمّن أي ترجمة.</b></p>
     </div>
     <div class="lab" id="lab-translate"></div>
     <p class="note">الترجمة الإنجليزية كلمةً كلمة والنقل الحرفي هنا مصدرهما <b>quran.com</b>،
@@ -1153,8 +1169,9 @@ svg.inert, svg.inert * { pointer-events: none }
     </div>
     <div class="lab" id="lab-meta"></div>
     <p class="note">تُجلَب الصفحات واحدة تلو الأخرى عند الطلب — 794 KiB خاماً، و197 KiB على الشبكة
-      بعد ضغطها باستخدام gzip، وهي الطريقة نفسها التي ينبغي لأي مستهلك أن يتبعها. وهذا المستند يُضمّن
-      صفحة واحدة فقط ويجلب ما عداها.</p>
+      بعد ضغطها باستخدام gzip، وهي الطريقة نفسها التي ينبغي لأي مستهلك أن يتبعها. وهذا المستند لا
+      يُضمّن صفحةً واحدة: فالصفحة التي في أعلاه تُجلَب كسائر الصفحات، ويتشارك كل قسم يعرض الصفحة 42
+      ذلك الطلب الواحد.</p>
   </div>
 </section>
 
@@ -1280,7 +1297,22 @@ svg.inert, svg.inert * { pointer-events: none }
         <p class="note">طبقة الوصلات <b>تقطيعٌ للعرض لا هجاء</b>. وهي ليست تقسيماً
           موثوقاً للحروف — إذ إن 156 كلمةً تُهجّى فيها بحروف أقل مما تحمله فعلاً — فاعتمد
           <code>data-uthmani</code> / <code>data-rasm</code> على الكلمة بوصفه النص المعتمد. والصفحة
-          المضمَّنة في أعلى هذا المستند هي وضع الإنتاج.</p>
+          التي في أعلى هذا المستند معروضة في وضع الإنتاج.</p>
+
+        <h3 style="font-size:19px;margin:26px 0 10px">مستويان للتفكيك</h3>
+        <p class="note" style="margin-top:0">يحمل عنصر <code>&lt;svg&gt;</code> الجذر في كل صفحة
+          السمة <code>data-decomposition</code>، ولها قيمتان. فالقيمة <code>word</code> تعني ما
+          عرضته هذه الصفحة كلها: الكلمات والوصلات والعلامات المسمّاة كلها قابلة للاستهداف. والقيمة
+          <code>ayah</code> تعني حبر الصفحة مع مضلّعات الآيات وعلامات رؤوسها، <b>ولا شيء دون
+          الآية</b> — فلا <code>g.word</code> ولا <code>data-wid</code> ولا علامات مسمّاة.</p>
+        <p class="note"><b>ورواية حفص — وهي المدوّنة الموصوفة هنا — قيمتها <code>word</code>. أما
+          ورش وقالون والدوري وشعبة فقيمتها اليوم <code>ayah</code>.</b> فاقرأ السمة قبل أن تكتب
+          مُحدِّداً على مستوى الكلمة؛ فالمُحدِّد في صفحة <code>ayah</code> ليس خاطئاً، لكنه لا
+          يطابق شيئاً.</p>
+        <figure class="code" style="margin-top:12px">
+          <button class="copy">نسخ</button>
+<pre><code><span class="tok-k">if</span> (doc.documentElement.dataset.decomposition !== <span class="tok-s">'word'</span>) <span class="tok-c">/* ayah level only */</span></code></pre>
+        </figure>
 
         <h3 style="font-size:19px;margin:26px 0 10px">الإصدارات</h3>
         <p class="note" style="margin-top:0">ثبّت على وسم؛ فأي URL يحمل رقم إصدار غير قابل للتغيير. والعقد:
@@ -1376,8 +1408,7 @@ svg.inert, svg.inert * { pointer-events: none }
     <p class="note">تظهر <code>data-eid</code> و<code>data-sig</code> كذلك على المسارات، في
       <b>كلا</b> الوضعين. وهما أداتا مراجعة: فـ<code>data-eid</code> <b>غير ثابت بين عمليات
       البناء</b>، و<code>data-sig</code> بصمة شكل لا هوية — إذ إن 98 بصمة تخدم أكثر من اسم علامة
-      واحد. <b>فلا تجعل أياً منهما مفتاحاً أبداً.</b> (الصفحة المضمَّنة في أعلى هذا المستند جُرِّدت
-      منهما، لتوفير 45 KB لا غير. والملف الذي تنزّله سيحملهما.)</p>
+      واحد. <b>فلا تجعل أياً منهما مفتاحاً أبداً.</b></p>
   </div>
 </section>
 
@@ -1399,8 +1430,27 @@ svg.inert, svg.inert * { pointer-events: none }
 (() => {
 'use strict';
 
-/* Where other pages are fetched from. In the shipped bundle this is 'pages/'. */
-const PAGES = '../../.cache/words-svg/hafs-kfqc/';
+/* ---------------------------------------------------------------------------
+   WHERE THIS SITE IS PUBLISHED — ONE constant, and ONE assumption.
+
+   ASSUMPTION, NOT YET CONFIRMED BY ABDULLAH: GitHub Pages for the public
+   repository `quranpedia/quran-svg`, which is where the decomposition is to be
+   published. `AbdullahObaid/quran-svg-pipeline` is private and cannot serve
+   Pages, so it cannot be the host. If the site lands anywhere else, THIS LINE
+   is the only thing that changes — everything the page fetches or links to is
+   derived from it.
+--------------------------------------------------------------------------- */
+const SITE_BASE = 'https://quranpedia.github.io/quran-svg/';
+
+/* Served out of a local checkout, the same things live where a checkout keeps
+   them: the pages are derived output under .cache/ and the spec is still raw
+   Markdown beside it. Published, both hang off SITE_BASE. */
+const LOCAL = location.protocol === 'file:' ||
+              /^(localhost|127\.0\.0\.1|\[::1\])(:|$)/.test(location.host);
+
+/* Where every page is fetched from — the hero included, since nothing is
+   inlined any more. In the published bundle this is SITE_BASE + 'pages/'. */
+const PAGES = LOCAL ? '../../.cache/words-svg/hafs-kfqc/' : SITE_BASE + 'pages/';
 const SVGNS = 'http://www.w3.org/2000/svg';
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -1439,10 +1489,29 @@ const isolate = s => RLI + s + PDI;
 /* Every block is isolated: a failure in one never kills the rest of the page. */
 function mod(name, fn) { try { return fn(); } catch (e) { console.error('[' + name + ']', e); } }
 
-const hero = $('#hero');
+/* ---------------------------------------------------------------------------
+   THE HERO IS FETCHED, NOT INLINED.
+
+   It used to be inlined into the document: 745 KiB of the 965 KiB this file
+   weighed. It is now fetched exactly like every other page the demo shows, and
+   THROUGH THE SAME CACHE — `getPage` memoises per page number, so page 42 is
+   requested ONCE however many of the seventeen labs run on it.
+
+   The cost is that the hero arrives one round trip after the document. Three
+   things keep that from reading as a broken load: the paper reserves the
+   page's own printed proportion from the viewBox, so nothing reflows when the
+   ink lands; the placeholder says what it is doing, and says so again if the
+   fetch fails; and the five buttons are `disabled` in the markup until there
+   is a page for them to act on.
+
+   `hero` and `PRISTINE` are therefore null until `heroReady` settles. Anything
+   that touches either must await it — `makeLab` does, below.
+--------------------------------------------------------------------------- */
+const HERO_PAGE = 42;
+let hero = null;
 /* Taken before anything touches the page, so every Reset restores the file
    exactly as it was loaded: no leftover rects, no changed fills, no classes. */
-const PRISTINE = hero.cloneNode(true);
+let PRISTINE = null;
 
 let cloneSeq = 0;
 function clonePage(src = PRISTINE) {
@@ -1472,6 +1541,20 @@ async function getPage(n) {
   pageCache.set(key, svg);
   return svg.cloneNode(true);
 }
+
+const heroReady = getPage(HERO_PAGE).then(svg => {
+  /* The demo shows the PRODUCTION profile. `getPage` already drops the
+     dev-only polygon layer; dissolving the ligature wrappers is the other half
+     of it, and it is what `build.py` used to do on the way in. Every selector
+     the reader sees on the hero is one that ships. */
+  svg.querySelectorAll('g.ligature').forEach(g => g.replaceWith(...g.childNodes));
+  PRISTINE = svg.cloneNode(true);
+  svg.id = 'hero';
+  hero = svg;
+  const paper = $('#hero-paper');
+  if (paper) paper.replaceChildren(svg);
+  return svg;
+});
 
 /* ---------- helpers the snippets can call ---------- */
 
@@ -2086,7 +2169,10 @@ function makeLab(cfg) {
     try {
       /* `built` flips only once the page this lab runs on is in hand, so a
          Reset or a variant switch during the fetch cannot run against null */
-      if (cfg.page) ctx.basePage = await getPage(cfg.page);
+      /* A lab either names its own page or runs on the hero's. Either way it
+         goes through the SAME cache, so page 42 is fetched once for the hero
+         and every lab that stages it, not once each. */
+      if (cfg.page) ctx.basePage = await getPage(cfg.page); else await heroReady;
       if (cfg.setup) cfg.setup(ctx);
       built = true;
       kick();
@@ -2167,10 +2253,15 @@ function bindToggle(ctx, o) {
    A reader convinced by a section needs somewhere to go next. Every capability
    section gets one line pointing into the part of FORMAT.md that covers it.
 
-   WHERE THE SPEC IS PUBLISHED IS NOT DECIDED YET, so the base lives in exactly
-   ONE constant. Change FORMAT_BASE and every link on the page follows.
+   The base lives in exactly ONE place. Change it and every link on the page
+   follows. Published, it is SITE_BASE + 'FORMAT.html' — GitHub Pages renders a
+   repository's Markdown to .html with the same heading slugs these anchors were
+   generated from. Served locally it stays the raw file beside this one, where a
+   browser will not honour the #anchor; that starts working when the spec is
+   published. See the SITE_BASE note at the top: the host is an ASSUMPTION and
+   needs Abdullah's confirmation.
 --------------------------------------------------------------------------- */
-const FORMAT_BASE = '../shipping/FORMAT.md';
+const FORMAT_BASE = LOCAL ? '../shipping/FORMAT.md' : SITE_BASE + 'FORMAT.html';
 
 /* section id → [anchor, what that part of the spec answers] */
 const FORMAT_LINKS = {
@@ -2296,7 +2387,10 @@ mod('copy', () => {
 });
 
 /* ---------- the hero ---------- */
-mod('hero', () => {
+/* Runs only once the page it acts on is in hand. If the fetch fails the paper
+   says so in plain words rather than sitting empty, and the buttons stay
+   disabled — they would have nothing to act on. */
+heroReady.then(() => mod('hero', () => {
   $('#hero-words').textContent = $$('g.word', hero).length + ' كلمة';
   $('#hero-frags').textContent =
     $$('g.ayah', hero).length + ' مقطع من ' +
@@ -2306,7 +2400,7 @@ mod('hero', () => {
   const out = $('#hero-out'), cap = $('#hero-caption');
   const REST = 'خمسة أزرار، تعمل كلها على هذا الملف وحده داخل المتصفح، ' +
                'وتتراكب — فاضغط منها ما شئت.';
-  const CAPTION = 'الصفحة 42 من المصحف، حيّةً داخل هذا المستند.';
+  const CAPTION = 'الصفحة 42 من المصحف، تصل عبر الشبكة إلى هذا المستند.';
 
   /* whichever ayah opens the page — read it, never assume it */
   let aid = hero.querySelector('g.ayah').dataset.aid;
@@ -2437,6 +2531,21 @@ mod('hero', () => {
   }
   addEventListener('hashchange', fromHash);
   fromHash();
+
+  /* the page is here, so the buttons can be pressed */
+  for (const k in btn) btn[k].disabled = false;
+  $('#hero-reset').disabled = false;
+}), err => {
+  const ph = $('#hero-ph');
+  if (ph) {
+    ph.className = 'hero-ph failed';
+    /* one child, because .hero-ph is a grid and a bare text node plus a <br>
+       would lay out as separate grid items */
+    ph.innerHTML = '<span>تعذّر جلب الصفحة 42 — ' + esc(err.message) +
+      '<br>وبقية هذه الصفحة تعمل، فكل قسم يجلب ملفه بنفسه</span>';
+  }
+  $('#hero-caption').textContent = 'تعذّر جلب الصفحة 42.';
+  console.warn('[hero]', err);
 });
 
 /* ═══════════ the labs ═══════════ */
@@ -3301,7 +3410,7 @@ play.addEventListener('click', () => {
   // الصوت يُجلب من CDN، فقل ذلك بدل أن تبدو معطلاً
   play.disabled = true;
   play.textContent = '…  جارٍ التحميل';
-  state.textContent = 'جارٍ الجلب ' + ayahs[at].aid + ' from the CDN';
+  state.textContent = 'يجري جلب ' + ayahs[at].aid + ' من شبكة توصيل المحتوى';
   audio.play().then(() => {
     play.disabled = false;
     play.textContent = '❚❚  إيقاف مؤقت';
@@ -3310,7 +3419,7 @@ play.addEventListener('click', () => {
     play.disabled = false;
     play.textContent = '▶  تشغيل التلاوة';
     dead('تعذّر تشغيل التلاوة (' + e.message + '). ' +
-         'Everything else on this page still works.');
+         'وكل ما عدا ذلك في هذه الصفحة يعمل.');
   });
 });
 
@@ -3457,7 +3566,7 @@ raf = requestAnimationFrame(frame);
 mod('lab-translate', () => {
   const ctx = makeLab({
     mount: 'lab-translate',
-    label: 'معاني الكلمات عند مرور المؤشر',
+    label: 'بيانات الكلمة عند مرور المؤشر — والمثال ترجمة إنجليزية',
     stageNote: 'مرّر المؤشر فوق كلمة، وعلى شاشة اللمس انقرها، وانقر الورقة للإخفاء. ' +
                'أو ادخل الصفحة بمفتاح Tab وتنقّل بـ Tab / Shift+Tab.',
     code: `
@@ -4301,7 +4410,6 @@ mod('attrs', () => {
     'path|data-pair': ['يربط شطري المعانقة — 3 أزواج بالضبط، أي 6 مسارات', 1],
     'path|data-standalone': ['علامة لا تتبع أي كلمة: 199 وردة حزب + 30 علامة سجدة', 1],
     'path|data-aid': ['على علامة مستقلة، الآية التي تقف عندها', 1],
-    'path|data-mark-part': ['<b>مسار واحد في المصحف كله.</b> جزء من علامة لا العلامة كلها. لا ينبغي لشيء أن يتخذه مفتاحاً؛ وهو مذكور هنا لأنه يُخرَج.', 1],
     'path|data-eid': ['رقم عنصر خاص بكل عملية بناء. <b>غير ثابت بين بناء وآخر — لا تتخذه مفتاحاً أبداً.</b>', 2],
     'path|data-sig': ['بصمة شكل لا هوية: 98 بصمة تخدم أكثر من اسم علامة واحد. <b>لا تتخذها مفتاحاً أبداً.</b>', 2],
     'g.hizb-mark|data-aid': ['الآية التي تقف عندها وردة الرُّبع المرسومة', 1],
@@ -4324,6 +4432,7 @@ mod('attrs', () => {
     'svg|data-ayah-numbering': ['نظام عدّ الآي — <code>kufi</code>، أي العدّ الكوفي', 1],
     'svg|data-ayah-total': ['عدد آيات المصحف كله <b>وفق ذلك النظام في عدّ الآي</b>. حقيقة عن العدّ الكوفي لا عن القرآن.', 1],
     'svg|data-page': ['رقم الصفحة، 1–604', 1],
+    'svg|data-decomposition': ['<b>إلى أي حدّ فُكِّكت هذه الطبعة.</b> فالقيمة <code>word</code> تعني أن الكلمات والوصلات والعلامات المسمّاة كلها قابلة للاستهداف، وعليها يقوم كل قسم في هذه الصفحة. والقيمة <code>ayah</code> تعني حبر الصفحة مع مضلّعات الآيات وعلامات رؤوسها، ولا شيء دون الآية. فاقرأها قبل أن تكتب مُحدِّداً على مستوى الكلمة.', 1],
     'class': ['ما هو العنصر. وكل مُحدِّد في هذه الصفحة مبني عليه.', 1],
     'g|id': ['الغلاف الذي يحوي محتوى الصفحة', 1],
     'g.ayah_markers|id': ['الطبقة التي تسكنها علامات رؤوس الآي، خارج الأسطر', 1],

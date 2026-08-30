@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-30T04:54:32",
+ "generated": "2026-08-30T05:24:31",
  "pages": 604,
  "rows": [
   {
@@ -769,7 +769,7 @@
   {
    "scope": "path",
    "attr": "data-eid",
-   "count": 598407,
+   "count": 598405,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
@@ -814,7 +814,7 @@
   {
    "scope": "path",
    "attr": "data-kind",
-   "count": 616561,
+   "count": 616559,
    "distinct": 5,
    "distinct_capped": false,
    "samples": [
@@ -845,7 +845,7 @@
   {
    "scope": "path",
    "attr": "data-mark-family",
-   "count": 393970,
+   "count": 393969,
    "distinct": 7,
    "distinct_capped": false,
    "samples": [
@@ -856,16 +856,6 @@
     "diacritic",
     "reading-sign",
     "diacritic tanween"
-   ]
-  },
-  {
-   "scope": "path",
-   "attr": "data-mark-part",
-   "count": 1,
-   "distinct": 1,
-   "distinct_capped": false,
-   "samples": [
-    "three-dots"
    ]
   },
   {
@@ -883,7 +873,7 @@
   {
    "scope": "path",
    "attr": "data-sig",
-   "count": 598392,
+   "count": 598391,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
@@ -952,6 +942,16 @@
    "distinct_capped": false,
    "samples": [
     "6236"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-decomposition",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "word"
    ]
   },
   {

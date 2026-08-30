@@ -18,7 +18,7 @@ export QSVG_ROOT=$PWD
 python3 docs/demo/build_search_index.py     # ~20 s, 604 files in parallel
 python3 docs/demo/build_attrs.py            # ~1 s, the attribute measurement
 python3 docs/demo/build_timings.py          # word timings for the hero page
-python3 docs/demo/build.py                  # inlines the hero page
+python3 docs/demo/build.py                  # fills in the cached timings
 python3 -m http.server 8778 --bind 127.0.0.1
 # http://127.0.0.1:8778/docs/demo/index.html
 ```
@@ -34,7 +34,7 @@ Port **8778**, not 8777 — `tools/review_server.py` owns 8777.
 | file | what |
 |---|---|
 | `template.html` | source of truth — all HTML, CSS and JS. 153 KB. |
-| `build.py` | inlines ONE page + the gloss + the cached timings → `index.html`. |
+| `build.py` | writes the gloss and inlines the cached timings → `index.html`. **Inlines no page.** |
 | `build_search_index.py` | mushaf-wide search index from the pages' own `data-search`. |
 | `build_attrs.py` | **every attribute in the corpus**, with counts and sample values. Feeds the reference table, which is no longer hand-maintained. |
 | `build_timings.py` | caches the hero page's word timings from quran.com. |
@@ -46,14 +46,38 @@ Ayat al-Kursi across six printed lines, a juz/hizb/rubʿ boundary and a drawn
 rosette. The hero button lights **the first ayah on the page**, read from the
 file (`2:253`, six fragments), never a hardcoded id.
 
-### What `build.py` does — and the one thing it is not
+### The hero is FETCHED, not inlined — 2026-08-30
 
-Strips `<path class="ayahPolygon">` and dissolves `<g class="ligature">`.
-**Those two are the production profile.** It also strips `data-eid`/`data-sig`,
-which is **not** a production-profile property — `FORMAT.md` §2 and §6.5 are
-explicit that both are in *both* profiles. The demo drops them for size only,
-and the page's reference tail says so. An earlier draft of these notes claimed
-production omits them; that was wrong and is corrected.
+Abdullah's call, and it is the whole size story: page 42 was **745 of the
+965 KiB** `index.html` weighed. It is now fetched like every other page, and
+`build.py` inlines nothing at all.
+
+**One request, not eighteen.** The hero goes through the *same* `getPage`
+memo as every lab, so page 42 is fetched once however many sections stage it.
+`heroReady` is that one promise; `makeLab`'s intersection handler awaits it for
+any lab that has no `cfg.page` of its own. Asserted in the browser: exactly
+one request for `042.svg` per page load, on all twelve viewport/theme/language
+combinations.
+
+**The load must not read as broken**, so three things:
+
+- The paper reserves the page's own printed proportion —
+  `aspect-ratio: 345/550`, from the viewBox — so nothing reflows when the ink
+  lands. Asserted: paper height identical before and after, to the pixel.
+- The placeholder says what it is doing (`fetching page 42 · 794 KiB`) and, if
+  the fetch fails, says *that* instead, in plain words. Never a dead area.
+  Asserted by aborting `042.svg` at the network layer.
+- The five buttons and Reset ship `disabled` and are enabled at the end of the
+  hero module. A button that throws is worse than a button you cannot press.
+
+**Two consequences worth knowing.** The production-profile transform moved
+into the browser: `getPage` already drops `path.ayahPolygon` for every page,
+and `heroReady` dissolves `g.ligature` on the hero only — the fetched pages
+keep theirs, because §"Two profiles" teaches detecting the dev profile by
+looking for that layer. And `data-eid`/`data-sig` are **no longer stripped**;
+that was a size saving for an inlined page and there is no inlined page. The
+demo is now closer to a file you would actually download, and the parenthetical
+in the reference tail that explained the stripping is gone.
 
 ---
 
@@ -292,6 +316,95 @@ Where the two disagree, the library ships. Two notes from building against
   literal and takes the whole script down with a syntax error. Use quotes in
   snippet comments. This cost a build; the page went blank below the fault.
 
+## Where this is published — ONE constant, and it is an ASSUMPTION
+
+**Abdullah chose "GitHub Pages on the repo" but did not name the repo.** What is
+set is `SITE_BASE = 'https://quranpedia.github.io/quran-svg/'`, and the reasoning
+is written into the code beside it:
+
+- the decomposition is to be published from **`quranpedia/quran-svg`** (Abdullah's
+  decision, 2026-08-29), which is public;
+- **`AbdullahObaid/quran-svg-pipeline` is private and cannot serve Pages**, so it
+  cannot be the host.
+
+**This needs confirming before the site goes up.** It is one line. Everything the
+page fetches or links to derives from it:
+
+| what | published | local checkout |
+|---|---|---|
+| `PAGES` | `SITE_BASE + 'pages/'` | `../../.cache/words-svg/hafs-kfqc/` |
+| `FORMAT_BASE` | `SITE_BASE + 'FORMAT.html'` | `../shipping/FORMAT.md` |
+
+The `LOCAL` branch exists so the page can still be served and *verified* out of a
+checkout, where the pages are derived output under `.cache/` and the spec is still
+raw Markdown. It tests `file:`, `localhost` and `127.0.0.1` only — anything else
+is treated as published. **Caveat:** serving the demo over the tailnet, as
+`review_server.py` is set up to be, therefore counts as "published" and the page
+would try to fetch from `quranpedia.github.io`. Add the host to the `LOCAL` test
+if that becomes a way you look at it. `FORMAT.html` is the name GitHub Pages gives a rendered
+`FORMAT.md`, and its heading slugs are the ones these 19 anchors were generated
+from, so the anchors should survive the move; that is worth one click to confirm
+once the spec is actually up.
+
+---
+
+## Which editions are word-level, and which are ayah-level
+
+Every page now carries **`data-decomposition`** on its root `<svg>`, and the demo
+says so in three places, in both languages:
+
+- a generated row in the attribute table (73 rows, unchanged count — the new
+  attribute arrived as `data-mark-part` left);
+- a short **"Two levels of decomposition"** block beside "Two profiles" in *The
+  bundle*, with the one-line guard
+  `if (doc.documentElement.dataset.decomposition !== 'word')`;
+- the factual sentence itself: **Hafs is `word`; Warsh, Qālūn, al-Dūrī and Shuʿba
+  are `ayah` today.**
+
+Stated as a fact, not a roadmap. The point of saying it here is that a developer
+arriving expecting word-level Warsh learns it from the page rather than from a
+selector that matches nothing — which is the failure mode, since an `ayah` page
+makes `g.word` selectors *empty*, not *wrong*.
+
+---
+
+## §10's English gloss on the Arabic page — relabelled, not removed
+
+Abdullah's call: keep the mechanism, frame it as an example. So §10 is now
+**"ربط أي بيانات تملكها بكل كلمة"** — joining any per-word data you already have —
+and the second paragraph leads with **«وما يظهر هنا مثال، لا ميزة»**: the gloss is
+word-by-word English from quran.com, chosen because it is open data anyone can
+check, and *the point is the join, not the language*. The SVGs ship no
+translations, and the page says so in both editions.
+
+The English page said most of this already; it now leads with the same "an
+example, not a feature" framing so the two editions agree.
+
+Wording checked against the `arabic-writer` skill (`reference/01`, `reference/02`
+and `technical-writing.md`) and `docs/arabic-glossary.md`. Terms reused, not
+reinvented: `علامة` vs `حركة`, `الحبر` never `رسم`, `مُحدِّد`, `وضع الإنتاج`,
+Western digits, `<code>` runs left in Latin.
+
+**The brief said `.quote-en` glosses Arabic into English on the Arabic page. It
+does not.** On `template.ar.html` that class carries a *modern-Arabic paraphrase*
+of the KFGQPC portal's own Arabic sentence; only the class name is a leftover from
+the English edition. Nothing to translate; flagging it because the name misleads.
+
+**Two genuinely untranslated strings were found and fixed** while in there, both
+in §9's Arabic snippet: `'جارٍ الجلب ' + aid + ' from the CDN'` and a
+`'Everything else on this page still works.'` inside an Arabic error message.
+
+---
+
+## §7's heading said four over five items
+
+Counted: the list has five, and all five are real and distinct — `getBBox`, caret
+placement, line-box sizing, newlines in a span, and the mousedown-on-a-selection
+drag. The fifth was appended when that bug was found and the heading was never
+updated. Heading corrected in both editions; no item removed.
+
+---
+
 ## Handoff to the format reference
 
 Every capability section ends with one line pointing into the relevant part of
@@ -346,33 +459,63 @@ actually is. A `#2:255` deep link now aims every button at the linked ayah.
 
 ## Sizes
 
-| | raw | gzip |
+Measured with `gzip -9` on the built files, before and after the hero stopped
+being inlined. Both numbers in a row come from the same command, so the ratio
+is honest even though `gzip -9` reports a little less than the figure in the
+previous revision of these notes.
+
+| | raw | gzip -9 |
 |---|---:|---:|
-| `index.html` | **988,075 B / 965 KiB** | **272,203 B / 266 KiB** |
-| — inlined page 42 | 745 KiB | — |
-| — HTML/CSS/JS | 212 KiB | — |
+| `index.html` **before** | 988,498 B / 965 KiB | 258,638 B / 253 KiB |
+| `index.html` **after** | **227,017 B / 222 KiB** | **69,907 B / 68 KiB** |
+| | **4.36x smaller** | **3.70x smaller** |
+| `index.ar.html` **before** | 1,027,363 B / 1003 KiB | 268,715 B / 262 KiB |
+| `index.ar.html` **after** | **266,477 B / 260 KiB** | **80,002 B / 78 KiB** |
+| | **3.86x smaller** | **3.36x smaller** |
 | `data/search-index.json` | 2.0 MiB | 477 KiB |
 | `data/attrs.json` | 15 KiB | 1.9 KiB |
 | `lib/mushaf.global.js` (fetched on demand) | 91 KiB | 29 KiB |
 
-**This is 65 KiB over the plan's 900 KiB target**, up from 906 KiB. The growth
-is 17 library snippets, the library section, the generated attribute table and
-the hero's three new buttons — all scaffolding, none of it the artwork.
+**Both pages are now comfortably inside the plan's 900 KiB target** — 222 KiB
+and 260 KiB against it. The gzipped figure came out at 68 KiB rather than the
+~55 KiB predicted: the prediction subtracted the inlined page's *raw* share
+from the gzipped total, and 745 KiB of repetitive path data compresses far
+better than the prose and code that remain.
 
-**The fix, if the budget is firm, is to stop inlining the hero page**: it is
-745 of the 965 KiB. Fetching page 42 like every other page takes `index.html` to
-**~220 KiB raw / ~55 KiB gzipped**, a 4.4x reduction, at the cost of the hero
-appearing one network round-trip after load instead of with the document. That
-is the only change worth making; nothing else on the page is within an order of
-magnitude of it. It is Abdullah's call, so it has not been done.
+The Arabic page is 39 KiB larger than the English one for the ordinary reason —
+Arabic is two bytes per character in UTF-8, and the page is mostly prose.
 
 ## Verified
 
-Chromium via Playwright at 360, 768 and 1280 px, light and dark:
-**all 17 labs green at every width, zero console errors, zero page errors**, no
-horizontal overflow (doc width 345 at 360 px), dark body `rgb(19,20,25)`, every
-one of the 19 Contents entries lands with its heading clear of the sticky bar.
-Live-edit, syntax-error and Reset round-trips all assert correctly.
+Chromium via Playwright. Harness: `scratchpad/verify_demo.mjs` (in the session
+scratchpad, not the repo). **Twelve combinations** — `index.html` and
+`index.ar.html` × 360/768/1280 px × light/dark — and in every one:
+
+- **all 17 labs green in BOTH the `plain JS` and the `library` variant** (34
+  green panes per combination, 408 in total), asserted on the result pane's own
+  `ok`/`err` class rather than on its text;
+- **zero console errors, zero page errors, zero failed requests**;
+- **no horizontal overflow** — document scrollWidth equals the viewport at all
+  three widths;
+- **`042.svg` requested exactly once** per load, shared by the hero and every lab
+  that stages it;
+- **the hero's paper does not reflow** — identical height, to the pixel, before
+  and after the page lands (480 px at 360, 1130 px at 768, 908 px at 1280);
+- the fetched hero is the production profile: **zero `g.ligature`, zero
+  `path.ayahPolygon`**, 147 words, `id="hero"`.
+
+Plus the failure path, asserted by aborting `042.svg` at the network layer on
+both editions: the placeholder switches to its failed style and says so, the
+buttons **stay** disabled, and nothing throws.
+
+**One harness trap worth recording.** The first version keyed "has this lab run?"
+off the string `not run yet` — which is `لم يُشغَّل بعد` on the Arabic page, so all
+six Arabic combinations reported green while nothing had actually run. Assert on
+a class, never on user-visible text, when the text is translated.
+
+Earlier verification, still standing: dark body `rgb(19,20,25)`, every one of the
+19 Contents entries lands with its heading clear of the sticky bar, and the
+live-edit, syntax-error and Reset round-trips.
 
 ## Still to do
 
@@ -380,15 +523,22 @@ Live-edit, syntax-error and Reset round-trips all assert correctly.
   Everything up to the boundary is asserted — the `copy` event fires and the
   exact string handed to `clipboardData.setData` is checked — but the headless
   browser has no system clipboard, so what a real paste produces is unproven.
-- **Where `FORMAT.md` will be published.** The 19 handoff links resolve against
-  `FORMAT_BASE`, currently the relative `../shipping/FORMAT.md`. Served as a raw
-  `.md` file a browser will not honour the `#anchor`; that only starts working
-  once the spec is rendered somewhere. One constant to change.
+- **The publishing host is an ASSUMPTION and needs Abdullah's word.** See
+  "Where this is published" above. `SITE_BASE` is set to
+  `https://quranpedia.github.io/quran-svg/` and everything — the 19 `FORMAT.md`
+  handoff links and the page fetches — derives from it. If the site lands
+  anywhere else it is a one-line fix.
 - **`FORMAT.md` has two `### 6.6` headings** (see above). Not mine to fix.
-- **`data-mark-part` appears exactly once in the whole mushaf** (p146, one path,
-  value `three-dots`). It is in the table because it is emitted, with a note
-  saying nothing should key on it — but somebody should decide whether it is a
-  real schema attribute or a leftover.
-- **Size:** 965 KiB against a 900 KiB target. See Sizes above for the one change
-  that fixes it and why it needs Abdullah's word.
+- ~~`data-mark-part`~~ **retired 2026-08-30.** A mark is now always exactly one
+  path. It is gone from the corpus (verified: zero hits across all 604 SVGs),
+  `data/attrs.json` dropped it on the next `build_attrs.py` run without any
+  help, and its hand-written row has been deleted from both language editions.
+- **§8's lab (`lab-reveal`) does not build if you only scroll past it once.**
+  Not a regression — reproduced on the pre-change `index.html` too. Building the
+  labs above it grows the document, so a single top-to-bottom sweep leaves it
+  below the fold and its `IntersectionObserver` never fires. A real reader
+  scrolling at human speed hits it; an automated single sweep does not. The
+  verification harness now sweeps repeatedly until every lab has run. Worth
+  deciding whether the labs should instead build on a `requestIdleCallback`
+  chain rather than purely on intersection.
 - Abdullah's confirmation of the Arabic quotation and portal URL; the licence.
