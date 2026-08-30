@@ -1,0 +1,1035 @@
+{
+ "generated": "2026-08-30T02:41:40",
+ "pages": 604,
+ "rows": [
+  {
+   "scope": "g",
+   "attr": "id",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "content"
+   ]
+  },
+  {
+   "scope": "g.ayah",
+   "attr": "class",
+   "count": 13489,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "ayah"
+   ]
+  },
+  {
+   "scope": "g.ayah",
+   "attr": "data-aid",
+   "count": 13489,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "1:1",
+    "1:2",
+    "1:3",
+    "1:4",
+    "1:5",
+    "1:6",
+    "1:7",
+    "2:1"
+   ]
+  },
+  {
+   "scope": "g.ayah",
+   "attr": "data-ayah-parts",
+   "count": 13489,
+   "distinct": 19,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.ayah",
+   "attr": "data-hizb-start",
+   "count": 140,
+   "distinct": 60,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.ayah",
+   "attr": "data-juz-start",
+   "count": 72,
+   "distinct": 30,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.ayah",
+   "attr": "data-marker",
+   "count": 13489,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "mk-1-1",
+    "mk-1-2",
+    "mk-1-3",
+    "mk-1-4",
+    "mk-1-5",
+    "mk-1-6",
+    "mk-1-7",
+    "mk-2-1"
+   ]
+  },
+  {
+   "scope": "g.ayah",
+   "attr": "data-nisf-start",
+   "count": 168,
+   "distinct": 60,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.ayah",
+   "attr": "data-part",
+   "count": 13489,
+   "distinct": 35,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.ayah",
+   "attr": "data-rub-start",
+   "count": 669,
+   "distinct": 240,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.ayah-marker",
+   "attr": "class",
+   "count": 6248,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "ayah-marker"
+   ]
+  },
+  {
+   "scope": "g.ayah-marker",
+   "attr": "data-aid",
+   "count": 6236,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "1:1",
+    "1:2",
+    "1:3",
+    "1:4",
+    "1:5",
+    "1:6",
+    "1:7",
+    "2:1"
+   ]
+  },
+  {
+   "scope": "g.ayah-marker",
+   "attr": "id",
+   "count": 6236,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "mk-1-1",
+    "mk-1-2",
+    "mk-1-3",
+    "mk-1-4",
+    "mk-1-5",
+    "mk-1-6",
+    "mk-1-7",
+    "mk-2-1"
+   ]
+  },
+  {
+   "scope": "g.ayah_markers",
+   "attr": "class",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "ayah_markers"
+   ]
+  },
+  {
+   "scope": "g.ayah_markers",
+   "attr": "id",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "ayah_markers"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "class",
+   "count": 112,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "basmalah"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-ayah-count",
+   "count": 112,
+   "distinct": 76,
+   "distinct_capped": false,
+   "samples": [
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "11"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-revelation-place",
+   "count": 112,
+   "distinct": 2,
+   "distinct_capped": false,
+   "samples": [
+    "makkah",
+    "madinah"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-sid",
+   "count": 112,
+   "distinct": 112,
+   "distinct_capped": false,
+   "samples": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "10"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-surah-name-ar",
+   "count": 112,
+   "distinct": 112,
+   "distinct_capped": false,
+   "samples": [
+    "ص",
+    "ق",
+    "طه",
+    "يس",
+    "سبإ",
+    "عبس",
+    "نوح",
+    "هود"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-surah-name-en",
+   "count": 112,
+   "distinct": 112,
+   "distinct_capped": false,
+   "samples": [
+    "Hud",
+    "Mary",
+    "Noah",
+    "Jonah",
+    "Sheba",
+    "Ta-Ha",
+    "Joseph",
+    "Luqman"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-surah-name-latin",
+   "count": 112,
+   "distinct": 112,
+   "distinct_capped": false,
+   "samples": [
+    "Hud",
+    "Nuh",
+    "Qaf",
+    "Sad",
+    "Saba",
+    "Taha",
+    "Fatir",
+    "Yunus"
+   ]
+  },
+  {
+   "scope": "g.hizb-mark",
+   "attr": "class",
+   "count": 199,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "hizb-mark"
+   ]
+  },
+  {
+   "scope": "g.hizb-mark",
+   "attr": "data-aid",
+   "count": 199,
+   "distinct": 199,
+   "distinct_capped": false,
+   "samples": [
+    "11:6",
+    "12:7",
+    "13:5",
+    "2:26",
+    "2:44",
+    "2:60",
+    "2:75",
+    "2:92"
+   ]
+  },
+  {
+   "scope": "g.hizb-mark",
+   "attr": "data-hizb",
+   "count": 199,
+   "distinct": 59,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.hizb-mark",
+   "attr": "data-juz",
+   "count": 199,
+   "distinct": 30,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.hizb-mark",
+   "attr": "data-mark",
+   "count": 199,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "hizb"
+   ]
+  },
+  {
+   "scope": "g.hizb-mark",
+   "attr": "data-nisf",
+   "count": 199,
+   "distinct": 2,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2"
+   ]
+  },
+  {
+   "scope": "g.hizb-mark",
+   "attr": "data-rub",
+   "count": 199,
+   "distinct": 199,
+   "distinct_capped": false,
+   "samples": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+   ]
+  },
+  {
+   "scope": "g.hizb-mark",
+   "attr": "data-rub-in-hizb",
+   "count": 199,
+   "distinct": 4,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4"
+   ]
+  },
+  {
+   "scope": "g.ligature",
+   "attr": "class",
+   "count": 156707,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "ligature"
+   ]
+  },
+  {
+   "scope": "g.ligature",
+   "attr": "data-text",
+   "count": 156707,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "ء",
+    "ا",
+    "ب",
+    "ة",
+    "ت",
+    "ج",
+    "د",
+    "ذ"
+   ]
+  },
+  {
+   "scope": "g.line",
+   "attr": "class",
+   "count": 9046,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "line"
+   ]
+  },
+  {
+   "scope": "g.line",
+   "attr": "data-line",
+   "count": 9046,
+   "distinct": 15,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.sajdah-mark",
+   "attr": "class",
+   "count": 17,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "sajdah-mark"
+   ]
+  },
+  {
+   "scope": "g.sajdah-mark",
+   "attr": "data-aid",
+   "count": 17,
+   "distinct": 17,
+   "distinct_capped": false,
+   "samples": [
+    "13:15",
+    "16:50",
+    "19:58",
+    "22:18",
+    "22:77",
+    "25:60",
+    "27:24",
+    "27:26"
+   ]
+  },
+  {
+   "scope": "g.sajdah-mark",
+   "attr": "data-mark",
+   "count": 17,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "sajdah"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "class",
+   "count": 114,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "surah-name"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-ayah-count",
+   "count": 114,
+   "distinct": 77,
+   "distinct_capped": false,
+   "samples": [
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "11"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-revelation-place",
+   "count": 114,
+   "distinct": 2,
+   "distinct_capped": false,
+   "samples": [
+    "makkah",
+    "madinah"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-sid",
+   "count": 114,
+   "distinct": 114,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-surah-name-ar",
+   "count": 114,
+   "distinct": 114,
+   "distinct_capped": false,
+   "samples": [
+    "ص",
+    "ق",
+    "طه",
+    "يس",
+    "سبإ",
+    "عبس",
+    "نوح",
+    "هود"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-surah-name-en",
+   "count": 114,
+   "distinct": 114,
+   "distinct_capped": false,
+   "samples": [
+    "Hud",
+    "Mary",
+    "Noah",
+    "Jonah",
+    "Sheba",
+    "Ta-Ha",
+    "Joseph",
+    "Luqman"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-surah-name-latin",
+   "count": 114,
+   "distinct": 114,
+   "distinct_capped": false,
+   "samples": [
+    "Hud",
+    "Nuh",
+    "Qaf",
+    "Sad",
+    "Saba",
+    "Taha",
+    "Fatir",
+    "Yunus"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "class",
+   "count": 77432,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "word"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-imlaei",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "أَن",
+    "إِن",
+    "الم",
+    "بَل",
+    "ذَا",
+    "ذُو",
+    "فِي",
+    "قَد"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-qpc",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "أَن",
+    "إِن",
+    "بَل",
+    "ذَا",
+    "ذُو",
+    "فِي",
+    "قَد",
+    "كَم"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-rasm",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "أم",
+    "أن",
+    "أو",
+    "إذ",
+    "إن",
+    "بل",
+    "به",
+    "تر"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-search",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "أم",
+    "أن",
+    "أو",
+    "إذ",
+    "إن",
+    "بل",
+    "به",
+    "تر"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-uthmani",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "أَن",
+    "إِن",
+    "بَل",
+    "ذَا",
+    "ذُو",
+    "فِى",
+    "قَد",
+    "كَم"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-wid",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "1:1:1",
+    "1:1:2",
+    "1:1:3",
+    "1:1:4",
+    "1:2:1",
+    "1:2:2",
+    "1:2:3",
+    "1:2:4"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-aid",
+   "count": 229,
+   "distinct": 216,
+   "distinct_capped": false,
+   "samples": [
+    "11:6",
+    "12:7",
+    "13:5",
+    "2:26",
+    "2:44",
+    "2:60",
+    "2:75",
+    "2:92"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-eid",
+   "count": 598407,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "e1",
+    "e2",
+    "e3",
+    "e4",
+    "e5",
+    "e6",
+    "e7",
+    "e8"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-form",
+   "count": 8506,
+   "distinct": 2,
+   "distinct_capped": false,
+   "samples": [
+    "stacked",
+    "staggered"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-iqlab",
+   "count": 940,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "iq-6-5-8",
+    "iq-8-5-4",
+    "iq-2-10-9",
+    "iq-2-18-1",
+    "iq-2-27-5",
+    "iq-2-33-3",
+    "iq-2-33-6",
+    "iq-2-51-9"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-kind",
+   "count": 616561,
+   "distinct": 5,
+   "distinct_capped": false,
+   "samples": [
+    "body",
+    "mark",
+    "header-ink",
+    "ayah-number",
+    "ayah-marker-ornament"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-mark",
+   "count": 436627,
+   "distinct": 34,
+   "distinct_capped": false,
+   "samples": [
+    "dot",
+    "hizb",
+    "damma",
+    "fatha",
+    "hamza",
+    "kasra",
+    "sukun",
+    "wasla"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-mark-family",
+   "count": 393970,
+   "distinct": 7,
+   "distinct_capped": false,
+   "samples": [
+    "dots",
+    "sifr",
+    "waqf",
+    "sajdah",
+    "diacritic",
+    "reading-sign",
+    "diacritic tanween"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-mark-part",
+   "count": 1,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "three-dots"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-pair",
+   "count": 6,
+   "distinct": 3,
+   "distinct_capped": false,
+   "samples": [
+    "mnq-2-2-1",
+    "mnq-5-26-1",
+    "mnq-5-41-1"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-sig",
+   "count": 598392,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "002d9c0f7cd02d83",
+    "005430b3c8b67c6a",
+    "0079787d91c42c19",
+    "00a9baded4b220d0",
+    "00ae149d2e60a8b2",
+    "00c433fdffb44850",
+    "017cd5c2d7a28f28",
+    "01d7e29b3384831b"
+   ]
+  },
+  {
+   "scope": "path",
+   "attr": "data-standalone",
+   "count": 229,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "1"
+   ]
+  },
+  {
+   "scope": "path.ayahPolygon",
+   "attr": "class",
+   "count": 6236,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "ayahPolygon"
+   ]
+  },
+  {
+   "scope": "path.ayahPolygon",
+   "attr": "id",
+   "count": 6236,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "verse-1",
+    "verse-2",
+    "verse-3",
+    "verse-4",
+    "verse-5",
+    "verse-6",
+    "verse-7",
+    "verse-8"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-ayah-numbering",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "kufi"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-ayah-total",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "6236"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-edition",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "kfgqpc-1421"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-mushaf",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "hafs-kfqc"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-mushaf-name-ar",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "حفص عن عاصم"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-mushaf-name-en",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "Hafs 'an Asim"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-page",
+   "count": 604,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-qiraa",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "asim"
+   ]
+  },
+  {
+   "scope": "svg",
+   "attr": "data-riwaya",
+   "count": 604,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "hafs"
+   ]
+  }
+ ]
+}

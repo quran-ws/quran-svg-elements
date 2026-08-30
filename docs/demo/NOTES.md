@@ -16,6 +16,7 @@ defect counts, sweeps or review state. The project's rigour appears once, as a
 cd ~/Dev/github.com/AbdullahObaid/quran-svg-work
 export QSVG_ROOT=$PWD
 python3 docs/demo/build_search_index.py     # ~20 s, 604 files in parallel
+python3 docs/demo/build_attrs.py            # ~1 s, the attribute measurement
 python3 docs/demo/build_timings.py          # word timings for the hero page
 python3 docs/demo/build.py                  # inlines the hero page
 python3 -m http.server 8778 --bind 127.0.0.1
@@ -35,6 +36,7 @@ Port **8778**, not 8777 — `tools/review_server.py` owns 8777.
 | `template.html` | source of truth — all HTML, CSS and JS. 153 KB. |
 | `build.py` | inlines ONE page + the gloss + the cached timings → `index.html`. |
 | `build_search_index.py` | mushaf-wide search index from the pages' own `data-search`. |
+| `build_attrs.py` | **every attribute in the corpus**, with counts and sample values. Feeds the reference table, which is no longer hand-maintained. |
 | `build_timings.py` | caches the hero page's word timings from quran.com. |
 | `data/*.json` | search index (2.0 MiB), gloss (5 KB), timings (2 KB). |
 
@@ -132,36 +134,188 @@ Two measurement notes, both of which cost real time:
 
 ---
 
-## ⚠️ Open regression — §7 cross-line drag selection
+## §7 cross-line drag selection — FOUND AND FIXED
 
-**Restructuring §7 onto the shared hit layer broke drag-selection across a line
-break, and I did not find the cause.**
+**The previous note blamed box size. That was wrong, and the bisect never
+supported it.** Cross-line drag-selection was never broken, and full-height
+gap-filled boxes never broke it either. Both claims are now disproved by
+measurement.
 
-- Before the refactor, verified working: a real mouse drag from line 3 into
-  line 4 selected 18 words, produced exactly one `\n`, snapped to whole words,
-  and the copy payload matched the highlight.
-- After the refactor, a diagonal drag **collapses to a single word**. The
-  selection is already collapsed *during* the drag, before any of my handlers
-  run.
-- A drag **within one line still works** (verified: 4 words selected).
-- Bisected and **ruled out**: full-height gap-filled boxes, horizontal-only gap
-  filling, and `pointer-events: none` on the ink (`q-inert`). Reverting each
-  individually did not restore it. `caretRangeFromPoint` resolves correctly at
-  the drag start, adjacent boxes do not overlap, `user-select` is `auto`.
+**The actual cause: a `mousedown` on text that is ALREADY SELECTED does not
+start a new selection — the browser begins a native drag-and-drop of the
+selected text.** The old selection then sits frozen for the whole gesture and
+the new drag appears to do nothing. It bites hardest on the *second* attempt,
+because after `snapToWords` the previous selection covers whole words and the
+words under the pointer are exactly the ones just selected. That is why it read
+as "diagonal drags collapse": the reader tries again, and the retry is the
+broken case.
 
-The page now states this as a measured limit rather than hiding it, but the
-**page's claim is wider than the evidence** — it attributes the limit to box
-size, which the bisect does not support. **That sentence should be corrected or
-removed when the real cause is found.** Everything else in §7 (the layer, the
-payload builder, ayah numbers, the format selectors) is verified.
+Measured in Chromium, per-step over a 14-step drag:
 
-Because of this, two of Abdullah's §7 requests are **not delivered**: one
-rectangle per line for the selection band, and easier grabbing of the first and
-last word of a range. The band code (`H.bandWords`, ink extents + line pitch,
-one rect per line, no overlap) is written and is used correctly by §11; it
-simply has no multi-line selection to draw in §7.
+| drag | words selected, step by step |
+|---|---|
+| clean start, within one line | 1 1 2 2 2 3 3 3 4 4 6 6 6 6 |
+| clean start, across a line break | – 1 1 1 1 1 1 **13** 13 13 13 13 13 13 |
+| identical drag, started inside the previous selection | **6 6 6 6 6 6 6 6 6 6 6 6 6 6** — frozen |
+| clean start, across a line break, FULL-HEIGHT boxes | 1 1 1 1 1 **12** 12 12 12 12 12 12 12 12 |
 
----
+**The fix is two lines in `hitLayer()`**: clear the selection on `mousedown`,
+and `preventDefault()` on `dragstart`. Plus a third thing worth keeping — a
+rebuild replaces every span and would destroy a live selection, so the
+`ResizeObserver` now defers its rebuild while the pointer is down.
+
+**Consequences, both now delivered.** §7 moved to the same full-height
+gap-filled boxes as §3, §10 and §11, so pointing and selecting finally share
+one layer *and* one box size: no dead zones in either direction, and the first
+and last word of a range need no deliberate aim. And the selection band is one
+rectangle per line of a **single polygon** (below).
+
+## Highlight bands are ONE polygon, not a stack of rectangles
+
+Abdullah, on a screenshot of 2:253 on p42: one ayah read as five stripes.
+
+Every band on the page — the ayah band, the selection band, the hero — is now a
+single `<path>` with **one subpath per printed line**, `fill-rule="nonzero"`,
+all subpaths wound the same direction, and a **0.25-unit vertical overlap**
+applied *only where two bands actually meet* (so a highlight on lines 3 and 9
+grows no tails into the lines between them).
+
+Two abutting antialiased edges do not add up to opaque, which is what made the
+seams. `nonzero` unions the subpaths, so the overlap paints once instead of
+doubling its alpha — that is what makes the overlap free.
+
+> **`fill-rule` is set explicitly and must stay that way.** The page's own ink
+> is `evenodd`, where overlapping contours inside one path CANCEL. Inherit it
+> here and every overlap becomes a hole. This is the trap that filled the
+> counter of a ح as a black blob, and it has now bitten this project three
+> times.
+
+Correctness is unchanged: horizontal extent from the words' INK boxes, vertical
+extent from the line PITCH, behind the ink, `pointer-events: none`.
+
+Verified on p42/2:253: before, 6 `<rect>` children and visible seams; after, 1
+`<path>` child, `fill-rule="nonzero"`, 6 subpaths, no seams.
+
+## Bidi: isolate every Arabic run inside LTR UI
+
+Abdullah, on the ayah-number `<select>`: the ornate brackets faced outward.
+
+**The characters were correct; the context was wrong.** U+FD3E / U+FD3F are
+direction-NEUTRAL, so inside an LTR control the bidi algorithm resolves them to
+the surrounding direction. So do the spaces, commas and middle dots between an
+Arabic word and the Latin id beside it.
+
+> **The rule, for anything added to this page later: any Arabic string placed
+> inside LTR UI must be ISOLATED — `<bdi>` in markup, U+2067 / U+2069 where
+> markup is not available. NEVER fix a bidi symptom by reordering or
+> substituting characters.** The text is data and must stay exactly as the file
+> has it; only the context is wrong, and the next context breaks differently.
+
+Applied at: the `<select>` options (character-level isolation, because CSS and
+`dir` are unreliable inside `<option>`), every lab readout (`out()` and `log()`
+wrap Arabic runs automatically — `log()` escapes first, so this is safe), the
+word tooltips in §10 and §11, the hero's text readout, the attribute table's
+sample values including `data-mushaf-name-ar`, and the mushaf-wide search's
+no-match message.
+
+One deliberate exception: **the copy payload gets no isolates.** It is data
+going to the clipboard, and a citation must paste as the characters the print
+uses. The preview of it in the readout is isolated; the clipboard string is not.
+
+A run must include the spaces BETWEEN Arabic words. Wrapping each word
+separately leaves those spaces neutral, and two adjacent isolates in an LTR
+paragraph lay out left to right — which reverses the word order.
+
+## The attribute table is generated, not maintained
+
+The old table listed **22 of 36** attributes and four (`data-hizb`, `data-juz`,
+`data-rub-in-hizb`, `data-mark-part`) appeared nowhere on the site. A section
+promising "every" and delivering 61% is worse than one that promises nothing.
+
+`build_attrs.py` scans all 604 pages (0.9 s wall, 32 workers) and writes
+`data/attrs.json`: scope, attribute, element count, distinct values and samples.
+**73 rows.** The page builds the table from that file; the prose is the only
+hand-written part, and an attribute with no note still gets a row saying so, so
+nothing can go missing by being forgotten. There is a scope filter, and a
+"production profile only" filter that hides `g.ligature`, `path.ayahPolygon`,
+`data-eid` and `data-sig`.
+
+The nine new root `<svg>` identity attributes are all there, with a callout on
+the two subtle ones: the directory name is the **riwaya**, not the qiraa (Hafs
+and Shuʿbah both transmit ʿĀṣim), and **6,236 is a Hafs fact, not a Quran
+fact** — the Kufan count; Nāfiʿ's Madani count is 6,214.
+
+**`data-mark-family` is a space-separated token list.** `fathatan`/`kasratan`/
+`dammatan` carry `"diacritic tanween"`. All 14 exact-match selectors on the page
+were rewritten to `~=`, and §12 now teaches why: `=` looks like it works,
+because it still matches the six single-family marks, and drops the three
+tanween without an error.
+
+## Two versions of every example, and a library section
+
+Every lab bar carries a **`plain JS` / `library`** switch. Both variants are
+real, editable and runnable; **plain JS is the default**, because it is the
+teaching and it is the argument that these files need no library. Reset restores
+whichever variant is showing, never the other. All 17 labs have both.
+
+The library (`../shipping/lib/mushaf.global.js`, 94 KB raw / 29 KB gzipped) is
+fetched on the **first** switch to a library snippet, never on page load. If it
+fails to load the lab says so and points at the plain version.
+
+§18 is the dedicated library section: how to import it (module or `<script>`),
+the three rules it keeps everywhere (nothing mutates a page you did not hand it;
+every mutating call returns a handle with `.remove()`; the shared hit layer is
+reference counted), and the two places it is deliberately stricter than the
+plain snippets — it never selects on `data-mark-family`, and its hit testing is
+nearest-*with-direction*.
+
+Where the two disagree, the library ships. Two notes from building against
+`API.md`:
+
+- `page.band()` already does the one-polygon work described above, seam and
+  all, and `API.md` documents it correctly. The plain-JS version on the page was
+  written to match it, not the other way round.
+- Two labs are CSS in the plain variant and JavaScript in the library variant
+  (§12 marks, §13 theme), so `makeLab` now carries the language per variant
+  rather than per lab.
+
+## Two smaller bugs found while testing
+
+- **§16's `to` slider was dead**, and had been. The snippet declared
+  `const FROM = 1, TO = 50;` on one line, and `bindSlider` rewrites a
+  `const NAME =` line — there was no `const TO`, so the control moved its own
+  label and changed nothing. **Rule: one bound const per line.** Caught by
+  driving every slider and asserting the textarea changed, which is the only
+  test that can see it; the lab was green throughout.
+- **A backtick inside a snippet ends the snippet.** The labs are template
+  literals, so a `` `const NAME =` `` in a *comment* inside one closes the
+  literal and takes the whole script down with a syntax error. Use quotes in
+  snippet comments. This cost a build; the page went blank below the fault.
+
+## Handoff to the format reference
+
+Every capability section ends with one line pointing into the relevant part of
+`FORMAT.md` — 19 links. **The base URL is in ONE constant**, `FORMAT_BASE` near
+the top of the script, because where the spec will be published is undecided.
+The anchors were generated from FORMAT.md's own headings rather than guessed.
+
+Found while doing it: **`FORMAT.md` has two `### 6.6` headings** — "Page
+identity" and "On `<g class="surah-name">`". The anchors differ so the links are
+unambiguous, but the numbering is wrong and 6.7 then collides conceptually.
+
+## The hero has five buttons and a Reset
+
+Highlight the first ayah · hide the vowel marks · **read the text out of it** ·
+**crop to one ayah** · **spread the lines**, plus Reset.
+
+They compose in any order and each is reversible, because there is no
+accumulated state: the panel holds a five-flag state object and **re-renders the
+page from a clean slate on every change**. Verified — pressing all five in
+forward order and in reverse order gives byte-identical DOM state, and Reset
+restores the untouched page exactly. Crop is done by hiding the other words and
+reframing the `viewBox`, not by replacing the element, which is what keeps it
+undoable. Spread runs before crop so the crop is framed on where the ink
+actually is. A `#2:255` deep link now aims every button at the linked ayah.
 
 ## Other things worth knowing
 
@@ -194,15 +348,23 @@ simply has no multi-line selection to draw in §7.
 
 | | raw | gzip |
 |---|---:|---:|
-| `index.html` | **927,395 B / 906 KiB** | **240,276 B / 235 KiB** |
-| — inlined page | 746 KiB | — |
-| — HTML/CSS/JS | 153 KiB | 47 KiB |
-| `data/search-index.json` | 2.0 MiB | 473 KiB |
+| `index.html` | **988,075 B / 965 KiB** | **272,203 B / 266 KiB** |
+| — inlined page 42 | 745 KiB | — |
+| — HTML/CSS/JS | 212 KiB | — |
+| `data/search-index.json` | 2.0 MiB | 477 KiB |
+| `data/attrs.json` | 15 KiB | 1.9 KiB |
+| `lib/mushaf.global.js` (fetched on demand) | 91 KiB | 29 KiB |
 
-**This now exceeds the plan's 900 KB initial target by ~27 KB**, all of it
-scaffolding from the six sections added after the original build. Over the wire
-it is 235 KiB. If the budget is firm, the cheapest fix is to stop inlining the
-hero page and fetch it like every other page.
+**This is 65 KiB over the plan's 900 KiB target**, up from 906 KiB. The growth
+is 17 library snippets, the library section, the generated attribute table and
+the hero's three new buttons — all scaffolding, none of it the artwork.
+
+**The fix, if the budget is firm, is to stop inlining the hero page**: it is
+745 of the 965 KiB. Fetching page 42 like every other page takes `index.html` to
+**~220 KiB raw / ~55 KiB gzipped**, a 4.4x reduction, at the cost of the hero
+appearing one network round-trip after load instead of with the document. That
+is the only change worth making; nothing else on the page is within an order of
+magnitude of it. It is Abdullah's call, so it has not been done.
 
 ## Verified
 
@@ -214,11 +376,19 @@ Live-edit, syntax-error and Reset round-trips all assert correctly.
 
 ## Still to do
 
-- **The library section, and the per-lab `plain JS` / `library` toggle.**
-  Blocked: the library has not reported done, and I was told not to invent the
-  API. Read its README and DESIGN doc, copy real signatures, run every snippet.
-- **Links into the published format reference** from each capability section,
-  with the base URL in one place. Not started.
-- **The §7 regression above.**
-- The OS clipboard handoff still needs one manual check in a real browser.
+- **The OS clipboard handoff** still needs one manual check in a real browser.
+  Everything up to the boundary is asserted — the `copy` event fires and the
+  exact string handed to `clipboardData.setData` is checked — but the headless
+  browser has no system clipboard, so what a real paste produces is unproven.
+- **Where `FORMAT.md` will be published.** The 19 handoff links resolve against
+  `FORMAT_BASE`, currently the relative `../shipping/FORMAT.md`. Served as a raw
+  `.md` file a browser will not honour the `#anchor`; that only starts working
+  once the spec is rendered somewhere. One constant to change.
+- **`FORMAT.md` has two `### 6.6` headings** (see above). Not mine to fix.
+- **`data-mark-part` appears exactly once in the whole mushaf** (p146, one path,
+  value `three-dots`). It is in the table because it is emitted, with a note
+  saying nothing should key on it — but somebody should decide whether it is a
+  real schema attribute or a leftover.
+- **Size:** 965 KiB against a 900 KiB target. See Sizes above for the one change
+  that fixes it and why it needs Abdullah's word.
 - Abdullah's confirmation of the Arabic quotation and portal URL; the licence.
