@@ -2856,10 +2856,19 @@ def rewrite(page, assignment):
                     open_ayah = None
                     if akey:
                         # data-aid replaces data-surah/data-ayah. An ayah is
-                        # emitted once per LINE it occupies, so these
-                        # attributes appear on every fragment of it; the
-                        # division-start flags below therefore mark the ayah,
-                        # not one fragment of it.
+                        # emitted once per LINE it occupies, so data-aid and
+                        # data-marker appear on every fragment of it.
+                        #
+                        # The division-start flags do NOT. A juz starts once,
+                        # not once per line: repeating them made a consumer
+                        # looping over [data-rub-start] print "rub 230 opens at
+                        # 73:20" seven times on p575, where that ayah spans
+                        # seven lines. Emitting on part 1 alone is exact, and
+                        # the counts prove it — 30 juz, 60 hizb, 240 rubʿ, 60
+                        # nisf, each the canonical total, against 72/140/669/168
+                        # when every fragment carried them. An ayah never spans
+                        # pages (6,236 ayahs, 6,236 page-ayah pairs), so part 1
+                        # is always present on the page the division opens on.
                         _npart = _ayah_parts.get(akey, 0)
                         _ipart = _ayah_seen.get(akey, 0) + 1
                         _ayah_seen[akey] = _ipart
@@ -2868,7 +2877,8 @@ def rewrite(page, assignment):
                                    'data-ayah-parts="%d"%s>'
                                    % (akey[0], akey[1], akey[0], akey[1],
                                       _ipart, _npart,
-                                      _ayah_start_attrs(akey)))
+                                      _ayah_start_attrs(akey)
+                                      if _ipart == 1 else ""))
                         open_ayah = akey
                 if word:
                     # data-qpc is the King Fahd Complex's own text of THIS print, which
