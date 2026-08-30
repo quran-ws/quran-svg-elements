@@ -500,7 +500,7 @@ Three of these are easy to misread:
   Kufan; Nāfiʿ counts 6,214. Any consumer that hardcodes 6,236 will reject a
   correct edition of another riwaya.
 
-### 6.6 On `<g class="surah-name">` and `<g class="basmalah">`
+### 6.7 On `<g class="surah-name">` and `<g class="basmalah">`
 
 ```xml
 <g class="surah-name" data-sid="2" data-surah-name-ar="البقرة"
@@ -522,7 +522,7 @@ its surah's metadata. **These attributes appear only on a surah's first page.**
 To know the surah of an arbitrary page, read the surah number out of any
 `data-wid`, or use the companion `index.json`.
 
-### 6.7 On `<g class="hizb-mark">`
+### 6.8 On `<g class="hizb-mark">`
 
 ```xml
 <g class="hizb-mark" data-mark="hizb" data-aid="2:75"
