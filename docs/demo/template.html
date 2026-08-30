@@ -114,6 +114,19 @@ section{padding:58px 0;border-bottom:1px solid var(--rule)}
 .paper.tight{padding:8px}
 .paper.empty{min-height:130px;display:flex;align-items:center;justify-content:center;
   color:var(--muted);font:500 12px/1 "IBM Plex Mono",monospace;text-align:center}
+/* The hero page is fetched, not inlined. Reserve its exact printed proportion
+   from the viewBox (345 x 550 on 602 of the 604 pages) so nothing on the page
+   moves when the file lands. Never a dead area: it says what it is doing, and
+   it says so again if the fetch fails. */
+.hero-ph{aspect-ratio:345/550;display:grid;place-items:center;
+  padding:0 18px;text-align:center;color:var(--muted);
+  font:500 12px/1.7 "IBM Plex Mono",monospace}
+.hero-ph b{font-weight:600}
+.hero-ph.loading{animation:ph-pulse 1.6s ease-in-out infinite}
+/* the paper stays light in both themes, so this colour is literal, not a token */
+.hero-ph.failed{color:#8c2f20}
+@keyframes ph-pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.hero-ph.loading{animation:none}}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px;align-items:start}
 @media (max-width:900px){.two{grid-template-columns:minmax(0,1fr)}}
 .stage{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(280px,.95fr);gap:26px;align-items:start}
@@ -364,18 +377,21 @@ footer p{max-width:74ch}
   <div class="wrap">
     <div class="stage">
       <div>
-        <div class="paper"><!--SVG--></div>
-        <p class="note" id="hero-caption">Page 42 of the mushaf, live in this document.</p>
+        <div class="paper" id="hero-paper">
+          <div class="hero-ph loading" id="hero-ph"><span>fetching page 42 · <b>794 KiB</b><br>
+            the same request every other section on this page makes</span></div>
+        </div>
+        <p class="note" id="hero-caption">Page 42 of the mushaf, fetched into this document.</p>
       </div>
       <div class="readout panel">
         <h3>Try it</h3>
         <div class="pills" id="hero-buttons">
-          <button id="hero-lit" aria-pressed="false">Highlight the first ayah</button>
-          <button id="hero-marks" aria-pressed="false">Hide the vowel marks</button>
-          <button id="hero-text" aria-pressed="false">Read the text out of it</button>
-          <button id="hero-crop" aria-pressed="false">Crop to one ayah</button>
-          <button id="hero-spread" aria-pressed="false">Spread the lines</button>
-          <button id="hero-reset">Reset</button>
+          <button id="hero-lit" aria-pressed="false" disabled>Highlight the first ayah</button>
+          <button id="hero-marks" aria-pressed="false" disabled>Hide the vowel marks</button>
+          <button id="hero-text" aria-pressed="false" disabled>Read the text out of it</button>
+          <button id="hero-crop" aria-pressed="false" disabled>Crop to one ayah</button>
+          <button id="hero-spread" aria-pressed="false" disabled>Spread the lines</button>
+          <button id="hero-reset" disabled>Reset</button>
         </div>
         <div class="out" id="hero-out">Five buttons. They all act on this one file, in the browser,
           and they compose — press as many as you like.</div>
@@ -682,7 +698,7 @@ footer p{max-width:74ch}
 
     <div class="two" style="margin-top:22px">
       <div class="callout">
-        <h3>Four things that go wrong, and what to do instead</h3>
+        <h3>Five things that go wrong, and what to do instead</h3>
         <ul class="plain-list" style="margin-top:0">
           <li><b><code>getBBox()</code> is the wrong measurement.</b> It reports a group's own
             user-space coordinates and ignores every transform above it, which puts line 1 near the
@@ -861,10 +877,11 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
         <code>data-wid</code> is <code>surah:ayah:word</code>, 1-based — the same key the quran.com
         API, word-by-word translation sets, morphology data and recitation timings already use, so a
         5 KB file of glosses joins to this ink with no mapping table.</p>
-      <p style="margin-top:10px">A word-by-word translation, a tafsir popup, a grammar tag, a
-        vocabulary card: all the same three lines once every word is addressable, and none of them
-        possible on a page image. <b>The gloss here happens to come from quran.com; the mechanism
-        takes any per-word data you already have.</b> These files ship no translations.</p>
+      <p style="margin-top:10px"><b>What you see here is an example, not a feature.</b> The gloss is
+        word-by-word English from quran.com, used because it is open data anyone can check; the point
+        is the join, not the language. Put a tafsir, a grammar tag, a vocabulary card or
+        <b>any per-word data you already have</b> in its place and the same three lines still run —
+        and none of it is possible on a page image. <b>These files ship no translations.</b></p>
     </div>
     <div class="lab" id="lab-translate"></div>
     <p class="note">Word-by-word English and transliteration here come from <b>quran.com</b>. They are
@@ -1074,8 +1091,9 @@ svg.inert, svg.inert * { pointer-events: none }
     </div>
     <div class="lab" id="lab-meta"></div>
     <p class="note">Pages are fetched one at a time, on demand — 794 KiB raw, 197 KiB over the wire
-      gzipped, which is the same technique any consumer should use. This document inlines exactly one
-      page and fetches everything else.</p>
+      gzipped, which is the same technique any consumer should use. This document inlines no page at
+      all: the one at the top is fetched exactly like the rest, and every section that shows page 42
+      shares that single request.</p>
   </div>
 </section>
 
@@ -1203,7 +1221,23 @@ svg.inert, svg.inert * { pointer-events: none }
         <p class="note">The ligature layer is a <b>rendering run, not a spelling</b>. It is not a
           reliable letter segmentation — 156 words spell fewer letters in it than they actually have —
           so use <code>data-uthmani</code> / <code>data-rasm</code> on the word as the text of record.
-          The page inlined at the top of this document is the production profile.</p>
+          The page at the top of this document is shown in the production profile.</p>
+
+        <h3 style="font-size:19px;margin:26px 0 10px">Two levels of decomposition</h3>
+        <p class="note" style="margin-top:0">Every page's root <code>&lt;svg&gt;</code> carries
+          <code>data-decomposition</code>, and it has two values.
+          <code>word</code> means what this whole page has been showing: words, ligatures and named
+          marks are addressable. <code>ayah</code> means page ink with ayah polygons and end-markers
+          and <b>nothing below the ayah</b> — no <code>g.word</code>, no <code>data-wid</code>, no
+          named marks.</p>
+        <p class="note"><b>Hafs — the corpus described here — is <code>word</code>. Warsh, Qālūn,
+          al-Dūrī and Shuʿba are <code>ayah</code> today.</b> Read the attribute before writing a
+          word-level selector; on an <code>ayah</code> page the selector is not wrong, it simply
+          matches nothing.</p>
+        <figure class="code" style="margin-top:12px">
+          <button class="copy">copy</button>
+<pre><code><span class="tok-k">if</span> (doc.documentElement.dataset.decomposition !== <span class="tok-s">'word'</span>) <span class="tok-c">/* ayah level only */</span></code></pre>
+        </figure>
 
         <h3 style="font-size:19px;margin:26px 0 10px">Versioning</h3>
         <p class="note" style="margin-top:0">Pin to a tag; a versioned URL is immutable. The contract:
@@ -1301,8 +1335,7 @@ svg.inert, svg.inert * { pointer-events: none }
     <p class="note"><code>data-eid</code> and <code>data-sig</code> also appear on paths, in
       <b>both</b> profiles. They are review instruments: <code>data-eid</code> is <b>not stable across
       builds</b> and <code>data-sig</code> is a shape signature, not an identity — 98 signatures serve
-      more than one mark name. <b>Never key on either.</b> (The page inlined at the top of this
-      document has them stripped, purely to save 45 KB. A file you download will have them.)</p>
+      more than one mark name. <b>Never key on either.</b></p>
   </div>
 </section>
 
@@ -1326,8 +1359,27 @@ svg.inert, svg.inert * { pointer-events: none }
 (() => {
 'use strict';
 
-/* Where other pages are fetched from. In the shipped bundle this is 'pages/'. */
-const PAGES = '../../.cache/words-svg/hafs-kfqc/';
+/* ---------------------------------------------------------------------------
+   WHERE THIS SITE IS PUBLISHED — ONE constant, and ONE assumption.
+
+   ASSUMPTION, NOT YET CONFIRMED BY ABDULLAH: GitHub Pages for the public
+   repository `quranpedia/quran-svg`, which is where the decomposition is to be
+   published. `AbdullahObaid/quran-svg-pipeline` is private and cannot serve
+   Pages, so it cannot be the host. If the site lands anywhere else, THIS LINE
+   is the only thing that changes — everything the page fetches or links to is
+   derived from it.
+--------------------------------------------------------------------------- */
+const SITE_BASE = 'https://quranpedia.github.io/quran-svg/';
+
+/* Served out of a local checkout, the same things live where a checkout keeps
+   them: the pages are derived output under .cache/ and the spec is still raw
+   Markdown beside it. Published, both hang off SITE_BASE. */
+const LOCAL = location.protocol === 'file:' ||
+              /^(localhost|127\.0\.0\.1|\[::1\])(:|$)/.test(location.host);
+
+/* Where every page is fetched from — the hero included, since nothing is
+   inlined any more. In the published bundle this is SITE_BASE + 'pages/'. */
+const PAGES = LOCAL ? '../../.cache/words-svg/hafs-kfqc/' : SITE_BASE + 'pages/';
 const SVGNS = 'http://www.w3.org/2000/svg';
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -1366,10 +1418,30 @@ const isolate = s => RLI + s + PDI;
 /* Every block is isolated: a failure in one never kills the rest of the page. */
 function mod(name, fn) { try { return fn(); } catch (e) { console.error('[' + name + ']', e); } }
 
-const hero = $('#hero');
+/* ---------------------------------------------------------------------------
+   THE HERO IS FETCHED, NOT INLINED.
+
+   It used to be inlined into the document: 745 KiB of the 965 KiB this file
+   weighed. It is now fetched exactly like every other page the demo shows, and
+   THROUGH THE SAME CACHE — `getPage` memoises per page number, so page 42 is
+   requested ONCE however many of the seventeen labs run on it.
+
+   The cost is that the hero arrives one round trip after the document. Three
+   things keep that from reading as a broken load: the paper reserves the
+   page's own printed proportion from the viewBox, so nothing reflows when the
+   ink lands; the placeholder says what it is doing, and says so again if the
+   fetch fails; and the five buttons are `disabled` in the markup until there
+   is a page for them to act on.
+
+   `hero` and `PRISTINE` are therefore null until `heroReady` settles. Anything
+   that touches either must await it — `makeLab` does, below.
+--------------------------------------------------------------------------- */
+const HERO_PAGE = 42;
+let hero = null;
 /* Taken before anything touches the page, so every Reset restores the file
    exactly as it was loaded: no leftover rects, no changed fills, no classes. */
-const PRISTINE = hero.cloneNode(true);
+let PRISTINE = null;
+
 
 let cloneSeq = 0;
 function clonePage(src = PRISTINE) {
@@ -1399,6 +1471,20 @@ async function getPage(n) {
   pageCache.set(key, svg);
   return svg.cloneNode(true);
 }
+
+const heroReady = getPage(HERO_PAGE).then(svg => {
+  /* The demo shows the PRODUCTION profile. `getPage` already drops the
+     dev-only polygon layer; dissolving the ligature wrappers is the other half
+     of it, and it is what `build.py` used to do on the way in. Every selector
+     the reader sees on the hero is one that ships. */
+  svg.querySelectorAll('g.ligature').forEach(g => g.replaceWith(...g.childNodes));
+  PRISTINE = svg.cloneNode(true);
+  svg.id = 'hero';
+  hero = svg;
+  const paper = $('#hero-paper');
+  if (paper) paper.replaceChildren(svg);
+  return svg;
+});
 
 /* ---------- helpers the snippets can call ---------- */
 
@@ -2013,7 +2099,10 @@ function makeLab(cfg) {
     try {
       /* `built` flips only once the page this lab runs on is in hand, so a
          Reset or a variant switch during the fetch cannot run against null */
-      if (cfg.page) ctx.basePage = await getPage(cfg.page);
+      /* A lab either names its own page or runs on the hero's. Either way it
+         goes through the SAME cache, so page 42 is fetched once for the hero
+         and every lab that stages it, not once each. */
+      if (cfg.page) ctx.basePage = await getPage(cfg.page); else await heroReady;
       if (cfg.setup) cfg.setup(ctx);
       built = true;
       kick();
@@ -2094,10 +2183,15 @@ function bindToggle(ctx, o) {
    A reader convinced by a section needs somewhere to go next. Every capability
    section gets one line pointing into the part of FORMAT.md that covers it.
 
-   WHERE THE SPEC IS PUBLISHED IS NOT DECIDED YET, so the base lives in exactly
-   ONE constant. Change FORMAT_BASE and every link on the page follows.
+   The base lives in exactly ONE place. Change it and every link on the page
+   follows. Published, it is SITE_BASE + 'FORMAT.html' — GitHub Pages renders a
+   repository's Markdown to .html with the same heading slugs these anchors were
+   generated from. Served locally it stays the raw file beside this one, where a
+   browser will not honour the #anchor; that starts working when the spec is
+   published. See the SITE_BASE note at the top: the host is an ASSUMPTION and
+   needs Abdullah's confirmation.
 --------------------------------------------------------------------------- */
-const FORMAT_BASE = '../shipping/FORMAT.md';
+const FORMAT_BASE = LOCAL ? '../shipping/FORMAT.md' : SITE_BASE + 'FORMAT.html';
 
 /* section id → [anchor, what that part of the spec answers] */
 const FORMAT_LINKS = {
@@ -2223,7 +2317,10 @@ mod('copy', () => {
 });
 
 /* ---------- the hero ---------- */
-mod('hero', () => {
+/* Runs only once the page it acts on is in hand. If the fetch fails the paper
+   says so in plain words rather than sitting empty, and the buttons stay
+   disabled — they would have nothing to act on. */
+heroReady.then(() => mod('hero', () => {
   $('#hero-words').textContent = $$('g.word', hero).length + ' words';
   $('#hero-frags').textContent =
     $$('g.ayah', hero).length + ' fragments for ' +
@@ -2233,7 +2330,7 @@ mod('hero', () => {
   const out = $('#hero-out'), cap = $('#hero-caption');
   const REST = 'Five buttons. They all act on this one file, in the browser, ' +
                'and they compose — press as many as you like.';
-  const CAPTION = 'Page 42 of the mushaf, live in this document.';
+  const CAPTION = 'Page 42 of the mushaf, fetched into this document.';
 
   /* whichever ayah opens the page — read it, never assume it */
   let aid = hero.querySelector('g.ayah').dataset.aid;
@@ -2364,6 +2461,21 @@ mod('hero', () => {
   }
   addEventListener('hashchange', fromHash);
   fromHash();
+
+  /* the page is here, so the buttons can be pressed */
+  for (const k in btn) btn[k].disabled = false;
+  $('#hero-reset').disabled = false;
+}), err => {
+  const ph = $('#hero-ph');
+  if (ph) {
+    ph.className = 'hero-ph failed';
+    /* one child, because .hero-ph is a grid and a bare text node plus a <br>
+       would lay out as separate grid items */
+    ph.innerHTML = '<span>page 42 could not be fetched — ' + esc(err.message) +
+      '<br>the rest of this page still works; every section fetches its own file</span>';
+  }
+  $('#hero-caption').textContent = 'Page 42 could not be fetched.';
+  console.warn('[hero]', err);
 });
 
 /* ═══════════ the labs ═══════════ */
@@ -4235,7 +4347,6 @@ mod('attrs', () => {
     'path|data-pair': ['links the two halves of a muʿānaqah — exactly 3 pairs, so 6 paths', 1],
     'path|data-standalone': ['a mark belonging to no word: 199 hizb rosettes + 30 sajdah signs', 1],
     'path|data-aid': ['on a standalone mark, the ayah it stands at', 1],
-    'path|data-mark-part': ['<b>one path in the whole mushaf.</b> Part of a mark rather than the whole of it. Nothing should key on it; it is listed because it is emitted.', 1],
     'path|data-eid': ['a per-build element number. <b>Not stable across builds — never key on it.</b>', 2],
     'path|data-sig': ['a shape signature, not an identity: 98 signatures serve more than one mark name. <b>Never key on it.</b>', 2],
     'g.hizb-mark|data-aid': ['the ayah the drawn rubʿ rosette stands at', 1],
@@ -4258,6 +4369,7 @@ mod('attrs', () => {
     'svg|data-ayah-numbering': ['the counting system — <code>kufi</code>', 1],
     'svg|data-ayah-total': ['ayahs in the whole mushaf <b>under that counting system</b>. A Hafs fact, not a Quran fact.', 1],
     'svg|data-page': ['the page number, 1–604', 1],
+    'svg|data-decomposition': ['<b>how far down this edition is broken up.</b> <code>word</code> — words, ligatures and named marks are all addressable, which is what every section on this page relies on. <code>ayah</code> — page ink with ayah polygons and end-markers, and nothing below the ayah. Read it before writing a word-level selector.', 1],
     'class': ['what the element is. Every selector on this page is built on it.', 1],
     'g|id': ['the wrapper holding the page content', 1],
     'g.ayah_markers|id': ['the layer the medallions live in, outside the lines', 1],
