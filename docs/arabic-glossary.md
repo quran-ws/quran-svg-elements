@@ -54,7 +54,7 @@ ever correct in the Arabic text. Use the Arabic; keep the attribute name and val
 | ayah numbering system | **نظام عدّ الآي** | `data-ayah-numbering` | Also **العدّ** alone once introduced. `عدّ الآي` is the established term of the discipline (علم الفواصل); `ترقيم` is a printing word and is weaker here. |
 | total ayahs | **إجمالي الآيات** | `data-ayah-total` | |
 | edition | **الطبعة** | `data-edition` | |
-| ~~mushaf name~~ **riwaya name** | **تسمية الرواية** | `data-mushaf-name-ar` / `-en` | **Corrected 2026-08-30 against the actual data.** An earlier version of this row said `اسم المصحف`, guessing from the attribute's *name*. The attribute does not hold a mushaf name: page 042 carries `data-mushaf-name-ar="حفص عن عاصم"` and `data-mushaf-name-en="Hafs 'an Asim"` — the riwaya formula. Never re-translate the `-ar` value; reproduce it. **The attribute name is misleading and is worth raising against the schema, not papering over in translation.** |
+| ~~mushaf name~~ **riwaya name** | **تسمية الرواية** | `data-riwaya-name-ar` / `-en` | **Corrected 2026-08-30 against the actual data.** An earlier version of this row said `اسم المصحف`, guessing from the attribute's *name*. The attribute does not hold a mushaf name: page 042 carries `data-riwaya-name-ar="حفص عن عاصم"` and `data-riwaya-name-en="Hafs 'an Asim"` — the riwaya formula. Never re-translate the `-ar` value; reproduce it. **The attribute name WAS misleading; it was renamed to `data-riwaya-name-*` on 2026-08-30, which is the correct home for it.** |
 | mushaf | **المصحف** | `data-mushaf` | |
 | page | **الصفحة** | `data-page` | |
 
@@ -277,7 +277,7 @@ Reproduce byte-for-byte. These are what a reader searches for and what the produ
 - Every attribute name: `data-wid`, `data-aid`, `data-search`, `data-rasm`, `data-imlaei`,
   `data-uthmani`, `data-qpc`, `data-kind`, `data-line`, `data-part`, `data-marker`, `viewBox`.
 - The nine root attributes: `data-mushaf`, `data-qiraa`, `data-riwaya`, `data-edition`,
-  `data-mushaf-name-ar`, `data-mushaf-name-en`, `data-ayah-numbering`, `data-ayah-total`,
+  `data-riwaya-name-ar`, `data-riwaya-name-en`, `data-ayah-numbering`, `data-ayah-total`,
   `data-page` — **and their values**: `asim`, `hafs`, `kufi`, `madani-first`. The Arabic prose names
   the concept (§1a); the attribute keeps the Latin key.
 - Every attribute *value* and key: `2:255`, `2:255:4`, `#231f20`.
