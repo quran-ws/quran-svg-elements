@@ -7845,10 +7845,14 @@ def assign_page(edition, page_no, cache_dir):
                 # vowel (p272: the bar over 16:48-49 renamed kasra and counted
                 # in ظِلَـٰلُهُۥ's budget) — the geometry says bar, so the name
                 # is dropped and the bar is ejected all the same.
+                # The name "sajdah" is no exception (p379, p480): a bar named
+                # sajdah used to skip this test and eject as a sign of its
+                # own, keyed to the ayah ABOVE it, so the site came out as two
+                # <g class="sajdah-mark"> groups with two different data-aid.
+                # The geometry decides — the ۩ is 8x11, never a hairline.
                 is_bar = (e.get("lab") == "sajdah" and not e.get("mkpart")
                           and (not e.get("mark")
                                or (os.environ.get("QSVG_SAJ", "1") == "1"
-                                   and e.get("mark") != "sajdah"
                                    and (e["y2"] - e["y1"]) < 2.5
                                    <= (e["x2"] - e["x1"]))))
                 if is_bar:
