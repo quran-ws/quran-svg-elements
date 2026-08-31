@@ -2600,6 +2600,64 @@ def rewrite(page, assignment):
                 _i = _j
             _lst[:] = _ord
 
+    # STANDALONE SIGNS IN READING ORDER (Abdullah 2026-08-31): "we want the
+    # order of svg to match order of the rtl print, so the hizb marker should
+    # be before that ayah text, and the sajdah should be after it."
+    #
+    # The 229 wordless standalone atoms (199 hizb rosettes + 30 sajdah signs)
+    # enter `assignment` as word-less entries AFTER every word, so per_path
+    # put them at the end of their line's list wherever the ink pass reached
+    # them. Measured on the 2026-08-31 build: 197 of 199 rosettes had words of
+    # their OWN ayah in front of them (p164's ۞ is drawn at x=220 — the very
+    # start of the line — and came out after all eleven words of 7:117), and
+    # the ayah group was split in two around the rosette for no reason.
+    #
+    # The rule is semantic, not geometric: a hizb/rubʿ rosette OPENS a
+    # division, so it goes immediately before the first element of its ayah;
+    # the sajdah sign closes the ayah that calls for prostration, so it goes
+    # immediately after the last element of its ayah. Where the ayah has no
+    # ink at all in this wrapper (the sign sits on a line its ayah does not
+    # reach) there is nothing to be relative to, and the group is left exactly
+    # where it was.
+    #
+    # Pixel-safe for the same reason as the RTL pass above: every path in this
+    # artwork is fill #231f20, same-colour coverage composites
+    # order-independently, and the move is WITHIN one per_path list — the same
+    # source-path wrapper, the same frame, no _reframe, no d-string touched
+    # (build_d runs per element and depends on nothing outside it).
+    if os.environ.get("QSVG_SAORDER", "1") == "1":
+        for _pi, _lst in per_path.items():
+            _runs, _i = [], 0
+            while _i < len(_lst):
+                _w0, _, _at0, _ = _lst[_i]
+                _sa0 = _at0.get("sa") if _w0 is None else None
+                if _sa0 and _sa0[1]:
+                    _j = _i
+                    while _j < len(_lst) and _lst[_j][2] is _at0:
+                        _j += 1
+                    _runs.append((_at0, _sa0, _lst[_i:_j]))
+                    _i = _j
+                else:
+                    _i += 1
+            if not _runs:
+                continue
+            _aids = {(t[0]["surah"], t[0]["ayah"])
+                     for t in _lst if t[0] is not None}
+            _runs = [r for r in _runs if (r[1][1], r[1][2]) in _aids]
+            if not _runs:
+                continue
+            _saids = {id(_a) for _a, _, _ in _runs}
+            _rest = [t for t in _lst
+                     if not (t[0] is None and id(t[2]) in _saids)]
+            for _at0, _sa0, _blk in _runs:
+                _aid = (_sa0[1], _sa0[2])
+                _hits = [_k for _k, t in enumerate(_rest)
+                         if t[0] is not None
+                         and (t[0]["surah"], t[0]["ayah"]) == _aid]
+                _at = _hits[0] if _sa0[0] == "hizb" else _hits[-1] + 1
+                _rest[_at:_at] = _blk
+            _lst[:] = _rest
+
     if os.environ.get("QSVG_EMDBG"):
         for _pi, _lst in per_path.items():
             for _w4, _lg4, _a4, _e4 in _lst:
