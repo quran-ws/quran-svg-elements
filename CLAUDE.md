@@ -2,9 +2,9 @@
 
 Semantic decomposition of the KFGQPC Madani mushaf: every page SVG broken into
 ayah → word → ligature → element → labelled mark, pixel-identical to the
-original artwork. **The artwork is the KFGQPC V2 1421H print (the edition
+original artwork. **The artwork is the KFGQPC V2 1441H print (the edition
 Digital Khatt models)** — confirmed by Abdullah 2026-08-26. When a text source
-or reference disagrees with the ink, the 1421H print is what the ink IS; judge
+or reference disagrees with the ink, the 1441H print is what the ink IS; judge
 sources against it, not it against sources (the waqf and iqlab notation
 differences in this file all trace to that edition).
 
@@ -342,7 +342,7 @@ about page boundaries on 25 pages.** quran.com's mushaf-2 layout disagrees with
 the print about WHICH WORDS ARE ON THE PAGE at p121-123, p145, p532-534, and
 18 pages of juz 29-30 (565, 568, 570, 576, 584, 586, 588-600) — p599 is off by
 two whole ayahs. Adjudicated three ways: DigitalKhatt's layout DB (an exact
-model of this 1421H print, `.cache/digitalkhatt/digital-khatt-15-lines.db` +
+model of this 1441H print, `.cache/digitalkhatt/digital-khatt-15-lines.db` +
 `digital-khatt-v2.db`, word-id joined) and MushafDatabase agree EXACTLY on
 every disputed page; quran.com stands alone. The pipeline has been cramming a
 wrong word list into the right ink on those pages — hence defects tracking

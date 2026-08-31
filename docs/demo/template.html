@@ -2242,9 +2242,12 @@ function bindPartColours(ctx, o) {
     ctx.ta.value = ctx.ta.value.replace(rx, '$1' + JSON.stringify(current));
     ctx.runNow();
   }
+  /* The swatches SHOW the design's own baked-in colour but do not WRITE it:
+     COLOURS stays empty until the reader moves one. That matters — an inline
+     custom property on the <svg> would beat a stylesheet rule, and the point
+     of the section is that a stylesheet alone recolours the marker. */
   function show(parts, defaults) {
     current = {};
-    for (const p of parts) current[p] = (defaults && defaults[p]) || (p.startsWith('fill') ? '#f4ecd8' : '#b08d2e');
     box.replaceChildren();
     for (const p of parts) {
       const l = document.createElement('label');
@@ -2253,7 +2256,7 @@ function bindPartColours(ctx, o) {
       t.textContent = p;
       const i = document.createElement('input');
       i.type = 'color';
-      i.value = current[p];
+      i.value = (defaults && defaults[p]) || (p.startsWith('fill') ? '#f4ecd8' : '#b08d2e');
       i.setAttribute('aria-label', p);
       i.addEventListener('input', () => { current[p] = i.value; write(); });
       l.append(t, i);
@@ -2267,20 +2270,19 @@ function bindPartColours(ctx, o) {
   return { show, hide() { box.replaceChildren(); } };
 }
 
-/* Which parts of a marker are colourable. A design with no annotations of its
-   own borrows another weight of the same family's, which is how the eight
-   unannotated files still colour. Mirrors markers.mjs annotationFor(). */
-function markerParts(annotations, id, ids) {
-  const ORDER = ['fill-base', 'fill-1', 'fill-2', 'fill-3', 'ink-base', 'ink-1', 'ink-2'];
-  const has = a => a && Object.values(a.parts || {}).some(v => v.length);
-  const all = (annotations && annotations.markers) || {};
-  let a = all[id];
-  if (!has(a)) {
-    const family = String(id).split('-')[0];
-    a = ids.map(x => all[x]).find((x, i) => String(ids[i]).split('-')[0] === family && has(x)) || a;
-  }
-  if (!has(a)) return ['ink-base'];
-  return ORDER.filter(p => (a.parts[p] || []).length);
+/* Which parts a marker draws, and the colour its designer baked in.
+
+   Upstream ships each marker ALREADY LAYERED — one <g data-part> per colourable
+   part, painting fill:var(--<part>, <its own default>) — so this reads the file
+   and nothing else. A control offering a part the design does not draw would be
+   a lie about the drawing. */
+function markerParts(svgText) {
+  const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
+  return [...doc.querySelectorAll('g[data-part]')].map(g => {
+    const m = /var\(\s*--[a-z0-9-]+\s*,\s*([^)]+)\)/i.exec(g.getAttribute('style') || '');
+    return { part: g.getAttribute('data-part'),
+             colour: (m ? m[1].trim() : '#b08d2e') };
+  });
 }
 
 /* ---------------------------------------------------------------------------
@@ -4005,10 +4007,8 @@ mod('lab-markers', () => {
   setup: async ctx2 => {
     const BASE = 'https://quranpedia.github.io/ayah-markers/';
     try {
-      const [coll, ann] = await Promise.all([
-        fetch(BASE + 'collection.json').then(r => r.json()),
-        fetch(BASE + 'annotations.json').then(r => r.json())]);
-      index = { coll, ann, ids: coll.markers.map(m => m.id) };
+      const coll = await fetch(BASE + 'collection.json').then(r => r.json());
+      index = { base: BASE, coll, files: new Map() };
       picker.options = [{ value: '', label: '— the printed ring —' }].concat(
         coll.markers.map(m => ({ value: m.id,
           label: m.id + '  ·  ' + (m.sources[0] ? m.sources[0].family : '') })));
@@ -4028,7 +4028,7 @@ mod('lab-markers', () => {
 // family it was traced from — read collection.json before redistributing.
 const SET     = 'https://quranpedia.github.io/ayah-markers/';
 const MARKER  = '017-regular';   // '' keeps the printed ring
-const COLOURS = {"ink-base":"#b08d2e"};
+const COLOURS = {};
 const SIZE    = 1;
 const HIDE_ALL = false;
 
@@ -4043,65 +4043,33 @@ else if (!MARKER) {
 }
 
 if (!HIDE_ALL && MARKER) try {
-  const [coll, ann] = await Promise.all([
-    fetch(SET + 'collection.json').then(r => r.json()),
-    fetch(SET + 'annotations.json').then(r => r.json())]);
-  const rec = coll.markers.find(m => m.id === MARKER);
+  const coll = await fetch(SET + 'collection.json').then(r => r.json());
+  const rec  = coll.markers.find(m => m.id === MARKER);
   const file = await fetch(SET + rec.file).then(r => r.text());
   if (signal.aborted) return;   // a newer run already replaced this stage
   const src = new DOMParser().parseFromString(file, 'image/svg+xml');
 
-  // ONE <path> holds every contour. Split on M; every command is absolute,
-  // so a contour cut off here is still in the right place.
-  const cs = src.querySelector('path').getAttribute('d').match(/M[^M]*/g);
+  // THE FILE ARRIVES READY TO DRAW. One <g data-part> per colourable part,
+  // each carrying its own fill-rule with the counters — the holes that make
+  // a ring a ring — already punched back out. Nothing is cut up here; the
+  // groups are lifted in exactly as they come.
+  const groups = [...src.querySelectorAll('g[data-part]')];
 
-  // Which part each contour belongs to. Anything unlisted is ink-base — and
-  // a design with no annotations of its own borrows another weight of the
-  // same family's, which is how the eight unannotated files still colour.
-  const ORDER = ['fill-base','fill-1','fill-2','fill-3','ink-base','ink-1','ink-2'];
-  const named = id => Object.values((ann.markers[id] || {}).parts || {}).some(v => v.length);
-  const key = named(MARKER) ? MARKER : coll.markers.map(m => m.id).find(
-    id => id.split('-')[0] === MARKER.split('-')[0] && named(id)) || MARKER;
-  const parts = (ann.markers[key] || {}).parts || {};
-  const owner = cs.map(() => 'ink-base');
-  for (const p in parts) for (const id of parts[p]) owner[+id.split('-').pop()] = p;
+  // AND COLOUR IS ONE CSS CUSTOM PROPERTY. Every group paints with
+  // fill:var(--ink-base, the colour its designer chose), so these two lines
+  // are the entire recolouring story — and a stylesheet saying
+  //     svg { --ink-base: #b08d2e }
+  // does the same with no JavaScript at all. Drag a swatch and watch.
+  for (const part in COLOURS) svg.style.setProperty('--' + part, COLOURS[part]);
 
-  // THE TRAP, and it is worth the twelve lines. The counters — the holes
-  // that make a ring a ring — are winding-based, and a hole and the shape
-  // it punches routinely sit in DIFFERENT parts. Give each part its own
-  // path and 39 of the 47 designs fill in solid. So every layer takes back
-  // the earlier-layer contours that lie inside it, and draws evenodd.
-  // A hidden <g>, not a nested <svg>: a nested svg with no size establishes a
-  // 0x0 viewport and getBBox() then measures the viewport, not the outlines.
+  // Measure the drawing once, so it can be scaled the way the ring was.
   const probe = document.createElementNS(H.SVGNS, 'g');
   probe.setAttribute('style', 'visibility:hidden');
+  groups.forEach(g => probe.append(g.cloneNode(true)));
   svg.append(probe);
-  const at = cs.map((d, i) => {
-    const p = document.createElementNS(H.SVGNS, 'path');
-    p.setAttribute('d', d);
-    p.setAttribute('fill-rule', 'evenodd');
-    probe.append(p);
-    return { d, part: owner[i], el: p };
-  });
-  for (const a of at) {                       // a point genuinely inside it
-    const b = a.el.getBBox();
-    a.pt = { x: b.x + b.width / 2, y: b.y + b.height / 2 };
-    for (let k = 1; k < 8 && !a.el.isPointInFill(a.pt); k++)
-      a.pt = { x: b.x + b.width * k / 8, y: b.y + b.height * k / 8 };
-  }
-  const layers = ORDER.map(part => {
-    const own = at.filter(a => a.part === part);
-    if (!own.length) return null;
-    const inside = at.filter(o => o.part !== part
-      && ORDER.indexOf(o.part) < ORDER.indexOf(part)
-      && own.some(a => a.el.isPointInFill(o.pt)));
-    const holes = inside.filter(o => !inside.some(q => q !== o && q.el.isPointInFill(o.pt)));
-    return { part, d: [...own, ...holes].map(a => a.d).join(' ') };
-  }).filter(Boolean);
   const box = probe.getBBox();
   probe.remove();
 
-  // A FIT, not a redraw: map the outline's box onto the box the ring had.
   markers.forEach(m => {
     const ring = m.querySelector('[data-kind="ayah-marker-ornament"]');
     if (!ring) return;
@@ -4111,8 +4079,9 @@ if (!HIDE_ALL && MARKER) try {
     g.setAttribute('data-kind', 'ayah-marker-ornament');
     // MOVE THE MARKER, NEVER THE NUMBER.
     // The numeral is the print's own ink and stays where the King Fahd Complex
-    // put it. Each design records where IT expects the number, so the
-    // replacement is positioned to put its own number-centre on the numeral.
+    // put it. Each design publishes one centre, cx/cy, where IT expects the
+    // number, so the replacement is positioned to put that centre on the
+    // printed numeral.
     //
     // MIND THE TWO COORDINATE SPACES. The ring's group is scaled by 0.011 and
     // y-flipped; the numeral's is a plain translate. So ring.getBBox() counts
@@ -4134,22 +4103,15 @@ if (!HIDE_ALL && MARKER) try {
       ty = c.y - s*nb.cy;
     }
     g.setAttribute('transform', 'translate(' + tx + ' ' + ty + ') scale(' + s + ')');
-    for (const l of layers) {
-      const p = document.createElementNS(H.SVGNS, 'path');
-      p.setAttribute('d', l.d);
-      p.setAttribute('fill-rule', 'evenodd');       // the counters need it
-      p.setAttribute('fill', COLOURS[l.part] ||
-        (l.part.startsWith('fill') ? 'none' : '#b08d2e'));
-      g.append(p);
-    }
+    groups.forEach(part => g.append(part.cloneNode(true)));
     ring.replaceWith(g);
-
   });
 
   log(markers.length, 'medallions redrawn with', MARKER);
-  log('number  ', rec.number ? ('placed from ' + rec.number.source) : 'left as printed');
-  log('parts   ', layers.map(l => l.part).join(', '));
-  log('traced from', rec.sources.map(s => s.family).join(', '));
+  log('parts   ', groups.map(g => g.getAttribute('data-part')).join(', '));
+  log('colour  ', 'one custom property per part; the swatches set them live');
+  log('number  ', rec.number ? 'the marker moved onto it; it did not move' : 'left as printed');
+  log('traced from', rec.sources.map(x => x.family).join(', '));
   log('');
   log('Nothing above was bundled: the outline arrived over the network.');
 } catch (e) {
@@ -4166,7 +4128,7 @@ if (!HIDE_ALL && MARKER) try {
 // from. The library is the mechanism and states no licence terms.
 const SET     = 'https://quranpedia.github.io/ayah-markers/';
 const MARKER  = '017-regular';   // '' keeps the printed ring
-const COLOURS = {"ink-base":"#b08d2e"};
+const COLOURS = {};
 const SIZE    = 1;
 const HIDE_ALL = false;
 
@@ -4185,15 +4147,18 @@ if (HIDE_ALL) {
   if (signal.aborted) return;   // a newer run already replaced this stage
 
   // Replaces the RING on g.ayah-marker[data-aid] only — the 12 decorative
-  // rosettes framing pages 1-2 close no ayah and are left alone — fits it
-  // into the box the ring had, and does not touch the numeral.
+  // rosettes framing pages 1-2 close no ayah and are left alone — puts the
+  // design's own number-centre on the printed numeral, and never touches
+  // the numeral itself.
   const h = M.setAyahMarker(page, outline, { size: SIZE, colours: COLOURS });
 
   log(h.count, 'medallions redrawn with', MARKER);
   log('parts   ', outline.parts.join(', '));
-  log('traced from', set.record(MARKER).sources.map(s => s.family).join(', '));
+  log('traced from', set.record(MARKER).sources.map(x => x.family).join(', '));
   log('');
-  log('Each part reads --ayah-marker-<part>, so CSS can recolour it live.');
+  log('colours is a convenience over one CSS custom property per part:');
+  log('   svg { --ink-base: #b08d2e; --fill-base: #f6ecd9 }');
+  log('recolours every medallion with no JavaScript at all.');
   log('M.resetAyahMarkers(page) puts the printed rings back, exactly.');
 } catch (e) {
   log('could not fetch the marker set from');
@@ -4204,10 +4169,19 @@ if (HIDE_ALL) {
 }
 ` }
   });
-  function onMarker(id) {
+  /* The swatches start on the design's OWN colours, read out of its file, so
+     the first thing the reader sees is the marker as its designer coloured it. */
+  async function onMarker(id) {
     if (!colours) return;
     if (!id || !index) { colours.hide(); return; }
-    colours.show(markerParts(index.ann, id, index.ids), { 'ink-base': '#b08d2e' });
+    const rec = index.coll.markers.find(m => m.id === id);
+    if (!rec) { colours.hide(); return; }
+    if (!index.files.has(id))
+      index.files.set(id, await fetch(index.base + rec.file).then(r => r.text()));
+    const parts = markerParts(index.files.get(id));
+    const baked = {};
+    for (const p of parts) baked[p.part] = p.colour;
+    colours.show(parts.map(p => p.part), baked);
   }
   picker = bindChoice(ctx, { label: 'design', name: 'MARKER',
                             value: '017-regular', onChange: onMarker });

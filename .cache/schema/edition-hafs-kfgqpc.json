@@ -1952,10 +1952,10 @@
  },
  "font": "digitalkhatt",
  "id": "hafs-kfgqpc",
- "layout_source": "Digital Khatt (QPC v2 1421H layout",
+ "layout_source": "Digital Khatt (QPC v2 1441H layout",
  "lines_per_page": 15,
  "pages": 604,
- "print": "KFGQPC Madani mushaf, V2 1421H",
+ "print": "KFGQPC Madani mushaf, V2 1441H",
  "schema": "edition-manifest",
  "sources": {
   "counts": "measured mushaf-wide; gated by tools/audit_taxonomy.py",

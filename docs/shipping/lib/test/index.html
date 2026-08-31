@@ -868,32 +868,42 @@ try {
    *
    * No marker outline ships with this repository — the set is fetched at
    * runtime and carries its sources' licences. So the deterministic assertions
-   * run against a SYNTHETIC set served by a stub fetch: a square ring whose
-   * counter is annotated into a different part, which is exactly the shape of
-   * the real trap. Point the page at a real set with ?markers=<url> and §21.20+
-   * additionally check that set for conformance.                            */
+   * run against a SYNTHETIC set served by a stub fetch, shaped exactly like the
+   * real one: PRE-LAYERED, one <g data-part> per colourable part, each painting
+   * with var(--<part>, <default>). Point the page at a real set with
+   * ?markers=<url> and §21.50+ additionally check that set for conformance.  */
   {
-    /* outer square 0..1000 wound one way, inner square 200..800 the other */
+    /* outer square 0..1000, inner square 200..800 punched back out of the ink
+       layer by upstream — the file arrives already cut, and this module does
+       not re-cut it */
     const OUTER = 'M0 0L1000 0L1000 1000L0 1000Z';
     const INNER = 'M200 200L200 800L800 800L800 200Z';
+    const LAYERED = '<svg xmlns="http://www.w3.org/2000/svg" class="ayah-marker" ' +
+      'viewBox="-50 -50 1100 1100">' +
+      `<g data-part="fill-1" fill-rule="evenodd" style="fill:var(--fill-1,#fff8e7)"><path data-contours="1" d="${INNER}"/></g>` +
+      `<g data-part="ink-base" fill-rule="evenodd" style="fill:var(--ink-base,#083a3a)"><path data-contours="0 1" d="${OUTER}${INNER}"/></g>` +
+      '</svg>';
     const FAKE = {
       'collection.json': { name: 'stub', markers: [
         { id: '900-regular', codepoint: 'U+E900', file: 'markers/900.svg',
           width: 1000, upem: 1000,
           sources: [{ source: 'stub', family: 'Stub Sans', variant: '400' }] },
+        /* same drawing, but this one tells us where it wants the number */
+        { id: '900-anchor', codepoint: 'U+E902', file: 'markers/900.svg',
+          width: 1000, upem: 1000,
+          number: { cx: 300, cy: 650, width: 400, height: 400, r: 200 },
+          sources: [{ source: 'stub', family: 'Stub Sans', variant: '400' }] },
         { id: '900-bold', codepoint: 'U+E901', file: 'markers/901.svg',
           width: 1000, upem: 1000, sources: [{ source: 'stub', family: 'Stub Sans', variant: '700' }] }
       ] },
-      'annotations.json': { version: 1, componentIdFormat: 'path-{pathIndex}-contour-{contourIndex}',
-        markers: { '900-regular': { parts: { 'ink-base': ['path-0-contour-0'],
-                                             'fill-1': ['path-0-contour-1'] } } } },
-      /* the hardcoded upstream colour is on the file, exactly as upstream ships it */
-      'markers/900.svg': `<svg xmlns="http://www.w3.org/2000/svg" fill="#0b7771" viewBox="-50 -50 1100 1100"><path d="${OUTER}${INNER}"/></svg>`
+      'markers/900.svg': LAYERED
       /* 900-bold is listed but its file is NOT served — the missing-file path */
     };
     let served = 0;
+    const asked = [];
     const stub = async url => {
       served++;
+      asked.push(String(url));
       const key = String(url).replace(/^stub:\/\//, '');
       if (!(key in FAKE)) return { ok: false, status: 404 };
       const body = FAKE[key];
@@ -901,106 +911,161 @@ try {
     };
 
     const set = await M.loadMarkerSet('stub://', { fetch: stub });
-    eq('21.1 the set lists its markers', set.ids(), ['900-regular', '900-bold']);
+    eq('21.1 the set lists its markers', set.ids(), ['900-regular', '900-anchor', '900-bold']);
     eq('21.2 designs are grouped, weights under them',
-       set.families().map(f => [f.family, f.weights.length]), [['900', 2]]);
+       set.families().map(f => [f.family, f.weights.length]), [['900', 3]]);
     eq('21.3 a marker names its source family, for the licence trail',
        set.record('900-regular').sources[0].family, 'Stub Sans');
-    eq('21.4 the colourable parts come off the annotations, in paint order',
-       set.record('900-regular').parts, ['fill-1', 'ink-base']);
-    eq('21.5 a weight with no annotations borrows its family\'s',
-       set.record('900-bold').parts, ['fill-1', 'ink-base']);
+    eq('21.4 the number record is carried through WHOLE — unknown fields and all',
+       set.record('900-anchor').number,
+       { cx: 300, cy: 650, width: 400, height: 400, r: 200 });
+    eq('21.4b only cx/cy are read; the rest is the publisher\'s business',
+       M.numberCentre(await set.outline('900-anchor')), { cx: 300, cy: 650 });
+    eq('21.5 a design that publishes no centre says so', set.record('900-regular').number, undefined);
 
     const out = await set.outline('900-regular');
-    eq('21.6 both contours were found', out.contours, 2);
-    eq('21.7 one layer per part, in paint order', out.layers.map(l => l.part), ['fill-1', 'ink-base']);
-    ok('21.8 the counter is RE-INCLUDED in the ink layer, or the ring fills solid',
-       out.layers.find(l => l.part === 'ink-base').d.includes('M200 200'));
-    eq('21.9 the outline box is measured, not taken from the padded viewBox',
+    eq('21.6 the parts come off the file itself, in the order it draws them',
+       out.parts, ['fill-1', 'ink-base']);
+    eq('21.7 one group per part, taken verbatim', out.groups.length, 2);
+    ok('21.8 the counter is already punched out upstream — nothing is re-cut here',
+       out.groups[1].querySelector('path').getAttribute('d').includes('M200 200'));
+    ok('21.9 upstream\'s fill-rule is carried through, or the ring fills solid',
+       out.groups.every(g => g.getAttribute('fill-rule') === 'evenodd'));
+    eq('21.10 the outline box is measured, not taken from the padded viewBox',
        [out.box.x, out.box.y, out.box.w, out.box.h], [0, 0, 1000, 1000]);
 
     /* the index is fetched once however many outlines are pulled */
     const before = served;
     await set.outline('900-regular');
-    eq('21.10 an outline is cut once and cached', served, before);
+    eq('21.11 an outline is read once and cached', served, before);
     const same = await M.loadMarkerSet('stub://', { fetch: stub });
-    ok('21.11 the set itself is cached per URL', same === set);
+    ok('21.12 the set itself is cached per URL', same === set);
+    eq('21.13 annotations.json is never fetched — upstream ships the layers',
+       asked.filter(u => u.includes('annotations')).length, 0);
 
     /* ---- the swap, on a real page ---- */
     const pm = show(await load(42));   /* rendered: getBBox and getComputedStyle need it */
     const mk = pm.markers()[0];
     const numeral = mk.numeral;
     const numBefore = { d: numeral.getAttribute('d'), box: JSON.stringify(numeral.getBBox()) };
+    const numScreen = numeral.getBoundingClientRect();
     const ringD = mk.ring.getAttribute('d');
     /* SCREEN space on purpose: getBBox() on a <g> excludes the group's OWN
        transform, which is precisely the fit being tested. */
     const ringBox = mk.ring.getBoundingClientRect();
 
     const h = M.setAyahMarker(pm, out, { colours: { 'ink-base': '#b08d2e' } });
-    eq('21.12 every real medallion on the page was swapped', h.count, pm.markers().length);
-    eq('21.13 the printed ring is gone from the medallion',
+    eq('21.14 every real medallion on the page was swapped', h.count, pm.markers().length);
+    eq('21.15 the printed ring is gone from the medallion',
        mk.el.querySelectorAll('path[data-kind="ayah-marker-ornament"]').length, 0);
 
     const swap = mk.el.querySelector('g.ayah-marker-swap');
     const sb = swap.getBoundingClientRect();
-    /* the fit is uniform, so the shorter axis matches exactly and the other is
-       centred inside — never larger than the box it replaced */
-    near('21.14 the swap is centred on the ring it replaced (x)',
+    /* this design publishes no number centre, so it falls back to box-centring
+       on the ring it replaced; the fit is uniform, so the shorter axis matches
+       exactly and the other is centred inside */
+    near('21.16 with no published centre the swap is centred on the ring (x)',
          sb.x + sb.width / 2, ringBox.x + ringBox.width / 2, 0.5);
-    near('21.15 the swap is centred on the ring it replaced (y)',
+    near('21.17 with no published centre the swap is centred on the ring (y)',
          sb.y + sb.height / 2, ringBox.y + ringBox.height / 2, 0.5);
-    ok('21.16 the swap fits inside the ring\'s box, touching on one axis',
+    ok('21.18 the swap fits inside the ring\'s box, touching on one axis',
        sb.width <= ringBox.width + 0.5 && sb.height <= ringBox.height + 0.5 &&
        (Math.abs(sb.width - ringBox.width) < 0.5 || Math.abs(sb.height - ringBox.height) < 0.5),
        [sb.width, sb.height, ringBox.width, ringBox.height]);
 
-    eq('21.17 the numeral is untouched — same d, same box',
+    eq('21.19 the numeral is untouched — same d, same box',
        [numeral.getAttribute('d'), JSON.stringify(numeral.getBBox())],
        [numBefore.d, numBefore.box]);
+    near('21.20 and it has not moved on screen either (x)',
+         numeral.getBoundingClientRect().x, numScreen.x, 0.01);
+    near('21.21 and it has not moved on screen either (y)',
+         numeral.getBoundingClientRect().y, numScreen.y, 0.01);
 
-    /* ---- recolouring ---- */
+    /* ---- recolouring, entirely through upstream's custom properties ---- */
     const parts = [...swap.querySelectorAll('[data-part]')].map(p => p.getAttribute('data-part'));
-    eq('21.18 every part is its own element, addressable', parts, ['fill-1', 'ink-base']);
-    ok('21.19 every part reads its own custom property',
+    eq('21.22 every part is its own element, addressable', parts, ['fill-1', 'ink-base']);
+    ok('21.23 every part reads UPSTREAM\'s custom property name',
        [...swap.querySelectorAll('[data-part]')].every(
-         p => p.getAttribute('style').includes('var(--ayah-marker-' + p.getAttribute('data-part'))));
-    const serialised = new XMLSerializer().serializeToString(pm.el);
-    ok('21.20 the upstream hardcoded #0b7771 never reaches the page',
-       !/0b7771/i.test(serialised));
+         p => p.getAttribute('style').includes('var(--' + p.getAttribute('data-part') + ',')));
+    ok('21.24 and none of them reads the retired --ayah-marker-* name',
+       !new XMLSerializer().serializeToString(swap).includes('--ayah-marker-'));
     {
       const ink = swap.querySelector('[data-part="ink-base"]');
-      eq('21.21 a colour passed in becomes the fallback, so it paints with no CSS',
-         getComputedStyle(ink).fill, 'rgb(176, 141, 46)');
-      const c = M.colourAyahMarkers(pm, { 'ink-base': '#123456' });
-      eq('21.22 a custom property set later wins, live',
-         getComputedStyle(ink).fill, 'rgb(18, 52, 86)');
+      const fill = swap.querySelector('[data-part="fill-1"]');
+      eq('21.25 a colour passed in is set as the custom property, and paints',
+         getComputedStyle(ink.querySelector('path')).fill, 'rgb(176, 141, 46)');
+      eq('21.26 the page carries it as --ink-base, upstream\'s own name',
+         pm.el.style.getPropertyValue('--ink-base').trim(), '#b08d2e');
+      eq('21.27 a part nobody set keeps the design\'s baked-in default',
+         getComputedStyle(fill.querySelector('path')).fill, 'rgb(255, 248, 231)');
+      const c = M.colourAyahMarkers(pm, { 'fill-1': '#123456' });
+      eq('21.28 setting the custom property alone recolours it, no JS on the shape',
+         getComputedStyle(fill.querySelector('path')).fill, 'rgb(18, 52, 86)');
       c.remove();
-      eq('21.23 removing it falls back again', getComputedStyle(ink).fill, 'rgb(176, 141, 46)');
-      eq('21.24 fill-* layers default to none, so a monochrome medallion is line art',
-         getComputedStyle(swap.querySelector('[data-part="fill-1"]')).fill, 'none');
+      eq('21.29 removing it falls back to the design\'s default again',
+         getComputedStyle(fill.querySelector('path')).fill, 'rgb(255, 248, 231)');
     }
 
     /* ---- reset ---- */
-    eq('21.25 the page reports it is showing swapped markers', M.hasSwappedMarkers(pm), true);
+    eq('21.30 the page reports it is showing swapped markers', M.hasSwappedMarkers(pm), true);
     const r1 = M.resetAyahMarkers(pm);
-    eq('21.26 reset restores every medallion', r1.count, h.count);
-    eq('21.27 reset restores the printed ring EXACTLY, not approximately',
+    eq('21.31 reset restores every medallion', r1.count, h.count);
+    eq('21.32 reset restores the printed ring EXACTLY, not approximately',
        pm.markers()[0].ring.getAttribute('d'), ringD);
-    eq('21.28 nothing is left over', pm.el.querySelectorAll('g.ayah-marker-swap').length, 0);
-    eq('21.29 the numeral survived the round trip untouched',
+    eq('21.33 nothing is left over', pm.el.querySelectorAll('g.ayah-marker-swap').length, 0);
+    eq('21.34 the numeral survived the round trip untouched',
        [numeral.getAttribute('d'), JSON.stringify(numeral.getBBox())],
        [numBefore.d, numBefore.box]);
-    /* the handle's own remove() is the same restoration */
-    M.setAyahMarker(pm, out).remove();
-    eq('21.30 the handle restores the ring too', pm.markers()[0].ring.getAttribute('d'), ringD);
+    /* the handle's own remove() is the same restoration, and takes the colours
+       back off with it */
+    M.colourAyahMarkers(pm, { 'ink-base': null });   /* clear §21.14's, which
+       resetAyahMarkers deliberately does not touch — it restores rings, not
+       colours — so the next handle starts from an unset property */
+    M.setAyahMarker(pm, out, { colours: { 'ink-base': '#010203' } }).remove();
+    eq('21.35 the handle restores the ring too', pm.markers()[0].ring.getAttribute('d'), ringD);
+    eq('21.36 and unsets the custom properties it set',
+       pm.el.style.getPropertyValue('--ink-base').trim(), '');
+
+    /* ---- the number anchor: the marker moves, the number never does ---- */
+    {
+      const p = show(await load(42));
+      const m0 = p.markers()[0];
+      const nb = m0.numeral.getBoundingClientRect();
+      const anchored = await set.outline('900-anchor');
+      const hh = M.setAyahMarker(p, anchored);
+      const sw = m0.el.querySelector('g.ayah-marker-swap');
+      eq('21.37 an anchored swap says so — a flag, not a provenance label',
+         sw.getAttribute('data-anchored'), 'numeral');
+      /* the design's own (300, 650) must land on the printed numeral's centre,
+         and that comparison is only meaningful in SCREEN space — the outline,
+         the ring and the numeral are three different coordinate systems */
+      const ctm = sw.getScreenCTM();
+      const pt = p.el.createSVGPoint();
+      pt.x = 300; pt.y = 650;
+      const got = pt.matrixTransform(ctm);
+      near('21.38 the design\'s own number-centre lands on the printed numeral (x)',
+           got.x, nb.x + nb.width / 2, 1);
+      near('21.39 the design\'s own number-centre lands on the printed numeral (y)',
+           got.y, nb.y + nb.height / 2, 1);
+      near('21.40 and the numeral itself did not move (x)',
+           m0.numeral.getBoundingClientRect().x, nb.x, 0.01);
+      near('21.41 and the numeral itself did not move (y)',
+           m0.numeral.getBoundingClientRect().y, nb.y, 0.01);
+      /* anchorOnNumber:false is the old box-on-box behaviour, still reachable */
+      hh.remove();
+      const h2 = M.setAyahMarker(p, anchored, { anchorOnNumber: false });
+      ok('21.42 anchorOnNumber:false falls back to box-centring',
+         !m0.el.querySelector('g.ayah-marker-swap').hasAttribute('data-anchored'));
+      h2.remove();
+    }
 
     /* ---- targeting ---- */
     {
       const p = await load(42);
       const one = p.markers()[0].aid;
       const hh = M.setAyahMarker(p, out, { target: one });
-      eq('21.31 a target swaps that ayah and no other', hh.count, 1);
-      eq('21.32 the others still hold their printed ring',
+      eq('21.43 a target swaps that ayah and no other', hh.count, 1);
+      eq('21.44 the others still hold their printed ring',
          p.el.querySelectorAll('path[data-kind="ayah-marker-ornament"]').length,
          p.markers().length - 1);
       hh.remove();
@@ -1010,18 +1075,18 @@ try {
     {
       const p = await load(1);
       const rosettes = p.allMarkerGroups().filter(g => !g.dataset.aid);
-      eq('21.33 page 1 carries 7 rosettes closing no ayah (12 over pages 1-2)',
+      eq('21.45 page 1 carries 7 rosettes closing no ayah (12 over pages 1-2)',
          rosettes.length, 7);
       const before = rosettes.map(g => g.innerHTML);
       const hh = M.setAyahMarker(p, out);
-      eq('21.34 only the real medallions were swapped', hh.count, p.markers().length);
-      eq('21.35 the decorative rosettes are untouched by default',
+      eq('21.46 only the real medallions were swapped', hh.count, p.markers().length);
+      eq('21.47 the decorative rosettes are untouched by default',
          rosettes.map(g => g.innerHTML), before);
       hh.remove();
       const h2 = M.setAyahMarker(p, out, { decorative: true });
-      eq('21.36 decorative:true reaches them', h2.count, p.allMarkerGroups().length);
+      eq('21.48 decorative:true reaches them', h2.count, p.allMarkerGroups().length);
       h2.remove();
-      eq('21.37 and puts them back', rosettes.map(g => g.innerHTML), before);
+      eq('21.49 and puts them back', rosettes.map(g => g.innerHTML), before);
     }
 
     /* ---- the size factor ---- */
@@ -1034,8 +1099,8 @@ try {
         return b;
       };
       const full = swapBox(1), half = swapBox(0.5);
-      near('21.38 size scales the fitted outline', half.height, full.height / 2, 0.5);
-      near('21.39 and does it uniformly', half.width, full.width / 2, 0.5);
+      near('21.60 size scales the fitted outline', half.height, full.height / 2, 0.5);
+      near('21.61 and does it uniformly', half.width, full.width / 2, 0.5);
     }
 
     /* ---- offline / a URL that moved ---- */
@@ -1044,20 +1109,33 @@ try {
       let msg = '';
       try { await M.loadMarkerSet('https://nowhere.invalid/set/', { fetch: dead }); }
       catch (e) { msg = e.message; }
-      ok('21.40 an unreachable set rejects with the URL in the message',
+      ok('21.62 an unreachable set rejects with the URL in the message',
          msg.includes('https://nowhere.invalid/set/collection.json'), msg);
       /* and it is NOT cached, so a retry when the network comes back works */
       const good = await M.loadMarkerSet('https://nowhere.invalid/set/', {
         fetch: async u => stub(String(u).replace('https://nowhere.invalid/set/', '')) });
-      eq('21.41 a failed load is not cached — a retry can succeed', good.ids().length, 2);
+      eq('21.63 a failed load is not cached — a retry can succeed', good.ids().length, 3);
 
       let m2 = '';
       try { await set.outline('nope'); } catch (e) { m2 = e.message; }
-      ok('21.42 an unknown marker id says so', /no marker "nope"/.test(m2), m2);
+      ok('21.64 an unknown marker id says so', /no marker "nope"/.test(m2), m2);
 
       let m3 = '';
       try { await set.outline('900-bold'); } catch (e) { m3 = e.message; }
-      eq('21.43 the missing-file path is reachable and reported', m3.slice(0, 8), 'HTTP 404');
+      eq('21.65 the missing-file path is reachable and reported', m3.slice(0, 8), 'HTTP 404');
+
+      let m5 = '';
+      try { M.numberCentre({ id: 'z', number: { width: 10 } }); } catch (e) { m5 = e.message; }
+      ok('21.67 a number record with no usable cx/cy throws instead of guessing',
+         /no usable cx\/cy/.test(m5), m5);
+      eq('21.68 but NO record at all is legitimate — box-centre it',
+         M.numberCentre({ id: 'z' }), null);
+
+      let m4 = '';
+      try { M.readOutline('<svg xmlns="http://www.w3.org/2000/svg"><path d="M0 0Z"/></svg>', { id: 'x' }); }
+      catch (e) { m4 = e.message; }
+      ok('21.66 a file with no data-part groups is rejected, not drawn blank',
+         /no <g data-part>/.test(m4), m4);
     }
 
     /* ---- conformance of a REAL set, only when one is pointed at ---- */
@@ -1066,21 +1144,22 @@ try {
       const real = await M.loadMarkerSet(MURL);
       const ids = real.ids();
       ok('21.50 the real set loaded', ids.length > 0, ids.length);
-      let relative = 0, empty = 0, teal = 0;
+      let empty = 0, unvar = 0, noCentre = 0, badBox = 0;
       for (const id of ids) {
         const o = await real.outline(id);
-        if (!o.layers.length) empty++;
-        for (const l of o.layers) {
-          if (/[a-z]/.test(l.d.replace(/[eE][-+]?\d/g, ''))) relative++;
-          if (/0b7771/i.test(l.d)) teal++;
-        }
+        if (!o.parts.length) empty++;
+        if (!(o.box.w > 0 && o.box.h > 0)) badBox++;
+        if (!M.numberCentre(o)) noCentre++;
+        for (const g of o.groups)
+          if (!String(g.getAttribute('style')).includes('var(--' + g.getAttribute('data-part') + ','))
+            unvar++;
       }
-      eq('21.51 every marker cut into at least one layer', empty, 0);
-      eq('21.52 every path command is absolute', relative, 0);
-      eq('21.53 no upstream colour survives the cut', teal, 0);
+      eq('21.51 every marker arrives already layered', empty, 0);
+      eq('21.52 every marker measures a real box', badBox, 0);
+      eq('21.53 every part paints through its own custom property', unvar, 0);
+      eq('21.54 every marker publishes a single number centre', noCentre, 0);
     }
   }
-
   /* left up on purpose for the interactive drag / resize probes */
   show(p42);
   const live = M.attachSelection(p42, { form: 'uthmani', citation: true });

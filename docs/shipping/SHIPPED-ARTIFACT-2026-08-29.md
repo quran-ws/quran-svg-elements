@@ -313,13 +313,13 @@ default bundle.
   "schema": "quran-svg-bundle",
   "version": "1.0.0",
   "edition": "hafs-kfgqpc",
-  "print": "KFGQPC Madani mushaf, V2 1421H",
+  "print": "KFGQPC Madani mushaf, V2 1441H",
   "pages": 604, "words": 77432, "ayat": 6236, "surahs": 114,
   "profile": "production",
   "format_spec": "FORMAT.md@1.0",
   "built": "2026-08-29",
   "text_sources": ["uthmani (quran.com)", "KFGQPC waqf", "DigitalKhatt budgets"],
-  "layout_source": "DigitalKhatt QPC v2 1421H layout DB",
+  "layout_source": "DigitalKhatt QPC v2 1441H layout DB",
   "gates": {"pixel_identical_pages": 604, "taxonomy": "ok", "mark_flags": 0}
 }
 ```

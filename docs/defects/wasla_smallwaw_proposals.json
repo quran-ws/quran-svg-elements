@@ -12,7 +12,7 @@
     "key": "11:13:3",
     "word": "ٱفْتَرَىٰهُ ۖ",
     "found": "the page draws a wasla over the alef and a dagger alef over the ىٰ (both boxed red in docs/defects/wasla_smallwaw_samples/p223_11-13-3.png) and the decomposition reads both correctly — but quran.com's text_uthmani for this ONE word is 'افْتَرَاهُ' (its imlaei spelling: bare alef, full alef, no wasla, no dagger), so the budget demands 0 of each and the audit convicts the correct ink twice (wasla 1/0, small-alef 1/0)",
-    "expected": "the true uthmani spelling ٱفْتَرَىٰهُ — the ink follows the 1421H print exactly",
+    "expected": "the true uthmani spelling ٱفْتَرَىٰهُ — the ink follows the 1441H print exactly",
     "proposal": "an upstream data defect in quran.com (text_uthmani == text_imlaei for word id 15424); either patch this one word in the cached word source from a verified text (QPC/DigitalKhatt both carry the print's spelling), or widen the audit budget to a range where text_uthmani == text_imlaei and the QPC text disagrees, the same shape as the waqf-range rule. Needs Abdullah's call on the channel — never hand-typed"
   }
 ]

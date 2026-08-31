@@ -149,7 +149,7 @@ def page_words(page_no, cache_dir):
 # ---------------------------------------------------------------------------
 # QSVG_DKTEXT: mark budgets from the DigitalKhatt text — the print's own model
 # ---------------------------------------------------------------------------
-# The DK text (digital-khatt-v2.db, QUL export of the KFGQPC V2 1421H print)
+# The DK text (digital-khatt-v2.db, QUL export of the KFGQPC V2 1441H print)
 # won the ink adjudication 5-0 against the uthmani+QPC composite on every
 # genuinely disputed site (docs/defects/text_contest_eyes.json), and its 339
 # iqlab sites carry the print's real convention (ONE haraka + small م —
@@ -279,7 +279,7 @@ def _qcf_lines():
     global _QCF_LINES
     if _QCF_LINES is None:
         # The DigitalKhatt layout DB is an exact model of THIS print (KFGQPC V2
-        # 1421H) and, unlike quran.com's mushaf-2 layout, is right about which
+        # 1441H) and, unlike quran.com's mushaf-2 layout, is right about which
         # words are on the page for all 604 pages (25 pages differ, 18 in juz
         # 29-30 — reported.json item 21, adjudicated against MushafDatabase).
         # tools/build_dk_words.py --lines writes it in this table's format.
@@ -3818,7 +3818,7 @@ def tag_ayah_markers(svg, polys_json, anchors=None):
 _MUSHAF_META = {
     "hafs/kfqc": {
         "mushaf": "hafs-kfqc", "qiraa": "asim", "riwaya": "hafs",
-        "edition": "kfgqpc-1421",
+        "edition": "kfgqpc-1441",
         "name_ar": "حفص عن عاصم", "name_en": "Hafs 'an Asim",
         "ayah_numbering": "kufi", "ayah_total": 6236,
         # How far this edition is decomposed. "ayah" is what quranpedia/quran-svg
