@@ -2526,7 +2526,9 @@ heroReady.then(() => mod('hero', () => {
     }
 
     if (state.lit) {
-      const f = frags(), n = band(hero, f);
+      /* bandWords, not band: the band is laid out on the LINE PITCH, so
+         consecutive lines meet flush instead of leaving the leading unpainted */
+      const f = frags(), n = bandWords(hero, wordsOf());
       said.push('Ayah <b>' + aid + '</b> · ' + wordsOf().length + ' words · ' + f.length +
         ' nodes matched, and <code>data-ayah-parts</code> says ' + f[0].dataset.ayahParts +
         ' — one <b>polygon</b> over ' + n + ' printed lines, not ' + n + ' stripes');
