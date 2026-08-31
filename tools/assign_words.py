@@ -282,13 +282,30 @@ def _qcf_lines():
         # 1441H) and, unlike quran.com's mushaf-2 layout, is right about which
         # words are on the page for all 604 pages (25 pages differ, 18 in juz
         # 29-30 — reported.json item 21, adjudicated against MushafDatabase).
-        # tools/build_dk_words.py --lines writes it in this table's format.
-        # QSVG_DKLINES=0 falls back to the QCF v2 font layout for A/B.
-        p = os.path.join(ROOT, ".cache", "dk_lines.json")
-        dk_file = (os.environ.get("QSVG_DKLINES", "1") == "1"
-                   and os.path.exists(p))
-        if not dk_file:
-            p = os.path.join(ROOT, ".cache", "qcf_lines.json")
+        # THE LINE TABLE COMES FROM THE PRINT'S OWN EDITION (2026-08-31).
+        #
+        # It used to come from DigitalKhatt, which models the KFGQPC **V2,
+        # 1421H** printing. This artwork is the **V4, 1441H** printing — QUL
+        # lists them as separate resources, and DK's database says so in its own
+        # info table. Measured over all 77,432 words: DK agreed on 96.33% with
+        # 121 pages differing, V4 on 100.0000% with none. 118 of those 121 had
+        # EVERY word shifted by the same amount, which is a layout offset
+        # between printings rather than scattered disagreement — and why it read
+        # as acceptable residue for so long. See docs/EDITION-1441-FINDING.md.
+        #
+        # tools/build_v4_lines.py writes it. Fall back through the DK table and
+        # then the QCF v2 font layout, so a checkout without the V4 file still
+        # builds; QSVG_LINES=dk|qcf forces one for A/B.
+        _want = os.environ.get("QSVG_LINES", "v4")
+        if os.environ.get("QSVG_DKLINES") == "0":
+            _want = "qcf"                       # the old switch still means this
+        _order = {"v4": ["v4_lines.json", "dk_lines.json", "qcf_lines.json"],
+                  "dk": ["dk_lines.json", "qcf_lines.json"],
+                  "qcf": ["qcf_lines.json"]}.get(_want, ["v4_lines.json"])
+        p = next((os.path.join(ROOT, ".cache", n) for n in _order
+                  if os.path.exists(os.path.join(ROOT, ".cache", n))),
+                 os.path.join(ROOT, ".cache", "qcf_lines.json"))
+        dk_file = os.path.basename(p) in ("v4_lines.json", "dk_lines.json")
         tbl = json.load(open(p)) if os.path.exists(p) else {}
         # dk_lines.json is keyed DK-canonical (the print's own segmentation of
         # the بَعْدَ مَا compounds, _DKSEG_SPLITS); qcf_lines.json is keyed
