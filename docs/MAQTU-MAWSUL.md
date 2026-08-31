@@ -5,7 +5,52 @@ audits, overrides, the line table and every consumer are keyed on them. So the
 question "is this one word or two?" is not cosmetic, and each answer has to be
 defensible from a source, not from a reading of the drawing.
 
-This file is the standing policy plus the four sites where it bites.
+This file defines what a word is here, the policy for defending that, and the
+four sites where it bites.
+
+---
+
+## What a word IS here
+
+**A word is the mushaf's word-by-word token — the unit the print's own V4 layout
+marks.** Not the rasm's written token, and not the grammatical word.
+
+This has to be said explicitly, because Arabic gives three different answers and
+the project ran for a long time without naming which one it meant. Taking
+`وَمَالِيَ` (36:22):
+
+| definition | `وَمَالِيَ` | `بَعْدَ مَا` | matches us? |
+|---|---:|---:|---|
+| **rasm** — how it is written | 1 | 2 | no |
+| **إعراب** — grammar: `و` + `مَا` + `لِـ` + `يَ` | 3–4 | 2 | no |
+| **word-by-word / layout token** | **2** | **2** | **yes** |
+
+- The **rasm** joins whatever is written without a space, so it keeps
+  `مَالِيَ` as one. It cannot be our rule: we split it.
+- The **إعراب** separates every particle, so it splits the prefixed `و` — a
+  حرف عطف, a word in its own right. It cannot be our rule either: we never
+  split a prefixed `و`/`ف`/`ب`/`لـ`.
+- The **word-by-word token** keeps prefixed particles attached and separates
+  `مَا` from `لِيَ`, because each takes its own gloss. That is what we do, at
+  every one of the 6,236 ayahs.
+
+It is a **convention**, not a derivation — but an external, published one, shared
+by the V4 layout, DigitalKhatt, MushafDatabase, quran.com and every word-by-word
+translation keyed to this mushaf. Consumers of `data-wid` expect exactly it.
+
+Two guards against re-opening this from the wrong end:
+
+> An ink-gap rule is not available. `و` does not join forward, so `وَمَا` has a
+> break in the ink; any gap-width criterion splits the waw. Gap width was never
+> our criterion, and reasoning from the drawing will keep suggesting it.
+
+> The rasm looks like it explains the waw — it keeps it attached — but only
+> because the rasm never splits anything written attached. That is circular, and
+> it does not survive `مَالِيَ`.
+
+The other two layers are still real and worth carrying, just not as `data-wid`:
+the rasm form is what someone searching `مالي` types, and it can be exposed as an
+attribute on the pair without touching segmentation.
 
 ---
 
@@ -15,8 +60,8 @@ This file is the standing policy plus the four sites where it bites.
 
 | rank | source | what it is competent to say |
 |---|---|---|
-| 1 | the **ink** of the 1441H print | final arbiter, where it discriminates |
-| 2 | **KFGQPC V4 layout** — the print's own | word positions; the only KFGQPC source that marks words |
+| 1 | **KFGQPC V4 layout** — the print's own | word positions; the only KFGQPC source that marks words, and the definition above |
+| 2 | the **ink** of the 1441H print | which ink belongs to a word once the boundary is known — NOT where the boundary is |
 | 3 | **MushafDatabase**, **DigitalKhatt** | independent word markings — but DK models the *1421H* print |
 | 4 | **quran.com** `text_uthmani` | word markings, weakest — known to fuse and to carry typos |
 | — | **KFGQPC UthmanicHafs text** | **spelling only.** Ayah-level; states the rasm, not word boundaries |
@@ -28,6 +73,10 @@ rule rather than a footnote:
 > string on whitespace and calling the result a word list measures the rasm's
 > joining convention, not our segmentation — and turns every mawṣūl pair in the
 > Quran into a false defect.
+
+The ink is demoted deliberately. It settles ownership and placement, and it is
+final for those — but it cannot state a boundary, because the only boundary
+signal it carries is gap width, and gap width splits the waw.
 
 Where sources at the same rank disagree, the tie is broken by a **falsifiable
 geometric test**, not by counting sources. The one that has decided a case here:
