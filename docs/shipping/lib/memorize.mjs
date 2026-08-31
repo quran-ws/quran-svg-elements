@@ -124,6 +124,74 @@ export function maskFrom(page, wid, opts = {}) {
   return mask(page, i < 0 ? [] : all.slice(i), opts);
 }
 
+/**
+ * Progressive reveal: the whole page greyed, and the reading position inked.
+ *
+ * The CLOCK is not the library's business — a transport bar, a recitation, a
+ * scroll position or a keypress all drive the same handle through goto(i).
+ * What the library owns is the part that is easy to get wrong:
+ *
+ *   · greying every ink path at once, through one scoped rule (page.theme),
+ *     rather than touching a thousand paths one at a time;
+ *   · the step list in READING order, words or ayahs;
+ *   · a medallion belongs to the ayah it CLOSES, so it lights when that
+ *     ayah's last word is reached, not when its first is.
+ *
+ * @param lit      how many steps stay at full ink behind the position
+ * @param byAyah   step an ayah at a time instead of a word at a time
+ * @param markers  light each ayah's medallion once that ayah is finished
+ */
+export function reveal(page, {
+  lit = 1, byAyah = false, grey = '#c9c4b8', ink = '#231f20', markers = true, at = 0
+} = {}) {
+  const theme = page.theme({ ink: grey });
+  const steps = byAyah ? page.ayahKeys() : page.words().map(w => w.wid);
+
+  const closes = new Map();
+  if (markers) {
+    for (const mk of page.markers()) {
+      const ayah = page.ayah(mk.aid);
+      const last = ayah && ayah.words().pop();
+      if (last) closes.set(mk.aid, steps.indexOf(byAyah ? mk.aid : last.wid));
+    }
+  }
+
+  let held = [], pos = -1;
+  function paint(i) {
+    held.forEach(h => h.remove());
+    held = [];
+    pos = i;
+    if (i < 0) return;
+    const keys = steps.slice(Math.max(0, i - lit + 1), i + 1);
+    if (keys.length) held.push(page.highlight(keys, { fill: ink }));
+    for (const [aid, k] of closes)
+      if (k >= 0 && i >= k) held.push(inkPaths(page.ayah(aid).marker, ink));
+  }
+  paint(Math.min(steps.length - 1, Math.max(0, at)));
+
+  return {
+    steps, closes, count: steps.length,
+    get at() { return pos; },
+    get key() { return steps[pos]; },
+    goto(i) { paint(Math.min(steps.length - 1, Math.max(0, i))); return pos; },
+    remove() { held.forEach(h => h.remove()); held = []; theme.remove(); }
+  };
+}
+
+/* A medallion is NOT a word, and page.highlight() resolves an element to the
+ * g.word groups inside it — of which a medallion has none, so highlighting one
+ * silently paints nothing. Paint its own paths instead, with the same
+ * handle shape as highlight() so the caller cannot tell them apart. */
+function inkPaths(el, fill) {
+  const paths = el ? [...el.querySelectorAll('path')] : [];
+  const prev = paths.map(p => [p, p.style.fill]);
+  for (const p of paths) p.style.fill = fill;
+  return {
+    paths, count: paths.length,
+    remove() { for (const [p, f] of prev) p.style.fill = f || ''; }
+  };
+}
+
 function byWid(a, b) {
   const x = a.parts, y = b.parts;
   return (x[0] - y[0]) || (x[1] - y[1]) || (x[2] - y[2]);

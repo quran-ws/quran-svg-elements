@@ -519,6 +519,34 @@ const h = onWordHover(page, ({word}) => tip.textContent = word.text.uthmani);
 h.remove();     // releases its reference to the layer; other consumers keep theirs
 ```
 
+### `wordTooltip(page, render, options)` → handle
+
+The whole of a hover-tooltip in one call: one absolutely positioned `<div>` in the
+stage, `render(word, hit, ev)` for its contents, and the placement — above the word,
+below it when there is no room, clamped inside the stage. Returning `null` or `false`
+from `render` leaves it hidden, which is how "no entry for this word" is said without a
+second call.
+
+**The library owns the placement, not the look.** Every pixel of styling comes from
+the class you pass; the only rule it sets is `position: absolute`.
+
+| option | default | |
+|---|---|---|
+| `className` | `'mushaf-tip'` | your class, and nothing is added to it |
+| `visibleClass` | `'on'` | toggled while the tip is showing |
+| `gap`, `pad` | `8`, `4` | px from the word, px kept clear of the stage edges |
+| | | plus any `onWordHover` option except `onLeave` |
+
+```js
+const tip = wordTooltip(page, w => gloss[w.wid] || null, {className: 'q-tip'});
+tip.remove();      // takes the element and the layer reference with it
+```
+
+`render` returning a string sets `innerHTML`; return a **Node** when the text is not
+yours (a translation feed, a user's note) and the markup should not be interpreted.
+
+Handle: `el`, `hide()`, `remove()`.
+
 ### `onWordClick(page, handler, options)` → handle
 Same, on `click` (or any `event` you name). Gap-aware.
 
@@ -590,8 +618,75 @@ m.remove();
 `'hide'` uses `visibility: hidden`, so the printed page keeps its shape and spacing —
 which is the point.
 
+### `reveal(page, options)` → handle
+
+The page greyed, and the reading position inked — the reader-follows-along mechanism
+as one call. **The clock is yours**: a transport bar, a recitation, a scroll position
+or a keypress all drive the same handle through `goto(i)`.
+
+| option | default | |
+|---|---|---|
+| `lit` | `1` | how many steps stay at full ink behind the position |
+| `byAyah` | `false` | step an ayah at a time instead of a word at a time |
+| `grey`, `ink` | `'#c9c4b8'`, `'#231f20'` | |
+| `markers` | `true` | light each medallion with the ayah it **closes** |
+| `at` | `0` | where to start |
+
+```js
+const show = reveal(page, {lit: 3});
+show.goto(show.at + 1);         // one step on
+show.remove();
+```
+
+Handle: `steps`, `closes`, `count`, `at`, `key`, `goto(i)`, `remove()`.
+
+Three things it gets right that are easy to get wrong: the grey is **one scoped CSS
+rule**, not a walk over a thousand paths (every path in the mushaf ships the same
+fill); `steps` is document order, which **is** reading order; and a medallion belongs
+to the ayah it closes, so it lights when that ayah's **last** word is reached.
+A medallion is not a word, so it is painted directly — `page.highlight()` resolves an
+element to the `g.word` groups inside it, and a medallion has none.
+
 ### `maskFrom(page, wid, options)` → handle
 Mask everything from a word onward.
+
+---
+
+## Recitation
+
+### `followRecitation(page, options)` → `Promise<handle>`
+
+Word-by-word follow-along against per-ayah audio. The library owns the **join** and
+the **clock**; the caller owns the buttons.
+
+| option | default | |
+|---|---|---|
+| `reciter` | `9` | quran.com recitation id (9 = Minshawi, murattal) |
+| `timings` | – | `{aid: [url, [[startMs, endMs]…]]}` — given, nothing is fetched |
+| `endpoint`, `cdn`, `timeout` | quran.com, qurancdn, 6000 | |
+| `paint` | `true` | `false` reports position and leaves the ink alone |
+| `grey`, `ink` | `'#c9c4b8'`, `'#231f20'` | |
+| `onWord` | – | `({aid, index, count, file, files, whole})` on every change |
+| `onEnd`, `onError` | – | |
+
+```js
+const f = await followRecitation(page, {onWord: w => bar.textContent = w.aid});
+await f.play();
+f.pause(); f.remove();
+```
+
+Handle: `ayahs`, `mismatches`, `playing`, `file`, `index`, `segments`,
+`play()`, `pause()`, `seek(i)`, `remove()`.
+
+**The guard is the point.** Timings come from a different decomposition of the same
+text, and two decompositions count words differently — p254 13:37 is 19 words there
+and 20 here. Zipping the lists drifts silently from that word to the end of the ayah,
+so where the counts disagree the ayah is followed **whole** and the disagreement is
+reported in `mismatches` rather than hidden. Timings covering none of the page throw;
+they are never a silent no-op.
+
+Needs `page.number` (`new MushafPage(svg, {number})` or the loader) unless you pass
+`timings` yourself.
 
 ---
 
