@@ -394,7 +394,7 @@ function bboxOf(el) {
  */
 export function setAyahMarker(page, outline, {
   target = 'page', size = 1, colours = null, ink = null, fills = 'none',
-  decorative = false, placeNumber = true
+  decorative = false, anchorOnNumber = true
 } = {}) {
   if (!outline || !Array.isArray(outline.layers))
     throw new TypeError('setAyahMarker needs an outline from set.outline(id)');
@@ -410,28 +410,32 @@ export function setAyahMarker(page, outline, {
     if (!(box.w > 0 && box.h > 0)) continue;
     if (!ORIGINALS.has(g)) ORIGINALS.set(g, { ring, parent: ring.parentNode, next: ring.nextSibling });
 
-    const fit = fitTransform(outline.box, box, size);
-    const swap = buildSwap(outline, box, size, colours, ink || ring.getAttribute('fill') || 'currentColor', fills);
+    // MOVE THE MARKER, NEVER THE NUMBER.
+    //
+    // The numeral is the print's own ink and stays exactly where the King Fahd
+    // Complex put it. What moves is the furniture around it: each design records
+    // where IT expects the number to sit, so the replacement is positioned so
+    // that its own number-centre lands on the printed numeral.
+    //
+    // Centring the outline's bounding box on the ring's would be wrong the
+    // moment a design is not symmetric — 014 is a disc with a pendant flourish,
+    // so its box centre sits on the join, and box-centring would hang the disc
+    // above the number instead of around it.
+    const anchor = anchorOnNumber
+      ? measured(page.el, () => {
+          const n = g.querySelector('[data-kind="ayah-number"]');
+          if (!n) return null;
+          const nb = bboxOf(n);
+          return nb.w > 0 ? { x: nb.x + nb.w / 2, y: nb.y + nb.h / 2 } : null;
+        })
+      : null;
+
+    const swap = buildSwap(outline, box, size, colours,
+                           ink || ring.getAttribute('fill') || 'currentColor',
+                           fills, anchor);
     const parent = ring.parentNode, next = ring.nextSibling;
     ring.replaceWith(swap);
     undo.push(() => { swap.remove(); parent.insertBefore(ring, next); });
-
-    // MOVE THE NUMBER TO WHERE THE NEW DESIGN WANTS IT.
-    //
-    // Centring on the marker's overall box is wrong the moment a design is not
-    // symmetric: 014 is a disc with a pendant flourish, so the box centre sits
-    // on the join and the number lands below the disc. The design's own answer
-    // is in `number` — read it, map it through the same fit the ring got, and
-    // put the numeral there.
-    //
-    // The numeral is still the print's own ink. It is translated and scaled
-    // UNIFORMLY and never redrawn, so the King Fahd Complex's glyph is intact;
-    // only where it sits changes, which is exactly what swapping the ring
-    // around it implies.
-    if (placeNumber) {
-      const undoNum = placeNumeral(page, g, outline, fit);
-      if (undoNum) undo.push(undoNum);
-    }
   }
 
   return {
@@ -506,62 +510,26 @@ export function fitTransform(from, to, size = 1) {
 
 const round4 = (v, d = 4) => Number(v.toFixed(d));
 
-/**
- * Put the printed numeral where this design wants it.
- *
- * Returns an undo function, or null if there is nothing to do — no numeral, or
- * the marker set predates the `number` field, in which case leaving the numeral
- * exactly where the print put it is the right answer, not a fallback.
- *
- * The numeral keeps its own aspect ratio. A number stretched to fill a box is
- * no longer the print's letterform, and this project does not distort the
- * artwork's glyphs for fit.
- */
-function placeNumeral(page, group, outline, fit) {
-  const num = group.querySelector('[data-kind="ayah-number"]');
-  if (!num) return null;
 
-  // How many digits, from the ayah key — a design that fits ٧ may have to
-  // narrow ٢٥٥, and upstream records a box per count.
-  const ayah = Number(String(group.dataset.aid || '').split(':')[1]);
-  const want = numberBox(outline, String(ayah).length);
-  if (!want) return null;
-
-  // The target box is in the OUTLINE's space; the ring was fitted into the
-  // marker's space by `fit`. Send the box through the same map, or the numeral
-  // lands where the outline would have been rather than where it now is.
-  const target = {
-    x: fit.tx + fit.scale * want.x, y: fit.ty + fit.scale * want.y,
-    w: fit.scale * want.w,          h: fit.scale * want.h
-  };
-
-  const have = measured(page.el, () => bboxOf(num));
-  if (!(have.w > 0 && have.h > 0)) return null;
-
-  const s = Math.min(target.w / have.w, target.h / have.h);
-  const tx = (target.x + target.w / 2) - s * (have.x + have.w / 2);
-  const ty = (target.y + target.h / 2) - s * (have.y + have.h / 2);
-
-  // Wrap rather than edit: the numeral's own element is left untouched, so
-  // remove() restores the printed placement exactly by unwrapping.
-  const wrap = document.createElementNS(NS, 'g');
-  wrap.setAttribute('class', 'ayah-number-placed');
-  wrap.setAttribute('data-number-source', want.source || 'unknown');
-  wrap.setAttribute('transform',
-    `translate(${round4(tx)} ${round4(ty)}) scale(${round4(s, 6)})`);
-
-  const parent = num.parentNode, next = num.nextSibling;
-  parent.insertBefore(wrap, next);
-  wrap.appendChild(num);
-  return () => { parent.insertBefore(num, wrap); wrap.remove(); };
-}
-
-function buildSwap(outline, box, size, colours, ink, fills) {
+function buildSwap(outline, box, size, colours, ink, fills, anchor = null) {
   const g = document.createElementNS(NS, 'g');
   g.setAttribute('class', 'ayah-marker-swap');
   g.setAttribute('data-marker', outline.id || '');
   g.setAttribute('data-kind', 'ayah-marker-ornament');
-  g.setAttribute('transform', String(fitTransform(outline.box, box, size)));
+
+  // Scale comes from the ring's box either way — the replacement should read
+  // at the size the printed medallion did. Only the POSITION differs: with an
+  // anchor, the design's own number-centre is put on the printed numeral;
+  // without one, the two bounding boxes are centred on each other.
+  const fit = fitTransform(outline.box, box, size);
+  const nb = numberBox(outline, 0);
+  if (anchor && nb) {
+    const ncx = nb.x + nb.w / 2, ncy = nb.y + nb.h / 2;
+    fit.tx = anchor.x - fit.scale * ncx;
+    fit.ty = anchor.y - fit.scale * ncy;
+    g.setAttribute('data-anchored', nb.source || 'number');
+  }
+  g.setAttribute('transform', String(fit));
 
   for (const gen of outline.generated) {
     const el = document.createElementNS(NS, gen.shape.type);
