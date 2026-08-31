@@ -2473,9 +2473,33 @@
       id: rec.id || null,
       viewBox: root.getAttribute('viewBox'),
       box, layers, generated,
+      // Where this design wants the ayah number, in the outline's own
+      // coordinates. Published upstream: U+06DD is a prefixed format control,
+      // defined to ENCLOSE the digits after it, so a font that implements it has
+      // already answered — `number.source` says whether a value came from the
+      // designer ("font-shaping") or from the interior geometry ("derived").
+      // `number.digits[1|2|3]` are per-digit-count boxes, because a design that
+      // fits ٧ comfortably may have to narrow ٢٥٥.
+      number: rec.number || null,
       parts: layers.map(l => l.part),
       contours: contours.size
     };
+  }
+
+  /**
+   * The box this design wants the number in, for a given digit count.
+   *
+   * Falls back through: the exact digit count → the whole-number box → null.
+   * A caller that gets null should leave the numeral where the print put it.
+   */
+  function numberBox(outline, digits = 0) {
+    const n = outline && outline.number;
+    if (!n) return null;
+    const d = n.digits && n.digits[String(digits)];
+    const b = d || n;
+    if (!(b && isFinite(b.cx) && isFinite(b.width) && b.width > 0 && b.height > 0)) return null;
+    return { x: b.cx - b.width / 2, y: b.cy - b.height / 2, w: b.width, h: b.height,
+             source: b.source || n.source || null };
   }
 
   /* A point genuinely inside the contour — a bbox centre can miss a crescent. */
@@ -2516,7 +2540,7 @@
    */
   function setAyahMarker(page, outline, {
     target = 'page', size = 1, colours = null, ink = null, fills = 'none',
-    decorative = false
+    decorative = false, placeNumber = true
   } = {}) {
     if (!outline || !Array.isArray(outline.layers))
       throw new TypeError('setAyahMarker needs an outline from set.outline(id)');
@@ -2532,10 +2556,28 @@
       if (!(box.w > 0 && box.h > 0)) continue;
       if (!ORIGINALS.has(g)) ORIGINALS.set(g, { ring, parent: ring.parentNode, next: ring.nextSibling });
 
+      const fit = fitTransform(outline.box, box, size);
       const swap = buildSwap(outline, box, size, colours, ink || ring.getAttribute('fill') || 'currentColor', fills);
       const parent = ring.parentNode, next = ring.nextSibling;
       ring.replaceWith(swap);
       undo.push(() => { swap.remove(); parent.insertBefore(ring, next); });
+
+      // MOVE THE NUMBER TO WHERE THE NEW DESIGN WANTS IT.
+      //
+      // Centring on the marker's overall box is wrong the moment a design is not
+      // symmetric: 014 is a disc with a pendant flourish, so the box centre sits
+      // on the join and the number lands below the disc. The design's own answer
+      // is in `number` — read it, map it through the same fit the ring got, and
+      // put the numeral there.
+      //
+      // The numeral is still the print's own ink. It is translated and scaled
+      // UNIFORMLY and never redrawn, so the King Fahd Complex's glyph is intact;
+      // only where it sits changes, which is exactly what swapping the ring
+      // around it implies.
+      if (placeNumber) {
+        const undoNum = placeNumeral(page, g, outline, fit);
+        if (undoNum) undo.push(undoNum);
+      }
     }
 
     return {
@@ -2610,6 +2652,56 @@
 
   const round4 = (v, d = 4) => Number(v.toFixed(d));
 
+  /**
+   * Put the printed numeral where this design wants it.
+   *
+   * Returns an undo function, or null if there is nothing to do — no numeral, or
+   * the marker set predates the `number` field, in which case leaving the numeral
+   * exactly where the print put it is the right answer, not a fallback.
+   *
+   * The numeral keeps its own aspect ratio. A number stretched to fill a box is
+   * no longer the print's letterform, and this project does not distort the
+   * artwork's glyphs for fit.
+   */
+  function placeNumeral(page, group, outline, fit) {
+    const num = group.querySelector('[data-kind="ayah-number"]');
+    if (!num) return null;
+
+    // How many digits, from the ayah key — a design that fits ٧ may have to
+    // narrow ٢٥٥, and upstream records a box per count.
+    const ayah = Number(String(group.dataset.aid || '').split(':')[1]);
+    const want = numberBox(outline, String(ayah).length);
+    if (!want) return null;
+
+    // The target box is in the OUTLINE's space; the ring was fitted into the
+    // marker's space by `fit`. Send the box through the same map, or the numeral
+    // lands where the outline would have been rather than where it now is.
+    const target = {
+      x: fit.tx + fit.scale * want.x, y: fit.ty + fit.scale * want.y,
+      w: fit.scale * want.w,          h: fit.scale * want.h
+    };
+
+    const have = measured(page.el, () => bboxOf(num));
+    if (!(have.w > 0 && have.h > 0)) return null;
+
+    const s = Math.min(target.w / have.w, target.h / have.h);
+    const tx = (target.x + target.w / 2) - s * (have.x + have.w / 2);
+    const ty = (target.y + target.h / 2) - s * (have.y + have.h / 2);
+
+    // Wrap rather than edit: the numeral's own element is left untouched, so
+    // remove() restores the printed placement exactly by unwrapping.
+    const wrap = document.createElementNS(NS, 'g');
+    wrap.setAttribute('class', 'ayah-number-placed');
+    wrap.setAttribute('data-number-source', want.source || 'unknown');
+    wrap.setAttribute('transform',
+      `translate(${round4(tx)} ${round4(ty)}) scale(${round4(s, 6)})`);
+
+    const parent = num.parentNode, next = num.nextSibling;
+    parent.insertBefore(wrap, next);
+    wrap.appendChild(num);
+    return () => { parent.insertBefore(num, wrap); wrap.remove(); };
+  }
+
   function buildSwap(outline, box, size, colours, ink, fills) {
     const g = document.createElementNS(NS, 'g');
     g.setAttribute('class', 'ayah-marker-swap');
@@ -2644,7 +2736,7 @@
   }
 
 
-  var api = { SVGNS: SVGNS, XHTMLNS: XHTMLNS, TEXT_FORMS: TEXT_FORMS, MARK_REGISTRY: MARK_REGISTRY, markNames: markNames, familyOf: familyOf, categoryOf: categoryOf, stripArabicMarks: stripArabicMarks, foldArabic: foldArabic, normalizeQuery: normalizeQuery, looseKey: looseKey, measured: measured, Word: Word, Ayah: Ayah, Line: Line, boxInView: boxInView, MushafPage: MushafPage, createLoader: createLoader, version: version, setLineGap: setLineGap, gapToFill: gapToFill, wastedFraction: wastedFraction, fitToViewport: fitToViewport, acquireHitLayer: acquireHitLayer, hasHitLayer: hasHitLayer, onWordHover: onWordHover, onWordClick: onWordClick, wordAt: wordAt, attachSelection: attachSelection, mask: mask, maskFrom: maskFrom, annotate: annotate, scrollIntoView: scrollIntoView, toCanvas: toCanvas, toPngDataUrl: toPngDataUrl, toPngBlob: toPngBlob, toSvgDataUrl: toSvgDataUrl, MushafAtlas: MushafAtlas, loadAtlas: loadAtlas, atlasFrom: atlasFrom, MARKER_PARTS: MARKER_PARTS, partVar: partVar, loadMarkerSet: loadMarkerSet, splitContours: splitContours, cutOutline: cutOutline, setAyahMarker: setAyahMarker, resetAyahMarkers: resetAyahMarkers, hasSwappedMarkers: hasSwappedMarkers, colourAyahMarkers: colourAyahMarkers, fitTransform: fitTransform };
+  var api = { SVGNS: SVGNS, XHTMLNS: XHTMLNS, TEXT_FORMS: TEXT_FORMS, MARK_REGISTRY: MARK_REGISTRY, markNames: markNames, familyOf: familyOf, categoryOf: categoryOf, stripArabicMarks: stripArabicMarks, foldArabic: foldArabic, normalizeQuery: normalizeQuery, looseKey: looseKey, measured: measured, Word: Word, Ayah: Ayah, Line: Line, boxInView: boxInView, MushafPage: MushafPage, createLoader: createLoader, version: version, setLineGap: setLineGap, gapToFill: gapToFill, wastedFraction: wastedFraction, fitToViewport: fitToViewport, acquireHitLayer: acquireHitLayer, hasHitLayer: hasHitLayer, onWordHover: onWordHover, onWordClick: onWordClick, wordAt: wordAt, attachSelection: attachSelection, mask: mask, maskFrom: maskFrom, annotate: annotate, scrollIntoView: scrollIntoView, toCanvas: toCanvas, toPngDataUrl: toPngDataUrl, toPngBlob: toPngBlob, toSvgDataUrl: toSvgDataUrl, MushafAtlas: MushafAtlas, loadAtlas: loadAtlas, atlasFrom: atlasFrom, MARKER_PARTS: MARKER_PARTS, partVar: partVar, loadMarkerSet: loadMarkerSet, splitContours: splitContours, cutOutline: cutOutline, numberBox: numberBox, setAyahMarker: setAyahMarker, resetAyahMarkers: resetAyahMarkers, hasSwappedMarkers: hasSwappedMarkers, colourAyahMarkers: colourAyahMarkers, fitTransform: fitTransform };
   if (typeof module === 'object' && module.exports) module.exports = api;
   root.Mushaf = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
