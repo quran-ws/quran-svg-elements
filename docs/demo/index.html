@@ -2616,20 +2616,13 @@ stage.replaceChildren(doc.documentElement);
 `,
   lib: { code: `
 // createLoader caches parsed pages and hands out a CLONE every time,
-// so two callers can never disturb each other. It also drops the
-// dev-only polygon layer for you.
+// so two callers can never disturb each other.
 const load = M.createLoader({ baseUrl: H.PAGES });
 const page = await load(3);
 
-log('words          ', page.wordCount);
-log('ayah fragments ', page.el.querySelectorAll('g.ayah').length);
-log('named marks    ', page.marks().length);
-log('viewBox        ', JSON.stringify(page.viewBox));   // read, never assumed
-log('profile        ', page.profile);   // the files do not announce it
-
-// the text of ayah 2:6, with the mushaf's own line breaks
-log('');
-log(page.text('2:6'));
+log(page.wordCount, 'words ·', page.marks().length, 'named marks ·',
+    page.profile, 'profile');
+log(page.text('2:6'));   // with the mushaf's own line breaks
 
 stage.className = 'paper tight';
 stage.replaceChildren(page.el);
@@ -2655,22 +2648,15 @@ log('words highlighted ',
 log('its medallion     ', frags[0].dataset.marker);
 `,
   lib: { code: `
-// new MushafPage(el) WRAPS the <svg> already on the page: no clone,
-// no fetch, and it does not mutate until you ask it to.
-const page = new M.MushafPage(svg);
-
 // page.ayah() returns ALL the fragments at once, which is the whole
 // point — there is no single node that "is" the ayah.
+const page = new M.MushafPage(svg);
 const ayah = page.ayah('2:255');
 
 page.band(ayah, { fill: '#d6a326' });   // ONE path over all six lines
 
-log('fragments matched ', ayah.fragments.length);
-log('data-ayah-parts   ', ayah.parts);
-log('complete          ', ayah.complete, '— did we get the lot?');
-log('words highlighted ', ayah.words().length);
-log('printed lines     ', ayah.lines.join(', '));
-log('its medallion     ', ayah.markerId);
+log(ayah.fragments.length, 'fragments ·', ayah.words().length, 'words ·',
+    'printed lines', ayah.lines.join(', '), '· medallion', ayah.markerId);
 ` }
 }));
 
@@ -2715,15 +2701,11 @@ stage.addEventListener('click', e => {
 out('gapfill = ' + GAPFILL + '. Click the line, aiming at the gaps.');
 `,
   lib: { code: `
-// page.onTap needs NO overlay at all. It resolves a click to the word
-// the reader MEANT from pure geometry: the point goes to a printed line
-// by its band, then to a word on that line — and a point in the gap is
-// biased toward the PRECEDING word, because in this print a word's
-// trailing ink is drawn into the following gap. Naive nearest gets
-// those gaps wrong systematically, always in the same direction.
-//
-// \`exact\` says whether the point was inside the word's own box, so
-// turning GAPFILL off is refusing everything that is not.
+// page.onTap needs NO overlay at all: it resolves a click to the word
+// the reader MEANT from geometry, biasing a point in the gap toward the
+// PRECEDING word, because in this print a word's trailing ink is drawn
+// into the following gap. r.exact says the point was inside the word's
+// own box, so GAPFILL off refuses everything that is not.
 const GAPFILL = false;
 
 const page = new M.MushafPage(svg);
@@ -2802,7 +2784,6 @@ svg.prepend(layer);          // first child of <svg> = behind everything
 log(boxes.length, 'printed lines for ayah', AID,
     '— drawn as', svg.querySelector('g > path') ? 1 : 0, 'path.');
 log('subpaths ', d.split('Z').length - 1, '· fill-rule', path.getAttribute('fill-rule'));
-log('The ink was never touched: no fill, no stroke, no filter.');
 `,
   lib: { code: `
 // All of the above is page.band(): the ink extents per printed line,
@@ -2815,15 +2796,8 @@ const PAD = 1.2;
 const page = new M.MushafPage(svg);
 const b = page.band(AID, { fill: FILL, padX: PAD, seam: 0.25 });
 
-log(b.bands, 'printed lines for ayah', AID);
-log('elements  ', b.el.children.length, '— one <' + b.path.tagName + '>');
-log('subpaths  ', (b.d.match(/Z/g) || []).length);
-log('fill-rule ', b.path.getAttribute('fill-rule'),
-    '  <- NEVER inherit: the page ink is evenodd');
-log('');
-log('b.boxes gives the per-line rectangles in viewBox units,');
-log('before the seam, if you want to draw something else on them.');
-log('b.remove() undoes exactly this and nothing else.');
+log(b.bands, 'printed lines, drawn as one <' + b.path.tagName + '> ·',
+    'fill-rule', b.path.getAttribute('fill-rule'));
 ` }
 }), { label: 'padding', name: 'PAD', min: 0, max: 6, step: 0.2, value: 1.2, digits: 1 }));
 
@@ -2852,24 +2826,15 @@ hits.slice(0, 10).forEach(w =>
   lib: { code: `
 const QUERY = 'الله';          // try درجات, الرسل, البينات, الرحمان
 
+// Folds both sides, searches the right text form, and widens to a loose
+// second pass ONLY if the strict one found nothing. Try الرحمان: the
+// printed word carries a dagger alef and is not in data-search at all.
 const page = new M.MushafPage(svg);
-
-// Defaults that matter: form 'search' (never 'rasm' for a search box),
-// normalise both sides, and a LOOSE second pass that only runs if the
-// strict one found nothing — so a query that already matched is never
-// widened behind your back. Try الرحمان: the printed word carries a
-// dagger alef and is not in data-search at all.
 const hits = page.search(QUERY);
 
 hits.forEach(m => m.word.el.classList.add('q-word'));   // red on the page
 
-log(hits.length, 'match(es) on this page for', QUERY);
-log('');
-hits.slice(0, 10).forEach(m =>
-  log(m.wid.padEnd(10), m.word.text.uthmani,
-      '  rasm:', m.word.text.rasm, '  search:', m.word.text.search));
-log('');
-log('page.text(hits.map(h => h.word)) gives just what you found:');
+log(hits.length, 'match(es) for', QUERY);
 log(page.text(hits.map(h => h.word)));
 ` }
 }));
@@ -2905,8 +2870,7 @@ out('hover the page →');
 `,
   lib: { code: `
 // page.word(wid) gives a Word: all five text forms, its ayah, its
-// printed line, its paths, and box() already through the whole
-// transform chain (getBBox would lie about position).
+// printed line, and box() through the whole transform chain.
 const page = new M.MushafPage(svg);
 
 svg.style.cursor = 'crosshair';
@@ -3056,8 +3020,6 @@ const sel = M.attachSelection(page, {
   }
 });
 
-// the SAME drag, in another spelling, is one call — because the
-// selection is a set of word ids, not a serialised string
 signal.addEventListener('abort', () => sel.detach());
 
 out('drag across the page →');
@@ -3212,7 +3174,6 @@ raf = requestAnimationFrame(tick);
 
 log(steps.length, BY_AYAH ? 'ayahs' : 'words', '·', furniture.length,
     'pieces of furniture that light with their ayah');
-log('nothing is at full strength before the reading position reaches it');
 `,
     lib: { code: `
 const GREY = '#c9c4b8';     // not yet reached
@@ -3305,8 +3266,6 @@ raf = requestAnimationFrame(tick);
 
 log(steps.length, BY_AYAH ? 'ayahs' : 'words', '·', closes.size,
     'medallions that light with the ayah they close');
-log('page.theme() greys everything; page.highlight() re-inks the');
-log('reading position, and its remove() puts back what was there.');
 ` }
   });
   if (!ctx) return;
@@ -3358,7 +3317,6 @@ function dead(msg) {                    // never leave a button that does nothin
 // And bound the request. An un-timed-out fetch does not fail on a bad
 // network, it HANGS — the await never settles and the section sits
 // blank forever, which is the worst of the three outcomes.
-log('timings   fetching from api.quran.com…');
 let raw = H.FALLBACK_TIMINGS, from = 'cached copy';
 try {
   const res = await fetch(API, { signal: AbortSignal.timeout(6000) });
@@ -3503,8 +3461,7 @@ function dead(msg) {
   signal.addEventListener('abort', () => box.remove());
 }
 
-log('timings   fetching from api.quran.com…');
-let raw = H.FALLBACK_TIMINGS, from = 'cached copy';
+let raw = H.FALLBACK_TIMINGS;
 try {
   const res = await fetch(API, { signal: AbortSignal.timeout(6000) });
   if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -3514,12 +3471,9 @@ try {
     const segs = (e.segments || []).slice().sort((a, b) => a[1] - b[1]);
     raw[e.verse_key] = [e.url, segs.map(s => [s[2], s[3]])];
   }
-  from = 'live from api.quran.com';
 } catch (e) {
-  log('API unreachable (' + (e.name === 'TimeoutError' ? 'timed out' : e.message) +
-      ') — falling back to the cached copy of this page.');
+  log('api.quran.com unreachable — using the cached copy of this page.');
 }
-log('timings  ', from);
 
 // THE GUARD, unchanged: two decompositions can count words differently
 // (p254 13:37: 19 theirs, 20 ours) and trusting it blindly drifts.
@@ -3534,10 +3488,8 @@ for (const aid of page.ayahKeys()) {
   ayahs.push({ aid, ayah: a, url: raw[aid][0], times, perWord });
 }
 if (!ayahs.length) { dead('No timings for this page, so there is nothing to follow.'); return; }
-log('ayahs    ', ayahs.length, '·',
+log(ayahs.length, 'ayahs ·',
     ayahs.reduce((n, a) => n + a.times.length, 0), 'word segments');
-log('counts   ', ayahs.every(a => a.perWord)
-      ? 'agree — using word-level timing' : 'disagree somewhere, see above');
 
 const theme = page.theme({ ink: '#c9c4b8' });
 signal.addEventListener('abort', () => theme.remove());
@@ -3682,8 +3634,8 @@ stage.addEventListener('click', e => {
   s ? show(s) : hide();
 });
 
-log(joined, 'of', layer.children.length, 'words joined on data-wid — zero misses.');
-log('hover, tap, or Tab into the page.');
+log(joined, 'of', layer.children.length,
+    'words joined on data-wid. Hover, tap, or Tab into the page.');
 `,
     lib: { code: `
 const gloss = await (await fetch('data/gloss-042.json')).json();
@@ -3697,10 +3649,10 @@ tip.setAttribute('role', 'tooltip');
 stage.append(tip);
 signal.addEventListener('abort', () => tip.remove());
 
-// onWordHover fires ONCE per word entered — not per pointermove, and
-// not per path, so the tooltip does not flicker across the gaps
-// between letters. It acquires the shared hit layer and reference-counts
-// it, so §7's selection can hold the same layer at the same time.
+// onWordHover fires ONCE per word entered — not per pointermove and not
+// per path, so the tooltip does not flicker across the gaps between
+// letters. It reference-counts the shared hit layer, so §7's selection
+// can hold the same layer at the same time.
 const hover = M.onWordHover(page, ({ word, span }) => {
   const g = gloss[word.wid];
   tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
@@ -3727,9 +3679,7 @@ if (PIN_TITLES) {
 }
 
 const joined = page.words().filter(w => gloss[w.wid]).length;
-log(joined, 'of', page.wordCount, 'words joined on data-wid — zero misses.');
-log('hover or tap the page.');
-if (a11y) log('annotate(): the page now has a title and a label per word.');
+log(joined, 'of', page.wordCount, 'words joined on data-wid. Hover the page.');
 ` }
   });
   bindToggle(ctx, { label: 'pin <title> too', name: 'PIN_TITLES', value: false });
@@ -3805,11 +3755,9 @@ document.addEventListener('copy', e => {
 out('Hover a word · click it to band its ayah · drag and copy. All three, together.');
 `,
   lib: { code: `
-// This is the section the library is FOR. Three capabilities, three
-// calls, and the layer underneath them is reference counted — each
-// handle takes a reference, each remove() gives it back, and the layer
-// is torn down when the last one does. Nothing here special-cases
-// anything: hover does not have to know selection exists.
+// Three capabilities, three calls, over ONE reference-counted layer.
+// Nothing here special-cases anything: hover does not have to know
+// that selection exists.
 const gloss = await (await fetch('data/gloss-042.json')).json();
 const page = new M.MushafPage(svg);
 
@@ -3903,7 +3851,7 @@ mod('lab-style', () => makeLab({
 // twice — cannot break your code.
 const page = new M.MushafPage(svg);
 
-const style = page.styleMarks({ family: 'diacritic' }, { fill: '#b8892b' });
+page.styleMarks({ family: 'diacritic' }, { fill: '#b8892b' });
 page.styleMarks({ family: 'dots' }, { fill: '#b03030' });
 page.styleMarks({ family: 'waqf' }, { fill: '#2d55a0' });
 page.styleMarks({ family: 'sifr' }, { fill: '#999999' });
@@ -3920,14 +3868,9 @@ page.styleMarks({ name: 'maddah' },     { fill: '#3b6fc4' });
 // memorisation: mask a word, keep the printed page's shape
 // M.mask(page, '2:255', { mode: 'hide' });
 
-log('vowel marks ', page.marks({ family: 'diacritic' }).length);
-log('  of which tanween', page.marks({ family: 'tanween' }).length,
-    '— they are BOTH, which is why data-mark-family is a token list');
-log('letter dots ', page.marks({ family: 'dots' }).length);
-log('waqf signs  ', page.marks({ family: 'waqf' }).length);
-log('');
-log('every styleMarks() handle has .remove(), which restores the');
-log('exact inline style that was there before — not a guess at it.');
+log(page.marks({ family: 'diacritic' }).length, 'vowel marks, of which',
+    page.marks({ family: 'tanween' }).length, 'tanween — they are BOTH,',
+    'which is why data-mark-family is a token list.');
 ` }
 }));
 
@@ -3965,12 +3908,9 @@ const theme = page.theme({
   numeral:    '#cfe3ff'
 });
 
-log('paths themed ', page.el.querySelectorAll('path').length);
-log('paper        ', 'a <rect> in the viewBox, not a container background');
-log('');
-log('theme.remove() puts the page back exactly as it was.');
-log('Because it is inside the <svg>, this also survives:');
-log('   await M.toPngDataUrl(page.crop("2:255"), { scale: 4 })');
+log(page.el.querySelectorAll('path').length,
+    'paths themed, and the paper is a <rect> in the viewBox —',
+    'so this survives crop and PNG export. theme.remove() undoes it.');
 ` }
   });
   if (!ctx) return;
@@ -4109,11 +4049,8 @@ if (!HIDE_ALL && MARKER) try {
 
   log(markers.length, 'medallions redrawn with', MARKER);
   log('parts   ', groups.map(g => g.getAttribute('data-part')).join(', '));
-  log('colour  ', 'one custom property per part; the swatches set them live');
   log('number  ', rec.number ? 'the marker moved onto it; it did not move' : 'left as printed');
   log('traced from', rec.sources.map(x => x.family).join(', '));
-  log('');
-  log('Nothing above was bundled: the outline arrived over the network.');
 } catch (e) {
   log('could not fetch the marker set from');
   log(SET);
@@ -4152,14 +4089,9 @@ if (HIDE_ALL) {
   // the numeral itself.
   const h = M.setAyahMarker(page, outline, { size: SIZE, colours: COLOURS });
 
-  log(h.count, 'medallions redrawn with', MARKER);
-  log('parts   ', outline.parts.join(', '));
-  log('traced from', set.record(MARKER).sources.map(x => x.family).join(', '));
-  log('');
-  log('colours is a convenience over one CSS custom property per part:');
-  log('   svg { --ink-base: #b08d2e; --fill-base: #f6ecd9 }');
-  log('recolours every medallion with no JavaScript at all.');
-  log('M.resetAyahMarkers(page) puts the printed rings back, exactly.');
+  log(h.count, 'medallions redrawn with', MARKER,
+      '· parts', outline.parts.join(', '),
+      '· traced from', set.record(MARKER).sources.map(x => x.family).join(', '));
 } catch (e) {
   log('could not fetch the marker set from');
   log(SET);
@@ -4249,9 +4181,8 @@ const page = new M.MushafPage(svg);
 // ayah's LAST fragment, and grows the viewBox so nothing is cropped.
 const h = M.setLineGap(page, GAP);
 
-log('viewBox ', h.viewBox);
-log('lines   ', h.lines, 'moved apart by', h.gap, 'units each');
-log('glyphs  ', page.el.querySelectorAll('path').length, 'untouched');
+log(h.lines, 'lines moved apart by', h.gap, 'units ·', h.viewBox, '·',
+    page.el.querySelectorAll('path').length, 'glyphs untouched');
 log('');
 
 // gapToFill is PURE ARITHMETIC — no DOM, so you can solve for a device
@@ -4264,9 +4195,8 @@ for (const [name, w, hgt] of [['iPhone SE', 375, 667], ['iPhone 14', 390, 844],
       ' wastes', (M.wastedFraction({ pageW: vb.w, pageH: vb.h, viewW: w, viewH: hgt }) * 100).toFixed(1) + '%');
 }
 log('');
-log('Clamped at zero: the iPad is already taller for its width than');
-log('the page, so it needs no leading — and a negative gap would');
-log('overlap the lines.  fitToViewport() measures and applies it.');
+log('Clamped at zero: the iPad is already taller for its width than the',
+    'page, so it needs no leading.  fitToViewport() measures and applies it.');
 ` }
   });
   if (!ctx) return;
@@ -4345,8 +4275,6 @@ const PAD = 4;                 // page units around the crop
 
 const page = new M.MushafPage(svg);
 
-// resolve() takes the same target every other method takes, so a run
-// of words is a list of wids — no filter function needed.
 const wids = page.words({ ayah: AID })
   .filter(w => w.index >= FROM && w.index <= TO)
   .map(w => w.wid);
@@ -4357,16 +4285,8 @@ const wids = page.words({ ayah: AID })
 const c = page.crop({ wids }, { pad: PAD });
 stage.replaceChildren(c.el);
 
-log('words   ', c.words.length, '(' + AID + ':' + FROM + '..' + TO + ')');
-log('paths   ', c.el.querySelectorAll('path').length);
-log('viewBox ', c.viewBox);
-log('');
+log(c.words.length, 'words ·', c.viewBox);
 log(c.page.text('page'));
-log('');
-log('c.toDataUrl() gives an <img src> for this crop, no canvas and no');
-log('rasterising, so it still scales.  M.toPngDataUrl(c, {scale: 4})');
-log('gives a PNG — the pages reference nothing external, so the');
-log('canvas is never tainted.');
 ` }
   });
   if (!ctx) return;
@@ -4449,8 +4369,6 @@ log('rosettes ', page.rosettes().length, 'drawn on the page');
 // split into two groups with unreliable data-aid
 const sj = page.sajdahs();
 log('sajdah   ', sj.length ? sj.map(s => s.aid).join(', ') : 'none');
-log('');
-log('page.info() gives all of that at once.');
 ` }
   });
   if (!ctx) return;
