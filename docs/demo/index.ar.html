@@ -4173,10 +4173,22 @@ if (!HIDE_ALL && MARKER) try {
     const s = Math.min(b.width / box.width, b.height / box.height) * SIZE;
     const g = document.createElementNS(H.SVGNS, 'g');
     g.setAttribute('data-kind', 'ayah-marker-ornament');
-    g.setAttribute('transform',
-      'translate(' + (b.x + b.width / 2 - s * (box.x + box.width / 2)) + ' ' +
-                     (b.y + b.height / 2 - s * (box.y + box.height / 2)) +
-      ') scale(' + s + ')');
+    // حرّك العلامة، لا الرقم.
+    // الرقم حبر المطبعة نفسه ويبقى حيث وضعه مجمّع الملك فهد. كل تصميم يسجّل
+    // موضع الرقم عنده، فتوضع العلامة البديلة بحيث يقع مركز رقمها على الرقم
+    // المطبوع. توسيط الصندوقين أحدهما على الآخر يخطئ متى لم يكن التصميم
+    // متناظراً: العلامة 014 قرصٌ يتدلّى منه زخرف، فمركز صندوقها على الوصل،
+    // ولو وُسِّطت لعلّق القرص فوق الرقم.
+    const num = m.querySelector('[data-kind="ayah-number"]');
+    const nb  = rec.number;
+    let tx = b.x + b.width/2  - s*(box.x + box.width/2);
+    let ty = b.y + b.height/2 - s*(box.y + box.height/2);
+    if (num && nb) {
+      const c = num.getBBox();
+      tx = (c.x + c.width/2)  - s*nb.cx;
+      ty = (c.y + c.height/2) - s*nb.cy;
+    }
+    g.setAttribute('transform', 'translate(' + tx + ' ' + ty + ') scale(' + s + ')');
     for (const l of layers) {
       const p = document.createElementNS(H.SVGNS, 'path');
       p.setAttribute('d', l.d);
@@ -4185,7 +4197,8 @@ if (!HIDE_ALL && MARKER) try {
         (l.part.startsWith('fill') ? 'none' : '#b08d2e'));
       g.append(p);
     }
-    ring.replaceWith(g);          // the NUMERAL is not touched, ever
+    ring.replaceWith(g);
+
   });
 
   log(markers.length, 'علامة أُعيد رسمها بتصميم', MARKER);
