@@ -16,3 +16,4 @@ export * from './view.mjs';
 export * from './raster.mjs';
 export * from './atlas.mjs';
 export * from './markers.mjs';
+export * from './recite.mjs';
