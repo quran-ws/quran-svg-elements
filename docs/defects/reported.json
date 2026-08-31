@@ -450,6 +450,15 @@
    "what": "Interval record p350 24:2:12 رَأْفَةࣱ ↔ فِى [dammatan]: 'I don't see issue with it'.",
    "verdict": "NOT A DEFECT — the print draws the dammatan of a word-final ة floating in the gap toward the next word. Both words' counts are exact; only the audit's territory model is too crude here. Recorded in .cache/review/explained.json and shown on remaining.html under 'Examined by eye', NOT suppressed in the audit — if the ink ever moves, the record returns to the open list.",
    "status": "explained"
+  },
+  {
+   "id": 43,
+   "date": "2026-08-31",
+   "reporter": "Abdullah (eye)",
+   "what": "مجموعتا سجدة ناقصتان: p379 (27:24 و 27:26) و p480 (41:37 و 41:38) — الرمز ۩ والخط الأفقي في مجموعتين منفصلتين تحملان رقمي آيتين مختلفتين.",
+   "verdict": "REAL — root cause in assign_words.py's standalone-ejection loop. The hairline overline is normally collected into `bars` and joined to the ۩ of the same site, but the `is_bar` test excluded any element already named mark=='sajdah'. On these two pages a namer had given the bar that name, so it skipped the bar path and ejected as a sign of its own, keyed by _ayah_at at ITS OWN centre — the ayah on the line ABOVE the bar. Two ejected keys => two <g class=\"sajdah-mark\"> groups with different data-aid. Fixed at cause: geometry decides (h<2.5<=w), the name no longer vetoes it; the ۩ is 8x11 and can never match.",
+   "status": "fixed",
+   "evidence": "all 15 sajdah sites now emit ONE group with the correct aid (1 sajdah-line + 1 sajdah-sign each); bench SCORE 137, no failures, pixelfail 0; audit_pixels clean on all 15 pages; annotations rebuilt 1-604 and validate_annotations OK. Note the annotation gate was BLIND to this: counts were 15+15 either way."
   }
  ]
 }
