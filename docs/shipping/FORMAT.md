@@ -314,6 +314,21 @@ They use a second, legacy attribute vocabulary from the upstream artwork:
   Concatenating a page's words line by line gives the mushaf's own word order
   exactly. (Until 2026-08-30, 58 words on 52 pages were emitted inside the
   wrong `<g class="line">`; they are not any more.)
+- **Standalone signs sit in reading order around their ayah** (changed
+  2026-08-31 — before that they came out wherever the ink pass reached them,
+  and 197 of the 199 rosettes were emitted *after* words of their own ayah).
+  A `g.hizb-mark` opens a division, so it is emitted immediately **before** the
+  first element of the ayah named by its `data-aid`; a `g.sajdah-mark` closes
+  its ayah, so it is emitted immediately **after** that ayah's last element.
+  Verified: 199 of 199 rosettes and 17 of 17 sajdah groups. On p309 the two
+  meet and read `…19:58 words · sajdah-mark 19:58 · hizb-mark 19:59 · 19:59
+  words…`. A sign whose ayah has no ink in the same source-path wrapper is
+  left where it was; there are none in this build.
+- **The `#ayah_markers` layer is NOT in reading order.** Every medallion lives
+  in one ornament layer near the top of the document, in *descending* ayah
+  order — it is the artwork's own layer and is untouched. Reach a marker from
+  its ayah through `data-marker` / `id="mk-S-A"` (§7), never by document
+  position.
 - **Paths within a word are NOT ordered right to left.** Measured: only 15,102
   of 77,432 words (19.5%) have their paths in descending x. Do not infer mark
   order from document order inside a word; use the path geometry. §10.7.
@@ -879,7 +894,8 @@ print's segmentation, not one spaced token.
 ### 9.5 Sajdah — 15 places, 30 paths, 17 groups
 
 The sign (۩) and the overline belong together and are `data-standalone="1"` —
-they are **never** inside a word.
+they are **never** inside a word. The group is emitted immediately **after** the
+last element of its ayah (§5.4).
 
 ```xml
 <!-- p176, complete -->
@@ -911,7 +927,8 @@ where the banner marks the division instead. 41 of 41, no exceptions.
 
 The rubʿ character U+06DE `۞` **is in the word text but never in the word's
 ink**: 199 words carry it in `data-uthmani` / `data-qpc` / `data-imlaei`, while
-the rosette is a standalone path in its own `<g class="hizb-mark">`.
+the rosette is a standalone path in its own `<g class="hizb-mark">`, emitted
+immediately **before** the first element of that ayah (§5.4).
 
 ```xml
 <g class="word" data-wid="2:26:1" data-uthmani="۞إِنَّ" data-rasm="إن"
