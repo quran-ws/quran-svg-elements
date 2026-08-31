@@ -2685,8 +2685,8 @@ stage.className = 'paper tight';
 stage.replaceChildren(doc.documentElement);
 `,
   lib: { code: `
-// يخزّن createLoader الصفحات المحلَّلة ويسلّم نسخة مستقلة في كل مرة،
-// فلا يفسد أحد المستدعين على الآخر.
+// يخزّن createLoader الصفحات المحلَّلة ويسلّم نسخة مستقلة، فلا يفسد
+// أحد المستدعين على الآخر.
 const load = M.createLoader({ baseUrl: H.PAGES });
 const page = await load(3);
 
@@ -2718,8 +2718,7 @@ log('words highlighted ',
 log('its medallion     ', frags[0].dataset.marker);
 `,
   lib: { code: `
-// تعيد page.ayah() كل المقاطع دفعة واحدة، وهذا هو المقصود:
-// لا توجد عقدة واحدة "هي" الآية.
+// تعيد page.ayah() كل المقاطع دفعة واحدة: لا عقدة واحدة "هي" الآية.
 const page = new M.MushafPage(svg);
 const ayah = page.ayah('2:255');
 
@@ -2770,11 +2769,9 @@ stage.addEventListener('click', e => {
 out('ملء الفجوات = ' + GAPFILL + '. انقر على السطر، مستهدفاً الفجوات بين الكلمات.');
 `,
   lib: { code: `
-// لا تحتاج page.onTap إلى أي طبقة فوقية: تحوّل النقرة إلى الكلمة التي
-// قصدها القارئ بالهندسة، وتُمال النقطة الواقعة في الفراغ إلى الكلمة
-// السابقة، لأن حبر آخر الكلمة في هذه الطبعة يمتد إلى الفراغ الذي
-// يليها. وتخبرك r.exact إن كانت النقطة داخل صندوق الكلمة نفسه، فإطفاء
-// GAPFILL رفض لكل ما ليس كذلك.
+// بلا طبقة فوقية: تحوّل onTap النقرة إلى كلمة بالهندسة، وتُمال النقطة
+// الواقعة في الفراغ إلى الكلمة السابقة، لأن حبر آخر الكلمة يمتد إلى
+// الفراغ الذي يليها. وتخبرك r.exact إن كانت النقطة داخل الكلمة.
 const GAPFILL = false;
 
 const page = new M.MushafPage(svg);
@@ -2855,10 +2852,8 @@ log(boxes.length, 'أسطر مطبوعة للآية', AID,
 log('subpaths ', d.split('Z').length - 1, '· fill-rule', path.getAttribute('fill-rule'));
 `,
   lib: { code: `
-// كل ما سبق هو page.band(): امتداد الحبر في كل سطر مطبوع، وخطوة
-// السطر للارتفاع، ومسار <path> واحد بمسار فرعي لكل سطر، وضبط
-// fill-rule="nonzero" صراحةً، وتداخل الحد الذي يمنع ظهور
-// الالتقاءات خيوطاً رفيعة.
+// كل ما سبق هو page.band(): امتداد الحبر في كل سطر، وخطوة السطر للارتفاع،
+// ومسار <path> واحد، وfill-rule صريح، وتداخل الحد الذي يمنع الخيوط.
 const AID = '2:255', FILL = '#d6a326';
 const PAD = 1.2;
 
@@ -2895,9 +2890,8 @@ hits.slice(0, 10).forEach(w =>
   lib: { code: `
 const QUERY = 'الله';          // جرّب: درجات · الرسل · البينات · الرحمان
 
-// يوحّد الجانبين، ويبحث في الصيغة الصحيحة، ولا يوسّع إلى تمريرة
-// متساهلة إلا إذا لم تجد الصارمة شيئاً. جرّب الرحمان: الكلمة المطبوعة
-// تحمل ألفاً خنجرية وليست في data-search.
+// يوحّد الجانبين، ولا يوسّع إلى تمريرة متساهلة إلا إذا لم تجد الصارمة
+// شيئاً. جرّب الرحمان: ألفها الخنجرية ليست في data-search.
 const page = new M.MushafPage(svg);
 const hits = page.search(QUERY);
 
@@ -2938,8 +2932,6 @@ svg.addEventListener('pointermove', e => {
 out('مرّر المؤشر على الصفحة ←');
 `,
   lib: { code: `
-// تعطي page.word(wid) كائن Word: صيغ النص الخمس، وآيته، وسطره
-// المطبوع، وbox() ممرَّرة عبر سلسلة التحويلات كاملةً.
 const page = new M.MushafPage(svg);
 
 svg.style.cursor = 'crosshair';
@@ -3065,10 +3057,8 @@ document.addEventListener('copy', e => {
 report();
 `,
     lib: { code: `
-// استدعاء واحد. تبني attachSelection طبقة النقر المشتركة أو تنضم
-// إليها، وتوسّع كل مدى إلى كلمات كاملة، وتركّب معالج النسخ، وتطلي
-// النطاق عبر page.band فيصير التحديد متعدد الأسطر مساراً واحداً لا
-// شريطاً لكل سطر، ثم تختم العزو.
+// نداء واحد: طبقة النقر المشتركة، والتوسيع إلى كلمات كاملة، ومعالج
+// النسخ، والتظليل عبر page.band مساراً واحداً لا شريطاً لكل سطر، والعزو.
 const WHICH = 'uthmani';   // ما تحمله العناصر وما ينسخه Ctrl+C
 
 const page = new M.MushafPage(svg);
@@ -3243,44 +3233,16 @@ log(steps.length, BY_AYAH ? 'آية' : 'كلمة', '·', furniture.length,
     'من عناصر الصفحة تُضاء مع آيتها');
 `,
     lib: { code: `
-const GREY = '#c9c4b8';     // not yet reached
-const INK  = '#231f20';     // the print's own colour
 const LIT  = 1;             // كم كلمة تبقى بكامل الحبر
 const MS_PER_WORD = 420;    // الإيقاع — اسحب شريط السرعة
 const BY_AYAH = false;      // التقدم آية آية
 
 const page = new M.MushafPage(svg);
 
-// استدعاءان ينجزان الآلية كلها. تُرمّد page.theme() كل مسارات الحبر،
-// من كلمات وعلامات آي وعناوين، بحقن قاعدة واحدة محصورة، لأن كل مسار
-// في المصحف يحمل التعبئة نفسها. ثم تعيد page.highlight() الحبر إلى
-// هدف بعينه، وتُرجع remove() القيم السابقة بالضبط، فتصير كل نبضة
-// مقبضاً يحل محل آخر.
-const theme = page.theme({ ink: GREY });
-signal.addEventListener('abort', () => theme.remove());
-
-// ترتيب المستند هو ترتيب القراءة، وتحفظه page.words().
-const words = page.words();
-const steps = BY_AYAH ? page.ayahKeys() : words.map(w => w.wid);
-
-// علامة رأس الآية تخص الآية التي تُنهيها، فتضيء عند بلوغ آخر كلمة
-// فيها
-const closes = new Map();
-for (const mk of page.markers()) {
-  const a = page.ayah(mk.aid);
-  if (!a) continue;
-  const last = a.words().pop();
-  if (last) closes.set(mk.aid, steps.indexOf(BY_AYAH ? mk.aid : last.wid));
-}
-
-let ink = [], at = 0, playing = true, t0 = performance.now(), raf = 0;
-function paint(i) {
-  ink.forEach(h => h.remove());
-  ink = [steps.slice(Math.max(0, i - LIT + 1), i + 1)].map(
-    keys => page.highlight(keys, { fill: INK }));
-  for (const [aid, k] of closes)
-    if (k >= 0 && i >= k) ink.push(page.highlight(page.ayah(aid).marker, { fill: INK }));
-}
+// نداء واحد: يُرمّد كل المسارات بقاعدة واحدة محصورة، ويبني الخطوات بترتيب
+// القراءة، ويُضيء علامة رأس الآية مع الآية التي تختمها.
+const show = M.reveal(page, { lit: LIT, byAyah: BY_AYAH });
+signal.addEventListener('abort', () => show.remove());
 
 // --- شريط التحكم، فوق الصفحة (DOM عادي: واجهة لا مصحف) ---
 const bar = document.createElement('div');
@@ -3288,41 +3250,40 @@ bar.className = 'q-transport';
 const play = document.createElement('button');
 play.className = 'q-play';
 const scrub = document.createElement('input');
-scrub.type = 'range'; scrub.min = 0; scrub.max = steps.length - 1; scrub.value = 0;
+scrub.type = 'range'; scrub.min = 0; scrub.max = show.count - 1; scrub.value = 0;
 scrub.style.flex = '1'; scrub.style.minWidth = '120px';
 scrub.setAttribute('aria-label', 'موضع القراءة');
 const read = document.createElement('span');
 read.className = 'state';
 bar.append(play, scrub, read);
 stage.before(bar);
-signal.addEventListener('abort', () => { bar.remove(); ink.forEach(h => h.remove()); });
+signal.addEventListener('abort', () => bar.remove());
 
+let playing = true, t0 = performance.now(), raf = 0;
 function label() {
-  read.innerHTML = '<b>' + (at + 1) + '</b>/' + steps.length + '  ' + steps[at];
+  read.innerHTML = '<b>' + (show.at + 1) + '</b>/' + show.count + '  ' + show.key;
   play.textContent = playing ? '❚❚  إيقاف مؤقت' : '▶  Play';
   play.setAttribute('aria-label', playing ? 'Pause the reveal' : 'Play the reveal');
 }
 function goto(i, restart) {
-  at = Math.min(steps.length - 1, Math.max(0, i));
+  const at = show.goto(i);
   if (restart) t0 = performance.now() - at * MS_PER_WORD;
-  paint(at); label();
+  label();
 }
 function tick(now) {
   raf = requestAnimationFrame(tick);
   if (!playing) return;
-  let i = at;
-  const t = now - t0;
-  while (i + 1 < steps.length && (i + 1) * MS_PER_WORD <= t) i++;
-  if (i === at) return;
-  at = i;
-  if (at >= steps.length - 1) playing = false;
-  scrub.value = at;
-  paint(at); label();
+  let i = show.at;
+  while (i + 1 < show.count && (i + 1) * MS_PER_WORD <= now - t0) i++;
+  if (i === show.at) return;
+  if (i >= show.count - 1) playing = false;
+  scrub.value = i;
+  goto(i);
 }
 play.addEventListener('click', () => {
   playing = !playing;
-  if (playing && at >= steps.length - 1) at = 0;
-  t0 = performance.now() - at * MS_PER_WORD;
+  if (playing && show.at >= show.count - 1) goto(0);
+  t0 = performance.now() - show.at * MS_PER_WORD;
   label();
 });
 scrub.addEventListener('input', () => { playing = false; goto(+scrub.value, true); });
@@ -3331,7 +3292,7 @@ signal.addEventListener('abort', () => cancelAnimationFrame(raf));
 goto(0, true);
 raf = requestAnimationFrame(tick);
 
-log(steps.length, BY_AYAH ? 'آية' : 'كلمة', '·', closes.size,
+log(show.count, BY_AYAH ? 'آية' : 'كلمة', '·', show.closes.size,
     'علامة رأس آية تُضاء مع الآية التي تختمها');
 ` }
   });
@@ -3496,14 +3457,10 @@ signal.addEventListener('abort', () => {
 raf = requestAnimationFrame(frame);
 `,
   lib: { code: `
-// الربط نفسه والحارس نفسه والساعة نفسها. ما تستبدله المكتبة هو
-// التلوين والبحث عن الكلمة: تعيد page.ayah() مقاطع الآية كلها
-// ككائن واحد وكلماته بترتيب القراءة، ويتولى theme/highlight
-// الانتقال من الرمادي إلى الحبر دون لمس 1,061 مساراً.
+// الوصل والحارس والساعة في نداء واحد. وحيث يختلف التقسيمان في عدّ الكلمات
+// (ص٢٥٤، ١٣:٣٧: تسع عشرة عندهم وعشرون عندنا) تُتابَع الآية كاملةً بدل أن
+// تنجرف إلى آخرها. أما شريط التحكم أدناه فمن صنع المستدعي.
 const PAGE = 42, RECITER = 9;
-const API = 'https://api.quran.com/api/v4/recitations/' + RECITER +
-            '/by_page/' + PAGE + '?fields=segments&per_page=60';
-const CDN = 'https://audio.qurancdn.com/';
 
 const page = new M.MushafPage(svg, { number: PAGE });
 
@@ -3511,11 +3468,11 @@ const bar = document.createElement('div');
 bar.className = 'q-transport';
 const play = document.createElement('button');
 play.className = 'q-play';
-play.textContent = '▶  تشغيل التلاوة';
-play.setAttribute('aria-label', 'تشغيل التلاوة');
+play.textContent = '▶  استمع للتلاوة';
+play.setAttribute('aria-label', 'استمع للتلاوة');
 const state = document.createElement('span');
 state.className = 'state';
-state.textContent = 'المنشاوي · المرتَّل · صفحة ' + PAGE;
+state.textContent = 'المنشاوي · مرتل · صفحة ' + PAGE;
 bar.append(play, state);
 stage.before(bar);
 signal.addEventListener('abort', () => bar.remove());
@@ -3528,98 +3485,43 @@ function dead(msg) {
   signal.addEventListener('abort', () => box.remove());
 }
 
-let raw = H.FALLBACK_TIMINGS;
+const opts = {
+  reciter: RECITER,
+  onWord: w => state.innerHTML = 'آية <b>' + w.aid + '</b> · كلمة ' + (w.index + 1) +
+                                 '/' + w.count + ' · ملف ' + (w.file + 1) + '/' + w.files,
+  onEnd: () => { play.textContent = '▶  استمع للتلاوة'; state.textContent = 'انتهت'; },
+  onError: e => dead(e.message + '. وسائر ما في الصفحة يعمل.')
+};
+
+let follow;
 try {
-  const res = await fetch(API, { signal: AbortSignal.timeout(6000) });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const data = await res.json();
-  raw = {};
-  for (const e of data.audio_files) {
-    const segs = (e.segments || []).slice().sort((a, b) => a[1] - b[1]);
-    raw[e.verse_key] = [e.url, segs.map(s => [s[2], s[3]])];
-  }
+  follow = await M.followRecitation(page, opts);
 } catch (e) {
-  log('تعذّر الوصول إلى api.quran.com — سيُستخدم المخزون لهذه الصفحة.');
+  log('تعذّر الوصول إلى api.quran.com — استُعملت النسخة المخزّنة لهذه الصفحة.');
+  follow = await M.followRecitation(page, { ...opts, timings: H.FALLBACK_TIMINGS });
 }
+if (signal.aborted) { follow.remove(); return; }
+signal.addEventListener('abort', () => follow.remove());
 
-// الحارس كما هو: تفكيكان قد يعدّان الكلمات عدّاً مختلفاً
-// (p254 13:37: 19 عندهم، 20 عندنا)، والثقة العمياء به تُزحزح التظليل.
-const ayahs = [];
-for (const aid of page.ayahKeys()) {
-  if (!raw[aid]) continue;
-  const a = page.ayah(aid);
-  const times = raw[aid][1];
-  const perWord = a.words().length === times.length;
-  if (!perWord) log('عدم تطابق', aid, '— لدينا', a.words().length,
-                    'لديهم', times.length, '· سيُظلَّل كاملاً');
-  ayahs.push({ aid, ayah: a, url: raw[aid][0], times, perWord });
-}
-if (!ayahs.length) { dead('لا توجد توقيتات لهذه الصفحة، فليس ثمة ما يُتابَع.'); return; }
-log(ayahs.length, 'آية ·',
-    ayahs.reduce((n, a) => n + a.times.length, 0), 'مقطعاً للكلمات');
-
-const theme = page.theme({ ink: '#c9c4b8' });
-signal.addEventListener('abort', () => theme.remove());
-let ink = null;
-function paint(a, i) {
-  if (ink) { ink.remove(); ink = null; }
-  if (!a) return;
-  const target = a.perWord ? a.ayah.words()[i] : a.ayah;
-  if (target) ink = page.highlight(target, { fill: '#231f20' });
-}
-signal.addEventListener('abort', () => { if (ink) ink.remove(); });
-
-const audio = new Audio(), ahead = new Audio();
-audio.preload = 'auto'; ahead.preload = 'auto';
-let at = 0, raf = 0;
-function load(i) {
-  at = i;
-  audio.src = CDN + ayahs[i].url;
-  if (ayahs[i + 1]) { ahead.src = CDN + ayahs[i + 1].url; ahead.load(); }
-}
-audio.addEventListener('ended', () => {
-  if (at + 1 < ayahs.length) { load(at + 1); audio.play().catch(() => {}); }
-  else { paint(null); play.textContent = '▶  تشغيل التلاوة'; state.textContent = 'انتهت'; }
-});
-audio.addEventListener('error', () =>
-  dead('تعذّر تحميل صوت التلاوة. وكل ما عدا ذلك في هذه الصفحة يعمل.'));
-
-function frame() {
-  raf = requestAnimationFrame(frame);
-  if (audio.paused) return;
-  const ms = audio.currentTime * 1000, a = ayahs[at];
-  let i = -1;
-  for (let k = 0; k < a.times.length; k++) if (ms >= a.times[k][0]) i = k;
-  paint(a, i);
-  state.innerHTML = 'ayah <b>' + a.aid + '</b> · word ' + (i + 1) + '/' + a.times.length +
-                    ' · file ' + (at + 1) + '/' + ayahs.length;
-}
+for (const m of follow.mismatches)
+  log('اختلاف', m.aid, '— عندنا', m.ours, 'عندهم', m.theirs, '· تُظلَّل كاملةً');
+log(follow.ayahs.length, 'آية ·', follow.segments, 'مقطعاً للكلمات');
 
 play.addEventListener('click', () => {
-  if (!audio.paused) {
-    audio.pause();
-    play.textContent = '▶  تشغيل التلاوة';
-    return;
-  }
-  if (!audio.src) load(0);
+  if (follow.playing) { follow.pause(); play.textContent = '▶  استمع للتلاوة'; return; }
   play.disabled = true;
   play.textContent = '…  جارٍ التحميل';
-  state.textContent = 'جارٍ الجلب ' + ayahs[at].aid + ' from the CDN';
-  audio.play().then(() => {
+  state.textContent = 'جلب ' + follow.ayahs[follow.file].aid + ' من الشبكة';
+  follow.play().then(() => {
     play.disabled = false;
     play.textContent = '❚❚  إيقاف مؤقت';
   }).catch(e => {
     play.disabled = false;
-    play.textContent = '▶  تشغيل التلاوة';
+    play.textContent = '▶  استمع للتلاوة';
     dead('تعذّر تشغيل التلاوة (' + e.message + '). ' +
-         'Everything else on this page still works.');
+         'وسائر ما في الصفحة يعمل.');
   });
 });
-
-signal.addEventListener('abort', () => {
-  cancelAnimationFrame(raf); audio.pause(); audio.src = ''; ahead.src = '';
-});
-raf = requestAnimationFrame(frame);
 ` }
 }));
 
@@ -3710,38 +3612,20 @@ const PIN_TITLES = false;   // سلّم الصفحة إلى قارئ الشاش�
 
 const page = new M.MushafPage(svg);
 
-const tip = document.createElement('div');
-tip.className = 'q-tip';
-tip.setAttribute('role', 'tooltip');
-stage.append(tip);
+// نداء واحد. يُطلق مرة واحدة لكل كلمة يدخلها المؤشر، لا مع كل pointermove
+// ولا مع كل مسار، ويتولى الموضعة. أما المظهر فمن صنف q-tip وحده.
+const tip = M.wordTooltip(page, word => {
+  const g = gloss[word.wid];
+  return '<b>' + (g ? g[0] : '(no gloss)') + '</b>' + (g ? '<i>' + g[1] + '</i>' : '') +
+         '<u>' + word.wid + '  ·  <bdi>' + word.text.uthmani + '</bdi></u>';
+}, { className: 'q-tip' });
+
+// يجب تحرير كل مقبض، وإلا بقيت طبقة اللمس المشتركة إلى الأبد
 signal.addEventListener('abort', () => tip.remove());
 
-// تُطلق onWordHover مرة واحدة لكل كلمة يدخلها المؤشر، لا مع كل
-// pointermove ولا مع كل مسار، فلا يرتجف التلميح في الفجوات بين
-// الحروف. وتعدّ مراجع طبقة اللمس المشتركة، فيمكن لتحديد §7 أن
-// يمسك الطبقة نفسها في الوقت نفسه.
-const hover = M.onWordHover(page, ({ word, span }) => {
-  const g = gloss[word.wid];
-  tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
-                  (g ? '<i>' + g[1] + '</i>' : '') +
-                  '<u>' + word.wid + '  ·  <bdi>' + word.text.uthmani + '</bdi></u>';
-  tip.classList.add('on');
-  const host = stage.getBoundingClientRect();
-  const box = (span || word.el).getBoundingClientRect();
-  const above = box.top - host.top - tip.offsetHeight - 8;
-  tip.style.top = (above > 4 ? above : box.bottom - host.top + 8) + 'px';
-  const x = box.left - host.left + box.width / 2 - tip.offsetWidth / 2;
-  tip.style.left = Math.max(4, Math.min(x, host.width - tip.offsetWidth - 4)) + 'px';
-}, { onLeave: () => tip.classList.remove('on') });
-
-// يجب تحرير كل مقبض، وإلا بقيت الطبقة المشتركة إلى الأبد
-signal.addEventListener('abort', () => hover.remove());
-
-let a11y = null;
 if (PIN_TITLES) {
-  // ملف SVG من المسارات صامت أمام قارئ الشاشة؛ وتمنحه annotate()
-  // دوراً وتسميةً و<title> لكل كلمة وتسميةً لكل مقطع من الآية
-  a11y = M.annotate(page, { level: 'both' });
+  // ملف SVG من المسارات صامت أمام قارئ الشاشة
+  const a11y = M.annotate(page, { level: 'both' });
   signal.addEventListener('abort', () => a11y.remove());
 }
 
@@ -3823,30 +3707,17 @@ document.addEventListener('copy', e => {
 out('مرّر المؤشر على كلمة · انقرها لتظليل آيتها · اسحب وانسخ. الثلاثة معاً.');
 `,
   lib: { code: `
-// ثلاث إمكانات، وثلاثة نداءات، فوق طبقة واحدة معدودة المراجع.
-// ولا شيء هنا معالج بحالة خاصة: التحويم لا يلزمه أن يعرف
-// بوجود التحديد.
+// ثلاث إمكانات فوق طبقة واحدة معدودة المراجع: التحويم لا يلزمه
+// أن يعرف بوجود التحديد.
 const gloss = await (await fetch('data/gloss-042.json')).json();
 const page = new M.MushafPage(svg);
 
-const tip = document.createElement('div');
-tip.className = 'q-tip';
-stage.append(tip);
-signal.addEventListener('abort', () => tip.remove());
-
 // --- 1. مرور المؤشر: المعنى ------------------------------------------
-const hover = M.onWordHover(page, ({ word, span }) => {
+const tip = M.wordTooltip(page, word => {
   const g = gloss[word.wid];
-  tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
-                  '<u>' + word.wid + '  ·  <bdi>' + word.text.uthmani + '</bdi></u>';
-  tip.classList.add('on');
-  const host = stage.getBoundingClientRect();
-  const box = (span || word.el).getBoundingClientRect();
-  const above = box.top - host.top - tip.offsetHeight - 8;
-  tip.style.top = (above > 4 ? above : box.bottom - host.top + 8) + 'px';
-  const x = box.left - host.left + box.width / 2 - tip.offsetWidth / 2;
-  tip.style.left = Math.max(4, Math.min(x, host.width - tip.offsetWidth - 4)) + 'px';
-}, { mount: stage, onLeave: () => tip.classList.remove('on') });
+  return '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
+         '<u>' + word.wid + '  ·  <bdi>' + word.text.uthmani + '</bdi></u>';
+}, { className: 'q-tip', mount: stage });
 
 // --- 2. النقر: تظليل الآية التي تنتمي إليها الكلمة --------------------
 let lit = null, litAid = null;
@@ -3866,7 +3737,7 @@ const sel = M.attachSelection(page, {
 stage.addEventListener('mushaf:copy', e => out('<b>نُسخ</b>\\n\\n' + e.detail.text));
 
 signal.addEventListener('abort', () => {
-  hover.remove(); click.remove(); sel.detach();
+  tip.remove(); click.remove(); sel.detach();
   if (lit) lit.remove();
 });
 
@@ -3913,9 +3784,8 @@ mod('lab-style', () => makeLab({
 /* g.word[data-wid^="2:255:"] { visibility: hidden } */
 `,
   lib: { code: `
-// لا تختار المكتبة أبداً عبر data-mark-family، بل تحلّ العائلة إلى
-// أسماء data-mark في تصنيف مضمّن وتختار بها، فلا تكسر شيفرتك
-// نسخةٌ تغيّر مفردات السمة، كما فعلت هذه النسخة مرتين.
+// لا تختار المكتبة عبر data-mark-family، بل تحلّ العائلة إلى أسماء
+// data-mark، فلا تكسر شيفرتَك نسخةٌ تغيّر مفردات السمة.
 const page = new M.MushafPage(svg);
 
 page.styleMarks({ family: 'diacritic' }, { fill: '#b8892b' });
@@ -3960,10 +3830,8 @@ mod('lab-theme', () => {
 svg path { fill: #231f20 }         /* الحبر */
 `,
     lib: { code: `
-// تحقن page.theme() عنصر <style> واحداً محصوراً داخل <svg>، وتحوّل
-// \`paper\` إلى <rect> خلفية بمقاس viewBox، فيبقى المظهر بعد
-// الاقتصاص وبعد التصدير إلى PNG، بدل أن يعيش على حاوية لا يراها
-// التصدير. هذا هو الفرق عن نسخة CSS.
+// عنصر <style> واحد محصور داخل <svg>، و\`paper\` خلفيةً <rect> بمقاس
+// viewBox، فيبقى المظهر بعد الاقتصاص وبعد التصدير إلى PNG.
 const page = new M.MushafPage(svg);
 
 const theme = page.theme({
@@ -4127,9 +3995,8 @@ if (!HIDE_ALL && MARKER) try {
 }
 `,
     lib: { code: `
-// Outlines are FETCHED AT RUNTIME from quranpedia/ayah-markers. Nothing
-// here ships them; each carries the licence of the family it was traced
-// from. The library is the mechanism and states no licence terms.
+// Outlines are fetched at runtime from quranpedia/ayah-markers — nothing here
+// ships them, and each keeps the licence of the family it was traced from.
 const SET     = 'https://quranpedia.github.io/ayah-markers/';
 const MARKER  = '017-regular';   // '' keeps the printed ring
 const COLOURS = {};
@@ -4138,33 +4005,18 @@ const HIDE_ALL = false;
 
 const page = new M.MushafPage(svg);
 
-if (HIDE_ALL) {
-  page.styleMarkers({ hide: true });
-  log('markers hidden — a plain reading view');
-} else if (!MARKER) {
-  page.styleMarkers({ ring: COLOURS['ink-base'] || '#b08d2e' });
-  log('the printed ring, recoloured. Pick a design to swap it.');
-} else try {
-  // fetched once per URL however many designs you try
-  const set = await M.loadMarkerSet(SET);
+if (HIDE_ALL)     page.styleMarkers({ hide: true });
+else if (!MARKER) page.styleMarkers({ ring: COLOURS['ink-base'] || '#b08d2e' });
+else try {
+  const set = await M.loadMarkerSet(SET);   // fetched once per URL
   const outline = await set.outline(MARKER);
-  if (signal.aborted) return;   // a newer run already replaced this stage
+  if (signal.aborted) return;               // a newer run replaced this stage
 
-  // Replaces the RING on g.ayah-marker[data-aid] only — the 12 decorative
-  // rosettes framing pages 1-2 close no ayah and are left alone — puts the
-  // design's own number-centre on the printed numeral, and never touches
-  // the numeral itself.
+  // Swaps the ring on g.ayah-marker[data-aid] only; the numeral is untouched.
   const h = M.setAyahMarker(page, outline, { size: SIZE, colours: COLOURS });
-
-  log(h.count, 'علامة أُعيد رسمها بتصميم', MARKER,
-      '· الأجزاء', outline.parts.join(', '),
-      '· منقولة عن', set.record(MARKER).sources.map(x => x.family).join(', '));
+  log(h.count, 'علامة أُعيد رسمها بتصميم', MARKER);
 } catch (e) {
-  log('تعذّر جلب مجموعة العلامات من');
-  log(SET);
-  log(e.message);
-  log('');
-  log('الحلقات المطبوعة لم تُمسّ، وسائر أقسام الصفحة تعمل. والرسوم ليست جزءاً من هذه الصفحة.');
+  log('تعذّر جلب', SET, '—', e.message, '· الحلقات المطبوعة لم تُمسّ');
 }
 ` }
   });
@@ -4243,16 +4095,16 @@ const GAP = 6;               // تباعد إضافي بوحدات الصفحة.
 
 const page = new M.MushafPage(svg);
 
-// تحرك setLineGap كل g.line، وتحمل علامات رأس الآية مع آخر مقطع من
-// آيتها، وتوسّع viewBox حتى لا يُقتطع شيء.
+// تحمل setLineGap كل علامة رأس آية مع آخر مقطع من آيتها، وتوسّع viewBox
+// حتى لا يُقتطع شيء.
 const h = M.setLineGap(page, GAP);
 
 log(h.lines, 'سطراً أُبعدت بمقدار', h.gap, 'وحدة ·', h.viewBox, '·',
     page.el.querySelectorAll('path').length, 'رسمة دون مساس');
-log('');
 
-// دالة gapToFill حساب محض بلا DOM، فتستطيع أن تحسب لجهاز لست
-// عليه.  needed = pageW·viewH/viewW ; gap = (needed-pageH)/(lines-1)
+// دالة gapToFill حساب محض بلا DOM، فتحسب لجهاز لست عليه، وتُصفَّر عند
+// الحاجة: الآيباد أطول أصلاً مما يلزم.
+//   needed = pageW·viewH/viewW ; gap = (needed-pageH)/(lines-1)
 const vb = page.viewBox, lines = page.lines().length;
 for (const [name, w, hgt] of [['iPhone SE', 375, 667], ['iPhone 14', 390, 844],
                               ['Pixel 7', 412, 915], ['iPad 10.9', 820, 1180]]) {
@@ -4260,9 +4112,6 @@ for (const [name, w, hgt] of [['iPhone SE', 375, 667], ['iPhone 14', 390, 844],
   log(name.padEnd(11), w + '×' + hgt, ' فجوة', g.toFixed(1),
       ' هدر', (M.wastedFraction({ pageW: vb.w, pageH: vb.h, viewW: w, viewH: hgt }) * 100).toFixed(1) + '%');
 }
-log('');
-log('محدود عند الصفر: نسبة ارتفاع iPad إلى عرضه أكبر أصلاً من نسبة',
-    'الصفحة، فلا يحتاج إلى تباعد.  fitToViewport() يقيسها ويطبّقها.');
 ` }
   });
   if (!ctx) return;
@@ -4302,9 +4151,6 @@ mod('lab-crop', () => {
   code: `
 // سلسلة متصلة من الكلمات. اسحب FROM و TO في شريط الأدوات أو حرّرهما هنا.
 const AID = '2:255';
-// ثابت واحد في كل سطر. تربط المنزلقات نفسها بسطر "const NAME ="
-// وتعيد كتابته، فحين شارك TO تصريحَ FROM صار منزلقه يحرك التسمية
-// ولا يغير شيئاً.
 const FROM = 1;                // أرقام الكلمات داخل تلك الآية
 const TO = 50;
 
@@ -4332,9 +4178,6 @@ log(words.map(w => w.dataset.uthmani).join(' '));
     lib: { code: `
 // سلسلة متصلة من الكلمات. اسحب FROM و TO في شريط الأدوات أو حرّرهما هنا.
 const AID = '2:255';
-// ثابت واحد في كل سطر. تربط المنزلقات نفسها بسطر "const NAME ="
-// وتعيد كتابته، فحين شارك TO تصريحَ FROM صار منزلقه يحرك التسمية
-// ولا يغير شيئاً.
 const FROM = 1;                // أرقام الكلمات داخل تلك الآية
 const TO = 50;
 const PAD = 4;                 // وحدات الصفحة حول الاقتصاص
@@ -4345,9 +4188,8 @@ const wids = page.words({ ayah: AID })
   .filter(w => w.index >= FROM && w.index <= TO)
   .map(w => w.wid);
 
-// تستنسخ crop(): الصفحة المجاورة لا تُمس. ولا تبقى علامة رأس الآية
-// إلا إذا نجت الآية كاملة، فلا يُؤطَّر اقتصاص كلمة واحدة حول علامة
-// في أقصى الآية.
+// تستنسخ crop(): الصفحة المجاورة لا تُمس. ولا تبقى علامة رأس الآية إلا
+// إذا نجت الآية كاملة.
 const c = page.crop({ wids }, { pad: PAD });
 stage.replaceChildren(c.el);
 
@@ -4403,13 +4245,11 @@ const sj = [...svg.querySelectorAll('g.sajdah-mark')].map(g => g.dataset.aid);
 log('sajdah   ', sj.length ? sj.join(', ') : 'لا شيء');
 `,
     lib: { code: `
-// كل ما يلي مقروء من الملف. بلا قاعدة بيانات، وبلا حالة خاصة
-// للصفحة التي لا عنوان سورة فيها ولا للرُبع بلا وردة.
+// كل ما يلي مقروء من الملف: بلا قاعدة بيانات وبلا حالات خاصة.
 const page = new M.MushafPage(svg);
 
-// السورة الموجودة في الصفحة دون أن تبدأ فيها تعود بـ hasBanner
-// false ورقمِها وحده، مقروءاً من data-wid، فالقائمة كاملة سواء
-// وُجدت سمات العنوان في هذه الصفحة أم لم توجد.
+// السورة الموجودة في الصفحة دون أن تبدأ فيها تعود بـ hasBanner false
+// ورقمِها وحده، مقروءاً من data-wid، فالقائمة كاملة على الحالين.
 for (const s of page.surahs()) {
   if (s.hasBanner) {
     log('surah    ', s.number, s.arabic, '·', s.latin, '·', s.english);
@@ -4423,16 +4263,14 @@ const keys = page.ayahKeys();
 log('on page  ', keys[0], '→', keys[keys.length - 1],
     '(' + page.wordCount + ' كلمة، ' + page.lines().length + ' سطراً مطبوعاً)');
 
-// تعطي divisions() الحدود التي تبدأ هنا، كلها، ومنها 41 رُبعاً بلا
-// وردة مرسومة. وتعطي rosettes() المرسومة وحدها. سؤالان مختلفان
-// ودالتان مختلفتان.
+// تعطي divisions() كل حدٍّ يبدأ هنا، ومنه 41 رُبعاً بلا وردة مرسومة،
+// وتعطي rosettes() المرسومة وحدها. سؤالان مختلفان.
 const d = page.divisions();
 for (const k of ['juz', 'hizb', 'nisf', 'rub'])
   for (const x of d[k]) log(k.padEnd(9), x.n, 'يبدأ عند', x.aid, '· سطر', x.line);
 log('rosettes ', page.rosettes().length, 'مرسومة على الصفحة');
 
-// العدّ بـ data-mark لا بالمجموعة: موضعان في المدونة مقسومان إلى
-// مجموعتين بـ data-aid غير موثوق
+// العدّ بـ data-mark لا بالمجموعة: موضعان مقسومان بـ data-aid غير موثوق
 const sj = page.sajdahs();
 log('sajdah   ', sj.length ? sj.map(s => s.aid).join(', ') : 'لا شيء');
 ` }
