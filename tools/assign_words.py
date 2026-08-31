@@ -2990,6 +2990,28 @@ def rewrite(page, assignment):
         open_ayah = None
         open_sa = None
         open_hdr = None
+        # ONE PATH per header (Abdullah 2026-08-31). The banner is the
+        # semantic unit, so its ink is buffered while the group is open and
+        # written as a single <path data-kind="header-ink"> when it closes —
+        # not one path per contour cluster.
+        #
+        # Merging contours is normally forbidden (`evenodd` cancellation fills
+        # counters solid, which is why the basmalah band, the muʿānaqah and the
+        # ظ loop were all rejected as merges). It is safe HERE for a reason
+        # that does not generalise: this loop is per SOURCE path, and the
+        # artwork holds one compound path per line, so every contour buffered
+        # below already shared one path — and one `d` — in the original
+        # artwork. The merge restores the artwork's own arrangement rather
+        # than inventing a new one. audit_pixels proves it page by page.
+        hdr_buf = []
+
+        def flush_hdr():
+            if hdr_buf:
+                out.append(head.replace(
+                    "<path ", '<path data-kind="header-ink" ', 1)
+                    + build_d(hdr_buf) + tail)
+                del hdr_buf[:]
+
         for word, lig_key, atom, e in per_path[pi]:
             sa = atom.get("sa") if not word else None
             if id(atom) != open_sa and open_sa is not None:
@@ -3003,6 +3025,7 @@ def rewrite(page, assignment):
                 if (word is None and not sa and not e.get("offcanvas")) \
                 else None
             if open_hdr is not None and hd != open_hdr:
+                flush_hdr()
                 out.append("</g>")
                 open_hdr = None
             if hd is not None:
@@ -3027,12 +3050,10 @@ def rewrite(page, assignment):
                                % (hd[0], hd[1], _surah_attrs(hd[1])))
                     open_hdr = hd
                 # ONE ITEM per header (Abdullah 2026-08-28): inside a surah
-                # name or basmalah the block is the semantic unit — emit the
-                # ink plain, no data-eid/kind/mark decomposition. Header
+                # name or basmalah the block is the semantic unit — the ink is
+                # plain, with no data-eid/kind/mark decomposition. Header
                 # glyphs stop polluting the mark inventories too.
-                out.append(head.replace(
-                    "<path ", '<path data-kind="header-ink" ', 1)
-                    + build_d(e["contours"]) + tail)
+                hdr_buf.extend(e["contours"])
                 continue
             wkey = id(word) if word else None
             if sa and open_sa is None:
@@ -3172,6 +3193,7 @@ def rewrite(page, assignment):
         if open_sa is not None:
             out.append("</g>")
         if open_hdr is not None:
+            flush_hdr()
             out.append("</g>")
     out.append(svg[pos:])
     return "".join(out)
