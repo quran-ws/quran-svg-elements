@@ -72,6 +72,43 @@ API = ("https://api.quran.com/api/v4/verses/by_page/%d?words=true&mushaf=2"
 # Verified word list per line (never hand-typed; cached verbatim from the API)
 # ---------------------------------------------------------------------------
 
+# Page furniture is not part of a word, and the sources glue it on.
+#
+# Measured 2026-08-31 against the King Fahd Complex's OWN data
+# (`UthmanicHafs_v2-0/hafsData_v2-0.json`, 6,236 ayahs of real Uthmani
+# Unicode): our per-word text matched it on 77,165 of 77,429 words, 99.659%.
+# Of the 264 that did not:
+#
+#   199  the rub' rosette glued to the following word — "۞إِنَّ" for
+#        "إِنَّ" — in data-uthmani, data-imlaei AND data-qpc. We already
+#        emit that rosette as its own <g class="hizb-mark">, so carrying it in
+#        the word text is a duplicate that reaches anyone searching or
+#        displaying the word.
+#    33  a TATWEEL inside كـَلَّا where the official text writes كَلَّا. The
+#        Complex's own release notes record fixing exactly that word "to
+#        display properly"; our source kept the display workaround as if it
+#        were text. A tatweel is a rendering hint, never a letter.
+#
+# The sajdah sign ۩ is NOT stripped, for two independent reasons. The official
+# text keeps it — it writes خُشُوعٗا۩ — so removing it moves us away from the
+# Complex's own data; our only difference there is a space. And the mark passes
+# read it as the budget signal for the sign: stripping it took the corpus from
+# 15 sajdah-sign marks to 14 and failed the annotation gate. Text-driven
+# recovery means a symbol in the text can be load-bearing — check what reads it
+# before removing it. The remaining differences are a spacing convention around ۩ and one
+# genuine segmentation site (15:7 لَّوۡمَا, one word officially, two here),
+# which is a word-id decision and deliberately NOT handled by stripping.
+_FURNITURE = "\u06de"                 # ARABIC START OF RUB EL HIZB only
+
+
+def _clean_word(text):
+    """Word text with the rub' rosette removed. ۩ and tatweel are left alone."""
+    if not text:
+        return text
+    out = "".join(c for c in text if c not in _FURNITURE)
+    return out.strip() or text        # never return empty
+
+
 def page_words(page_no, cache_dir):
     os.makedirs(cache_dir, exist_ok=True)
     cache = os.path.join(cache_dir, "page-%03d.json" % page_no)
@@ -140,8 +177,9 @@ def page_words(page_no, cache_dir):
                     ut = dt
             lines.setdefault(ln, []).append({
                 "surah": int(surah), "ayah": int(ayah), "pos": w["position"],
-                "uthmani": ut, "imlaei": w["text_imlaei"],
-                "qpc": _dkseg_qpc(qpc, int(surah), int(ayah), w["position"]),
+                "uthmani": _clean_word(ut), "imlaei": _clean_word(w["text_imlaei"]),
+                "qpc": _clean_word(
+                    _dkseg_qpc(qpc, int(surah), int(ayah), w["position"])),
             })
     return lines
 
