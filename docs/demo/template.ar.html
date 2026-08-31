@@ -4174,19 +4174,26 @@ if (!HIDE_ALL && MARKER) try {
     const g = document.createElementNS(H.SVGNS, 'g');
     g.setAttribute('data-kind', 'ayah-marker-ornament');
     // حرّك العلامة، لا الرقم.
-    // الرقم حبر المطبعة نفسه ويبقى حيث وضعه مجمّع الملك فهد. كل تصميم يسجّل
-    // موضع الرقم عنده، فتوضع العلامة البديلة بحيث يقع مركز رقمها على الرقم
-    // المطبوع. توسيط الصندوقين أحدهما على الآخر يخطئ متى لم يكن التصميم
-    // متناظراً: العلامة 014 قرصٌ يتدلّى منه زخرف، فمركز صندوقها على الوصل،
-    // ولو وُسِّطت لعلّق القرص فوق الرقم.
+    // الرقم حبر المطبعة نفسه ويبقى حيث وضعه مجمّع الملك فهد، وكل تصميم يسجّل
+    // موضع رقمه، فتوضع العلامة البديلة ليقع مركز رقمها على الرقم المطبوع.
+    //
+    // انتبه لفضاءي الإحداثيات: مجموعة الحلقة مصغّرة بـ 0.011 ومقلوبة رأسياً،
+    // ومجموعة الرقم إزاحة بسيطة. فقياس الأولى بالآلاف وقياس الثانية بالعشرات،
+    // ومقارنتهما مباشرةً تُبعد العلامة عن الرقم. المرور بمصفوفات CTM يضمّ كل
+    // تحويل فوق العنصر، والقلب معه.
     const num = m.querySelector('[data-kind="ayah-number"]');
     const nb  = rec.number;
     let tx = b.x + b.width/2  - s*(box.x + box.width/2);
     let ty = b.y + b.height/2 - s*(box.y + box.height/2);
     if (num && nb) {
-      const c = num.getBBox();
-      tx = (c.x + c.width/2)  - s*nb.cx;
-      ty = (c.y + c.height/2) - s*nb.cy;
+      const host = ring.parentNode;
+      const nbox = num.getBBox();
+      const pt = svg.createSVGPoint();
+      pt.x = nbox.x + nbox.width/2;
+      pt.y = nbox.y + nbox.height/2;
+      const c = pt.matrixTransform(host.getScreenCTM().inverse().multiply(num.getScreenCTM()));
+      tx = c.x - s*nb.cx;
+      ty = c.y - s*nb.cy;
     }
     g.setAttribute('transform', 'translate(' + tx + ' ' + ty + ') scale(' + s + ')');
     for (const l of layers) {
