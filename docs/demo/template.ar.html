@@ -2596,7 +2596,9 @@ heroReady.then(() => mod('hero', () => {
     }
 
     if (state.lit) {
-      const f = frags(), n = band(hero, f);
+      /* bandWords, not band: the band is laid out on the LINE PITCH, so
+         consecutive lines meet flush instead of leaving the leading unpainted */
+      const f = frags(), n = bandWords(hero, wordsOf());
       said.push('الآية <b>' + aid + '</b> · ' + wordsOf().length + ' كلمة · ' + f.length +
         ' عقدة مطابِقة، و<code>data-ayah-parts</code> يقول ' + f[0].dataset.ayahParts +
         ' — <b>مضلّع</b> واحد يغطي ' + n + ' سطراً مطبوعاً، لا ' + n + ' شريطاً');
