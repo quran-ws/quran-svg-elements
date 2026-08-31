@@ -260,6 +260,21 @@ def _dktext(s0, a0, pos):
             db.close()
     if not _DK_TEXT:
         return None                       # DB absent: fall back to composite
+    if _dk_fuses(s0, a0):
+        # DK itself writes this compound as ONE word, so its positions do not
+        # follow ours on either side of the split: in DK-canonical keying our
+        # two halves both live in DK's single position, and in fused keying our
+        # one position matches DK's exactly. Without this, 37:130:3 took DK's
+        # whole "إِلْ يَاسِينَ" and the split silently produced a word holding
+        # both halves' text next to a second word holding one of them.
+        if not _dkseg_on():
+            return _DK_TEXT.get("%d:%d:%d" % (s0, a0, pos))
+        fp, half = _dkseg_fused(s0, a0, pos)
+        t = _DK_TEXT.get("%d:%d:%d" % (s0, a0, fp))
+        if half is None or not t:
+            return t
+        parts = [x for x in t.split(" ") if x]
+        return parts[half] if len(parts) == 2 else None
     if _dkseg_on():
         return _DK_TEXT.get("%d:%d:%d" % (s0, a0, pos))
     # fused keying: the compound position holds both DK halves
@@ -440,11 +455,33 @@ def dk_header_surahs():
 # p254 pair straddles a line break, which one fused word cannot express). The
 # DK keying is canonical here: the compound splits at position `fused` into
 # `fused` (بَعْدَ) and `fused+1` (مَا) and every later position shifts +1.
-# The other two letter-space compounds stay ONE word because the DK DB fuses
-# them too: 37:130:3 إِلْ يَاسِينَ, and 5:52:12 where quran.com's internal
-# space is its own typo (DK and MushafDatabase both write one word).
+# 37:130:3 إِلْ يَاسِينَ splits the same way, and used NOT to: it was held as one
+# word because the DK DB fuses it. DK models the 1421H V2 print, not this one
+# (docs/EDITION-1441-FINDING.md), so that was never evidence about this artwork.
+# The Complex's own 1441H text writes the two with a space between them — the
+# maqṭūʿ spelling — and the print's own V4 layout, the only KFGQPC source that
+# marks words at all, gives the ayah FOUR word positions. Splitting it closes the
+# p451 open item, which read "one run more than the joining rules allow": that is
+# what one word holding two words' ink measures as. See docs/MAQTU-MAWSUL.md.
+# 5:52:12 still stays ONE word — there quran.com's internal space is its own typo
+# (DK and MushafDatabase both write one word).
 # QSVG_DKSEG=0 reverts everything to quran.com's fused keying.
-_DKSEG_SPLITS = {(2, 181): (3, 27), (8, 6): (4, 177), (13, 37): (8, 254)}
+_DKSEG_SPLITS = {(2, 181): (3, 27), (8, 6): (4, 177), (13, 37): (8, 254),
+                 (37, 130): (3, 451)}
+
+def _dk_fuses(s0, a0):
+    """Does the DK DB write this compound as ONE word, where we split it?
+
+    Asked of the DB rather than listed here: DK segments the three بَعْدَ مَا
+    pairs itself, so its positions track ours there, and it fuses 37:130, so
+    its positions run one behind ours after the split. Both are properties of
+    the source, and reading them from the source means a DK update cannot
+    leave a hand-kept list quietly wrong.
+    """
+    sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+    if sp is None:
+        return False
+    return " " in (_DK_TEXT.get("%d:%d:%d" % (s0, a0, sp)) or "")
 _DKSEG_HALVES = {}
 
 
