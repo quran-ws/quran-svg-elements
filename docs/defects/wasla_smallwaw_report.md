@@ -79,7 +79,7 @@ in `docs/defects/wasla_smallwaw_proposals.json` (not appended to proposals.json)
    just left with the maddah above. Correct fix is letter restoration through
    the label/signature channel — labels.json untouched per this task's brief.
 2. **p223 11:13:3 ٱفْتَرَىٰهُ (wasla 1/0, also small-alef 1/0).** The ink is
-   RIGHT — wasla + dagger alef, exactly the 1421H print. quran.com's
+   RIGHT — wasla + dagger alef, exactly the 1441H print. quran.com's
    `text_uthmani` for this one word carries the imlaei spelling (افْتَرَاهُ),
    so the budget demands zero of each. An upstream word-source data defect
    (their uthmani equals their imlaei for word id 15424); needs a decision on

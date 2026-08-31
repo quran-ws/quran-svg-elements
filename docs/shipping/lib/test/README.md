@@ -1,6 +1,6 @@
 # Running the tests
 
-271 assertions in a real browser — 275 with `?markers=<url>`. No test framework,
+287 assertions in a real browser — 292 with `?markers=<url>`. No test framework,
 no install.
 
 ```bash
@@ -24,7 +24,7 @@ const r = await page.evaluate(() => window.__RESULTS__);
 
 Add `&markers=<url>` — for example
 `https://quranpedia.github.io/ayah-markers/` — to additionally check a real marker
-set for conformance (§21.50+). Without it the end-marker tests still run in full
+set for conformance (§21.50-54). Without it the end-marker tests still run in full
 against a synthetic set served by a stub `fetch`, because no marker outline may ship
 in this repository.
 

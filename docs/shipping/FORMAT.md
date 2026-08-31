@@ -1,7 +1,7 @@
 # Format specification — Quran page SVGs, Hafs / KFGQPC Madani
 
 Edition id `hafs-kfgqpc` · 604 pages · 77,432 words · 6,236 ayahs · 114 surahs.
-Artwork: the **KFGQPC Madani mushaf, V2 1421H print**.
+Artwork: the **KFGQPC Madani mushaf, V2 1441H print**.
 
 This document ships with the files. Everything in it was verified against the
 real build; every count is a measurement over all 604 emitted pages, not an
@@ -475,7 +475,7 @@ self-describing:
 
 ```xml
 <svg data-mushaf="hafs-kfqc" data-qiraa="asim" data-riwaya="hafs"
-     data-edition="kfgqpc-1421"
+     data-edition="kfgqpc-1441"
      data-riwaya-name-ar="حفص عن عاصم" data-riwaya-name-en="Hafs 'an Asim"
      data-ayah-numbering="kufi" data-ayah-total="6236"
      data-decomposition="word" data-page="42" …>

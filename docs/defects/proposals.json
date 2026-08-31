@@ -60,7 +60,7 @@
    "focus_x": null,
    "focus_y": null,
    "title": "أُوْلَـٰٓئِكَ 'missing fatha at the end' — print fact or pipeline loss?",
-   "evidence": "Your note says the final fatha is missing. If the INK truly lacks it, that is a fact about the 1421H print (like إِلْ يَاسِينَ's extra piece) and becomes a recorded exception; if the stroke exists nearby, some word stole it.",
+   "evidence": "Your note says the final fatha is missing. If the INK truly lacks it, that is a fact about the 1441H print (like إِلْ يَاسِينَ's extra piece) and becomes a recorded exception; if the stroke exists nearby, some word stole it.",
    "proposal": "You look at the printed page: is there a fatha drawn at the word's end anywhere? If absent → record as print-fact exception. If present → tell me which word holds it.",
    "alternatives": [],
    "state": "done",

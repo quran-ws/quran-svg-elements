@@ -167,7 +167,7 @@ def edition():
         "schema": "edition-manifest",
         "version": REGISTRY_VERSION,
         "id": "hafs-kfgqpc",
-        "print": "KFGQPC Madani mushaf, V2 1421H",
+        "print": "KFGQPC Madani mushaf, V2 1441H",
         "layout_source": name,
         "font": font,
         "pages": pages,

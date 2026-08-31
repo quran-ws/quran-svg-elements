@@ -228,7 +228,7 @@
    "words": [
     "25 pages: 121-123, 145, 532-534, 565, 568, 570, 576, 584, 586, 588-600 (18 in juz 29-30)"
    ],
-   "reported": "can we re-run the pipeline with the DigitalKhatt text and font? (artwork confirmed = KFGQPC V2 1421H print, the edition DigitalKhatt models)",
+   "reported": "can we re-run the pipeline with the DigitalKhatt text and font? (artwork confirmed = KFGQPC V2 1441H print, the edition DigitalKhatt models)",
    "cause": "Adjudicated three ways: on every disputed page DigitalKhatt's layout DB (QUL export, .cache/digitalkhatt/) and MushafDatabase agree EXACTLY and quran.com mushaf-2 is wrong about WHICH WORDS ARE ON THE PAGE — p599 off by two ayahs (print starts 98:6, quran.com says 98:8), p590 (print starts 84:25 — our worst width defects are exactly those words), p121 (5:78 vs 5:77). 25 pages total, 18 in juz 29-30: THIS IS THE JUZ-30 MECHANISM (defects 2.7x, gaps 62% wider = wrong word count crammed into the page). Also: DigitalKhatt segments بعد/ما as two words (the print's true segmentation, ids 34301/34302, p254 diagnosis item 20) and its text carries the print's own orthography (open tanween U+08F0-08F2).",
    "status": "ADOPTED (surgical) 2026-08-26: .cache/dk_lines.json built from the DigitalKhatt DBs replaces qcf_lines.json as the line table (QSVG_DKLINES=0 reverts). Measured: target-page mark flags 22->17, zero regressions, bench clean. Full word-source replacement was measured FIRST and is WORSE (22->64): the polygon/ayah_stream layer already repairs page membership from the artwork's own markers, and a wholesale swap double-corrects. The juz-30 WIDTH clusters (p592-600) are NOT fixed by this - they are the line-partition work in the fix plan. DigitalKhattV2.otf stored in .cache/digitalkhatt/ for the future width-metric phase."
   },
@@ -433,7 +433,7 @@
    "date": "2026-08-28",
    "reporter": "pipeline (after the eye-driven sign hunt)",
    "what": "Three low-iqlab (ۭ) words hold NO separate م ink and no canonical sign outline exists within reach: جَنَّةِۭ p45, لَّازِبِۭ p446, قَسْوَرَةِۭ p577. Their kasras are plain single-contour slashes (no fusion). All other iqlab sites are now complete (p36 فإمساك recovered from بمعروف; p358 متبرجات by eye; p7 already had its sign).",
-   "status": "awaiting Abdullah's eye ON THE PRINT: does the 1421H edition draw a small م at these three sites at all, or is low-ۭ iqlab expressed by the kasra alone there? If drawn, point at the ink; if not, art fact — record and exempt from the sign budget."
+   "status": "awaiting Abdullah's eye ON THE PRINT: does the 1441H edition draw a small م at these three sites at all, or is low-ۭ iqlab expressed by the kasra alone there? If drawn, point at the ink; if not, art fact — record and exempt from the sign budget."
   },
   {
    "id": 41,

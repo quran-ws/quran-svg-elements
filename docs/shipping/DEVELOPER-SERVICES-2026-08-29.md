@@ -263,7 +263,7 @@ This is the technical heart, so I built it: **`docs/shipping/poc/ayah_crop_poc.p
 3. **No ayah crosses a page boundary.** Verified two independent ways: all
    6,236 `data-aid` values appear on exactly one page in our SVGs, and the
    DigitalKhatt layout DB (`.cache/dk_lines.json`, the authoritative model of
-   this 1421H print) agrees 6,236/6,236. So the endpoint never stitches. This
+   this 1441H print) agrees 6,236/6,236. So the endpoint never stitches. This
    is a property of the Madani print, not of our pipeline, and it removes the
    single hardest case from the design. **Ranges still can span** — 603 of
    6,235 adjacent-ayah boundaries (9.7 %) fall on a page break; see §3.6.

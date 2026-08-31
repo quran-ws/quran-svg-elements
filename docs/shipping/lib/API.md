@@ -651,8 +651,8 @@ external marker set, recolour it part by part, and put the print back exactly.
 
 **The numeral never changes.** It is the print's own drawing of the number, not a font
 rendering of it, and it is not touched by anything in this module. The replacement is
-*fitted into the box the ring occupied*, so whatever centred the number still centres
-it.
+positioned so that the design's **own** number-centre lands on the printed numeral, and
+scaled from the box the ring occupied.
 
 **Nothing is redistributed.** No outline ships with this library. `loadMarkerSet()`
 takes a base URL and fetches at runtime. The reference set is
@@ -665,21 +665,31 @@ licence terms and grants none: it is the mechanism, not the material.
 
 ### `loadMarkerSet(baseUrl, {fetch, cache})` → `Promise<MarkerSet>`
 
-Fetches `collection.json` and `annotations.json` once. Cached per URL; a *failed* load
-is not cached, so a retry when the network returns works. Rejects with the URL in the
-message — catch it and say so rather than showing a dead pane.
+Fetches `collection.json` once. Cached per URL; a *failed* load is not cached, so a
+retry when the network returns works. Rejects with the URL in the message — catch it
+and say so rather than showing a dead pane.
 
 ```js
 const set = await loadMarkerSet('https://quranpedia.github.io/ayah-markers/');
-set.list();       // [{id, family, weight, codepoint, width, upem, sources[], parts[]}, …]
+set.list();       // [{id, family, weight, codepoint, width, upem, number, sources[]}, …]
 set.families();   // [{family: '017', weights: [...]}, …]  — what a picker wants
 set.record('017-regular').sources;   // the licence trail
 ```
 
-### `set.outline(id)` → `Promise<{id, viewBox, box, layers, generated, parts, contours}>`
+### `set.outline(id)` → `Promise<{id, viewBox, box, groups, parts, number}>`
 
-Fetches one marker SVG and cuts it into one path per colourable part. Cached per id.
-`box` is the outline's **measured** bounding box, not the padded `viewBox`.
+Fetches one marker SVG and reads it. Cached per id. The file arrives **already
+layered** — one `<g data-part>` per colourable part — and those groups are taken
+verbatim, so `groups` are upstream's own nodes and `parts` is the list of part names
+in the order the design draws them. `box` is the drawing's **measured** bounding box,
+not the padded `viewBox`.
+
+`number` is the design's own answer to where the ayah number sits, in its own
+coordinates, carried through **whole**: `{cx, cy, width, height, r}` today, whatever
+upstream publishes tomorrow. `numberCentre(outline)` reads only `cx`/`cy` and returns
+`{cx, cy}`; `null` if the design publishes no record at all, and it **throws** if a
+record is present but has no usable centre — a trimmed field must not silently hang the
+design off the wrong point.
 
 ### `setAyahMarker(page, outline, options)` → handle
 
@@ -687,9 +697,8 @@ Fetches one marker SVG and cuts it into one path per colourable part. Cached per
 |---|---|---|
 | `target` | `'page'` | `'page'`, an ayah key `'2:255'`, an `Ayah`, or an array of those |
 | `size` | `1` | factor on the fitted size; `1` matches the ring's box |
-| `colours` | `null` | `{part: colour}` — becomes each part's fallback, so it paints with no CSS at all |
-| `ink` | the ring's own fill | fallback for the `ink-*` layers |
-| `fills` | `'none'` | fallback for the `fill-*` layers |
+| `colours` | `null` | `{part: colour}` — sets upstream's `--<part>` custom properties on the `<svg>` |
+| `anchorOnNumber` | `true` | put the design's own number-centre on the printed numeral; `false` centres box on box |
 | `decorative` | `false` | include the `g.ayah-marker` groups with **no** `data-aid` |
 
 **Decorative rosettes are left alone by default.** Pages 1–2 carry 12 `g.ayah-marker`
@@ -697,82 +706,60 @@ groups with no `data-aid` — the frame of the opening spread, closing no ayah. 
 `g.ayah-marker[data-aid]` is touched unless you ask for them.
 
 `handle.remove()` restores the printed rings exactly — the original `<path>` node is
-kept, not re-serialised.
+kept, not re-serialised — and unsets any custom properties `colours` set.
 
 ### `resetAyahMarkers(page, {decorative})` → `{count}`
 ### `hasSwappedMarkers(page)` → `boolean`
 ### `colourAyahMarkers(page, colours)` → handle
 
 Recolours what is already on the page by setting the custom properties on the `<svg>`,
-without rebuilding anything.
+without rebuilding anything. Pass `null` for a part to unset it.
 
-### `MARKER_PARTS` · `partVar(part)` · `splitContours(d)` · `cutOutline(svgText, annotation)` · `fitTransform(from, to, size)`
+### `readOutline(svgText, rec)` · `numberCentre(outline)` · `fitTransform(from, to, size)`
 
 The primitives, exported for building your own.
 
-### Recolouring
+### Recolouring is upstream's CSS contract, and needs no JavaScript
 
-Seven parts, painted in this order: `fill-base`, `fill-1`, `fill-2`, `fill-3`,
-`ink-base`, `ink-1`, `ink-2`. Each becomes one `<path>` carrying
-`style="fill:var(--ayah-marker-<part>, <fallback>)"`, so a custom property on any
-ancestor wins over the fallback, live:
+Seven part names — `fill-base`, `fill-1`, `fill-2`, `fill-3`, `ink-base`, `ink-1`,
+`ink-2` — each drawn by upstream as a group carrying
+
+```
+style="fill:var(--ink-base,#083a3a)"
+```
+
+with a **baked-in default**, so a marker arrives coloured the way its designer coloured
+it. Setting the custom property on any ancestor recolours it, live:
+
+```css
+.my-page { --ink-base: #b08d2e; --fill-base: #f6ecd9; }
+```
 
 ```js
 const set = await loadMarkerSet(BASE);
 const h = setAyahMarker(page, await set.outline('017-regular'),
                         { colours: { 'ink-base': '#b08d2e' } });
-colourAyahMarkers(page, { 'ink-1': '#8a6d1f' });     // or from CSS:
-// .my-page { --ayah-marker-ink-base: #b08d2e; }
+colourAyahMarkers(page, { 'ink-1': '#8a6d1f' });     // same thing, later
 h.remove();                                          // the print is back
 ```
 
-The upstream files hardcode `fill="#0b7771"` on their root `<svg>`. Only the `d` is
-ever read, so that colour cannot reach the page — asserted in the tests.
+Each design uses only some of the seven; `outline.parts` lists the ones it draws, and a
+control offering a part the design does not have is a lie about the drawing.
 
-The colour goes in an inline **style**, not the `fill` attribute: `var()` inside a
-presentation attribute is not reliably substituted; inside a style declaration it
-always is.
+**The `--ayah-marker-<part>` names this library once used are retired.** They were a
+workaround for a format that no longer exists.
 
-### The trap this module exists to get right
+### What this module used to do
 
-Every upstream file is **one `<path>` holding every contour**, and the counters — the
-holes that make a ring a ring rather than a disc — are **winding-based**. Splitting
-that path into one path per part destroys them, because a hole and the shape it
-punches routinely sit in *different* parts by design (`ink-2` is a petal outline,
-`fill-1` is the region inside it).
-
-Measured over all 47 markers, rasterised at 320 px and diffed against the original:
-
-| | differing pixels |
-|---|---|
-| naive split, document order preserved | **1,499,224** |
-| each layer takes back the earlier layers' contours inside it, `fill-rule="evenodd"` | **18,582** |
-| the same, widened to *any* other layer | 21,955 |
-
-45 of the 47 land at 24 differing pixels or fewer — antialiasing on the seams. The
-exception is `014-regular-bold`, whose lower flourish draws solid rather than outlined
-because its counters are annotated into a *later* layer; the upstream customizer
-renders it the same way, so this is the annotation and not the port.
-
-Containment is decided by `isPointInFill` on a real rendered path, never by arithmetic.
-
-### Two things about the annotation format
-
-- **A contour listed in no part is drawn as `ink-base`.** Eight of the 47 files
-  annotate nothing at all, and six more leave two contours out. They still have to be
-  drawn.
-- **A marker with no annotations of its own borrows another weight of the same numeric
-  family's** (`003-black` takes `003-thin`'s). Without that, a third of the set would
-  offer one colour.
-
-`generatedFills` — shapes the annotation *synthesises* rather than takes from the
-file — are drawn behind everything, and are invisible while `fill-*` defaults to
-`none`. Five markers declare one.
-
-**Every path command in the reference set is absolute** (322 contours, zero lowercase),
-which is why a contour can be split off on `M` and stay in place. `cutOutline()` does
-not handle relative commands; it *asserts* their absence and throws, so a future file
-that breaks the assumption fails loudly instead of drawing something wrong.
+Upstream once shipped each marker as one `<path>` holding every contour, with a
+separate `annotations.json` saying which contour belonged to which part. Cutting that
+up was the hard part of this file: the counters — the holes that make a ring a ring —
+are winding-based, and a hole and the shape it punches routinely belong to different
+parts, so every layer had to re-include the earlier-layer contours lying inside it and
+draw `evenodd`. Getting it wrong turned 39 of the 47 markers into solid blobs. Upstream
+now ships the layering, the `fill-rule` and the re-inclusion, so all of that is gone
+and the groups are taken as they come. If a marker draws solid, it draws solid
+upstream.
 
 ---
 

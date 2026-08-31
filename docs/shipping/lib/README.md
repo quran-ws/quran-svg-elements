@@ -112,7 +112,7 @@ works without it.
 
 ## Tested
 
-217 assertions in a real browser (Chromium via Playwright) against real pages —
+287 assertions in a real browser (Chromium via Playwright) against real pages —
 1, 42, 48, 176, 582, 604 — plus a genuine mouse drag, Ctrl+C, hover, a click in a
 6.96 px gap, and a window resize. Zero console errors. See the final section of
 [`API.md`](API.md#testing) for what is and is not covered.

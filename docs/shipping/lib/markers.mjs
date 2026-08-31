@@ -1,4 +1,4 @@
-/* mushaf.js — swappable, recolourable ayah end-markers.
+/* markers.mjs — swappable, recolourable ayah end-markers.
  *
  * The medallion at the end of an ayah is
  *
@@ -17,93 +17,46 @@
  * ─── nothing is redistributed ───────────────────────────────────────────────
  *
  * No marker outline ships with this library. `loadMarkerSet()` takes a base URL
- * and fetches `collection.json`, `annotations.json` and each marker SVG at
- * runtime. The reference set is
+ * and fetches `collection.json` and each marker SVG at runtime. The reference
+ * set is
  *
  *   https://github.com/quranpedia/ayah-markers
  *
- * whose outlines are traced from twenty type families (Google Fonts and
- * fonts.quran.ws) and carry THOSE families' licences, which differ from one
- * another. Read `collection.json` — every marker names its `sources[]` — before
- * you redistribute anything. This library states no licence terms and grants
- * none; it is the mechanism, not the material.
+ * whose outlines are traced from twenty type families and carry THOSE families'
+ * licences, which differ from one another. Read `collection.json` — every
+ * marker names its `sources[]` — before you redistribute anything. This library
+ * states no licence terms and grants none; it is the mechanism, not the
+ * material.
  *
- * ─── the geometry is easy, and that is not an accident ──────────────────────
+ * ─── what this module used to do, and no longer has to ──────────────────────
  *
- * The set's outlines are in the same coordinate space as ours — font units,
- * y-up, ~1000 upem (some are 2048 or 3000, so nothing here assumes a number).
- * The replacement is inserted where the ring was, so it inherits the ring's
- * parent transform, including that group's y-flip; there is no flip to undo.
- * The fit is derived from two measured bounding boxes and nothing else.
- *
- * ─── the trap, and it is real (measured 2026-08-31, 47 markers) ─────────────
- *
- * Every upstream file is ONE <path> holding every contour, and the counters —
- * the holes that make a ring a ring rather than a disc — are winding-based.
- * Splitting that path into one <path> per colourable part destroys them: a
- * naive split turned 39 of 47 markers into solid blobs, ~31% of the rendered
- * pixels wrong. It is not enough to keep document order, and it is not fixed
- * by switching fill-rule.
- *
- * The reason is that a hole and the shape it punches routinely belong to
- * DIFFERENT parts, by design — "ink-2" is a petal outline and "fill-1" is the
- * region inside it. So when a part is emitted as its own path, every contour
- * that lies inside one of its own contours and belongs to an earlier layer has
- * to be RE-INCLUDED in that path, with fill-rule="evenodd", so it punches the
- * hole again. `buildLayers()` below does that; containment is decided by
- * SVGGeometryElement.isPointInFill on a real rendered path, not by arithmetic.
- * This is the same rule the upstream customizer uses.
- *
- * MEASURED, all 47 markers, rasterised at 320px and diffed against the original
- * single path with every ink layer black and every fill layer `none`:
- *
- *   naive split, document order preserved   1,499,224 differing px
- *   this rule                                   18,582
- *   this rule, widened to any other layer       21,955
- *
- * 45 of the 47 come out at 24 differing pixels or fewer — antialiasing on the
- * seams. The two that do not:
- *   · 014-regular-bold (Noto Nastaliq Urdu) — 18,555. Its lower flourish draws
- *     solid instead of outlined, because those counters are annotated into a
- *     LATER layer, which the rule above deliberately does not reach back for.
- *     The upstream customizer renders it the same way; this is the annotation,
- *     not the port.
- *   · 021-regular — 24 px, a seam.
- * Re-run `docs/shipping/lib/test/` §M when the upstream annotations change.
+ * Upstream once shipped each marker as ONE <path> holding every contour, with a
+ * separate annotations.json saying which contour belonged to which colourable
+ * part. Cutting that up here was the hard part of this file: the counters — the
+ * holes that make a ring a ring — are winding-based, and a hole and the shape
+ * it punches routinely belong to different parts, so every layer had to
+ * re-include the earlier-layer contours lying inside it and draw `evenodd`.
+ * Upstream now ships the markers already layered — one <g data-part> per part,
+ * fill-rule and re-inclusion applied — so that whole apparatus is gone and the
+ * groups are taken verbatim. If a marker draws solid, it draws solid upstream.
  *
  * ─── how a marker is coloured ───────────────────────────────────────────────
  *
- * Seven parts, painted in this order: fill-base, fill-1, fill-2, fill-3,
- * ink-base, ink-1, ink-2. Each becomes one <path> whose fill is
+ * Colour is upstream's contract, not ours. Each group carries
  *
- *   var(--ayah-marker-<part>, <fallback>)
+ *   style="fill:var(--fill-base,#fff8e7)"
  *
- * so a caller recolours with CSS custom properties on any ancestor, or by
- * passing `colours` to setAyahMarker(). The `ink-*` fallback is the ring's own
- * printed fill; the `fill-*` fallback is `none`, because those layers are
- * backgrounds behind the drawing and a monochrome medallion wants them empty.
- * The upstream files hardcode fill="#0b7771" on their root <svg>; only the `d`
- * is ever read here, so that colour cannot reach the page.
- *
- * Two things the annotation file does that are worth knowing:
- *   · a contour listed in NO part is drawn as `ink-base` — 8 of the 47 markers
- *     annotate nothing at all, and 6 more leave two contours out.
- *   · a marker with no annotations borrows them from another weight of the same
- *     numeric family (003-black takes 003-thin's), which is why those 8 still
- *     colour. `annotationFor()`.
+ * so setting `--fill-base`, `--fill-1`, `--fill-2`, `--fill-3`, `--ink-base`,
+ * `--ink-1` or `--ink-2` on ANY ancestor recolours the drawing with no
+ * JavaScript at all. `colourAyahMarkers()` is a convenience over
+ * `element.style.setProperty`, nothing more. Each design uses only some of the
+ * parts; `outline.parts` lists the ones it actually draws.
  */
 
 import { measured } from './core.mjs';
 
 const NS = 'http://www.w3.org/2000/svg';   /* core.mjs exports SVGNS; the flat
    global build puts every module in one scope, so the name must be local */
-
-/** Paint order. `fill-*` are backgrounds, `ink-*` is the drawing on top. */
-export const MARKER_PARTS = Object.freeze(
-  ['fill-base', 'fill-1', 'fill-2', 'fill-3', 'ink-base', 'ink-1', 'ink-2']);
-
-/** The CSS custom property a part reads. */
-export const partVar = part => '--ayah-marker-' + part;
 
 /* one MarkerSet per base URL, so two consumers share the fetches */
 const SETS = new Map();
@@ -114,17 +67,17 @@ const ORIGINALS = new WeakMap();
 /* ------------------------------------------------------------------ fetch */
 
 /**
- * Load a marker set's index. Fetches `collection.json` and `annotations.json`
- * once; the outlines themselves are fetched lazily, on first use of each.
+ * Load a marker set's index. Fetches `collection.json` once; the outlines
+ * themselves are fetched lazily, on first use of each.
  *
  *   const set = await loadMarkerSet('https://example.org/ayah-markers/');
  *   set.list()                       // [{id, family, weight, sources, …}, …]
- *   await set.outline('017-regular') // {viewBox, box, layers:[{part, d}], …}
+ *   await set.outline('017-regular') // {viewBox, box, parts, number, …}
  *
  * Rejects with a message naming the URL if the set cannot be read — a consumer
  * that may be offline should catch it and say so, not show an empty pane.
  *
- * @param baseUrl  directory holding collection.json, annotations.json, markers/
+ * @param baseUrl  directory holding collection.json and markers/
  * @param fetch    an override, for tests or for a caller with its own client
  * @param cache    false to bypass the per-URL cache (a retry after a failure)
  */
@@ -133,29 +86,27 @@ export function loadMarkerSet(baseUrl, { fetch: f = null, cache = true } = {}) {
   if (cache && SETS.has(base)) return SETS.get(base);
 
   const fetcher = f || ((...a) => globalThis.fetch(...a));
-  const json = async name => {
-    let res;
-    try { res = await fetcher(base + name); }
-    catch (e) { throw new Error(`could not reach ${base + name}: ${e.message}`); }
-    if (!res.ok) throw new Error(`HTTP ${res.status} for ${base + name}`);
-    return res.json();
-  };
 
   const p = (async () => {
-    const [collection, annotations] = await Promise.all([
-      json('collection.json'), json('annotations.json')]);
+    let res;
+    const url = base + 'collection.json';
+    try { res = await fetcher(url); }
+    catch (e) { throw new Error(`could not reach ${url}: ${e.message}`); }
+    if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+    const collection = await res.json();
     const records = (collection.markers || []).map(m => {
       const family = String(m.id).split('-')[0];
       return {
         id: m.id, family, weight: String(m.id).slice(family.length + 1),
         codepoint: m.codepoint, file: m.file, width: m.width, upem: m.upem,
-        // Where the ayah number goes, in the outline's own coordinates.
+        // Where the ayah number goes, in the outline's own coordinates: ONE
+        // centre, {cx, cy}, with {width, height, r} describing the room it has.
         // U+06DD is a prefixed format control — it is defined to ENCLOSE the
         // digits after it — so a font that implements it has already answered
-        // this, and `number.source` says whether the value came from the
-        // designer ("font-shaping") or from our reading of the interior
-        // ("derived"). Absent on sets published before this field existed;
-        // a consumer must cope with undefined.
+        // this, and upstream publishes the answer rather than a provenance
+        // story about it. Carried through WHOLE and unpicked: upstream is still
+        // moving, so read what you need and ignore the rest. Absent on sets
+        // published before this field existed; a consumer must cope with that.
         number: m.number,
         sources: (m.sources || []).map(s => ({
           source: s.source, family: s.family, variant: s.variant,
@@ -164,7 +115,7 @@ export function loadMarkerSet(baseUrl, { fetch: f = null, cache = true } = {}) {
           license: s.license }))
       };
     });
-    return new MarkerSet(base, records, annotations, fetcher);
+    return new MarkerSet(base, records, fetcher);
   })();
 
   if (cache) {
@@ -175,17 +126,15 @@ export function loadMarkerSet(baseUrl, { fetch: f = null, cache = true } = {}) {
 }
 
 class MarkerSet {
-  constructor(base, records, annotations, fetcher) {
+  constructor(base, records, fetcher) {
     this.baseUrl = base;
     this.name = null;
     this._records = records;
-    this._ann = annotations && annotations.markers || {};
     this._fetch = fetcher;
     this._outlines = new Map();
-    for (const r of records) r.parts = partsOf(this._ann, r.id, records);
   }
 
-  /** Every marker in the set: id, family, weight, sources, colourable parts. */
+  /** Every marker in the set: id, family, weight, sources, number. */
   list() { return this._records.map(r => ({ ...r, sources: r.sources.map(s => ({ ...s })) })); }
   ids() { return this._records.map(r => r.id); }
   has(id) { return this._records.some(r => r.id === id); }
@@ -202,8 +151,8 @@ class MarkerSet {
   }
 
   /**
-   * The outline, fetched and cut into layers on first ask, then cached.
-   * `box` is the outline's own bounding box in its own units, measured once —
+   * The outline, fetched and parsed on first ask, then cached.
+   * `box` is the drawing's own bounding box in its own units, measured once —
    * the fit reads it and never the viewBox, which carries padding.
    */
   outline(id) {
@@ -216,7 +165,7 @@ class MarkerSet {
       try { res = await this._fetch(url); }
       catch (e) { throw new Error(`could not reach ${url}: ${e.message}`); }
       if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
-      return cutOutline(await res.text(), annotationFor(this._ann, id, this._records), rec);
+      return readOutline(await res.text(), rec);
     })();
     this._outlines.set(id, p);
     p.catch(() => this._outlines.delete(id));
@@ -226,149 +175,62 @@ class MarkerSet {
 
 /* ------------------------------------------------------- reading a marker */
 
-/** Contours, in document order. Every command in this set is absolute. */
-export function splitContours(d) { return String(d).match(/M[^M]*/g) || []; }
-
-/** A marker with no assignments of its own borrows another weight's. */
-function annotationFor(all, id, records) {
-  const has = a => a && ['parts', 'interiorFills', 'generatedFills']
-    .some(k => Object.values(a[k] || {}).some(v => v.length));
-  const own = all[id];
-  if (has(own)) return own;
-  const family = String(id).split('-')[0];
-  for (const r of records)
-    if (r.family === family && has(all[r.id])) return all[r.id];
-  return own || { parts: {} };
-}
-
-function partsOf(all, id, records) {
-  const a = annotationFor(all, id, records);
-  const out = new Set();
-  for (const k of ['parts', 'interiorFills', 'generatedFills'])
-    for (const part in (a[k] || {})) if (a[k][part].length) out.add(part);
-  return MARKER_PARTS.filter(p => out.has(p));
-}
-
 /**
- * Cut one marker file into per-part paths.
+ * Read one already-layered marker file.
  *
- * Layer i's path holds its own contours PLUS every contour of an EARLIER layer
- * that sits inside one of them and is not itself inside another such contour —
- * re-included so `fill-rule="evenodd"` punches the counter back out. Without
- * this the medallion fills solid; see the header.
+ * The `<g data-part="…">` groups are taken VERBATIM — their `fill-rule`, their
+ * `var(--part, default)` style and the contours inside them are upstream's
+ * answer, not ours. All this does is measure the box and remember the groups.
  */
-export function cutOutline(svgText, annotation, rec = {}) {
+export function readOutline(svgText, rec = {}) {
   const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
   if (doc.querySelector('parsererror')) throw new Error(`${rec.id || 'marker'}: not parseable SVG`);
   const root = doc.documentElement;
-  const paths = [...root.querySelectorAll('path')];
-  if (!paths.length) throw new Error(`${rec.id || 'marker'}: no <path> in the file`);
+  const groups = [...root.querySelectorAll('g[data-part]')];
+  if (!groups.length) throw new Error(`${rec.id || 'marker'}: no <g data-part> in the file`);
 
-  /* id -> contour, keyed the way annotations.json keys them */
-  const contours = new Map();
-  paths.forEach((p, pi) => splitContours(p.getAttribute('d')).forEach(
-    (c, ci) => contours.set(`path-${pi}-contour-${ci}`, c)));
-
-  /* The upstream set is entirely absolute (M Q C L H V Z, 322 contours, zero
-   * lowercase). A relative contour would be positioned against wherever the
-   * previous one ended, so cutting it off would silently misplace it. Fail
-   * loudly rather than draw something wrong. */
-  for (const [id, c] of contours)
-    if (/[a-z]/.test(c.replace(/[eE][-+]?\d/g, '')))
-      throw new Error(`${rec.id || 'marker'}: ${id} uses relative path commands, ` +
-        'which cannot be split off safely');
-
-  const assigned = new Map();
-  for (const part in (annotation.parts || {}))
-    for (const id of annotation.parts[part]) assigned.set(id, part);
-
-  /* One rendered path per contour, so containment is decided by the renderer.
-   * They live in a detached <svg> that `measured` parks in the document. */
+  /* Measure the drawing in a probe that `measured` parks in the document —
+     getBBox() is meaningless on a detached, unrendered tree. */
   const probe = document.createElementNS(NS, 'svg');
-  const placed = [];
-  for (const [id, d] of contours) {
-    const p = document.createElementNS(NS, 'path');
-    p.setAttribute('d', d);
-    p.setAttribute('fill-rule', 'evenodd');
-    probe.appendChild(p);
-    placed.push({ id, d, part: assigned.get(id) || 'ink-base', el: p });
-  }
-
-  const { layers, box } = measured(probe, () => {
-    for (const it of placed) it.point = interiorPoint(it.el);
-    const rank = p => MARKER_PARTS.indexOf(p);
-    const out = [];
-    for (const part of MARKER_PARTS) {
-      const own = placed.filter(x => x.part === part);
-      if (!own.length) continue;
-      /* Only EARLIER layers are pulled back in. Widening it to any other layer
-       * was measured and is worse — 21,955 differing pixels across the 47
-       * against 18,582 — so the restriction stays. */
-      const inside = placed.filter(o => o.part !== part && rank(o.part) < rank(part)
-        && own.some(x => x.el.isPointInFill(o.point)));
-      const holes = inside.filter(o => !inside.some(q => q !== o && q.el.isPointInFill(o.point)));
-      out.push({ part, d: [...own, ...holes].map(x => x.d).join(' ') });
-    }
-    return { layers: out, box: bboxOf(probe) };
+  for (const g of groups) probe.appendChild(document.importNode(g, true));
+  const box = measured(probe, () => {
+    const b = probe.getBBox();
+    return { x: b.x, y: b.y, w: b.width, h: b.height };
   });
-
-  /* Shapes the annotation SYNTHESISES rather than takes from the file — five
-   * markers back `fill-base` with an ellipse that is in no contour. They are
-   * drawn behind everything, and are invisible while `fill-*` defaults to
-   * `none`, which is the monochrome default. */
-  const generated = [];
-  for (const part in (annotation.generatedFills || {}))
-    for (const s of annotation.generatedFills[part]) generated.push({ part, shape: s });
-  for (const part in (annotation.interiorFills || {}))
-    for (const id of annotation.interiorFills[part])
-      if (contours.has(id)) generated.push({ part, shape: { type: 'path', d: contours.get(id) } });
 
   return {
     id: rec.id || null,
     viewBox: root.getAttribute('viewBox'),
-    box, layers, generated,
+    box,
+    // the parsed groups, cloned per swap; never mutated
+    groups,
+    parts: groups.map(g => g.getAttribute('data-part')),
     // Where this design wants the ayah number, in the outline's own
-    // coordinates. Published upstream: U+06DD is a prefixed format control,
-    // defined to ENCLOSE the digits after it, so a font that implements it has
-    // already answered — `number.source` says whether a value came from the
-    // designer ("font-shaping") or from the interior geometry ("derived").
-    // `number.digits[1|2|3]` are per-digit-count boxes, because a design that
-    // fits ٧ comfortably may have to narrow ٢٥٥.
-    number: rec.number || null,
-    parts: layers.map(l => l.part),
-    contours: contours.size
+    // coordinates — one centre, {cx, cy}, verbatim from collection.json.
+    number: rec.number || null
   };
 }
 
 /**
- * The box this design wants the number in, for a given digit count.
+ * The centre this design wants the ayah number on, or null.
  *
- * Falls back through: the exact digit count → the whole-number box → null.
- * A caller that gets null should leave the numeral where the print put it.
+ * `cx`/`cy` are the whole contract. Whatever else the record carries — the
+ * room the number has (`width`, `height`, `r`), or fields published after this
+ * was written — is passed through untouched on `outline.number` and ignored
+ * here. A consumer that breaks when a publisher trims a field is a consumer
+ * nobody can rely on.
+ *
+ * NO record at all is fine, and means "box-centre me". A record that is there
+ * but carries no usable `cx`/`cy` is broken, and throws rather than silently
+ * hanging the design off the wrong point.
  */
-export function numberBox(outline, digits = 0) {
+export function numberCentre(outline) {
   const n = outline && outline.number;
-  if (!n) return null;
-  const d = n.digits && n.digits[String(digits)];
-  const b = d || n;
-  if (!(b && isFinite(b.cx) && isFinite(b.width) && b.width > 0 && b.height > 0)) return null;
-  return { x: b.cx - b.width / 2, y: b.cy - b.height / 2, w: b.width, h: b.height,
-           source: b.source || n.source || null };
-}
-
-/* A point genuinely inside the contour — a bbox centre can miss a crescent. */
-function interiorPoint(path) {
-  const b = path.getBBox();
-  for (let r = 1; r < 8; r++) for (let c = 1; c < 8; c++) {
-    const p = { x: b.x + b.width * c / 8, y: b.y + b.height * r / 8 };
-    if (path.isPointInFill(p)) return p;
-  }
-  return { x: b.x + b.width / 2, y: b.y + b.height / 2 };
-}
-
-function bboxOf(el) {
-  const b = el.getBBox();
-  return { x: b.x, y: b.y, w: b.width, h: b.height };
+  if (n == null) return null;          // published no centre — box-centre it
+  if (!isFinite(n.cx) || !isFinite(n.cy))
+    throw new Error(`${(outline && outline.id) || 'marker'}: number record has ` +
+      'no usable cx/cy');              // present but malformed — say so
+  return { cx: n.cx, cy: n.cy };
 }
 
 /**
@@ -405,27 +267,26 @@ function numeralCentreIn(group, host) {
 /**
  * Put `outline` in place of the printed ring on every real ayah marker.
  *
- * The numeral is not touched: the replacement is fitted into the box the ring
- * occupied, so whatever centred the number still centres it.
+ * The numeral is not touched: the replacement is positioned so that the
+ * design's OWN number-centre lands on the printed numeral, and scaled from the
+ * box the ring occupied.
  *
  * DECORATIVE ROSETTES ARE LEFT ALONE. Pages 1-2 carry 12 `g.ayah-marker`
  * groups with no `data-aid` — the frame of the opening spread, closing no ayah.
  * Pass `decorative: true` to include them.
  *
  * @param page     a MushafPage
- * @param outline  what `set.outline(id)` resolved to (or the id, with `set`)
+ * @param outline  what `set.outline(id)` resolved to
  * @param target   'page' (default), an ayah key '2:255', an Ayah, or an array
  * @param size     factor on the fitted size; 1 matches the ring's box
- * @param colours  {part: colour} — sets --ayah-marker-<part> on each medallion
- * @param ink      fallback colour for the ink-* layers (default: the ring's own)
- * @param fills    fallback colour for the fill-* layers (default 'none')
+ * @param colours  {part: colour} — sets upstream's --<part> variables on the page
  * @returns {count, remove()} — remove() restores the printed rings exactly
  */
 export function setAyahMarker(page, outline, {
-  target = 'page', size = 1, colours = null, ink = null, fills = 'none',
+  target = 'page', size = 1, colours = null,
   decorative = false, anchorOnNumber = true
 } = {}) {
-  if (!outline || !Array.isArray(outline.layers))
+  if (!outline || !Array.isArray(outline.groups))
     throw new TypeError('setAyahMarker needs an outline from set.outline(id)');
 
   const groups = markerGroups(page, target, decorative);
@@ -447,25 +308,29 @@ export function setAyahMarker(page, outline, {
     // that its own number-centre lands on the printed numeral.
     //
     // Centring the outline's bounding box on the ring's would be wrong the
-    // moment a design is not symmetric — 014 is a disc with a pendant flourish,
-    // so its box centre sits on the join, and box-centring would hang the disc
-    // above the number instead of around it.
+    // moment a design is not symmetric — a disc with a pendant flourish has its
+    // box centre on the join, and box-centring would hang the disc above the
+    // number instead of around it.
     const anchor = anchorOnNumber
       ? measured(page.el, () => numeralCentreIn(g, ring.parentNode))
       : null;
 
-    const swap = buildSwap(outline, box, size, colours,
-                           ink || ring.getAttribute('fill') || 'currentColor',
-                           fills, anchor);
+    const swap = buildSwap(outline, box, size, anchor);
     const parent = ring.parentNode, next = ring.nextSibling;
     ring.replaceWith(swap);
     undo.push(() => { swap.remove(); parent.insertBefore(ring, next); });
   }
 
+  const paint = colours ? colourAyahMarkers(page, colours) : null;
+
   return {
     count: undo.length,
     marker: outline.id,
-    remove() { undo.reverse().forEach(f => f()); undo.length = 0; }
+    remove() {
+      undo.reverse().forEach(f => f());
+      undo.length = 0;
+      if (paint) paint.remove();
+    }
   };
 }
 
@@ -489,15 +354,20 @@ export function hasSwappedMarkers(page) {
 }
 
 /**
- * Recolour whatever is already on the page, without rebuilding it. Sets the
- * custom properties on the <svg>, so it reaches every medallion at once.
+ * Recolour whatever is already on the page, without rebuilding it.
+ *
+ * These are UPSTREAM's variable names — `--fill-base`, `--fill-1`, `--fill-2`,
+ * `--fill-3`, `--ink-base`, `--ink-1`, `--ink-2` — set here on the <svg> so
+ * they reach every medallion at once. A stylesheet setting them on any ancestor
+ * does exactly the same thing with no JavaScript.
  */
 export function colourAyahMarkers(page, colours = {}) {
   const el = page.el, prev = [];
   for (const part in colours) {
-    prev.push([partVar(part), el.style.getPropertyValue(partVar(part))]);
-    if (colours[part] == null) el.style.removeProperty(partVar(part));
-    else el.style.setProperty(partVar(part), String(colours[part]));
+    const name = '--' + part;
+    prev.push([name, el.style.getPropertyValue(name)]);
+    if (colours[part] == null) el.style.removeProperty(name);
+    else el.style.setProperty(name, String(colours[part]));
   }
   return { remove() { for (const [k, v] of prev) v ? el.style.setProperty(k, v) : el.style.removeProperty(k); } };
 }
@@ -519,6 +389,11 @@ function currentRing(g) {
          g.querySelector('g.ayah-marker-swap');
 }
 
+function bboxOf(el) {
+  const b = el.getBBox();
+  return { x: b.x, y: b.y, w: b.width, h: b.height };
+}
+
 /**
  * Fit the outline's box onto the ring's box. Uniform scale — the aspect ratios
  * differ marker to marker and stretching an ornament to match is worse than
@@ -534,8 +409,7 @@ export function fitTransform(from, to, size = 1) {
 
 const round4 = (v, d = 4) => Number(v.toFixed(d));
 
-
-function buildSwap(outline, box, size, colours, ink, fills, anchor = null) {
+function buildSwap(outline, box, size, anchor = null) {
   const g = document.createElementNS(NS, 'g');
   g.setAttribute('class', 'ayah-marker-swap');
   g.setAttribute('data-marker', outline.id || '');
@@ -546,37 +420,15 @@ function buildSwap(outline, box, size, colours, ink, fills, anchor = null) {
   // anchor, the design's own number-centre is put on the printed numeral;
   // without one, the two bounding boxes are centred on each other.
   const fit = fitTransform(outline.box, box, size);
-  const nb = numberBox(outline, 0);
-  if (anchor && nb) {
-    const ncx = nb.x + nb.w / 2, ncy = nb.y + nb.h / 2;
-    fit.tx = anchor.x - fit.scale * ncx;
-    fit.ty = anchor.y - fit.scale * ncy;
-    g.setAttribute('data-anchored', nb.source || 'number');
+  const nc = numberCentre(outline);
+  if (anchor && nc) {
+    fit.tx = anchor.x - fit.scale * nc.cx;
+    fit.ty = anchor.y - fit.scale * nc.cy;
+    g.setAttribute('data-anchored', 'numeral');   // a flag, not a provenance
   }
   g.setAttribute('transform', String(fit));
 
-  for (const gen of outline.generated) {
-    const el = document.createElementNS(NS, gen.shape.type);
-    for (const k in gen.shape) if (k !== 'type') el.setAttribute(k, String(gen.shape[k]));
-    paint(el, gen.part);
-    g.appendChild(el);
-  }
-  for (const layer of outline.layers) {
-    const p = document.createElementNS(NS, 'path');
-    p.setAttribute('d', layer.d);
-    p.setAttribute('fill-rule', 'evenodd');   // the counters depend on it
-    p.setAttribute('data-part', layer.part);
-    paint(p, layer.part);
-    g.appendChild(p);
-  }
+  /* Upstream's groups, verbatim — fill-rule, style and all. */
+  for (const src of outline.groups) g.appendChild(document.importNode(src, true));
   return g;
-
-  /* The colour goes in an inline STYLE, not the `fill` attribute. var() inside
-   * a presentation attribute is not reliably substituted; inside a style
-   * declaration it always is. */
-  function paint(el, part) {
-    const given = colours && colours[part];
-    const fallback = given != null ? String(given) : (part.startsWith('fill') ? fills : ink);
-    el.setAttribute('style', `fill:var(${partVar(part)}, ${fallback})`);
-  }
 }

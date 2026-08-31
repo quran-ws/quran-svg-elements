@@ -291,7 +291,7 @@ Verified headless before being promised (test 12).
 - `loadMarkerSet(baseUrl)` / `set.outline(id)` / `setAyahMarker(page, outline, …)` /
   `resetAyahMarkers(page)` / `colourAyahMarkers(page, colours)`.
 
-Three decisions worth the words:
+Four decisions worth the words:
 
 1. **The library takes a base URL and ships nothing.** The reference set
    (`quranpedia/ayah-markers`) has no licence file and grants none for the outlines,
@@ -300,23 +300,24 @@ Three decisions worth the words:
    module is a mechanism: it fetches, and it says so in the API docs and on the demo
    page. That is also why the tests run against a *synthetic* set — the assertions must
    not need the real one to exist.
-2. **The ring is replaced, the numeral is not.** The number is the print's own ink. The
-   replacement is fitted into the box the ring occupied rather than composed with the
-   numeral, so the numeral needs no handling at all: whatever centred it still does.
+2. **The ring is replaced, the numeral is not.** The number is the print's own ink and
+   is never substituted for a font's digits; only the furniture around it changes.
    Uniform scale, not stretch — the outlines' aspect ratios differ marker to marker and
    distorting an ornament to fill a box is worse than leaving air around it.
-3. **Per-part paths, with the counters re-punched.** Recolouring needs one element per
-   colourable part, but the upstream files are a single path whose holes are
-   winding-based, and a hole and its outer shape routinely belong to different parts.
-   Splitting naively wrecks 39 of 47 designs (1,499,224 differing pixels, ~31% of the
-   raster); each layer taking back the earlier layers' contours that lie inside it, drawn
-   `evenodd`, brings that to 18,582, of which 18,555 is one marker the upstream
-   customizer draws the same way. Widening the rule to *any* other layer was measured and
-   is worse. Containment is decided by `isPointInFill` on a rendered path, because the
-   renderer is the authority on what is inside what.
-
-Colours are inline `style="fill:var(--ayah-marker-<part>, <fallback>)"`, not `fill`
-attributes: `var()` in a presentation attribute is not reliably substituted.
+3. **The marker moves, the number never does.** Each design publishes a single
+   `number` centre; the replacement is positioned so that ITS centre lands on the
+   printed numeral, and only scaled from the ring's box. Box-on-box centring is wrong
+   the moment a design is asymmetric — a disc with a pendant flourish has its box
+   centre on the join. The two are in DIFFERENT coordinate systems (the ring's group is
+   `scale(0.011 -0.011)`, the numeral's a plain translate), so the centre is carried
+   through `getScreenCTM()` composition and never by comparing `getBBox()` numbers.
+4. **The layering is upstream's, and so is the colour.** Markers arrive as one
+   `<g data-part>` per part with `fill-rule` and re-included counters already applied,
+   each painting `fill:var(--<part>, <default>)`. This module takes the groups verbatim
+   and sets custom properties; it does no cutting and invents no names. It used to do
+   both — a single path had to be split per part and the winding-based counters
+   re-punched — and getting that wrong turned 39 of 47 designs into solid blobs. All of
+   it is deleted.
 
 ---
 
