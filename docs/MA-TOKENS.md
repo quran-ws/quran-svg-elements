@@ -89,3 +89,45 @@ The prefixed `و` is untouched by any of this: `وما` is one token at all 646
 sites, and there are **0** bare `و`/`ف`/`ب`/`ل` words in the whole mushaf. The
 question of where `ما` welds to what follows is independent of the particle that
 precedes it.
+
+## 5. Ours vs theirs — every source, all 6,236 ayahs
+
+Word-count disagreement with the Complex's own 1441H text, measured over the
+whole Quran. Lower is closer to the print's own spelling.
+
+| source | what it is | ayahs differing from the rasm |
+|---|---|---:|
+| **ours** | this pipeline | **3** |
+| **V4 layout** | the print's own 1441H layout | **3** |
+| **DigitalKhatt** | the 1421H V2 print | **4** |
+| **quran.com** | `text_uthmani` | **7** |
+
+The union of every disagreement, so nothing is hidden by a total:
+
+| ayah | rasm | ours | V4 layout | DigitalKhatt | quran.com |
+|---|---:|---:|---:|---:|---:|
+| 2:181 | 14 | · | · | · | 13 |
+| 8:6 | 12 | · | · | · | 11 |
+| 13:37 | 20 | · | · | · | 19 |
+| 15:7 | 7 | 8 | 8 | 8 | 8 |
+| 27:20 | 11 | 12 | 12 | 12 | 12 |
+| 36:22 | 7 | 8 | 8 | 8 | 8 |
+| 37:130 | 4 | · | · | 3 | 3 |
+
+`·` = agrees with the rasm.
+
+**Reading it:**
+
+* **15:7, 27:20, 36:22 — every source disagrees, including the print's own V4
+  layout.** No word-marking source gets these right; only the Complex's text
+  does. This is the shared inherited inconsistency of section 3.
+* **37:130** — DigitalKhatt and quran.com still hold one word where the rasm and
+  V4 have two. We used to, and no longer do; that fix is what brings us level
+  with the print's own layout.
+* **2:181, 8:6, 13:37** — quran.com fuses `بَعْدَ مَا`. We already split these
+  (`_DKSEG_SPLITS`), forced independently by p254's line break.
+
+So we now match the print's own layout exactly, and are ahead of DigitalKhatt
+and quran.com. The only remaining gap is the three sites where V4 itself
+departs from the Complex's text — and closing those would put this
+decomposition ahead of every source measured here.
