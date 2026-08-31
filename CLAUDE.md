@@ -2,8 +2,10 @@
 
 Semantic decomposition of the KFGQPC Madani mushaf: every page SVG broken into
 ayah → word → ligature → element → labelled mark, pixel-identical to the
-original artwork. **The artwork is the KFGQPC V2 1441H print (the edition
-Digital Khatt models)** — confirmed by Abdullah 2026-08-26. When a text source
+original artwork. **The artwork is the KFGQPC V4 1441H print.** NOT the V2
+1421H print, and NOT the edition DigitalKhatt's layout DB models — those are a
+different printing, and reading them as the same cost 118 pages of silent line
+drift — measured 2026-08-31, see `docs/EDITION-1441-FINDING.md`. When a text source
 or reference disagrees with the ink, the 1441H print is what the ink IS; judge
 sources against it, not it against sources (the waqf and iqlab notation
 differences in this file all trace to that edition).
