@@ -2295,8 +2295,19 @@
         return {
           id: m.id, family, weight: String(m.id).slice(family.length + 1),
           codepoint: m.codepoint, file: m.file, width: m.width, upem: m.upem,
+          // Where the ayah number goes, in the outline's own coordinates.
+          // U+06DD is a prefixed format control — it is defined to ENCLOSE the
+          // digits after it — so a font that implements it has already answered
+          // this, and `number.source` says whether the value came from the
+          // designer ("font-shaping") or from our reading of the interior
+          // ("derived"). Absent on sets published before this field existed;
+          // a consumer must cope with undefined.
+          number: m.number,
           sources: (m.sources || []).map(s => ({
-            source: s.source, family: s.family, variant: s.variant }))
+            source: s.source, family: s.family, variant: s.variant,
+            // The source font's own terms. Carried through so a consumer can
+            // honour them; the sets we do not redistribute say so themselves.
+            license: s.license }))
         };
       });
       return new MarkerSet(base, records, annotations, fetcher);
