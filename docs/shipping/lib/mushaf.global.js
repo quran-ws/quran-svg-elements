@@ -2517,6 +2517,35 @@
     return { x: b.x, y: b.y, w: b.width, h: b.height };
   }
 
+  /**
+   * The printed numeral's centre, expressed in `host`'s coordinate system.
+   *
+   * THE TWO ARE NOT IN THE SAME SPACE, and this is the whole difficulty. A
+   * marker group holds two children with different transforms:
+   *
+   *   <g transform="translate(…) scale(0.011 -0.011)">  the ring — FONT units
+   *   <g transform="translate(…)">                      the numeral — PAGE units
+   *
+   * so `ring.getBBox()` counts in thousands while `num.getBBox()` counts in tens,
+   * and comparing them directly puts the replacement a long way from the number.
+   * Go through the screen CTMs, which compose every transform above each element
+   * — including the y-flip — and land the point in the space the swap's own
+   * transform is written in.
+   */
+  function numeralCentreIn(group, host) {
+    const num = group.querySelector('[data-kind="ayah-number"]');
+    if (!num || !host || !num.getScreenCTM || !host.getScreenCTM) return null;
+    const b = num.getBBox();
+    if (!(b.width > 0 && b.height > 0)) return null;
+    const hostCTM = host.getScreenCTM(), numCTM = num.getScreenCTM();
+    if (!hostCTM || !numCTM) return null;
+    const svg = num.ownerSVGElement;
+    const pt = svg.createSVGPoint();
+    pt.x = b.x + b.width / 2;
+    pt.y = b.y + b.height / 2;
+    return pt.matrixTransform(hostCTM.inverse().multiply(numCTM));
+  }
+
   /* ------------------------------------------------------------- the swap */
 
   /**
@@ -2568,12 +2597,7 @@
       // so its box centre sits on the join, and box-centring would hang the disc
       // above the number instead of around it.
       const anchor = anchorOnNumber
-        ? measured(page.el, () => {
-            const n = g.querySelector('[data-kind="ayah-number"]');
-            if (!n) return null;
-            const nb = bboxOf(n);
-            return nb.w > 0 ? { x: nb.x + nb.w / 2, y: nb.y + nb.h / 2 } : null;
-          })
+        ? measured(page.el, () => numeralCentreIn(g, ring.parentNode))
         : null;
 
       const swap = buildSwap(outline, box, size, colours,

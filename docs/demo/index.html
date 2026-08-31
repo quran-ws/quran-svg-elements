@@ -4110,20 +4110,28 @@ if (!HIDE_ALL && MARKER) try {
     const g = document.createElementNS(H.SVGNS, 'g');
     g.setAttribute('data-kind', 'ayah-marker-ornament');
     // MOVE THE MARKER, NEVER THE NUMBER.
-    // The numeral is the print's own ink and stays exactly where the King Fahd
-    // Complex put it. Each design records where IT expects the number to sit,
-    // so the replacement is positioned to put its own number-centre on the
-    // printed numeral. Centring the two bounding boxes would be wrong as soon
-    // as a design is not symmetric: 014 is a disc with a pendant, so its box
-    // centre sits on the join and the disc would hang above the number.
+    // The numeral is the print's own ink and stays where the King Fahd Complex
+    // put it. Each design records where IT expects the number, so the
+    // replacement is positioned to put its own number-centre on the numeral.
+    //
+    // MIND THE TWO COORDINATE SPACES. The ring's group is scaled by 0.011 and
+    // y-flipped; the numeral's is a plain translate. So ring.getBBox() counts
+    // in thousands and num.getBBox() in tens, and comparing them directly puts
+    // the marker a long way from the number. Go through the screen CTMs, which
+    // compose every transform above each element, including the flip.
     const num = m.querySelector('[data-kind="ayah-number"]');
     const nb  = rec.number;
     let tx = b.x + b.width/2  - s*(box.x + box.width/2);
     let ty = b.y + b.height/2 - s*(box.y + box.height/2);
     if (num && nb) {
-      const c = num.getBBox();
-      tx = (c.x + c.width/2)  - s*nb.cx;
-      ty = (c.y + c.height/2) - s*nb.cy;
+      const host = ring.parentNode;                 // the space g's transform is in
+      const nbox = num.getBBox();
+      const pt = svg.createSVGPoint();
+      pt.x = nbox.x + nbox.width/2;
+      pt.y = nbox.y + nbox.height/2;
+      const c = pt.matrixTransform(host.getScreenCTM().inverse().multiply(num.getScreenCTM()));
+      tx = c.x - s*nb.cx;
+      ty = c.y - s*nb.cy;
     }
     g.setAttribute('transform', 'translate(' + tx + ' ' + ty + ') scale(' + s + ')');
     for (const l of layers) {
