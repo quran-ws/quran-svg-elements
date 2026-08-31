@@ -379,3 +379,35 @@ Recorded here because the plan depends on them; repeated in the final report.
 3. FORMAT's §11 "colour the dots differently" recipe is correct (`dots` is emitted as a
    single value); `[data-mark-family="waqf"]` is correct; the tanween and reading-sign
    families are the affected ones.
+
+---
+
+## The one-call entry points, and where the line is
+
+`wordTooltip`, `reveal` and `followRecitation` exist for one reason: a library variant
+of a demo that runs as long as the hand-written one is an argument that the library
+buys nothing. The four longest demos measured 108, 72, 36 and 29 lines of library code
+against a plain-JS version that did the same thing.
+
+Reading them, almost none of that length was mushaf work. It was **demo chrome** — a
+transport bar, a tooltip div, a play button — and third-party fetching. So the cut is
+not "one call per demo"; it is:
+
+**Mechanism belongs to the library. Pixels belong to the caller.**
+
+Each of the three owns exactly the part that is repeated, invisible, or easy to get
+silently wrong, and nothing that has a look:
+
+| | the library's half | the caller's half |
+|---|---|---|
+| `wordTooltip` | placement, clamping, once-per-word firing | the element's every style, and what it says |
+| `reveal` | the grey, reading order, the medallion-closes rule | the clock: bar, keypress, scroll, audio |
+| `followRecitation` | the join, the word-count guard, the transport of files | play/pause, the read-out, the error message |
+
+They took the demos to 15, 25, 52 and 55 lines. `reveal`'s 52 is nearly all transport
+bar, and that is the right answer: the library ships no buttons.
+
+Building them surfaced a defect the demo had shipped with — `page.highlight()` resolves
+an element to the `g.word` groups inside it, and a medallion has none, so the "the
+medallion lights with the ayah it closes" line had always painted nothing. `reveal`
+paints those paths directly, and test 22.5 holds it.

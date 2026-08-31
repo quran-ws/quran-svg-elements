@@ -1160,6 +1160,89 @@ try {
       eq('21.54 every marker publishes a single number centre', noCentre, 0);
     }
   }
+  /* ============================================ 22. THE ONE-CALL ENTRY POINTS
+     reveal(), wordTooltip() and followRecitation() each collapse a whole demo
+     into one call. What is tested here is the part the caller can no longer
+     see: the step order, the medallion rule, the placement, and the guard
+     that refuses to zip two disagreeing word counts together. */
+  show(p42);
+  const fill = el => [...el.querySelectorAll('path')].filter(p => p.style.fill).length;
+
+  const rev = M.reveal(p42, { lit: 3 });
+  eq('22.1 one step per word, in reading order',
+     [rev.count, rev.steps[0], rev.steps[146]], [147, p42.words()[0].wid, p42.words()[146].wid]);
+  const revA = M.reveal(p42, { byAyah: true });
+  eq('22.2 by ayah instead', revA.steps, p42.ayahKeys());
+  revA.remove();
+  rev.goto(5);
+  const inked = [...p42.el.querySelectorAll('g.word')].filter(g => fill(g)).map(g => g.dataset.wid);
+  eq('22.3 exactly `lit` steps are inked, ending at the position',
+     inked, rev.steps.slice(3, 6));
+  eq('22.4 and the handle reports where it is', [rev.at, rev.key], [5, rev.steps[5]]);
+
+  /* a medallion belongs to the ayah it CLOSES */
+  const firstAid = p42.ayahKeys()[0];
+  const closesAt = rev.closes.get(firstAid);
+  const medal = p42.ayah(firstAid).marker;
+  rev.goto(closesAt - 1);
+  const dark = fill(medal);
+  rev.goto(closesAt);
+  ok('22.5 a medallion lights only once its ayah is finished',
+     dark === 0 && fill(medal) > 0, { before: dark, after: fill(medal) });
+
+  rev.remove();
+  eq('22.6 remove() puts every path back', fill(p42.el), 0);
+
+  /* ---- wordTooltip: the library owns the placement, not the look ---- */
+  const seen = [];
+  const tip = M.wordTooltip(p42, w => { seen.push(w.wid); return '<b>' + w.wid + '</b>'; },
+                            { className: 'q-tip-test', mount: stage });
+  eq('22.7 the tip carries the caller class and nothing else', tip.el.className, 'q-tip-test');
+  eq('22.8 placement needs exactly one inline rule of ours',
+     [tip.el.parentElement === stage, tip.el.style.position], [true, 'absolute']);
+
+  const hoverBox = p42.word('2:255:3').el.getBoundingClientRect();
+  const at = (x, y) => stage.dispatchEvent(new PointerEvent('pointermove',
+    { clientX: x, clientY: y, bubbles: true }));
+  at(hoverBox.left + hoverBox.width / 2, hoverBox.top + hoverBox.height / 2);
+  eq('22.9 hovering a word renders and shows the tip',
+     [seen, tip.el.classList.contains('on'), tip.el.textContent], [['2:255:3'], true, '2:255:3']);
+  at(hoverBox.left + hoverBox.width / 2, hoverBox.top + hoverBox.height / 2 + 1);
+  eq('22.10 it renders ONCE per word entered, not per pointermove', seen.length, 1);
+  ok('22.11 the tip is placed inside the stage, not off it',
+     parseFloat(tip.el.style.left) >= 4 - 0.01 &&
+     parseFloat(tip.el.style.left) + tip.el.offsetWidth <= stage.getBoundingClientRect().width + 0.01,
+     tip.el.style.left);
+  at(-500, -500);
+  eq('22.12 leaving every word hides it', tip.el.classList.contains('on'), false);
+  tip.remove();
+  eq('22.13 remove() takes the element with it', stage.querySelectorAll('.q-tip-test').length, 0);
+
+  /* ---- followRecitation: the guard, without a network or a speaker ---- */
+  const aidA = p42.ayahKeys()[0], aidB = p42.ayahKeys()[1];
+  const nA = p42.ayah(aidA).words().length;
+  const stub = {
+    [aidA]: ['a.mp3', Array.from({ length: nA }, (_, i) => [i * 500, i * 500 + 400])],
+    [aidB]: ['b.mp3', [[0, 900]]]                    /* deliberately the wrong count */
+  };
+  const foll = await M.followRecitation(p42, { timings: stub, paint: false });
+  eq('22.14 the join keeps the page order and drops nothing',
+     foll.ayahs.map(a => a.aid), [aidA, aidB]);
+  eq('22.15 a word-count disagreement is REPORTED, never zipped',
+     foll.mismatches, [{ aid: aidB, ours: p42.ayah(aidB).words().length, theirs: 1 }]);
+  eq('22.16 and that ayah is followed whole while the other is per word',
+     foll.ayahs.map(a => a.perWord), [true, false]);
+  eq('22.17 segments totalled across the page', foll.segments, nA + 1);
+  eq('22.18 nothing plays until play() is called', [foll.playing, foll.index], [false, -1]);
+  foll.remove();
+  eq('22.19 remove() leaves the ink untouched', fill(p42.el), 0);
+
+  let refused = null;
+  try { await M.followRecitation(p42, { timings: { '99:99': ['x', []] } }); }
+  catch (e) { refused = e.message; }
+  ok('22.20 timings that cover none of this page are an error, not a silent no-op',
+     !!refused, refused);
+
   /* left up on purpose for the interactive drag / resize probes */
   show(p42);
   const live = M.attachSelection(p42, { form: 'uthmani', citation: true });

@@ -330,6 +330,57 @@ export function onWordClick(page, handler, {
   return pointerBinding(page, handler, { event, level, layerOpts, maxDistance, gapBias });
 }
 
+/**
+ * A tooltip that follows the word under the pointer.
+ *
+ * The library owns the PLACEMENT, not the look: it makes one absolutely
+ * positioned <div> in the stage, and every pixel of styling comes from the
+ * className the caller passes. Placement is the part worth sharing — prefer
+ * above the word, fall back to below when there is no room, and clamp to the
+ * stage so a word at either margin does not push the tip off the page.
+ *
+ * `render(word, hit)` returns HTML, a Node, or null/false to stay hidden —
+ * which is how "no entry for this word" is expressed without a second call.
+ *
+ * @param className    the caller's class; the library adds nothing else
+ * @param visibleClass toggled on the element while the tip is showing
+ * @param gap          px between the word's box and the tip
+ * @param pad          px kept clear of the stage edges
+ */
+export function wordTooltip(page, render, {
+  mount = null, className = 'mushaf-tip', visibleClass = 'on', gap = 8, pad = 4, ...hoverOpts
+} = {}) {
+  const svg = page.el;
+  const doc = svg.ownerDocument;
+  const stage = mount || svg.parentElement;
+  if (!stage) throw new Error('the page must be mounted before a tooltip can be placed');
+
+  const tip = doc.createElement('div');
+  tip.className = className;
+  tip.setAttribute('role', 'tooltip');
+  tip.style.position = 'absolute';       /* the one rule placement depends on */
+  stage.appendChild(tip);
+
+  const hide = () => tip.classList.remove(visibleClass);
+
+  const hover = onWordHover(page, (hit, ev) => {
+    const body = render(hit.word, hit, ev);
+    if (body == null || body === false) return hide();
+    if (body instanceof Node) tip.replaceChildren(body);
+    else tip.innerHTML = String(body);
+    tip.classList.add(visibleClass);
+
+    const host = stage.getBoundingClientRect();
+    const box = (hit.span || hit.word.el).getBoundingClientRect();
+    const above = box.top - host.top - tip.offsetHeight - gap;
+    tip.style.top = (above > pad ? above : box.bottom - host.top + gap) + 'px';
+    const x = box.left - host.left + box.width / 2 - tip.offsetWidth / 2;
+    tip.style.left = Math.max(pad, Math.min(x, host.width - tip.offsetWidth - pad)) + 'px';
+  }, { mount: stage, ...hoverOpts, onLeave: hide });
+
+  return { el: tip, hide, remove() { hover.remove(); tip.remove(); } };
+}
+
 /** One-shot query without keeping a binding alive. */
 export function wordAt(page, clientX, clientY, opts = {}) {
   const hl = acquireHitLayer(page, opts);
