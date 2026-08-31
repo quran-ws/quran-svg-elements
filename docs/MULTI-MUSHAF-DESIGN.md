@@ -46,7 +46,7 @@ ten qiraat, their rawis, and the counting systems. **Nothing here is invented.**
     data-mushaf="hafs-kfqc"              the directory/bundle key
     data-qiraa="asim"
     data-riwaya="hafs"
-    data-edition="kfgqpc-1421"
+    data-edition="kfgqpc-1441"
     data-riwaya-name-ar="حفص عن عاصم"    the conventional name: rawi عن qiraa
     data-riwaya-name-en="Hafs 'an Asim"
     data-ayah-numbering="kufi"           see §2 — must be explicit

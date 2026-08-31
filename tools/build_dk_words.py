@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a word cache from the DigitalKhatt layout of the KFGQPC V2 1421H print.
+"""Build a word cache from the DigitalKhatt layout of the KFGQPC V2 1441H print.
 
 quran.com's mushaf-2 layout is wrong about which words are on the page for 25
 pages (reported.json item 21; 18 of them in juz 29-30 — the juz-30 mechanism).
@@ -162,7 +162,7 @@ def main():
                                verses.items(),
                                key=lambda kv: tuple(int(x) for x in
                                                     kv[0].split(":")))],
-                "source": "digitalkhatt-1421H layout + uthmani text"}
+                "source": "digitalkhatt-1441H layout + uthmani text"}
         json.dump(data, open(os.path.join(OUT, "page-%03d.json" % pg), "w",
                              encoding="utf-8"), ensure_ascii=False)
     print("wrote pages %d-%d to %s | words with no uthmani join (kept "
