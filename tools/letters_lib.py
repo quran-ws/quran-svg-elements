@@ -495,10 +495,12 @@ def _nearest_true(mask, rc, max_px):
     return best[1] if best else None
 
 
-_FOUR = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool)
+# connectivity for the painted-strip components: 8-connected, like the ink itself (a
+# one-pixel diagonal bridge in a thin stroke is still the same stroke)
+_FOUR = np.ones((3, 3), dtype=bool)
 
 def _paint(cut, x0, y0, z, W, H):
-    ext = 4.0 / z
+    ext = 2.5 / z
     A, B = cut[0], cut[-1]
     ua = (A[0] - cut[1][0], A[1] - cut[1][1])
     ub = (B[0] - cut[-2][0], B[1] - cut[-2][1])
@@ -547,18 +549,20 @@ def split_by_cut(ink, cut, x0, y0, z):
 
 def cut_run(d, cuts, refs=None, z=8, tol=0.005):
     """Split the run `d` (one evenodd path) by `cuts` in READING ORDER (cut k lies
-    between letter k and k+1) into len(cuts)+1 pieces.
+    between letter k and k+1) into len(cuts)+1 pieces. A cut is a polyline or a list
+    of polylines (a medial kaf meets its neighbour at two places).
 
-    All cuts are painted one pixel wide over the run's raster at once; the ink then
-    falls into components, and letter k is the component holding `refs[k]` (a point on
-    its ink) plus any unclaimed component nearest to it. The exact piece is the run
-    intersected with the letter's one-pixel envelope, where inside the painted line
-    pixels the envelope is replaced by the chord's own half-plane — so every boundary
-    curve is the run's own except the chord, and the chord acts nowhere else. Without
-    refs, letter k is the right flank of cut k.
+    All cuts are painted three pixels wide over the run's raster at once; the ink then
+    falls into components. `refs[k]` is letter k's anchor point or list of anchor
+    points (one per ink region of the letter); every component holding one of them
+    is letter k's, and a component holding none goes to the nearest claimed one. The
+    exact piece is the run intersected with the letter's one-pixel envelope, where
+    inside the painted strips the envelope is replaced by each chord's half-plane —
+    so every boundary curve is the run's own except the chords, which act nowhere
+    else. Without refs, letter k is the right flank of cut k.
 
-    Raises CutError when a cut does not separate letters k and k+1, two references
-    share a component, a piece is empty, or the area balance breaks."""
+    Raises CutError when a chord does not separate letters k and k+1, two letters'
+    anchors share a component, a piece is empty, or the area balance breaks."""
     from scipy import ndimage
     run = to_path(d)
     run.simplify()
@@ -566,6 +570,7 @@ def cut_run(d, cuts, refs=None, z=8, tol=0.005):
     if not cuts:
         return [path_d(run)]
     n = len(cuts) + 1
+    cuts = [c if (c and not isinstance(c[0][0], (int, float))) else [c] for c in cuts]
     polys = flatten(d)
     bx0, by0, bx1, by1 = bbox(polys)
     pad = 1.0
@@ -582,68 +587,72 @@ def cut_run(d, cuts, refs=None, z=8, tol=0.005):
         return (x0 + (q[1] + 0.5) / z, y0 + (q[0] + 0.5) / z)
 
     for k, cut in enumerate(cuts):
-        if len(cut) < 2:
-            raise CutError("degenerate cut", piece=k)
-    lines = [_paint(cut, x0, y0, z, W, H) for cut in cuts]
+        for pl in cut:
+            if len(pl) < 2:
+                raise CutError("degenerate cut", piece=k)
+    strips = [[_paint(pl, x0, y0, z, W, H) for pl in cut] for cut in cuts]
+    lines = [np.any(st, axis=0) for st in strips]
     LR = np.any(lines, axis=0)
     free = ink & ~LR
     lab, ncomp = ndimage.label(free, structure=_FOUR)
     sizes = np.bincount(lab.ravel())
     min_px = max(20, int(0.02 * ink.sum()))
-    # the two flanks of every chord
-    flanks = []
+    # the two flanks of every chord polyline
+    flanks = []          # per cut: list per polyline of ((cid, pt), (cid, pt))
     for k, cut in enumerate(cuts):
-        A, B = cut[0], cut[-1]
-        dx, dy = B[0] - A[0], B[1] - A[1]
-        nn = math.hypot(dx, dy) or 1e-9
-        nrm = (-dy / nn, dx / nn)
-        got = None
-        for mid in _along(cut, [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.1, 0.9]):
-            pair = []
-            for sgn in (1, -1):
-                q = rc((mid[0] + nrm[0] * sgn * 3.0 / z, mid[1] + nrm[1] * sgn * 3.0 / z))
-                q = _nearest_true(free, q, 3)
-                pair.append((int(lab[q]), xy(q)) if q else (0, None))
-            if pair[0][0] and pair[1][0] and pair[0][0] != pair[1][0] \
-                    and sizes[pair[0][0]] >= min_px and sizes[pair[1][0]] >= min_px:
-                got = pair
-                break
-        if got is None:
-            raise CutError("cut does not separate", piece=k)
-        flanks.append(got)
-    # component → letter
+        fl = []
+        for pl in cut:
+            A, B = pl[0], pl[-1]
+            dx, dy = B[0] - A[0], B[1] - A[1]
+            nn = math.hypot(dx, dy) or 1e-9
+            nrm = (-dy / nn, dx / nn)
+            got = None
+            for mid in _along(pl, [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.1, 0.9]):
+                pair = []
+                for sgn in (1, -1):
+                    q = rc((mid[0] + nrm[0] * sgn * 3.0 / z, mid[1] + nrm[1] * sgn * 3.0 / z))
+                    q = _nearest_true(free, q, 3)
+                    pair.append((int(lab[q]), xy(q)) if q else (0, None))
+                if pair[0][0] and pair[1][0] and pair[0][0] != pair[1][0] \
+                        and sizes[pair[0][0]] >= min_px and sizes[pair[1][0]] >= min_px:
+                    got = pair
+                    break
+            if got is None:
+                raise CutError("cut does not separate", piece=k)
+            fl.append(got)
+        flanks.append(fl)
+    # component → letter, from the anchors
     owner = {}
     refs = list(refs or []) + [None] * n
     for k in range(n):
-        if refs[k] is None:
+        pts = refs[k]
+        if pts is None:
             continue
-        q = _nearest_true(free, rc(refs[k]), int(0.8 * z) + 1)
-        cid = int(lab[q]) if q else 0
-        if not cid:
+        if pts and isinstance(pts[0], (int, float)):
+            pts = [pts]
+        for p in pts:
+            q = _nearest_true(free, rc(p), int(0.8 * z) + 1)
+            cid = int(lab[q]) if q else 0
+            if not cid:
+                continue
+            if cid in owner and owner[cid] != k:
+                raise CutError("references share a component", piece=k)
+            owner[cid] = k
+        if not any(v == k for v in owner.values()):
             raise CutError("reference off the ink", piece=k)
-        if cid in owner and owner[cid] != k:
-            raise CutError("references share a component", piece=k)
-        owner[cid] = k
-    # letters without a reference: right flank of cut k is letter k; the left flank of
-    # the last cut is the last letter
     for k in range(n - 1):
-        if refs[k] is None:
-            (ca, pa), (cb, pb) = flanks[k]
+        if refs[k] is None or not refs[k]:
+            (ca, pa), (cb, pb) = flanks[k][0]
             right = ca if pa[0] >= pb[0] else cb
             other = cb if right == ca else ca
             owner.setdefault(right if right not in owner else other, k)
-    if refs[n - 1] is None:
-        (ca, pa), (cb, pb) = flanks[-1]
+    if refs[n - 1] is None or not refs[n - 1]:
+        (ca, pa), (cb, pb) = flanks[-1][0]
         left = ca if pa[0] < pb[0] else cb
         other = cb if left == ca else ca
         owner.setdefault(left if left not in owner else other, n - 1)
-    # every cut must separate letters k and k+1
-    for k, ((ca, pa), (cb, pb)) in enumerate(flanks):
-        la, lb = owner.get(ca), owner.get(cb)
-        if {la, lb} != {k, k + 1}:
-            raise CutError("cut does not separate its letters", piece=k, letters=(la, lb))
-    # unclaimed components go to the nearest reference / claimed component
-    claimed = {cid: k for cid, k in owner.items()}
+    # unclaimed components (fragments a strip carved off) go to the nearest claimed one
+    claimed = dict(owner)
     for cid in range(1, ncomp + 1):
         if cid in owner:
             continue
@@ -651,32 +660,44 @@ def cut_run(d, cuts, refs=None, z=8, tol=0.005):
         best = None
         for oc, k in claimed.items():
             oys, oxs = np.nonzero(lab == oc)
-            dd = np.min(np.hypot(xs[:, None] - oxs[None, ::max(1, len(oxs) // 400)],
-                                 ys[:, None] - oys[None, ::max(1, len(oys) // 400)]))
+            step = max(1, len(oxs) // 400)
+            dd = np.min(np.hypot(xs[:, None] - oxs[None, ::step], ys[:, None] - oys[None, ::step]))
             if best is None or dd < best[0]:
                 best = (dd, k)
         owner[cid] = best[1] if best else 0
+    # every chord must separate letters k and k+1
+    for k, fl in enumerate(flanks):
+        for j, ((ca, pa), (cb, pb)) in enumerate(fl):
+            la, lb = owner.get(ca), owner.get(cb)
+            if la is None or lb is None:
+                raise CutError("cut does not separate its letters", piece=k, letters=(la, lb))
+            if len(fl) == 1:
+                ok = {la, lb} == {k, k + 1}
+            else:            # a chord set: each chord parts a letter ≤ k from a letter > k
+                ok = min(la, lb) <= k < max(la, lb)
+            if not ok:
+                raise CutError("cut does not separate its letters", piece=k, letters=(la, lb))
     letter_mask = [np.zeros(ink.shape, dtype=bool) for _ in range(n)]
     for cid, k in owner.items():
         letter_mask[k] |= lab == cid
     pieces = []
     for k in range(n):
-        env = ndimage.binary_dilation(letter_mask[k], structure=_FOUR, iterations=1)
+        env = ndimage.binary_dilation(letter_mask[k], iterations=1)
         for j in range(n):
             if j != k:
                 env &= ~letter_mask[j]
-        others = np.zeros(ink.shape, dtype=bool)
-        for j in range(len(cuts)):
-            if j not in (k - 1, k):
-                others |= lines[j]
-        region = _mask_path((env & ~LR) | (env & others & ~np.any([lines[j] for j in (k - 1, k) if 0 <= j < len(cuts)], axis=0)), x0, y0, z)
+        adjacent = np.zeros(ink.shape, dtype=bool)
         for j in (k - 1, k):
             if 0 <= j < len(cuts):
-                (ca, pa), (cb, pb) = flanks[j]
-                side_pt = pa if owner.get(ca) == k else pb
-                hp = _poly_path(half_plane(cuts[j], side_pt, box))
-                region = pathops.op(region, pathops.op(_mask_path(lines[j], x0, y0, z), hp, pathops.PathOp.INTERSECTION),
-                                    pathops.PathOp.UNION)
+                adjacent |= lines[j]
+        region = _mask_path((env & ~LR) | (env & LR & ~adjacent), x0, y0, z)
+        for j in (k - 1, k):
+            if 0 <= j < len(cuts):
+                for pl, strip, ((ca, pa), (cb, pb)) in zip(cuts[j], strips[j], flanks[j]):
+                    side_pt = pa if owner.get(ca) == k else pb
+                    hp = _poly_path(half_plane(pl, side_pt, box))
+                    region = pathops.op(region, pathops.op(_mask_path(strip, x0, y0, z), hp, pathops.PathOp.INTERSECTION),
+                                        pathops.PathOp.UNION)
         piece = pathops.op(run, region, pathops.PathOp.INTERSECTION)
         piece.simplify()
         if abs(piece.area) < 0.05:

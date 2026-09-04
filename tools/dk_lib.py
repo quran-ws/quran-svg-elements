@@ -202,11 +202,14 @@ def refine_templates(ink, masks, z, reach=1.3, order_tol=0.4):
     return out
 
 
-def centroids(labels, meta):
+def centroids(labels, meta, n=None):
     """Per letter: the labelled ink pixel nearest the label's centroid (a point ON the
-    letter's ink — a bowl's true centroid lies in empty space)."""
+    letter's ink — a bowl's true centroid lies in empty space). None for a letter with
+    no labelled pixel; the list has `n` entries (default: the number of templates)."""
     out = []
-    for i in range(int(labels.max()) + 1):
+    if n is None:
+        n = len(meta.get("masks", [])) or int(labels.max()) + 1
+    for i in range(n):
         ys, xs = np.nonzero(labels == i)
         if not len(xs):
             out.append(None)
@@ -214,6 +217,40 @@ def centroids(labels, meta):
         cx, cy = xs.mean(), ys.mean()
         k = int(np.argmin((xs - cx) ** 2 + (ys - cy) ** 2))
         out.append((meta["x0"] + (xs[k] + 0.5) / meta["z"], meta["y0"] + (ys[k] + 0.5) / meta["z"]))
+    return out
+
+
+def anchors(labels, meta, n=None, min_px=15, min_frac=0.15):
+    """Per letter: one ink point per connected region of its label (a medial kaf is an
+    arm AND a baseline; a letter is every region its label covers). Each region's
+    point is the region pixel nearest the region's centroid; regions under min_px or
+    under min_frac of the letter's pixels are dropped. The first entry of each list is
+    the largest region's point (the reference used to walk from)."""
+    if n is None:
+        n = len(meta.get("masks", [])) or int(labels.max()) + 1
+    z, x0, y0 = meta["z"], meta["x0"], meta["y0"]
+    masks = meta.get("masks")
+    out = []
+    for i in range(n):
+        m = labels == i
+        tot = int(m.sum())
+        pts = []
+        if tot:
+            lab, k = ndimage.label(m, structure=np.ones((3, 3), dtype=bool))
+            sizes = np.bincount(lab.ravel())
+            covered = ndimage.binary_dilation(masks[i], iterations=2) if masks is not None else None
+            for rank, cid in enumerate(sorted(range(1, k + 1), key=lambda c: -sizes[c])):
+                if sizes[cid] < max(min_px, min_frac * tot):
+                    continue
+                # a second region counts only when the letter's own template covers it:
+                # the label bleeds into neighbours where no template reaches
+                if rank > 0 and covered is not None and (covered & (lab == cid)).sum() < 0.6 * sizes[cid]:
+                    continue
+                ys, xs = np.nonzero(lab == cid)
+                cx, cy = xs.mean(), ys.mean()
+                j = int(np.argmin((xs - cx) ** 2 + (ys - cy) ** 2))
+                pts.append((x0 + (xs[j] + 0.5) / z, y0 + (ys[j] + 0.5) / z))
+        out.append(pts)
     return out
 
 
@@ -284,39 +321,42 @@ def side_agreement(labels, meta, piece_masks):
     return out
 
 
-def joint_of_cut(labels, meta, poly, refs=None):
-    """Which joint a cut polyline closes: paint it over the run's ink and see on which
-    side each letter's reference point falls. Valid when the letters split as
-    {0..j} | {j+1..}; returns j, else None."""
+def joint_of_cut(labels, meta, polys, anchors_=None):
+    """Which joint a cut (one or more polylines) closes: paint it over the run's ink
+    and see on which side every ink region of every letter falls. Valid when all of a
+    letter's regions agree and the letters split as {0..j} | {j+1..}; returns j."""
     ink, z, x0, y0 = meta["ink"], meta["z"], meta["x0"], meta["y0"]
-    if refs is None:
-        refs = centroids(labels, meta)
-    if any(r is None for r in refs):
+    n = len(meta["masks"])
+    if anchors_ is None:
+        anchors_ = anchors(labels, meta, n)
+    if any(not a for a in anchors_):
         return None
-    got = L.split_by_cut(ink, poly, x0, y0, z)
-    if got is None:
-        return None
-    lab, line, (ia, ib) = got
-    free = ink & ~line
+    if polys and isinstance(polys[0][0], (int, float)):
+        polys = [polys]
     H, W = ink.shape
-    side = []
-    for r in refs:
-        q = L._nearest_true(free, (min(H - 1, max(0, int((r[1] - y0) * z))), min(W - 1, max(0, int((r[0] - x0) * z)))), 3)
-        cid = int(lab[q]) if q else 0
-        if cid == ia:
-            side.append(0)
-        elif cid == ib:
-            side.append(1)
-        else:
+    strip = np.zeros(ink.shape, dtype=bool)
+    for poly in polys:
+        strip |= L._paint(poly, x0, y0, z, W, H)
+    free = ink & ~strip
+    lab, _n = ndimage.label(free, structure=L._FOUR)
+    comp = []
+    for pts in anchors_:
+        ids = set()
+        for p in pts:
+            q = L._nearest_true(free, (min(H - 1, max(0, int((p[1] - y0) * z))), min(W - 1, max(0, int((p[0] - x0) * z)))), 3)
+            ids.add(int(lab[q]) if q else 0)
+        if 0 in ids:
             return None
-    n = len(side)
-    right = side[0]
-    j = 0
-    while j < n and side[j] == right:
-        j += 1
-    if j == 0 or j == n or any(sd == right for sd in side[j:]):
-        return None
-    return j - 1
+        comp.append(ids)
+    # letters split into two groups of components: {0..j} and {j+1..}
+    for j in range(n - 1):
+        a = set().union(*comp[:j + 1])
+        b = set().union(*comp[j + 1:])
+        if a & b:
+            continue
+        # the cut must be what separates them: without it they would be one
+        return j
+    return None
 
 
 def _chord_at(run_polys, ink, ink_d, dt, c, x0, y0, z, radius=1.5, md_max=0.35):
@@ -365,93 +405,121 @@ def _core(mask, ink):
     return mask & ink
 
 
-def joint_cut(run_polys, labels, meta, i, refs=None):
-    """The cut between letter i and i+1. The stroke's centre line is walked from
-    letter i's reference point (an ink pixel at the middle of its label region) to
-    letter i+1's. Every point of that walk is tried for the shortest crossing of the
-    stroke through it; a crossing counts when painting it separates the two reference
-    points (a chord across a loop's wall never does: the ring connects around it, so a
-    loop letter is cut right after its loop). Of the crossings that count, the last
-    one before letter i+1's template region begins is the joint — the connecting
-    stroke stays with the letter it leaves — or the first one when that region begins
-    before any crossing does."""
+def _path(ink, cost, src_pts, dst_pts, blocked):
+    """Cheapest path through ink (minus `blocked`) from any of src_pts to any of
+    dst_pts; None when disconnected."""
     import heapq
-    ink, masks, z, x0, y0 = meta["ink"], meta["masks"], meta["z"], meta["x0"], meta["y0"]
-    if i + 1 >= len(masks):
-        return None
-    if refs is None:
-        refs = centroids(labels, meta)
-    if refs[i] is None or refs[i + 1] is None:
-        return None
     H, W = ink.shape
-
-    def rc(p):
-        return (min(H - 1, max(0, int((p[1] - y0) * z))), min(W - 1, max(0, int((p[0] - x0) * z))))
-
-    origin, target = rc(refs[i]), rc(refs[i + 1])
-    if not ink[origin] or not ink[target]:
-        return None
-    dt = ndimage.distance_transform_edt(ink)
-    ink_d = ndimage.binary_dilation(ink, iterations=1)
-    cost = 1.0 / (dt + 0.5)
+    free = ink & ~blocked
     dist = np.full(ink.shape, np.inf)
     prev = {}
-    dist[origin] = 0.0
-    pq = [(0.0, origin[0], origin[1])]
-    found = False
+    pq = []
+    for p in src_pts:
+        if free[p]:
+            dist[p] = 0.0
+            pq.append((0.0, p[0], p[1]))
+    heapq.heapify(pq)
+    dst = set(dst_pts)
     while pq:
         g, r, c = heapq.heappop(pq)
         if g > dist[r, c]:
             continue
-        if (r, c) == target:
-            found = True
-            break
+        if (r, c) in dst:
+            path = [(r, c)]
+            while path[-1] in prev:
+                path.append(prev[path[-1]])
+            return path[::-1]
         for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)):
             nr, nc = r + dr, c + dc
-            if 0 <= nr < H and 0 <= nc < W and ink[nr, nc]:
+            if 0 <= nr < H and 0 <= nc < W and free[nr, nc]:
                 ng = g + cost[nr, nc] * (1.4142 if dr and dc else 1.0)
                 if ng < dist[nr, nc]:
                     dist[nr, nc] = ng
                     prev[(nr, nc)] = (r, c)
                     heapq.heappush(pq, (ng, nr, nc))
-    if not found:
+    return None
+
+
+def joint_cut(run_polys, labels, meta, i, anchors_=None, max_chords=4):
+    """The cut between letter i and i+1: the set of chords (usually one) that separates
+    every ink region of letters ≤ i from every region of letters > i.
+
+    Repeat until no path connects the two sides through ink not yet painted: take the
+    cheapest path (along the stroke's centre line), try every point on it for the
+    shortest crossing of the stroke through it, keep the crossings that separate the
+    path's two ends, and choose the FIRST one after letter i's template ends — the
+    connecting stroke belongs to the letter it enters — or the first one at all when
+    the template overshoots. A chord across a loop's wall never separates (the ring
+    connects around it), so a loop letter is cut right after its loop. A medial kaf
+    needs two chords (its arm and its baseline both meet the stem); the second comes
+    from the second path."""
+    ink, masks, z, x0, y0 = meta["ink"], meta["masks"], meta["z"], meta["x0"], meta["y0"]
+    n = len(masks)
+    if i + 1 >= n:
         return None
-    path = [target]
-    while path[-1] in prev:
-        path.append(prev[path[-1]])
-    path = path[::-1]
-    in_b = ndimage.binary_dilation(masks[i + 1], iterations=1)
-    entry_b = next((k for k, p in enumerate(path) if in_b[p]), None)
-    hits = []                                      # (k, chord) along the walk
-    tried = set()
-    for k in range(0, len(path), 2):
-        r, c = path[k]
-        key = (r // 2, c // 2)
-        if key in tried:
-            continue
-        tried.add(key)
-        cpt = (x0 + (c + 0.5) / z, y0 + (r + 0.5) / z)
-        cand = _chord_at(run_polys, ink, ink_d, dt, cpt, x0, y0, z, radius=1.4, md_max=0.3)
-        if cand is None:
-            continue
-        got = L.split_by_cut(ink, cand["poly"], x0, y0, z)
-        if got is None:
-            continue
-        lab, line, ids = got
-        free = ink & ~line
-        qo = L._nearest_true(free, origin, 3)
-        qt = L._nearest_true(free, target, 3)
-        if qo is None or qt is None or lab[qo] == lab[qt] or lab[qo] == 0 or lab[qt] == 0:
-            continue
-        hits.append((k, cand))
-    if not hits:
+    if anchors_ is None:
+        anchors_ = anchors(labels, meta, n)
+    H, W = ink.shape
+
+    def rc(p):
+        return (min(H - 1, max(0, int((p[1] - y0) * z))), min(W - 1, max(0, int((p[0] - x0) * z))))
+
+    left = [rc(p) for k in range(i + 1) for p in anchors_[k]]
+    right = [rc(p) for k in range(i + 1, n) for p in anchors_[k]]
+    primary = {rc(a[0]) for a in anchors_ if a}          # each letter's main region
+    left = [p for p in left if ink[p]]
+    right = [p for p in right if ink[p]]
+    if not left or not right:
         return None
-    if entry_b is not None:
-        before = [(k, c) for k, c in hits if k <= entry_b]
-        k, cand = before[-1] if before else hits[0]
+    dt = ndimage.distance_transform_edt(ink)
+    ink_d = ndimage.binary_dilation(ink, iterations=1)
+    cost = 1.0 / (dt + 0.5)
+    in_a = ndimage.binary_dilation(masks[i], iterations=1)
+    blocked = np.zeros(ink.shape, dtype=bool)
+    chords = []
+    for nchord in range(max_chords):
+        path = _path(ink, cost, left, right, blocked)
+        if path is None:
+            break
+        if nchord and path[-1] in primary:
+            # a second chord only ever serves a right-side letter's SECOND region (a
+            # medial kaf's baseline); a main region still joined after the first chord
+            # means the first chord is wrong, not that another is missing
+            return None
+        exit_a = next((k for k, p in enumerate(path) if not in_a[p]), None)
+        hits = []
+        tried = set()
+        for k in range(0, len(path), 2):
+            r, c = path[k]
+            key = (r // 2, c // 2)
+            if key in tried:
+                continue
+            tried.add(key)
+            cpt = (x0 + (c + 0.5) / z, y0 + (r + 0.5) / z)
+            cand = _chord_at(run_polys, ink, ink_d, dt, cpt, x0, y0, z, radius=1.4, md_max=0.3)
+            if cand is None:
+                continue
+            strip = L._paint(cand["poly"], x0, y0, z, W, H)
+            if any(strip[p] for p in left + right):
+                continue                          # a chord over an anchor decides nothing
+            free = ink & ~blocked & ~strip
+            lab, _n = ndimage.label(free, structure=L._FOUR)
+            if lab[path[0]] == 0 or lab[path[-1]] == 0 or lab[path[0]] == lab[path[-1]]:
+                continue
+            hits.append((k, cand, strip))
+        if not hits:
+            return None
+        after = [h for h in hits if exit_a is not None and h[0] >= exit_a]
+        k, cand, strip = after[0] if after else hits[0]
+        cand["walk"] = float(k / z)
+        chords.append(cand)
+        blocked |= strip
     else:
-        k, cand = hits[len(hits) // 2]
-    cand["walk"] = float(k / z)
-    cand["stretch"] = [float(hits[0][0] / z), float(hits[-1][0] / z)]
-    cand["how"] = "path"
-    return cand
+        return None
+    if not chords:
+        return None
+    # still connected after max_chords?  (the for-else above returns None in that case)
+    res = {"poly": chords[0]["poly"], "polys": [c["poly"] for c in chords],
+           "neck": max(c["neck"] for c in chords), "boundary_dist": chords[0]["boundary_dist"],
+           "thick": chords[0]["thick"], "walk": chords[0]["walk"], "how": "path", "chords": len(chords)}
+    return res

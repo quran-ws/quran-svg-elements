@@ -53,22 +53,44 @@ def _piece_masks(pieces, meta):
 
 def align_runs(word):
     """Pair the emitted ligature groups (with body ink) to the letter indices they
-    draw, using each group's data-text. Returns (letters, [(lig, [letter idx…])…]) or
-    (letters, None) when the texts do not concatenate to the word's rasm."""
+    draw. The groups are not in reading order in the file, so they are ordered by ink
+    position (rightmost first) and their texts must then concatenate to the word's
+    rasm — the emitter's runs are the truth of the INK, which joins letters the rules
+    split (كفروا drawn as one stroke) and splits some the rules join. When ink order
+    fails (stacked groups overlap in x) the groups are matched by text against the
+    rule-based runs instead. A bare ء drawn as its own group becomes a body letter.
+    Returns (letters, [(lig, [letter idx…])…] in reading order) or (letters, None)."""
     letters = L.letters_of(word["uthmani"])
-    rasm = "".join(l["ch"] for l in letters if l["body"])
     ligs = [l for l in word["ligatures"] if any(p["kind"] == "body" for p in l["paths"])]
+    if any(l["text"] == "ء" for l in ligs):
+        for l in letters:
+            if l["ch"] == "ء" and not l["body"]:
+                l["body"] = True
+                l["marks"] = [m for m in l["marks"] if m != "hamza"]
     body_idx = [i for i, l in enumerate(letters) if l["body"]]
-    pos, out = 0, []
-    for lig in ligs:
-        t = lig["text"]
-        if rasm[pos:pos + len(t)] != t:
-            return letters, None
-        out.append((lig, body_idx[pos:pos + len(t)]))
-        pos += len(t)
-    if pos != len(rasm):
+    rasm = "".join(letters[i]["ch"] for i in body_idx)
+
+    def xpos(l):
+        return max(L.bbox(L.flatten(p["d"]))[2] for p in l["paths"] if p["kind"] == "body" and p["d"])
+
+    ordered = sorted(ligs, key=xpos, reverse=True)
+    if "".join(l["text"] for l in ordered) == rasm:
+        out, pos = [], 0
+        for l in ordered:
+            out.append((l, body_idx[pos:pos + len(l["text"])]))
+            pos += len(l["text"])
+        return letters, out
+    runs = [r for r in L.runs_of(letters) if letters[r[0]]["body"]]
+    expected = ["".join(letters[i]["ch"] for i in r) for r in runs]
+    texts = [l["text"] for l in ligs]
+    if sorted(expected) != sorted(texts):
         return letters, None
-    return letters, out
+    by_text = {}
+    for l in ligs:
+        by_text.setdefault(l["text"], []).append(l)
+    for t in by_text:
+        by_text[t].sort(key=xpos, reverse=True)
+    return letters, [(by_text[t].pop(0), idx) for t, idx in zip(expected, runs)]
 
 
 def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
@@ -98,7 +120,9 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     mm = L.raster(main_polys, mx0, my0, meta["shape"][1] / z_, meta["shape"][0] / z_, z_)[:meta["shape"][0], :meta["shape"][1]]
     main_mask = np.zeros(meta["shape"], dtype=bool)
     main_mask[:mm.shape[0], :mm.shape[1]] = mm
-    refs = D.centroids(np.where(main_mask, labels, -1), meta)
+    anchors_ = D.anchors(np.where(main_mask, labels, -1), meta, n=n)
+    refs = [a[0] if a else None for a in anchors_]
+    rec["anchors"] = [[[round(x, 3), round(y, 3)] for x, y in a] for a in anchors_]
     rec["refs"] = [[round(r[0], 3), round(r[1], 3)] if r else None for r in refs]
     # --- hand cuts, each mapped to the joint its midpoint sits on
     cuts = {}
@@ -108,7 +132,7 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
                 continue
             lp = font.outline_page(name, scale, pair["tx"], pair["ty"])
             for c in T.lift_cuts(lp, word_tree, main_polys):
-                j = D.joint_of_cut(labels, meta, c, refs=refs)
+                j = D.joint_of_cut(labels, meta, c, anchors_=anchors_)
                 if j is None or j >= n - 1:
                     rec["flags"].append("hand-cut-unmapped")
                     continue
@@ -121,7 +145,7 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     for i in range(n - 1):
         if i in cuts:
             continue
-        nc = D.joint_cut(rp, labels, meta, i, refs=refs)
+        nc = D.joint_cut(rp, labels, meta, i, anchors_=anchors_)
         if nc is None:
             rec["flags"].append("neck-missing:%d" % i)
             continue
@@ -129,8 +153,9 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
         if nc["thick"] > 0:
             conf *= min(1.0, nc["thick"] / max(nc["neck"], 1e-6))      # a long chord for its stroke
         conf *= max(0.0, 1.0 - nc["boundary_dist"] / 1.5)
-        cuts[i] = {"poly": [(round(x, 3), round(y, 3)) for x, y in nc["poly"]], "src": "dk",
-                   "how": nc.get("how", "neck"),
+        cuts[i] = {"poly": [(round(x, 3), round(y, 3)) for x, y in nc["poly"]],
+                   "polys": [[(round(x, 3), round(y, 3)) for x, y in pl] for pl in nc.get("polys", [nc["poly"]])],
+                   "src": "dk", "how": nc.get("how", "neck"),
                    "after": i, "conf": round(conf, 3), "neck": round(nc["neck"], 3),
                    "boundary_dist": round(nc["boundary_dist"], 3), "thick": round(nc["thick"], 3)}
     ordered = [cuts[i] for i in range(n - 1) if i in cuts]
@@ -139,7 +164,7 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     # --- dry run of the full set, and side agreement with the labels
     if ordered and "incomplete" not in rec["flags"]:
         try:
-            pieces = L.cut_run(main["d"], [c["poly"] for c in ordered], refs=refs)
+            pieces = L.cut_run(main["d"], [c.get("polys", [c["poly"]]) for c in ordered], refs=anchors_)
         except L.CutError as e:
             rec["flags"].append("cut-failed:%s" % e.why)
             pieces = None

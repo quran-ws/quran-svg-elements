@@ -158,9 +158,9 @@ def emit_word(word, wrec):
             notes.append("run-unsplit:%s:%s" % (lig["text"], ",".join(blocking) or "incomplete"))
             continue
         main = next(p for p in bodies if p["eid"] == rec["main"])
-        refs = [tuple(r) if r else None for r in rec.get("refs", [])]
+        refs = rec.get("anchors") or [[tuple(r)] if r else [] for r in rec.get("refs", [])]
         try:
-            pieces = L.cut_run(main["d"], [c["poly"] for c in cuts], refs=refs)
+            pieces = L.cut_run(main["d"], [c.get("polys", [c["poly"]]) for c in cuts], refs=refs)
         except L.CutError as e:
             unsplit[ri] = idx
             for p in bodies:
