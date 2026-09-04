@@ -46,17 +46,39 @@ class Geometry(unittest.TestCase):
         # right piece first
         self.assertGreater(L.bbox(L.flatten(pieces[0]))[0], 4.9)
 
-    def test_cut_two_cuts_ordered_right_to_left(self):
-        pieces = L.cut_run(SQUARE, [[(3, -1), (3, 11)], [(7, -1), (7, 11)]])
+    def test_cut_two_cuts_in_reading_order(self):
+        # cuts come in reading order: cut k closes letter k, the rightmost first
+        pieces = L.cut_run(SQUARE, [[(7, -1), (7, 11)], [(3, -1), (3, 11)]])
         self.assertEqual(len(pieces), 3)
         xs = [L.bbox(L.flatten(p))[0] for p in pieces]
         self.assertEqual(xs, sorted(xs, reverse=True))
+        self.assertAlmostEqual(L.area(pieces[1]), 40, 1)
 
-    def test_cut_polyline_inside_stroke_is_extended(self):
-        # the cut is given only INSIDE the ink; the extension reaches the border
-        pieces = L.cut_run(SQUARE, [[(5, 2), (5, 8)]])
+    def test_cut_side_chosen_by_reference_point(self):
+        # a horizontal cut: the piece for letter 0 is whichever side holds its reference
+        pieces = L.cut_run(SQUARE, [[(-1, 4), (11, 4)]], refs=[(5, 8)])
+        self.assertAlmostEqual(L.area(pieces[0]), 60, 1)
+        pieces = L.cut_run(SQUARE, [[(-1, 4), (11, 4)]], refs=[(5, 1)])
+        self.assertAlmostEqual(L.area(pieces[0]), 40, 1)
+
+    def test_cut_keeps_only_ink_touching_the_cut(self):
+        # a U shape: the cut through the left arm must not take the right arm along
+        U = "M0 0L10 0L10 10L8 10L8 2L2 2L2 10L0 10Z"
+        pieces = L.cut_run(U, [[(-0.2, 6), (2.2, 6)]], refs=[(1, 9)])
         self.assertEqual(len(pieces), 2)
-        self.assertAlmostEqual(sum(L.area(p) for p in pieces), 100, 1)
+        self.assertAlmostEqual(L.area(pieces[0]), 8, 0)      # the top of the left arm only
+
+    def test_cut_that_stops_inside_the_ink_is_refused(self):
+        with self.assertRaises(L.CutError):
+            L.cut_run(SQUARE, [[(5, 2), (5, 8)]])
+
+    def test_cut_leaves_ink_crossed_by_the_extension_alone(self):
+        # two bars; the cut through the lower bar's neck must not take the upper bar
+        BARS = "M0 0L10 0L10 2L0 2ZM0 5L5 5L5 7L0 7Z"       # the upper bar sits over the LEFT letter
+        pieces = L.cut_run(BARS, [[(5, 0), (5, 2)]], refs=[(8, 1), (2, 1)])
+        self.assertEqual(len(pieces), 2)
+        self.assertAlmostEqual(L.area(pieces[0]), 10, 1)
+        self.assertAlmostEqual(L.area(pieces[1]), 20, 1)
 
     def test_cut_conserves_area_with_hole(self):
         pieces = L.cut_run(RING, [[(5, -1), (5, 11)]])
@@ -137,8 +159,89 @@ class Page50(unittest.TestCase):
         xm = (x0 + x1) / 2
         pieces = L.cut_run(d, [[(xm, y0 - 1), (xm, y1 + 1)]])
         self.assertEqual(len(pieces), 2)
-        self.assertAlmostEqual(sum(L.area(p) for p in pieces), L.area(d), 2)
+        self.assertLess(abs(sum(L.area(p) for p in pieces) - L.area(d)), 0.001 * L.area(d))
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+TAJ50 = os.path.join(L.ROOT, ".cache", "tajweed", "fonts", "p50.ttf")
+DKFONT = os.path.join(L.ROOT, ".cache", "digitalkhatt", "DigitalKhattV2.otf")
+
+
+@unittest.skipUnless(os.path.exists(P50) and os.path.exists(TAJ50), "page-50 word SVG or tajweed font missing")
+class Tajweed(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        from tools import tajweed_lib as T
+        cls.T = T
+        cls.words, _ = L.read_words(50)
+        cls.font = T.PageFont(50)
+        cls.scale = T.page_scale(cls.words, cls.font)
+        cls.pairs = T.pair_glyphs(cls.words, cls.font, cls.scale)
+
+    def test_scale_is_the_measured_one(self):
+        self.assertAlmostEqual(self.scale, 0.00616, 4)
+
+    def test_every_word_registers_exactly(self):
+        self.assertEqual(len(self.pairs), len(self.words))
+        self.assertTrue(all(p["cov"] >= 0.97 for p in self.pairs.values()))
+
+    def test_lift_cuts_on_qayyum(self):
+        T = self.T
+        w = [x for x in self.words if x["wid"] == "3:2:7"][0]        # ٱلْقَيُّومُ
+        p = self.pairs[w["wid"]]
+        tree, _ = L.outline_tree([poly for q in w["paths"] if q["d"] for poly in L.flatten(q["d"])], 0.05)
+        lig = [l for l in w["ligatures"] if l["text"] == "لقيو"][0]
+        rp = [poly for q in lig["paths"] if q["kind"] == "body" for poly in L.flatten(q["d"])]
+        cuts = []
+        for name, cid in self.font.layers(p["code"]):
+            if self.font.is_letter_layer(cid):
+                cuts += T.lift_cuts(self.font.outline_page(name, self.scale, p["tx"], p["ty"]), tree, rp)
+        # ي and و are both hand-cut: ق|ي once, ي|و from both layers
+        self.assertEqual(len(cuts), 3)
+        for c in cuts:
+            self.assertTrue(all(L.point_poly_dist(pt, rp) < 0.5 for pt in (c[0], c[-1])))
+
+
+@unittest.skipUnless(os.path.exists(P50) and os.path.exists(DKFONT), "page-50 word SVG or DK font missing")
+class DigitalKhatt(unittest.TestCase):
+    def test_shape_bism(self):
+        from tools import dk_lib as D
+        names = [g[0] for g in D.shape("بِسْمِ")]
+        self.assertEqual(len(names), 3)
+        self.assertTrue(names[0].startswith("meem") and names[-1].startswith("behshape"))
+
+    def test_letter_glyphs_one_per_letter(self):
+        from tools import dk_lib as D
+        text = "يَحْزُنكَ"
+        letters = L.letters_of(text)
+        lg = D.letter_glyphs(text, letters)
+        self.assertEqual(len(lg), len(letters))
+        self.assertTrue(all(e is not None for e in lg))
+        self.assertTrue(lg[1][0].startswith("hah"))
+
+    def test_label_and_neck_on_musaddiqan(self):
+        from tools import dk_lib as D
+        words, _ = L.read_words(50)
+        w = [x for x in words if x["wid"] == "3:3:5"][0]
+        letters = L.letters_of(w["uthmani"])
+        lg = D.letter_glyphs(w["uthmani"], letters)
+        lig = [l for l in w["ligatures"] if l["text"] == "مصد"][0]
+        rp = [poly for q in lig["paths"] if q["kind"] == "body" for poly in L.flatten(q["d"])]
+        labels, meta = D.label_run(rp, lg[0:3])
+        self.assertIsNotNone(labels)
+        self.assertTrue(all(s > 0.05 for s in meta["share"]))
+        refs = D.centroids(labels, meta)
+        for i in range(2):
+            nc = D.joint_cut(rp, labels, meta, i)
+            self.assertIsNotNone(nc)
+            self.assertLess(nc["neck"], 2.5)
+            pieces = L.cut_run(max((q["d"] for q in lig["paths"] if q["kind"] == "body"), key=len), [nc["poly"]], refs=[refs[i]])
+            self.assertEqual(len(pieces), 2)
+        # the meem's cut sits right after its loop: the whole baseline under the sad is the sad's
+        nc = D.joint_cut(rp, labels, meta, 0)
+        mx = sum(p[0] for p in nc["poly"]) / 2
+        loop_x1 = L.bbox([p for p in rp if L._shoelace(p) and L.bbox([p])[2] > mx][0:1] or rp)[0]
+        self.assertGreater(mx, L.bbox(rp)[0] + 0.55 * (L.bbox(rp)[2] - L.bbox(rp)[0]))

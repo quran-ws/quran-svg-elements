@@ -385,171 +385,28 @@ def _simplify(pts, eps):
     return [pts[0], pts[-1]]
 
 
-def _extend_to_border(ink, start_rc, prefer_row_dir):
-    """A* over non-ink pixels from `start_rc` to the raster border; returns the path
-    (list of (r,c)) or None. `prefer_row_dir` (+1/-1/0) says which border the search
-    aims at (the one the cut's end tangent points to)."""
-    import heapq
-    H, W = ink.shape
-    r0, c0 = start_rc
-    if ink[r0, c0]:
-        return None
-    target = (H - 1) if prefer_row_dir > 0 else 0
-    h = (lambda r: abs(target - r)) if prefer_row_dir else (lambda r: min(r, H - 1 - r))
-    dist = {(r0, c0): 0.0}
-    prev = {}
-    pq = [(h(r0), 0.0, r0, c0)]
-    while pq:
-        _, g, r, c = heapq.heappop(pq)
-        if r in (0, H - 1) or c in (0, W - 1):
-            path = [(r, c)]
-            while path[-1] in prev:
-                path.append(prev[path[-1]])
-            return path[::-1]
-        if g > dist.get((r, c), 1e18):
-            continue
-        for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)):
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < H and 0 <= nc < W and not ink[nr, nc]:
-                ng = g + (1.0 if dr == 0 or dc == 0 else 1.4142)
-                if ng < dist.get((nr, nc), 1e18):
-                    dist[(nr, nc)] = ng
-                    prev[(nr, nc)] = (r, c)
-                    heapq.heappush(pq, (ng + h(nr), ng, nr, nc))
-    return None
-
-
-def _march_out(ink, rc, direction, z, max_units=3.0):
-    """From pixel `rc`, walk along `direction` (unit vector, raster rows/cols) until a
-    non-ink pixel; returns the pixels walked (ink ones included) or None."""
-    H, W = ink.shape
-    r, c = rc
-    dr, dc = direction
-    walked = []
-    for k in range(int(max_units * z) + 1):
-        rr, cc = int(round(r + dr * k)), int(round(c + dc * k))
-        if not (0 <= rr < H and 0 <= cc < W):
-            return None
-        walked.append((rr, cc))
-        if not ink[rr, cc]:
-            return walked
-    return None
-
-
-def extend_cut(d_or_polys, cut, z=8, pad=1.5):
-    """Extend a cut polyline (page units, crossing the stroke once) outside the ink
-    to the padded bbox border on both ends, never crossing ink. Returns the extended
-    polyline and the padded bbox (x0, y0, x1, y1)."""
-    polys = flatten(d_or_polys) if isinstance(d_or_polys, str) else d_or_polys
-    bx0, by0, bx1, by1 = bbox(polys)
-    x0, y0, x1, y1 = bx0 - pad, by0 - pad, bx1 + pad, by1 + pad
-    ink = raster(polys, x0, y0, x1 - x0, y1 - y0, z)
-    H, W = ink.shape
-
-    def to_rc(p):
-        return (min(H - 1, max(0, int((p[1] - y0) * z))), min(W - 1, max(0, int((p[0] - x0) * z))))
-
-    def to_xy(rc):
-        return (x0 + (rc[1] + 0.5) / z, y0 + (rc[0] + 0.5) / z)
-
-    ends = []
-    for end, nxt in ((cut[0], cut[1]), (cut[-1], cut[-2])):
-        dy, dx = end[1] - nxt[1], end[0] - nxt[0]
-        n = math.hypot(dx, dy) or 1e-9
-        rc = to_rc(end)
-        pre = []
-        if ink[rc]:
-            walked = _march_out(ink, rc, (dy / n, dx / n), z)
-            if walked is None:
-                raise CutError("cut end inside ink and cannot leave it")
-            pre = walked[:-1]
-            rc = walked[-1]
-        pref = 1 if dy > abs(dx) * 0.3 else (-1 if -dy > abs(dx) * 0.3 else 0)
-        path = _extend_to_border(ink, rc, pref)
-        if path is None:
-            raise CutError("extension blocked")
-        pts = [to_xy(q) for q in pre + path]
-        ends.append(_simplify(pts, 0.6 / z) if len(pts) > 2 else pts)
-    head = ends[0][::-1]     # from border down to cut[0]
-    tail = ends[1]           # from cut[-1] out to border
-    ext = head + list(cut) + tail
-    ext[0] = _snap_border(ext[0], x0, y0, x1, y1)
-    ext[-1] = _snap_border(ext[-1], x0, y0, x1, y1)
-    return ext, (x0, y0, x1, y1)
-
-
-def _snap_border(p, x0, y0, x1, y1):
-    cands = [(abs(p[0] - x0), (x0, p[1])), (abs(p[0] - x1), (x1, p[1])),
-             (abs(p[1] - y0), (p[0], y0)), (abs(p[1] - y1), (p[0], y1))]
-    return min(cands)[1]
-
-
-# The box perimeter is parametrised clockwise from the (x0, y0) corner: bottom edge
-# (y = y0) left→right, right edge up, top edge right→left, left edge down. A cut that
-# reaches the border at two points is a chord; the arc between them that contains the
-# (x1, y0) corner (position W) is the chord's RIGHT side. Regions between chords are
-# built from nested right sides, so pieces come out right→left.
-def _perim(box):
-    x0, y0, x1, y1 = box
-    return 2 * (x1 - x0) + 2 * (y1 - y0)
-
-
-def _border_pos(p, box):
-    x0, y0, x1, y1 = box
-    W, H = x1 - x0, y1 - y0
-    if abs(p[1] - y0) < 1e-9:
-        return p[0] - x0
-    if abs(p[0] - x1) < 1e-9:
-        return W + (p[1] - y0)
-    if abs(p[1] - y1) < 1e-9:
-        return W + H + (x1 - p[0])
-    return 2 * W + H + (y1 - p[1])
-
-
-def _pos_point(pos, box):
-    x0, y0, x1, y1 = box
-    W, H = x1 - x0, y1 - y0
-    pos %= _perim(box)
-    if pos < W:
-        return (x0 + pos, y0)
-    if pos < W + H:
-        return (x1, y0 + pos - W)
-    if pos < 2 * W + H:
-        return (x1 - (pos - W - H), y1)
-    return (x0, y1 - (pos - 2 * W - H))
-
-
-def _border_walk(a, b, box):
-    """Corner points strictly between perimeter positions a and b (forward, a < b)."""
-    x0, y0, x1, y1 = box
-    W, H = x1 - x0, y1 - y0
-    P = _perim(box)
-    corners = [W, W + H, 2 * W + H, P]
-    out = []
-    for cp in corners:
-        k = math.floor((a - cp) / P) + 1            # first multiple of P that puts cp above a
-        c = cp + k * P
-        while c < b:
-            out.append(_pos_point(c, box))
-            c += P
-    return out
-
-
-def _chord(ext, box):
-    """(a, b, polyline a→b) for an extended cut: positions with a < b such that the arc
-    (a, b) is the chord's right side (contains position W)."""
-    x0, y0, x1, y1 = box
-    W = x1 - x0
-    P = _perim(box)
-    pa, pb = _border_pos(ext[0], box), _border_pos(ext[-1], box)
-    pts = list(ext)
-    if pa > pb:
-        pa, pb = pb, pa
-        pts = pts[::-1]
-    if pa < W < pb:                          # arc (pa, pb) holds the right corner
-        return pa, pb, pts
-    # the other arc does: walk from pb to pa + P
-    return pb, pa + P, pts[::-1]
+# Cutting. A cut is a polyline crossing the stroke once, ends on the run contour. It
+# is LOCAL: painted one pixel wide over the run's raster it splits the ink into
+# connected components, and the letter is the component holding its reference point.
+# The exact vector piece is the run intersected with that component's one-pixel
+# envelope (never reaching the other side's pixels) intersected with the half-plane
+# of the cut — so every boundary curve of the piece is the run's own except the
+# chord itself. A half-plane alone is wrong whenever the chord lies along a
+# baseline (the infinite line slices every stroke at that height); the envelope is
+# what keeps the cut local. Stacked joints and tails need no special case.
+def _pip(pt, poly):
+    """Ray-casting point in polygon."""
+    x, y = pt
+    inside = False
+    n = len(poly)
+    for i in range(n):
+        x0, y0 = poly[i]
+        x1, y1 = poly[(i + 1) % n]
+        if (y0 > y) != (y1 > y):
+            xi = x0 + (y - y0) * (x1 - x0) / (y1 - y0)
+            if xi > x:
+                inside = not inside
+    return inside
 
 
 def _poly_path(poly):
@@ -563,94 +420,360 @@ def _poly_path(poly):
     return reg
 
 
-def cut_run(d, cuts, z=8, tol=0.005):
-    """Split the run `d` (one evenodd path) by `cuts` (polylines in page units, each
-    crossing the stroke once) into pieces ordered right→left. Raises CutError when the
-    piece count, an empty piece, or the area balance says the cut did not do what was
-    asked."""
+def _shoelace(poly):
+    a = 0.0
+    n = len(poly)
+    for i in range(n):
+        x0, y0 = poly[i]
+        x1, y1 = poly[(i + 1) % n]
+        a += x0 * y1 - x1 * y0
+    return a / 2
+
+
+def half_plane(cut, ref, box, sign=None):
+    """Side polygon of a cut: the polyline extended along its end tangents, closed far
+    away on the side of `ref` (or of `sign` × the left normal when ref is None)."""
+    x0, y0, x1, y1 = box
+    D = 3 * math.hypot(x1 - x0, y1 - y0) + 10
+    A, B = cut[0], cut[-1]
+    ua = (A[0] - cut[1][0], A[1] - cut[1][1])
+    ub = (B[0] - cut[-2][0], B[1] - cut[-2][1])
+    na, nb = math.hypot(*ua) or 1e-9, math.hypot(*ub) or 1e-9
+    A_ext = (A[0] + ua[0] / na * D, A[1] + ua[1] / na * D)
+    B_ext = (B[0] + ub[0] / nb * D, B[1] + ub[1] / nb * D)
+    dx, dy = B[0] - A[0], B[1] - A[1]
+    nn = math.hypot(dx, dy) or 1e-9
+    n = (-dy / nn, dx / nn)                      # left normal of A→B
+    mid = ((A[0] + B[0]) / 2, (A[1] + B[1]) / 2)
+    if ref is not None:
+        sgn = 1 if (ref[0] - mid[0]) * n[0] + (ref[1] - mid[1]) * n[1] > 0 else -1
+    else:
+        sgn = sign if sign is not None else (1 if n[0] > 0 else -1)      # the right side
+    n = (n[0] * sgn, n[1] * sgn)
+    return [A_ext] + list(cut) + [B_ext, (B_ext[0] + n[0] * D, B_ext[1] + n[1] * D),
+                                  (A_ext[0] + n[0] * D, A_ext[1] + n[1] * D)]
+
+
+def _mask_path(mask, x0, y0, z):
+    """Exact polygon of a pixel mask (union of its pixel squares) as a pathops path."""
+    p = pathops.Path()
+    pen = p.getPen()
+    for r in range(mask.shape[0]):
+        row = mask[r]
+        c = 0
+        W = len(row)
+        while c < W:
+            if row[c]:
+                c1 = c
+                while c1 < W and row[c1]:
+                    c1 += 1
+                xa, xb = x0 + c / z, x0 + c1 / z
+                ya, yb = y0 + r / z, y0 + (r + 1) / z
+                pen.moveTo((xa, ya))
+                pen.lineTo((xb, ya))
+                pen.lineTo((xb, yb))
+                pen.lineTo((xa, yb))
+                pen.closePath()
+                c = c1
+            else:
+                c += 1
+    p.fillType = pathops.FillType.WINDING
+    p.simplify()
+    return p
+
+
+def _nearest_true(mask, rc, max_px):
+    H, W = mask.shape
+    r0, c0 = rc
+    best = None
+    for r in range(max(0, r0 - max_px), min(H, r0 + max_px + 1)):
+        for c in range(max(0, c0 - max_px), min(W, c0 + max_px + 1)):
+            if mask[r, c]:
+                d = (r - r0) ** 2 + (c - c0) ** 2
+                if best is None or d < best[0]:
+                    best = (d, (r, c))
+    return best[1] if best else None
+
+
+_FOUR = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool)
+
+def _paint(cut, x0, y0, z, W, H):
+    ext = 4.0 / z
+    A, B = cut[0], cut[-1]
+    ua = (A[0] - cut[1][0], A[1] - cut[1][1])
+    ub = (B[0] - cut[-2][0], B[1] - cut[-2][1])
+    na, nb = math.hypot(*ua) or 1e-9, math.hypot(*ub) or 1e-9
+    painted = [(A[0] + ua[0] / na * ext, A[1] + ua[1] / na * ext)] + list(cut) + \
+              [(B[0] + ub[0] / nb * ext, B[1] + ub[1] / nb * ext)]
+    # three pixels wide: the exact chord must lie INSIDE the painted strip everywhere
+    # (a one-pixel diagonal line is a staircase the chord slips out of between steps)
+    im = Image.new("1", (W, H), 0)
+    ImageDraw.Draw(im).line([((x - x0) * z, (y - y0) * z) for x, y in painted], fill=1, width=3)
+    return np.array(im, dtype=bool)
+
+
+def split_by_cut(ink, cut, x0, y0, z):
+    """Paint `cut` (page units) one pixel wide over `ink` (raster in the frame x0, y0,
+    z), extended a few pixels past both ends, and 4-label the rest. Returns
+    (labels, line_mask, (id_a, id_b)) — the two components flanking the chord — or
+    None when the chord does not separate the ink it crosses."""
+    from scipy import ndimage
+    H, W = ink.shape
+    A, B = cut[0], cut[-1]
+    line = _paint(cut, x0, y0, z, W, H)
+    free = ink & ~line
+    lab, n = ndimage.label(free, structure=_FOUR)
+    dx, dy = B[0] - A[0], B[1] - A[1]
+    nn = math.hypot(dx, dy) or 1e-9
+    nrm = (-dy / nn, dx / nn)
+
+    def rc(p):
+        return (min(H - 1, max(0, int((p[1] - y0) * z))), min(W - 1, max(0, int((p[0] - x0) * z))))
+
+    sizes = np.bincount(lab.ravel())
+    min_px = max(20, int(0.02 * ink.sum()))
+    for mid in _along(cut, [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.1, 0.9]):
+        got = []
+        for sgn in (1, -1):
+            q = rc((mid[0] + nrm[0] * sgn * 3.0 / z, mid[1] + nrm[1] * sgn * 3.0 / z))
+            q = _nearest_true(free, q, 3)
+            got.append(int(lab[q]) if q else 0)
+        if got[0] and got[1] and got[0] != got[1] and sizes[got[0]] >= min_px and sizes[got[1]] >= min_px:
+            return lab, line, (got[0], got[1])
+    return None
+
+
+
+
+def cut_run(d, cuts, refs=None, z=8, tol=0.005):
+    """Split the run `d` (one evenodd path) by `cuts` in READING ORDER (cut k lies
+    between letter k and k+1) into len(cuts)+1 pieces.
+
+    All cuts are painted one pixel wide over the run's raster at once; the ink then
+    falls into components, and letter k is the component holding `refs[k]` (a point on
+    its ink) plus any unclaimed component nearest to it. The exact piece is the run
+    intersected with the letter's one-pixel envelope, where inside the painted line
+    pixels the envelope is replaced by the chord's own half-plane — so every boundary
+    curve is the run's own except the chord, and the chord acts nowhere else. Without
+    refs, letter k is the right flank of cut k.
+
+    Raises CutError when a cut does not separate letters k and k+1, two references
+    share a component, a piece is empty, or the area balance breaks."""
+    from scipy import ndimage
     run = to_path(d)
     run.simplify()
     total = abs(run.area)
     if not cuts:
         return [path_d(run)]
+    n = len(cuts) + 1
     polys = flatten(d)
-    chords, box = [], None
-    for cut in cuts:
-        ext, box = extend_cut(polys, cut, z=z)
-        chords.append(_chord(ext, box))
-    chords.sort(key=lambda c: c[1] - c[0])          # smallest right side = rightmost cut
-    for (a1, b1, _), (a2, b2, _) in zip(chords, chords[1:]):
-        if not (a2 <= a1 and b1 <= b2):
-            raise CutError("cuts not nested")
-    P = _perim(box)
-    regions = []
-    a, b, pts = chords[0]                            # rightmost: the chord's right side
-    regions.append(pts[::-1] + _border_walk(a, b, box))
-    for (aR, bR, pR), (aL, bL, pL) in zip(chords, chords[1:]):
-        poly = list(pR) + _border_walk(bR, bL, box) + list(pL)[::-1] + _border_walk(aL, aR + (P if aR < aL else 0), box)
-        regions.append(poly)
-    a, b, pts = chords[-1]                           # leftmost: complement of the last right side
-    regions.append(list(pts) + _border_walk(b, a + P, box))
+    bx0, by0, bx1, by1 = bbox(polys)
+    pad = 1.0
+    x0, y0 = bx0 - pad, by0 - pad
+    w, h = bx1 - bx0 + 2 * pad, by1 - by0 + 2 * pad
+    ink = raster(polys, x0, y0, w, h, z)
+    H, W = ink.shape
+    box = (bx0, by0, bx1, by1)
+
+    def rc(p):
+        return (min(H - 1, max(0, int((p[1] - y0) * z))), min(W - 1, max(0, int((p[0] - x0) * z))))
+
+    def xy(q):
+        return (x0 + (q[1] + 0.5) / z, y0 + (q[0] + 0.5) / z)
+
+    for k, cut in enumerate(cuts):
+        if len(cut) < 2:
+            raise CutError("degenerate cut", piece=k)
+    lines = [_paint(cut, x0, y0, z, W, H) for cut in cuts]
+    LR = np.any(lines, axis=0)
+    free = ink & ~LR
+    lab, ncomp = ndimage.label(free, structure=_FOUR)
+    sizes = np.bincount(lab.ravel())
+    min_px = max(20, int(0.02 * ink.sum()))
+    # the two flanks of every chord
+    flanks = []
+    for k, cut in enumerate(cuts):
+        A, B = cut[0], cut[-1]
+        dx, dy = B[0] - A[0], B[1] - A[1]
+        nn = math.hypot(dx, dy) or 1e-9
+        nrm = (-dy / nn, dx / nn)
+        got = None
+        for mid in _along(cut, [0.5, 0.4, 0.6, 0.3, 0.7, 0.2, 0.8, 0.1, 0.9]):
+            pair = []
+            for sgn in (1, -1):
+                q = rc((mid[0] + nrm[0] * sgn * 3.0 / z, mid[1] + nrm[1] * sgn * 3.0 / z))
+                q = _nearest_true(free, q, 3)
+                pair.append((int(lab[q]), xy(q)) if q else (0, None))
+            if pair[0][0] and pair[1][0] and pair[0][0] != pair[1][0] \
+                    and sizes[pair[0][0]] >= min_px and sizes[pair[1][0]] >= min_px:
+                got = pair
+                break
+        if got is None:
+            raise CutError("cut does not separate", piece=k)
+        flanks.append(got)
+    # component → letter
+    owner = {}
+    refs = list(refs or []) + [None] * n
+    for k in range(n):
+        if refs[k] is None:
+            continue
+        q = _nearest_true(free, rc(refs[k]), int(0.8 * z) + 1)
+        cid = int(lab[q]) if q else 0
+        if not cid:
+            raise CutError("reference off the ink", piece=k)
+        if cid in owner and owner[cid] != k:
+            raise CutError("references share a component", piece=k)
+        owner[cid] = k
+    # letters without a reference: right flank of cut k is letter k; the left flank of
+    # the last cut is the last letter
+    for k in range(n - 1):
+        if refs[k] is None:
+            (ca, pa), (cb, pb) = flanks[k]
+            right = ca if pa[0] >= pb[0] else cb
+            other = cb if right == ca else ca
+            owner.setdefault(right if right not in owner else other, k)
+    if refs[n - 1] is None:
+        (ca, pa), (cb, pb) = flanks[-1]
+        left = ca if pa[0] < pb[0] else cb
+        other = cb if left == ca else ca
+        owner.setdefault(left if left not in owner else other, n - 1)
+    # every cut must separate letters k and k+1
+    for k, ((ca, pa), (cb, pb)) in enumerate(flanks):
+        la, lb = owner.get(ca), owner.get(cb)
+        if {la, lb} != {k, k + 1}:
+            raise CutError("cut does not separate its letters", piece=k, letters=(la, lb))
+    # unclaimed components go to the nearest reference / claimed component
+    claimed = {cid: k for cid, k in owner.items()}
+    for cid in range(1, ncomp + 1):
+        if cid in owner:
+            continue
+        ys, xs = np.nonzero(lab == cid)
+        best = None
+        for oc, k in claimed.items():
+            oys, oxs = np.nonzero(lab == oc)
+            dd = np.min(np.hypot(xs[:, None] - oxs[None, ::max(1, len(oxs) // 400)],
+                                 ys[:, None] - oys[None, ::max(1, len(oys) // 400)]))
+            if best is None or dd < best[0]:
+                best = (dd, k)
+        owner[cid] = best[1] if best else 0
+    letter_mask = [np.zeros(ink.shape, dtype=bool) for _ in range(n)]
+    for cid, k in owner.items():
+        letter_mask[k] |= lab == cid
     pieces = []
-    for k, poly in enumerate(regions):
-        piece = pathops.op(run, _poly_path(poly), pathops.PathOp.INTERSECTION)
+    for k in range(n):
+        env = ndimage.binary_dilation(letter_mask[k], structure=_FOUR, iterations=1)
+        for j in range(n):
+            if j != k:
+                env &= ~letter_mask[j]
+        others = np.zeros(ink.shape, dtype=bool)
+        for j in range(len(cuts)):
+            if j not in (k - 1, k):
+                others |= lines[j]
+        region = _mask_path((env & ~LR) | (env & others & ~np.any([lines[j] for j in (k - 1, k) if 0 <= j < len(cuts)], axis=0)), x0, y0, z)
+        for j in (k - 1, k):
+            if 0 <= j < len(cuts):
+                (ca, pa), (cb, pb) = flanks[j]
+                side_pt = pa if owner.get(ca) == k else pb
+                hp = _poly_path(half_plane(cuts[j], side_pt, box))
+                region = pathops.op(region, pathops.op(_mask_path(lines[j], x0, y0, z), hp, pathops.PathOp.INTERSECTION),
+                                    pathops.PathOp.UNION)
+        piece = pathops.op(run, region, pathops.PathOp.INTERSECTION)
         piece.simplify()
-        ar = abs(piece.area)
-        if ar < 0.05:
-            raise CutError("empty piece", piece=k, area=ar)
-        pieces.append((piece, ar))
-    s = sum(ar for _, ar in pieces)
+        if abs(piece.area) < 0.05:
+            raise CutError("empty piece", piece=k)
+        pieces.append(piece)
+    s = sum(abs(p.area) for p in pieces)
     if abs(s - total) > max(tol * total, 0.02):
         raise CutError("area not conserved", total=total, pieces=s)
-    return [path_d(p) for p, _ in pieces]
+    return [path_d(p) for p in pieces]
+
+
+def _along(poly, ts):
+    """Points at fractions `ts` of a polyline's length."""
+    segs = [(poly[i], poly[i + 1], math.hypot(poly[i + 1][0] - poly[i][0], poly[i + 1][1] - poly[i][1]))
+            for i in range(len(poly) - 1)]
+    total = sum(s[2] for s in segs) or 1e-9
+    out = []
+    for t in ts:
+        target = t * total
+        acc = 0.0
+        for j, (a, b, ln) in enumerate(segs):
+            if acc + ln >= target or j == len(segs) - 1:
+                u = 0 if ln == 0 else max(0.0, min(1.0, (target - acc) / ln))
+                out.append((a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u))
+                break
+            acc += ln
+    return out
 
 
 # ----------------------------------------------------------------------------
 # the word-level SVG as data
 # ----------------------------------------------------------------------------
-_WORD = re.compile(r'<g class="word"([^>]*)>(.*?)</g>\s*</g>', re.S)
 _ATTR = re.compile(r'([a-zA-Z:-]+)="([^"]*)"')
 _LIG = re.compile(r'<g class="ligature" data-text="([^"]*)">(.*?)</g>', re.S)
 _PATH = re.compile(r'<path ([^>]*?)/>', re.S)
+_TAG = re.compile(r'<g\b[^>]*>|</g>')
 
 
 def parse_attrs(s):
     return dict(_ATTR.findall(s))
 
 
+def _group_spans(s, marker='<g class="word"'):
+    """(start, end) of every group opened by `marker`, matching nested <g>/</g>."""
+    spans = []
+    pos = 0
+    while True:
+        i = s.find(marker, pos)
+        if i < 0:
+            break
+        depth = 0
+        for m in _TAG.finditer(s, i):
+            if m.group(0).startswith("</"):
+                depth -= 1
+                if depth == 0:
+                    spans.append((i, m.end()))
+                    pos = m.end()
+                    break
+            else:
+                depth += 1
+        else:
+            break
+    return spans
+
+
 def read_words(page, svg_dir=WORDS_SVG):
     """Words of a page in reading order:
-    {'wid','uthmani','attrs','span':(start,end),'ligatures':[{'text','paths':[…]}],
-     'paths':[{'kind','mark','eid','d','attrs','raw'}…] (all paths, document order)}."""
+    {'wid','uthmani','attrs','span':(start,end),'open':the open tag,'inner':text between
+     the open tag and the closing </g>, 'ligatures':[{'text','paths':[…]}],
+     'paths':[{'kind','mark','eid','d','attrs','raw','loose'}…] (document order)}."""
     s = open(os.path.join(svg_dir, "%03d.svg" % page), encoding="utf-8").read()
     words = []
-    for m in _WORD.finditer(s):
-        attrs = parse_attrs(m.group(1))
-        body = m.group(2) + "</g>"        # the inner text up to (excluding) the last </g>
-        # the regex consumed one inner "</g>" as part of the word close; rebuild the inner
-        inner = m.group(0)[len('<g class="word"') + len(m.group(1)) + 1:-len("</g>")]
+    for a, b in _group_spans(s):
+        open_end = s.index(">", a) + 1
+        open_tag = s[a:open_end]
+        inner = s[open_end:b - len("</g>")]
+        attrs = parse_attrs(open_tag[len("<g"):])
         ligs, paths = [], []
         for lm in _LIG.finditer(inner):
             lp = []
             for pm in _PATH.finditer(lm.group(2)):
-                a = parse_attrs(pm.group(1))
-                rec = {"kind": a.get("data-kind"), "mark": a.get("data-mark"),
-                       "eid": a.get("data-eid"), "d": a.get("d"), "attrs": a,
-                       "raw": pm.group(0)}
+                at = parse_attrs(pm.group(1))
+                rec = {"kind": at.get("data-kind"), "mark": at.get("data-mark"),
+                       "eid": at.get("data-eid"), "d": at.get("d"), "attrs": at,
+                       "raw": pm.group(0), "loose": False}
                 lp.append(rec)
                 paths.append(rec)
             ligs.append({"text": lm.group(1), "paths": lp})
-        # word-level paths outside any ligature (waqf signs etc.)
         rest = _LIG.sub("", inner)
         for pm in _PATH.finditer(rest):
-            a = parse_attrs(pm.group(1))
-            rec = {"kind": a.get("data-kind"), "mark": a.get("data-mark"),
-                   "eid": a.get("data-eid"), "d": a.get("d"), "attrs": a,
-                   "raw": pm.group(0), "loose": True}
-            paths.append(rec)
+            at = parse_attrs(pm.group(1))
+            paths.append({"kind": at.get("data-kind"), "mark": at.get("data-mark"),
+                          "eid": at.get("data-eid"), "d": at.get("d"), "attrs": at,
+                          "raw": pm.group(0), "loose": True})
         words.append({"wid": attrs.get("data-wid"), "uthmani": attrs.get("data-uthmani", ""),
-                      "attrs": attrs, "span": m.span(), "ligatures": ligs, "paths": paths,
-                      "inner": inner})
+                      "attrs": attrs, "span": (a, b), "open": open_tag, "ligatures": ligs,
+                      "paths": paths, "inner": inner})
     key = lambda w: tuple(int(v) for v in w["wid"].split(":"))
     words.sort(key=key)
     return words, s
@@ -669,3 +792,32 @@ def render_mask(svg_text, x0, y0, w, h, z):
     png = subprocess.run(["rsvg-convert"], input=(hdr + svg_text + "</svg>").encode(),
                          capture_output=True, check=True).stdout
     return np.array(Image.open(io.BytesIO(png)).convert("RGBA"))[..., 3] > 128
+
+
+# ----------------------------------------------------------------------------
+# outline sampling helpers (registration, cut lifting)
+# ----------------------------------------------------------------------------
+def resample(polys, step):
+    """Points along closed polylines at most `step` apart (each vertex kept)."""
+    out = []
+    for poly in polys:
+        n = len(poly)
+        for i in range(n):
+            ax, ay = poly[i]
+            bx, by = poly[(i + 1) % n]
+            L = math.hypot(bx - ax, by - ay)
+            k = max(1, int(math.ceil(L / step)))
+            for j in range(k):
+                t = j / k
+                out.append((ax + (bx - ax) * t, ay + (by - ay) * t))
+    return out
+
+
+def outline_tree(polys, step=0.05):
+    from scipy.spatial import cKDTree
+    pts = np.array(resample(polys, step), dtype=float)
+    return cKDTree(pts), pts
+
+
+def transform_polys(polys, s, tx, ty):
+    return [[(x * s + tx, y * s + ty) for x, y in poly] for poly in polys]
