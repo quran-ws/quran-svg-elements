@@ -46,3 +46,9 @@ dist/
 .cache/mdb_runs.json
 # derived: the per-page annotation graph, rebuilt by tools/build_annotations.py
 .cache/annotations/
+
+# letter-level decomposition: fonts fetched by tools/fetch_tajweed_fonts.py, derived cuts and SVGs
+.cache/tajweed/fonts/
+.cache/letters/cuts/
+.cache/letters/audit/
+.cache/letters-svg/
