@@ -103,7 +103,10 @@ def load_hand_cuts():
     return out
 
 
-def drawn_cut_labels(polys, cuts, n, frame, ink):
+NOJOIN = set("اأإآٱدذرزوؤءةى")          # letters that never join the letter after them
+
+
+def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None):
     """Exact labels from drawn cut lines: paint the lines (extended 1u past their ends
     over the canvas), take the ink components, and number them right→left. Returns the
     mask or None when the lines do not give exactly n pieces."""
@@ -134,6 +137,15 @@ def drawn_cut_labels(polys, cuts, n, frame, ink):
             continue
         wc = int(np.bincount(whole[lab == c]).argmax())
         (pieces if wc in touched else extras).append(c)
+    if len(pieces) < n and letters:
+        # after a letter that never joins left (و then ة, ر then ا) the next letter is a
+        # contour of its own that no line needs to touch; the text says how many such
+        # letters this run may hold, and the largest untouched contours are they
+        allowed = sum(1 for ch in letters[:-1] if ch in NOJOIN)
+        extras.sort(key=lambda c: -sizes[c])
+        for c in extras[:min(allowed, n - len(pieces))]:
+            pieces.append(c)
+        extras = [c for c in extras if c not in pieces]
     if len(pieces) != n:
         return None
     pieces.sort(key=lambda c: -np.nonzero(lab == c)[1].mean())      # rightmost first
@@ -170,7 +182,8 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None):
     frame = canvas_frame(polys)
     ink = raster_on_canvas(polys, frame)
     if drawn:
-        mask = drawn_cut_labels(polys, drawn, n, frame, ink)
+        letters = [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]
+        mask = drawn_cut_labels(polys, drawn, n, frame, ink, letters)
         if mask is not None:
             return {"ink": ink, "mask": mask, "n": n, "frame": frame, "known": n, "drawn": True,
                     "exact_px": int(ink.sum()), "ink_px": int(ink.sum()), "wid": word["wid"],
