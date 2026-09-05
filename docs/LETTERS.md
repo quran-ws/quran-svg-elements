@@ -187,6 +187,33 @@ cover (لك, عل, لح, كل, فل, كف, ته…). The lines land in `docs/def
 line touches, such as a final ك's arm, joins the piece it overlaps). 43 words so far; they
 are weighted 10× in training and used to fine-tune the epoch-3 model (`--init`).
 
+Rules the drawn-cut label builder needed, each found on a real drawing (2026-09-05 night):
+
+- **Pieces are numbered along the chain the lines make, not by mean x.** Each drawn line
+  joins the two pieces that hold most of the ink it removed; the chain is walked from the
+  end whose ink lies furthest right. Mean x had swapped ل and ح in every لح/لج drawing
+  (the ح bowl swings back under the ل stem, so it lies RIGHT of it). Found by rendering
+  all masks on one contact sheet — do that after any change here.
+- **A separate contour after a letter that never joins left is its own piece** (و then ه,
+  ر then ا): no line is needed across a gap, and asking for one was wrong. Only after a
+  joining letter does an untouched contour join the piece it overlaps (the kaf arm).
+- **The word build sometimes files a trailing ا or و in the NEXT group** (ٱلْحَرَامِ: the ا
+  sits in the م group; كَفَرُوا۟: the و in the ا group). `align_runs` moves it back on three
+  witnesses that must all hold: the text says the group must break into more contours
+  than it holds; the next group holds more contours than its text allows and its
+  rightmost contour stands clear of the rest; and that contour has the measured size and
+  shape of the letter (ا 123–169 px at 4 px/u, h/w 5.4; و 262–299 px, h/w 1.09; a bare
+  ء, which also sits clear at the right of a group, is 154–179 px — the bands do not
+  touch). Any one witness alone over-moves: ر against و merely touching lowers the
+  first count, a final ه ring or a hamza seat raises the second. 33 words on 61 sample
+  pages, all 33 checked right by eye.
+- **Drawn cuts count on words the tajweed font never registered** (`no-registration`),
+  which had silently dropped some.
+- **Words drawn one line short are rejected, not guessed** ("do not give n pieces"); the
+  page rebuilds with them on a Redo row that says which joint is missing
+  (`build_letters_label_page.py --rank --words page:wid,…`, headings per pair with the
+  measured joint counts, unsplit runs first).
+
 Remaining blocks are "letter without ink" (274: the model gave a letter no pixel on
 the shared contour, mostly a thin ا inside a ligature), area not conserved (56) and
 empty pieces (45). Uncovered letter pairs (لك, عل, لح, كل, فل…) are cut by transfer
