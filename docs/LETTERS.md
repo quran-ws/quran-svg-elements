@@ -240,3 +240,25 @@ Build under `QSVG_LETTERS_TAG=model` (`.cache/letters/cuts-model`, `.cache/lette
 The remaining 699 unsplit runs are runs whose pieces do not reproduce the contour
 (the boolean library's refit) or whose letter got no pixel at all. The exact Bézier
 splitter (no boolean ops) is still the right fix for the first family.
+
+### Second fine-tune, measured and NOT adopted (2026-09-05 night)
+
+`model_ft2.pt` = `model_ft.pt` fine-tuned one more epoch (lr 5e-4, quick set) with the
+87 drawn words then on file at 10×. Held-out pages (≡ 0 mod 10):
+
+| measure | model_ft | model_ft2 |
+|---|---|---|
+| exact-pixel accuracy, tajweed labels | 0.924 | 0.924 |
+| joint error vs tajweed cuts, median / within 1u | 0.50u / 76% | 0.51u / 76.4% |
+| agreement with the drawn labels on never-trained pages (8 words) | 0.816 | 0.854 |
+| hard cut failures, pages 1–60, same alignment code | 142 | 182 |
+| full run: runs left unsplit | 699 | 1,409 |
+
+The tajweed yardstick cannot see the pairs the drawings cover, so it stays flat; the
+drawn-pair agreement moves the right way on a tiny sample; but the gate says the model
+now leaves twice as many runs uncut, mostly "letter without ink" (624 vs 274) and
+"empty piece" (273 vs 45). A/B with `QSVG_LETTERS_REBAL=0` shows the run re-keying is
+neutral (143 vs 142), so the regression is the checkpoint. `model_ft` stays the build.
+Next try: the same data at lr 1e-4 (`model_ft3.pt`), and an eval that scores the model
+on drawn words from held-out pages as the drawings grow.
+
