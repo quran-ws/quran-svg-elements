@@ -252,13 +252,21 @@ splitter (no boolean ops) is still the right fix for the first family.
 | joint error vs tajweed cuts, median / within 1u | 0.50u / 76% | 0.51u / 76.4% |
 | agreement with the drawn labels on never-trained pages (8 words) | 0.816 | 0.854 |
 | hard cut failures, pages 1–60, same alignment code | 142 | 182 |
-| full run: runs left unsplit | 699 | 1,409 |
+| full run: runs left unsplit (`data-unsplit` in the emitted SVG) | **647** | ≈950 |
+
+(`audit_letters.py`'s `unsplit` total is a different figure: it ADDS the ~460 whole words
+that got no letter group at all — unregistered or text-mismatched words — to the
+run-level count, giving 1,106 for `model_ft` and 1,409 for `model_ft2`. The table
+quotes the run-level count, which is what the earlier 699 was.)
 
 The tajweed yardstick cannot see the pairs the drawings cover, so it stays flat; the
 drawn-pair agreement moves the right way on a tiny sample; but the gate says the model
-now leaves twice as many runs uncut, mostly "letter without ink" (624 vs 274) and
-"empty piece" (273 vs 45). A/B with `QSVG_LETTERS_REBAL=0` shows the run re-keying is
-neutral (143 vs 142), so the regression is the checkpoint. `model_ft` stays the build.
-Next try: the same data at lr 1e-4 (`model_ft3.pt`), and an eval that scores the model
-on drawn words from held-out pages as the drawings grow.
+leaves ~300 more runs uncut, mostly "letter without ink" (624 vs 274) and "empty piece"
+(273 vs 45). A/B with `QSVG_LETTERS_REBAL=0` shows the run re-keying is neutral at the
+cut builder (143 vs 142 hard failures) and at the emitter (57 vs 56 unsplit on pages
+1–60); the regression is the checkpoint. `model_ft` stays the build; with the re-keying
+its run-level unsplit went 699 → 647 (ink 9 pages, pixels 13, letters 320,883 — the
+rest of the table above unchanged). Next try: the same data at lr 1e-4
+(`model_ft3.pt`), and an eval that scores the model on drawn words from held-out pages
+as the drawings grow.
 
