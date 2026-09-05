@@ -139,3 +139,45 @@ accepted DigitalKhatt cuts, each letter in its own colour with the chords drawn,
 verdict selector and a note box. "Copy decisions" emits JSON lines for
 `docs/defects/letters_verdicts.jsonl`. Decisions become data (an override for a place, a
 threshold for a joint pair), never code.
+
+## The learned labeller (2026-09-05 afternoon)
+
+The rule-based placement above is superseded by a model trained on the hand cuts
+(spec: `docs/superpowers/specs/2026-09-05-learned-letter-labels-design.md`).
+
+```bash
+python3 tools/build_letter_labels.py 1 604 --jobs 32        # samples from the hand layers (partial labels)
+python3 tools/train_letter_model.py --epochs 3 --batch 48 --quick --out .cache/letters/model_full.pt
+python3 tools/eval_letter_model.py --model .cache/letters/model_full.pt      # held-out report
+QSVG_LETTERS_TAG=model python3 tools/build_letter_cuts.py 1 604 --jobs 32 --model .cache/letters/model_full.pt
+QSVG_LETTERS_TAG=model python3 tools/emit_letters.py 1 604 --jobs 32
+QSVG_LETTERS_TAG=model python3 tools/audit_letters.py 1 604 --jobs 32
+```
+
+Every multi-letter run is a sample: its raster on a 96 × 256 canvas at 4 px/u and, per
+ink pixel, a bitmask of the letter positions it may belong to — exact inside a hand-cut
+layer whose letter index the cut record resolves, a set on the black stretches between
+resolved letters (by reading order), all bits when nothing is resolved. The loss is
+−log of the probability mass on the set. A small U-Net (24-channel base) labels every
+ink pixel with its letter position; pages divisible by 10 are held out.
+
+With `--model`, the label map IS the ownership: each letter's piece is the run
+intersected with its pixels' envelope, and a straight chord through each boundary
+component (its principal axis, clipped to the ink) replaces the pixel staircase
+inside its strip. The emitter re-runs the model, so nothing about the labels is
+stored beyond the chords.
+
+Held-out pages (every 10th, 9,054 runs), epoch-1 model:
+
+| | rules (DK templates) | learned labels |
+|---|---|---|
+| runs blocked (unsplit) | 1,002 (11.1%) | 380 (4.2%) |
+| joint error vs hand cuts, median | 1.06u | 0.64u |
+| within 1u of the hand cut | 47% | 65% |
+| gate: count / ink | 0 / 0 | 0 / 0 |
+| gate: pixels | 4 pages | 3 pages (slivers, max 73–119) |
+
+Remaining blocks are "letter without ink" (274: the model gave a letter no pixel on
+the shared contour, mostly a thin ا inside a ligature), area not conserved (56) and
+empty pieces (45). Uncovered letter pairs (لك, عل, لح, كل, فل…) are cut by transfer
+from covered ones; a hand-labelled sample of those pairs is the next data to add.
