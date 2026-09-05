@@ -80,7 +80,7 @@ def align_runs(word):
         for l in ordered:
             out.append((l, body_idx[pos:pos + len(l["text"])]))
             pos += len(l["text"])
-        return letters, _rebalance(out, letters)
+        return letters, (_rebalance(out, letters) if os.environ.get("QSVG_LETTERS_REBAL", "1") != "0" else out)
     runs = [r for r in L.runs_of(letters) if letters[r[0]]["body"]]
     expected = ["".join(letters[i]["ch"] for i in r) for r in runs]
     texts = [l["text"] for l in ligs]
