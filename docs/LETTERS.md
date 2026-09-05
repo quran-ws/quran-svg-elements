@@ -191,3 +191,25 @@ Remaining blocks are "letter without ink" (274: the model gave a letter no pixel
 the shared contour, mostly a thin ا inside a ligature), area not conserved (56) and
 empty pieces (45). Uncovered letter pairs (لك, عل, لح, كل, فل…) are cut by transfer
 from covered ones; a hand-labelled sample of those pairs is the next data to add.
+
+### Full run with the fine-tuned model (2026-09-05, evening)
+
+`model_ft.pt` = the conditioned model after three epochs, fine-tuned one epoch with
+Abdullah's 43 drawn words at 10× weight; continuity unconditional (a letter keeps the
+region that continues into the next letter; the rest goes to the neighbour it touches).
+Build under `QSVG_LETTERS_TAG=model` (`.cache/letters/cuts-model`, `.cache/letters-svg-model`).
+
+| | rules (night) | learned (final) |
+|---|---|---|
+| multi-letter runs | 90,244 | 90,244 |
+| runs left unsplit | 10,165 (11.3%) | 699 (0.8%) |
+| letters emitted | 285,741 | 320,870 |
+| gate: count | 0 | 0 |
+| gate: ink (pieces reproduce their contour, no overlap, on 12 px/u rasters) | 0 | 9 pages, chord slivers of 40–60 px |
+| gate: pixels (1400 px raster vs the word build) | 35 pages | 13 pages, one or two edge pixels each |
+| per-letter mark mismatches (prior) | 3,835 | 3,726 |
+| joint error vs the tajweed hand cuts, held-out median | 1.06u | 0.50u (76% within 1u) |
+
+The remaining 699 unsplit runs are runs whose pieces do not reproduce the contour
+(the boolean library's refit) or whose letter got no pixel at all. The exact Bézier
+splitter (no boolean ops) is still the right fix for the first family.
