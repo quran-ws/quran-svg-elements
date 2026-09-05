@@ -120,15 +120,36 @@ def drawn_cut_labels(polys, cuts, n, frame, ink):
         dr.line([((x - x0) * z, (y - y0) * z) for x, y in pts], fill=1, width=3)
     line = np.array(im, dtype=bool)
     free = ink & ~line
-    lab, nc = ndimage.label(free, structure=np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool))
+    four = np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool)
+    eight = np.ones((3, 3), dtype=bool)
+    lab, nc = ndimage.label(free, structure=four)
     sizes = np.bincount(lab.ravel())
-    comps = [c for c in range(1, nc + 1) if sizes[c] >= 12]
-    if len(comps) != n:
+    # a contour no line touches (a final kaf's arm) is not a piece: it joins the piece
+    # it overlaps most in x
+    whole, _ = ndimage.label(ink, structure=eight)
+    touched = set(np.unique(whole[line & ink]))
+    pieces, extras = [], []
+    for c in range(1, nc + 1):
+        if sizes[c] < 12:
+            continue
+        wc = int(np.bincount(whole[lab == c]).argmax())
+        (pieces if wc in touched else extras).append(c)
+    if len(pieces) != n:
         return None
-    comps.sort(key=lambda c: -np.nonzero(lab == c)[1].mean())      # rightmost first
+    pieces.sort(key=lambda c: -np.nonzero(lab == c)[1].mean())      # rightmost first
     mask = np.zeros((H, W), dtype=np.uint16)
-    for k, c in enumerate(comps):
+    span = {}
+    for k, c in enumerate(pieces):
         mask[lab == c] = 1 << k
+        xs = np.nonzero(lab == c)[1]
+        span[k] = (xs.min(), xs.max())
+    for c in extras:
+        xs = np.nonzero(lab == c)[1]
+        lo, hi = xs.min(), xs.max()
+        best = max(range(n), key=lambda k: min(hi, span[k][1]) - max(lo, span[k][0]))
+        if min(hi, span[best][1]) - max(lo, span[best][0]) < 0:
+            best = min(range(n), key=lambda k: abs((span[k][0] + span[k][1]) / 2 - (lo + hi) / 2))
+        mask[lab == c] = 1 << best
     # the line pixels themselves take the nearest piece
     rest = ink & (mask == 0)
     if rest.any():

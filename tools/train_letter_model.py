@@ -42,6 +42,7 @@ def main():
     ap.add_argument("--lr", type=float, default=2e-3)
     ap.add_argument("--quick", action="store_true", help="only runs with a resolved layer")
     ap.add_argument("--out", default=M.MODEL_PATH)
+    ap.add_argument("--init", help="start from this checkpoint (fine-tune)")
     a = ap.parse_args()
     torch.set_num_threads(os.cpu_count())          # all cores: Abdullah wants the machine saturated
     pages = list(range(a.pages[0], a.pages[1] + 1))
@@ -51,10 +52,13 @@ def main():
         print("no training data")
         return
     ink, mask, n, meta, codes = tr
-    weight = torch.tensor([1.0 if m.get("known") else 0.2 for m in meta])
+    # runs cut by hand on letters_label.html are few and cover what nothing else does
+    weight = torch.tensor([10.0 if m.get("drawn") else (1.0 if m.get("known") else 0.2) for m in meta])
     print("train runs %d (with a resolved layer %d), held-out runs %d"
           % (len(n), int((weight == 1).sum()), 0 if te is None else len(te[2])), flush=True)
     model = M.UNet()
+    if a.init:
+        model.load_state_dict(torch.load(a.init, map_location="cpu", weights_only=True))
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
     steps = a.epochs * ((len(n) + a.batch - 1) // a.batch)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=a.lr, total_steps=steps)
