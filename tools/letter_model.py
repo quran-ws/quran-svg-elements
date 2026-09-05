@@ -196,6 +196,8 @@ def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0, letters=None):
         if have.any():
             _, (ir, ic) = ndimage.distance_transform_edt(~have, return_indices=True)
             labels[missing] = labels[ir[missing], ic[missing]]
+    labels = clean_labels(labels, ink, n)          # resampling leaves specks at the joints
+    labels = np.where(ink, labels, -1)
     masks = [labels == k for k in range(n)]
     n_ink = max(1, int(ink.sum()))
     meta = {"x0": x0, "y0": y0, "z": z_out, "ink": ink, "masks": masks, "iou": 1.0,
@@ -204,17 +206,18 @@ def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0, letters=None):
 
 
 def clean_labels(lab, ink, n, small=0.08):
-    """Continuity: a fragment of letter k that is smaller than `small` of the letter's
-    pixels and touches another letter goes to the letter it touches most. Bigger
-    fragments stay (a medial kaf's arm and baseline are both real)."""
+    """Continuity, in two moves. (1) A fragment of letter k under `small` of the
+    letter's pixels that touches another letter goes to the letter it touches most.
+    (2) A letter still in two regions on ONE connected piece of ink is joined: the
+    cheapest ink path between its two largest regions, widened to the stroke, is
+    relabelled to it — the way a ك after ل takes the lower stem that links its arm to
+    its baseline. A repair that would leave another letter in pieces is not applied."""
     from scipy import ndimage
+    import heapq
     lab = lab.copy()
     eight = np.ones((3, 3), dtype=bool)
-    changed = True
-    rounds = 0
-    while changed and rounds < 3:
+    for _round in range(3):
         changed = False
-        rounds += 1
         for k in range(n):
             m = lab == k
             tot = int(m.sum())
@@ -234,10 +237,114 @@ def clean_labels(lab, ink, n, small=0.08):
                 if len(nb):
                     lab[frag] = int(np.bincount(nb).argmax())
                     changed = True
+        if not changed:
+            break
+    # (2) join what is still in pieces on the same ink component
+    ink_comp, _ = ndimage.label(ink, structure=eight)
+    dt = ndimage.distance_transform_edt(ink)
+    H, W = ink.shape
+    for k in range(n):
+        m = lab == k
+        comp, nc = ndimage.label(m, structure=eight)
+        if nc <= 1:
+            continue
+        sizes = np.bincount(comp.ravel())
+        order = sorted(range(1, nc + 1), key=lambda c: -sizes[c])
+        a, b = order[0], order[1]
+        ra = comp == a
+        rb = comp == b
+        ca = np.bincount(ink_comp[ra].ravel()).argmax()
+        cb = np.bincount(ink_comp[rb].ravel()).argmax()
+        if ca != cb:
+            continue                              # different contours: nothing to join
+        # cheapest path through this ink component from region a to region b
+        allowed = ink_comp == ca
+        dist = np.full(ink.shape, np.inf)
+        prev = {}
+        pq = []
+        for r, c in zip(*np.nonzero(ra)):
+            dist[r, c] = 0.0
+            pq.append((0.0, int(r), int(c)))
+        heapq.heapify(pq)
+        end = None
+        while pq:
+            g, r, c = heapq.heappop(pq)
+            if g > dist[r, c]:
+                continue
+            if rb[r, c]:
+                end = (r, c)
+                break
+            for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1), (1, 1), (1, -1), (-1, 1), (-1, -1)):
+                nr, nc_ = r + dr, c + dc
+                if 0 <= nr < H and 0 <= nc_ < W and allowed[nr, nc_]:
+                    ng = g + (1.4142 if dr and dc else 1.0)
+                    if ng < dist[nr, nc_]:
+                        dist[nr, nc_] = ng
+                        prev[(nr, nc_)] = (r, c)
+                        heapq.heappush(pq, (ng, nr, nc_))
+        if end is None:
+            continue
+        path = [end]
+        while path[-1] in prev:
+            path.append(prev[path[-1]])
+        # widen the path to the local stroke width
+        band = np.zeros(ink.shape, dtype=bool)
+        for r, c in path:
+            w = int(dt[r, c]) + 1
+            band[max(0, r - w):r + w + 1, max(0, c - w):c + w + 1] = True
+        band &= ink
+        trial = lab.copy()
+        trial[band] = k
+        # no other letter may be left in pieces or emptied by the repair
+        ok = True
+        for j in range(n):
+            if j == k:
+                continue
+            mj = trial == j
+            if not mj.any() or ndimage.label(mj, structure=eight)[1] > ndimage.label(lab == j, structure=eight)[1]:
+                ok = False
+                break
+        if ok:
+            lab = trial
+    # (3) what the join could not connect: a region under a quarter of its letter goes
+    # to the letter it touches most (a bigger one is a real split — left for the flag)
+    for k in range(n):
+        m = lab == k
+        tot = int(m.sum())
+        if not tot:
+            continue
+        comp, nc = ndimage.label(m, structure=eight)
+        if nc <= 1:
+            continue
+        sizes = np.bincount(comp.ravel())
+        for cid in range(1, nc + 1):
+            if sizes[cid] >= 0.25 * tot or sizes[cid] == sizes[1:].max():
+                continue
+            frag = comp == cid
+            ring = ndimage.binary_dilation(frag, structure=eight) & ink & ~frag
+            nb = lab[ring]
+            nb = nb[(nb >= 0) & (nb != k)]
+            if len(nb):
+                lab[frag] = int(np.bincount(nb).argmax())
     return lab
 
 
-def region_count(lab, n):
-    """Connected regions per letter (8-connected)."""
+def region_count(lab, n, ink=None):
+    """Regions per letter, counted within one connected piece of ink: a letter drawn
+    partly on a separate contour is not "in pieces"."""
     from scipy import ndimage
-    return [int(ndimage.label(lab == k, structure=np.ones((3, 3), dtype=bool))[1]) for k in range(n)]
+    eight = np.ones((3, 3), dtype=bool)
+    if ink is None:
+        ink = lab >= 0
+    ink_comp, _ = ndimage.label(ink, structure=eight)
+    out = []
+    for k in range(n):
+        m = lab == k
+        if not m.any():
+            out.append(0)
+            continue
+        worst = 1
+        for cid in np.unique(ink_comp[m]):
+            worst = max(worst, ndimage.label(m & (ink_comp == cid), structure=eight)[1])
+        out.append(int(worst))
+    return out

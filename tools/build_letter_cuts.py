@@ -112,7 +112,7 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
         labels, meta = LM.label_run_with_model(MODEL, rp, n, letters=[letters[i]["ch"] for i in idx])
         if labels is not None:
             rec["model"] = {"share": [round(s, 3) for s in meta["share"]],
-                            "regions": LM.region_count(labels, n)}
+                            "regions": LM.region_count(labels, n, meta["ink"])}
     elif all(e is not None for e in entries):
         labels, meta = D.label_run(rp, entries)
         if labels is not None:
