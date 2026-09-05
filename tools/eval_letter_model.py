@@ -51,9 +51,9 @@ def main():
     if data is None:
         print("no held-out data")
         return
-    ink, mask, n, meta = data
+    ink, mask, n, meta, codes = data
     model = M.load_model(a.model)
-    pred = M.predict(model, ink, n)
+    pred = M.predict(model, ink, n, codes=codes)
     single = (mask > 0) & ((mask & (mask - 1)) == 0)
     truth = torch.full(mask.shape, -1, dtype=torch.int64)
     truth[single] = torch.log2(mask[single].float()).round().long()

@@ -27,7 +27,8 @@ def _block(cin, cout):
 
 
 class UNet(nn.Module):
-    def __init__(self, cin=4, base=24, k=K):
+    def __init__(self, cin=None, base=24, k=K):
+        cin = cin or CIN
         super().__init__()
         self.e1 = _block(cin, base)
         self.e2 = _block(base, base * 2)
@@ -49,13 +50,48 @@ class UNet(nn.Module):
         return self.out(d1)
 
 
-def make_input(ink, n):
-    """ink: (B, H, W) bool → (B, 4, H, W) float."""
+# the 28 base letters + the ones this script writes as their own shapes
+ALPHABET = "ابتثجحخدذرزسشصضطظعغفقكلمنهويىةء"
+CIN = 4 + 2 * K          # ink, x, y, n/K, then per position (letter id, form)
+
+
+def letter_codes(letters):
+    """letters: list of base chars for the run (reading order) → (K,) ids in [1, 40],
+    0 for an empty slot."""
+    out = torch.zeros(K, dtype=torch.long)
+    for k, ch in enumerate(letters[:K]):
+        i = ALPHABET.find(ch)
+        out[k] = (i + 1) if i >= 0 else len(ALPHABET) + 1
+    return out
+
+
+def form_codes(n):
+    """(K,) form per position: 0 empty, 1 isolated, 2 initial, 3 medial, 4 final — a run
+    is a connected stroke, so its first letter is initial, its last final."""
+    out = torch.zeros(K, dtype=torch.long)
+    if n == 1:
+        out[0] = 1
+    else:
+        out[0] = 2
+        out[1:n - 1] = 3
+        out[n - 1] = 4
+    return out
+
+
+def make_input(ink, n, codes=None):
+    """ink: (B, H, W) bool; n: (B,); codes: (B, K) letter ids (None → zeros) →
+    (B, CIN, H, W) float: ink, x, y, n/K, and per position its letter id/40 and form/4
+    broadcast over the canvas."""
     B = ink.shape[0]
     ys = torch.linspace(0, 1, H).view(1, 1, H, 1).expand(B, 1, H, W)
     xs = torch.linspace(0, 1, W).view(1, 1, 1, W).expand(B, 1, H, W)
     nn_ = (n.float() / K).view(B, 1, 1, 1).expand(B, 1, H, W)
-    return torch.cat([ink.float().unsqueeze(1), xs, ys, nn_], 1)
+    if codes is None:
+        codes = torch.zeros(B, K, dtype=torch.long)
+    forms = torch.stack([form_codes(int(v)) for v in n])
+    cond = torch.cat([codes.float() / 40.0, forms.float() / 4.0], 1)          # (B, 2K)
+    cond = cond.view(B, 2 * K, 1, 1).expand(B, 2 * K, H, W)
+    return torch.cat([ink.float().unsqueeze(1), xs, ys, nn_, cond], 1)
 
 
 def set_loss(logits, mask):
@@ -72,6 +108,7 @@ def set_loss(logits, mask):
 
 
 def load_pages(pages, need_known=False):
+    """→ (ink, mask, n, metas, codes)."""
     inks, masks, ns, metas = [], [], [], []
     for p in pages:
         path = os.path.join(LABELS_DIR, "%03d.npz" % p)
@@ -92,17 +129,18 @@ def load_pages(pages, need_known=False):
             metas.append(dict(meta[i], page=p))
     if not inks:
         return None
+    codes = torch.stack([letter_codes(m.get("letters", [])) for m in metas])
     return (torch.from_numpy(np.stack(inks)), torch.from_numpy(np.stack(masks).astype(np.int64)),
-            torch.tensor(ns, dtype=torch.int64), metas)
+            torch.tensor(ns, dtype=torch.int64), metas, codes)
 
 
-def predict(model, ink, n, batch=64):
-    """ink (B, H, W) bool, n (B,) → labels (B, H, W) int64 (−1 off ink)."""
+def predict(model, ink, n, batch=64, codes=None):
+    """ink (B, H, W) bool, n (B,), codes (B, K) → labels (B, H, W) int64 (−1 off ink)."""
     model.eval()
     out = []
     with torch.no_grad():
         for i in range(0, ink.shape[0], batch):
-            x = make_input(ink[i:i + batch], n[i:i + batch])
+            x = make_input(ink[i:i + batch], n[i:i + batch], None if codes is None else codes[i:i + batch])
             logits = model(x)
             # letters beyond n are impossible
             nk = n[i:i + batch].view(-1, 1, 1, 1)
@@ -121,7 +159,7 @@ def load_model(path=MODEL_PATH):
     return m
 
 
-def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0):
+def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0, letters=None):
     """Labels for a run from the model, in the frame the cut placement expects:
     (labels, meta) like dk_lib.label_run — labels[r, c] = letter position or −1 off
     ink, meta with 'x0','y0','z','ink','masks' (one boolean mask per letter),
@@ -134,7 +172,9 @@ def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0):
         return None, None
     frame = canvas_frame(run_polys)
     ink_c = raster_on_canvas(run_polys, frame)
-    lab_c = predict(model, torch.from_numpy(ink_c[None]), torch.tensor([n]))[0].numpy()
+    codes = letter_codes(letters)[None] if letters else None
+    lab_c = predict(model, torch.from_numpy(ink_c[None]), torch.tensor([n]), codes=codes)[0].numpy()
+    lab_c = clean_labels(lab_c, ink_c, n)
     fx0, fy0, fz = frame
     bx0, by0, bx1, by1 = L.bbox(run_polys)
     x0, y0 = bx0 - pad, by0 - pad
@@ -161,3 +201,43 @@ def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0):
     meta = {"x0": x0, "y0": y0, "z": z_out, "ink": ink, "masks": masks, "iou": 1.0,
             "share": [float(m.sum() / n_ink) for m in masks], "shape": labels.shape}
     return labels, meta
+
+
+def clean_labels(lab, ink, n, small=0.08):
+    """Continuity: a fragment of letter k that is smaller than `small` of the letter's
+    pixels and touches another letter goes to the letter it touches most. Bigger
+    fragments stay (a medial kaf's arm and baseline are both real)."""
+    from scipy import ndimage
+    lab = lab.copy()
+    eight = np.ones((3, 3), dtype=bool)
+    changed = True
+    rounds = 0
+    while changed and rounds < 3:
+        changed = False
+        rounds += 1
+        for k in range(n):
+            m = lab == k
+            tot = int(m.sum())
+            if tot == 0:
+                continue
+            comp, nc = ndimage.label(m, structure=eight)
+            if nc <= 1:
+                continue
+            sizes = np.bincount(comp.ravel())
+            for cid in range(1, nc + 1):
+                if sizes[cid] >= small * tot:
+                    continue
+                frag = comp == cid
+                ring = ndimage.binary_dilation(frag, structure=eight) & ink & ~frag
+                nb = lab[ring]
+                nb = nb[(nb >= 0) & (nb != k)]
+                if len(nb):
+                    lab[frag] = int(np.bincount(nb).argmax())
+                    changed = True
+    return lab
+
+
+def region_count(lab, n):
+    """Connected regions per letter (8-connected)."""
+    from scipy import ndimage
+    return [int(ndimage.label(lab == k, structure=np.ones((3, 3), dtype=bool))[1]) for k in range(n)]

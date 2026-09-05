@@ -109,9 +109,10 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     labels = meta = None
     if MODEL is not None:
         from tools import letter_model as LM
-        labels, meta = LM.label_run_with_model(MODEL, rp, n)
+        labels, meta = LM.label_run_with_model(MODEL, rp, n, letters=[letters[i]["ch"] for i in idx])
         if labels is not None:
-            rec["model"] = {"share": [round(s, 3) for s in meta["share"]]}
+            rec["model"] = {"share": [round(s, 3) for s in meta["share"]],
+                            "regions": LM.region_count(labels, n)}
     elif all(e is not None for e in entries):
         labels, meta = D.label_run(rp, entries)
         if labels is not None:
@@ -274,6 +275,8 @@ def _model_cuts(rec, main, main_polys, rp, labels, meta, anchors_, on_main, join
         polys = D.boundary_chords(main_polys, labels, meta, i)
         ordered.append({"poly": polys[0] if polys else [], "polys": polys, "src": "model", "how": "boundary",
                         "after": i, "conf": 1.0, "chords": len(polys)})
+    if any(r > 1 for r in rec.get("model", {}).get("regions", [])):
+        rec["flags"].append("letter-in-pieces:%s" % ",".join(str(r) for r in rec["model"]["regions"]))
     masks = [meta["masks"][k] for k in on_main]
     # ownership restricted to the main contour
     z, x0, y0 = meta["z"], meta["x0"], meta["y0"]

@@ -24,9 +24,9 @@ def held_out(page):
     return page % 10 == 0
 
 
-def exact_accuracy(model, ink, mask, n, batch=128):
+def exact_accuracy(model, ink, mask, n, codes, batch=128):
     """Accuracy on pixels whose set is a singleton."""
-    pred = M.predict(model, ink, n, batch)
+    pred = M.predict(model, ink, n, batch, codes=codes)
     single = (mask > 0) & ((mask & (mask - 1)) == 0)
     if not single.any():
         return float("nan")
@@ -50,7 +50,7 @@ def main():
     if tr is None:
         print("no training data")
         return
-    ink, mask, n, meta = tr
+    ink, mask, n, meta, codes = tr
     weight = torch.tensor([1.0 if m.get("known") else 0.2 for m in meta])
     print("train runs %d (with a resolved layer %d), held-out runs %d"
           % (len(n), int((weight == 1).sum()), 0 if te is None else len(te[2])), flush=True)
@@ -64,7 +64,7 @@ def main():
         t0, tot, cnt = time.time(), 0.0, 0
         for i in range(0, len(n), a.batch):
             idx = perm[i:i + a.batch]
-            x = M.make_input(ink[idx], n[idx])
+            x = M.make_input(ink[idx], n[idx], codes[idx])
             # random horizontal jitter (the canvas is right-aligned; shift a little)
             shift = int(torch.randint(-6, 1, (1,)))
             if shift:
@@ -84,7 +84,7 @@ def main():
             cnt += len(idx)
             if (i // a.batch) % 200 == 0:
                 print("  epoch %d  %d/%d  loss %.4f  %.0fs" % (epoch, i, len(n), tot / max(1, cnt), time.time() - t0), flush=True)
-        acc = exact_accuracy(model, *te[:3]) if te is not None else float("nan")
+        acc = exact_accuracy(model, te[0], te[1], te[2], te[4]) if te is not None else float("nan")
         print("epoch %d done: train loss %.4f  held-out exact-pixel accuracy %.4f  %.0fs"
               % (epoch, tot / max(1, cnt), acc, time.time() - t0), flush=True)
         torch.save(model.state_dict(), a.out)

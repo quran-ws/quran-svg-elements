@@ -96,6 +96,16 @@ def audit_page(page, do_pixels=True):
                 continue
             a0 = L.area(src_d[base])
             a1 = sum(L.area(d) for d in ds)
+            # no two pieces of one contour may overlap
+            import pathops as _po
+            paths = [L.to_path(d) for d in ds]
+            for i in range(len(paths)):
+                for j in range(i + 1, len(paths)):
+                    ov = _po.op(paths[i], paths[j], _po.PathOp.INTERSECTION)
+                    ov.simplify()
+                    if abs(ov.area) > 0.01:
+                        res["ink"] += 1
+                        res["detail"].append((w["wid"], "ink", "pieces %d and %d of %s overlap (%.3f)" % (i, j, base, abs(ov.area))))
             if abs(a1 - a0) > max(0.005 * a0, 0.02):
                 res["ink"] += 1
                 res["detail"].append((w["wid"], "ink", "pieces of %s sum %.3f vs %.3f" % (base, a1, a0)))

@@ -130,7 +130,7 @@ _MODEL = None
 _MODEL_PATH = None
 
 
-def _model_pieces(main, bodies, idx, cuts, on_main):
+def _model_pieces(main, bodies, idx, cuts, on_main, letters=None):
     """Recompute the label map with the model (deterministic) and cut by ownership."""
     global _MODEL
     from tools import letter_model as LM
@@ -139,7 +139,7 @@ def _model_pieces(main, bodies, idx, cuts, on_main):
         torch.set_num_threads(1)
         _MODEL = LM.load_model(_MODEL_PATH)
     rp = [poly for p in bodies for poly in L.flatten(p["d"])]
-    labels, meta = LM.label_run_with_model(_MODEL, rp, len(idx))
+    labels, meta = LM.label_run_with_model(_MODEL, rp, len(idx), letters=letters)
     if labels is None:
         raise L.CutError("model has no labels")
     z, x0, y0 = meta["z"], meta["x0"], meta["y0"]
@@ -190,7 +190,7 @@ def emit_word(word, wrec):
         refs = [anchors[k] for k in on_main]
         try:
             if rec.get("mode") == "model":
-                pieces = _model_pieces(main, bodies, idx, cuts, on_main)
+                pieces = _model_pieces(main, bodies, idx, cuts, on_main, letters=[letters[i]["ch"] for i in idx])
             else:
                 pieces = L.cut_run(main["d"], [c.get("polys", [c["poly"]]) for c in cuts], refs=refs)
         except L.CutError as e:
