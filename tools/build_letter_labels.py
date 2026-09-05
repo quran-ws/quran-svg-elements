@@ -106,6 +106,50 @@ def load_hand_cuts():
 NOJOIN = set("اأإآٱدذرزوؤءةى")          # letters that never join the letter after them
 
 
+def order_pieces(pieces, lab, cuts, frame, ink):
+    """Reading order of the pieces. Mean x alone is wrong where a letter swings back
+    under the one before it (the ح bowl of لح lies right of the ل stem), so walk the
+    chain the drawn lines make — each line joins the two pieces it touches — from the
+    end whose ink lies furthest right; separate chains (a letter after one that does not
+    join) follow in order of their mean x."""
+    x0, y0, z = frame
+    from PIL import Image, ImageDraw
+    meanx = {c: np.nonzero(lab == c)[1].mean() for c in pieces}
+    adj = {c: set() for c in pieces}
+    have = np.isin(lab, pieces)
+    _, (ir, ic) = ndimage.distance_transform_edt(~have, return_indices=True)
+    nearest = lab[ir, ic]
+    for c in cuts:
+        # the pixels the line took out of the ink, each given to its nearest piece:
+        # the two pieces holding most of them are the two the line separates (the
+        # line's 1u extension may graze a third letter; the stroke it crosses cannot)
+        im = Image.new("1", (W, H), 0)
+        ImageDraw.Draw(im).line([((x - x0) * z, (y - y0) * z) for x, y in c], fill=1, width=3)
+        took = nearest[np.array(im, dtype=bool) & ink]
+        touched = [(int((took == k).sum()), k) for k in pieces]
+        touched = [k for cnt, k in sorted(touched, reverse=True) if cnt > 0][:2]
+        if len(touched) == 2:
+            adj[touched[0]].add(touched[1])
+            adj[touched[1]].add(touched[0])
+    out, seen = [], set()
+    ends = sorted((c for c in pieces if len(adj[c]) <= 1), key=lambda c: -meanx[c])
+    for start in ends + sorted(pieces, key=lambda c: -meanx[c]):
+        if start in seen:
+            continue
+        chain = [start]
+        seen.add(start)
+        while True:
+            nxt = [k for k in adj[chain[-1]] if k not in seen]
+            if not nxt:
+                break
+            chain.append(nxt[0])
+            seen.add(nxt[0])
+        out.append(chain)
+    # chains in order of the ink they start from; a chain's start is its rightmost end
+    out.sort(key=lambda ch: -max(meanx[c] for c in ch))
+    return [c for ch in out for c in ch]
+
+
 def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None):
     """Exact labels from drawn cut lines: paint the lines (extended 1u past their ends
     over the canvas), take the ink components, and number them right→left. Returns the
@@ -148,7 +192,7 @@ def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None):
         extras = [c for c in extras if c not in pieces]
     if len(pieces) != n:
         return None
-    pieces.sort(key=lambda c: -np.nonzero(lab == c)[1].mean())      # rightmost first
+    pieces = order_pieces(pieces, lab, cuts, frame, ink)
     mask = np.zeros((H, W), dtype=np.uint16)
     span = {}
     for k, c in enumerate(pieces):
