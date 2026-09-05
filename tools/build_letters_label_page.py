@@ -66,6 +66,35 @@ def word_svg(word, run_eids, pad=2.0, scale=10, letters_word=None):
     return "".join(parts), (x0 - pad, y1 + pad)
 
 
+def pair_coverage(pairs):
+    """Per pair: joints in the mushaf, joints the tajweed layers cut, joints drawn by
+    hand — read from the label masks (a joint is covered when both letters have
+    single-bit pixels), so the ranking is measured, not kept by hand."""
+    import numpy as np
+    from tools.build_letter_labels import LABELS_DIR
+    allp, cov, drawn = {}, {}, {}
+    for f in sorted(glob.glob(os.path.join(LABELS_DIR, "*.npz"))):
+        z = np.load(f)
+        meta = json.loads(str(z["meta"]))
+        mask = z["mask"]
+        for smp, m in zip(meta, mask):
+            t = smp["text"]
+            if len(t) != smp["n"]:
+                continue
+            single = m[(m & (m - 1)) == 0]
+            bits = {int(np.log2(b)) for b in np.unique(single[single > 0])}
+            for i in range(len(t) - 1):
+                pr = t[i:i + 2]
+                if pr not in pairs:
+                    continue
+                allp[pr] = allp.get(pr, 0) + 1
+                if smp.get("drawn"):
+                    drawn[pr] = drawn.get(pr, 0) + 1
+                elif i in bits and i + 1 in bits:
+                    cov[pr] = cov.get(pr, 0) + 1
+    return {pr: (allp.get(pr, 0), cov.get(pr, 0), drawn.get(pr, 0)) for pr in pairs}
+
+
 def collect(pairs, per, seed, words=()):
     """`words` are (page, wid) asked for by name; they come first, marked "redo"."""
     rnd = random.Random(seed)
@@ -81,11 +110,12 @@ def collect(pairs, per, seed, words=()):
                     named.append(("redo",) + (rec["page"], wid, ri, run["text"], run.get("eid", [])))
                 for pr in pairs:
                     if pr in run["text"]:
-                        by_pair[pr].append((rec["page"], wid, ri, run["text"], run.get("eid", [])))
+                        by_pair[pr].append((rec["page"], wid, ri, run["text"], run.get("eid", []), bool(run.get("flags"))))
     out = list(named)
     for pr, items in by_pair.items():
         rnd.shuffle(items)
-        out += [(pr,) + it for it in items[:per]]
+        items.sort(key=lambda it: not it[-1])             # runs the builder could not cut first
+        out += [(pr,) + it[:-1] for it in items[:per]]
     return out
 
 
@@ -95,13 +125,27 @@ def main():
     ap.add_argument("--per", type=int, default=40)
     ap.add_argument("--seed", type=int, default=11)
     ap.add_argument("--words", default="", help="page:wid,... to show first (a drawing to redo)")
+    ap.add_argument("--rank", action="store_true", help="order pairs by uncut joints, with a heading per pair")
     ap.add_argument("--out", default=OUT)
     a = ap.parse_args()
     words = {(int(w.split(":")[0]), w.split(":", 1)[1]) for w in a.words.split(",") if w}
-    items = collect([p for p in a.pairs.split(",") if p], a.per, a.seed, words)
+    pairs = [p for p in a.pairs.split(",") if p]
+    stats = pair_coverage(pairs) if a.rank else {}
+    if a.rank:                                             # most uncut joints first
+        pairs.sort(key=lambda pr: -(stats[pr][0] - stats[pr][1] - stats[pr][2]))
+    items = collect(pairs, a.per, a.seed, words)
     cards = []
     cache = {}
+    last = None
     for pr, page, wid, ri, text, eids in items:
+        if a.rank and pr != last:
+            if pr == "redo":
+                cards.append('<h2 class="sec">Redo</h2>')
+            else:
+                n, c, d = stats[pr]
+                cards.append('<h2 class="sec"><span class="ar">%s</span> — %d joints in the mushaf, %d cut by the tajweed layers, %d drawn</h2>'
+                             % (pr, n, c, d))
+            last = pr
         if page not in cache:
             words, _ = L.read_words(page)
             lw = {}
@@ -126,7 +170,8 @@ def main():
             ".card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:8px}"
             "svg.art{max-width:100%;height:auto;cursor:crosshair;background:#fff}"
             ".ar{font-size:22px;direction:rtl}.meta{font-size:13px;margin-top:4px}.cutlist span{margin-right:8px;font-size:12px}"
-            ".cutlist button{font-size:11px}button.copy{position:fixed;top:10px;right:10px;padding:8px 14px}</style>"
+            ".cutlist button{font-size:11px}button.copy{position:fixed;top:10px;right:10px;padding:8px 14px}"
+            "h2.sec{grid-column:1/-1;margin:18px 0 4px;font-size:18px;border-bottom:1px solid #ccc}</style>"
             "<button class=copy onclick='copyAll()'>Copy cuts</button>"
             "<h1>Draw the letter cuts</h1><p>Dark grey is the run to cut; pale colours are the model's current guess, one per letter. Click two points to draw one cut line across the stroke, "
             "one line per joint, from right to left. ✕ removes a line. Then Copy and paste into "
