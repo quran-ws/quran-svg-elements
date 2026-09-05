@@ -25,7 +25,12 @@ from tools import letters_lib as L          # noqa: E402
 OUT = os.path.join(L.ROOT, "docs", "defects", "letters_label.html")
 
 
-def word_svg(word, run_eids, pad=2.0, scale=10):
+PALE = ["#f4a3b5", "#a9dbb0", "#a8b8ec", "#f9c89a", "#c9a0d6", "#a5e8f8", "#f6a4f0", "#d9c3a0"]
+
+
+def word_svg(word, run_eids, pad=2.0, scale=10, letters_word=None):
+    """The word, the run to cut in dark grey; with `letters_word` (the model build's
+    version) the model's letters are shown in pale colours under it as a hint."""
     polys = [poly for p in word["paths"] if p["d"] and p["kind"] == "body" for poly in L.flatten(p["d"])]
     if not polys:
         return "", None
@@ -35,8 +40,25 @@ def word_svg(word, run_eids, pad=2.0, scale=10):
              % (x0 - pad, y1 + pad, w, h, w, h, int(w * scale), int(h * scale))]
     # page-path y is UP: flip inside the group, so screen (sx, sy) ↔ page (x0-pad+sx, y1+pad-sy)
     parts.append('<g transform="translate(%.3f %.3f) scale(1 -1)">' % (-(x0 - pad), y1 + pad))
+    shown = set()
+    if letters_word:
+        import re
+        for k, m in enumerate(re.finditer(r'<g class="letter"([^>]*)>(.*?)</g>', letters_word["inner"], re.S)):
+            at = L.parse_attrs(m.group(1))
+            if at.get("data-unsplit") == "1":
+                continue
+            col = PALE[int(at.get("data-index", k)) % len(PALE)]
+            for pm in re.finditer(r'<path ([^>]*?)/>', m.group(2)):
+                pa = L.parse_attrs(pm.group(1))
+                if pa.get("data-kind") == "body" and pa.get("d"):
+                    base = pa.get("data-eid", "").rsplit("-", 1)[0] if pa.get("data-cut") == "1" else pa.get("data-eid")
+                    if base in run_eids:
+                        parts.append('<path d="%s" fill="%s" fill-rule="evenodd"/>' % (pa["d"], col))
+                        shown.add(base)
     for p in word["paths"]:
         if p["kind"] != "body" or not p["d"]:
+            continue
+        if p["eid"] in shown:
             continue
         col = "#222" if p["eid"] in run_eids else "#bbb"
         parts.append('<path d="%s" fill="%s" fill-rule="evenodd"/>' % (p["d"], col))
@@ -76,11 +98,16 @@ def main():
     for pr, page, wid, ri, text, eids in items:
         if page not in cache:
             words, _ = L.read_words(page)
-            cache[page] = {w["wid"]: w for w in words}
-        word = cache[page].get(wid)
+            lw = {}
+            lpath = os.path.join(L.LETTERS_SVG, "%03d.svg" % page)
+            if os.path.exists(lpath):
+                lws, _ = L.read_words(page, L.LETTERS_SVG)
+                lw = {w["wid"]: w for w in lws}
+            cache[page] = ({w["wid"]: w for w in words}, lw)
+        word = cache[page][0].get(wid)
         if word is None:
             continue
-        svg, _ = word_svg(word, set(eids))
+        svg, _ = word_svg(word, set(eids), letters_word=cache[page][1].get(wid))
         if not svg:
             continue
         cards.append('<div class="card" data-page="%d" data-wid="%s" data-run="%d" data-text="%s">%s'
@@ -95,7 +122,7 @@ def main():
             ".ar{font-size:22px;direction:rtl}.meta{font-size:13px;margin-top:4px}.cutlist span{margin-right:8px;font-size:12px}"
             ".cutlist button{font-size:11px}button.copy{position:fixed;top:10px;right:10px;padding:8px 14px}</style>"
             "<button class=copy onclick='copyAll()'>Copy cuts</button>"
-            "<h1>Draw the letter cuts</h1><p>Black is the run to cut. Click two points to draw one cut line across the stroke, "
+            "<h1>Draw the letter cuts</h1><p>Dark grey is the run to cut; pale colours are the model's current guess, one per letter. Click two points to draw one cut line across the stroke, "
             "one line per joint, from right to left. ✕ removes a line. Then Copy and paste into "
             "<code>docs/defects/letters_hand_cuts.jsonl</code>.</p>"
             "<div class=grid>" + "".join(cards) + "</div>"
