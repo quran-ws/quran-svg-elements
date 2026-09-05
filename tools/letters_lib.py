@@ -951,6 +951,8 @@ def cut_run_masks(d, masks, chords, frame, tol=0.005):
             region = pathops.op(region, pathops.op(_mask_path(strip, x0, y0, z), hp, pathops.PathOp.INTERSECTION),
                                 pathops.PathOp.UNION)
         piece = pathops.op(run, region, pathops.PathOp.INTERSECTION)
+        for earlier in pieces:                     # overlapping strips: no double cover
+            piece = pathops.op(piece, earlier, pathops.PathOp.DIFFERENCE)
         piece.simplify()
         if abs(piece.area) < 0.05:
             raise CutError("empty piece", piece=k)

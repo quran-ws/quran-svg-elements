@@ -290,19 +290,55 @@ def _model_cuts(rec, main, main_polys, rp, labels, meta, anchors_, on_main, join
         rec["agree"] = [1.0] * len(on_main)
     others = [p for p in bodies if p is not main]
     missing = [k for k in range(n) if k not in on_main]
-    if others and len(others) == len(missing):
-        for p, k in zip(sorted(others, key=lambda p: -L.bbox(L.flatten(p["d"]))[2]), missing):
-            rec["extra"][p["eid"]] = k
-    else:
-        for p in others:
-            m = L.raster(L.flatten(p["d"]), x0, y0, meta["shape"][1] / z, meta["shape"][0] / z, z)
-            m = m[:meta["shape"][0], :meta["shape"][1]]
-            sub = labels[:m.shape[0], :m.shape[1]][m]
-            sub = sub[sub >= 0]
-            rec["extra"][p["eid"]] = int(np.bincount(sub).argmax()) if len(sub) else 0
+    if len(missing) > len(others):
+        rec["flags"].append("cut-failed:letter without ink")     # the model gave it no pixel anywhere
+    _assign_extras(rec, others, missing, on_main, labels, meta, n)
     rec["cuts"] = ordered
     rec["mode"] = "model"
     return rec
+
+
+def _assign_extras(rec, others, missing, on_main, labels, meta, n):
+    """Separate contours of a run go to letters: paired right→left with the letters
+    that have no ink on the main contour when the counts match; else each by majority
+    label, and then every still-empty missing letter takes, from letters holding more
+    than one body, the contour nearest to where it should sit."""
+    z, x0, y0 = meta["z"], meta["x0"], meta["y0"]
+    if not others:
+        return
+    xc = {p["eid"]: (lambda b: (b[0] + b[2]) / 2)(L.bbox(L.flatten(p["d"]))) for p in others}
+    if len(others) == len(missing):
+        for p, k in zip(sorted(others, key=lambda p: -xc[p["eid"]]), missing):
+            rec["extra"][p["eid"]] = k
+        return
+    for p in others:
+        m = L.raster(L.flatten(p["d"]), x0, y0, meta["shape"][1] / z, meta["shape"][0] / z, z)
+        m = m[:meta["shape"][0], :meta["shape"][1]]
+        sub = labels[:m.shape[0], :m.shape[1]][m]
+        sub = sub[sub >= 0]
+        rec["extra"][p["eid"]] = int(np.bincount(sub).argmax()) if len(sub) else 0
+    # letter x positions on the main contour, for "where it should sit"
+    pos = {}
+    for k in on_main:
+        ys, xs = np.nonzero(meta["masks"][k])
+        if len(xs):
+            pos[k] = x0 + xs.mean() / z
+    for k in missing:
+        if k in rec["extra"].values():
+            continue
+        bodies_of = {}
+        for eid, o in rec["extra"].items():
+            bodies_of.setdefault(o, []).append(eid)
+        cands = [eid for o, eids in bodies_of.items() if (o in on_main and eids) or len(eids) > 1 for eid in eids]
+        if not cands:
+            continue
+        nb = [pos[j] for j in (k - 1, k + 1) if j in pos]
+        if nb:
+            want = sum(nb) / len(nb)
+        else:
+            want = max(xc.values()) if k == 0 else min(xc.values())
+        best = min(cands, key=lambda eid: abs(xc[eid] - want))
+        rec["extra"][best] = k
 
 
 def build_page(page, use_tajweed=True):
