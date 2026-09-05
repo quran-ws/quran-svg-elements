@@ -63,9 +63,13 @@ def word_svg(word, letters_word=None, cuts=None, pad=2.0):
     return "".join(parts)
 
 
-def collect(sample, seed, limit):
+def collect(sample, seed, limit, pairs=None, per=60):
+    """Flagged runs and a blind sample of accepted ones; with `pairs`, instead a sample
+    of accepted runs containing each listed letter pair (the pairs the hand cuts never
+    cover), `per` of each."""
     rnd = random.Random(seed)
     flagged, accepted = [], []
+    by_pair = {p: [] for p in (pairs or [])}
     for path in sorted(glob.glob(os.path.join(L.CUTS_DIR, "*.json"))):
         rec = json.load(open(path, encoding="utf-8"))
         page = rec["page"]
@@ -78,8 +82,19 @@ def collect(sample, seed, limit):
                     continue
                 if run.get("flags"):
                     flagged.append((page, wid, ri, run["flags"]))
-                elif any(c["src"] == "dk" for c in run["cuts"]) and rnd.random() < sample:
+                    continue
+                if pairs:
+                    text = run["text"]
+                    for pr in pairs:
+                        if pr in text:
+                            by_pair[pr].append((page, wid, ri, ["pair " + pr]))
+                elif any(c["src"] in ("dk", "model") for c in run["cuts"]) and rnd.random() < sample:
                     accepted.append((page, wid, ri, []))
+    if pairs:
+        for pr, items in by_pair.items():
+            rnd.shuffle(items)
+            accepted += items[:per]
+        return [], accepted
     return flagged[:limit], accepted[:limit]
 
 
@@ -120,11 +135,19 @@ def main():
     ap.add_argument("--sample", type=float, default=0.02)
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--limit", type=int, default=400)
+    ap.add_argument("--pairs", help="comma-separated letter pairs to sample instead (e.g. لك,عل)")
+    ap.add_argument("--per", type=int, default=60)
+    ap.add_argument("--out", default=OUT)
     a = ap.parse_args()
-    flagged, accepted = collect(a.sample, a.seed, a.limit)
+    pairs = a.pairs.split(",") if a.pairs else None
+    flagged, accepted = collect(a.sample, a.seed, a.limit, pairs, a.per)
     body = render(flagged, "Flagged runs", "Runs the builder could not cut, or cut with a doubt. These are unsplit in the output.")
-    body += render(accepted, "Blind sample of accepted DigitalKhatt cuts",
-                   "A seeded random %.0f%% of runs cut WITHOUT a hand cut. Judge the cut, not the colours." % (a.sample * 100))
+    if pairs:
+        body = render(accepted, "Uncovered letter pairs, cut by the model",
+                      "Pairs the hand cuts never cover (%s), %d runs each. Judge the cut between those two letters." % (", ".join(pairs), a.per))
+    else:
+        body += render(accepted, "Blind sample of accepted cuts",
+                       "A seeded random %.0f%% of runs cut WITHOUT a hand cut. Judge the cut, not the colours." % (a.sample * 100))
     page = ("<!doctype html><meta charset=utf-8><title>Letter cuts — review</title>"
             "<style>body{font-family:system-ui;margin:20px;background:#fafafa}"
             ".grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}"
@@ -137,10 +160,10 @@ def main():
             "const v=c.querySelector('.verdict').value,n=c.querySelector('.note').value;"
             "if(v||n)out.push({wid:c.dataset.wid,run:c.dataset.run,verdict:v,note:n})});"
             "navigator.clipboard.writeText(out.map(o=>JSON.stringify(o)).join('\\n'));alert(out.length+' decisions copied')}</script>")
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w", encoding="utf-8") as f:
+    os.makedirs(os.path.dirname(a.out), exist_ok=True)
+    with open(a.out, "w", encoding="utf-8") as f:
         f.write(page)
-    print("%s: %d flagged, %d sampled" % (OUT, len(flagged), len(accepted)))
+    print("%s: %d flagged, %d sampled" % (a.out, len(flagged), len(accepted)))
 
 
 if __name__ == "__main__":
