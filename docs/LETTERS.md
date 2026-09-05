@@ -270,3 +270,40 @@ rest of the table above unchanged). Next try: the same data at lr 1e-4
 (`model_ft3.pt`), and an eval that scores the model on drawn words from held-out pages
 as the drawings grow.
 
+### Third and fourth fine-tunes; `model_ft4` adopted (2026-09-06, 02:00)
+
+Same 99 drawn words at 10×, from `model_ft`. `model_ft3` = a full quick epoch at lr 1e-4;
+`model_ft4` = `--frac 0.12` (every drawn run plus a random 12% of the tajweed-labelled
+runs, ~4,000 samples, nine minutes) at lr 1e-4. The base model `model_cond_e3` is shown
+for scale.
+
+| measure | e3 | ft | ft2 | ft3 | **ft4** |
+|---|---|---|---|---|---|
+| held-out exact-pixel, tajweed labels | — | 0.924 | 0.924 | 0.927 | 0.924 |
+| held-out joint error median / within 1u | — | 0.50u / 76% | 0.51u / 76.4% | 0.50u / 76.4% | 0.50u / 76.6% |
+| agreement with drawn labels, never-trained pages (8 words) | — | 0.816 | 0.854 | 0.880 | **0.921** |
+| hard cut failures, pages 1–60 | 163 | 142 | 182 | 171 | 144 |
+
+The runs the long fine-tunes broke are touching pairs no tajweed layer ever labels
+(ون, نى at word end: the model starved the و to under 1% of the run). Nothing in
+training constrains them — their masks allow both letters everywhere, zero gradient —
+so a full epoch on the labelled subset drifts there while a short dose does not.
+
+Full run with `model_ft4` under `QSVG_LETTERS_TAG=model`:
+
+| | model_ft (restored, with the re-keying) | model_ft4 |
+|---|---|---|
+| runs left unsplit (`data-unsplit`) | 647 | 655 |
+| letters emitted | 320,883 | 321,017 |
+| gate: count | 0 | 0 |
+| gate: ink | 9 pages | 9 pages |
+| gate: pixels (largest alpha change > 72/255) | 13 pages | 17 pages (max 77–142, the boolean-refit sliver class; 10 pages shared, p100/p592 cleared, six new) |
+| per-letter mark mismatches (prior) | 3,727 | 3,722 |
+
+Adopted for the pairs the drawings cover — that is what the drawings are for — at the
+cost of four more pages in the seam class the Bézier splitter is meant to retire, and
+eight more unsplit runs. `model_ft` is kept on disk; rebuild with `--model
+.cache/letters/model_ft.pt` to revert. Next data: batch 3 (هم, لم, كم, ها, به, كل …), then
+re-measure the same five numbers; the drawn-word held-out set (pages ≡ 0 mod 10) is
+only 8 words and should grow with it.
+
