@@ -86,7 +86,59 @@ def resolve_layers(run, font, pair, scale):
     return out
 
 
-def run_sample(word, lig, idx, run_rec, font, pair, scale):
+HAND_CUTS_PATH = os.path.join(L.ROOT, "docs", "defects", "letters_hand_cuts.jsonl")
+
+
+def load_hand_cuts():
+    """Cuts drawn by hand on letters_label.html: {(page, wid, run text): [polylines]}."""
+    out = {}
+    if not os.path.exists(HAND_CUTS_PATH):
+        return out
+    for line in open(HAND_CUTS_PATH, encoding="utf-8"):
+        line = line.strip()
+        if not line:
+            continue
+        e = json.loads(line)
+        out[(e["page"], e["wid"], e["text"])] = [[tuple(p) for p in c] for c in e["cuts"]]
+    return out
+
+
+def drawn_cut_labels(polys, cuts, n, frame, ink):
+    """Exact labels from drawn cut lines: paint the lines (extended 1u past their ends
+    over the canvas), take the ink components, and number them right→left. Returns the
+    mask or None when the lines do not give exactly n pieces."""
+    x0, y0, z = frame
+    from PIL import Image, ImageDraw
+    im = Image.new("1", (W, H), 0)
+    dr = ImageDraw.Draw(im)
+    for c in cuts:
+        (ax, ay), (bx, by) = c[0], c[-1]
+        dx, dy = bx - ax, by - ay
+        nn = (dx * dx + dy * dy) ** 0.5 or 1e-9
+        ext = 1.0
+        pts = [(ax - dx / nn * ext, ay - dy / nn * ext)] + list(c) + [(bx + dx / nn * ext, by + dy / nn * ext)]
+        dr.line([((x - x0) * z, (y - y0) * z) for x, y in pts], fill=1, width=3)
+    line = np.array(im, dtype=bool)
+    free = ink & ~line
+    lab, nc = ndimage.label(free, structure=np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]], dtype=bool))
+    sizes = np.bincount(lab.ravel())
+    comps = [c for c in range(1, nc + 1) if sizes[c] >= 12]
+    if len(comps) != n:
+        return None
+    comps.sort(key=lambda c: -np.nonzero(lab == c)[1].mean())      # rightmost first
+    mask = np.zeros((H, W), dtype=np.uint16)
+    for k, c in enumerate(comps):
+        mask[lab == c] = 1 << k
+    # the line pixels themselves take the nearest piece
+    rest = ink & (mask == 0)
+    if rest.any():
+        have = mask > 0
+        _, (ir, ic) = ndimage.distance_transform_edt(~have, return_indices=True)
+        mask[rest] = mask[ir[rest], ic[rest]]
+    return mask
+
+
+def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None):
     bodies = [p for p in lig["paths"] if p["kind"] == "body" and p["d"]]
     polys = [poly for p in bodies for poly in L.flatten(p["d"])]
     if not polys:
@@ -96,6 +148,12 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale):
         return None
     frame = canvas_frame(polys)
     ink = raster_on_canvas(polys, frame)
+    if drawn:
+        mask = drawn_cut_labels(polys, drawn, n, frame, ink)
+        if mask is not None:
+            return {"ink": ink, "mask": mask, "n": n, "frame": frame, "known": n, "drawn": True,
+                    "exact_px": int(ink.sum()), "ink_px": int(ink.sum()), "wid": word["wid"],
+                    "text": lig["text"], "letters": [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]}
     mask = np.zeros((H, W), dtype=np.uint16)
     known = {}                                   # letter position → pixel mask
     if pair is not None and font is not None:
@@ -144,6 +202,7 @@ def build_page(page):
     font = T.PageFont(page) if os.path.exists(os.path.join(T.FONTS, "p%d.ttf" % page)) else None
     scale = rec.get("scale", T.DEFAULT_SCALE)
     samples = []
+    drawn_all = load_hand_cuts()
     for w in words:
         wrec = rec["words"].get(w["wid"])
         if not wrec or wrec.get("flags"):
@@ -163,10 +222,13 @@ def build_page(page):
             if len(idx) < 2:
                 continue
             run_rec = by_letters.get(tuple(idx), {})
+            drawn = drawn_all.get((page, w["wid"], lig["text"]))
             try:
-                s = run_sample(w, lig, idx, run_rec, font, pair, scale)
+                s = run_sample(w, lig, idx, run_rec, font, pair, scale, drawn=drawn)
             except Exception:
                 s = None
+            if drawn and (s is None or not s.get("drawn")):
+                print("  drawn cuts of p%d %s %s do not give %d pieces" % (page, w["wid"], lig["text"], len(idx)))
             if s:
                 samples.append(s)
     return samples
