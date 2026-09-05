@@ -167,15 +167,25 @@ component (its principal axis, clipped to the ink) replaces the pixel staircase
 inside its strip. The emitter re-runs the model, so nothing about the labels is
 stored beyond the chords.
 
-Held-out pages (every 10th, 9,054 runs), epoch-1 model:
+Held-out pages (every 10th, 9,054 runs). The learned column is the model conditioned
+on letter identity and form after three epochs (`model_cond_e3.pt`); its block rate is
+with continuity enforced (a letter left in two regions is not split).
 
 | | rules (DK templates) | learned labels |
 |---|---|---|
-| runs blocked (unsplit) | 1,002 (11.1%) | 380 (4.2%) |
-| joint error vs hand cuts, median | 1.06u | 0.64u |
-| within 1u of the hand cut | 47% | 65% |
+| runs blocked (unsplit) | 1,002 (11.1%) | 671 (7.4%, epoch 2) |
+| joint error vs hand cuts, median | 1.06u | 0.50u |
+| within 1u of the hand cut | 47% | 75% |
+| exact-pixel accuracy on hand-labelled pixels | — | 0.923 |
 | gate: count / ink | 0 / 0 | 0 / 0 |
 | gate: pixels | 4 pages | 3 pages (slivers, max 73–119) |
+
+**Hand-drawn cuts.** `tools/build_letters_label_page.py` writes `docs/defects/letters_label.html`,
+where Abdullah draws cut lines on sampled words of the letter pairs the tajweed layers never
+cover (لك, عل, لح, كل, فل, كف, ته…). The lines land in `docs/defects/letters_hand_cuts.jsonl`
+(page-path units) and `build_letter_labels.py` turns them into exact labels (a contour no
+line touches, such as a final ك's arm, joins the piece it overlaps). 43 words so far; they
+are weighted 10× in training and used to fine-tune the epoch-3 model (`--init`).
 
 Remaining blocks are "letter without ink" (274: the model gave a letter no pixel on
 the shared contour, mostly a thin ا inside a ligature), area not conserved (56) and
