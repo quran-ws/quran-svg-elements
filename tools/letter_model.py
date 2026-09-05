@@ -306,8 +306,9 @@ def clean_labels(lab, ink, n, small=0.08):
                 break
         if ok:
             lab = trial
-    # (3) what the join could not connect: a region under a quarter of its letter goes
-    # to the letter it touches most (a bigger one is a real split — left for the flag)
+    # (3) what the join could not connect goes to the neighbour it touches: every
+    # letter ends as ONE region (Abdullah's rule). On a shared لك stem this hands the
+    # arm to the ل and leaves the ك the baseline — the partition his own lines draw.
     for k in range(n):
         m = lab == k
         tot = int(m.sum())
@@ -317,8 +318,9 @@ def clean_labels(lab, ink, n, small=0.08):
         if nc <= 1:
             continue
         sizes = np.bincount(comp.ravel())
+        keep = int(sizes[1:].argmax()) + 1
         for cid in range(1, nc + 1):
-            if sizes[cid] >= 0.25 * tot or sizes[cid] == sizes[1:].max():
+            if cid == keep:
                 continue
             frag = comp == cid
             ring = ndimage.binary_dilation(frag, structure=eight) & ink & ~frag
