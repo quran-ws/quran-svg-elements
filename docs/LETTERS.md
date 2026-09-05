@@ -95,9 +95,42 @@ measured the same for split strokes (26–60) against 100+ for a real defect. Ov
 the pieces to hide the seam makes it worse (measured: 0.1u overlap → 46/255), so pieces
 never overlap.
 
-## Numbers
+## Numbers (full run, 2026-09-05)
 
-Filled in by the 2026-09-05 full run — see the end of this file.
+| | |
+|---|---|
+| words | 77,433 |
+| letters emitted | 285,741 |
+| multi-letter runs | 90,244 |
+| runs cut | 80,079 (88.7%) |
+| runs left unsplit (honest gaps) | 10,165 runs, 10,587 counting word-level; blocked by: no separating crossing found 6,407 · DK labels disagree with the cut 2,499 · chord fails to separate 904 · flank/letter mismatch 780 · other 31 |
+| words not registered to the tajweed font | 251 (a waqf-sign glyph the font draws apart, mostly) |
+| words whose groups do not concatenate to the rasm | 188 |
+| cuts | 160,735 = 51,818 hand (tajweed, 32%) + 108,917 DigitalKhatt; 1,211 joints need two chords |
+| gate: count / ink | 0 / 0 on all 604 pages |
+| gate: pixels | 569 pages pass; 35 pages carry edge slivers with max 76–108/255 on a handful of pixels (see below) |
+| per-letter mark mismatches (prior) | 3,835 of 285,741 letters (1.3%) |
+| DK cut vs hand cut, joints with both (every 15th page, 2,826) | midpoint distance median 1.06u · p75 2.1u · p90 3.7u · p99 8.4u |
+
+**The 35 pixel pages.** `skia-pathops` re-fits curves when it intersects the run with
+the pixel envelope; almost everywhere the deviation is sub-pixel at 1400 px, but on
+these pages a sliver under 0.1u wide survives the reproduce check (which catches
+strips ≥ 2 px at 12 px/u — the p70 ه counter corner it was written for). They are
+edge pixels, not moved ink: on each of those pages ONE or TWO pixels exceed 72
+(measured on p7, p16, p33, p40, p77). The proper fix is to stop using boolean
+ops for the free-space boundary altogether: split the run's own Bézier segments at
+the chord endpoints and stitch faces (exact, no refit). That is the next step.
+
+**The largest unsplit family** is "no separating crossing found" (6,407 joints): a
+medial ه whose two loops the template does not cover, لو ligatures where the و loop
+sits on the ل stem, and ك after ل when the label gives the ك's baseline to a
+neighbour. Every one is emitted unsplit with `data-unsplit="1"`, never guessed.
+
+**Calibration reading.** Half the DigitalKhatt joints sit within one unit of the hand
+cut, a quarter beyond two: the placement convention ("first crossing after the
+letter's template ends") differs from the hand's. With 51,818 hand cuts on the same
+joints a per-joint-pair offset can be learned; that is the second next step, before
+any DK cut is trusted for tajweed colouring at the sub-unit level.
 
 ## Human loop
 
