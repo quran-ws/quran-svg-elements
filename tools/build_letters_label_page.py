@@ -66,19 +66,23 @@ def word_svg(word, run_eids, pad=2.0, scale=10, letters_word=None):
     return "".join(parts), (x0 - pad, y1 + pad)
 
 
-def collect(pairs, per, seed):
+def collect(pairs, per, seed, words=()):
+    """`words` are (page, wid) asked for by name; they come first, marked "redo"."""
     rnd = random.Random(seed)
     by_pair = {p: [] for p in pairs}
+    named = []
     for path in sorted(glob.glob(os.path.join(L.CUTS_DIR, "*.json"))):
         rec = json.load(open(path, encoding="utf-8"))
         for wid, wrec in rec["words"].items():
             for ri, run in enumerate(wrec["runs"]):
                 if len(run["letters"]) < 2:
                     continue
+                if (rec["page"], wid) in words:
+                    named.append(("redo",) + (rec["page"], wid, ri, run["text"], run.get("eid", [])))
                 for pr in pairs:
                     if pr in run["text"]:
                         by_pair[pr].append((rec["page"], wid, ri, run["text"], run.get("eid", [])))
-    out = []
+    out = list(named)
     for pr, items in by_pair.items():
         rnd.shuffle(items)
         out += [(pr,) + it for it in items[:per]]
@@ -90,9 +94,11 @@ def main():
     ap.add_argument("--pairs", default="لك,عل,لح,كل,فل,كف,ته,فس,كت,بم")
     ap.add_argument("--per", type=int, default=40)
     ap.add_argument("--seed", type=int, default=11)
+    ap.add_argument("--words", default="", help="page:wid,... to show first (a drawing to redo)")
     ap.add_argument("--out", default=OUT)
     a = ap.parse_args()
-    items = collect(a.pairs.split(","), a.per, a.seed)
+    words = {(int(w.split(":")[0]), w.split(":", 1)[1]) for w in a.words.split(",") if w}
+    items = collect([p for p in a.pairs.split(",") if p], a.per, a.seed, words)
     cards = []
     cache = {}
     for pr, page, wid, ri, text, eids in items:
