@@ -158,6 +158,8 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     if not on_main:
         rec["flags"].append("no-main-letters")
         return rec
+    if MODEL is not None:
+        return _model_cuts(rec, main, main_polys, rp, labels, meta, anchors_, on_main, joints, bodies, n)
     # --- hand cuts, each mapped to the joint its midpoint sits on
     cuts = {}
     if pair is not None and font is not None:
@@ -180,9 +182,13 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     for i, i2 in joints:
         if i in cuts:
             continue
-        nc = D.joint_cut(rp, labels, meta, i, anchors_=anchors_)
+        why = None
+        if MODEL is not None:
+            nc, why = D.boundary_cuts(rp, labels, meta, i, anchors_=anchors_)
+        else:
+            nc = D.joint_cut(rp, labels, meta, i, anchors_=anchors_)
         if nc is None:
-            rec["flags"].append("neck-missing:%d" % i)
+            rec["flags"].append("neck-missing:%d%s" % (i, ":" + why if why else ""))
             continue
         conf = 1.0
         if nc["thick"] > 0:
@@ -261,6 +267,44 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     return rec
 
 
+def _model_cuts(rec, main, main_polys, rp, labels, meta, anchors_, on_main, joints, bodies, n):
+    """MODEL mode: the label map is the ownership; chords only straighten boundaries."""
+    ordered = []
+    for i, i2 in joints:
+        polys = D.boundary_chords(main_polys, labels, meta, i)
+        ordered.append({"poly": polys[0] if polys else [], "polys": polys, "src": "model", "how": "boundary",
+                        "after": i, "conf": 1.0, "chords": len(polys)})
+    masks = [meta["masks"][k] for k in on_main]
+    # ownership restricted to the main contour
+    z, x0, y0 = meta["z"], meta["x0"], meta["y0"]
+    mm = L.raster(main_polys, x0, y0, meta["shape"][1] / z, meta["shape"][0] / z, z)
+    main_mask = np.zeros(meta["shape"], dtype=bool)
+    main_mask[:mm.shape[0], :mm.shape[1]] = mm[:meta["shape"][0], :meta["shape"][1]]
+    masks = [m & main_mask for m in masks]
+    try:
+        pieces = L.cut_run_masks(main["d"], masks, [c["polys"] for c in ordered], (x0, y0, z))
+    except L.CutError as e:
+        rec["flags"].append("cut-failed:%s" % e.why)
+        pieces = None
+    if pieces is not None:
+        rec["agree"] = [1.0] * len(on_main)
+    others = [p for p in bodies if p is not main]
+    missing = [k for k in range(n) if k not in on_main]
+    if others and len(others) == len(missing):
+        for p, k in zip(sorted(others, key=lambda p: -L.bbox(L.flatten(p["d"]))[2]), missing):
+            rec["extra"][p["eid"]] = k
+    else:
+        for p in others:
+            m = L.raster(L.flatten(p["d"]), x0, y0, meta["shape"][1] / z, meta["shape"][0] / z, z)
+            m = m[:meta["shape"][0], :meta["shape"][1]]
+            sub = labels[:m.shape[0], :m.shape[1]][m]
+            sub = sub[sub >= 0]
+            rec["extra"][p["eid"]] = int(np.bincount(sub).argmax()) if len(sub) else 0
+    rec["cuts"] = ordered
+    rec["mode"] = "model"
+    return rec
+
+
 def build_page(page, use_tajweed=True):
     words, _ = L.read_words(page)
     font = pairs = None
@@ -269,7 +313,7 @@ def build_page(page, use_tajweed=True):
         font = T.PageFont(page)
         scale = T.page_scale(words, font)
         pairs = T.pair_glyphs(words, font, scale)
-    out = {"page": page, "scale": scale, "words": {}}
+    out = {"page": page, "scale": scale, "words": {}, "model": MODEL_PATH if MODEL is not None else None}
     for w in words:
         wrec = {"runs": [], "flags": []}
         if pairs is not None:

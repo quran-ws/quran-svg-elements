@@ -29,8 +29,10 @@ ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 WORDS_SVG = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
-CUTS_DIR = os.path.join(ROOT, ".cache", "letters", "cuts")
-LETTERS_SVG = os.path.join(ROOT, ".cache", "letters-svg", "hafs-kfqc")
+# QSVG_LETTERS_TAG=<tag> keeps a second build side by side (cuts-<tag>, letters-svg-<tag>)
+BUILD_TAG = os.environ.get("QSVG_LETTERS_TAG", "")
+CUTS_DIR = os.path.join(ROOT, ".cache", "letters", "cuts" + ("-" + BUILD_TAG if BUILD_TAG else ""))
+LETTERS_SVG = os.path.join(ROOT, ".cache", "letters-svg" + ("-" + BUILD_TAG if BUILD_TAG else ""), "hafs-kfqc")
 
 NUM = re.compile(r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?")
 _CMD = re.compile(r"([MmLlHhVvCcSsQqTtZz])([^MmLlHhVvCcSsQqTtZz]*)")
@@ -861,3 +863,111 @@ def outline_tree(polys, step=0.05):
 
 def transform_polys(polys, s, tx, ty):
     return [[(x * s + tx, y * s + ty) for x, y in poly] for poly in polys]
+
+
+def cut_run_masks(d, masks, chords, frame, tol=0.005):
+    """Split the run `d` by a trusted per-pixel ownership.
+
+    `masks[k]` is letter k's pixel mask in the raster `frame` = (x0, y0, z); `chords[j]`
+    is a list of polylines (may be empty) straightening the boundary between letters
+    j and j+1. Every ink pixel belongs to the letter whose mask holds it (unowned ink
+    pixels go to the nearest owned one); the piece is the run intersected with the
+    letter's one-pixel envelope, and inside each painted chord strip with the chord's
+    half-plane on the letter's side. Where no chord exists the boundary is the pixel
+    staircase itself. Checks: no empty piece, areas conserve, pieces reproduce the run."""
+    from scipy import ndimage
+    x0, y0, z = frame
+    run = to_path(d)
+    run.simplify()
+    total = abs(run.area)
+    n = len(masks)
+    polys = flatten(d)
+    bx0, by0, bx1, by1 = bbox(polys)
+    box = (bx0, by0, bx1, by1)
+    H, W = masks[0].shape
+    ink = raster(polys, x0, y0, W / z, H / z, z)
+    ink_ = np.zeros((H, W), dtype=bool)
+    h_, w_ = min(H, ink.shape[0]), min(W, ink.shape[1])
+    ink_[:h_, :w_] = ink[:h_, :w_]
+    ink = ink_
+    own = np.full((H, W), -1, dtype=np.int64)
+    for k, m in enumerate(masks):
+        own[m & ink] = k
+    unowned = ink & (own < 0)
+    if unowned.any():
+        have = own >= 0
+        if not have.any():
+            raise CutError("no ownership")
+        _, (ir, ic) = ndimage.distance_transform_edt(~have, return_indices=True)
+        own[unowned] = own[ir[unowned], ic[unowned]]
+    letter_mask = [own == k for k in range(n)]
+    for k in range(n):
+        if not letter_mask[k].any():
+            raise CutError("letter without ink", piece=k)
+    strips = [[_paint(pl, x0, y0, z, W, H) for pl in (chords[j] if j < len(chords) else [])] for j in range(n - 1)]
+    lines = [np.any(st, axis=0) if st else np.zeros((H, W), dtype=bool) for st in strips]
+    LR = np.any(lines, axis=0) if lines else np.zeros((H, W), dtype=bool)
+
+    def xy(q):
+        return (x0 + (q[1] + 0.5) / z, y0 + (q[0] + 0.5) / z)
+
+    def rc(p):
+        return (min(H - 1, max(0, int((p[1] - y0) * z))), min(W - 1, max(0, int((p[0] - x0) * z))))
+
+    # every strip's ink pixels are split by the chord's line; each side goes wholly to
+    # the letter owning most of it, so no strip pixel is lost or counted twice
+    rr, cc = np.mgrid[0:H, 0:W]
+    PX = x0 + (cc + 0.5) / z
+    PY = y0 + (rr + 0.5) / z
+    strip_parts = []           # (owner letter, strip mask, chord, side point)
+    for j in range(n - 1):
+        for pl, strip in zip(chords[j] if j < len(chords) else [], strips[j]):
+            A, B = pl[0], pl[-1]
+            dx, dy = B[0] - A[0], B[1] - A[1]
+            sign = (PX - A[0]) * dy - (PY - A[1]) * dx
+            for sgn in (1, -1):
+                part = strip & ink & ((sign * sgn) > 0)
+                if not part.any():
+                    continue
+                owners = own[part]
+                owners = owners[owners >= 0]
+                if not len(owners):
+                    continue
+                k = int(np.bincount(owners).argmax())
+                ys_, xs_ = np.nonzero(part)
+                side_pt = (x0 + (xs_.mean() + 0.5) / z, y0 + (ys_.mean() + 0.5) / z)
+                strip_parts.append((k, strip, pl, side_pt))
+    pieces = []
+    for k in range(n):
+        env = ndimage.binary_dilation(letter_mask[k], structure=_FOUR, iterations=1)
+        for j in range(n):
+            if j != k:
+                env &= ~letter_mask[j]
+        region = _mask_path(env & ~LR, x0, y0, z)
+        for owner, strip, pl, side_pt in strip_parts:
+            if owner != k:
+                continue
+            hp = _poly_path(half_plane(pl, side_pt, box))
+            region = pathops.op(region, pathops.op(_mask_path(strip, x0, y0, z), hp, pathops.PathOp.INTERSECTION),
+                                pathops.PathOp.UNION)
+        piece = pathops.op(run, region, pathops.PathOp.INTERSECTION)
+        piece.simplify()
+        if abs(piece.area) < 0.05:
+            raise CutError("empty piece", piece=k)
+        pieces.append(piece)
+    s = sum(abs(p.area) for p in pieces)
+    if abs(s - total) > max(tol * total, 0.02):
+        raise CutError("area not conserved", total=total, pieces=s)
+    zz = 12
+    fr = (bx0 - 1, by0 - 1, bx1 - bx0 + 2, by1 - by0 + 2)
+    ref_m = raster(polys, *fr, zz)
+    uni = np.zeros(ref_m.shape, dtype=bool)
+    for p in pieces:
+        m = raster(flatten(path_d(p, prec=6)), *fr, zz)
+        hh, ww = min(m.shape[0], uni.shape[0]), min(m.shape[1], uni.shape[1])
+        uni[:hh, :ww] |= m[:hh, :ww]
+    k2 = np.ones((2, 2), dtype=bool)
+    blob = ndimage.binary_opening(uni & ~ref_m, structure=k2) | ndimage.binary_opening(ref_m & ~uni, structure=k2)
+    if int(blob.sum()) >= 6:
+        raise CutError("pieces do not reproduce the run", blob=int(blob.sum()))
+    return [path_d(p) for p in pieces]

@@ -39,8 +39,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from tools import letters_lib as L          # noqa: E402
 
 TOL, SEAM_PX, WIDTH = 24, 10, 1400
-SEAM_MAX, SEAM_PER_CUT = 72, 8
-AUDIT_DIR = os.path.join(L.ROOT, ".cache", "letters", "audit")
+SEAM_MAX, SEAM_PER_CUT = 72, 14      # 14: a staircase boundary (model ownership) seams ~10 px per cut
+AUDIT_DIR = os.path.join(L.ROOT, ".cache", "letters", "audit" + ("-" + L.BUILD_TAG if L.BUILD_TAG else ""))
 _LETTER = re.compile(r'<g class="letter"([^>]*)>(.*?)</g>', re.S)
 _PATH = re.compile(r'<path ([^>]*?)/>', re.S)
 _EQUIV = {"fathatan": "fatha", "dammatan": "damma", "kasratan": "kasra"}

@@ -20,6 +20,8 @@ import json
 import os
 import sys
 import time
+
+import numpy as np
 from concurrent.futures import ProcessPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -124,6 +126,31 @@ def _piece_path(main, d, k, n):
     return "<path " + " ".join('%s="%s"' % (a, v) for a, v in at.items()) + "/>"
 
 
+_MODEL = None
+_MODEL_PATH = None
+
+
+def _model_pieces(main, bodies, idx, cuts, on_main):
+    """Recompute the label map with the model (deterministic) and cut by ownership."""
+    global _MODEL
+    from tools import letter_model as LM
+    if _MODEL is None:
+        import torch
+        torch.set_num_threads(1)
+        _MODEL = LM.load_model(_MODEL_PATH)
+    rp = [poly for p in bodies for poly in L.flatten(p["d"])]
+    labels, meta = LM.label_run_with_model(_MODEL, rp, len(idx))
+    if labels is None:
+        raise L.CutError("model has no labels")
+    z, x0, y0 = meta["z"], meta["x0"], meta["y0"]
+    main_polys = L.flatten(main["d"])
+    mm = L.raster(main_polys, x0, y0, meta["shape"][1] / z, meta["shape"][0] / z, z)
+    main_mask = np.zeros(meta["shape"], dtype=bool)
+    main_mask[:mm.shape[0], :mm.shape[1]] = mm[:meta["shape"][0], :meta["shape"][1]]
+    masks = [meta["masks"][k] & main_mask for k in on_main]
+    return L.cut_run_masks(main["d"], masks, [c.get("polys", []) for c in cuts], (x0, y0, z))
+
+
 def emit_word(word, wrec):
     """The new inner text of a word group, and notes."""
     notes = []
@@ -162,7 +189,10 @@ def emit_word(word, wrec):
         anchors = rec.get("anchors") or [[tuple(r)] if r else [] for r in rec.get("refs", [])]
         refs = [anchors[k] for k in on_main]
         try:
-            pieces = L.cut_run(main["d"], [c.get("polys", [c["poly"]]) for c in cuts], refs=refs)
+            if rec.get("mode") == "model":
+                pieces = _model_pieces(main, bodies, idx, cuts, on_main)
+            else:
+                pieces = L.cut_run(main["d"], [c.get("polys", [c["poly"]]) for c in cuts], refs=refs)
         except L.CutError as e:
             unsplit[ri] = idx
             for p in bodies:
@@ -230,6 +260,8 @@ def emit_page(page, out_dir=L.LETTERS_SVG):
     words, s = L.read_words(page)
     cuts_path = os.path.join(L.CUTS_DIR, "%03d.json" % page)
     rec = json.load(open(cuts_path, encoding="utf-8")) if os.path.exists(cuts_path) else {"words": {}}
+    global _MODEL_PATH
+    _MODEL_PATH = rec.get("model")
     pieces = []
     pos = 0
     notes = {}

@@ -12,6 +12,7 @@ cuts too. The hand cuts from tajweed_lib are the yardstick for these.
 
 Spec: docs/superpowers/specs/2026-09-05-letter-level-decomposition-design.md
 """
+import math
 import os
 
 import numpy as np
@@ -523,3 +524,116 @@ def joint_cut(run_polys, labels, meta, i, anchors_=None, max_chords=4):
            "neck": max(c["neck"] for c in chords), "boundary_dist": chords[0]["boundary_dist"],
            "thick": chords[0]["thick"], "walk": chords[0]["walk"], "how": "path", "chords": len(chords)}
     return res
+
+
+def _band_chord(run_polys, ink, comp_mask, x0, y0, z):
+    """A straight chord through a boundary component: its principal axis through its
+    centroid, walked out of the ink on both sides, ends snapped to the contour."""
+    ys, xs = np.nonzero(comp_mask)
+    if len(xs) < 2:
+        return None
+    cx, cy = xs.mean(), ys.mean()
+    pts = np.stack([xs - cx, ys - cy], 1).astype(float)
+    if len(xs) >= 3:
+        cov = pts.T @ pts
+        w, v = np.linalg.eigh(cov)
+        d = v[:, int(np.argmax(w))]
+    else:
+        d = np.array([1.0, 0.0])
+    H, W = ink.shape
+    ends = []
+    for sgn in (1, -1):
+        k = 0
+        while True:
+            k += 1
+            px, py = cx + sgn * d[0] * k, cy + sgn * d[1] * k
+            r, c = int(round(py)), int(round(px))
+            if not (0 <= r < H and 0 <= c < W) or not ink[r, c]:
+                break
+            if k > 6 * z:
+                return None
+        ends.append((x0 + (px + 0.5) / z, y0 + (py + 0.5) / z))
+    # snap to the contour
+    cpts = np.array(L.resample(run_polys, 0.05), dtype=float)
+    out = []
+    for e in ends:
+        j = int(np.argmin(np.hypot(cpts[:, 0] - e[0], cpts[:, 1] - e[1])))
+        out.append((float(cpts[j, 0]), float(cpts[j, 1])))
+    if math.hypot(out[0][0] - out[1][0], out[0][1] - out[1][1]) < 0.15:
+        return None
+    A, B = out
+    return {"poly": [A, B], "neck": math.hypot(A[0] - B[0], A[1] - B[1]), "boundary_dist": 0.0,
+            "thick": float(len(xs)) / z}
+
+
+def boundary_cuts(run_polys, labels, meta, i, anchors_=None, min_px=4):
+    """The cut between letter i and i+1 from a label map that is trusted (the learned
+    labeller): one chord through each connected component of the boundary between the
+    two labels — the component's principal axis, clipped to the ink — the set validated
+    by painting it: every anchor of letters ≤ i must end up apart from every anchor of
+    letters > i. Returns the cut, or (None, reason)."""
+    ink, z, x0, y0 = meta["ink"], meta["z"], meta["x0"], meta["y0"]
+    n = len(meta["masks"])
+    if i + 1 >= n:
+        return None, "index"
+    if anchors_ is None:
+        anchors_ = anchors(labels, meta, n)
+    H, W = ink.shape
+
+    def rc(p):
+        return (min(H - 1, max(0, int((p[1] - y0) * z))), min(W - 1, max(0, int((p[0] - x0) * z))))
+
+    a, b = labels == i, labels == i + 1
+    band = (a & ndimage.binary_dilation(b, iterations=2)) | (b & ndimage.binary_dilation(a, iterations=2))
+    if not band.any():
+        return None, "no-band"
+    comp, nc = ndimage.label(band, structure=np.ones((3, 3), dtype=bool))
+    sizes = np.bincount(comp.ravel())
+    chords = []
+    for cid in sorted(range(1, nc + 1), key=lambda c: -sizes[c]):
+        if sizes[cid] < min_px:
+            continue
+        cand = _band_chord(run_polys, ink, comp == cid, x0, y0, z)
+        if cand is not None:
+            chords.append(cand)
+    if not chords:
+        return None, "no-chord"
+    left = [rc(p) for k in range(i + 1) for p in anchors_[k]]
+    right = [rc(p) for k in range(i + 1, n) for p in anchors_[k]]
+    left = [p for p in left if ink[p]]
+    right = [p for p in right if ink[p]]
+    if not left or not right:
+        return None, "no-anchor"
+    strip = np.zeros(ink.shape, dtype=bool)
+    for m in range(len(chords)):
+        strip |= L._paint(chords[m]["poly"], x0, y0, z, W, H)
+        free = ink & ~strip
+        lab, _n = ndimage.label(free, structure=L._FOUR)
+        ls = {int(lab[L._nearest_true(free, p, 3) or p]) for p in left}
+        rs = {int(lab[L._nearest_true(free, p, 3) or p]) for p in right}
+        if 0 not in ls and 0 not in rs and not (ls & rs):
+            used = chords[:m + 1]
+            return {"poly": used[0]["poly"], "polys": [c["poly"] for c in used],
+                    "neck": max(c["neck"] for c in used), "boundary_dist": 0.0,
+                    "thick": used[0]["thick"], "walk": 0.0, "how": "boundary", "chords": len(used)}, None
+    return None, "no-separation"
+
+
+def boundary_chords(run_polys, labels, meta, i, min_px=4):
+    """Straight chords through each component of the boundary between letters i and
+    i+1 of a trusted label map (no validation: the ownership is the labels')."""
+    ink, z, x0, y0 = meta["ink"], meta["z"], meta["x0"], meta["y0"]
+    a, b = labels == i, labels == i + 1
+    band = (a & ndimage.binary_dilation(b, iterations=2)) | (b & ndimage.binary_dilation(a, iterations=2))
+    if not band.any():
+        return []
+    comp, nc = ndimage.label(band, structure=np.ones((3, 3), dtype=bool))
+    sizes = np.bincount(comp.ravel())
+    out = []
+    for cid in sorted(range(1, nc + 1), key=lambda c: -sizes[c]):
+        if sizes[cid] < min_px:
+            continue
+        cand = _band_chord(run_polys, ink, comp == cid, x0, y0, z)
+        if cand is not None:
+            out.append(cand["poly"])
+    return out

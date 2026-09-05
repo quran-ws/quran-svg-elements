@@ -43,7 +43,7 @@ def main():
     ap.add_argument("--quick", action="store_true", help="only runs with a resolved layer")
     ap.add_argument("--out", default=M.MODEL_PATH)
     a = ap.parse_args()
-    torch.set_num_threads(max(1, os.cpu_count() - 2))
+    torch.set_num_threads(os.cpu_count())          # all cores: Abdullah wants the machine saturated
     pages = list(range(a.pages[0], a.pages[1] + 1))
     tr = M.load_pages([p for p in pages if not held_out(p)], need_known=a.quick)
     te = M.load_pages([p for p in pages if held_out(p)], need_known=True)
