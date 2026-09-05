@@ -52,3 +52,6 @@ dist/
 .cache/letters/cuts/
 .cache/letters/audit/
 .cache/letters-svg/
+.cache/letters/labels/
+.cache/letters/*.pt
+.cache/letters/*.log

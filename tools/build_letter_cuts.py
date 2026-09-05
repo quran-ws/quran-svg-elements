@@ -31,7 +31,8 @@ from tools import letters_lib as L          # noqa: E402
 from tools import tajweed_lib as T          # noqa: E402
 from tools import dk_lib as D               # noqa: E402
 
-MIN_AGREE = 0.35       # below this the DK labels and the cut disagree badly enough to review
+MIN_AGREE = 0.35       # below this the labels and the cut disagree badly enough to review
+MODEL = None           # set by --model: the learned labeller replaces the DK templates
 
 
 def _mid(poly):
@@ -103,10 +104,15 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     rec = {"text": text, "letters": idx, "eid": [p["eid"] for p in bodies], "main": main["eid"],
            "cuts": [], "flags": [], "extra": {}}
     n = len(idx)
-    # --- DK labels: which ink is which letter
+    # --- labels: which ink is which letter — the learned model when given, else DK
     entries = [lg[i] for i in idx]
     labels = meta = None
-    if all(e is not None for e in entries):
+    if MODEL is not None:
+        from tools import letter_model as LM
+        labels, meta = LM.label_run_with_model(MODEL, rp, n)
+        if labels is not None:
+            rec["model"] = {"share": [round(s, 3) for s in meta["share"]]}
+    elif all(e is not None for e in entries):
         labels, meta = D.label_run(rp, entries)
         if labels is not None:
             meta["shape"] = labels.shape
@@ -314,8 +320,23 @@ def summary(rec):
             "word_flags": sum(1 for w in rec["words"].values() if w["flags"])}
 
 
+MODEL_PATH = None
+
+
+def _init_model(path):
+    """Worker initialiser: load the labeller once per process."""
+    global MODEL
+    if path:
+        import torch
+        torch.set_num_threads(1)
+        from tools import letter_model as LM
+        MODEL = LM.load_model(path)
+
+
 def _one(page):
     t = time.time()
+    if MODEL is None and MODEL_PATH:
+        _init_model(MODEL_PATH)
     rec = build_page(page)
     os.makedirs(L.CUTS_DIR, exist_ok=True)
     with open(os.path.join(L.CUTS_DIR, "%03d.json" % page), "w", encoding="utf-8") as f:
@@ -330,10 +351,13 @@ def main():
     ap.add_argument("first", type=int)
     ap.add_argument("last", type=int, nargs="?")
     ap.add_argument("--jobs", type=int, default=32)
+    ap.add_argument("--model", help="path of a trained letter labeller (.pt); replaces the DK templates")
     a = ap.parse_args()
     pages = range(a.first, (a.last or a.first) + 1)
     tot = {"multi_runs": 0, "cuts": 0, "hand": 0, "dk": 0, "flagged_runs": 0, "word_flags": 0}
-    with ProcessPoolExecutor(min(a.jobs, len(pages))) as ex:
+    global MODEL_PATH
+    MODEL_PATH = a.model
+    with ProcessPoolExecutor(min(a.jobs, len(pages)), initializer=_init_model, initargs=(a.model,)) as ex:
         for s in ex.map(_one, pages):
             print("p%03d runs %4d cuts %4d hand %4d dk %4d flagged %3d word-flags %2d  %ss"
                   % (s["page"], s["multi_runs"], s["cuts"], s["hand"], s["dk"], s["flagged_runs"],
