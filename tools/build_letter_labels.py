@@ -226,8 +226,10 @@ def build_page(page):
     drawn_all = load_hand_cuts()
     for w in words:
         wrec = rec["words"].get(w["wid"])
-        if not wrec or wrec.get("flags"):
+        if not wrec:
             continue
+        if wrec.get("flags") and not any(k[:2] == (page, w["wid"]) for k in drawn_all):
+            continue                      # no tajweed registration; drawn cuts need none
         reg = wrec.get("reg")
         pair = None
         if reg and font is not None:
