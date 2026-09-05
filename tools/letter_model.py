@@ -318,7 +318,18 @@ def clean_labels(lab, ink, n, small=0.08):
         if nc <= 1:
             continue
         sizes = np.bincount(comp.ravel())
+        # keep the region that continues into the NEXT letter (the baseline of a ك,
+        # not its arm); with no such contact, the largest
         keep = int(sizes[1:].argmax()) + 1
+        if k + 1 < n:
+            nxt = lab == k + 1
+            best, best_c = -1, None
+            for cid in range(1, nc + 1):
+                contact = int((ndimage.binary_dilation(comp == cid, structure=eight) & nxt).sum())
+                if contact > best:
+                    best, best_c = contact, cid
+            if best > 0:
+                keep = best_c
         for cid in range(1, nc + 1):
             if cid == keep:
                 continue
