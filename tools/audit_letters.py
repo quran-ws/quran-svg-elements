@@ -207,10 +207,10 @@ def calib(pages):
                 labels, meta = D.label_run(rp, [lg[i] for i in idx])
                 if labels is None:
                     continue
-                refs = [tuple(r) if r else None for r in run.get("refs", [])]
+                anchors_ = [[tuple(p) for p in a] for a in run.get("anchors", [])]
                 for c in hand:
                     j = c["after"]
-                    dk = D.joint_cut(rp, labels, meta, j, refs=refs)
+                    dk = D.joint_cut(rp, labels, meta, j, anchors_=anchors_ or None)
                     pair = letters[idx[j]]["ch"] + letters[idx[j + 1]]["ch"]
                     if dk is None:
                         out[pair].append(None)
@@ -228,8 +228,11 @@ def main():
     ap.add_argument("--jobs", type=int, default=32)
     ap.add_argument("--calib", action="store_true")
     ap.add_argument("--out", help="write the calibration table here (json)")
+    ap.add_argument("--step", type=int, default=1, help="calib: every N-th page")
     a = ap.parse_args()
     pages = list(range(a.first, (a.last or a.first) + 1))
+    if a.calib and a.step > 1:
+        pages = pages[::a.step]
     if a.calib:
         table = calib(pages)
         allv = [v for vs in table.values() for v in vs if v is not None]

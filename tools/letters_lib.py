@@ -706,6 +706,25 @@ def cut_run(d, cuts, refs=None, z=8, tol=0.005):
     s = sum(abs(p.area) for p in pieces)
     if abs(s - total) > max(tol * total, 0.02):
         raise CutError("area not conserved", total=total, pieces=s)
+    # the boolean op re-fits curves (sub-pixel) and, rarely, clips a hole (measured on
+    # p70: a filled corner of a ه counter, ~0.3 u²). Raster the union of the pieces
+    # against the run at 12 px/u: beyond the refit noise it is a wrong split — refuse.
+    zz = 12
+    fr = (bx0 - 1, by0 - 1, bx1 - bx0 + 2, by1 - by0 + 2)
+    ref_m = raster(polys, *fr, zz)
+    uni = np.zeros(ref_m.shape, dtype=bool)
+    for p in pieces:
+        m = raster(flatten(path_d(p, prec=6)), *fr, zz)
+        h_, w_ = min(m.shape[0], uni.shape[0]), min(m.shape[1], uni.shape[1])
+        uni[:h_, :w_] |= m[:h_, :w_]
+    from scipy import ndimage as _ndi
+    # refit noise is a one-pixel sliver along the contour; a clipped hole is a blob.
+    # A morphological opening keeps only blobs.
+    # (a 2×2 opening: refit noise is a one-pixel chain, a clipped hole a strip ≥ 2 px)
+    k2 = np.ones((2, 2), dtype=bool)
+    blob = _ndi.binary_opening(uni & ~ref_m, structure=k2) | _ndi.binary_opening(ref_m & ~uni, structure=k2)
+    if int(blob.sum()) >= 6:
+        raise CutError("pieces do not reproduce the run", blob=int(blob.sum()))
     return [path_d(p) for p in pieces]
 
 

@@ -227,6 +227,30 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
             sub = labels[:m.shape[0], :m.shape[1]][m]
             sub = sub[sub >= 0]
             rec["extra"][p["eid"]] = int(np.bincount(sub).argmax()) if len(sub) else 0
+        # a missing letter must still get a contour: the free one nearest its template
+        held = {}
+        for eid, k in rec["extra"].items():
+            held.setdefault(k, []).append(eid)
+        by_eid = {p["eid"]: p for p in others}
+        for k in missing:
+            if held.get(k):
+                continue
+            tm = meta["masks"][k]
+            if tm.any():
+                tys, txs = np.nonzero(tm)
+                cx = meta["x0"] + (txs.mean() + 0.5) / z
+            else:
+                cx = None
+            cands = [eid for eid, kk in rec["extra"].items() if kk in on_main or len(held.get(kk, [])) > 1]
+            if not cands:
+                continue
+            if cx is not None:
+                eid = min(cands, key=lambda e: abs(sum(L.bbox(L.flatten(by_eid[e]["d"]))[0::2]) / 2 - cx))
+            else:
+                eid = cands[0]
+            held.setdefault(rec["extra"][eid], []).remove(eid)
+            rec["extra"][eid] = k
+            held.setdefault(k, []).append(eid)
     rec["cuts"] = ordered
     return rec
 

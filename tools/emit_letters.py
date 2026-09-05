@@ -26,7 +26,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from tools import letters_lib as L          # noqa: E402
 from tools.build_letter_cuts import align_runs   # noqa: E402
 
-SOFT_FLAGS = ("side-disagreement", "hand-cut-unmapped", "anchor-forced")
+SOFT_FLAGS = ("hand-cut-unmapped", "anchor-forced")     # side-disagreement blocks: a wrong split is worse than none
 # how emitted mark labels map onto the letter expectation's families
 _FAMILY = {"fathatan": "fatha", "dammatan": "damma", "kasratan": "kasra",
            "sifr-mustadir": "sifr-mustadir", "sifr-mustatil": "sifr-mustatil"}
