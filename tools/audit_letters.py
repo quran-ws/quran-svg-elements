@@ -26,6 +26,8 @@ Per page, on .cache/letters-svg/hafs-kfqc/NNN.svg against .cache/words-svg:
     conf      cuts below the calibrated confidence
 """
 import argparse
+
+import numpy as np
 import json
 import os
 import re
@@ -96,16 +98,22 @@ def audit_page(page, do_pixels=True):
                 continue
             a0 = L.area(src_d[base])
             a1 = sum(L.area(d) for d in ds)
-            # no two pieces of one contour may overlap
-            import pathops as _po
-            paths = [L.to_path(d) for d in ds]
-            for i in range(len(paths)):
-                for j in range(i + 1, len(paths)):
-                    ov = _po.op(paths[i], paths[j], _po.PathOp.INTERSECTION)
-                    ov.simplify()
-                    if abs(ov.area) > 0.01:
+            # no two pieces of one contour may overlap: rastered at 12 px/u (the boolean
+            # library mishandles evenodd operands, so no path ops here), an overlap is a
+            # blob of shared pixels that survives a 2x2 opening
+            polys_ = [L.flatten(d) for d in ds]
+            bx0, by0, bx1, by1 = L.bbox([pl for pp in polys_ for pl in pp])
+            fr = (bx0 - 1, by0 - 1, bx1 - bx0 + 2, by1 - by0 + 2)
+            masks_ = [L.raster(pp, *fr, 12) for pp in polys_]
+            from scipy import ndimage as _ndi
+            for i in range(len(masks_)):
+                for j in range(i + 1, len(masks_)):
+                    hh, ww = min(masks_[i].shape[0], masks_[j].shape[0]), min(masks_[i].shape[1], masks_[j].shape[1])
+                    both = masks_[i][:hh, :ww] & masks_[j][:hh, :ww]
+                    blob = int(_ndi.binary_opening(both, structure=np.ones((2, 2), dtype=bool)).sum())
+                    if blob >= 20:              # 0.14 u²: the curve refit along a chord leaves 6–8 px slivers
                         res["ink"] += 1
-                        res["detail"].append((w["wid"], "ink", "pieces %d and %d of %s overlap (%.3f)" % (i, j, base, abs(ov.area))))
+                        res["detail"].append((w["wid"], "ink", "pieces %d and %d of %s overlap (%d px)" % (i, j, base, blob)))
             if abs(a1 - a0) > max(0.005 * a0, 0.02):
                 res["ink"] += 1
                 res["detail"].append((w["wid"], "ink", "pieces of %s sum %.3f vs %.3f" % (base, a1, a0)))
