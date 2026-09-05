@@ -500,8 +500,8 @@ def joint_cut(run_polys, labels, meta, i, anchors_=None, max_chords=4):
             if cand is None:
                 continue
             strip = L._paint(cand["poly"], x0, y0, z, W, H)
-            if any(strip[p] for p in left + right):
-                continue                          # a chord over an anchor decides nothing
+            if strip[path[0]] or strip[path[-1]]:
+                continue                          # a chord over the path's ends decides nothing
             free = ink & ~blocked & ~strip
             lab, _n = ndimage.label(free, structure=L._FOUR)
             if lab[path[0]] == 0 or lab[path[-1]] == 0 or lab[path[0]] == lab[path[-1]]:

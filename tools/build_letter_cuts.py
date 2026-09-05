@@ -120,10 +120,38 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     mm = L.raster(main_polys, mx0, my0, meta["shape"][1] / z_, meta["shape"][0] / z_, z_)[:meta["shape"][0], :meta["shape"][1]]
     main_mask = np.zeros(meta["shape"], dtype=bool)
     main_mask[:mm.shape[0], :mm.shape[1]] = mm
-    anchors_ = D.anchors(np.where(main_mask, labels, -1), meta, n=n)
+    main_labels = np.where(main_mask, labels, -1)
+    anchors_ = D.anchors(main_labels, meta, n=n)
     refs = [a[0] if a else None for a in anchors_]
     rec["anchors"] = [[[round(x, 3), round(y, 3)] for x, y in a] for a in anchors_]
     rec["refs"] = [[round(r[0], 3), round(r[1], 3)] if r else None for r in refs]
+    # letters drawn on the main contour (a group can hold a separate contour for a
+    # letter — ة after و — which needs no cut, only its contour assigned)
+    on_main = [k for k in range(n) if anchors_[k]]
+    # a letter with no labelled pixel on the main contour and no separate contour to
+    # be is still on the main contour (the text says it exists, the ink is one piece):
+    # anchor it on the main-contour pixel nearest its template's centre
+    others_n = len([p for p in bodies if p is not main])
+    missing = [k for k in range(n) if k not in on_main]
+    if len(missing) > others_n:
+        mys, mxs = np.nonzero(main_mask)
+        for k in missing[:len(missing) - others_n]:
+            tm = meta["masks"][k]
+            if tm.any():
+                tys, txs = np.nonzero(tm)
+                cy, cx = tys.mean(), txs.mean()
+            else:
+                cy, cx = mys.mean(), mxs.mean()
+            j = int(np.argmin((mxs - cx) ** 2 + (mys - cy) ** 2))
+            anchors_[k] = [(meta["x0"] + (mxs[j] + 0.5) / meta["z"], meta["y0"] + (mys[j] + 0.5) / meta["z"])]
+            rec["flags"].append("anchor-forced:%d" % k)
+        on_main = [k for k in range(n) if anchors_[k]]
+        rec["anchors"] = [[[round(x, 3), round(y, 3)] for x, y in a] for a in anchors_]
+    rec["main_letters"] = on_main
+    joints = [(on_main[j], on_main[j + 1]) for j in range(len(on_main) - 1)]
+    if not on_main:
+        rec["flags"].append("no-main-letters")
+        return rec
     # --- hand cuts, each mapped to the joint its midpoint sits on
     cuts = {}
     if pair is not None and font is not None:
@@ -141,8 +169,9 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
                 cuts[j] = {"poly": [(round(x, 3), round(y, 3)) for x, y in c], "src": "tajweed",
                            "after": j, "conf": 1.0, "layer": name,
                            "layer_area": round(T.layer_area(font, name, scale), 3)}
-    # --- DK neck cuts for the rest
-    for i in range(n - 1):
+    # --- DK joints for the rest (a joint between letters i and i2 that share the main
+    # contour; the record's `after` is i)
+    for i, i2 in joints:
         if i in cuts:
             continue
         nc = D.joint_cut(rp, labels, meta, i, anchors_=anchors_)
@@ -158,35 +187,46 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
                    "src": "dk", "how": nc.get("how", "neck"),
                    "after": i, "conf": round(conf, 3), "neck": round(nc["neck"], 3),
                    "boundary_dist": round(nc["boundary_dist"], 3), "thick": round(nc["thick"], 3)}
-    ordered = [cuts[i] for i in range(n - 1) if i in cuts]
-    if len(ordered) != n - 1:
+    ordered = [cuts[i] for i, _ in joints if i in cuts]
+    if len(ordered) != len(joints):
         rec["flags"].append("incomplete")
     # --- dry run of the full set, and side agreement with the labels
     if ordered and "incomplete" not in rec["flags"]:
         try:
-            pieces = L.cut_run(main["d"], [c.get("polys", [c["poly"]]) for c in ordered], refs=anchors_)
+            pieces = L.cut_run(main["d"], [c.get("polys", [c["poly"]]) for c in ordered],
+                               refs=[anchors_[k] for k in on_main])
         except L.CutError as e:
             rec["flags"].append("cut-failed:%s" % e.why)
             pieces = None
         if pieces is not None:
             masks = _piece_masks(pieces, meta)
-            agree = D.side_agreement(labels, meta, masks)
+            agree = []
+            for k, m in zip(on_main, masks):
+                li = labels == k
+                agree.append(float((li & m).sum() / max(1, li.sum())))
             rec["agree"] = [round(a, 3) for a in agree]
             if min(agree) < MIN_AGREE:
                 rec["flags"].append("side-disagreement")
             for k, c in enumerate(ordered):
                 if c["src"] == "dk":
                     c["conf"] = round(min(c["conf"], (agree[k] + agree[k + 1]) / 2), 3)
-    # --- other contours of the run (a kaf's stroke): majority label
+    # --- other contours of the run. Letters with no ink on the main contour must be
+    # these (the text says they exist): pair them right→left when the counts match;
+    # otherwise each contour goes to its majority label (a kaf's separate stroke).
     z, x0, y0 = meta["z"], meta["x0"], meta["y0"]
-    for p in bodies:
-        if p is main:
-            continue
-        m = L.raster(L.flatten(p["d"]), x0, y0, meta["shape"][1] / z, meta["shape"][0] / z, z)
-        m = m[:meta["shape"][0], :meta["shape"][1]]
-        sub = labels[:m.shape[0], :m.shape[1]][m]
-        sub = sub[sub >= 0]
-        rec["extra"][p["eid"]] = int(np.bincount(sub).argmax()) if len(sub) else 0
+    others = [p for p in bodies if p is not main]
+    missing = [k for k in range(n) if k not in on_main]
+    if others and len(others) == len(missing):
+        others_sorted = sorted(others, key=lambda p: -L.bbox(L.flatten(p["d"]))[2])
+        for p, k in zip(others_sorted, missing):
+            rec["extra"][p["eid"]] = k
+    else:
+        for p in others:
+            m = L.raster(L.flatten(p["d"]), x0, y0, meta["shape"][1] / z, meta["shape"][0] / z, z)
+            m = m[:meta["shape"][0], :meta["shape"][1]]
+            sub = labels[:m.shape[0], :m.shape[1]][m]
+            sub = sub[sub >= 0]
+            rec["extra"][p["eid"]] = int(np.bincount(sub).argmax()) if len(sub) else 0
     rec["cuts"] = ordered
     return rec
 

@@ -26,7 +26,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from tools import letters_lib as L          # noqa: E402
 from tools.build_letter_cuts import align_runs   # noqa: E402
 
-SOFT_FLAGS = ("side-disagreement", "hand-cut-unmapped")
+SOFT_FLAGS = ("side-disagreement", "hand-cut-unmapped", "anchor-forced")
 # how emitted mark labels map onto the letter expectation's families
 _FAMILY = {"fathatan": "fatha", "dammatan": "damma", "kasratan": "kasra",
            "sifr-mustadir": "sifr-mustadir", "sifr-mustatil": "sifr-mustatil"}
@@ -149,7 +149,8 @@ def emit_word(word, wrec):
             continue
         blocking = [f for f in (rec or {}).get("flags", ["no-record"]) if not f.startswith(SOFT_FLAGS)]
         cuts = (rec or {}).get("cuts", [])
-        if rec is None or blocking or len(cuts) != len(idx) - 1:
+        on_main = (rec or {}).get("main_letters", list(range(len(idx))))
+        if rec is None or blocking or len(cuts) != len(on_main) - 1:
             unsplit[ri] = idx
             for p in bodies:
                 groups[idx[0]].append(p["raw"])
@@ -158,7 +159,8 @@ def emit_word(word, wrec):
             notes.append("run-unsplit:%s:%s" % (lig["text"], ",".join(blocking) or "incomplete"))
             continue
         main = next(p for p in bodies if p["eid"] == rec["main"])
-        refs = rec.get("anchors") or [[tuple(r)] if r else [] for r in rec.get("refs", [])]
+        anchors = rec.get("anchors") or [[tuple(r)] if r else [] for r in rec.get("refs", [])]
+        refs = [anchors[k] for k in on_main]
         try:
             pieces = L.cut_run(main["d"], [c.get("polys", [c["poly"]]) for c in cuts], refs=refs)
         except L.CutError as e:
@@ -169,7 +171,8 @@ def emit_word(word, wrec):
                 used.add(id(p))
             notes.append("run-unsplit:%s:cut-failed:%s" % (lig["text"], e.why))
             continue
-        for k, (li, d) in enumerate(zip(idx, pieces)):
+        for k, (mi, d) in enumerate(zip(on_main, pieces)):
+            li = idx[mi]
             groups[li].append(_piece_path(main, d, k, len(idx)))
             polys[li] += L.flatten(d)
         used.add(id(main))
