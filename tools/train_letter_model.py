@@ -46,6 +46,9 @@ def main():
     ap.add_argument("--frac", type=float, default=1.0,
                     help="each epoch sees every drawn run plus this fraction of the others (short fine-tunes)")
     ap.add_argument("--drawn-weight", type=float, default=10.0, help="loss weight of a hand-drawn run")
+    ap.add_argument("--drawn-min-letters", type=int, default=0,
+                    help="drop hand-drawn runs shorter than this from the epoch (they are the ones "
+                         "over-represented in the drawn set against the mushaf)")
     a = ap.parse_args()
     torch.set_num_threads(os.cpu_count())          # all cores: Abdullah wants the machine saturated
     pages = list(range(a.pages[0], a.pages[1] + 1))
@@ -57,8 +60,22 @@ def main():
     ink, mask, n, meta, codes = tr
     # runs cut by hand on letters_label.html are few and cover what nothing else does
     weight = torch.tensor([a.drawn_weight if m.get("drawn") else (1.0 if m.get("known") else 0.2) for m in meta])
-    drawn_idx = torch.tensor([i for i, m in enumerate(meta) if m.get("drawn")], dtype=torch.long)
-    other_idx = torch.tensor([i for i, m in enumerate(meta) if not m.get("drawn")], dtype=torch.long)
+    dropped = 0
+    if a.drawn_min_letters:
+        keep = []
+        for i, m in enumerate(meta):
+            if m.get("drawn") and int(n[i]) < a.drawn_min_letters:
+                dropped += 1
+                continue
+            keep.append(i)
+        print("dropped %d hand-drawn runs under %d letters" % (dropped, a.drawn_min_letters), flush=True)
+        keep = set(keep)
+    else:
+        keep = None
+    drawn_idx = torch.tensor([i for i, m in enumerate(meta)
+                              if m.get("drawn") and (keep is None or i in keep)], dtype=torch.long)
+    other_idx = torch.tensor([i for i, m in enumerate(meta)
+                              if not m.get("drawn") and (keep is None or i in keep)], dtype=torch.long)
     per_epoch = len(drawn_idx) + int(round(a.frac * len(other_idx)))
     print("train runs %d (with a resolved layer %d), held-out runs %d"
           % (len(n), int((weight == 1).sum()), 0 if te is None else len(te[2])), flush=True)
@@ -70,8 +87,9 @@ def main():
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=a.lr, total_steps=steps)
     for epoch in range(a.epochs):
         model.train()
-        if a.frac < 1.0:
-            pick = other_idx[torch.randperm(len(other_idx))[:per_epoch - len(drawn_idx)]]
+        if a.frac < 1.0 or a.drawn_min_letters:
+            want = max(0, per_epoch - len(drawn_idx))
+            pick = other_idx[torch.randperm(len(other_idx))[:want]]
             perm = torch.cat([drawn_idx, pick])
             perm = perm[torch.randperm(len(perm))]
         else:
