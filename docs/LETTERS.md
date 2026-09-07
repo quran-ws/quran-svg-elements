@@ -353,3 +353,37 @@ The port was checked against the Python masks on 16 accepted words — same piec
 same letter order, matching pixel shares — and it reproduces the same rejection on the
 words that were a line short. A word can no longer be sent in short.
 
+### Two new audit rows: shape and size (2026-09-06)
+
+Abdullah photographed a cut that wandered instead of crossing the stroke, with a
+speck of one letter stranded inside the other, and asked for both an audit and a fix.
+
+**shape** — inside one source contour, a letter's ink must be one piece, and a cut
+between two letters must be a straight line across the stroke. Measured over 7,990
+boundaries in the shipped build: a cut sits 0.09u from a straight line at the median,
+0.23u at p90, 0.71u at p99, so `SHAPE_DEV = 0.85u` is past the tail. A boundary longer
+than 2.5 stroke widths is a shared flank, not a cut, and is not judged. An island is a
+disconnected piece of a letter under 15% of its ink and at least 40 px at 12 px/u —
+below that it is the boolean library's refit sliver, which the ink row already covers.
+Mushaf-wide: **997 flags, 926 islands and 71 ragged cuts.**
+
+**size** — a letter far from the area that letter takes elsewhere in the same position
+in its run. `--size-table` writes the medians (137 letter/position combinations) to
+`.cache/letters/letter_sizes.json`. Over 31,000 letters the ratio to the median is
+within 0.9–1.1 for half of them, below 0.34x for 1.5% and above 3x for 0.45%; that
+tail is where the defects are (a letter reduced to a sliver at 0.01x, one that
+swallowed its neighbour at 10x). Mushaf-wide: **6,103 flags, 4,834 too small and 1,269
+too large**, of which 1,716 are past 6x or under 0.1x.
+
+Both are priors, not proof rows: they rank work, they do not block a build.
+
+**The geometric fix was measured and rejected.** Forcing the chord's half-plane on the
+ink around each cut — the obvious way to make a boundary straight — breaks more letters
+into islands than it straightens, at every band width tried (pages 41, 81, 141: shape 8
+with it off, 25 at 0.5u, 23 at 1u, 39 at 2u), because a chord's line also slices the
+parts of a letter that curve back past the cut. Moving small islands to the letter that
+surrounds them changes nothing at all: the islands are not in the model's pixel
+ownership, they are made later by the boolean piece construction. So the two fixes that
+remain are the exact Bézier splitter, which retires that library, and more drawn
+examples where the model's boundary is wrong.
+
