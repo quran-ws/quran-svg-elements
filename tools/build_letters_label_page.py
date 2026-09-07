@@ -376,7 +376,7 @@ def main():
             ".cutlist button{font-size:11px}button.copy{position:fixed;top:10px;right:10px;padding:8px 14px}"
             "h2.sec{grid-column:1/-1;margin:18px 0 4px;font-size:18px;border-bottom:1px solid #ccc}"
             ".split{margin-top:6px;border-top:1px dashed #ddd;padding-top:6px}"
-            ".pieces{display:flex;flex-direction:row-reverse;justify-content:flex-end;flex-wrap:wrap;gap:8px;align-items:flex-end}"
+            ".pieces{display:flex;direction:rtl;gap:10px;align-items:flex-end;overflow-x:auto;padding-bottom:2px}"
             ".piece{text-align:center}.piece canvas{display:block;image-rendering:pixelated}"
             ".plab{font-size:20px;direction:rtl}.status{font-size:12px;margin-bottom:4px}"
             ".status.ok{color:#2a7}.status.bad{color:#b00}</style>"
