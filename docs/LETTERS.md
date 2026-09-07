@@ -467,3 +467,27 @@ against a mushaf where most runs are longer, and the model is conditioned on the
 count. The next attempt should balance the drawn sample by run length before weighting
 it, and hold the two-letter runs out to see whether they are what moves the gate.
 
+### The control: it is the extra epoch, not the drawings (2026-09-06, 21:25)
+
+Two hypotheses were tested against `model_ft5`, each one epoch at lr 1e-4 over a 30%
+epoch:
+
+| | ft5 (kept) | ft7 all drawn, 4x | ft8 no 2-letter drawn | control, NO drawn |
+|---|---|---|---|---|
+| held-out exact-pixel | 0.926 | 0.928 | 0.927 | 0.926 |
+| within 1u | 76.9% | 76.1% | 76.2% | 76.4% |
+| agreement with the drawn labels, held-out pages | **0.901** | 0.893 | 0.894 | 0.822 |
+| hard cut failures, pages 1–60 | **129** | 135 | 148 | 164 |
+
+Both hypotheses are refuted, and the control settles it. **Another epoch costs the gate
+whatever the data**: with no drawn runs at all the failures go 129 → 164, worse than any
+run that included them. The drawings are not the problem — they are what holds the line,
+and dropping them also drops the drawn-label agreement from 0.901 to 0.822, exactly the
+knowledge they carry.
+
+So `model_ft5` sits at a point that further fine-tuning walks away from, and stacking
+epochs is the wrong move. The next attempt has to change the schedule, not the data:
+train from `model_cond_e3` (the base) with the whole drawn set present from the start,
+rather than bolting another epoch onto a model that has already converged. Until that is
+measured, ft5 stays the build.
+
