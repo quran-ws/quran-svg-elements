@@ -307,3 +307,49 @@ eight more unsplit runs. `model_ft` is kept on disk; rebuild with `--model
 re-measure the same five numbers; the drawn-word held-out set (pages ≡ 0 mod 10) is
 only 8 words and should grow with it.
 
+### The misfiled tail, fixed generally (2026-09-06)
+
+Abdullah drew تُكَذِّبَانِ on p531 and the preview said five letters, three pieces. The
+drawing was right: the group is texted تكذبا but its ink holds only تكذ, with با filed
+in the ن group — the same defect as ٱلْحَرَامِ, where the ا sits in the م group. Over 61
+sample pages 191 groups draw FEWER contours than their text needs and 360 draw more.
+
+`align_runs` now moves a misfiled tail back on either of two proofs, and both need the
+target's rightmost contour to stand clear of the rest of its ink:
+
+* **the counts square** — the source is short of `_expected` (one contour, plus one per
+  letter that never joins the letter after it), the group after it is over its own
+  `_expected`, and moving the letters after the source's last break makes both counts
+  exactly right. Letters that merely touch can only lower a count, never raise one, so
+  the source being short is never proof on its own;
+* **the moved letter is a lone ا or و** of the measured size (ا 123–169 px at 4 px/u,
+  h/w 5.4; و 262–299 px at 1.09; a bare ء 154–179 px at 1.15 — the bands do not touch),
+  which catches the cases where the moved ink touches its new neighbour so no count can
+  square.
+
+45 words on the 61 sample pages, ~450 mushaf-wide; every one rendered with its groups
+coloured and checked by eye. Beyond تكذبا and لحرا it re-keys ٱلسَّمَآءِ, أَشْيَآءَهُمْ,
+فَكَذَّبُوهُمَا, عِبَادِنَا, هَٰٓؤُلَآءِ, وَرَثَةِ. `QSVG_LETTERS_REBAL=0` turns it off for A/B.
+
+Full rebuild after the fix (labels, cuts, emit, audit; model_ft4):
+
+| | before | after |
+|---|---|---|
+| runs left unsplit (`data-unsplit`) | 655 | **634** |
+| letters emitted | 321,017 | 321,116 |
+| gate: count / ink / pixels | 0 / 9 / 17 | 0 / 9 / 17 |
+| per-letter mark mismatches (prior) | 3,722 | 3,722 |
+| drawn words the label builder accepts | 99 of 102 | **102 of 102** |
+
+### The drawing page shows the split (2026-09-06)
+
+`build_letters_label_page.py` now carries the run's own path data into the page and
+re-implements `drawn_cut_labels` + `order_pieces` in the browser (4 px per unit, lines
+3 px wide extended 1u, components of ink minus lines, a contour no line touches counts
+as a letter only after one that never joins left, pieces ordered along the chain the
+lines make). Under each word the pieces appear one letter at a time, in reading order,
+with a green line when the count matches the text and a red one naming what is missing.
+The port was checked against the Python masks on 16 accepted words — same piece count,
+same letter order, matching pixel shares — and it reproduces the same rejection on the
+words that were a line short. A word can no longer be sent in short.
+
