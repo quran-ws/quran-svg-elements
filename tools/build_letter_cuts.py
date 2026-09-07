@@ -97,12 +97,12 @@ def align_runs(word):
 NOJOIN = set("اأإآٱدذرزوؤءةى")          # letters that never join the letter after them
 
 
-def _contours(lig):
+def _contours(lig, side="right"):
     """The separate pieces of ink in the group (8-connected, 4 px per unit): their
-    count; whether the rightmost piece stands clear of the others in x (nothing else
-    reaches past half its width — a misfiled و carries the ا it was filed with under
-    its tail, so half the width, not the whole of it, is the test); and that piece's
-    box in page units with its pixel count."""
+    count; whether the piece on the given side stands clear of the others in x (nothing
+    else reaches past half its width — a misfiled و carries the ا it was filed with
+    under its tail, so half the width, not the whole of it, is the test); and that
+    piece's box in page units with its pixel count."""
     from scipy import ndimage
     polys = [poly for p in lig["paths"] if p["kind"] == "body" and p["d"] for poly in L.flatten(p["d"])]
     x0, y0, x1, y1 = L.bbox(polys)
@@ -114,9 +114,10 @@ def _contours(lig):
     for k in range(1, n + 1):
         ys, xs = np.nonzero(lab == k)
         boxes.append((int(xs.min()), int(xs.max()), int(ys.min()), int(ys.max()), int(len(xs))))
-    boxes.sort(key=lambda bx: -bx[1])
+    boxes.sort(key=(lambda bx: -bx[1]) if side == "right" else (lambda bx: bx[0]))
     bx = boxes[0]
-    clear = max(o[1] for o in boxes[1:]) <= bx[1] - 0.5 * (bx[1] - bx[0])
+    clear = (max(o[1] for o in boxes[1:]) <= bx[1] - 0.5 * (bx[1] - bx[0])) if side == "right" \
+        else (min(o[0] for o in boxes[1:]) >= bx[0] + 0.5 * (bx[1] - bx[0]))
     box = (x0 - 1 + bx[0] / 4, x0 - 1 + bx[1] / 4, y0 - 1 + bx[2] / 4, y0 - 1 + bx[3] / 4)
     return n, clear, box, bx[4]
 
@@ -159,7 +160,7 @@ def _rebalance(out, letters):
         breaks = [j for j in range(len(chars) - 1) if chars[j] in NOJOIN]
         if not breaks:
             continue
-        have, _, _, _ = _contours(lig)
+        have = _contours(lig)[0]
         if have >= _expected(chars):
             continue                                   # the source is not short
         nlig, nidx = out[k + 1]
@@ -170,15 +171,57 @@ def _rebalance(out, letters):
         j = breaks[-1]
         moved = chars[j + 1:]
         squares = (have == _expected(chars[:j + 1]) and nhave == _expected(moved + nchars))
-        shaped = False
-        if len(moved) == 1 and (moved[0] in ALEFS or moved[0] == "و"):
-            ratio = (box[3] - box[2]) / max(box[1] - box[0], 0.25)
-            shaped = (100 <= npx <= 200 and ratio >= 3.5) if moved[0] in ALEFS \
-                else (220 <= npx <= 330 and 0.8 <= ratio <= 1.5)
+        shaped = len(moved) == 1 and _shaped(moved[0], box, npx)
         if not (squares or shaped):
             continue
         nidx[0:0] = idx[j + 1:]
         del idx[j + 1:]
+        out[k] = (lig, idx)
+    return _rebalance_back(out, letters)
+
+
+def _shaped(ch, box, px):
+    """Does a lone contour have the measured size and shape of this letter? Over 3,718
+    lone groups at 4 px per unit an ا is 123-169 px with height 5.4x its width, a و
+    262-299 px at 1.09 and a bare ء 154-179 px at 1.15; the bands do not touch."""
+    if box is None:
+        return False
+    ratio = (box[3] - box[2]) / max(box[1] - box[0], 0.25)
+    if ch in ALEFS:
+        return 100 <= px <= 200 and ratio >= 3.5
+    if ch == "و":
+        return 220 <= px <= 330 and 0.8 <= ratio <= 1.5
+    return False
+
+
+def _rebalance_back(out, letters):
+    """The mirror of _rebalance: a group's FIRST letter whose ink was filed in the
+    group BEFORE it (وَٱلْمَوْقُوذَةُ: the group texted المو draws one contour, لمو, and the
+    ا stands in the و group). The witnesses are the same counts read the other way —
+    this group short, the one before it over its own text, and the moved letter's ink
+    the right size and shape at that group's left edge. The `clear` test is not used
+    here: an ا filed with a و is drawn hard against it and overlaps it in x, which is
+    exactly why the word build put them together."""
+    out = [(l, list(idx)) for l, idx in out]
+    for k in range(1, len(out)):
+        lig, idx = out[k]
+        if len(idx) < 2:
+            continue
+        chars = [letters[i]["ch"] for i in idx]
+        lead = chars[0]
+        if lead not in ALEFS and lead != "و":
+            continue
+        have = _contours(lig)[0]
+        if have >= _expected(chars):
+            continue
+        plig, pidx = out[k - 1]
+        pchars = [letters[i]["ch"] for i in pidx]
+        phave, _, box, px = _contours(plig, side="left")
+        if phave <= _expected(pchars) or not _shaped(lead, box, px):
+            continue
+        if have != _expected(chars[1:]) or phave != _expected(pchars + [lead]):
+            continue
+        pidx.append(idx.pop(0))
         out[k] = (lig, idx)
     return [(l, idx) for l, idx in out if idx]
 
