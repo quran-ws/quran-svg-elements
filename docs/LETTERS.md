@@ -491,3 +491,29 @@ train from `model_cond_e3` (the base) with the whole drawn set present from the 
 rather than bolting another epoch onto a model that has already converged. Until that is
 measured, ft5 stays the build.
 
+### Training from the base, and the real bottleneck (2026-09-07 night)
+
+Three full epochs from `model_cond_e3` at lr 5e-4 with the whole drawn set present from
+the first step (166 words at 10x = 4.9% of a full epoch's loss, against 31% in ft6):
+
+| measure | ft5 (kept) | base, 3 epochs |
+|---|---|---|
+| held-out exact-pixel | 0.926 | **0.928** |
+| joint error median / within 1u | 0.50u / 76.9% | 0.50u / 76.5% |
+| agreement with the drawn labels, held-out pages | 0.901 | 0.899 |
+| hard cut failures, pages 1–60 | **129** | 158 |
+| of those, "letter without ink" | **12** | 42 |
+
+Rejected, the fifth in a row, and the five together say something the pixel metrics do
+not: **every model that trains further gets better at labelling pixels and worse at the
+gate**, always through the same two failures — a letter left with no ink, and an empty
+piece. Of the 42 failing runs on pages 1–60, **34 are runs where the model gave some
+letter under 2% of the ink**. The label map is right about where the boundary goes and
+wrong about how much a small letter deserves, and the cutter then cannot realise it.
+
+So the bottleneck is no longer the labels; it is that a letter with a sliver of a share
+fails the cut instead of being grown to its expected size. That is a change in
+`cut_run_masks` (grow a starved letter from its position rather than raise
+`letter without ink`), not another training run. `model_ft5` stays the build; no further
+fine-tuning should be attempted until the cutter tolerates a starved letter.
+
