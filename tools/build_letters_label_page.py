@@ -254,11 +254,49 @@ function preview(card) {
   card._r = r; card._g = g;
   const sig = JSON.stringify(cuts);
   if (!card._assign || card._sig !== sig || card._assign.length !== r.k) {
-    card._assign = [];
-    for (let k = 0; k < r.k; k++) card._assign.push(Math.min(k, r.n - 1));
+    card._assign = seedAssign(g, r);
     card._sig = sig;
   }
   render(card);
+}
+function seedAssign(g, r) {
+  // each piece starts on the letter whose model ink it covers most; a piece the model
+  // has nothing for falls back to its place in reading order
+  // reading order for the first n pieces; a piece beyond them takes the letter of the
+  // nearest one, which is right far more often than dropping it on the last letter
+  const cen = [];
+  for (let k = 0; k < r.k; k++) cen.push(centroid(r.lab, r.W, r.H, k));
+  const out = [];
+  for (let k = 0; k < r.k; k++) {
+    if (k < r.n) { out.push(k); continue; }
+    let best = 0, bd = Infinity;
+    for (let i = 0; i < r.n; i++) {
+      const d = (cen[i].x - cen[k].x) ** 2 + (cen[i].y - cen[k].y) ** 2;
+      if (d < bd) { bd = d; best = i; }
+    }
+    out.push(best);
+  }
+  const ds = g.model || [];
+  if (!ds.length) return out;
+  const owner = new Int32Array(r.W * r.H).fill(-1);
+  for (let i = 0; i < ds.length; i++) {
+    if (!ds[i] || !ds[i].length) continue;
+    const ctx = newCtx(g, r.W, r.H);
+    ctx.fillStyle = '#000';
+    for (const d of ds[i]) ctx.fill(new Path2D(d), 'evenodd');
+    const m = maskOf(ctx, r.W, r.H);
+    for (let j = 0; j < owner.length; j++) if (m[j] && owner[j] < 0) owner[j] = i;
+  }
+  for (let k = 0; k < r.k; k++) {
+    const cnt = new Int32Array(r.n);
+    let any = false;
+    for (let j = 0; j < owner.length; j++) if (r.lab[j] === k && owner[j] >= 0) { cnt[owner[j]]++; any = true; }
+    if (!any) continue;
+    let best = 0;
+    for (let i = 1; i < r.n; i++) if (cnt[i] > cnt[best]) best = i;
+    out[k] = best;
+  }
+  return out;
 }
 function assignOf(card) {                       // [[x, y, letter], …] in page units
   if (!card._r || !card._assign) return null;
@@ -311,6 +349,33 @@ def word_svg(word, run_eids, pad=2.0, scale=10, letters_word=None):
     ds = [p["d"] for p in word["paths"] if p["kind"] == "body" and p["d"] and p["eid"] in run_eids]
     return "".join(parts), {"x0": round(x0 - pad, 3), "y1": round(y1 + pad, 3),
                             "w": round(w, 3), "h": round(h, 3), "ds": ds}
+
+
+def model_letters(letters_word, lidx):
+    """The model's ink for each letter of the run, from the letters build: a list of
+    path `d` strings per run position. The drawing page seeds each piece's letter from
+    this, so a piece the lines produce starts on the model's opinion rather than on the
+    last letter of the run."""
+    out = [[] for _ in lidx]
+    if not letters_word:
+        return out
+    import re
+    where = {v: i for i, v in enumerate(lidx)}
+    for m in re.finditer(r'<g class="letter"([^>]*)>(.*?)</g>', letters_word["inner"], re.S):
+        at = L.parse_attrs(m.group(1))
+        if at.get("data-unsplit") == "1":
+            continue
+        try:
+            k = where.get(int(at.get("data-index", -1)))
+        except ValueError:
+            k = None
+        if k is None:
+            continue
+        for pm in re.finditer(r'<path ([^>]*?)/>', m.group(2)):
+            pa = L.parse_attrs(pm.group(1))
+            if pa.get("data-kind") == "body" and pa.get("d"):
+                out[k].append(pa["d"])
+    return out
 
 
 def pair_coverage(pairs):
@@ -415,6 +480,7 @@ def main():
             geom["letters"] = [wl[i]["ch"] for i in lidx]
         except Exception:
             geom["letters"] = list(text)
+        geom["model"] = model_letters(cache[page][1].get(wid), lidx)
         cards.append('<div class="card" data-page="%d" data-wid="%s" data-run="%d" data-text="%s">%s'
                      '<script type="application/json" class="rundata">%s</script>'
                      '<div class="meta"><b>%s</b> p%d %s <span class="ar">%s</span> run <span class="ar">%s</span>'
