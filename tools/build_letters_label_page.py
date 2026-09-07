@@ -216,6 +216,12 @@ function preview(card) {
     box.appendChild(cell);
   }
   const ok = r.k === r.n;
+  if (!cuts.length) {
+    status.className = 'status';
+    status.textContent = r.n + ' letters — draw a line across each joint';
+    box.textContent = '';
+    return;
+  }
   status.className = 'status ' + (ok ? 'ok' : 'bad');
   status.textContent = ok ? ('✓ ' + r.n + ' letters, ' + r.k + ' pieces')
                           : ('✗ ' + r.n + ' letters but ' + r.k + ' piece' + (r.k === 1 ? '' : 's')
@@ -312,7 +318,7 @@ def collect(pairs, per, seed, words=()):
     out = list(named)
     for pr, items in by_pair.items():
         rnd.shuffle(items)
-        items.sort(key=lambda it: not it[-1])             # runs the builder could not cut first
+        items.sort(key=lambda it: (not it[-1], len(it[3])))   # runs the builder could not cut first, shortest first
         out += [(pr,) + it[:-1] for it in items[:per]]
     return out
 
