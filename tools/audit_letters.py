@@ -41,6 +41,11 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from tools import letters_lib as L          # noqa: E402
 
 TOL, SEAM_PX, WIDTH = 24, 10, 1400
+SHAPE_DEV, ISLAND, SHAPE_MIN_PX = 0.85, 0.15, 4      # ragged cut, island share, boundary pixels
+SIZE_LO, SIZE_HI, SIZE_MIN = 0.34, 3.0, 12           # letter area vs its median, and the sample floor
+ISLAND_PX = 40                                       # a piece smaller than this is a refit sliver
+SIZES_PATH = os.path.join(L.ROOT, ".cache", "letters", "letter_sizes" + ("-" + L.BUILD_TAG if L.BUILD_TAG else "") + ".json")
+Z_SHAPE = 12
 SEAM_MAX, SEAM_PER_CUT = 72, 14      # 14: a staircase boundary (model ownership) seams ~10 px per cut
 AUDIT_DIR = os.path.join(L.ROOT, ".cache", "letters", "audit" + ("-" + L.BUILD_TAG if L.BUILD_TAG else ""))
 _LETTER = re.compile(r'<g class="letter"([^>]*)>(.*?)</g>', re.S)
@@ -59,11 +64,154 @@ def _diff(a_svg, b_svg, width=WIDTH):
     return mx, sum(h[TOL + 1:])
 
 
+def letter_areas(inner):
+    """Every emitted letter of the word: (run, index, text, drawn area in square page
+    units, form). Form is the letter's place in its run — the rightmost letter of a run
+    is its first."""
+    rows = []
+    for attrs, body in _LETTER.findall(inner):
+        at = L.parse_attrs(attrs)
+        if at.get("data-unsplit") == "1":
+            continue
+        try:
+            idx = int(at.get("data-index", -1))
+        except ValueError:
+            continue
+        area = 0.0
+        for m in _PATH.findall(body):
+            pa = L.parse_attrs(m)
+            if pa.get("data-kind") == "body" and pa.get("d"):
+                area += L.area(pa["d"])
+        rows.append({"run": at.get("data-run", ""), "idx": idx, "ch": at.get("data-text", ""), "area": area})
+    by_run = defaultdict(list)
+    for r in rows:
+        by_run[r["run"]].append(r)
+    for run, rs in by_run.items():
+        rs.sort(key=lambda r: r["idx"])
+        for i, r in enumerate(rs):
+            r["form"] = ("only" if len(rs) == 1 else "first" if i == 0
+                         else "last" if i == len(rs) - 1 else "middle")
+    return rows
+
+
+_SIZES = None
+
+
+def sizes_table():
+    global _SIZES
+    if _SIZES is None:
+        _SIZES = json.load(open(SIZES_PATH, encoding="utf-8")) if os.path.exists(SIZES_PATH) else {}
+    return _SIZES
+
+
+def build_sizes(pages, jobs):
+    """The median drawn area of every letter in every position, over the whole mushaf."""
+    from collections import defaultdict as dd
+    acc = dd(list)
+    with ProcessPoolExecutor(min(jobs, len(pages))) as ex:
+        for rows in ex.map(_areas_of_page, pages):
+            for ch, form, area in rows:
+                acc["%s|%s" % (ch, form)].append(area)
+    out = {k: {"median": float(np.median(v)), "n": len(v)} for k, v in acc.items()}
+    os.makedirs(os.path.dirname(SIZES_PATH), exist_ok=True)
+    with open(SIZES_PATH, "w", encoding="utf-8") as f:
+        json.dump(out, f, ensure_ascii=False)
+    return out
+
+
+def _areas_of_page(page):
+    path = os.path.join(L.LETTERS_SVG, "%03d.svg" % page)
+    if not os.path.exists(path):
+        return []
+    words, _ = L.read_words(page, L.LETTERS_SVG)
+    out = []
+    for w in words:
+        for r in letter_areas(w["inner"]):
+            if r["area"] > 0:
+                out.append((r["ch"], r["form"], r["area"]))
+    return out
+
+
+def letter_index_of(inner):
+    """Map each emitted path's `d` to the letter group it sits in: {d: (index, text)}."""
+    out = {}
+    for attrs, body in _LETTER.findall(inner):
+        at = L.parse_attrs(attrs)
+        if at.get("data-unsplit") == "1":
+            continue
+        try:
+            idx = int(at.get("data-index", -1))
+        except ValueError:
+            continue
+        for m in _PATH.findall(body):
+            pa = L.parse_attrs(m)
+            if pa.get("data-kind") == "body" and pa.get("d"):
+                out[pa["d"]] = (idx, at.get("data-text", ""))
+    return out
+
+
+def straightness(mask_a, mask_b, z):
+    """The shared boundary of two pieces: its pixel count, its length and how far it
+    wanders from a straight line, in page units. A cut across a stroke is a short
+    straight segment; two letters running alongside each other share a long curved
+    boundary, which is not a defect."""
+    from scipy import ndimage as _ndi
+    touch = _ndi.binary_dilation(mask_a, np.ones((3, 3), bool)) & mask_b
+    n = int(touch.sum())
+    if n < SHAPE_MIN_PX:
+        return n, 0.0, 0.0
+    ys, xs = np.nonzero(touch)
+    pts = np.stack([xs / z, ys / z], 1)
+    c = pts.mean(0)
+    _, sv, vt = np.linalg.svd(pts - c, full_matrices=False)
+    axis = vt[0]
+    perp = np.array([-axis[1], axis[0]])
+    along = (pts - c) @ axis
+    dev = np.abs((pts - c) @ perp)
+    return n, float(along.max() - along.min()), float(dev.max())
+
+
+def shape_checks(res, wid, base, per_letter, texts, run_m, z):
+    """Two shape rules inside one source contour: a letter's ink is one piece, and the
+    boundary where a cut separates two letters is straight across the stroke."""
+    from scipy import ndimage as _ndi
+    eight = np.ones((3, 3), dtype=bool)
+    for k, m in sorted(per_letter.items()):
+        lab, nc = _ndi.label(m, structure=eight)
+        if nc < 2:
+            continue
+        sizes = sorted((int(v) for v in np.bincount(lab.ravel())[1:] if v >= ISLAND_PX), reverse=True)
+        if len(sizes) < 2:
+            continue
+        share = sizes[-1] / float(sum(sizes))
+        if share <= ISLAND:
+            res["shape"] += 1
+            res["detail"].append((wid, "shape", "letter %d %s is in %d pieces inside %s, the smallest %.0f%% of it"
+                                  % (k, texts.get(k, ""), len(sizes), base, 100 * share)))
+    # stroke half-width where two letters meet, to tell a cut from a shared flank
+    edt = _ndi.distance_transform_edt(run_m) / z
+    ks = sorted(per_letter)
+    for k, k2 in zip(ks, ks[1:]):
+        if k2 != k + 1:
+            continue
+        n, extent, dev = straightness(per_letter[k], per_letter[k2], z)
+        if n < SHAPE_MIN_PX:
+            continue
+        touch = _ndi.binary_dilation(per_letter[k], np.ones((3, 3), bool)) & per_letter[k2]
+        width = 2 * float(edt[touch].max()) if touch.any() else 0.0
+        if extent > 2.5 * max(width, 0.1):
+            continue                       # a shared flank, not a cut across the stroke
+        if dev > SHAPE_DEV:
+            res["shape"] += 1
+            res["detail"].append((wid, "shape", "the cut between %s and %s in %s wanders %.2fu from a straight line"
+                                  % (texts.get(k, ""), texts.get(k2, ""), base, dev)))
+
+
 def audit_page(page, do_pixels=True):
     lsvg = os.path.join(L.LETTERS_SVG, "%03d.svg" % page)
     wsvg = os.path.join(L.WORDS_SVG, "%03d.svg" % page)
     res = {"page": page, "count": 0, "ink": 0, "pixels": 0, "marks": 0, "area": 0, "unsplit": 0,
-           "letters": 0, "words": 0, "detail": []}
+           "shape": 0, "size": 0, "letters": 0, "words": 0, "detail": []}
     if not os.path.exists(lsvg):
         res["missing"] = True
         return res
@@ -81,6 +229,7 @@ def audit_page(page, do_pixels=True):
             res["ink"] += 1
             res["detail"].append((w["wid"], "ink", "word missing in the word build"))
             continue
+        by_d = letter_index_of(w["inner"])
         src_d = {p["eid"]: p["d"] for p in src["paths"]}
         src_paths = Counter(p["d"] for p in src["paths"])
         seen = Counter()
@@ -113,6 +262,16 @@ def audit_page(page, do_pixels=True):
                 hh, ww = min(m.shape[0], run_m.shape[0]), min(m.shape[1], run_m.shape[1])
                 mm[:hh, :ww] = m[:hh, :ww]
                 masks_.append(mm)
+            per_letter, texts = {}, {}
+            for d, m in zip(ds, masks_):
+                hit = by_d.get(d)
+                if hit is None:
+                    continue
+                k, t = hit
+                texts[k] = t
+                per_letter[k] = m if k not in per_letter else (per_letter[k] | m)
+            if len(per_letter) > 1 or any(m.sum() for m in per_letter.values()):
+                shape_checks(res, w["wid"], base, per_letter, texts, run_m, 12)
             uni = np.any(masks_, axis=0)
             diff = int(_ndi.binary_opening(uni & ~run_m, structure=k2).sum() + _ndi.binary_opening(run_m & ~uni, structure=k2).sum())
             if diff >= 40:
@@ -129,6 +288,18 @@ def audit_page(page, do_pixels=True):
         if seen != src_paths:
             res["ink"] += 1
             res["detail"].append((w["wid"], "ink", "path multiset differs (%d vs %d)" % (sum(seen.values()), sum(src_paths.values()))))
+        # size: a letter far off what that letter measures elsewhere in the mushaf
+        tbl = sizes_table()
+        if tbl:
+            for r in letter_areas(w["inner"]):
+                ent = tbl.get("%s|%s" % (r["ch"], r["form"]))
+                if not ent or ent["n"] < SIZE_MIN or not r["area"]:
+                    continue
+                ratio = r["area"] / ent["median"]
+                if ratio < SIZE_LO or ratio > SIZE_HI:
+                    res["size"] += 1
+                    res["detail"].append((w["wid"], "size", "letter %d %s (%s) is %.2fx the usual area"
+                                          % (r["idx"], r["ch"], r["form"], ratio)))
         # count + marks
         try:
             letters = L.letters_of(w["uthmani"])
@@ -255,10 +426,18 @@ def main():
     ap.add_argument("--calib", action="store_true")
     ap.add_argument("--out", help="write the calibration table here (json)")
     ap.add_argument("--step", type=int, default=1, help="calib: every N-th page")
+    ap.add_argument("--size-table", action="store_true", help="rebuild the letter-size medians and stop")
     a = ap.parse_args()
     pages = list(range(a.first, (a.last or a.first) + 1))
     if a.calib and a.step > 1:
         pages = pages[::a.step]
+    if a.size_table:
+        out = build_sizes(pages, a.jobs)
+        vals = sorted(out.items(), key=lambda kv: -kv[1]["n"])
+        print("letter/form combinations %d, written to %s" % (len(out), SIZES_PATH))
+        for k, v in vals[:10]:
+            print("   %-10s n=%-6d median %.2f" % (k, v["n"], v["median"]))
+        return
     if a.calib:
         table = calib(pages)
         allv = [v for vs in table.values() for v in vs if v is not None]
@@ -279,11 +458,12 @@ def main():
                 print("p%03d MISSING" % r["page"])
                 tot["missing"] += 1
                 continue
-            print("p%03d words %3d letters %4d | count %d ink %d pixels %d (max %s, bad %s) | marks %3d unsplit %2d"
+            print("p%03d words %3d letters %4d | count %d ink %d pixels %d (max %s, bad %s) | shape %2d size %2d | marks %3d unsplit %2d"
                   % (r["page"], r["words"], r["letters"], r["count"], r["ink"], r["pixels"],
-                     r.get("pixel_max"), r.get("pixel_bad"), r["marks"], r["unsplit"]), flush=True)
-            for k in ("count", "ink", "pixels", "marks", "unsplit", "letters", "words"):
-                tot[k] += r[k]
+                     r.get("pixel_max"), r.get("pixel_bad"), r.get("shape", 0), r.get("size", 0),
+                     r["marks"], r["unsplit"]), flush=True)
+            for k in ("count", "ink", "pixels", "shape", "size", "marks", "unsplit", "letters", "words"):
+                tot[k] += r.get(k, 0)
     print("TOTAL", dict(tot))
     print("PROOF FAILURES:", tot["count"] + tot["ink"] + tot["pixels"])
 

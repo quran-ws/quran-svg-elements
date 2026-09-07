@@ -354,10 +354,11 @@ def collect(pairs, per, seed, words=()):
                 if len(run["letters"]) < 2:
                     continue
                 if (rec["page"], wid) in words:
-                    named.append(("redo",) + (rec["page"], wid, ri, run["text"], run.get("eid", [])))
+                    named.append(("redo", rec["page"], wid, ri, run["text"], run.get("eid", []), run["letters"]))
                 for pr in pairs:
                     if pr in run["text"]:
-                        by_pair[pr].append((rec["page"], wid, ri, run["text"], run.get("eid", []), bool(run.get("flags"))))
+                        by_pair[pr].append((rec["page"], wid, ri, run["text"], run.get("eid", []),
+                                            run["letters"], bool(run.get("flags"))))
     out = list(named)
     for pr, items in by_pair.items():
         rnd.shuffle(items)
@@ -384,7 +385,7 @@ def main():
     cards = []
     cache = {}
     last = None
-    for pr, page, wid, ri, text, eids in items:
+    for pr, page, wid, ri, text, eids, lidx in items:
         if a.rank and pr != last:
             if pr == "redo":
                 cards.append('<h2 class="sec">Redo</h2>')
@@ -407,7 +408,13 @@ def main():
         svg, geom = word_svg(word, set(eids), letters_word=cache[page][1].get(wid))
         if not svg:
             continue
-        geom["letters"] = list(text)
+        # the run's real letters, which are not always the group's text: the word build
+        # sometimes files a letter's ink in the next group and align_runs re-keys it
+        try:
+            wl = L.letters_of(word["uthmani"])
+            geom["letters"] = [wl[i]["ch"] for i in lidx]
+        except Exception:
+            geom["letters"] = list(text)
         cards.append('<div class="card" data-page="%d" data-wid="%s" data-run="%d" data-text="%s">%s'
                      '<script type="application/json" class="rundata">%s</script>'
                      '<div class="meta"><b>%s</b> p%d %s <span class="ar">%s</span> run <span class="ar">%s</span>'

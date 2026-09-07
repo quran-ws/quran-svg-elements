@@ -188,7 +188,7 @@ def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None):
             continue
         wc = int(np.bincount(whole[lab == c]).argmax())
         (pieces if wc in touched else extras).append(c)
-    if len(pieces) < n and letters and not assign:
+    if len(pieces) < n and letters:
         # after a letter that never joins left (و then ة, ر then ا) the next letter is a
         # contour of its own that no line needs to touch; the text says how many such
         # letters this run may hold, and the largest untouched contours are they
