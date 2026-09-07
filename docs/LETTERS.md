@@ -365,7 +365,7 @@ boundaries in the shipped build: a cut sits 0.09u from a straight line at the me
 than 2.5 stroke widths is a shared flank, not a cut, and is not judged. An island is a
 disconnected piece of a letter under 15% of its ink and at least 40 px at 12 px/u —
 below that it is the boolean library's refit sliver, which the ink row already covers.
-Mushaf-wide: **997 flags, 926 islands and 71 ragged cuts.**
+Mushaf-wide: **997 flags, 809 islands and 188 ragged cuts.**
 
 **size** — a letter far from the area that letter takes elsewhere in the same position
 in its run. `--size-table` writes the medians (137 letter/position combinations) to
