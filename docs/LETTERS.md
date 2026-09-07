@@ -387,3 +387,29 @@ ownership, they are made later by the boolean piece construction. So the two fix
 remain are the exact Bézier splitter, which retires that library, and more drawn
 examples where the model's boundary is wrong.
 
+### The mirror: a leading letter filed in the group before it (2026-09-06)
+
+The same defect runs both ways. In وَٱلْمَوْقُوذَةُ the group texted المو draws one contour,
+لمو, and the ا stands in the group before it, the one texted و, which holds two
+contours: a waw of 270 px and a thin stroke of 164 px at 5.6 times its width. The two
+overlap in x, which is why the word build filed them together — and why the `clear`
+test the forward rule uses cannot apply here. The measured size bands do the work
+instead. `_rebalance_back` moves the leading letter back when its own group is short
+of `_expected`, the group before it is over its own, the extra contour has the size and
+shape of an ا or a و, and the move squares both counts.
+
+65 words on the 61 sample pages (~650 mushaf-wide), almost all the وَٱل and وَأَ openings;
+every one rendered with its groups coloured and checked by eye. Hard cut failures on
+pages 1–60 fall from 143 to 137.
+
+Full rebuild with both rules (labels, cuts, emit, audit; model_ft4):
+
+| | before | after |
+|---|---|---|
+| runs left unsplit (`data-unsplit`) | 634 | **592** |
+| letters emitted | 321,116 | 321,239 |
+| gate: count / ink / pixels | 0 / 9 / 17 | 0 / 9 / 17 |
+| shape (islands + ragged cuts) | 997 | 985 |
+| size (letters off their usual area) | 6,103 | 5,920 |
+| drawn words accepted | 118 of 120 | **121 of 121** |
+
