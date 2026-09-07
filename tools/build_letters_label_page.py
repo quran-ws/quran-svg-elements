@@ -182,50 +182,93 @@ function splitRun(g, cuts) {
   for (let i = 0; i < W * H; i++) if (ink[i] && out[i] < 0 && fill[i] > 0) out[i] = fill[i] - 1;
   return {lab: out, W, H, k: order.length, n};
 }
+function centroid(lab, W, H, k) {
+  let n = 0, sx = 0, sy = 0;
+  for (let i = 0; i < W * H; i++) if (lab[i] === k) { n++; sx += i % W; sy += (i / W) | 0; }
+  return {n, x: sx / Math.max(n, 1), y: sy / Math.max(n, 1)};
+}
+function tile(r, g, k, letterIdx) {
+  const b = bboxOf(r.lab.map(v => v + 1), r.W, r.H, k + 1);
+  if (!b.n) return null;
+  const w = b.x1 - b.x0 + 3, h = b.y1 - b.y0 + 3, s = 2;
+  const cv = document.createElement('canvas');
+  cv.width = w * s; cv.height = h * s;
+  const ctx = cv.getContext('2d'), im = ctx.createImageData(w * s, h * s);
+  const col = COLS[letterIdx % COLS.length];
+  const rgb = [parseInt(col.slice(1, 3), 16), parseInt(col.slice(3, 5), 16), parseInt(col.slice(5, 7), 16)];
+  for (let y = 0; y < h * s; y++) for (let x = 0; x < w * s; x++) {
+    const sx = b.x0 - 1 + ((x / s) | 0), sy = b.y0 - 1 + ((y / s) | 0);
+    if (sx < 0 || sy < 0 || sx >= r.W || sy >= r.H) continue;
+    if (r.lab[sy * r.W + sx] !== k) continue;
+    const o = (y * w * s + x) * 4;
+    im.data[o] = rgb[0]; im.data[o + 1] = rgb[1]; im.data[o + 2] = rgb[2]; im.data[o + 3] = 255;
+  }
+  ctx.putImageData(im, 0, 0);
+  const cell = document.createElement('div');
+  cell.className = 'piece';
+  cell.title = 'click: give this piece to the next letter';
+  cell.appendChild(cv);
+  const lb = document.createElement('div');
+  lb.className = 'plab';
+  lb.textContent = g.letters[letterIdx] || '?';
+  lb.style.color = col;
+  cell.appendChild(lb);
+  return cell;
+}
+function render(card) {
+  const r = card._r, g = card._g, assign = card._assign;
+  const box = card.querySelector('.pieces'), status = card.querySelector('.status');
+  box.textContent = '';
+  for (let k = 0; k < r.k; k++) {
+    const cell = tile(r, g, k, assign[k]);
+    if (!cell) continue;
+    cell.onclick = () => { card._assign[k] = (card._assign[k] + 1) % r.n; render(card); };
+    box.appendChild(cell);
+  }
+  const held = new Set(assign);
+  const missing = [];
+  for (let i = 0; i < r.n; i++) if (!held.has(i)) missing.push(g.letters[i]);
+  if (!missing.length && r.k === r.n) {
+    status.className = 'status ok';
+    status.textContent = '✓ ' + r.n + ' letters, ' + r.k + ' pieces';
+  } else if (!missing.length) {
+    status.className = 'status warn';           // more pieces than letters: check each one
+    status.textContent = '⚠ ' + r.k + ' pieces for ' + r.n + ' letters — check the letter under each piece, click to change';
+  } else {
+    status.className = 'status bad';
+    status.textContent = '✗ no ink for ' + missing.join(' ') + ' — draw another line, or click a piece to give it that letter';
+  }
+}
 function preview(card) {
   const g = JSON.parse(card.querySelector('.rundata').textContent);
   const cuts = [...card.querySelectorAll('.cutlist span')].map(s => JSON.parse(s.dataset.cut));
-  const box = card.querySelector('.pieces'), status = card.querySelector('.status');
-  box.textContent = '';
-  const r = splitRun(g, cuts);
-  for (let k = 0; k < r.k; k++) {
-    const b = bboxOf(r.lab.map(v => v + 1), r.W, r.H, k + 1);
-    if (b.n === 0) continue;
-    const w = b.x1 - b.x0 + 3, h = b.y1 - b.y0 + 3, s = 2;
-    const cv = document.createElement('canvas');
-    cv.width = w * s; cv.height = h * s;
-    const ctx = cv.getContext('2d'), im = ctx.createImageData(w * s, h * s);
-    const col = COLS[k % COLS.length];
-    const rgb = [parseInt(col.slice(1, 3), 16), parseInt(col.slice(3, 5), 16), parseInt(col.slice(5, 7), 16)];
-    for (let y = 0; y < h * s; y++) for (let x = 0; x < w * s; x++) {
-      const sx = b.x0 - 1 + ((x / s) | 0), sy = b.y0 - 1 + ((y / s) | 0);
-      if (sx < 0 || sy < 0 || sx >= r.W || sy >= r.H) continue;
-      if (r.lab[sy * r.W + sx] !== k) continue;
-      const o = (y * w * s + x) * 4;
-      im.data[o] = rgb[0]; im.data[o + 1] = rgb[1]; im.data[o + 2] = rgb[2]; im.data[o + 3] = 255;
-    }
-    ctx.putImageData(im, 0, 0);
-    const cell = document.createElement('div');
-    cell.className = 'piece';
-    cell.appendChild(cv);
-    const lb = document.createElement('div');
-    lb.className = 'plab';
-    lb.textContent = k < g.letters.length ? g.letters[k] : '?';
-    lb.style.color = col;
-    cell.appendChild(lb);
-    box.appendChild(cell);
-  }
-  const ok = r.k === r.n;
+  const status = card.querySelector('.status');
   if (!cuts.length) {
     status.className = 'status';
-    status.textContent = r.n + ' letters — draw a line across each joint';
-    box.textContent = '';
+    status.textContent = g.letters.length + ' letters — draw a line across each joint';
+    card.querySelector('.pieces').textContent = '';
+    card._assign = null;
     return;
   }
-  status.className = 'status ' + (ok ? 'ok' : 'bad');
-  status.textContent = ok ? ('✓ ' + r.n + ' letters, ' + r.k + ' pieces')
-                          : ('✗ ' + r.n + ' letters but ' + r.k + ' piece' + (r.k === 1 ? '' : 's')
-                             + ' — ' + (r.k < r.n ? 'a joint still needs a line' : 'one line too many'));
+  const r = splitRun(g, cuts);
+  card._r = r; card._g = g;
+  const sig = JSON.stringify(cuts);
+  if (!card._assign || card._sig !== sig || card._assign.length !== r.k) {
+    card._assign = [];
+    for (let k = 0; k < r.k; k++) card._assign.push(Math.min(k, r.n - 1));
+    card._sig = sig;
+  }
+  render(card);
+}
+function assignOf(card) {                       // [[x, y, letter], …] in page units
+  if (!card._r || !card._assign) return null;
+  const r = card._r, g = card._g;
+  const plain = r.k === r.n && card._assign.every((v, i) => v === i);
+  if (plain) return null;                       // one piece per letter, nothing to say
+  return card._assign.map((k, i) => {
+    const c = centroid(r.lab, r.W, r.H, i);
+    return [+(g.x0 + c.x / Z).toFixed(3), +(g.y1 - c.y / Z).toFixed(3), k];
+  });
 }
 """
 
@@ -383,14 +426,17 @@ def main():
             "h2.sec{grid-column:1/-1;margin:18px 0 4px;font-size:18px;border-bottom:1px solid #ccc}"
             ".split{margin-top:6px;border-top:1px dashed #ddd;padding-top:6px}"
             ".pieces{display:flex;direction:rtl;gap:10px;align-items:flex-end;overflow-x:auto;padding-bottom:2px}"
-            ".piece{text-align:center}.piece canvas{display:block;image-rendering:pixelated}"
+            ".piece{text-align:center;cursor:pointer}.piece canvas{display:block;image-rendering:pixelated}"
+            ".piece:hover{outline:1px solid #999}"
             ".plab{font-size:20px;direction:rtl}.status{font-size:12px;margin-bottom:4px}"
-            ".status.ok{color:#2a7}.status.bad{color:#b00}</style>"
+            ".status.ok{color:#2a7}.status.bad{color:#b00}.status.warn{color:#b70}</style>"
             "<button class=copy onclick='copyAll()'>Copy cuts</button>"
             "<h1>Draw the letter cuts</h1><p>Dark grey is the run to cut; pale colours are the model's current guess, one per letter. Click two points to draw one cut line across the stroke, "
             "one line per joint, from right to left. ✕ removes a line. Then Copy and paste into "
             "<code>docs/defects/letters_hand_cuts.jsonl</code>. Under each word the pieces your lines make are "
-            "shown one letter at a time, in reading order, exactly as the label builder cuts them.</p>"
+            "shown one letter at a time, in reading order, exactly as the label builder cuts them. Where no line can give one "
+            "piece per letter — the medial \u0643+\u0644 ligature, where the kaf is an arm plus a bowl and the lam a stem plus a foot — "
+            "cut the strokes apart and then <b>click a piece to give it to the next letter</b>.</p>"
             "<div class=grid>" + "".join(cards) + "</div>"
             "<script>" + SPLIT_JS +
             "document.querySelectorAll('svg.art').forEach(svg=>{let pending=null;"
@@ -410,7 +456,8 @@ def main():
             "card.querySelector('.status').textContent='preview failed: '+e.message}}"
             "document.querySelectorAll('.card').forEach(c=>{try{preview(c)}catch(e){}});"
             "function copyAll(){const out=[];document.querySelectorAll('.card').forEach(c=>{const cuts=[...c.querySelectorAll('.cutlist span')].map(s=>JSON.parse(s.dataset.cut));"
-            "if(cuts.length)out.push({page:+c.dataset.page,wid:c.dataset.wid,run:+c.dataset.run,text:c.dataset.text,cuts});});"
+            "if(!cuts.length)return;const o={page:+c.dataset.page,wid:c.dataset.wid,run:+c.dataset.run,text:c.dataset.text,cuts};"
+            "const as=assignOf(c);if(as)o.assign=as;out.push(o)});"
             "navigator.clipboard.writeText(out.map(o=>JSON.stringify(o)).join('\\n'));alert(out.length+' words copied');}"
             "</script>")
     os.makedirs(os.path.dirname(a.out), exist_ok=True)

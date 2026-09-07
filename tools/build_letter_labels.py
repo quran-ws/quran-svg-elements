@@ -90,7 +90,13 @@ HAND_CUTS_PATH = os.path.join(L.ROOT, "docs", "defects", "letters_hand_cuts.json
 
 
 def load_hand_cuts():
-    """Cuts drawn by hand on letters_label.html: {(page, wid, run text): [polylines]}."""
+    """Drawn by hand on letters_label.html, keyed (page, wid, run text) → (cuts, assign).
+    `cuts` are polylines in page units. `assign` is optional and is what a shape needs
+    when no set of lines can give one piece per letter (the medial ك+ل ligature: the
+    kaf is an arm plus a bowl and the lam a stem plus a foot, four pieces for two
+    letters): [[x, y, k], …], one entry per piece, x/y the piece's centre in page units
+    and k the letter it belongs to. Pieces are matched to entries by nearest centre, so
+    the assignment survives any change in how pieces are ordered."""
     out = {}
     if not os.path.exists(HAND_CUTS_PATH):
         return out
@@ -99,7 +105,8 @@ def load_hand_cuts():
         if not line:
             continue
         e = json.loads(line)
-        out[(e["page"], e["wid"], e["text"])] = [[tuple(p) for p in c] for c in e["cuts"]]
+        out[(e["page"], e["wid"], e["text"])] = ([[tuple(p) for p in c] for c in e["cuts"]],
+                                                 e.get("assign"))
     return out
 
 
@@ -150,7 +157,7 @@ def order_pieces(pieces, lab, cuts, frame, ink):
     return [c for ch in out for c in ch]
 
 
-def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None):
+def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None):
     """Exact labels from drawn cut lines: paint the lines (extended 1u past their ends
     over the canvas), take the ink components, and number them right→left. Returns the
     mask or None when the lines do not give exactly n pieces."""
@@ -181,7 +188,7 @@ def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None):
             continue
         wc = int(np.bincount(whole[lab == c]).argmax())
         (pieces if wc in touched else extras).append(c)
-    if len(pieces) < n and letters:
+    if len(pieces) < n and letters and not assign:
         # after a letter that never joins left (و then ة, ر then ا) the next letter is a
         # contour of its own that no line needs to touch; the text says how many such
         # letters this run may hold, and the largest untouched contours are they
@@ -190,15 +197,35 @@ def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None):
         for c in extras[:min(allowed, n - len(pieces))]:
             pieces.append(c)
         extras = [c for c in extras if c not in pieces]
-    if len(pieces) != n:
+    if assign:
+        if len(assign) != len(pieces):
+            return None
+        # each piece takes the letter of the nearest named centre
+        letter_of, seen = {}, set()
+        for c in pieces:
+            ys, xs = np.nonzero(lab == c)
+            cx, cy = x0 + xs.mean() / z, y0 + ys.mean() / z
+            k = min(assign, key=lambda a: (a[0] - cx) ** 2 + (a[1] - cy) ** 2)[2]
+            if not 0 <= int(k) < n:
+                return None
+            letter_of[c] = int(k)
+            seen.add(int(k))
+        if len(seen) != n:
+            return None                          # every letter must hold some ink
+    elif len(pieces) != n:
         return None
     pieces = order_pieces(pieces, lab, cuts, frame, ink)
     mask = np.zeros((H, W), dtype=np.uint16)
     span = {}
     for k, c in enumerate(pieces):
-        mask[lab == c] = 1 << k
+        bit = letter_of[c] if assign else k
+        mask[lab == c] = 1 << bit
         xs = np.nonzero(lab == c)[1]
-        span[k] = (xs.min(), xs.max())
+        lo, hi = xs.min(), xs.max()
+        if bit in span:
+            span[bit] = (min(span[bit][0], lo), max(span[bit][1], hi))
+        else:
+            span[bit] = (lo, hi)
     for c in extras:
         xs = np.nonzero(lab == c)[1]
         lo, hi = xs.min(), xs.max()
@@ -227,7 +254,7 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None):
     ink = raster_on_canvas(polys, frame)
     if drawn:
         letters = [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]
-        mask = drawn_cut_labels(polys, drawn, n, frame, ink, letters)
+        mask = drawn_cut_labels(polys, drawn[0], n, frame, ink, letters, drawn[1])
         if mask is not None:
             return {"ink": ink, "mask": mask, "n": n, "frame": frame, "known": n, "drawn": True,
                     "exact_px": int(ink.sum()), "ink_px": int(ink.sum()), "wid": word["wid"],
