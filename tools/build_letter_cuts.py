@@ -99,25 +99,32 @@ NOJOIN = set("اأإآٱدذرزوؤءةى")          # letters that never join 
 
 def _contours(lig):
     """The separate pieces of ink in the group (8-connected, 4 px per unit): their
-    count, and for the rightmost piece its box in page units and pixel count when it
-    stands clear of the others in x — nothing else reaches past half its width (else
-    None): a misfiled و can carry the ا it was filed with under its tail."""
+    count; whether the rightmost piece stands clear of the others in x (nothing else
+    reaches past half its width — a misfiled و carries the ا it was filed with under
+    its tail, so half the width, not the whole of it, is the test); and that piece's
+    box in page units with its pixel count."""
     from scipy import ndimage
     polys = [poly for p in lig["paths"] if p["kind"] == "body" and p["d"] for poly in L.flatten(p["d"])]
     x0, y0, x1, y1 = L.bbox(polys)
     m = L.raster(polys, x0 - 1, y0 - 1, x1 - x0 + 2, y1 - y0 + 2, 4)
     lab, n = ndimage.label(m, structure=np.ones((3, 3), dtype=bool))
     if n < 2:
-        return n, None, 0
+        return n, False, None, 0
     boxes = []
     for k in range(1, n + 1):
         ys, xs = np.nonzero(lab == k)
-        boxes.append((xs.min(), xs.max(), ys.min(), ys.max(), len(xs)))
+        boxes.append((int(xs.min()), int(xs.max()), int(ys.min()), int(ys.max()), int(len(xs))))
     boxes.sort(key=lambda bx: -bx[1])
     bx = boxes[0]
-    if max(o[1] for o in boxes[1:]) > bx[1] - 0.5 * (bx[1] - bx[0]):
-        return n, None, 0
-    return n, (x0 - 1 + bx[0] / 4, x0 - 1 + bx[1] / 4, y0 - 1 + bx[2] / 4, y0 - 1 + bx[3] / 4), bx[4]
+    clear = max(o[1] for o in boxes[1:]) <= bx[1] - 0.5 * (bx[1] - bx[0])
+    box = (x0 - 1 + bx[0] / 4, x0 - 1 + bx[1] / 4, y0 - 1 + bx[2] / 4, y0 - 1 + bx[3] / 4)
+    return n, clear, box, bx[4]
+
+
+def _expected(chars):
+    """Contours the text says this letter sequence must draw: one, plus one for every
+    letter that never joins the letter after it."""
+    return sum(1 for ch in chars[:-1] if ch in NOJOIN) + 1
 
 
 ALEFS = set("اأإآٱ")
@@ -125,46 +132,53 @@ ALEFS = set("اأإآٱ")
 
 def _rebalance(out, letters):
     """The word build sometimes files a letter's ink in the NEXT group (ٱلْحَرَامِ: the
-    group texted لحرا holds one contour, لحر, and the ا sits in the م group; كَفَرُوا۟:
-    the و sits in the ا group). Witnesses, all needed: the text says the group must
-    break into more contours than it holds (a letter that never joins left ends a
-    contour — but letters that merely touch, ر against و, lower the count too, so this
-    alone proves nothing); the next group holds more contours than ITS text allows,
-    and its rightmost contour stands clear of the rest of its ink (a final ه, a hamza
-    seat or a kaf arm add a contour, never a clear one at the right edge); and that
-    contour has the size and shape of the letter the text would move. Measured over
-    3,718 lone groups (4 px per unit): an ا is 123-169 px with height 5.4x its width,
-    a و 262-299 px at 1.09, a bare ء — which also sits clear at the right of a group —
-    154-179 px at 1.15; the bands do not touch. Only a trailing alef or و moves."""
+    group texted لحرا holds one contour, لحر, and the ا sits in the م group;
+    تُكَذِّبَانِ: the group texted تكذبا holds تكذ and با sits in the ن group). Two
+    independent proofs, either one enough, and both verified by eye over the words
+    they move (41 and 33 words on 61 sample pages, 2026-09-06):
+
+    * the counts square. The source draws FEWER contours than its text needs (one per
+      letter that never joins the letter after it, plus one), the group after it draws
+      MORE than its own text needs, and moving the letters after the source's last
+      break makes both counts exactly right. Letters that merely touch (ر against و)
+      can only lower a count, never raise one, so the source being short is not proof
+      on its own — the target's surplus is the second witness.
+    * the moved letter is an ا or a و of the measured size. Over 3,718 lone groups at
+      4 px per unit an ا is 123-169 px with height 5.4x its width, a و 262-299 px at
+      1.09, a bare ء — which also sits clear at the right of a group — 154-179 px at
+      1.15; the bands do not touch. This catches the ones where the moved ink touches
+      its new neighbour, so the target's count cannot square.
+
+    Both require the target's rightmost contour to stand clear of the rest of its ink:
+    a final ه ring, a hamza seat or a kaf arm add a contour to a group, but never a
+    clear one at its right edge."""
     out = [(l, list(idx)) for l, idx in out]
-
-    def breaks_of(idx):
-        chars = [letters[i]["ch"] for i in idx]
-        return [j for j in range(len(chars) - 1) if chars[j] in NOJOIN]
-
     for k in range(len(out) - 1):
         lig, idx = out[k]
-        breaks = breaks_of(idx)
-        if not breaks or breaks[-1] != len(idx) - 2:
-            continue                                     # only a single trailing letter moves
-        ch = letters[idx[-1]]["ch"]
-        if ch not in ALEFS and ch != "و":
+        chars = [letters[i]["ch"] for i in idx]
+        breaks = [j for j in range(len(chars) - 1) if chars[j] in NOJOIN]
+        if not breaks:
             continue
-        have, _, _ = _contours(lig)
-        if have >= len(breaks) + 1:
-            continue
+        have, _, _, _ = _contours(lig)
+        if have >= _expected(chars):
+            continue                                   # the source is not short
         nlig, nidx = out[k + 1]
-        nhave, box, npx = _contours(nlig)
-        if box is None or nhave <= len(breaks_of(nidx)) + 1:
+        nchars = [letters[i]["ch"] for i in nidx]
+        nhave, clear, box, npx = _contours(nlig)
+        if not clear or nhave <= _expected(nchars):
+            continue                                   # the target holds no clear surplus
+        j = breaks[-1]
+        moved = chars[j + 1:]
+        squares = (have == _expected(chars[:j + 1]) and nhave == _expected(moved + nchars))
+        shaped = False
+        if len(moved) == 1 and (moved[0] in ALEFS or moved[0] == "و"):
+            ratio = (box[3] - box[2]) / max(box[1] - box[0], 0.25)
+            shaped = (100 <= npx <= 200 and ratio >= 3.5) if moved[0] in ALEFS \
+                else (220 <= npx <= 330 and 0.8 <= ratio <= 1.5)
+        if not (squares or shaped):
             continue
-        ratio = (box[3] - box[2]) / max(box[1] - box[0], 0.25)
-        if ch in ALEFS:
-            ok = 100 <= npx <= 200 and ratio >= 3.5
-        else:
-            ok = 220 <= npx <= 330 and 0.8 <= ratio <= 1.5
-        if not ok:
-            continue
-        nidx.insert(0, idx.pop())
+        nidx[0:0] = idx[j + 1:]
+        del idx[j + 1:]
         out[k] = (lig, idx)
     return [(l, idx) for l, idx in out if idx]
 
