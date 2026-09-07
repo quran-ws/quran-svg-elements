@@ -439,3 +439,30 @@ The drawn-word agreement has gone 0.816 → 0.921 → 0.917 → 0.917 over the f
 while the tajweed yardstick barely moves, which is the point: the drawings cover the
 pairs the tajweed layers never colour.
 
+### The drawn set outgrew its weight (2026-09-06 evening)
+
+Abdullah drew 45 more words, taking the set to 166 and covering ها and به for the first
+time. Two fine-tunes from `model_ft5` were measured and **both rejected**:
+
+| measure | ft5 (kept) | ft6 (10x, frac 0.12) | ft7 (4x, frac 0.30) |
+|---|---|---|---|
+| held-out exact-pixel | 0.926 | 0.924 | **0.928** |
+| joint error median / within 1u | 0.50u / 76.9% | 0.50u / 76.3% | 0.51u / 76.1% |
+| agreement with the drawn labels, held-out pages (15 words) | **0.901** | 0.897 | 0.893 |
+| hard cut failures, pages 1–60 | **129** | 174 | 135 |
+| of those, "letter without ink" | **12** | 51 | 20 |
+
+The first failure has a clear cause: a drawn word carries 10x the loss of an ordinary
+sample, which was 1% of the signal at 40 words and is **31%** at 166 with the short
+epoch. The model stopped learning the mushaf and started memorising the drawings.
+Re-weighting to 4x over a 30% epoch (8% of the signal) recovered the tajweed metric —
+0.928 is the best held-out pixel accuracy so far — but did not recover the gate, and the
+drawn agreement fell again.
+
+So the recipe has to scale with the set: **share of loss, not a fixed multiplier**. And
+something in the new batch is not helping the way the earlier ones did. The obvious
+suspect is run length: 63 of the 166 drawn words are two-letter runs (ها, به, كم…),
+against a mushaf where most runs are longer, and the model is conditioned on the letter
+count. The next attempt should balance the drawn sample by run length before weighting
+it, and hold the two-letter runs out to see whether they are what moves the gate.
+
