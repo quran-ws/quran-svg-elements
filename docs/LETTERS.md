@@ -413,3 +413,29 @@ Full rebuild with both rules (labels, cuts, emit, audit; model_ft4):
 | size (letters off their usual area) | 6,103 | 5,920 |
 | drawn words accepted | 118 of 120 | **121 of 121** |
 
+### `model_ft5` adopted (2026-09-06, 13:20)
+
+`model_ft4` fine-tuned once more with `--frac 0.12 --lr 1e-4` on all 121 drawn words.
+Measured the four ways before adopting:
+
+| measure | ft4 | **ft5** |
+|---|---|---|
+| held-out exact-pixel, tajweed labels | 0.924 | 0.926 |
+| held-out joint error median / within 1u | 0.50u / 76.6% | 0.50u / 76.9% |
+| agreement with the drawn labels on never-trained pages (10 words) | 0.895 | **0.917** |
+| hard cut failures, pages 1–60 | 137 | **129** |
+
+Better or equal on all four, so it is the build. Full run:
+
+| | ft4 build | **ft5 build** |
+|---|---|---|
+| runs left unsplit (`data-unsplit`) | 592 | **534** |
+| letters emitted | 321,239 | 321,403 |
+| gate: count / ink / pixels | 0 / 9 / 17 | 0 / **6** / 18 |
+| shape (islands + ragged cuts) | 985 | **915** |
+| size (letters off their usual area) | 5,920 | **5,764** |
+
+The drawn-word agreement has gone 0.816 → 0.921 → 0.917 → 0.917 over the fine-tunes
+while the tajweed yardstick barely moves, which is the point: the drawings cover the
+pairs the tajweed layers never colour.
+
