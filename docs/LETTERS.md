@@ -461,7 +461,8 @@ drawn agreement fell again.
 
 So the recipe has to scale with the set: **share of loss, not a fixed multiplier**. And
 something in the new batch is not helping the way the earlier ones did. The obvious
-suspect is run length: 63 of the 166 drawn words are two-letter runs (ها, به, كم…),
+suspect is run length: 39 of the 166 drawn words are two-letter runs (ها, به, كم…) and
+78 are two or three letters,
 against a mushaf where most runs are longer, and the model is conditioned on the letter
 count. The next attempt should balance the drawn sample by run length before weighting
 it, and hold the two-letter runs out to see whether they are what moves the gate.
