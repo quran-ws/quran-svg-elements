@@ -7,6 +7,7 @@ Loss on ink pixels: −log Σ_{k ∈ set} softmax_k — the set is a bitmask; ex
 are singleton sets, the black stretches between known letters are multi-bit sets.
 """
 import math
+import json
 import os
 import sys
 
@@ -152,11 +153,212 @@ def predict(model, ink, n, batch=64, codes=None):
     return torch.cat(out)
 
 
+def predict_probs(model, ink, n, codes=None):
+    """(H, W, n) per-pixel probability for each letter of one run."""
+    model.eval()
+    with torch.no_grad():
+        x = make_input(ink, n, codes)
+        logits = model(x)
+        nk = n.view(-1, 1, 1, 1)
+        ks = torch.arange(K).view(1, K, 1, 1)
+        logits = logits.masked_fill(ks >= nk, -1e9)
+        p = torch.softmax(logits, 1)[0, :int(n[0])]
+    return p.permute(1, 2, 0).numpy()
+
+
+def grow_from_probs(labels, ink, probs, k, want, region=None):
+    """Give letter k a region of `want` pixels, grown from the pixel the model likes
+    most for k and spreading to its neighbours in order of that same probability. The
+    model usually knows where a starved letter is — it ranks it second there — so the
+    letter is rebuilt from the model's own evidence instead of a guess about which
+    neighbour to rob, and the region is contiguous by construction."""
+    import heapq
+    H_, W_ = labels.shape
+    field = ink if region is None else (ink & region)
+    pk = np.where(field, probs[:, :, k], -1.0)
+    if pk.max() <= 0:
+        return labels
+    seed = np.unravel_index(int(np.argmax(pk)), pk.shape)
+    taken = np.zeros_like(ink)
+    heap = [(-float(pk[seed]), int(seed[0]), int(seed[1]))]
+    seen = {(int(seed[0]), int(seed[1]))}
+    got = 0
+    while heap and got < want:
+        negp, r, c = heapq.heappop(heap)
+        if not field[r, c]:
+            continue
+        taken[r, c] = True
+        got += 1
+        for dr, dc in ((-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (-1, 1), (1, -1), (1, 1)):
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < H_ and 0 <= nc < W_ and (nr, nc) not in seen and field[nr, nc]:
+                seen.add((nr, nc))
+                heapq.heappush(heap, (-float(pk[nr, nc]), nr, nc))
+    if got:
+        labels[taken] = k
+    return labels, got
+
+
 def load_model(path=MODEL_PATH):
     m = UNet()
     m.load_state_dict(torch.load(path, map_location="cpu", weights_only=True))
     m.eval()
     return m
+
+
+STARVE = os.environ.get("QSVG_LETTERS_STARVE", "balance")  # off | balance | split | prob
+MIN_SHARE = float(os.environ.get("QSVG_LETTERS_MINSHARE", "0.02"))
+_SIZES = None
+
+
+def _sizes():
+    """Median drawn area per letter and position, written by
+    `audit_letters.py --size-table`. Used only to say how a shared region should be
+    divided, so a missing table costs nothing: the split falls back to equal shares."""
+    global _SIZES
+    if _SIZES is None:
+        import glob
+        _SIZES = {}
+        for f in sorted(glob.glob(os.path.join(os.path.dirname(LABELS_DIR), "letter_sizes*.json"))):
+            try:
+                _SIZES.update(json.load(open(f, encoding="utf-8")))
+            except Exception:
+                pass
+    return _SIZES
+
+
+def expected_areas(letters, n):
+    """Relative area each letter of the run should draw."""
+    tbl = _sizes()
+    out = []
+    for i in range(n):
+        ch = letters[i] if letters and i < len(letters) else ""
+        form = "only" if n == 1 else "first" if i == 0 else "last" if i == n - 1 else "middle"
+        ent = tbl.get("%s|%s" % (ch, form)) or tbl.get("%s|middle" % ch)
+        out.append(float(ent["median"]) if ent and ent.get("n", 0) >= 12 else 0.0)
+    if not any(out):
+        return [1.0] * n
+    med = np.median([v for v in out if v > 0])
+    return [v if v > 0 else med for v in out]
+
+
+def repair_starved(labels, ink, n, letters=None, min_share=MIN_SHARE, probs=None):
+    """A letter the model left with (almost) no ink has not lost it — a neighbour is
+    holding it. Measured over the shipped build: of 533 runs the cutter could not
+    realise, 452 have a letter under 2% of the run's ink, and rendering them shows the
+    same thing every time (نى, خلق, سلم): the boundary is roughly right and the LABELS
+    are shifted by one, so one letter covers two.
+
+    So: take the starved letter's share back from the neighbour holding it, cutting
+    along the reading direction at the position the two letters' expected areas ask
+    for. The cut is a straight line across the stroke, which is what a joint looks
+    like. Neighbours are tried in order of surplus, and no donor gives up more than
+    half of itself.
+    """
+    if STARVE == "off" or n < 2:
+        return labels
+    exp = expected_areas(letters, n)
+    if STARVE == "balance":
+        # Accounting decides who gives and how much; geometry decides where. The donor
+        # is the neighbour furthest OVER the area its own letter draws elsewhere in the
+        # mushaf, it gives only as much as brings both toward that size, and it gives it
+        # from the END the starved letter reads on — a straight cut along the reading
+        # direction, which is what a joint looks like and which leaves the donor in one
+        # piece. Growing the letter from the model's own probability was tried and is
+        # worse: it takes a bite out of the donor's middle, the donor is left in two
+        # regions, and the cleanup then hands them back.
+        total = max(1, int(ink.sum()))
+        share = [v / sum(exp) for v in exp]
+        cols = np.arange(labels.shape[1])[None, :]
+        for _ in range(3):
+            counts = [int((labels == k).sum()) for k in range(n)]
+            starved = [k for k in range(n) if counts[k] / total < min_share]
+            if not starved:
+                break
+            moved = False
+            for k in starved:
+                cands = [d for d in (k - 1, k + 1) if 0 <= d < n and counts[d] > 8]
+                if not cands:
+                    continue
+                d = max(cands, key=lambda d: counts[d] - share[d] * total)
+                surplus = counts[d] - share[d] * total
+                if surplus <= 4:
+                    continue
+                sel = labels == d
+                npx = int(sel.sum())
+                take = int(min(share[k] * total - counts[k], surplus, npx // 2))
+                if take < 4:
+                    continue
+                xs = np.sort(np.nonzero(sel)[1])
+                cut = xs[take - 1] if d == k - 1 else xs[npx - take]
+                grab = sel & ((cols <= cut) if d == k - 1 else (cols >= cut))
+                if not grab.any():
+                    continue
+                labels[grab] = k
+                counts[k] += int(grab.sum())
+                counts[d] = npx - int(grab.sum())
+                moved = True
+            if not moved:
+                break
+        return labels
+    if STARVE == "prob" and probs is not None:
+        total = max(1, int(ink.sum()))
+        tot_exp = sum(exp)
+        for _ in range(2):
+            counts = [int((labels == k).sum()) for k in range(n)]
+            starved = [k for k in range(n) if counts[k] / total < min_share]
+            if not starved:
+                break
+            for k in starved:
+                want = int(round(total * exp[k] / tot_exp))
+                want = max(8, min(want, total // 2))
+                labels, _ = grow_from_probs(labels, ink, probs, k, want)
+        return labels
+    xs_all = np.nonzero(ink)[1]
+    if not len(xs_all):
+        return labels
+    for _ in range(3):
+        counts = [int((labels == k).sum()) for k in range(n)]
+        total = max(1, int(ink.sum()))
+        starved = [k for k in range(n) if counts[k] / total < min_share]
+        if not starved:
+            break
+        moved = False
+        for k in starved:
+            # the neighbour with the most ink beyond what its own letter asks for
+            cands = [d for d in (k - 1, k + 1) if 0 <= d < n and counts[d] > 0]
+            if not cands:
+                continue
+            # the donor is the neighbour that is too WIDE for its own letter, not
+            # merely the one with the most ink: letters are laid out along the line, so
+            # a neighbour holding two letters spans two letters' worth of columns
+            def spread(dd):
+                cols = np.nonzero((labels == dd).any(axis=0))[0]
+                return (cols.max() - cols.min() + 1) if len(cols) else 0
+            d = max(cands, key=lambda dd: spread(dd) / max(exp[dd], 1e-6) ** 0.5)
+            sel = labels == d
+            npx = int(sel.sum())
+            if npx < 8:
+                continue
+            want = exp[k] / max(exp[k] + exp[d], 1e-6)
+            take = int(round(min(0.5, want) * npx))
+            if take < 4:
+                continue
+            xs = np.nonzero(sel)[1]
+            # k reads to the LEFT of k-1 and to the RIGHT of k+1
+            order = np.sort(xs)
+            cut = order[take - 1] if d == k - 1 else order[npx - take]
+            grab = sel & ((np.arange(labels.shape[1])[None, :] <= cut) if d == k - 1
+                          else (np.arange(labels.shape[1])[None, :] >= cut))
+            if not grab.any():
+                continue
+            labels[grab] = k
+            counts[k] = int(grab.sum())
+            counts[d] = npx - counts[k]
+            moved = True
+        if not moved:
+            break
+    return labels
 
 
 def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0, letters=None):
@@ -173,7 +375,10 @@ def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0, letters=None):
     frame = canvas_frame(run_polys)
     ink_c = raster_on_canvas(run_polys, frame)
     codes = letter_codes(letters)[None] if letters else None
-    lab_c = predict(model, torch.from_numpy(ink_c[None]), torch.tensor([n]), codes=codes)[0].numpy()
+    ink_t = torch.from_numpy(ink_c[None])
+    n_t = torch.tensor([n])
+    lab_c = predict(model, ink_t, n_t, codes=codes)[0].numpy()
+    probs_c = predict_probs(model, ink_t, n_t, codes) if STARVE in ("prob", "balance") else None
     lab_c = clean_labels(lab_c, ink_c, n)
     fx0, fy0, fz = frame
     bx0, by0, bx1, by1 = L.bbox(run_polys)
@@ -197,6 +402,12 @@ def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0, letters=None):
             _, (ir, ic) = ndimage.distance_transform_edt(~have, return_indices=True)
             labels[missing] = labels[ir[missing], ic[missing]]
     labels = clean_labels(labels, ink, n)          # resampling leaves specks at the joints
+    labels = np.where(ink, labels, -1)
+    probs = None
+    if probs_c is not None:
+        probs = probs_c[cr, cch]                   # resampled to the output frame
+    labels = repair_starved(labels, ink, n, letters, probs=probs)
+    labels = clean_labels(labels, ink, n)          # keep every letter one region
     labels = np.where(ink, labels, -1)
     masks = [labels == k for k in range(n)]
     n_ink = max(1, int(ink.sum()))
