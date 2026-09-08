@@ -1,6 +1,6 @@
 # Running the tests
 
-307 assertions in a real browser — 312 with `?markers=<url>`. No test framework,
+321 assertions in a real browser — 326 with `?markers=<url>`. No test framework,
 no install.
 
 ```bash

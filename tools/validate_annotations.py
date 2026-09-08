@@ -148,6 +148,10 @@ def check_page(pg, reg, edition):
             continue
         for key, attr in (("uthmani", "data-uthmani"), ("rasm", "data-rasm"),
                           ("imlaei", "data-imlaei")):
+            if attr not in at:
+                # production pages carry data-uthmani only (2026-09-04); the
+                # other forms are compared where the profile writes them
+                continue
             if _unesc(at.get(attr, "")) != (w[key] or ""):
                 bad.append("word %s: %s graph=%r svg=%r"
                            % (wid, attr, w[key], _unesc(at.get(attr, ""))))

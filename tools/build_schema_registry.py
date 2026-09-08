@@ -110,6 +110,9 @@ _KINDS = {
     "ornament": "banner decoration, not a mark",
     "ayah-marker-ornament": "the medallion ring",
     "ayah-number": "the numeral inside the medallion",
+    "page-number": "the printed page number (p17 only: the artwork keeps it)",
+    "running-head": "a juz/surah running head drawn above the viewBox, never "
+                    "visible (p17 only)",
 }
 
 _FEATURES = {

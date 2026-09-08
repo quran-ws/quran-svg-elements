@@ -67,6 +67,10 @@ def contour_conservation(pg, svg):
     to, tu = tails(orig), tails(svg)
     extra = sum((tu - to).values())
     missing = sum((to - tu).values())
+    # No carve-out for the doubled ornaments of p1/p2: collapsing an exact
+    # in-place duplicate LOOKS free and is not — two identical fills darken
+    # the anti-aliased rim by up to 57/255 (3,264 px on p1, measured
+    # 2026-09-04). The emitter keeps both copies; a missing one is a defect.
     return extra, missing
 
 
