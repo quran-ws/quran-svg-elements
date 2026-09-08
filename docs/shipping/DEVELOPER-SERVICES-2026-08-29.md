@@ -60,7 +60,7 @@ Everything measured against `.cache/words-svg/hafs-kfqc/` as built 2026-08-29
    plus `.png` on each. Everything else I considered is rejected in §5 with
    reasons, mostly "the bundle already does that" or "that is quran.com's job".
 8. **One blocker is fatal to the flagship and it is already known.** The
-   ayah-marker `data-aid` is reversed on 441 of 604 pages
+   ayah-mark `data-aid` is reversed on 441 of 604 pages
    (`SHIPPED-ARTIFACT-2026-08-29.md` §8.1). I hit it directly: cropping `112:1`
    *with* its marker gives a box spanning the whole page (86.5–336.0 ×
    76.3–547.4) instead of the correct one-line box (238.1–336.0 × 76.3–115.5),
@@ -114,14 +114,14 @@ keys join to it for free.
 
 | you need | use | how it joins to us |
 |---|---|---|
-| verse text, translations, tafsir, transliteration | Quran Foundation API (`apis.quran.foundation/content/api/v4`) | `data-aid` = their verse key; `data-wid` = their `location` |
-| word morphology, roots, grammar | quranic-corpus-derived datasets | `data-wid` |
-| audio, per-word timings | `audio.quran.com`, `quran-align` | `data-aid` / `data-wid` |
-| full-text search | `alfanous`, or the bundle's `words.json` | resolves to a `data-wid`, which is a URL here |
+| verse text, translations, tafsir, transliteration | Quran Foundation API (`apis.quran.foundation/content/api/v4`) | `data-aid` = their verse key; `data-word-key` = their `location` |
+| word morphology, roots, grammar | quranic-corpus-derived datasets | `data-word-key` |
+| audio, per-word timings | `audio.quran.com`, `quran-align` | `data-aid` / `data-word-key` |
+| full-text search | `alfanous`, or the bundle's `words.json` | resolves to a `data-word-key`, which is a URL here |
 
 **The interoperability fact this rests on** (verified in
 `SHIPPED-ARTIFACT-2026-08-29.md` §6b, and re-confirmed here against the
-DigitalKhatt word table): `data-wid` is quran.com's word key exactly — 1:1 = 4
+DigitalKhatt word table): `data-word-key` is quran.com's word key exactly — 1:1 = 4
 words, 2:255 = 50, 77,432 in the corpus, and
 `.cache/digitalkhatt/digital-khatt-v2.db` uses the identical `location` string
 (`'1:1:1'`). **No mapping table exists because none is needed.** They are the
@@ -151,7 +151,7 @@ should be narrowed before it goes on a landing page.
 **Be fair about the fonts in the docs.** They are tiny, universally supported,
 free, and text selection falls out of the DOM. What they cannot do is the
 entire reason to use us: a word is one indivisible glyph, so there is no
-selecting, colouring or querying a shadda, a fatha, a waqf sign or a letter;
+selecting, colouring or querying a shaddah, a fathah, a waqf sign or a letter;
 no geometry comes from the server; and cropping "just 2:255" means measuring
 shaped text yourself. Say that plainly rather than pretending we replace them.
 
@@ -237,7 +237,7 @@ This is the technical heart, so I built it: **`docs/shipping/poc/ayah_crop_poc.p
 **The three traps, and how they are handled.**
 
 1. **An ayah is not one node.** Measured over the whole corpus: 6,236 ayahs are
-   emitted as 12,868 `<g class="ayah">` nodes. **4,458 ayahs (71.5 %) are
+   emitted as 12,868 `<g class="ayah-fragment">` nodes. **4,458 ayahs (71.5 %) are
    multi-node** — one per printed line they occupy.
 
    | nodes per ayah | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 15 |
@@ -277,8 +277,8 @@ $ python3 docs/shipping/poc/ayah_crop_poc.py 2:255 --page 42
 $ rsvg-convert -w 1000 -b white out/2-255-p042.svg -o 2-255.png
 ```
 
-Renders Ayat al-Kursi, six line fragments, correct RTL, real KFGQPC ink, and
-the crop still carries every `data-wid`, `data-uthmani` and `data-mark` — it is
+Renders Ayahs al-Kursi, six line fragments, correct RTL, real KFGQPC ink, and
+the crop still carries every `data-word-key`, `data-rasm-uthmani` and `data-mark` — it is
 addressable, not a picture. `112:1` renders as a clean single line
 (`قل هو الله أحد`, 700 px, box 238.08–335.95 × 76.29–115.46).
 
@@ -302,7 +302,7 @@ Four options, measured against what an embedder actually has.
 |---|---|---|---|---|
 | `<img src="…svg">` | no — SVG loaded via `<img>` is a closed document; no external CSS, no JS, no DOM access | only via `theme=auto` inside the file, which **does** work in `<img>` | works everywhere, including GitHub READMEs, most CMSs, RSS | **the documented default** |
 | `<img src="…png">` | no | no | works where SVG does not: email, some CMSs, social/OG cards | **the fallback, and a real one** — §3.7 |
-| inline `<svg>` (fetch + insert) | yes — `data-wid`, `data-mark`, everything | yes | needs a fetch and a CSP allowance | **document it**; it is the whole differentiator |
+| inline `<svg>` (fetch + insert) | yes — `data-word-key`, `data-mark`, everything | yes | needs a fetch and a CSP allowance | **document it**; it is the whole differentiator |
 | `<object>` / `<iframe>` | partly | yes | heavier, focus and sizing quirks | **document `<object>`, do not recommend `<iframe>`** |
 
 **Recommend `<img>` as the default** precisely because it is the lowest-friction
@@ -328,7 +328,7 @@ A worked example, everything real:
 fetch('https://quran.ws/v1/ayah/2:255.svg')
   .then(r => r.text()).then(t => {
     document.getElementById('a').innerHTML = t;
-    document.querySelector('[data-wid="2:255:4"] path')
+    document.querySelector('[data-word-key="2:255:4"] path')
             .setAttribute('fill', '#b03030');
   });
 </script>
@@ -379,7 +379,7 @@ every reasonable request.
 
 ### 3.6 Ranges
 
-`/v1/ayah/2:255-2:257.svg`. Same machinery: select every `<g class="ayah">`
+`/v1/ayah/2:255-2:257.svg`. Same machinery: select every `<g class="ayah-fragment">`
 whose `data-aid` falls in the range, union the boxes.
 
 **Ranges are dynamic (c)**, not pre-generated: there are ~19.4M valid
@@ -416,7 +416,7 @@ Measured over 60 ayah crops, `rsvg-convert -w 800 -b white`:
 | PNG (24-bit) | 54.9 KiB | 40.4 KiB | 202.4 KiB |
 | PNG after `pngquant` 8-bit | **14.0 KiB** | — | — |
 
-Ayat al-Kursi specifically, at 800 px: PNG 149 KiB → pngquant 38 KiB → WebP q90
+Ayahs al-Kursi specifically, at 800 px: PNG 149 KiB → pngquant 38 KiB → WebP q90
 57 KiB. Its brotli SVG is 47 KiB.
 
 **Three findings worth stating:**
@@ -446,7 +446,7 @@ classifications from §1.
 
 | # | service | delivery | justification | needs from the pipeline | effort |
 |---|---|---|---|---|---|
-| 1 | **`/v1/ayah/{key}.svg`** | pre-generated static | **(c)** | ayah-marker fix (§7); exact extents | small — the PoC is 300 lines |
+| 1 | **`/v1/ayah/{key}.svg`** | pre-generated static | **(c)** | ayah-mark fix (§7); exact extents | small — the PoC is 300 lines |
 | 2 | **`/v1/ayah/{key}.png`** | dynamic | **(c)** — SVG does not render where this is wanted | nothing new | small |
 | 3 | **`/v1/ayah/{key}` with `ink` / `theme`** | dynamic (trivial) | **(c)** — one colour of ink makes this nearly free, and it is the thing a font cannot do at all | nothing new | tiny |
 | 4 | **`/v1/page/{n}.svg`** | static | **(b)** | nothing | none — it is the bundle file |
@@ -483,9 +483,9 @@ More useful than another endpoint table.
 | **Per-ayah pre-generated files as a *download*** | **(a)** — 88 MiB brotli on top of a 70 MiB bundle covering the same ink. If someone wants them offline they can run our crop script over the bundle. Ship the script, not the files. |
 | **A search endpoint** | Out of scope (§2), and **(a)** — `words.json` is 478 KiB brotli in the bundle. A consumer can search the entire mushaf client-side in a fetch smaller than one page SVG. Running a search service would be strictly worse than what they already have. |
 | **Text / translation / tafsir / audio endpoints** | Out of scope by instruction, and we would be a worse quran.com. §2. |
-| **A tajweed colour API** | The colouring is a CSS file over `data-mark` — **(a)**, and it is also a scholarly opinion. Publish a stylesheet as a separate artifact if at all; do not put an opinion behind a URL we operate. |
-| **A memorisation / masking endpoint** | **(a)** — `g.word[data-wid^="2:255:"]{visibility:hidden}`. It is one CSS rule on files the consumer already has. Put it in the docs as an example; a server adds nothing. |
-| **Word-timing / audio-sync overlays** | Out of scope. The join is `data-wid` and `quran-align` already emits it. A 20-line README example, not an endpoint. |
+| **A tajwid colour API** | The colouring is a CSS file over `data-mark` — **(a)**, and it is also a scholarly opinion. Publish a stylesheet as a separate artifact if at all; do not put an opinion behind a URL we operate. |
+| **A memorisation / masking endpoint** | **(a)** — `g.word[data-word-key^="2:255:"]{visibility:hidden}`. It is one CSS rule on files the consumer already has. Put it in the docs as an example; a server adds nothing. |
+| **Word-ayah-timing / audio-sync overlays** | Out of scope. The join is `data-word-key` and `quran-align` already emits it. A 20-line README example, not an endpoint. |
 | **An interactive `<iframe>` embed widget** | Heavier than `<img>`, harder to style, and everything it would do is available by fetching the SVG inline. Ship a documented snippet instead. |
 | **An OG / share-card renderer** (ayah on a branded background) | Tempting, and genuinely dynamic — but it is a *design* product, not an ink product. It needs typography, a background, a logo and a brand. Out of the narrowed scope, and it invites us to composite the Quranic text into decorated images we then serve. If ever built, build it *on top of* `/v1/ayah/{key}.png`, as someone else's layer. |
 | **A `/v1/surah/{n}.svg` first-class endpoint** | Almost every surah spans many pages, so it is a range render with a friendlier name and all the cross-page problems. Support it only where the surah fits one page; otherwise 400 with the list of page URLs. |
@@ -615,9 +615,9 @@ Rate limiting, however, **is** needed, and only on the dynamic paths:
 
 | # | need | status | blocks |
 |---|---|---|---|
-| 1 | **ayah-marker `data-aid` corrected** | broken on 441/604 pages (`SHIPPED-ARTIFACT` §8.1); reproduced here — `112:1` with marker gives a whole-page box instead of a one-line box, and the `2:255` crop draws ٢٥٤ | **the flagship, hard.** `marker=1` is the default and it is wrong nearly everywhere |
+| 1 | **ayah-mark `data-aid` corrected** | broken on 441/604 pages (`SHIPPED-ARTIFACT` §8.1); reproduced here — `112:1` with marker gives a whole-page box instead of a one-line box, and the `2:255` crop draws ٢٥٤ | **the flagship, hard.** `marker=1` is the default and it is wrong nearly everywhere |
 | 2 | **exact ink extents per word/ayah**, emitted by the pipeline | the pipeline computes them; nothing writes them out. The PoC uses a control-point hull (slightly loose, never wrong) | crop tightness; also `wordboxes.json` in the bundle |
-| 3 | **`id` per word**, mirroring `data-wid` | proposed in the bundle (`SHIPPED-ARTIFACT` §3.1) | `:target`-based no-script embeds; nice, not blocking |
+| 3 | **`id` per word**, mirroring `data-word-key` | proposed in the bundle (`SHIPPED-ARTIFACT` §3.1) | `:target`-based no-script embeds; nice, not blocking |
 | 4 | **correct `<g class="line">` membership** | 54 words on 51 pages are in the wrong line group (§8.2 there) | line-granular crops only; ayah crops are unaffected because they select on `data-aid` |
 | 5 | **a stable root `data-bundle-version`** | not emitted today | §6.3's whole mechanism |
 | 6 | **the ayah→page table** as a shipped file | exists inside `index.json` (bundle) | `/v1/locate/`, and knowing which page to crop without scanning 604 files |
@@ -693,13 +693,13 @@ Run from the work dir with `export QSVG_ROOT=$PWD`.
 | corpus size, 604 pages, 454.1 MiB | `du` + per-file `os.path.getsize` over `.cache/words-svg/hafs-kfqc/*.svg` |
 | per-page gzip/brotli (mean 176.8 / 112.6 KiB on a 31-page sample) | `gzip.compress(q=9)` / `brotli.compress(quality=11)`, every 20th page. Agrees within 6 % with the whole-corpus 119 KiB in `SHIPPED-ARTIFACT` §2, whose figure I quote |
 | ayah node counts, fragmentation histogram, worst cases | `python3 docs/shipping/poc/ayah_crop_poc.py --survey` |
-| no ayah crosses a page (6,236/6,236) | the same survey, plus an independent check against `.cache/dk_lines.json` (page → {wid: line}) |
-| 603 of 6,235 adjacent-ayah boundaries cross a page | last `data-wid` of page N vs first of page N+1, all 603 boundaries |
+| no ayah crosses a page (6,236/6,236) | the same survey, plus an independent check against `.cache/dk_lines.json` (page → {word_key: line}) |
+| 603 of 6,235 adjacent-ayah boundaries cross a page | last `data-word-key` of page N vs first of page N+1, all 603 boundaries |
 | ayah crop sizes and build time (67.8 / 19.1 / 14.5 KiB, 132 ms) | `python3 docs/shipping/poc/ayah_crop_poc.py --estimate 300` |
 | word crop sizes (5.96 / 1.96 KiB, 34 ms) | 300 crops over 12 random pages, same module |
 | `2:255` crop: 6 nodes, box, 262,711 B | `ayah_crop_poc.py 2:255 --page 42` |
 | `112:1` marker on/off boxes | `crop(604, '112:1', marker=True/False)` |
 | PNG render time and size (62 ms, 54.9 / 14.0 KiB) | `rsvg-convert -w 800 -b white` + `pngquant --quality 60-90` over 60 crops from 20 random pages |
 | WebP comparison (57 KiB) | `cwebp -q 90` on the 800 px `2:255` render |
-| `data-wid` = DigitalKhatt `location` | `select * from words limit 3` on `.cache/digitalkhatt/digital-khatt-v2.db` |
+| `data-word-key` = DigitalKhatt `location` | `select * from words limit 3` on `.cache/digitalkhatt/digital-khatt-v2.db` |
 | ecosystem facts in §2 | live fetches of `api.quran.com/api/v4`, `apis.quran.foundation`, `static.qurancdn.com/fonts/quran/hafs/v{1,2}/woff2/`, `files.quran.app/hafs/madani/`, `cdn.islamic.network/quran/images/`, `digitalkhatt.org/api/*`, plus the repos named inline |

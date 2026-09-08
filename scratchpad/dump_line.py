@@ -28,5 +28,5 @@ for x1,x2,w,els,b in rows:
     qw = q.get(key,0)
     exp = (qw/tot_q*tot_a) if tot_q else 0
     mks = [e.get("mark") for e in els if e["kind"]=="mark" and not e.get("mkpart")]
-    print("%-16s %6.1f-%-6.1f %4d %6.1f %6.1f  %s" % (w["uthmani"], x1, x2, len(b),
+    print("%-16s %6.1f-%-6.1f %4d %6.1f %6.1f  %s" % (w["rasm_uthmani"], x1, x2, len(b),
           x2-x1, exp, " ".join(m or "?" for m in mks)))

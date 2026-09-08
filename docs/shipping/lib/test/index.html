@@ -61,12 +61,12 @@ try {
      p1.viewBox, { x: 0, y: 0, w: 345, h: 550 });
   eq('1.7 page 1 has 8 printed lines', p1.lines().length, 8);
   eq('1.8 page 1 word count', p1.wordCount, 29);
-  eq('1.9 page 1: one marker group per ayah, every one with data-aid',
-     [p1.allMarkerGroups().length, p1.markers().length], [7, 7]);
+  eq('1.9 page 1: one marker group per ayah, every one with data-ayah-key',
+     [p1.ayahMarkGroups().length, p1.ayahMarks().length], [7, 7]);
   eq('1.9b page 1: each marker holds the ring, one tagged copy of it, and the numeral',
-     p1.markers().map(m => [!!m.ring, m.ringCopies.length, !!m.numeral]).every(x => x[0] && x[1] === 1 && x[2]), true);
+     p1.ayahMarks().map(m => [!!m.ring, m.ringCopies.length, !!m.numeral]).every(x => x[0] && x[1] === 1 && x[2]), true);
   eq('1.9c page 42: no ring copies outside the opening spread',
-     p42.markers().every(m => m.ringCopies.length === 0), true);
+     p42.ayahMarks().every(m => m.ringCopies.length === 0), true);
 
   const p604 = await load(604), p176 = await load(176), p582 = await load(582);
   eq('1.10 page 604 words', p604.wordCount, 58);
@@ -81,9 +81,9 @@ try {
   /* clone() namespaces ids so two copies can share a document */
   const c1 = p42.clone(), c2 = p42.clone();
   ok('1.13 clone() namespaces marker ids',
-     c1.markers()[0].id !== c2.markers()[0].id && c1.markers()[0].id !== p42.markers()[0].id);
-  ok('1.14 clone() keeps data-marker in step',
-     c1.ayahs().every(x => !x.markerId || c1.el.querySelector('#' + CSS.escape(x.markerId))));
+     c1.ayahMarks()[0].id !== c2.ayahMarks()[0].id && c1.ayahMarks()[0].id !== p42.ayahMarks()[0].id);
+  ok('1.14 clone() keeps data-mark in step',
+     c1.ayahs().every(x => !x.markId || c1.el.querySelector('#' + CSS.escape(x.markId))));
 
   /* production profile: same file with the ligature layer unwrapped */
   const prod = p42.clone();
@@ -95,19 +95,19 @@ try {
      [prod.ayah('2:255').words().length, prod.search('الله', { mode: 'exact' }).length],
      [p42.ayah('2:255').words().length, 5]);
 
-  /* production profile, as SHIPPED since 2026-09-04: data-uthmani only on the
-     word group; rasm / imlaei / search / qpc come from index/by-page/NNN.json */
-  const sidecar = { words: p42.words().map(w => ({ wid: w.wid, ...w.text })) };
+  /* production profile, as SHIPPED since 2026-09-04: data-rasm-uthmani only on the
+     word group; rasm / rasm_imlai / search / qpc come from index/by-page/NNN.json */
+  const sidecar = { words: p42.words().map(w => ({ wordKey: w.wordKey, ...w.text })) };
   prod.el.querySelectorAll('g.word').forEach(g => {
-    for (const k of ['rasm', 'imlaei', 'search', 'qpc']) delete g.dataset[k];
+    for (const k of ['rasm', 'rasm_imlai', 'search', 'qpc']) delete g.dataset[k];
   });
   ok('1.17b every word carries the global word id (data-w), a positive integer',
      p42.words().every(w => Number.isInteger(w.w) && w.w > 0), p42.word('2:255:1').w);
-  eq('1.18 a shipped production word has uthmani inline and the rest null',
-     [prod.word('2:255:1').form('uthmani') !== null, prod.word('2:255:1').form('search'),
+  eq('1.18 a shipped production word has rasm_uthmani inline and the rest null',
+     [prod.word('2:255:1').form('rasm_uthmani') !== null, prod.word('2:255:1').form('search'),
       prod.word('2:255:1').text.rasm],
      [true, null, null]);
-  eq('1.19 hasForm() says search is missing', [prod.hasForm('uthmani'), prod.hasForm('search')],
+  eq('1.19 hasForm() says search is missing', [prod.hasForm('rasm_uthmani'), prod.hasForm('search')],
      [true, false]);
   let threw = null;
   try { prod.search('الله'); } catch (e) { threw = e.message; }
@@ -117,15 +117,15 @@ try {
   eq('1.22 after attachWords the five forms match the dev page',
      prod.word('2:255:1').text, p42.word('2:255:1').text);
   eq('1.23 search works from the sidecar',
-     prod.search('الله', { mode: 'exact' }).map(m => m.wid),
-     p42.search('الله', { mode: 'exact' }).map(m => m.wid));
+     prod.search('الله', { mode: 'exact' }).map(m => m.wordKey),
+     p42.search('الله', { mode: 'exact' }).map(m => m.wordKey));
   eq('1.24 page.text() reads the sidecar form',
      prod.text('2:255', { form: 'search' }), p42.text('2:255', { form: 'search' }));
   eq('1.25 clone() carries the sidecar',
      prod.clone().word('2:255:1').form('search'), p42.word('2:255:1').form('search'));
   eq('1.26 inline attributes win over the sidecar',
-     p42.clone().attachWords({ words: [{ wid: '2:255:1', search: 'WRONG' }] }) && p42.word('2:255:1').form('search'),
-     sidecar.words.find(r => r.wid === '2:255:1').search);
+     p42.clone().attachWords({ words: [{ wordKey: '2:255:1', search: 'WRONG' }] }) && p42.word('2:255:1').form('search'),
+     sidecar.words.find(r => r.wordKey === '2:255:1').search);
   {
     const seen = [];
     const stub = async u => {
@@ -148,8 +148,8 @@ try {
      [naba.arabic, naba.latin, naba.english, naba.revelationPlace, naba.ayahCount, naba.hasBanner, naba.hasBasmalah],
      [banner78.dataset.surahNameAr, banner78.dataset.surahNameLatin, banner78.dataset.surahNameEn,
       banner78.dataset.revelationPlace, 40, true, true]);
-  eq('2.1b and it is surah An-Naba, 40 ayahs, makkah',
-     [naba.latin, naba.ayahCount, naba.revelationPlace], ['An-Naba', 40, 'makkah']);
+  eq('2.1b and it is surah Naba, 40 ayahs, makkah',
+     [naba.latin, naba.ayahCount, naba.revelationPlace], ['Naba', 40, 'makkah']);
   ok('2.2 a surah present without a banner is still reported',
      p42.surahs().length === 1 && p42.surahs()[0].number === 2 && p42.surahs()[0].hasBanner === false);
   eq('2.3 page 604 carries three surah banners',
@@ -158,31 +158,31 @@ try {
      p1.surahs()[0].hasBanner === true && p1.surahs()[0].hasBasmalah === false);
 
   eq('2.5 juz 30 starts at 78:1 on page 582',
-     p582.divisions().juz.map(d => [d.n, d.aid]), [[30, '78:1']]);
-  eq('2.6 page 42 opens rub 17 / hizb 5 / juz 3 at 2:253',
-     [p42.divisions().rub.map(d => [d.n, d.aid]),
-      p42.divisions().hizb.map(d => [d.n, d.aid]),
-      p42.divisions().juz.map(d => [d.n, d.aid])],
+     p582.divisions().juz.map(d => [d.n, d.ayahKey]), [[30, '78:1']]);
+  eq('2.6 page 42 opens rubu_al_hizb 17 / hizb 5 / juz 3 at 2:253',
+     [p42.divisions().rubu_al_hizb.map(d => [d.n, d.ayahKey]),
+      p42.divisions().hizb.map(d => [d.n, d.ayahKey]),
+      p42.divisions().juz.map(d => [d.n, d.ayahKey])],
      [[[17, '2:253']], [[5, '2:253']], [[3, '2:253']]]);
   eq('2.7 page 42 draws one hizb rosette, agreeing with the ayah tags',
-     p42.rosettes().map(r => [r.rub, r.hizb, r.juz, r.aid]), [[17, 5, 3, '2:253']]);
-  eq('2.8 page 176 has the 7:206 sajdah', p176.sajdahs().map(s => s.aid), ['7:206']);
+     p42.divisionMarks().map(r => [r.rubu_al_hizb, r.hizb, r.juz, r.ayahKey]), [[17, 5, 3, '2:253']]);
+  eq('2.8 page 176 has the 7:206 sajdah', p176.sajdahs().map(s => s.ayahKey), ['7:206']);
   eq('2.9 no sajdah where there is none', p42.sajdahs().length, 0);
 
   eq('2.10 ayah keys on page 42', p42.ayahKeys(), ['2:253', '2:254', '2:255', '2:256']);
   const a255 = p42.ayah('2:255');
   ok('2.11 an ayah is several fragments, and knows it',
-     a255.fragments.length > 1 && a255.parts === a255.fragments.length && a255.complete);
+     a255.fragments.length > 1 && a255.fragmentCount === a255.fragments.length && a255.isComplete);
   ok('2.12 2:255 spans several printed lines', a255.lines.length > 1, a255.lines);
   ok('2.13 an ayah resolves to its medallion',
-     a255.marker && a255.marker.dataset.aid === '2:255');
-  eq('2.14 info() is one call', typeof p42.info().divisions, 'object');
+     a255.mark && a255.mark.dataset.ayahKey === '2:255');
+  eq('2.14 summary() is one call', typeof p42.summary().divisions, 'object');
 
   /* words */
   const w = p42.word('2:255:1');
   eq('2.15 word text, all five forms', Object.keys(w.text).sort(),
-     ['imlaei', 'qpc', 'rasm', 'search', 'uthmani']);
-  eq('2.16 word identity', [w.surah, w.ayah, w.index, w.aid, w.line],
+     ['qpc', 'rasm', 'rasm_imlai', 'rasm_uthmani', 'search']);
+  eq('2.16 word identity', [w.surah, w.ayah, w.number, w.ayahKey, w.line],
      [2, 255, 1, '2:255', Number(w.el.closest('g.line').dataset.line)]);
   eq('2.16b 2:255 opens on line 8', w.line, 8);
   const box = w.box();
@@ -203,9 +203,9 @@ try {
   }
 
   /* ============================================ 3. text extraction */
-  const t255 = p42.text('2:255', { form: 'uthmani' });
+  const t255 = p42.text('2:255', { form: 'rasm_uthmani' });
   ok('3.1 ayah text starts with its own first word',
-     t255.startsWith(p42.word('2:255:1').text.uthmani), t255.slice(0, 20));
+     t255.startsWith(p42.word('2:255:1').text.rasm_uthmani), t255.slice(0, 20));
   eq('3.2 ayah text word count', t255.split(/[\s\n]+/).length, a255.words().length);
   ok('3.3 a multi-line ayah carries the mushaf line breaks', t255.includes('\n'));
   eq('3.4 line text', p42.line(4).words().length, p42.words({ line: 4 }).length);
@@ -216,26 +216,26 @@ try {
 
   /* ============================================ 4. search */
   eq('4.1 exact search on page 42: الله',
-     p42.search('الله', { mode: 'exact' }).map(m => m.wid),
+     p42.search('الله', { mode: 'exact' }).map(m => m.wordKey),
      ['2:253:10', '2:253:24', '2:253:45', '2:253:49', '2:255:1']);
-  const mn = p42.search('من', { mode: 'exact' }).map(m => m.wid);
+  const mn = p42.search('من', { mode: 'exact' }).map(m => m.wordKey);
   eq('4.2 exact search: من', mn,
      ['2:253:8', '2:253:28', '2:253:30', '2:253:38', '2:253:41', '2:254:7', '2:255:20', '2:255:36', '2:256:8']);
   eq('4.3 page 604 exact: الناس',
-     p604.search('الناس', { mode: 'exact' }).map(m => m.wid),
+     p604.search('الناس', { mode: 'exact' }).map(m => m.wordKey),
      ['114:1:4', '114:2:2', '114:3:2', '114:5:5']);
   eq('4.4 page 604 exact: شر',
-     p604.search('شر', { mode: 'exact' }).map(m => m.wid),
+     p604.search('شر', { mode: 'exact' }).map(m => m.wordKey),
      ['113:2:2', '113:3:2', '113:4:2', '113:5:2', '114:4:2']);
   /* the whole point of the loose second pass */
   eq('4.5 typed الرحمان finds the printed الرحمن (dagger alef)',
-     p1.search('الرحمان', { mode: 'exact' }).map(m => m.wid), ['1:1:3', '1:3:1']);
+     p1.search('الرحمان', { mode: 'exact' }).map(m => m.wordKey), ['1:1:3', '1:3:1']);
   eq('4.6 and الرحمن finds it too',
-     p1.search('الرحمن', { mode: 'exact' }).map(m => m.wid), ['1:1:3', '1:3:1']);
+     p1.search('الرحمن', { mode: 'exact' }).map(m => m.wordKey), ['1:1:3', '1:3:1']);
   /* a query typed WITH diacritics still matches the bare data-search */
   eq('4.7 a fully-vocalised query is normalised',
-     p42.search('ٱللَّهُ', { mode: 'exact' }).map(m => m.wid).length, 5);
-  eq('4.8 prefix mode', p604.search('الن', { mode: 'prefix' }).map(m => m.wid),
+     p42.search('ٱللَّهُ', { mode: 'exact' }).map(m => m.wordKey).length, 5);
+  eq('4.8 prefix mode', p604.search('الن', { mode: 'prefix' }).map(m => m.wordKey),
      ['113:4:3', '114:1:4', '114:2:2', '114:3:2', '114:5:5']);
   ok('4.9 substring mode is a superset of exact',
      p42.search('من').length >= mn.length);
@@ -244,7 +244,7 @@ try {
      p42.search('الله', { mode: 'exact' })[0].word instanceof M.Word, true);
   /* the strict pass must not be widened when it already worked */
   eq('4.12 loose pass does not fire when the strict pass matched',
-     p42.search('ما', { mode: 'exact' }).map(m => m.wid),
+     p42.search('ما', { mode: 'exact' }).map(m => m.wordKey),
      ['2:253:25', '2:253:32', '2:253:46', '2:253:51', '2:255:14', '2:255:28']);
   eq('4.13 normalisation helpers are exported',
      [M.normalizeQuery('ٱلَّذِينَ'), M.foldArabic('ة'), M.stripArabicMarks('سَنَةࣰ')],
@@ -337,7 +337,7 @@ try {
   const target = p42.word('2:255:5');
   const tb = target.box();
   const inside = p42.hitTest((tb.x0 + tb.x1) / 2, (tb.y0 + tb.y1) / 2, { space: 'view' });
-  eq('6.1 a point on the ink hits its own word', [inside.wid, inside.exact], ['2:255:5', true]);
+  eq('6.1 a point on the ink hits its own word', [inside.wordKey, inside.exact], ['2:255:5', true]);
 
   /* a point in the GAP between two words of the same line */
   const line4 = p42.words({ line: 4 }).map(x => ({ w: x, b: x.box() }))
@@ -352,21 +352,21 @@ try {
     const y = (gapCase.prev.b.y0 + gapCase.prev.b.y1) / 2;
     const mid = (gapCase.prev.b.x0 + gapCase.next.b.x1) / 2;
     const h = p42.hitTest(mid, y, { space: 'view' });
-    ok('6.3 a tap in the gap hits a word, not nothing', !!h && !h.exact, h && h.wid);
+    ok('6.3 a tap in the gap hits a word, not nothing', !!h && !h.exact, h && h.wordKey);
     /* direction: with the default bias the middle of the gap goes to the
        PRECEDING (right-hand) word, because its trailing ink drifts left */
     eq('6.4 the gap is awarded with direction, not naive nearest',
-       h.wid, gapCase.prev.w.wid);
+       h.wordKey, gapCase.prev.w.wordKey);
     const naive = p42.hitTest(mid, y, { space: 'view', gapBias: 0.5 });
     ok('6.5 gapBias actually moves the boundary',
-       p42.hitTest(gapCase.prev.b.x0 - gapCase.gap * 0.45, y, { space: 'view', gapBias: 0.6 }).wid
-       === gapCase.prev.w.wid);
+       p42.hitTest(gapCase.prev.b.x0 - gapCase.gap * 0.45, y, { space: 'view', gapBias: 0.6 }).wordKey
+       === gapCase.prev.w.wordKey);
     ok('6.6 far into the gap the following word wins',
-       p42.hitTest(gapCase.next.b.x1 + gapCase.gap * 0.1, y, { space: 'view' }).wid === gapCase.next.w.wid);
+       p42.hitTest(gapCase.next.b.x1 + gapCase.gap * 0.1, y, { space: 'view' }).wordKey === gapCase.next.w.wordKey);
   }
   /* a point far below the last line still resolves to the nearest line */
   const below = p42.hitTest(170, 545, { space: 'view' });
-  ok('6.7 a point off the text block resolves to the nearest line', !!below, below && below.wid);
+  ok('6.7 a point off the text block resolves to the nearest line', !!below, below && below.wordKey);
   ok('6.8 the reported distance is to the WORD box, not the line band',
      below.distance > 0, below.distance);
   eq('6.9 maxDistance can refuse a hit',
@@ -379,30 +379,30 @@ try {
   /* ============================================ 7. marks */
   eq('7.1 marks by registry family: dots',
      p42.marks({ family: 'dots' }).length,
-     p42.el.querySelectorAll('path[data-mark="dot"],path[data-mark="two-dots"],path[data-mark="three-dots"]').length);
-  ok('7.2 the tanween family works even though the files never emit it',
-     p42.marks({ family: 'tanween' }).length > 0, p42.marks({ family: 'tanween' }).length);
+     p42.el.querySelectorAll('path[data-mark="dot"],path[data-mark="two_dots"],path[data-mark="three_dots"]').length);
+  ok('7.2 the tanwin family works even though the files never emit it',
+     p42.marks({ family: 'tanwin' }).length > 0, p42.marks({ family: 'tanwin' }).length);
   /* The emitted data-mark-family is NOT a reliable selector and has changed
      shape mid-project: it has been "diacritic" and is now the multi-valued
-     "diacritic tanween". Exact-match attribute selectors break on both.
+     "diacritic tanwin". Exact-match attribute selectors break on both.
      The library keys on data-mark names, so it is unaffected - assert that. */
   {
-    const tn = p42.marks({ family: 'tanween' });
+    const tn = p42.marks({ family: 'tanwin' });
     const attrs = [...new Set(tn.map(p => p.dataset.markFamily || '(none)'))];
-    eq('7.3 the tanween family is selected by NAME, whatever the attribute says',
-       tn.every(p => ['fathatan', 'kasratan', 'dammatan'].includes(p.dataset.mark)), true);
+    eq('7.3 the tanwin family is selected by NAME, whatever the attribute says',
+       tn.every(p => ['tanwin_al_fath', 'tanwin_al_kasr', 'tanwin_al_damm'].includes(p.dataset.mark)), true);
     ok('7.3b (observed data-mark-family on those paths)', true, attrs);
     eq('7.3c an exact-match attribute selector would find a different set',
-       p42.marks({ family: 'tanween' }).length >=
-       p42.el.querySelectorAll('[data-mark-family="tanween"]').length, true);
+       p42.marks({ family: 'tanwin' }).length >=
+       p42.el.querySelectorAll('[data-mark-family="tanwin"]').length, true);
   }
   const dia = p42.marks({ family: 'diacritic' });
   ok('7.4 diacritic family is non-empty and excludes dots',
      dia.length > 100 && dia.every(p => p.dataset.markFamily !== 'dots'), dia.length);
-  eq('7.5 marks by name', p42.marks({ name: 'shadda' }).every(p => p.dataset.mark === 'shadda'), true);
+  eq('7.5 marks by name', p42.marks({ name: 'shaddah' }).every(p => p.dataset.mark === 'shaddah'), true);
   eq('7.6 marks by category', p42.marks({ category: 'waqf' }).length, p42.marks({ family: 'waqf' }).length);
   eq('7.7 marks scoped to one ayah',
-     p42.marks({ family: 'dots', ayah: '2:255' }).every(p => p.closest('g.ayah').dataset.aid === '2:255'), true);
+     p42.marks({ family: 'dots', ayah: '2:255' }).every(p => p.closest('g.ayah-fragment').dataset.ayahKey === '2:255'), true);
 
   const dotsBefore = p42.marks({ family: 'dots' }).length;
   const hid = p42.hideMarks({ family: 'diacritic' });
@@ -414,8 +414,8 @@ try {
   hid.remove();
   ok('7.11 hideMarks.remove() restores', dia.every(p => p.style.display !== 'none'));
   eq('7.12 registry lookups are exported',
-     [M.familyOf('kasratan'), M.categoryOf('meem-iqlab'), M.markNames({ family: 'sifr' })],
-     ['tanween', 'dabt', ['sifr-mustadir', 'sifr-mustatil']]);
+     [M.familyOf('tanwin_al_kasr'), M.categoryOf('small_meem'), M.markNames({ family: 'sifr' })],
+     ['tanwin', 'dabt', ['rounded_zero', 'rectangular_zero']]);
 
   /* ============================================ 8. theme */
   const th = p42.theme({ paper: '#0d1b2a', ink: '#cfe3ff', diacritics: '#7fb0e8', dots: '#a3392c' });
@@ -431,42 +431,42 @@ try {
   th.remove();
   eq('8.5 theme.remove() restores the printed ink', getComputedStyle(inkPath).fill, 'rgb(35, 31, 32)');
 
-  /* ============================================ 9. ayah end-markers */
-  const before = p42.markers().length;
-  const st = p42.styleMarkers({ ring: '#b08d2e', numeral: '#004488', scale: 1.3 });
-  eq('9.1 rings recoloured', p42.markers().every(m => m.ring.getAttribute('fill') === '#b08d2e'), true);
+  /* ============================================ 9. ayah end-marks */
+  const before = p42.ayahMarks().length;
+  const st = p42.styleAyahMarks({ ring: '#b08d2e', numeral: '#004488', scale: 1.3 });
+  eq('9.1 rings recoloured', p42.ayahMarks().every(m => m.ring.getAttribute('fill') === '#b08d2e'), true);
   eq('9.2 numerals recoloured independently',
-     p42.markers().every(m => m.numeral.getAttribute('fill') === '#004488'), true);
-  ok('9.3 the medallion scales', p42.markers()[0].el.style.transform === 'scale(1.3)');
+     p42.ayahMarks().every(m => m.numeral.getAttribute('fill') === '#004488'), true);
+  ok('9.3 the medallion scales', p42.ayahMarks()[0].el.style.transform === 'scale(1.3)');
   st.remove();
-  eq('9.4 restored', p42.markers()[0].ring.getAttribute('fill'), '#231f20');
+  eq('9.4 restored', p42.ayahMarks()[0].ring.getAttribute('fill'), '#231f20');
 
-  const swap = p42.styleMarkers({ replaceRing: true, ring: '#a00' });
+  const swap = p42.styleAyahMarks({ replaceRing: true, ring: '#a00' });
   eq('9.5 the ring is replaced and the printed numeral survives',
-     [p42.el.querySelectorAll('g.ayah-marker[data-aid] circle').length,
-      p42.el.querySelectorAll('[data-kind="ayah-number"]').length],
+     [p42.el.querySelectorAll('g.ayah-mark[data-ayah-key] circle').length,
+      p42.el.querySelectorAll('[data-kind="ayah_number"]').length],
      [before, before]);
   swap.remove();
   eq('9.6 the original ring comes back',
-     p42.el.querySelectorAll('[data-kind="ayah-marker-ornament"]').length, before);
+     p42.el.querySelectorAll('[data-kind="ayah_mark_ornament"]').length, before);
 
-  const hm = p42.hideMarkers();
-  eq('9.7 markers hidden', p42.markers().every(m => m.el.style.display === 'none'), true);
+  const hm = p42.hideAyahMarks();
+  eq('9.7 markers hidden', p42.ayahMarks().every(m => m.el.style.display === 'none'), true);
   hm.remove();
   /* pages 1-2: no id-less groups any more; the doubled ring is INSIDE the group
      and must be styled with the ring, or the copy shows through in the old ink */
   show(p1);
-  const st1 = p1.styleMarkers({ ring: '#0a0' });
-  const idless = [...p1.allMarkerGroups()].filter(g => !g.dataset.aid);
+  const st1 = p1.styleAyahMarks({ ring: '#0a0' });
+  const idless = [...p1.ayahMarkGroups()].filter(g => !g.dataset.ayahKey);
   eq('9.8 page 1: no id-less marker groups, and the ring copies take the ring colour',
      [idless.length,
-      p1.markers().every(m => m.ringCopies.every(c => getComputedStyle(c).fill === getComputedStyle(m.ring).fill))],
+      p1.ayahMarks().every(m => m.ringCopies.every(c => getComputedStyle(c).fill === getComputedStyle(m.ring).fill))],
      [0, true]);
   st1.remove();
-  const rr1 = p1.styleMarkers({ replaceRing: true });
+  const rr1 = p1.styleAyahMarks({ replaceRing: true });
   eq('9.8b page 1: replacing the ring hides its copy, and remove() brings it back',
-     [p1.markers().every(m => m.ringCopies.every(c => c.getAttribute('display') === 'none')),
-      (rr1.remove(), p1.markers().every(m => m.ringCopies.every(c => !c.hasAttribute('display'))))],
+     [p1.ayahMarks().every(m => m.ringCopies.every(c => c.getAttribute('display') === 'none')),
+      (rr1.remove(), p1.ayahMarks().every(m => m.ringCopies.every(c => !c.hasAttribute('display'))))],
      [true, true]);
 
   /* ============================================ 10. layout */
@@ -525,9 +525,9 @@ try {
   const cropWord = p42.crop('2:255:1');
   eq('11.6 one-word crop', cropWord.words, ['2:255:1']);
   ok('11.7 a partial crop drops the medallion at the far end of the ayah',
-     cropWord.el.querySelectorAll('g.ayah-marker[data-aid]').length === 0);
+     cropWord.el.querySelectorAll('g.ayah-mark[data-ayah-key]').length === 0);
   ok('11.8 a whole-ayah crop keeps its medallion',
-     cropAyah.el.querySelectorAll('g.ayah-marker[data-aid]').length === 1);
+     cropAyah.el.querySelectorAll('g.ayah-mark[data-ayah-key]').length === 1);
   const cropLine = p42.crop({ line: 5 });
   eq('11.9 line crop', cropLine.words.length, p42.words({ line: 5 }).length);
   const cw = cropWord.viewBox.split(' ').map(Number);
@@ -592,18 +592,18 @@ try {
 
   const mf = M.maskFrom(p42, '2:255:10');
   ok('13.11 maskFrom hides from a word onward',
-     mf.words[0].wid === '2:255:10' && !p42.word('2:255:9').el.style.visibility);
+     mf.words[0].wordKey === '2:255:10' && !p42.word('2:255:9').el.style.visibility);
   mf.remove();
 
   /* ============================================ 14. accessibility */
-  const an = M.annotate(p42, { form: 'uthmani' });
+  const an = M.annotate(p42, { form: 'rasm_uthmani' });
   eq('14.1 the svg gets an accessible name', !!p42.el.getAttribute('aria-label'), true);
   eq('14.2 every word gets a label and a <title>',
      [an.words, p42.el.querySelectorAll('g.word > title').length], [147, 147]);
   eq('14.3 the label is the word text',
-     p42.word('2:255:1').el.getAttribute('aria-label'), p42.word('2:255:1').text.uthmani);
+     p42.word('2:255:1').el.getAttribute('aria-label'), p42.word('2:255:1').text.rasm_uthmani);
   ok('14.4 ayah fragments say which part they are',
-     /part 1 of/.test(p42.el.querySelector('g.ayah[data-aid="2:255"]').getAttribute('aria-label')));
+     /part 1 of/.test(p42.el.querySelector('g.ayah-fragment[data-ayah-key="2:255"]').getAttribute('aria-label')));
   an.remove();
   eq('14.5 annotate.remove() leaves no titles', p42.el.querySelectorAll('g.word > title').length, 0);
   const an2 = M.annotate(p42, { deferToTextLayer: true });
@@ -620,10 +620,10 @@ try {
   eq('15.4 pageOf 114:6 is the last page', atlas.pageOf('114:6'), 604);
   eq('15.5 pageOf 1:1', atlas.pageOf('1:1'), 1);
   eq('15.6 pageOfWord', atlas.pageOfWord('2:255:3'), 42);
-  eq('15.7 surah lookup', [atlas.surah(2).latin, atlas.pageOfSurah(2)], ['Al-Baqarah', 2]);
+  eq('15.7 surah lookup', [atlas.surah(2).latin, atlas.pageOfSurah(2)], ['Baqarah', 2]);
   eq('15.8 juz 30 starts at 78:1 on page 582',
-     [atlas.juz(30).aid, atlas.juz(30).page], ['78:1', 582]);
-  eq('15.9 all 240 rub boundaries indexed', atlas.data.rub.length, 240);
+     [atlas.juz(30).ayahKey, atlas.juz(30).page], ['78:1', 582]);
+  eq('15.9 all 240 rubu_al_hizb boundaries indexed', atlas.data.rubu_al_hizb.length, 240);
   eq('15.10 juz page range', atlas.pagesOfJuz(30), [582, 604]);
   eq('15.11 which juz is 2:255 in?', atlas.juzAt('2:255').n, 3);
   eq('15.12 findSurah by english', atlas.findSurah('The Cow').map(s => s.n), [2]);
@@ -640,7 +640,7 @@ try {
 
   /* ============================================ 16. selection layer */
   show(p42);
-  const sel = M.attachSelection(p42, { form: 'uthmani', citation: true });
+  const sel = M.attachSelection(p42, { form: 'rasm_uthmani', citation: true });
   window.__SEL__ = sel; window.__P42__ = p42;
   eq('16.1 one span per word', sel.count, 147);
   /* spans land on the ink: compare each span's centre to its word's rect */
@@ -649,7 +649,7 @@ try {
   let worst = 0;
   const origin16 = sel.layer.getBoundingClientRect();
   for (const s of sel.spans()) {
-    const wr = p42.el.querySelector(`g.word[data-wid="${s.dataset.wid}"]`).getBoundingClientRect();
+    const wr = p42.el.querySelector(`g.word[data-word-key="${s.dataset.wordKey}"]`).getBoundingClientRect();
     const ink = s.dataset.ink.split(' ').map(Number);
     worst = Math.max(worst, Math.abs(ink[0] - (wr.left - origin16.left)),
                      Math.abs(ink[1] - (wr.top - origin16.top)),
@@ -675,19 +675,19 @@ try {
 
   /* programmatic selection over three words of one ayah */
   const want = ['2:255:1', '2:255:2', '2:255:3'];
-  const first = sel.spans().find(s => s.dataset.wid === want[0]);
-  const lastS = sel.spans().find(s => s.dataset.wid === want[2]);
+  const first = sel.spans().find(s => s.dataset.wordKey === want[0]);
+  const lastS = sel.spans().find(s => s.dataset.wordKey === want[2]);
   const range = document.createRange();
   range.setStartBefore(first); range.setEndAfter(lastS);
   getSelection().removeAllRanges(); getSelection().addRange(range);
   eq('16.5 the selection resolves to the right words',
-     sel.words().map(x => x.wid), want);
-  eq('16.6 the payload is the uthmani text of those words',
-     sel.text('uthmani'), want.map(x => p42.word(x).text.uthmani).join(' '));
+     sel.words().map(x => x.wordKey), want);
+  eq('16.6 the payload is the rasm_uthmani text of those words',
+     sel.text('rasm_uthmani'), want.map(x => p42.word(x).text.rasm_uthmani).join(' '));
   eq('16.7 the same drag can yield a different form',
      sel.text('search'), want.map(x => p42.word(x).text.search).join(' '));
   eq('16.8 citation appends the ayah key',
-     sel.payload('uthmani'), want.map(x => p42.word(x).text.uthmani).join(' ') + ' (2:255)');
+     sel.payload('rasm_uthmani'), want.map(x => p42.word(x).text.rasm_uthmani).join(' ') + ' (2:255)');
   getSelection().removeAllRanges();
   sel.detach();
   eq('16.9 detach tears the layer down', document.querySelectorAll('.mushaf-hitlayer').length, 0);
@@ -711,10 +711,10 @@ try {
   show(p42);
   const cBand = p42.band('2:255', { fill: '#d6a326' });
   const hovers = [];
-  const cHover = M.onWordHover(p42, r => hovers.push(r.wid));
-  const cSel = M.attachSelection(p42, { form: 'uthmani', citation: true });
+  const cHover = M.onWordHover(p42, r => hovers.push(r.wordKey));
+  const cSel = M.attachSelection(p42, { form: 'rasm_uthmani', citation: true });
   const taps = [];
-  const cTap = M.onWordClick(p42, r => taps.push(r.wid));
+  const cTap = M.onWordClick(p42, r => taps.push(r.wordKey));
 
   eq('19.1 three capabilities share ONE hit layer',
      document.querySelectorAll('.mushaf-hitlayer').length, 1);
@@ -736,16 +736,16 @@ try {
   const pr = probe.el.getBoundingClientRect();
   const under = document.elementFromPoint(pr.left + pr.width / 2, pr.top + pr.height / 2);
   eq('19.8 a point on the ink resolves to that word, through the layer',
-     under.closest('.mushaf-hitlayer span')?.dataset.wid, '2:255:3');
+     under.closest('.mushaf-hitlayer span')?.dataset.wordKey, '2:255:3');
   eq('19.9 wordAt agrees',
-     cSel.hitLayer.wordAt(pr.left + pr.width / 2, pr.top + pr.height / 2).wid, '2:255:3');
+     cSel.hitLayer.wordAt(pr.left + pr.width / 2, pr.top + pr.height / 2).wordKey, '2:255:3');
 
   /* selection still works with hover and the band running */
   cSel.selectWords(['2:255:1', '2:255:2', '2:255:3']);
   eq('19.10 a selection still resolves with all three running',
-     cSel.words().map(x => x.wid), ['2:255:1', '2:255:2', '2:255:3']);
+     cSel.words().map(x => x.wordKey), ['2:255:1', '2:255:2', '2:255:3']);
   eq('19.11 and still carries the citation',
-     cSel.payload('uthmani').endsWith('(2:255)'), true);
+     cSel.payload('rasm_uthmani').endsWith('(2:255)'), true);
   cSel.clear();
 
   /* detaching ONE capability must not tear the layer out from the others */
@@ -755,7 +755,7 @@ try {
      document.querySelectorAll('.mushaf-hitlayer').length, 1);
   cSel.selectWords(['2:255:5', '2:255:6']);
   eq('19.14 selection still works after hover detached',
-     cSel.words().map(x => x.wid), ['2:255:5', '2:255:6']);
+     cSel.words().map(x => x.wordKey), ['2:255:5', '2:255:6']);
   cSel.clear();
   cTap.remove();
   cSel.detach();
@@ -768,9 +768,9 @@ try {
 
   /* the overlay-free path still works for a caller who opts out */
   const taps2 = [];
-  const tapOnly = p42.onTap(r => taps2.push(r.wid));
+  const tapOnly = p42.onTap(r => taps2.push(r.wordKey));
   const tw = p42.word('2:254:1').el.getBoundingClientRect();
-  p42.el.querySelector('g.word[data-wid="2:254:1"] path')
+  p42.el.querySelector('g.word[data-word-key="2:254:1"] path')
       .dispatchEvent(new MouseEvent('click', { bubbles: true,
         clientX: tw.left + tw.width / 2, clientY: tw.top + tw.height / 2 }));
   eq('19.18 onTap works with no overlay at all', taps2, ['2:254:1']);
@@ -815,7 +815,7 @@ try {
        covered - checked at 20.2 - and that hit boxes are wider ON AVERAGE. */
     const line4 = dz.spans().filter(x => x.dataset.line === '4');
     const deltas = line4.map(x => x.getBoundingClientRect().width -
-                                  p42.word(x.dataset.wid).el.getBoundingClientRect().width);
+                                  p42.word(x.dataset.wordKey).el.getBoundingClientRect().width);
     const median = deltas.slice().sort((a, b) => a - b)[deltas.length >> 1];
     ok('20.5 hit boxes are wider than the ink they cover (median over a line)',
        median > 0, { median, sample: [hb.width, ib.width] });
@@ -832,7 +832,7 @@ try {
   {
     const spans = dz.spans().filter(s => s.dataset.line === '4')
                     .map(s => ({ s, r: s.getBoundingClientRect(),
-                                 ink: p42.word(s.dataset.wid).el.getBoundingClientRect() }))
+                                 ink: p42.word(s.dataset.wordKey).el.getBoundingClientRect() }))
                     .sort((a, b) => b.ink.right - a.ink.right);
     let probed = 0, resolved = 0;
     for (let i = 0; i < spans.length - 1; i++) {
@@ -842,7 +842,7 @@ try {
       const x = (spans[i].ink.left + spans[i + 1].ink.right) / 2;
       const y = (spans[i].ink.top + spans[i].ink.bottom) / 2;
       const r = dz.wordAt(x, y);
-      if (r && (r.wid === spans[i].s.dataset.wid || r.wid === spans[i + 1].s.dataset.wid)) resolved++;
+      if (r && (r.wordKey === spans[i].s.dataset.wordKey || r.wordKey === spans[i + 1].s.dataset.wordKey)) resolved++;
     }
     ok('20.8 there were real gaps to probe', probed > 3, probed);
     eq('20.9 a click in a gap always returns one of the two neighbours', resolved, probed);
@@ -875,9 +875,9 @@ try {
 
   /* word granularity: a mid-word range paints and copies whole words only */
   {
-    const gsel = M.attachSelection(p42, { form: 'uthmani' });
-    const a1 = gsel.spans().find(s => s.dataset.wid === '2:255:2');
-    const a2 = gsel.spans().find(s => s.dataset.wid === '2:255:20');
+    const gsel = M.attachSelection(p42, { form: 'rasm_uthmani' });
+    const a1 = gsel.spans().find(s => s.dataset.wordKey === '2:255:2');
+    const a2 = gsel.spans().find(s => s.dataset.wordKey === '2:255:20');
     const r = document.createRange();
     /* deliberately start and end INSIDE the text nodes */
     r.setStart(a1.firstChild, 1);
@@ -894,10 +894,10 @@ try {
     ok('20.13b the mid-word range produced a selection', words.length > 0, R.granularityDebug);
     if (!words.length) throw new Error('no selection');
     ok('20.14 a mid-word range is snapped out to whole words',
-       words[0].wid === '2:255:2' && words[words.length - 1].wid === '2:255:20', 
-       [words[0]?.wid, words[words.length-1]?.wid]);
+       words[0].wordKey === '2:255:2' && words[words.length - 1].wordKey === '2:255:20', 
+       [words[0]?.wordKey, words[words.length-1]?.wordKey]);
     eq('20.15 the copied text has exactly as many words as are highlighted',
-       gsel.text('uthmani').split(/[\s\n]+/).length, words.length);
+       gsel.text('rasm_uthmani').split(/[\s\n]+/).length, words.length);
     const bandNow = gsel.band;
     const usedLines = [...new Set(words.map(x => x.line))];
     eq('20.16 the painted band is one rect per line of the selection',
@@ -920,7 +920,7 @@ try {
     gsel.detach();
   }
 
-  /* ================================ 21. swappable ayah end-markers (markers.mjs)
+  /* ================================ 21. swappable ayah end-marks (markers.mjs)
    *
    * No marker outline ships with this repository — the set is fetched at
    * runtime and carries its sources' licences. So the deterministic assertions
@@ -934,7 +934,7 @@ try {
        not re-cut it */
     const OUTER = 'M0 0L1000 0L1000 1000L0 1000Z';
     const INNER = 'M200 200L200 800L800 800L800 200Z';
-    const LAYERED = '<svg xmlns="http://www.w3.org/2000/svg" class="ayah-marker" ' +
+    const LAYERED = '<svg xmlns="http://www.w3.org/2000/svg" class="ayah-mark" ' +
       'viewBox="-50 -50 1100 1100">' +
       `<g data-part="fill-1" fill-rule="evenodd" style="fill:var(--fill-1,#fff8e7)"><path data-contours="1" d="${INNER}"/></g>` +
       `<g data-part="ink-base" fill-rule="evenodd" style="fill:var(--ink-base,#083a3a)"><path data-contours="0 1" d="${OUTER}${INNER}"/></g>` +
@@ -966,7 +966,7 @@ try {
       return { ok: true, status: 200, json: async () => body, text: async () => String(body) };
     };
 
-    const set = await M.loadMarkerSet('stub://', { fetch: stub });
+    const set = await M.loadMarkSet('stub://', { fetch: stub });
     eq('21.1 the set lists its markers', set.ids(), ['900-regular', '900-anchor', '900-bold']);
     eq('21.2 designs are grouped, weights under them',
        set.families().map(f => [f.family, f.weights.length]), [['900', 3]]);
@@ -994,14 +994,14 @@ try {
     const before = served;
     await set.outline('900-regular');
     eq('21.11 an outline is read once and cached', served, before);
-    const same = await M.loadMarkerSet('stub://', { fetch: stub });
+    const same = await M.loadMarkSet('stub://', { fetch: stub });
     ok('21.12 the set itself is cached per URL', same === set);
     eq('21.13 annotations.json is never fetched — upstream ships the layers',
        asked.filter(u => u.includes('annotations')).length, 0);
 
     /* ---- the swap, on a real page ---- */
     const pm = show(await load(42));   /* rendered: getBBox and getComputedStyle need it */
-    const mk = pm.markers()[0];
+    const mk = pm.ayahMarks()[0];
     const numeral = mk.numeral;
     const numBefore = { d: numeral.getAttribute('d'), box: JSON.stringify(numeral.getBBox()) };
     const numScreen = numeral.getBoundingClientRect();
@@ -1010,12 +1010,12 @@ try {
        transform, which is precisely the fit being tested. */
     const ringBox = mk.ring.getBoundingClientRect();
 
-    const h = M.setAyahMarker(pm, out, { colours: { 'ink-base': '#b08d2e' } });
-    eq('21.14 every real medallion on the page was swapped', h.count, pm.markers().length);
+    const h = M.setAyahMark(pm, out, { colours: { 'ink-base': '#b08d2e' } });
+    eq('21.14 every real medallion on the page was swapped', h.count, pm.ayahMarks().length);
     eq('21.15 the printed ring is gone from the medallion',
-       mk.el.querySelectorAll('path[data-kind="ayah-marker-ornament"]').length, 0);
+       mk.el.querySelectorAll('path[data-kind="ayah_mark_ornament"]').length, 0);
 
-    const swap = mk.el.querySelector('g.ayah-marker-swap');
+    const swap = mk.el.querySelector('g.ayah-mark-swap');
     const sb = swap.getBoundingClientRect();
     /* this design publishes no number centre, so it falls back to box-centring
        on the ring it replaced; the fit is uniform, so the shorter axis matches
@@ -1043,8 +1043,8 @@ try {
     ok('21.23 every part reads UPSTREAM\'s custom property name',
        [...swap.querySelectorAll('[data-part]')].every(
          p => p.getAttribute('style').includes('var(--' + p.getAttribute('data-part') + ',')));
-    ok('21.24 and none of them reads the retired --ayah-marker-* name',
-       !new XMLSerializer().serializeToString(swap).includes('--ayah-marker-'));
+    ok('21.24 and none of them reads the retired --ayah-mark-* name',
+       !new XMLSerializer().serializeToString(swap).includes('--ayah-mark-'));
     {
       const ink = swap.querySelector('[data-part="ink-base"]');
       const fill = swap.querySelector('[data-part="fill-1"]');
@@ -1054,7 +1054,7 @@ try {
          pm.el.style.getPropertyValue('--ink-base').trim(), '#b08d2e');
       eq('21.27 a part nobody set keeps the design\'s baked-in default',
          getComputedStyle(fill.querySelector('path')).fill, 'rgb(255, 248, 231)');
-      const c = M.colourAyahMarkers(pm, { 'fill-1': '#123456' });
+      const c = M.colourAyahMarks(pm, { 'fill-1': '#123456' });
       eq('21.28 setting the custom property alone recolours it, no JS on the shape',
          getComputedStyle(fill.querySelector('path')).fill, 'rgb(18, 52, 86)');
       c.remove();
@@ -1063,33 +1063,33 @@ try {
     }
 
     /* ---- reset ---- */
-    eq('21.30 the page reports it is showing swapped markers', M.hasSwappedMarkers(pm), true);
-    const r1 = M.resetAyahMarkers(pm);
+    eq('21.30 the page reports it is showing swapped markers', M.hasSwappedMarks(pm), true);
+    const r1 = M.resetAyahMarks(pm);
     eq('21.31 reset restores every medallion', r1.count, h.count);
     eq('21.32 reset restores the printed ring EXACTLY, not approximately',
-       pm.markers()[0].ring.getAttribute('d'), ringD);
-    eq('21.33 nothing is left over', pm.el.querySelectorAll('g.ayah-marker-swap').length, 0);
+       pm.ayahMarks()[0].ring.getAttribute('d'), ringD);
+    eq('21.33 nothing is left over', pm.el.querySelectorAll('g.ayah-mark-swap').length, 0);
     eq('21.34 the numeral survived the round trip untouched',
        [numeral.getAttribute('d'), JSON.stringify(numeral.getBBox())],
        [numBefore.d, numBefore.box]);
     /* the handle's own remove() is the same restoration, and takes the colours
        back off with it */
-    M.colourAyahMarkers(pm, { 'ink-base': null });   /* clear §21.14's, which
-       resetAyahMarkers deliberately does not touch — it restores rings, not
+    M.colourAyahMarks(pm, { 'ink-base': null });   /* clear §21.14's, which
+       resetAyahMarks deliberately does not touch — it restores rings, not
        colours — so the next handle starts from an unset property */
-    M.setAyahMarker(pm, out, { colours: { 'ink-base': '#010203' } }).remove();
-    eq('21.35 the handle restores the ring too', pm.markers()[0].ring.getAttribute('d'), ringD);
+    M.setAyahMark(pm, out, { colours: { 'ink-base': '#010203' } }).remove();
+    eq('21.35 the handle restores the ring too', pm.ayahMarks()[0].ring.getAttribute('d'), ringD);
     eq('21.36 and unsets the custom properties it set',
        pm.el.style.getPropertyValue('--ink-base').trim(), '');
 
     /* ---- the number anchor: the marker moves, the number never does ---- */
     {
       const p = show(await load(42));
-      const m0 = p.markers()[0];
+      const m0 = p.ayahMarks()[0];
       const nb = m0.numeral.getBoundingClientRect();
       const anchored = await set.outline('900-anchor');
-      const hh = M.setAyahMarker(p, anchored);
-      const sw = m0.el.querySelector('g.ayah-marker-swap');
+      const hh = M.setAyahMark(p, anchored);
+      const sw = m0.el.querySelector('g.ayah-mark-swap');
       eq('21.37 an anchored swap says so — a flag, not a provenance label',
          sw.getAttribute('data-anchored'), 'numeral');
       /* the design's own (300, 650) must land on the printed numeral's centre,
@@ -1109,37 +1109,37 @@ try {
            m0.numeral.getBoundingClientRect().y, nb.y, 0.01);
       /* anchorOnNumber:false is the old box-on-box behaviour, still reachable */
       hh.remove();
-      const h2 = M.setAyahMarker(p, anchored, { anchorOnNumber: false });
+      const h2 = M.setAyahMark(p, anchored, { anchorOnNumber: false });
       ok('21.42 anchorOnNumber:false falls back to box-centring',
-         !m0.el.querySelector('g.ayah-marker-swap').hasAttribute('data-anchored'));
+         !m0.el.querySelector('g.ayah-mark-swap').hasAttribute('data-anchored'));
       h2.remove();
     }
 
     /* ---- targeting ---- */
     {
       const p = await load(42);
-      const one = p.markers()[0].aid;
-      const hh = M.setAyahMarker(p, out, { target: one });
+      const one = p.ayahMarks()[0].ayahKey;
+      const hh = M.setAyahMark(p, out, { target: one });
       eq('21.43 a target swaps that ayah and no other', hh.count, 1);
       eq('21.44 the others still hold their printed ring',
-         p.el.querySelectorAll('path[data-kind="ayah-marker-ornament"]').length,
-         p.markers().length - 1);
+         p.el.querySelectorAll('path[data-kind="ayah_mark_ornament"]').length,
+         p.ayahMarks().length - 1);
       hh.remove();
     }
 
     /* ---- pages 1-2: every group has an ayah; the doubled ring is INSIDE it ---- */
     {
       const p = await load(1);
-      eq('21.45 page 1: no marker group without data-aid (every one closes an ayah)',
-         p.allMarkerGroups().filter(g => !g.dataset.aid).length, 0);
-      const before = p.markers().map(m => m.el.innerHTML);
-      const hh = M.setAyahMarker(p, out);
+      eq('21.45 page 1: no marker group without data-ayah-key (every one closes an ayah)',
+         p.ayahMarkGroups().filter(g => !g.dataset.ayahKey).length, 0);
+      const before = p.ayahMarks().map(m => m.el.innerHTML);
+      const hh = M.setAyahMark(p, out);
       eq('21.46 all seven medallions were swapped', hh.count, 7);
       eq('21.47 the doubled ring is hidden with the ring it copies',
-         p.markers().every(m => m.ringCopies.length === 1 && m.ringCopies[0].getAttribute('display') === 'none'), true);
+         p.ayahMarks().every(m => m.ringCopies.length === 1 && m.ringCopies[0].getAttribute('display') === 'none'), true);
       hh.remove();
-      eq('21.48 remove() restores the group exactly', p.markers().map(m => m.el.innerHTML), before);
-      const h2 = M.setAyahMarker(p, out, { decorative: true });
+      eq('21.48 remove() restores the group exactly', p.ayahMarks().map(m => m.el.innerHTML), before);
+      const h2 = M.setAyahMark(p, out, { decorative: true });
       eq('21.49 decorative:true changes nothing on a current page', h2.count, 7);
       h2.remove();
     }
@@ -1148,8 +1148,8 @@ try {
     {
       const p = show(await load(42));
       const swapBox = f => {
-        const hh = M.setAyahMarker(p, out, { size: f });
-        const b = p.markers()[0].el.querySelector('g.ayah-marker-swap').getBoundingClientRect();
+        const hh = M.setAyahMark(p, out, { size: f });
+        const b = p.ayahMarks()[0].el.querySelector('g.ayah-mark-swap').getBoundingClientRect();
         hh.remove();
         return b;
       };
@@ -1162,12 +1162,12 @@ try {
     {
       const dead = async () => { throw new TypeError('Failed to fetch'); };
       let msg = '';
-      try { await M.loadMarkerSet('https://nowhere.invalid/set/', { fetch: dead }); }
+      try { await M.loadMarkSet('https://nowhere.invalid/set/', { fetch: dead }); }
       catch (e) { msg = e.message; }
       ok('21.62 an unreachable set rejects with the URL in the message',
          msg.includes('https://nowhere.invalid/set/collection.json'), msg);
       /* and it is NOT cached, so a retry when the network comes back works */
-      const good = await M.loadMarkerSet('https://nowhere.invalid/set/', {
+      const good = await M.loadMarkSet('https://nowhere.invalid/set/', {
         fetch: async u => stub(String(u).replace('https://nowhere.invalid/set/', '')) });
       eq('21.63 a failed load is not cached — a retry can succeed', good.ids().length, 3);
 
@@ -1196,7 +1196,7 @@ try {
     /* ---- conformance of a REAL set, only when one is pointed at ---- */
     const MURL = q.get('markers');
     if (MURL) {
-      const real = await M.loadMarkerSet(MURL);
+      const real = await M.loadMarkSet(MURL);
       const ids = real.ids();
       ok('21.50 the real set loaded', ids.length > 0, ids.length);
       let empty = 0, unvar = 0, noCentre = 0, badBox = 0;
@@ -1225,12 +1225,12 @@ try {
 
   const rev = M.reveal(p42, { lit: 3 });
   eq('22.1 one step per word, in reading order',
-     [rev.count, rev.steps[0], rev.steps[146]], [147, p42.words()[0].wid, p42.words()[146].wid]);
+     [rev.count, rev.steps[0], rev.steps[146]], [147, p42.words()[0].wordKey, p42.words()[146].wordKey]);
   const revA = M.reveal(p42, { byAyah: true });
   eq('22.2 by ayah instead', revA.steps, p42.ayahKeys());
   revA.remove();
   rev.goto(5);
-  const inked = [...p42.el.querySelectorAll('g.word')].filter(g => fill(g)).map(g => g.dataset.wid);
+  const inked = [...p42.el.querySelectorAll('g.word')].filter(g => fill(g)).map(g => g.dataset.wordKey);
   eq('22.3 exactly `lit` steps are inked, ending at the position',
      inked, rev.steps.slice(3, 6));
   eq('22.4 and the handle reports where it is', [rev.at, rev.key], [5, rev.steps[5]]);
@@ -1238,7 +1238,7 @@ try {
   /* a medallion belongs to the ayah it CLOSES */
   const firstAid = p42.ayahKeys()[0];
   const closesAt = rev.closes.get(firstAid);
-  const medal = p42.ayah(firstAid).marker;
+  const medal = p42.ayah(firstAid).mark;
   rev.goto(closesAt - 1);
   const dark = fill(medal);
   rev.goto(closesAt);
@@ -1250,7 +1250,7 @@ try {
 
   /* ---- wordTooltip: the library owns the placement, not the look ---- */
   const seen = [];
-  const tip = M.wordTooltip(p42, w => { seen.push(w.wid); return '<b>' + w.wid + '</b>'; },
+  const tip = M.wordTooltip(p42, w => { seen.push(w.wordKey); return '<b>' + w.wordKey + '</b>'; },
                             { className: 'q-tip-test', mount: stage });
   eq('22.7 the tip carries the caller class and nothing else', tip.el.className, 'q-tip-test');
   eq('22.8 placement needs exactly one inline rule of ours',
@@ -1282,9 +1282,9 @@ try {
   };
   const foll = await M.followRecitation(p42, { timings: stub, paint: false });
   eq('22.14 the join keeps the page order and drops nothing',
-     foll.ayahs.map(a => a.aid), [aidA, aidB]);
+     foll.ayahs.map(a => a.ayahKey), [aidA, aidB]);
   eq('22.15 a word-count disagreement is REPORTED, never zipped',
-     foll.mismatches, [{ aid: aidB, ours: p42.ayah(aidB).words().length, theirs: 1 }]);
+     foll.mismatches, [{ ayahKey: aidB, ours: p42.ayah(aidB).words().length, theirs: 1 }]);
   eq('22.16 and that ayah is followed whole while the other is per word',
      foll.ayahs.map(a => a.perWord), [true, false]);
   eq('22.17 segments totalled across the page', foll.segments, nA + 1);
@@ -1300,10 +1300,10 @@ try {
 
   /* left up on purpose for the interactive drag / resize probes */
   show(p42);
-  const live = M.attachSelection(p42, { form: 'uthmani', citation: true });
+  const live = M.attachSelection(p42, { form: 'rasm_uthmani', citation: true });
   window.__SEL__ = live; window.__P42__ = p42;
   window.__HOVER__ = [];
-  window.__HOVERBIND__ = M.onWordHover(p42, r => window.__HOVER__.push(r.wid));
+  window.__HOVERBIND__ = M.onWordHover(p42, r => window.__HOVER__.push(r.wordKey));
 
 } catch (e) {
   R.errors.push('THREW: ' + (e && e.stack || e));

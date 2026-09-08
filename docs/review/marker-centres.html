@@ -73,8 +73,8 @@
 
 <script type="module">
 const params = new URLSearchParams(location.search);
-const BASE = params.get('set') || 'https://quranpedia.github.io/ayah-markers/';
-const KEY  = 'ayah-marker-centres-v1';
+const BASE = params.get('set') || 'https://quranpedia.github.io/ayah-marks/';
+const KEY  = 'ayah-mark-centres-v1';
 const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
 const grid = document.getElementById('grid');
 const state = {};
@@ -220,7 +220,7 @@ document.getElementById('export').addEventListener('click', () => {
   };
   const blob = new Blob([JSON.stringify(out,null,2)], {type:'application/json'});
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = 'marker-centres.json'; a.click();
+  a.href = URL.createObjectURL(blob); a.download = 'mark-centres.json'; a.click();
 });
 </script>
 </body></html>

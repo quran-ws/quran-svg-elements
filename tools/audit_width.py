@@ -77,7 +77,7 @@ def scan(pg):
             if (r < LOW or r > HIGH) and abs((x2 - x1) - exp) >= MIN_OFF:
                 out.append({"page": pg, "line": ln,
                             "key": "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]),
-                            "word": w["uthmani"], "ratio": round(r, 2),
+                            "word": w["rasm_uthmani"], "ratio": round(r, 2),
                             "width": round(x2 - x1, 1), "want": round(exp, 1),
                             "bodies": nb})
     return pg, out
@@ -105,7 +105,10 @@ if __name__ == "__main__":
     for r in worst:
         print("p%-5d %-16s %6.2f %8.1f %8.1f %d"
               % (r["page"], r["word"], r["ratio"], r["width"], r["want"],
-                 r["bodies"]))def _lsum(txt):
+                 r["bodies"]))
+
+
+def _lsum(txt):
     """Letter weight of a word: base letters only (marks stripped). Fallback
     width share for lines where the QCF advance table is scrambled (the 26
     layout-drift pages, reported.json item 21: on p599 a 2-letter word

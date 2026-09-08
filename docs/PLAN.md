@@ -42,7 +42,7 @@ recorded here as findings, not as housekeeping.
   p136 is two paths for the reference and three contours for us at *identical*
   extent. Counting objects charged that difference in draughtsmanship as theft:
   piece surplus 5 -> 1 on the sample when fixed.
-- **A ya before a hamza is drawn undotted.** Both decompositions independently
+- **A ya before a hamzah is drawn undotted.** Both decompositions independently
   count three dots in `شَيۡءٖ`; the budget demanded five. Every one of the 21 words
   where the two sources agreed and the budget did not was `شيء` or `بشيء`. Dots
   went 26 vs 19 -> 7 vs 0 on the sample — the shared noise had been hiding the
@@ -68,7 +68,7 @@ with zero new ones in the second round. What blocks the rest:
 - **66 dot errors.** Not a label-table problem — `dot -> dot` is ~100% pure. Not an
   ownership problem — the ink is in the right word in every case traced. They are
   per-occurrence welding and clustering defects: `فَبَعَثَ` (p33) has a three-dot
-  `ث` cluster whose master is labelled `two-dots`, and `بِٱلۡمَعۡرُوفِ` (p27) welds
+  `ث` cluster whose master is labelled `two_dots`, and `بِٱلۡمَعۡرُوفِ` (p27) welds
   two dots fifty units apart.
 - **19 piece surpluses.** Real body fragments. `لِّلَّهِ` (p15) and `بَيِّنَةٍۢ`
   (p33) are the type.
@@ -120,7 +120,7 @@ which **92 are real — 5.6% precision**.
 
 ### The queue is not the work list
 
-The largest family in `docs/defects/queue.json` is `pause`, 202 flags. Putting
+The largest family in `docs/defects/queue.json` is `waqf`, 202 flags. Putting
 each to a three-way vote between the text budget, our ink and the reference's ink:
 
 ```
@@ -133,7 +133,7 @@ The cause is concrete and checkable: the KFGQPC artwork draws a `ۚ` after
 `بَلَىٰ` on p12 that quran.com's word text does not carry at all, and quran.com
 puts a `ۙ` on `رِّزْقًۭا` (p5) that the artwork does not draw. `audit_marks.py`
 takes quran.com's word text as ground truth for what is printed. For waqf signs
-it is not. **Nine of every ten pause "defects" are audit artefacts.**
+it is not. **Nine of every ten waqf "defects" are audit artefacts.**
 
 Across the whole flag set the same vote gives roughly a quarter real. So of the
 659 mark flags, the honest defect count is nearer 170 than 659 — and it is a
@@ -186,7 +186,7 @@ on reasoning; each is accepted on a number that moved the right way.
 
 ### Step 0 — stop working the wrong list  *(no code change)*
 
-Re-base the queue on the votes before spending a day on 202 pause flags that are
+Re-base the queue on the votes before spending a day on 202 waqf flags that are
 90% artefacts.
 
 ```bash
@@ -233,7 +233,7 @@ Target: 352 → under 100.
 which 43 words. `CLAUDE.md` records that the cause tracks **ayahs per page**
 rather than word density, and that medallion proximity and metric bias were both
 tested and are dead. The untested hypothesis is band geometry: surah headers and
-basmalas take whole lines in juz 30, so the number of *text* lines per page
+basmalahs take whole lines in juz 30, so the number of *text* lines per page
 differs and the line-mapping stage sees a different grid. Compare band heights
 and the line-mapping stage's behaviour on p582–604 against a body page.
 
@@ -256,12 +256,12 @@ matching it. Current state:
 
 | | reference | ours |
 |---|---|---|
-| path type | `data-type`: text, diacritic, dots, kaf-hamza, waqf, sajda-line, sajda-mehrab, juz-star | `data-kind`: body, mark, ayah-marker-ornament, ayah-number |
+| path type | `data-type`: text, diacritic, dots, kaf-hamzah, waqf, sajdah-line, sajdah-mehrab, juz-star | `data-kind`: body, mark, ayah_mark_ornament, ayah_number |
 | diacritics | `data-diacritic`, 25 named values | `data-mark`, 17 values, dots mixed into the same attribute |
-| pause signs | `data-waqf`: lazim, jaiz, sali, qila, taanuq | **all collapsed to `pause`** |
+| waqf signs | `data-waqf`: madd_lazim, jaiz, sali, qila, taanuq | **all collapsed to `waqf`** |
 | grouping | `md-ligature-*` / `md-diacritic-*` per cluster | none |
 | word attrs | + `line-number`, `waw-alatf`, `type` | missing all three |
-| missing entirely | | kaf-hamza, juz-star, sajda-mehrab, sajda-line, small seen, small meem, the successive-tanween and iqlab distinctions, rectangular vs rounded zero |
+| missing entirely | | kaf-hamzah, juz-star, sajdah-mehrab, sajdah-line, small seen, small meem, the successive-tanwin and iqlab distinctions, rectangular vs rounded zero |
 
 **The cheap way to get all of it.** Every one of our paths carries a `data-sig`
 shape signature, and `.cache/marks/labels.json` maps a signature to a label for
@@ -282,8 +282,8 @@ Guard rails, both learned the hard way and both non-negotiable:
   labels one at a time against an 11-page sample and keeps only those that do not
   make things worse. It found the one bad entry out of 18 last time. One wrong
   entry cost +527 flags mushaf-wide.
-- **Never collapse a composite.** `fatha+hamza` is one outline carrying two
-  marks. Collapsing it to `hamza` deleted a fatha everywhere and took flags from
+- **Never collapse a composite.** `fathah+hamzah` is one outline carrying two
+  marks. Collapsing it to `hamzah` deleted a fathah everywhere and took flags from
   991 to 1601. `apply_labels.py` refuses without `--force`; leave it refusing.
 
 Distinguishing the five waqf subtypes is the same mechanism: they are five

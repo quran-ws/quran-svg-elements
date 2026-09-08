@@ -16,7 +16,7 @@ typed by hand:
     Everything that is true of THIS print rather than of the pipeline: page
     count and lines per page (DigitalKhatt layout DB `info` table), the surah
     table (quran.com `/api/v4/chapters`), the juz / hizb / rubʿ division
-    (quran.com verse records in `.cache/words`), the rare-sign sites
+    (quran.com ayah records in `.cache/words`), the rare-sign sites
     (`.cache/marks/rare_places.json`), the sifr word counts and the basmalah
     expectation (audit_taxonomy's measured constants), and the v1 vocabulary
     freeze for reference.
@@ -44,74 +44,74 @@ REGISTRY_VERSION = "2.0"
 # is what the emitter does today (it writes data-mark-family only when _MFAM
 # has the name).
 _MARKS = {
-    # harakat — one stroke, named from position; see CLAUDE.md "derived families"
-    "fatha":          ("haraka", None, ["placement"]),
-    "kasra":          ("haraka", None, ["placement"]),
-    "damma":          ("haraka", None, ["placement"]),
-    "sukun":          ("haraka", None, []),
-    "shadda":         ("haraka", None, []),
-    "fathatan":       ("tanween", "tanween", ["arrangement"]),
-    "kasratan":       ("tanween", "tanween", ["arrangement"]),
-    "dammatan":       ("tanween", "tanween", ["arrangement"]),
+    # harakahs — one stroke, named from position; see CLAUDE.md "derived families"
+    "fathah":          ("harakah", None, ["placement"]),
+    "kasrah":          ("harakah", None, ["placement"]),
+    "dammah":          ("harakah", None, ["placement"]),
+    "sukun":          ("harakah", None, []),
+    "shaddah":         ("harakah", None, []),
+    "tanwin_al_fath":       ("tanwin", "tanwin", ["arrangement"]),
+    "tanwin_al_kasr":       ("tanwin", "tanwin", ["arrangement"]),
+    "tanwin_al_damm":       ("tanwin", "tanwin", ["arrangement"]),
     # hamzat and the long-vowel letters written small
     "maddah":         ("orthographic", None, []),
-    "hamza":          ("orthographic", None, []),
-    "wasla":          ("orthographic", None, []),
-    "small-alef":     ("orthographic", None, []),
-    "small-waw":      ("orthographic", None, []),
-    "small-ya":       ("orthographic", None, []),
-    "small-noon":     ("orthographic", None, []),
+    "hamzah":          ("orthographic", None, []),
+    "hamzat_al_wasl":          ("orthographic", None, []),
+    "omitted_alif":     ("orthographic", None, []),
+    "small_waw":      ("orthographic", None, []),
+    "small_yaa":       ("orthographic", None, []),
+    "small_noon":     ("orthographic", None, []),
     # dabt — the reading apparatus of this print
-    "sifr-mustadir":  ("dabt", "sifr", []),
-    "sifr-mustatil":  ("dabt", "sifr", []),
-    "meem-iqlab":     ("dabt", None, ["placement"]),
+    "rounded_zero":  ("dabt", "sifr", []),
+    "rectangular_zero":  ("dabt", "sifr", []),
+    "small_meem":     ("dabt", None, ["placement"]),
     # letter dots. v2 §6.2 makes these a segmentation role rather than a
     # semantic mark; the bridge (ruling E6) keeps the internal counting
-    # bucket, so they stay in the registry with role="letter-dot".
-    "dot":            ("letter-dot", "dots", []),
-    "two-dots":       ("letter-dot", "dots", []),
-    "three-dots":     ("letter-dot", "dots", []),
+    # bucket, so they stay in the registry with role="letter_dot".
+    "dot":            ("letter_dot", "dots", []),
+    "two_dots":       ("letter_dot", "dots", []),
+    "three_dots":     ("letter_dot", "dots", []),
     # waqf. Budgets are FAMILY level: the editions disagree on WHICH sign at
     # 424 of 4,416 positions (CLAUDE.md), so the ink names the subtype and
     # the count answers to "waqf".
-    "pause":          ("waqf", "waqf", []),
-    "wasl-awla":      ("waqf", "waqf", []),
-    "waqf-awla":      ("waqf", "waqf", []),
-    "waqf-jaiz":      ("waqf", "waqf", []),
-    "waqf-lazim":     ("waqf", "waqf", []),
-    "muanaqah":       ("waqf", "waqf", []),
+    "waqf":          ("waqf", "waqf", []),
+    "waqf_jaiz_wasl_awla":      ("waqf", "waqf", []),
+    "waqf_jaiz_waqf_awla":      ("waqf", "waqf", []),
+    "waqf_jaiz_mustawi_al_tarafayn":      ("waqf", "waqf", []),
+    "waqf_lazim":     ("waqf", "waqf", []),
+    "waqf_al_muanaqah":       ("waqf", "waqf", []),
     # reading signs, all single-site or near it
-    "saktah":         ("reading-sign", "reading-sign", []),
-    "seen-reading":   ("reading-sign", "reading-sign", []),
-    "imalah":         ("reading-sign", "reading-sign", []),
-    "ishmam":         ("reading-sign", "reading-sign", []),
-    "tashil":         ("reading-sign", "reading-sign", []),
+    "saktah":         ("reading_sign", "reading_sign", []),
+    "seen_al_qiraah":   ("reading_sign", "reading_sign", []),
+    "imalah":         ("reading_sign", "reading_sign", []),
+    "ishmam":         ("reading_sign", "reading_sign", []),
+    "tashil":         ("reading_sign", "reading_sign", []),
     # standalone signs — their own <g>, no word
-    "sajdah-line":    ("standalone", "sajdah", []),
-    "sajdah-sign":    ("standalone", "sajdah", []),
+    "sajdah_line":    ("standalone", "sajdah", []),
+    "sajdah_mark":    ("standalone", "sajdah", []),
     "hizb":           ("standalone", None, []),
 }
 
-# group-level names (the <g class="sajdah-mark"|"hizb-mark"> wrapper)
+# group-level names (the <g class="sajdah-mark"|"division-mark"> wrapper)
 _GROUP_MARKS = {"sajdah": "standalone", "hizb": "standalone"}
 
 # reserved, deliberately inactive (attr_schema_v3 §4.3): this print draws no
 # لا sign, so the token exists but nothing may emit it.
-_RESERVED = {"waqf-mamnu": "this print emits no لا sign (ALLOWED_WAQF is the "
+_RESERVED = {"waqf_mamnu": "this print emits no لا sign (ALLOWED_WAQF is the "
                            "five-value set); token reserved, not active"}
 
-_ALIASES = {"waqf qila": "waqf-jaiz", "waqf sali": "wasl-awla",
-            "waqf taanuq": "muanaqah", "sajdah": "sajdah-sign"}
+_ALIASES = {"waqf qila": "waqf_jaiz_mustawi_al_tarafayn", "waqf sali": "waqf_jaiz_wasl_awla",
+            "waqf taanuq": "waqf_al_muanaqah", "sajdah": "sajdah_mark"}
 
 _KINDS = {
     "body": "letter ink of a word",
     "mark": "a named diacritic or sign",
-    "header-ink": "ink inside a surah-name or basmalah banner, undecomposed",
+    "header_ink": "ink inside a surah-name or basmalah banner, undecomposed",
     "ornament": "banner decoration, not a mark",
-    "ayah-marker-ornament": "the medallion ring",
-    "ayah-number": "the numeral inside the medallion",
-    "page-number": "the printed page number (p17 only: the artwork keeps it)",
-    "running-head": "a juz/surah running head drawn above the viewBox, never "
+    "ayah_mark_ornament": "the medallion ring",
+    "ayah_number": "the numeral inside the medallion",
+    "page_number": "the printed page number (p17 only: the artwork keeps it)",
+    "running_head": "a juz/surah running head drawn above the viewBox, never "
                     "visible (p17 only)",
 }
 
@@ -152,11 +152,11 @@ def edition():
     ch = qm.chapters()
     surahs = [ch[n] for n in sorted(ch)]
 
-    rub = qm.rub_starts()
+    rubu_al_hizb = qm.rubu_al_hizb_starts()
     divisions = {}
-    for r in sorted(k for k in rub if isinstance(k, int)):
-        p = qm.rub_position(r)
-        p["starts_at"] = "%d:%d" % rub[r]
+    for r in sorted(k for k in rubu_al_hizb if isinstance(k, int)):
+        p = qm.rubu_al_hizb_position(r)
+        p["starts_at"] = "%d:%d" % rubu_al_hizb[r]
         divisions[str(r)] = p
 
     rare = json.load(open(os.path.join(ROOT, ".cache", "marks",
@@ -178,7 +178,7 @@ def edition():
         "sources": {
             "surahs": "quran.com /api/v4/chapters?language=en "
                       "-> .cache/meta/chapters.json",
-            "divisions": "quran.com verse records (juz_number, hizb_number, "
+            "divisions": "quran.com ayah records (juz_number, hizb_number, "
                          "rub_el_hizb_number) in .cache/words/page-*.json",
             "layout": ".cache/digitalkhatt/digital-khatt-15-lines.db (info)",
             "rare_sites": ".cache/marks/rare_places.json",
@@ -186,12 +186,12 @@ def edition():
         },
         "surahs": surahs,
         "divisions": {
-            "juz": 30, "hizb": 60, "rub": 240,
-            "rub_starts": divisions,
+            "juz": 30, "hizb": 60, "rubu_al_hizb": 240,
+            "rubu_al_hizb_starts": divisions,
         },
         "expectations": {
             # One banner per surah — 114. Two surahs carry no basmalah of
-            # their own: al-Fatiha, whose basmalah IS ayah 1:1, and at-Tawba,
+            # their own: Fatihah, whose basmalah IS ayah 1:1, and Tawbah,
             # which has none at all. So 112 basmalah groups. Both numbers are
             # measured on the emitted pages AND declared independently by the
             # DK layout DB (2026-08-29). The earlier 113/108 encoded the
@@ -200,12 +200,12 @@ def edition():
             # two, which cancelled out to 113.
             "basmalah_groups": 112,
             "surah_name_groups_emitted": 114,
-            "sifr_mustadir_words": 3970,
-            "sifr_mustatil_words": 66,
-            "muanaqah_pairs": 3,
+            "rounded_zero_words": 3970,
+            "rectangular_zero_words": 66,
+            "waqf_al_muanaqah_pairs": 3,
             "sajdah_sites": 15,
-            "hizb_marks_drawn": 199,
-            "hizb_marks_note":
+            "division_marks_drawn": 199,
+            "division_marks_note":
                 "240 rubʿ boundaries, 199 rosettes: all 41 absent ones fall on "
                 "an ayah 1, where the surah banner marks the division instead "
                 "(41 of 41 — measured, no exceptions)",

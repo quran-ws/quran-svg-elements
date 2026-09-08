@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Geometry shared by the ayah-polygon audit and the generator.
 
-Everything here is derived from a page SVG alone: the ۝ end-of-ayah markers drawn in
+Everything here is derived from a page SVG alone: the ۝ ayah-mark markers drawn in
 ``<g id="ayah_markers">``, and the page's own ink as rendered by ``rsvg-convert``.  No
 function reads the shipped polygons to decide what a polygon should be.
 
@@ -170,7 +170,7 @@ def markers(svg_text):
 def translation_fit(mk, entries, tol=1.5):
     """(matched, dx, dy) — the offset that carries markers.json into page space.
 
-    Hafs, Douri and Shu'bah state their marker coordinates in page space, so the offset is
+    Hafs, Duri and Shu'bah state their marker coordinates in page space, so the offset is
     zero.  Qalun and Warsh state theirs in a different frame, offset by a translation that
     varies from page to page.  Fit it by consensus rather than assuming either.
     """
@@ -186,7 +186,7 @@ def translation_fit(mk, entries, tol=1.5):
     return best
 
 
-def recover_markers(mk, entries, tol=1.5):
+def recover_marks(mk, entries, tol=1.5):
     """(markers, recovered) — ayah ends whose ۝ rosette was never drawn.
 
     A few Qalun pages print an ayah end as a bare numeral with no rosette, so the glyph is
@@ -222,7 +222,7 @@ def ink_mask(svg_path, z=Z):
             os.unlink(tmp)
 
 
-def line_grid(mask, marker_ys, box, pitch=PITCH, z=Z):
+def line_grid(mask, mark_ys, box, pitch=PITCH, z=Z):
     """(pitch, bands) — a uniform comb fitted to the ink and phase-locked to the markers,
     with every boundary then snapped to the ink minimum between its two lines."""
     x0, y0, _, _ = box
@@ -230,7 +230,7 @@ def line_grid(mask, marker_ys, box, pitch=PITCH, z=Z):
     ys = np.arange(len(prof)) / z + y0
     inked = ys[prof > 0]
     top, bot = inked.min(), inked.max()
-    m = np.asarray(sorted(marker_ys), float)
+    m = np.asarray(sorted(mark_ys), float)
     best = None
     for h in np.arange(pitch[0], pitch[1] + 1e-9, 0.02):
         coherence = abs(np.exp(1j * 2 * np.pi * (m % h) / h).mean()) if len(m) >= 2 else 1.0
@@ -264,7 +264,7 @@ def line_grid(mask, marker_ys, box, pitch=PITCH, z=Z):
         bands.append(dict(top=a, bot=b, x0=cols.min() / z + x0, x1=cols.max() / z + x0,
                           ink=int(sl.sum()), col=col))
     # A comb fitted to 15 lines can put an extra tooth over the descenders hanging below the
-    # last line -- a kasra under the final word is enough to inject a phantom sixteenth band,
+    # last line -- a kasrah under the final word is enough to inject a phantom sixteenth band,
     # which then reads as "the page ends mid-ayah".  Measured over the whole corpus, the
     # faintest real band carries 0.188 of its page's median (a surah header) while these
     # specks carry 0.003 to 0.006, so the cut sits in a wide gap.
@@ -284,7 +284,7 @@ def text_margins(bands, box):
     return max(x0, lo - pad), min(x0 + width, hi + pad)
 
 
-def decoration(bands, marker_bands, ayahs):
+def decoration(bands, mark_bands, ayahs):
     """Bands that carry a surah header or a basmalah rather than ayah text.
 
     Such a band has no marker, is narrower than a justified line, and sits where the surah
@@ -292,13 +292,13 @@ def decoration(bands, marker_bands, ayahs):
     width test alone is not enough — the surah change is what makes it safe.
     """
     widest = max(b["x1"] - b["x0"] for b in bands)
-    marked = set(marker_bands)
+    marked = set(mark_bands)
     decor = set()
     for i, (surah, ayah) in enumerate(ayahs):
         starts_surah = (i == 0 and ayah == 1) or (i > 0 and ayahs[i - 1][0] != surah)
         if not starts_surah:
             continue
-        for j in range(0 if i == 0 else marker_bands[i - 1], marker_bands[i] + 1):
+        for j in range(0 if i == 0 else mark_bands[i - 1], mark_bands[i] + 1):
             if j in marked:
                 continue
             if bands[j]["x1"] - bands[j]["x0"] < NARROW * widest:
@@ -463,4 +463,4 @@ def score(polygons, bands, decor, mask, mk, box, ordered_keys=None, z=Z):
                        for r in polygons[key]):
                 stray += 1
     return dict(uncovered_ink=uncovered, overlap_area=round(area, 1),
-                overlap_pairs=pairs, stray_markers=stray)
+                overlap_pairs=pairs, stray_marks=stray)

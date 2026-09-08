@@ -22,7 +22,7 @@ This changes page artwork, not just hit-regions, so it is a separate script from
 
 Usage:
     python3 tools/draw_missing_rosettes.py --dry-run
-    python3 tools/draw_missing_rosettes.py --mushaf qalon
+    python3 tools/draw_missing_rosettes.py --mushaf qalun
 """
 
 import argparse
@@ -37,11 +37,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import brotli
 import numpy as np
 
-from polygon_lib import (INKCOL, Z, ink_mask, line_grid, markers, read_page, recover_markers,
+from polygon_lib import (INKCOL, Z, ink_mask, line_grid, markers, read_page, recover_marks,
                          translation_fit, viewbox)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MUSHAFS = ("douri", "hafs", "qalon", "shubah", "warsh")
+MUSHAFS = ("duri", "hafs", "qalun", "shubah", "warsh")
 FIRST_PAGE, LAST_PAGE = 3, 604
 BROTLI_QUALITY = 11
 
@@ -104,7 +104,7 @@ def missing_rosettes(mushaf, page, entries):
     mk = markers(text)
     if len(mk) >= len(polys):
         return text, box, [], []
-    filled, recovered = recover_markers(mk, entries)
+    filled, recovered = recover_marks(mk, entries)
     if not recovered:
         return text, box, [], []
     _, fit_dx, fit_dy = translation_fit(mk, entries)
@@ -133,7 +133,7 @@ def missing_rosettes(mushaf, page, entries):
     return text, box, out, meta
 
 
-def marker_children(text):
+def mark_children(text):
     """(start, end) of each top-level child of the marker group, in document order."""
     k = text.find('<g id="ayah_markers"')
     if k < 0:
@@ -170,7 +170,7 @@ def draw(text, centres, meta_xy=None):
     gx, gy = glyph_centre(element)
     a, b, c, d, e, f = page_matrix(text)
 
-    children = marker_children(text)
+    children = mark_children(text)
     rosettes = []                       # (index, centre_x, centre_y) of each existing rosette
     offsets = []                        # numeral translate minus rosette translate
     for i, (start, end) in enumerate(children):

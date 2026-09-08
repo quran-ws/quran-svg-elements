@@ -25,8 +25,8 @@ const CDN = 'https://audio.qurancdn.com/';
 
 /**
  * @param reciter   quran.com recitation id (9 = Minshawi, murattal)
- * @param timings   skip the network entirely: {aid: [url, [[startMs, endMs]…]]}
- * @param onWord    ({aid, index, count, file, files, whole}) on every change
+ * @param timings   skip the network entirely: {ayahKey: [url, [[startMs, endMs]…]]}
+ * @param onWord    ({ayahKey, index, count, file, files, whole}) on every change
  * @param onEnd     the last ayah finished
  * @param onError   the audio element failed; the handle is dead after this
  * @param paint     false leaves the ink alone and reports position only
@@ -53,13 +53,13 @@ export async function followRecitation(page, {
   }
 
   const ayahs = [], mismatches = [];
-  for (const aid of page.ayahKeys()) {
-    if (!raw[aid]) continue;
-    const ayah = page.ayah(aid);
-    const times = raw[aid][1];
+  for (const ayahKey of page.ayahKeys()) {
+    if (!raw[ayahKey]) continue;
+    const ayah = page.ayah(ayahKey);
+    const times = raw[ayahKey][1];
     const perWord = ayah.words().length === times.length;
-    if (!perWord) mismatches.push({ aid, ours: ayah.words().length, theirs: times.length });
-    ayahs.push({ aid, ayah, url: raw[aid][0], times, perWord });
+    if (!perWord) mismatches.push({ ayahKey, ours: ayah.words().length, theirs: times.length });
+    ayahs.push({ ayahKey, ayah, url: raw[ayahKey][0], times, perWord });
   }
   if (!ayahs.length) throw new Error('no timings cover page ' + n);
 
@@ -93,7 +93,7 @@ export async function followRecitation(page, {
     if (i === word) return;
     word = i;
     show(a, i);
-    if (onWord) onWord({ aid: a.aid, index: i, count: a.times.length,
+    if (onWord) onWord({ ayahKey: a.ayahKey, index: i, count: a.times.length,
                          file, files: ayahs.length, whole: !a.perWord });
   }
 

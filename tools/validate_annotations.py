@@ -9,13 +9,13 @@ attr_schema_v3 §16.2-16.5 made concrete. Per page, and then mushaf-wide:
    counts paths, and today they must agree exactly.
 2. **references** — every eid a record names exists in the page, and no eid is
    claimed by two records.
-3. **words** — the same set of `wid`s, and for each one the same uthmani, rasm
-   and imlaei. This is what makes the graph a stand-in for the SVG's text.
+3. **words** — the same set of `word_key`s, and for each one the same rasm_uthmani, rasm
+   and rasm_imlai. This is what makes the graph a stand-in for the SVG's text.
 4. **metadata** — the surah card, the division-start flags and the hizb
    rosette's rubʿ/nisf/hizb/juz read the same in both places.
-5. **relations** — muanaqah has exactly 2 members, the sajdah compound has one
-   overline and one sign, and every iqlab relation names a tanween-family mark
-   plus a meem-iqlab.
+5. **relations** — waqf_al_muanaqah has exactly 2 members, the sajdah compound has one
+   overline and one sign, and every iqlab relation names a tanwin-family mark
+   plus a small_meem.
 6. **vocabulary** — every emitted mark name is in the registry and active.
 
 Usage:  python3 tools/validate_annotations.py [first last] [-jN]
@@ -55,7 +55,7 @@ def check_page(pg, reg, edition):
     master_ids = []
     eids = set()
     hizb = []
-    markers_svg = []
+    marks_svg = []
     ayah_attrs = {}
     surah_attrs = {}
     stack = []
@@ -69,35 +69,35 @@ def check_page(pg, reg, edition):
         if t.startswith("<g"):
             cls = at.get("class")
             if cls == "word":
-                words_svg[at.get("data-wid")] = at
+                words_svg[at.get("data-word-key")] = at
             elif cls == "ayah":
                 # An ayah is emitted once per LINE, and the division-start
-                # flags are carried ONLY by data-part="1" (a division opens
+                # flags are carried ONLY by data-fragment="1" (a division opens
                 # once, not once per line). Keeping the last fragment seen
                 # would therefore lose them on every multi-line ayah. Merge
                 # across fragments so the check sees the ayah, not a fragment.
-                _prev = ayah_attrs.get(at.get("data-aid"))
+                _prev = ayah_attrs.get(at.get("data-ayah-key"))
                 if _prev:
                     _merged = dict(_prev)
                     _merged.update(at)
-                    ayah_attrs[at.get("data-aid")] = _merged
+                    ayah_attrs[at.get("data-ayah-key")] = _merged
                 else:
-                    ayah_attrs[at.get("data-aid")] = at
+                    ayah_attrs[at.get("data-ayah-key")] = at
             elif cls in ("surah-name", "basmalah"):
                 surah_attrs[at.get("data-sid")] = at
-            elif cls == "hizb-mark":
+            elif cls == "division-mark":
                 hizb.append(at)
-            elif cls == "ayah-marker":
-                markers_svg.append(at.get("data-aid"))
+            elif cls == "ayah-mark":
+                marks_svg.append(at.get("data-ayah-key"))
             if not t.endswith("/>"):
                 stack.append(at)
             continue
-        if at.get("data-eid"):
-            eids.add(at["data-eid"])
+        if at.get("data-element-id"):
+            eids.add(at["data-element-id"])
         nm = at.get("data-mark")
         if nm:
             masters[nm] += 1
-            master_ids.append(at.get("data-eid"))
+            master_ids.append(at.get("data-element-id"))
 
     # ---- 6. vocabulary ----------------------------------------------------
     for nm in masters:
@@ -137,24 +137,24 @@ def check_page(pg, reg, edition):
             bad.append("ref: %s claimed by %d records" % (e, n))
 
     # ---- 3. words ---------------------------------------------------------
-    gw = {w["wid"]: w for w in ann["words"]}
+    gw = {w["word_key"]: w for w in ann["words"]}
     if set(gw) != set(words_svg):
         miss = sorted(set(gw) - set(words_svg))[:5]
         extra = sorted(set(words_svg) - set(gw))[:5]
         bad.append("words: graph-only %s svg-only %s" % (miss, extra))
-    for wid, w in gw.items():
-        at = words_svg.get(wid)
+    for word_key, w in gw.items():
+        at = words_svg.get(word_key)
         if not at:
             continue
-        for key, attr in (("uthmani", "data-uthmani"), ("rasm", "data-rasm"),
-                          ("imlaei", "data-imlaei")):
+        for key, attr in (("rasm_uthmani", "data-rasm-uthmani"), ("rasm", "data-rasm"),
+                          ("rasm_imlai", "data-rasm-imlai")):
             if attr not in at:
-                # production pages carry data-uthmani only (2026-09-04); the
+                # production pages carry data-rasm-uthmani only (2026-09-04); the
                 # other forms are compared where the profile writes them
                 continue
             if _unesc(at.get(attr, "")) != (w[key] or ""):
                 bad.append("word %s: %s graph=%r svg=%r"
-                           % (wid, attr, w[key], _unesc(at.get(attr, ""))))
+                           % (word_key, attr, w[key], _unesc(at.get(attr, ""))))
 
     # ---- 4. metadata ------------------------------------------------------
     by_num = {c["number"]: c for c in ann["surahs"]}
@@ -167,9 +167,9 @@ def check_page(pg, reg, edition):
                 or at.get("data-revelation-place") != c["revelation_place"] \
                 or at.get("data-ayah-count") != str(c["ayah_count"]):
             bad.append("meta: surah %s card differs from the graph" % sid)
-    starts = {d["aid"]: d for d in ann["divisions_starting_here"]}
+    starts = {d["ayah_key"]: d for d in ann["divisions_starting_here"]}
     for aid, at in ayah_attrs.items():
-        for k in ("juz", "hizb", "nisf", "rub"):
+        for k in ("juz", "hizb", "nisf", "rubu_al_hizb"):
             v = at.get("data-%s-start" % k)
             g = starts.get(aid, {}).get(k)
             if (v is None) != (g is None) or (v is not None
@@ -177,15 +177,15 @@ def check_page(pg, reg, edition):
                 bad.append("meta: %s data-%s-start svg=%r graph=%r"
                            % (aid, k, v, g))
     for at in hizb:
-        aid = at.get("data-aid")
+        aid = at.get("data-ayah-key")
         d = starts.get(aid)
-        if not d or "rub" not in d:
+        if not d or "rubu_al_hizb" not in d:
             bad.append("meta: hizb rosette at %s is not a rubʿ start" % aid)
             continue
-        r = int(d["rub"])
-        want = {"data-rub": r, "data-hizb": (r + 3) // 4,
+        r = int(d["rubu_al_hizb"])
+        want = {"data-rubu-al-hizb": r, "data-hizb": (r + 3) // 4,
                 "data-juz": (r + 7) // 8,
-                "data-rub-in-hizb": ((r - 1) % 4) + 1,
+                "data-rubu-al-hizb-in-hizb": ((r - 1) % 4) + 1,
                 "data-nisf": 1 if ((r - 1) % 4) < 2 else 2}
         for k, v in want.items():
             if at.get(k) != str(v):
@@ -195,10 +195,10 @@ def check_page(pg, reg, edition):
     # ---- 4b. ayah markers -------------------------------------------------
     # Every medallion the page draws is in the graph, with the same ayah, and
     # no ayah is closed twice on one page.
-    gmk = [r["aid"] for r in ann["relations"] if r["type"] == "ayah-marker"]
-    if sorted(gmk) != sorted(x for x in markers_svg if x):
+    gmk = [r["ayah_key"] for r in ann["relations"] if r["type"] == "ayah-mark"]
+    if sorted(gmk) != sorted(x for x in marks_svg if x):
         bad.append("marker: graph %s svg %s" % (sorted(gmk)[:6],
-                                                sorted(markers_svg)[:6]))
+                                                sorted(marks_svg)[:6]))
     if len(set(gmk)) != len(gmk):
         bad.append("marker: an ayah is closed twice on this page")
 
@@ -206,14 +206,14 @@ def check_page(pg, reg, edition):
     by_id = {m["id"]: m for m in ann["marks"]}
     sajdah_parts = Counter()
     for r in ann["relations"]:
-        if r["type"] == "muanaqah" and len(r.get("members", [])) != 2:
-            bad.append("relation: muanaqah %s has %d members (want 2)"
+        if r["type"] == "waqf_al_muanaqah" and len(r.get("members", [])) != 2:
+            bad.append("relation: waqf_al_muanaqah %s has %d members (want 2)"
                        % (r.get("key"), len(r.get("members", []))))
         if r["type"] == "iqlab":
             names = sorted(by_id[i]["mark"] for i in r.get("members", [])
                            if i in by_id)
-            if "meem-iqlab" not in names:
-                bad.append("relation: iqlab %s = %s, no meem-iqlab"
+            if "small_meem" not in names:
+                bad.append("relation: iqlab %s = %s, no small_meem"
                            % (r.get("key"), names))
         if r["type"] == "sajdah":
             # Cardinality is checked MUSHAF-WIDE (15 signs, 15 overlines), not
@@ -224,11 +224,11 @@ def check_page(pg, reg, edition):
             names = [by_id[i]["mark"] for i in r.get("members", [])
                      if i in by_id]
             if not names:
-                bad.append("relation: sajdah %s has no members" % r.get("aid"))
+                bad.append("relation: sajdah %s has no members" % r.get("ayah_key"))
             sajdah_parts.update(names)
         if r["type"] == "hizb" and len(r.get("members", [])) != 1:
             bad.append("relation: hizb %s has %d masters (want 1)"
-                       % (r.get("aid"), len(r.get("members", []))))
+                       % (r.get("ayah_key"), len(r.get("members", []))))
     return {"page": pg, "violations": bad, "marks": dict(rec_by_name),
             "markers": len(gmk),
             "sajdah": dict(sajdah_parts),
@@ -272,11 +272,11 @@ def main():
     full = (args.first, args.last) == (1, 604)
     if full:
         exp = edition["expectations"]
-        if hizb != exp["hizb_marks_drawn"]:
+        if hizb != exp["division_marks_drawn"]:
             fails.append(("mushaf", ["hizb rosettes %d != %d"
-                                     % (hizb, exp["hizb_marks_drawn"])]))
-        for part, want in (("sajdah-sign", exp["sajdah_sites"]),
-                           ("sajdah-line", exp["sajdah_sites"])):
+                                     % (hizb, exp["division_marks_drawn"])]))
+        for part, want in (("sajdah_mark", exp["sajdah_sites"]),
+                           ("sajdah_line", exp["sajdah_sites"])):
             if sajdah[part] != want:
                 fails.append(("mushaf", ["%s %d != %d"
                                          % (part, sajdah[part], want)]))

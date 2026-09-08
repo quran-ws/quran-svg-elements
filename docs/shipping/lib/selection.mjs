@@ -34,11 +34,11 @@ import { acquireHitLayer } from './overlay.mjs';
 
 /**
  * @param form      which text form Ctrl+C copies
- * @param citation  true -> "…text… (2:255)"; or fn(words, text, aids) -> string
- * @param onSelect  {text, words, aids} on every selection change
+ * @param citation  true -> "…text… (2:255)"; or fn(words, text, ayahKeys) -> string
+ * @param onSelect  {text, words, ayahKeys} on every selection change
  */
 export function attachSelection(page, {
-  mount = null, form = 'uthmani', citation = false, onSelect = null, copy = true,
+  mount = null, form = 'rasm_uthmani', citation = false, onSelect = null, copy = true,
   paintBand = true, bandFill = '#2d6fd6', bandOpacity = 0.25, bandPadX = 0.6
 } = {}) {
   const hl = acquireHitLayer(page, { mount, form });
@@ -69,14 +69,14 @@ export function attachSelection(page, {
     return hl.spans().filter(s => r.intersectsNode(s));
   }
   function selectedWords() {
-    return selectedSpans().map(s => page.word(s.dataset.wid)).filter(Boolean);
+    return selectedSpans().map(s => page.word(s.dataset.wordKey)).filter(Boolean);
   }
 
-  /** The payload, built from data-wid — the mushaf's own line breaks kept. */
+  /** The payload, built from data-word-key — the mushaf's own line breaks kept. */
   function text(which = copyForm) {
     let out = '', prevLine = null;
     for (const s of selectedSpans()) {
-      const w = page.word(s.dataset.wid);
+      const w = page.word(s.dataset.wordKey);
       const v = w && w.form(which);
       if (!v) continue;
       out += (prevLine !== null && s.dataset.line !== prevLine ? '\n' : (out ? ' ' : '')) + v;
@@ -91,10 +91,10 @@ export function attachSelection(page, {
     const body = text(which);
     if (!body || !citation) return body;
     const words = selectedWords();
-    const aids = [...new Set(words.map(w => w.aid))];
-    if (typeof citation === 'function') return citation(words, body, aids);
-    const ref = aids.length === 1 ? aids[0]
-      : aids[0] + '–' + aids[aids.length - 1].split(':')[1];
+    const ayahKeys = [...new Set(words.map(w => w.ayahKey))];
+    if (typeof citation === 'function') return citation(words, body, ayahKeys);
+    const ref = ayahKeys.length === 1 ? ayahKeys[0]
+      : ayahKeys[0] + '–' + ayahKeys[ayahKeys.length - 1].split(':')[1];
     return `${body} (${ref})`;
   }
 
@@ -130,7 +130,7 @@ export function attachSelection(page, {
       if (paintBand) repaint();
       if (onSelect) {
         const words = selectedWords();
-        onSelect({ text: text(), words, aids: [...new Set(words.map(w => w.aid))] });
+        onSelect({ text: text(), words, ayahKeys: [...new Set(words.map(w => w.ayahKey))] });
       }
     } finally { painting = false; }
   };
@@ -161,8 +161,8 @@ export function attachSelection(page, {
     rebuild: () => hl.rebuild(),
     spans: () => hl.spans(),
     words: selectedWords, text, payload,
-    selectWords(wids) {
-      const list = wids.map(w => hl.spanOf(w)).filter(Boolean);
+    selectWords(wordKeys) {
+      const list = wordKeys.map(w => hl.spanOf(w)).filter(Boolean);
       if (!list.length) return false;
       const r = doc.createRange();
       r.setStartBefore(list[0]);

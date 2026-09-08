@@ -23,13 +23,13 @@ def ref_page(pg):
     root = ET.parse(p).getroot()
     seq = {}
     for w in root.iter(NS + 'g'):
-        wid = w.get('id') or ''
-        if not wid.startswith('md-word-'):
+        word_key = w.get('id') or ''
+        if not word_key.startswith('md-word-'):
             continue
         if w.get('data-type') != 'text':
             continue
         try:
-            sa = (int(w.get('data-surah')), int(w.get('data-aya')))
+            sa = (int(w.get('data-surah')), int(w.get('data-ayah')))
             idx = int(w.get('data-word-index-in-ayah'))
         except (TypeError, ValueError):
             continue
@@ -97,8 +97,8 @@ def our_page(pg):
                          min((e['x1'] for e in body), default=None),
                          max((e['x2'] for e in body), default=None)))
         out[(w['surah'], w['ayah'], w['pos'])] = dict(
-            uthmani=w['uthmani'], runs=runs,
-            segs=[s['text'] for s in (aw.segment_word(w['uthmani']) or [])])
+            rasm_uthmani=w['rasm_uthmani'], runs=runs,
+            segs=[s['text'] for s in (aw.segment_word(w['rasm_uthmani']) or [])])
     return out
 
 
@@ -109,7 +109,7 @@ if __name__ == '__main__':
     print('ref %d ours %d both %d' % (len(r), len(o), len(both)))
     n_txt = n_same = 0
     for k in both:
-        if skel(r[k]['hafs']) != skel(o[k]['uthmani']):
+        if skel(r[k]['hafs']) != skel(o[k]['rasm_uthmani']):
             n_txt += 1; continue
         rr = [skel(t) for t, a, b in r[k]['runs']]
         oo = [skel(t) for t, a, b in o[k]['runs']]
@@ -117,5 +117,5 @@ if __name__ == '__main__':
             n_same += 1
         else:
             print('%-11s %-16s ref=%s | ours=%s | segs=%s' % (
-                '%d:%d:%d' % k, o[k]['uthmani'], rr, oo, [skel(s) for s in o[k]['segs']]))
+                '%d:%d:%d' % k, o[k]['rasm_uthmani'], rr, oo, [skel(s) for s in o[k]['segs']]))
     print('text-mismatch %d, run-seq identical %d / %d' % (n_txt, n_same, len(both) - n_txt))

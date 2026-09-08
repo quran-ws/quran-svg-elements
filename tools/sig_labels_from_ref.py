@@ -4,7 +4,7 @@
 Every path we emit carries a `data-sig` outline hash, and `.cache/marks/labels.json`
 maps a signature to one label applied mushaf-wide. That is enormous leverage in both
 directions: one right answer fixes every occurrence, one wrong answer costs hundreds of
-flags at once (`letter-hamza` -> `hamza`, one entry, +527 flags).
+flags at once (`letter_hamzah` -> `hamzah`, one entry, +527 flags).
 
 The reference names every path it draws — 25 diacritics, three dot counts, five waqf
 signs, and the special elements. Registration puts our ink and theirs in the same frame
@@ -16,15 +16,15 @@ This writes evidence, not labels. Nothing is applied. `tools/apply_labels.py` fo
 answer in, and `scratchpad/label_bisect.py` measures it first — a label change is never
 adopted on the strength of the tally alone.
 
-What it is for, concretely: our pipeline collapses every pause sign to one label
-`pause`, so a `ۚ` (ج) and a `ۗ` (قلى) come out indistinguishable. They cannot be told
-apart from the text either — quran.com's uthmani text and this print disagree about the
+What it is for, concretely: our pipeline collapses every waqf sign to one label
+`waqf`, so a `ۚ` (ج) and a `ۗ` (قلى) come out indistinguishable. They cannot be told
+apart from the text either — quran.com's rasm_uthmani text and this print disagree about the
 waqf sign at 424 of 4,416 positions (9.6%), including 87 where the text says قلى and the
 page draws ج. The shapes, however, are distinct outlines, so the signature tally settles
 them from the ink.
 
     python3 tools/sig_labels_from_ref.py "<ref>/SVG V1.01" --jobs 6
-    python3 tools/sig_labels_from_ref.py "<ref>/SVG V1.01" 1 120 --only pause
+    python3 tools/sig_labels_from_ref.py "<ref>/SVG V1.01" 1 120 --only waqf
 """
 
 import argparse
@@ -78,7 +78,7 @@ def our_page(pg):
             continue
         k = (w["surah"], w["ayah"], w["pos"])
         words[k] = {"x1": min(e["x1"] for e in body), "x2": max(e["x2"] for e in body),
-                    "y2": max(e["y2"] for e in body), "text": w["uthmani"]}
+                    "y2": max(e["y2"] for e in body), "text": w["rasm_uthmani"]}
         els += [e for e in ee if e.get("sig")]
     return words, els
 
@@ -150,7 +150,7 @@ def main(argv=None):
     ap.add_argument("first", nargs="?", type=int, default=1)
     ap.add_argument("last", nargs="?", type=int, default=604)
     ap.add_argument("--pages", help="comma-separated page numbers instead of a range. "
-                                    "The rare signs need this: waqf lazim is drawn 21 "
+                                    "The rare signs need this: waqf madd_lazim is drawn 21 "
                                     "times in the whole mushaf and the muʿānaqah 6, so a "
                                     "sample of consecutive pages will not contain them.")
     ap.add_argument("--jobs", type=int, default=6)

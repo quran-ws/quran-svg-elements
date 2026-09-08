@@ -12,8 +12,8 @@ D = os.path.join(ROOT, "docs", "defects")
 
 
 PLAIN = {
- "pause_damma_report": ("Fixed: all 11 pause signs you flagged (they were drawn "
-   "but held by the wrong word or counted as letters) and 3 missing dammas. "
+ "waqf_dammah_report": ("Fixed: all 11 waqf signs you flagged (they were drawn "
+   "but held by the wrong word or counted as letters) and 3 missing dammahs. "
    "Also lists 7 words we could NOT fix safely, each with the reason."),
  "compound_sajdah_report": ("Fixed: p254's بعد ما (the two-part word that broke "
    "its whole line) and the sajdah signs (checked all 15; fixed 2)."),
@@ -23,7 +23,7 @@ PLAIN = {
  "bodyfix_report": ("The 5 word-theft repairs you approved (p341 chain, p59, "
    "p535, p437, p596). Before/after pictures are at the bottom of this page."),
  "visual_labels_report": ("An agent looked at every unnamed mark shape (332) "
-   "and named 271 safely. 61 need YOU: mostly hamza shapes only a human may "
+   "and named 271 safely. 61 need YOU: mostly hamzah shapes only a human may "
    "call. Sections B and C are your list."),
  "marktype_verification": ("A second agent double-checked the rules agent. "
    "It confirmed the detections but caught one WRONG fix before it shipped "
@@ -37,7 +37,7 @@ PLAIN = {
  "manual_review": ("Older manual review notes."),
 }
 
-ORDER = ["pause_damma_report", "compound_sajdah_report", "lsolve_report",
+ORDER = ["waqf_dammah_report", "compound_sajdah_report", "lsolve_report",
          "bodyfix_report", "visual_labels_report", "marktype_verification",
          "marktype_rules", "xband_proposals", "iqlab_notation", "manual_review"]
 
@@ -164,7 +164,7 @@ figcaption{font-size:11.5px;color:#6c675d}
 <li><a href="/proposals">Proposals page</a> — 6 pending cards. Pick an answer on each, press Copy, paste to Claude.</li>
 <li><a href="/confidence">Confidence page</a> — filter "certain" (16 cards): mark each ✓ real or ✗ not.</li>
 <li>Same page, filter "fixed" (green cards): quick glance that the repairs look right.</li>
-<li>Below on THIS page: "visual labels report" sections B and C — the hamza shapes only you can name.</li>
+<li>Below on THIS page: "visual labels report" sections B and C — the hamzah shapes only you can name.</li>
 </ol></section>%s</main></body></html>""" % (
         head, nav, "\n".join(secs))
     out = os.path.join(D, "index.html")

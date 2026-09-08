@@ -3,7 +3,7 @@ import sys, os, io, contextlib, importlib.util, json
 from collections import Counter
 ROOT = os.environ["QSVG_ROOT"]
 AW = None; CAP = {}
-U = {"dot": 1, "two-dots": 2, "three-dots": 3}
+U = {"dot": 1, "two_dots": 2, "three_dots": 3}
 def page(pg):
     global AW
     if AW is None:
@@ -20,11 +20,11 @@ def page(pg):
         if not w: continue
         els = [e for a in at for e in a["els"]]
         held = sum(U.get(e.get("mark") or "", 0) for e in els if not e.get("mkpart"))
-        want = AW.dot_budget(w["uthmani"])
+        want = AW.dot_budget(w["rasm_uthmani"])
         for e in els:
             if (e.get("mark") or "") not in U: continue
             out.append((round(e["x2"]-e["x1"], 3), e["mark"], pg,
-                        "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), w["uthmani"],
+                        "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), w["rasm_uthmani"],
                         held - want, bool(e.get("mkpart"))))
     return pg, out
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 """Split each line's merged glyph path into one <path> per element of ink.
 
 An "element" is one connected piece of ink together with its counters: a letter-body
-ligature, a dot group drawn as one contour, a fatha, a hamza. The page draws each line as
+ligature, a dot group drawn as one contour, a fathah, a hamzah. The page draws each line as
 a single <path> whose subpaths are these contours; this tool regroups them into separate
 <path> elements so each can be addressed, classified and labelled individually — the
 prerequisite for word/ligature/diacritic metadata a la MushafDatabase.
@@ -284,14 +284,14 @@ def verify(before, after, viewbox, scale=3, tolerance=100):
 
 
 def editions(selector=None):
-    """Every `<qiraa>/<publisher>` under mushafs/, or just the selected one."""
+    """Every `<qiraah>/<publisher>` under mushafs/, or just the selected one."""
     base = os.path.join(ROOT, "mushafs")
-    for qiraa in sorted(os.listdir(base)):
-        qdir = os.path.join(base, qiraa)
+    for qiraah in sorted(os.listdir(base)):
+        qdir = os.path.join(base, qiraah)
         if not os.path.isdir(qdir):
             continue
         for pub in sorted(os.listdir(qdir)):
-            ed = "%s/%s" % (qiraa, pub)
+            ed = "%s/%s" % (qiraah, pub)
             if os.path.isdir(os.path.join(qdir, pub, "svg")) and selector in (None, ed):
                 yield ed
 

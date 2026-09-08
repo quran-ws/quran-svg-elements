@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 """Build the signature -> waqf-sign table from MushafDatabase, as data.
 
-Our pipeline gives every pause sign the single label `pause`, so the five signs the
+Our pipeline gives every waqf sign the single label `waqf`, so the five signs the
 KFGQPC print uses come out of the decomposition indistinguishable. They cannot be
-recovered from the text either: quran.com's uthmani edition and this print disagree
+recovered from the text either: quran.com's rasm_uthmani edition and this print disagree
 about which sign is drawn at 424 of 4,416 positions — 87 of them where the text says
 قلى and the page draws ج.
 
 They can be recovered from the ink. Each sign is its own outline, so each has its own
 `data-sig`, and MushafDatabase names every waqf path it draws. Over the mushaf that
-makes the label a tally rather than a judgement — the four pause signatures came out
+makes the label a tally rather than a judgement — the four waqf signatures came out
 99.7% to 100% pure over a hundred pages.
 
 Only signatures the reference names consistently are written. Nothing is guessed.
@@ -46,9 +46,9 @@ def main(argv=None):
             continue
         # ref_label is MushafDatabase's vocabulary; the table is written in the
         # print's own (taxonomy phase 1, decision 8)
-        _CANON = {"waqf lazim": "waqf-lazim", "waqf qila": "waqf-awla",
-                  "waqf sali": "wasl-awla", "waqf jaiz": "waqf-jaiz",
-                  "waqf taanuq": "muanaqah"}
+        _CANON = {"waqf madd_lazim": "waqf_lazim", "waqf qila": "waqf_jaiz_waqf_awla",
+                  "waqf sali": "waqf_jaiz_wasl_awla", "waqf jaiz": "waqf_jaiz_mustawi_al_tarafayn",
+                  "waqf taanuq": "waqf_al_muanaqah"}
         table[r["sig"]] = {"waqf": _CANON.get(r["ref_label"], r["ref_label"]),
                            "n": r["n"], "purity": r["purity"],
                            "we_call": r["ours"]}

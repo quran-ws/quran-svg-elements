@@ -32,9 +32,9 @@ def word_svg(svg, keys):
     vb = re.search(r'viewBox="[^"]*"', svg)
     body, n = [], 0
     for k in keys:
-        # the emitter now carries one combined key (data-wid="2:6:3");
+        # the emitter now carries one combined key (data-word-key="2:6:3");
         # fall back to the three separate attributes for older builds
-        i = svg.find('data-wid="%s"' % k)
+        i = svg.find('data-word-key="%s"' % k)
         if i < 0:
             su, ay, wd = k.split(":")
             i = svg.find('data-surah="%s" data-ayah="%s" data-word="%s"'
@@ -81,7 +81,7 @@ def main():
            'td,th{padding:6px 8px;border-bottom:1px solid #eee;'
            'vertical-align:top;font-size:13px;text-align:left}',
            '.ink{width:560px}.ink svg{width:560px;height:230px;border:1px solid #eee;border-radius:6px;background:#fff}',
-           '.w{font-family:"KFGQPC Uthmanic Script HAFS",serif;font-size:21px}',
+           '.w{font-family:"KFGQPC RasmUthmani Script HAFS",serif;font-size:21px}',
            '.q{color:#666;font-size:13px;margin:4px 0 10px}',
            'a{color:#2a6ebb}</style>',
            '<h1>The 14 line-partition sites — with and without their overrides</h1>',

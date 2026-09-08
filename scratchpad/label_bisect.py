@@ -15,7 +15,7 @@ def measure():
     for pg in PAGES:
         _,rows=AM.scan(pg)
         tot+=len(rows)
-        hz+=sum(1 for r in rows for b in r[2] if b[0]=="hamza")
+        hz+=sum(1 for r in rows for b in r[2] if b[0]=="hamzah")
     return tot,hz
 
 orig=json.load(open("/tmp/labels.orig.json"))
@@ -24,7 +24,7 @@ changed={sg:v for sg,v in withall.items()
          if (orig.get(sg) or {}).get("label")!=v.get("label")}
 print("labels differing from the original table: %d"%len(changed), flush=True)
 json.dump(orig, open(TAB,"w"), ensure_ascii=False, indent=0)
-base=measure(); print("baseline: flags %d hamza %d"%base, flush=True)
+base=measure(); print("baseline: flags %d hamzah %d"%base, flush=True)
 rows=[]
 for sg,v in changed.items():
     t=dict(orig); t[sg]=v
@@ -32,7 +32,7 @@ for sg,v in changed.items():
     f,h=measure()
     d=f-base[0]
     rows.append((d,h-base[1],sg,(orig.get(sg) or {}).get("label"),v.get("label")))
-    print("  %+3d flags %+3d hamza   %s  %s -> %s"%(d,h-base[1],sg[:12],
+    print("  %+3d flags %+3d hamzah   %s  %s -> %s"%(d,h-base[1],sg[:12],
           rows[-1][3],rows[-1][4]), flush=True)
 good={sg:withall[sg] for d,_,sg,_,_ in rows if d<=0}
 keep=dict(orig); keep.update(good)

@@ -92,7 +92,7 @@ kbd{background:#eee9dc;border:1px solid var(--line);border-radius:3px;
 
 /* svg interaction styling */
 /* overlay layers (ayah polygons, markers, ornaments) must not swallow the mouse */
-.svg-holder .ayahPolygon,.svg-holder [class*="ayah_markers"],
+.svg-holder .ayahPolygon,.svg-holder [class*="ayah_marks"],
 .svg-holder polygon{pointer-events:none}
 .word-hit{fill:transparent;stroke:none;pointer-events:fill}
 .audgrid{display:flex;flex-wrap:wrap;gap:10px;direction:rtl;padding:8px 0}
@@ -104,7 +104,7 @@ kbd{background:#eee9dc;border:1px solid var(--line);border-radius:3px;
 .audcard.focus{border-color:#245a9e;box-shadow:0 0 0 2px #245a9e}
 .aud-ink{height:52px;max-width:200px;display:block}
 .aud-word{font-size:26px;line-height:1.5;font-family:"QPC Hafs",
-  "KFGQPC Uthmanic Script HAFS","KFGQPC HAFS Uthmanic Script","Amiri Quran",
+  "KFGQPC RasmUthmani Script HAFS","KFGQPC HAFS RasmUthmani Script","Amiri Quran",
   "Scheherazade New",serif}
 .aud-id{font-size:10px;color:var(--muted);direction:ltr}
 .delbtn{border:none;background:none;color:#c2452e;font-size:12px;float:right;
@@ -118,7 +118,7 @@ kbd{background:#eee9dc;border:1px solid var(--line);border-radius:3px;
 #floatbar .fb-hint{color:var(--muted);margin-bottom:6px}
 #floatbar button{margin-right:6px;font-size:12px;padding:3px 8px}
 .multi-sel{stroke:#7a3fd1 !important;stroke-width:.7 !important}
-.step-words path[data-eid]{cursor:pointer}
+.step-words path[data-element-id]{cursor:pointer}
 .wc0 path[data-kind]{fill:#5b7a9d}.wc1 path[data-kind]{fill:#8a6d3b}
 .wc2 path[data-kind]{fill:#5e8a63}.wc3 path[data-kind]{fill:#9d5b70}
 .wc4 path[data-kind]{fill:#6d5b9d}.wc5 path[data-kind]{fill:#3b8a8a}
@@ -179,7 +179,7 @@ rect.line-hl{fill:none;stroke:var(--bad);stroke-width:1;stroke-dasharray:4 3}
 
 <script>
 function boxOf(el){
-  // geometry in page units — stable across pipeline changes, unlike the eid
+  // geometry in page units — stable across pipeline changes, unlike the elementId
   try{
     const b = el.getBBox();
     return [b.x, b.y, b.x + b.width, b.y + b.height].map(v => Math.round(v * 10) / 10).join(",");
@@ -245,12 +245,12 @@ document.getElementById("rebuild-all").onclick = e => { e.preventDefault(); rebu
 const KIND_DESC = e => {
   const p = e.payload || {};
   switch (e.kind) {
-    case "move-element": return `Move element <b>${p.eid}</b> from <b>${p.from}</b> → <b>${p.to}</b>`;
-    case "relabel-mark": return `Relabel mark <b>${p.eid}</b>: <b>${p.from_label}</b> → <b>${p.to_label}</b>`;
-    case "label-unlabeled": return `Label unlabeled mark <b>${p.eid}</b> → <b>${p.to_label}</b>`;
+    case "move-element": return `Move element <b>${p.elementId}</b> from <b>${p.from}</b> → <b>${p.to}</b>`;
+    case "relabel-mark": return `Relabel mark <b>${p.elementId}</b>: <b>${p.from_label}</b> → <b>${p.to_label}</b>`;
+    case "label-unlabeled": return `Label unlabeled mark <b>${p.elementId}</b> → <b>${p.to_label}</b>`;
     case "merge-words": return `Merge words <b>${(p.words || []).join("</b> + <b>")}</b>`;
     case "split-word": return `Split word <b>${p.word}</b>${p.note ? " — " + p.note : ""}`;
-    case "note": return `Note${p.eid ? " on <b>" + p.eid + "</b>" : ""}: ${p.note || ""}`;
+    case "note": return `Note${p.elementId ? " on <b>" + p.elementId + "</b>" : ""}: ${p.note || ""}`;
     default: return e.kind;
   }
 };
@@ -278,9 +278,9 @@ async function renderAudit(page) {
   holder.innerHTML = data.svg;
   const svg = holder.querySelector("svg");
 
-  const groups = new Map();          // wid -> [wrapper groups]
+  const groups = new Map();          // wordKey -> [wrapper groups]
   svg.querySelectorAll("g.word").forEach(g => {
-    const key = g.dataset.wid;
+    const key = g.dataset.wordKey;
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(g);
   });
@@ -296,7 +296,7 @@ async function renderAudit(page) {
     </div><div class="audgrid" id="audgrid"></div>`;
   const grid = $("#audgrid");
 
-  // existing mismatch flags → wid -> edit id
+  // existing mismatch flags → wordKey -> edit id
   const flagged = new Map();
   data.edits.forEach(e => {
     const p = e.payload || {};
@@ -309,7 +309,7 @@ async function renderAudit(page) {
     const ka = a[0].split(":").map(Number), kb = b[0].split(":").map(Number);
     return (ka[0] - kb[0]) || (ka[1] - kb[1]) || (ka[2] - kb[2]);
   });
-  for (const [wid, gs] of ordered) {
+  for (const [wordKey, gs] of ordered) {
     // union bbox in root svg space
     let X1 = 1e9, Y1 = 1e9, X2 = -1e9, Y2 = -1e9;
     const clones = [];
@@ -343,26 +343,26 @@ async function renderAudit(page) {
     clones.forEach(c => mini.appendChild(c));
 
     const g0 = gs[0];
-    const card = el("div", {class: "audcard" + (flagged.has(wid) ? " mismatch" : "")});
-    card.dataset.wid = wid;
+    const card = el("div", {class: "audcard" + (flagged.has(wordKey) ? " mismatch" : "")});
+    card.dataset.wordKey = wordKey;
     card.appendChild(mini);
-    // The King Fahd Complex's own text of this print, not quran.com's uthmani: the two
+    // The King Fahd Complex's own text of this print, not quran.com's rasm_uthmani: the two
     // are different editions and disagree about the waqf sign at 424 positions. Showing
     // the wrong one under the printed ink is asking the reviewer to judge a mismatch we
     // introduced ourselves.
     card.appendChild(el("div", {class: "aud-word", dir: "rtl"},
-                        g0.dataset.qpc || g0.dataset.uthmani || ""));
-    card.appendChild(el("div", {class: "aud-id"}, wid));
+                        g0.dataset.qpc || g0.dataset.rasm_uthmani || ""));
+    card.appendChild(el("div", {class: "aud-id"}, wordKey));
     card.onclick = async () => {
       try {
-        if (flagged.has(wid)) {
-          await api("/api/edit/delete", {id: flagged.get(wid), editor: USER});
-          flagged.delete(wid);
+        if (flagged.has(wordKey)) {
+          await api("/api/edit/delete", {id: flagged.get(wordKey), editor: USER});
+          flagged.delete(wordKey);
           card.classList.remove("mismatch");
         } else {
           const r = await api("/api/edit", {page, step: "words", kind: "note",
-            payload: {word: wid, note: "audit-mismatch"}, editor: USER});
-          flagged.set(wid, r.record.id);
+            payload: {word: wordKey, note: "audit-mismatch"}, editor: USER});
+          flagged.set(wordKey, r.record.id);
           card.classList.add("mismatch");
         }
       } catch (e) { alert(e.message); }
@@ -373,7 +373,7 @@ async function renderAudit(page) {
   // ?word=S:A:P deep-links one card (confidence.html rows use this)
   const focus = qs.get("word");
   if (focus) {
-    const card = grid.querySelector(`.audcard[data-wid="${CSS.escape(focus)}"]`);
+    const card = grid.querySelector(`.audcard[data-word-key="${CSS.escape(focus)}"]`);
     if (card) {
       card.classList.add("focus");
       card.scrollIntoView({behavior: "smooth", block: "center"});
@@ -507,7 +507,7 @@ async function renderPage(page, step) {
   let mergeMode = false, mergePick = null;
   const words = [...svg.querySelectorAll("g.word")];
   words.forEach((w, i) => w.classList.add("wc" + (i % 6)));
-  const wid = w => w.dataset.wid;
+  const wordKey = w => w.dataset.wordKey;
 
   // Forgiving hit areas: a transparent rect behind each word so gaps between
   // strokes still hover/click. Ink always wins over a box (see pickTarget).
@@ -524,12 +524,12 @@ async function renderPage(page, step) {
     } catch (e) {}
   });
   // Resolve what the pointer is really on: prefer real ink (any path with an
-  // eid) over hit boxes, since neighbouring word boxes overlap in Arabic.
+  // elementId) over hit boxes, since neighbouring word boxes overlap in Arabic.
   const pickTarget = ev => {
-    const direct = ev.target.closest && ev.target.closest("path[data-eid]");
+    const direct = ev.target.closest && ev.target.closest("path[data-element-id]");
     const under = document.elementsFromPoint(ev.clientX, ev.clientY);
     const ink = direct
-      || under.find(e => e.matches && e.matches("path[data-eid]")) || null;
+      || under.find(e => e.matches && e.matches("path[data-element-id]")) || null;
     const w = ink ? ink.closest("g.word")
                   : (ev.target.closest && ev.target.closest("g.word"));
     return {path: ink, w};
@@ -569,8 +569,8 @@ async function renderPage(page, step) {
 
   const applyEditVisual = e => {
     const p = e.payload || {};
-    if (p.eid) {
-      const path = svg.querySelector(`path[data-eid="${p.eid}"]`);
+    if (p.elementId) {
+      const path = svg.querySelector(`path[data-element-id="${p.elementId}"]`);
       if (path) {
         path.classList.add("edited-el");
         if (e.kind === "relabel-mark" || e.kind === "label-unlabeled") {
@@ -648,8 +648,8 @@ async function renderPage(page, step) {
     svg.addEventListener("mousemove", ev => {
       const {w} = pickTarget(ev);
       if (!w) return;
-      $("#hoverword").textContent = w.dataset.qpc || w.dataset.uthmani || "";
-      $("#hovermeta").textContent = `${wid(w)} — imlaei: ${w.dataset.imlaei || "?"}`;
+      $("#hoverword").textContent = w.dataset.qpc || w.dataset.rasm_uthmani || "";
+      $("#hovermeta").textContent = `${wordKey(w)} — rasm_imlai: ${w.dataset.rasm_imlai || "?"}`;
     });
     document.addEventListener("keydown", ev => {
       if (ev.key === "Escape") { pickSet.clear(); refreshPicks(); hideFloat(); }
@@ -679,7 +679,7 @@ async function renderPage(page, step) {
           pickSet.forEach(p => {
             const home = p.closest("g.word");
             if (home !== w)
-              postEdit("move-element", {eid: p.dataset.eid, box: boxOf(p), from: wid(home), to: wid(w)});
+              postEdit("move-element", {elementId: p.dataset.elementId, box: boxOf(p), from: wordKey(home), to: wordKey(w)});
           });
         }
         pickSet.clear(); refreshPicks(); clearSel();
@@ -691,51 +691,51 @@ async function renderPage(page, step) {
         const home = selEl.closest("g.word");
         if (path === selEl) { clearSel(); return; }          // click again = cancel
         if (w !== home) {
-          postEdit("move-element", {eid: selEl.dataset.eid, box: boxOf(selEl), from: wid(home), to: wid(w)});
+          postEdit("move-element", {elementId: selEl.dataset.elementId, box: boxOf(selEl), from: wordKey(home), to: wordKey(w)});
           clearSel(); return;
         }
       }
       // a word is picked for merging: clicking another word completes it
       if (mergePick) {
         if (w !== mergePick) {
-          postEdit("merge-words", {words: [wid(mergePick), wid(w)]});
+          postEdit("merge-words", {words: [wordKey(mergePick), wordKey(w)]});
         }
         clearSel(); return;
       }
       if (path) {                                            // pick this ink piece
         clearSel();
         selEl = path; path.classList.add("sel-el");
-        $("#selinfo").innerHTML = `piece <b>${path.dataset.eid}</b> of <b>${w.dataset.uthmani}</b>`;
+        $("#selinfo").innerHTML = `piece <b>${path.dataset.elementId}</b> of <b>${w.dataset.rasm_uthmani}</b>`;
         showFloat(ev.clientX, ev.clientY,
-          `Piece of ${w.dataset.uthmani} (${wid(w)})`,
+          `Piece of ${w.dataset.rasm_uthmani} (${wordKey(w)})`,
           "Wrong word? Just click the word it belongs to.",
           [["Split word…", () => {
-              const note = prompt(`Describe how to split ${wid(w)}:`);
-              if (note) { postEdit("split-word", {word: wid(w), note}); clearSel(); }
+              const note = prompt(`Describe how to split ${wordKey(w)}:`);
+              if (note) { postEdit("split-word", {word: wordKey(w), note}); clearSel(); }
             }],
            ["Note", () => {
               const note = prompt("Note about this piece:");
-              if (note) { postEdit("note", {eid: path.dataset.eid, word: wid(w), note}); clearSel(); }
+              if (note) { postEdit("note", {elementId: path.dataset.elementId, word: wordKey(w), note}); clearSel(); }
             }]]);
       } else {                                               // pick the whole word
         clearSel();
         mergePick = null;
-        $("#selinfo").innerHTML = `word <b>${w.dataset.uthmani}</b> (${wid(w)})`;
+        $("#selinfo").innerHTML = `word <b>${w.dataset.rasm_uthmani}</b> (${wordKey(w)})`;
         showFloat(ev.clientX, ev.clientY,
-          `${w.dataset.uthmani} — ${wid(w)}`,
+          `${w.dataset.rasm_uthmani} — ${wordKey(w)}`,
           "",
           [["Merge into…", () => {
               mergePick = w; w.classList.add("merge-pick");
               hideFloat();
-              $("#selinfo").textContent = `now click the word to merge ${wid(w)} with`;
+              $("#selinfo").textContent = `now click the word to merge ${wordKey(w)} with`;
             }],
            ["Split…", () => {
-              const note = prompt(`Describe how to split ${wid(w)}:`);
-              if (note) { postEdit("split-word", {word: wid(w), note}); clearSel(); }
+              const note = prompt(`Describe how to split ${wordKey(w)}:`);
+              if (note) { postEdit("split-word", {word: wordKey(w), note}); clearSel(); }
             }],
            ["Note", () => {
               const note = prompt("Note about this word:");
-              if (note) { postEdit("note", {word: wid(w), note}); clearSel(); }
+              if (note) { postEdit("note", {word: wordKey(w), note}); clearSel(); }
             }]]);
       }
     });
@@ -756,8 +756,8 @@ async function renderPage(page, step) {
       /* A composite mark is drawn as more than one path and labelled ONCE, on the
          master; the other pieces carry data-mark-part instead. They are not unlabeled —
          they are that same mark. Reading only data-mark showed 14,855 of them in red as
-         needing an answer: the third blob of a three-dots, the second stroke of a
-         fathatan or kasratan, the dot inside a ج. */
+         needing an answer: the third blob of a three_dots, the second stroke of a
+         tanwin_al_fath or tanwin_al_kasr, the dot inside a ج. */
       const l = p.getAttribute("data-mark");
       const part = p.getAttribute("data-mark-part");
       if (l) { p.style.fill = labelColor(l); p.style.animation = "none"; }
@@ -806,11 +806,11 @@ async function renderPage(page, step) {
     const covered = new Set();
     liveEdits.forEach(e => {
       const p = e.payload || {};
-      if (e.kind === "label-unlabeled" && p.eid) covered.add(p.eid);
-      if (e.kind === "note" && p.eid && (p.note || "").includes("confirm-unlabeled"))
-        covered.add(p.eid);
+      if (e.kind === "label-unlabeled" && p.elementId) covered.add(p.elementId);
+      if (e.kind === "note" && p.elementId && (p.note || "").includes("confirm-unlabeled"))
+        covered.add(p.elementId);
     });
-    return unlabeledPaths().filter(p => !covered.has(p.dataset.eid));
+    return unlabeledPaths().filter(p => !covered.has(p.dataset.elementId));
   }
   function updateCompleteGate() {
     const btn = $("#completebtn"), warn = $("#completewarn");
@@ -849,7 +849,7 @@ async function renderPage(page, step) {
     popts.innerHTML = "";
     list.slice(0, 200).forEach((l, i) => {
       const d = el("div", {class: (i === 0 ? "hot " : "") +
-        (["word", "letter-part", "letter-hamza", "ignore"].includes(l) ? "special" : "")},
+        (["word", "letter_part", "letter_hamzah", "ignore"].includes(l) ? "special" : "")},
         l + (l === cur ? " ✓" : "") + (rec.includes(l) ? " ★" : ""));
       d.onclick = () => chooseLabel(l);
       popts.appendChild(d);
@@ -857,7 +857,7 @@ async function renderPage(page, step) {
     if (pickerTarget && !pickerTarget.getAttribute("data-mark")) {
       const d = el("div", {class: "special"}, "· confirm as intentionally unlabeled ·");
       d.onclick = () => {
-        postEdit("note", {eid: pickerTarget.dataset.eid, note: "confirm-unlabeled"});
+        postEdit("note", {elementId: pickerTarget.dataset.elementId, note: "confirm-unlabeled"});
         hidePicker();
       };
       popts.appendChild(d);
@@ -871,7 +871,7 @@ async function renderPage(page, step) {
   function labelOne(path, label) {
     const from = path.getAttribute("data-mark");
     if (from === label) return;
-    const base = {eid: path.dataset.eid, to_label: label};
+    const base = {elementId: path.dataset.elementId, to_label: label};
     if (path.dataset.sig) base.sig = path.dataset.sig;   // approved => applies mushaf-wide
     if (from) postEdit("relabel-mark", {...base, from_label: from});
     else postEdit("label-unlabeled", base);
@@ -942,20 +942,20 @@ async function renderPage(page, step) {
       if (selEl) selEl.classList.remove("sel-el");
       selEl = path; path.classList.add("sel-el");
       const w = path.closest("g.word");
-      $("#selinfo").innerHTML = `mark <b>${path.dataset.eid}</b>` +
+      $("#selinfo").innerHTML = `mark <b>${path.dataset.elementId}</b>` +
         ` (${path.getAttribute("data-mark") || "UNLABELED"})` +
-        (w ? ` in <b>${wid(w)}</b>` : "");
+        (w ? ` in <b>${wordKey(w)}</b>` : "");
       if (w) {
-        $("#hoverword").textContent = w.dataset.qpc || w.dataset.uthmani || "";
-        $("#hovermeta").textContent = wid(w);
+        $("#hoverword").textContent = w.dataset.qpc || w.dataset.rasm_uthmani || "";
+        $("#hovermeta").textContent = wordKey(w);
       }
       showPicker(path, ev.clientX + 8, ev.clientY + 8);
     });
     svg.addEventListener("mousemove", ev => {
       const {w} = pickTarget(ev);
       if (!w) return;
-      $("#hoverword").textContent = w.dataset.qpc || w.dataset.uthmani || "";
-      $("#hovermeta").textContent = wid(w);
+      $("#hoverword").textContent = w.dataset.qpc || w.dataset.rasm_uthmani || "";
+      $("#hovermeta").textContent = wordKey(w);
     });
   }
 

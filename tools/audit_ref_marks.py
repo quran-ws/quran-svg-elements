@@ -19,8 +19,8 @@ reference's ink:
   UNCLEAR     all three differ, or the word cannot be compared.
 
 The comparison is by GEOMETRY, never by label. The two sources name marks differently
-(they write one `successive fathatan` where we write two `fathatan` strokes, they fuse
-the iqlab meem into `fatha iqlab`), and any mapping between the two vocabularies would
+(they write one `successive tanwin_al_fath` where we write two `tanwin_al_fath` strokes, they fuse
+the iqlab meem into `fathah iqlab`), and any mapping between the two vocabularies would
 manufacture disagreements out of naming. Positions cannot be argued with: registration
 lands the two frames within 0.01 of a unit, so a mark either sits inside the same word
 in both decompositions or it does not.
@@ -84,7 +84,7 @@ def our_page(pg):
         out[(w["surah"], w["ayah"], w["pos"])] = {
             "x1": min(e["x1"] for e in body), "x2": max(e["x2"] for e in body),
             "y1": min(e["y1"] for e in body), "y2": max(e["y2"] for e in body),
-            "text": w["uthmani"],
+            "text": w["rasm_uthmani"],
             "marks": [e for e in els if e["kind"] != "body"],
         }
     return out
@@ -109,8 +109,8 @@ def _pair(a, b):
     """Which marks on each side have no counterpart on the other.
 
     Deliberately NOT a one-to-one pairing. The two sources cut the same ink into
-    different numbers of pieces — the pair of strokes we call two `fathatan` is one path
-    they call `successive fathatan`, and the iqlab meem they fuse into `fatha iqlab` we
+    different numbers of pieces — the pair of strokes we call two `tanwin_al_fath` is one path
+    they call `successive tanwin_al_fath`, and the iqlab meem they fuse into `fathah iqlab` we
     carry separately. Insisting on a bijection reports that difference in draughtsmanship
     as stolen ink: it turned 2:25:18, where every one of the seven marks lines up to a
     hundredth of a unit, into a defect. What matters is whether each mark has ANY

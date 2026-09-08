@@ -12,7 +12,7 @@ to the SECOND nearest ayah end (an empty band there makes the assignment
 proof-class), how many pages the document-order pairing gets right today, and
 any page that cannot be matched 1:1.
 
-    python3 scratchpad/marker_match.py [first last]
+    python3 scratchpad/mark_match.py [first last]
 """
 import contextlib
 import io
@@ -66,7 +66,7 @@ def one(pg):
                           + max(e["y2"] for e in bods)) / 2.0)
     anchors = [(k, v[1], v[2]) for k, v in ends.items()]
 
-    # polygon order, as tag_ayah_markers uses it today
+    # polygon order, as tag_ayah_marks uses it today
     polys = json.load(open(os.path.join(
         ROOT, "mushafs", "hafs", "kfqc", "json", "%03d.json" % pg),
         encoding="utf-8")) if os.path.exists(os.path.join(

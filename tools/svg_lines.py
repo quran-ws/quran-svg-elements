@@ -405,13 +405,13 @@ def segment_valleys(boxes, expected):
     """Cut a page into `expected` lines without assuming a constant pitch.
 
     The body pages are set on a fixed grid and are fitted as one; the opening two pages
-    are not — Al-Fatiha and the opening of Al-Baqarah are set with their own spacing, and
+    are not — Fatihah and the opening of Baqarah are set with their own spacing, and
     forcing a uniform grid onto them leaves a band empty. Here the cuts are the deepest
     troughs in the ink profile, kept a minimum distance apart so that two of them cannot
     both land in the same gap.
 
     That minimum starts at half a line and is raised until every band holds ink. It has
-    to be: the gap under the basmala on page 2 is wide enough to swallow two cuts at half
+    to be: the gap under the basmalah on page 2 is wide enough to swallow two cuts at half
     a line's separation, which is exactly how `shubah/002` first came out with one band
     holding two lines and another holding none.
     """

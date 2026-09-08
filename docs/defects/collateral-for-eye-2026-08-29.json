@@ -5,9 +5,9 @@
   "page": 570,
   "key": "70:44:4",
   "word": "ذِلَّةࣱۚ",
-  "what": "A named dammatan at 185.0,120.6,189.2,127.0 (5 contours) belongs to NO WORD. It sits immediately right of ذِلَّةࣱ's own dammatan at 188.5,120.6,193.2,127.0 (2 contours), same y to 0.1u.",
+  "what": "A named tanwin_al_damm at 185.0,120.6,189.2,127.0 (5 contours) belongs to NO WORD. It sits immediately right of ذِلَّةࣱ's own tanwin_al_damm at 188.5,120.6,193.2,127.0 (2 contours), same y to 0.1u.",
   "why_invisible": "Every mark audit counts marks PER WORD, so ink owned by no word is invisible to all of them. This is the only such case on a text line in the whole mushaf — the other 2715 wordless named marks are all on surah-header/basmalah lines, where they are legitimate.",
-  "question_for_abdullah": "Is the 185.0 piece the SECOND STROKE of ذِلَّةࣱ's tanween (your law: tanween needs two strokes), in which case it should weld into the owned dammatan? Or is it separate ink that has been mis-named dammatan — 5 contours is a lot for one tanween stroke.",
+  "question_for_abdullah": "Is the 185.0 piece the SECOND STROKE of ذِلَّةࣱ's tanwin (your law: tanwin needs two strokes), in which case it should weld into the owned tanwin_al_damm? Or is it separate ink that has been mis-named tanwin_al_damm — 5 contours is a lot for one tanwin stroke.",
   "not_applied": "Deliberately NOT overridden: the contour count makes the identity uncertain and this needs an eye, not a guess."
  }
 ]

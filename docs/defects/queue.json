@@ -5,11 +5,11 @@
   "word": "إِيَّاكَ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "2",
     "1"
    ]
@@ -41,11 +41,11 @@
   "word": "أُو۟لَـٰٓئِكَ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "3",
     "2"
    ]
@@ -59,11 +59,11 @@
   "word": "وَأُو۟لَـٰٓئِكَ",
   "source": "marks",
   "families": [
-   "small-alef"
+   "omitted_alif"
   ],
   "detail": [
    [
-    "small-alef",
+    "omitted_alif",
     "2",
     "1"
    ]
@@ -95,11 +95,11 @@
   "word": "رِّزْقًۭا ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -122,7 +122,7 @@
    "holder": "وَهُمْ",
    "inside": "مُّطَهَّرَةٌۭ ۖ",
    "key": "2:25:32",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 174.8,
    "rA": 0.75,
    "rB": 1.27,
@@ -147,7 +147,7 @@
    "holder": "هَـٰذِهِ",
    "inside": "ٱلشَّجَرَةَ",
    "key": "2:35:14",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 217.6,
    "rA": 1.08,
    "rB": 1.08,
@@ -172,7 +172,7 @@
    "holder": "تَشَـٰبَهَ",
    "inside": "ٱلْبَقَرَ",
    "key": "2:70:11",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 111.8,
    "rA": 1.0,
    "rB": 1.13,
@@ -188,11 +188,11 @@
   "word": "بَلَىٰ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -233,7 +233,7 @@
    "holder": "وَمَلَـٰٓئِكَتِهِۦ",
    "inside": "لِّلَّهِ",
    "key": "2:98:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 197.6,
    "rA": 0.96,
    "rB": 1.26,
@@ -258,7 +258,7 @@
    "holder": "وَرُسُلِهِۦ",
    "inside": "وَمَلَـٰٓئِكَتِهِۦ",
    "key": "2:98:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 112.4,
    "rA": 0.96,
    "rB": 0.96,
@@ -283,7 +283,7 @@
    "holder": "وَجِبْرِيلَ",
    "inside": "وَرُسُلِهِۦ",
    "key": "2:98:7",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 57.9,
    "rA": 0.97,
    "rB": 0.96,
@@ -299,11 +299,11 @@
   "word": "بَلَىٰ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -326,7 +326,7 @@
    "holder": "ٱلصَّلَوٰةَ",
    "inside": "وَأَقِيمُوا۟",
    "key": "2:110:2",
-   "mark": "wasla",
+   "mark": "hamzat_al_wasl",
    "x": 220.7,
    "rA": 1.11,
    "rB": 1.17,
@@ -351,7 +351,7 @@
    "holder": "وَءَاتُوا۟",
    "inside": "ٱلصَّلَوٰةَ",
    "key": "2:110:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 166.5,
    "rA": 0.76,
    "rB": 1.11,
@@ -367,11 +367,11 @@
   "word": "ٱلْعِلْمِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -385,11 +385,11 @@
   "word": "ٱللَّهِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -421,11 +421,11 @@
   "word": "ٱلْعِلْمِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -439,11 +439,11 @@
   "word": "رَّبِّكَ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -457,11 +457,11 @@
   "word": "ٱلْكِتَـٰبِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -475,11 +475,11 @@
   "word": "عَلَيْهِمْ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -493,11 +493,11 @@
   "word": "فِيهَا ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -520,7 +520,7 @@
    "holder": "فَلَا",
    "inside": "ٱعْتَمَرَ",
    "key": "2:158:12",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 206.9,
    "rA": 1.12,
    "rB": 1.1,
@@ -536,11 +536,11 @@
   "word": "قَلِيلًا ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -572,11 +572,11 @@
   "word": "لَّكُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -599,7 +599,7 @@
    "holder": "وَٱشْرَبُوا۟",
    "inside": "وَكُلُوا۟",
    "key": "2:187:32",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 53.9,
    "rA": 0.87,
    "rB": 1.21,
@@ -615,11 +615,11 @@
   "word": "ٱلتَّهْلُكَةِ ۛ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -642,7 +642,7 @@
    "holder": "وَٱلْحُرُمَـٰتُ",
    "inside": "ٱلْحَرَامِ",
    "key": "2:194:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 255.3,
    "rA": 0.84,
    "rB": 1.26,
@@ -667,7 +667,7 @@
    "holder": "وَٱتَّقُوا۟",
    "inside": "ٱلْحَرَامِ ۚ",
    "key": "2:196:67",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 244.7,
    "rA": 0.81,
    "rB": 1.33,
@@ -692,7 +692,7 @@
    "holder": "وَٱللَّهُ",
    "inside": "كَسَبُوا۟ ۚ",
    "key": "2:202:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 151.4,
    "rA": 0.64,
    "rB": 1.22,
@@ -744,11 +744,11 @@
   "word": "يُنفِقُونَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -762,11 +762,11 @@
   "word": "ٱلْمَحِيضِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -816,11 +816,11 @@
   "word": "لَكُمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -843,7 +843,7 @@
    "holder": "ٱلْـَٔاخِرِ ۗ",
    "inside": "ذَٰلِكُمْ",
    "key": "2:232:24",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 172.0,
    "rA": 1.04,
    "rB": 1.05,
@@ -868,7 +868,7 @@
    "holder": "أَزْكَىٰ",
    "inside": "لَكُمْ",
    "key": "2:232:26",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 114.6,
    "rA": 0.89,
    "rB": 0.95,
@@ -902,11 +902,11 @@
   "word": "وَقُومُوا۟",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "2"
    ]
@@ -920,11 +920,11 @@
   "word": "وَيَبْصُۜطُ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "2"
    ]
@@ -956,11 +956,11 @@
   "word": "خَلْفَهُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -974,11 +974,11 @@
   "word": "أَذًۭى ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -992,11 +992,11 @@
   "word": "لَّهُمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -1010,11 +1010,11 @@
   "word": "أَجْرُهُمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -1028,11 +1028,11 @@
   "word": "۞ قَوْلٌۭ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -1046,11 +1046,11 @@
   "word": "مَّعْرُوفٌۭ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -1073,7 +1073,7 @@
    "holder": "۞ قَوْلٌۭ",
    "inside": "مَّعْرُوفٌۭ",
    "key": "2:263:1",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 234.0,
    "rA": 0.69,
    "rB": 1.03,
@@ -1098,7 +1098,7 @@
    "holder": "وَٱللَّهُ",
    "inside": "كَسَبُوا۟ ۗ",
    "key": "2:264:34",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 191.2,
    "rA": 0.73,
    "rB": 1.27,
@@ -1150,11 +1150,11 @@
   "word": "لَّكُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -1177,7 +1177,7 @@
    "holder": "تَظْلِمُونَ",
    "inside": "وَلَا",
    "key": "2:279:15",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 198.0,
    "rA": 0.83,
    "rB": 0.99,
@@ -1218,11 +1218,11 @@
   "word": "تَرْتَابُوٓا۟ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -1236,11 +1236,11 @@
   "word": "وَمَلَـٰٓئِكَتِهِۦ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -1254,11 +1254,11 @@
   "word": "وَأَطَعْنَا ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -1281,7 +1281,7 @@
    "holder": "وَٱلْإِنجِيلَ",
    "inside": "ٱلتَّوْرَىٰةَ",
    "key": "3:3:11",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 108.4,
    "rA": 0.93,
    "rB": 1.27,
@@ -1297,11 +1297,11 @@
   "word": "مَتَـٰعُ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -1315,11 +1315,11 @@
   "word": "أَؤُنَبِّئُكُم",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -1342,7 +1342,7 @@
    "holder": "وَٱصْطَفَىٰكِ",
    "inside": "وَطَهَّرَكِ",
    "key": "3:42:9",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 65.9,
    "rA": 0.92,
    "rB": 1.31,
@@ -1358,11 +1358,11 @@
   "word": "رَّبِّكُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -1385,7 +1385,7 @@
    "holder": "وَٱلْإِنجِيلُ",
    "inside": "ٱلتَّوْرَىٰةُ",
    "key": "3:65:10",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 229.2,
    "rA": 0.94,
    "rB": 1.34,
@@ -1401,17 +1401,17 @@
   "word": "يُؤَدِّهِۦٓ",
   "source": "marks",
   "families": [
-   "fatha",
-   "kasra"
+   "fathah",
+   "kasrah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
    [
-    "kasra",
+    "kasrah",
     "1",
     "2"
    ]
@@ -1425,11 +1425,11 @@
   "word": "بَلَىٰ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -1443,11 +1443,11 @@
   "word": "ٱللَّهِ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -1461,11 +1461,11 @@
   "word": "حَنِيفًۭا",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -1479,11 +1479,11 @@
   "word": "بِٱلْحَقِّ ۗ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "2",
     "1"
    ]
@@ -1506,7 +1506,7 @@
    "holder": "وَٱخْتَلَفُوا۟",
    "inside": "تَفَرَّقُوا۟",
    "key": "3:105:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 197.2,
    "rA": 0.87,
    "rB": 1.29,
@@ -1522,11 +1522,11 @@
   "word": "يُكْفَرُوهُ ۗ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "2",
     "1"
    ]
@@ -1567,7 +1567,7 @@
    "holder": "وَهُوَ",
    "inside": "مَوْلَىٰكُمْ ۖ",
    "key": "3:150:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 202.8,
    "rA": 0.78,
    "rB": 1.1,
@@ -1601,11 +1601,11 @@
   "word": "وَعَلَى",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ]
@@ -1619,11 +1619,11 @@
   "word": "وَمَن",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -1655,11 +1655,11 @@
   "word": "وَٱلْأَرْضِ ۗ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -1682,7 +1682,7 @@
    "holder": "وَٱتَّقُوا۟",
    "inside": "وَرَابِطُوا۟",
    "key": "3:200:7",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 218.5,
    "rA": 0.83,
    "rB": 1.23,
@@ -1698,11 +1698,11 @@
   "word": "إِخْوَةٌۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -1779,7 +1779,7 @@
    "holder": "يُشْرَكَ",
    "inside": "بِهِۦ",
    "key": "4:48:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 108.7,
    "rA": 1.02,
    "rB": 0.97,
@@ -1804,7 +1804,7 @@
    "holder": "وَٱلرَّسُولِ",
    "inside": "إِن",
    "key": "4:59:18",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 52.3,
    "rA": 1.05,
    "rB": 0.99,
@@ -1829,7 +1829,7 @@
    "holder": "إِن",
    "inside": "وَٱلرَّسُولِ",
    "key": "4:59:19",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 60.4,
    "rA": 0.99,
    "rB": 1.05,
@@ -1845,11 +1845,11 @@
   "word": "بِهِۦ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -1926,7 +1926,7 @@
    "holder": "وَٱلرَّسُولَ",
    "inside": "ٱللَّهَ",
    "key": "4:69:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 246.1,
    "rA": 0.99,
    "rB": 1.31,
@@ -1951,7 +1951,7 @@
    "holder": "فَأُو۟لَـٰٓئِكَ",
    "inside": "وَٱلرَّسُولَ",
    "key": "4:69:5",
-   "mark": "hamza",
+   "mark": "hamzah",
    "x": 182.5,
    "rA": 1.04,
    "rB": 0.99,
@@ -1976,7 +1976,7 @@
    "holder": "فَأُو۟لَـٰٓئِكَ",
    "inside": "وَٱلرَّسُولَ",
    "key": "4:69:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 187.7,
    "rA": 1.04,
    "rB": 0.99,
@@ -1992,11 +1992,11 @@
   "word": "بُرُوجٍۢ",
   "source": "marks",
   "families": [
-   "kasratan"
+   "tanwin_al_kasr"
   ],
   "detail": [
    [
-    "kasratan",
+    "tanwin_al_kasr",
     "0",
     "1"
    ]
@@ -2010,11 +2010,11 @@
   "word": "سَيِّئَةٌۭ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "4",
     "2"
    ]
@@ -2028,11 +2028,11 @@
   "word": "كُلٌّۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ]
@@ -2055,7 +2055,7 @@
    "holder": "مُّشَيَّدَةٍۢ ۗ",
    "inside": "بُرُوجٍۢ",
    "key": "4:78:9",
-   "mark": "kasratan",
+   "mark": "tanwin_al_kasr",
    "x": 163.6,
    "rA": 0.97,
    "rB": 0.84,
@@ -2071,11 +2071,11 @@
   "word": "تَقُولُ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -2089,11 +2089,11 @@
   "word": "أَسْلِحَتَهُمْ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -2125,11 +2125,11 @@
   "word": "أَوْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -2143,11 +2143,11 @@
   "word": "ٱللَّهِ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -2179,11 +2179,11 @@
   "word": "وَٱلصُّلْحُ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -2197,11 +2197,11 @@
   "word": "أَن",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -2215,11 +2215,11 @@
   "word": "لِيَغْفِرَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -2233,11 +2233,11 @@
   "word": "أَلِيمًا",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -2251,11 +2251,11 @@
   "word": "غَيْرِهِۦٓ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -2269,11 +2269,11 @@
   "word": "مِّثْلُهُمْ ۗ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "2",
     "1"
    ]
@@ -2296,7 +2296,7 @@
    "holder": "فَقَدْ",
    "inside": "ٱلْـَٔاخِرِ",
    "key": "4:136:25",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 65.0,
    "rA": 1.07,
    "rB": 1.15,
@@ -2312,11 +2312,11 @@
   "word": "يَـٰٓأَيُّهَا",
   "source": "marks",
   "families": [
-   "small-alef"
+   "omitted_alif"
   ],
   "detail": [
    [
-    "small-alef",
+    "omitted_alif",
     "0",
     "1"
    ]
@@ -2339,7 +2339,7 @@
    "holder": "وَٱعْتَصَمُوا۟",
    "inside": "وَأَصْلَحُوا۟",
    "key": "4:146:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 162.9,
    "rA": 0.86,
    "rB": 1.16,
@@ -2382,7 +2382,7 @@
    "holder": "وَٱلنَّبِيِّـۧنَ",
    "inside": "نُوحٍۢ",
    "key": "4:163:8",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 121.8,
    "rA": 0.91,
    "rB": 1.64,
@@ -2407,7 +2407,7 @@
    "holder": "وَٱسْتَكْبَرُوا۟",
    "inside": "ٱسْتَنكَفُوا۟",
    "key": "4:173:14",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 262.1,
    "rA": 0.91,
    "rB": 1.17,
@@ -2432,7 +2432,7 @@
    "holder": "وَٱللَّهُ",
    "inside": "تَضِلُّوا۟ ۗ",
    "key": "4:176:47",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 180.9,
    "rA": 0.72,
    "rB": 1.36,
@@ -2448,11 +2448,11 @@
   "word": "ٱلطَّيِّبَـٰتُ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -2466,11 +2466,11 @@
   "word": "ٱلصَّـٰلِحَـٰتِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -2493,7 +2493,7 @@
    "holder": "وَٱمْسَحُوا۟",
    "inside": "ٱلْمَرَافِقِ",
    "key": "5:6:13",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 126.8,
    "rA": 0.87,
    "rB": 1.21,
@@ -2509,11 +2509,11 @@
   "word": "مَّوَاضِعِهِۦ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -2536,7 +2536,7 @@
    "holder": "بَعْدَ",
    "inside": "كَفَرَ",
    "key": "5:12:39",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 66.5,
    "rA": 0.84,
    "rB": 1.14,
@@ -2552,11 +2552,11 @@
   "word": "بَشِيرٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -2570,11 +2570,11 @@
   "word": "فِيهَا ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -2624,11 +2624,11 @@
   "word": "وَمِثْلَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -2642,11 +2642,11 @@
   "word": "مَعَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "2",
     "1"
    ]
@@ -2714,11 +2714,11 @@
   "word": "أَيْمَـٰنِهِمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -2759,7 +2759,7 @@
    "holder": "ٱلرَّبَّـٰنِيُّونَ",
    "inside": "يَنْهَىٰهُمُ",
    "key": "5:63:3",
-   "mark": "wasla",
+   "mark": "hamzat_al_wasl",
    "x": 61.0,
    "rA": 0.92,
    "rB": 1.04,
@@ -2802,7 +2802,7 @@
    "holder": "ٱلْكَعْبَةِ",
    "inside": "أَوْ",
    "key": "5:95:26",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 157.5,
    "rA": 0.9,
    "rB": 1.97,
@@ -2827,7 +2827,7 @@
    "holder": "أَوْ",
    "inside": "ٱلْكَعْبَةِ",
    "key": "5:95:27",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 165.9,
    "rA": 1.97,
    "rB": 0.9,
@@ -2843,11 +2843,11 @@
   "word": "حَامٍۢ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -2870,7 +2870,7 @@
    "holder": "وَٱلْهَدْىَ",
    "inside": "ٱلْحَرَامَ",
    "key": "5:97:10",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 180.2,
    "rA": 1.07,
    "rB": 1.32,
@@ -2895,7 +2895,7 @@
    "holder": "وَٱلْقَلَـٰٓئِدَ ۚ",
    "inside": "وَٱلْهَدْىَ",
    "key": "5:97:11",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 129.8,
    "rA": 0.81,
    "rB": 1.07,
@@ -2911,11 +2911,11 @@
   "word": "قُرْبَىٰ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -2947,11 +2947,11 @@
   "word": "بِإِذْنِى ۖ",
   "source": "marks",
   "families": [
-   "kasra"
+   "kasrah"
   ],
   "detail": [
    [
-    "kasra",
+    "kasrah",
     "2",
     "3"
    ]
@@ -2983,11 +2983,11 @@
   "word": "ٱلْأَرْضِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -3001,11 +3001,11 @@
   "word": "جَآءَهُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -3019,11 +3019,11 @@
   "word": "سَكَنَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "4",
     "3"
    ]
@@ -3037,11 +3037,11 @@
   "word": "وَلِيًّۭا",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -3055,11 +3055,11 @@
   "word": "بِخَيْرٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "1"
    ]
@@ -3073,11 +3073,11 @@
   "word": "فَوْقَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -3100,7 +3100,7 @@
    "holder": "أَتَّخِذُ",
    "inside": "وَلِيًّۭا",
    "key": "6:14:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 232.9,
    "rA": 0.97,
    "rB": 0.9,
@@ -3125,7 +3125,7 @@
    "holder": "وَٱللَّهِ",
    "inside": "قَالُوا۟",
    "key": "6:23:8",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 171.4,
    "rA": 0.66,
    "rB": 1.49,
@@ -3159,18 +3159,18 @@
   "word": "رُسُلٌۭ",
   "source": "marks",
   "families": [
-   "damma",
-   "dammatan",
+   "dammah",
+   "tanwin_al_damm",
    "dots"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "2"
    ],
    [
-    "dammatan",
+    "tanwin_al_damm",
     "0",
     "1"
    ],
@@ -3189,13 +3189,13 @@
   "word": "مِّن",
   "source": "marks",
   "families": [
-   "damma",
+   "dammah",
    "dots",
    "ligatures"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "3",
     "0"
    ],
@@ -3252,7 +3252,7 @@
    "holder": "كُذِّبَتْ",
    "inside": "رُسُلٌۭ",
    "key": "6:34:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 20.9,
    "rA": 0.73,
    "rB": 0.69,
@@ -3302,7 +3302,7 @@
    "holder": "مِّن",
    "inside": "قَبْلِكَ",
    "key": "6:34:4",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 297.7,
    "rA": 1.58,
    "rB": 1.43,
@@ -3327,7 +3327,7 @@
    "holder": "مِّن",
    "inside": "قَبْلِكَ",
    "key": "6:34:4",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 297.3,
    "rA": 1.58,
    "rB": 1.43,
@@ -3343,11 +3343,11 @@
   "word": "رَبِّهِمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -3370,7 +3370,7 @@
    "holder": "وَٱلْحَمْدُ",
    "inside": "ظَلَمُوا۟ ۚ",
    "key": "6:45:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 163.9,
    "rA": 0.89,
    "rB": 1.34,
@@ -3386,11 +3386,11 @@
   "word": "ٱلرَّحْمَةَ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -3404,11 +3404,11 @@
   "word": "أَهْوَآءَكُمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -3431,7 +3431,7 @@
    "holder": "بِمَا",
    "inside": "كَانُوا۟",
    "key": "6:70:43",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 239.3,
    "rA": 0.13,
    "rB": 1.59,
@@ -3481,7 +3481,7 @@
    "holder": "بِمَا",
    "inside": "كَانُوا۟",
    "key": "6:70:43",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 251.6,
    "rA": 0.13,
    "rB": 1.59,
@@ -3497,11 +3497,11 @@
   "word": "ءَالِهَةً ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -3542,7 +3542,7 @@
    "holder": "ٱلسَّمِيعُ",
    "inside": "وَهُوَ",
    "key": "6:115:10",
-   "mark": "wasla",
+   "mark": "hamzat_al_wasl",
    "x": 113.9,
    "rA": 0.99,
    "rB": 1.36,
@@ -3558,11 +3558,11 @@
   "word": "إِلَىٰٓ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -3594,18 +3594,18 @@
   "word": "إِلَى",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "ligatures",
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "1"
    ],
    [
-    "wasla",
+    "hamzat_al_wasl",
     "1",
     "0"
    ],
@@ -3624,11 +3624,11 @@
   "word": "ٱللَّهِ ۖ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -3642,11 +3642,11 @@
   "word": "وَمَا",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -3660,11 +3660,11 @@
   "word": "كَانَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -3687,7 +3687,7 @@
    "holder": "ٱللَّهِ ۖ",
    "inside": "إِلَى",
    "key": "6:136:21",
-   "mark": "pause",
+   "mark": "waqf",
    "x": 148.5,
    "rA": 0.87,
    "rB": 1.86,
@@ -3712,7 +3712,7 @@
    "holder": "ٱللَّهِ ۖ",
    "inside": "إِلَى",
    "key": "6:136:21",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 152.1,
    "rA": 0.87,
    "rB": 1.86,
@@ -3764,11 +3764,11 @@
   "word": "إِمْلَـٰقٍۢ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -3800,11 +3800,11 @@
   "word": "سَاعَةًۭ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -3818,11 +3818,11 @@
   "word": "ءَايَـٰتِى ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -3845,7 +3845,7 @@
    "holder": "وَٱشْرَبُوا۟",
    "inside": "وَكُلُوا۟",
    "key": "7:31:9",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 48.5,
    "rA": 0.89,
    "rB": 1.29,
@@ -3870,7 +3870,7 @@
    "holder": "مِنْهَا",
    "inside": "ظَهَرَ",
    "key": "7:33:8",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 56.2,
    "rA": 0.95,
    "rB": 1.32,
@@ -3886,11 +3886,11 @@
   "word": "أُمَمٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -3913,7 +3913,7 @@
    "holder": "بِٱلْـَٔاخِرَةِ",
    "inside": "كَـٰفِرُونَ",
    "key": "7:45:9",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 109.2,
    "rA": 1.04,
    "rB": 1.01,
@@ -3929,11 +3929,11 @@
   "word": "ٱلْعَرْشِ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -3974,7 +3974,7 @@
    "holder": "ٱلْمَلَأُ",
    "inside": "مِن",
    "key": "7:60:2",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 279.2,
    "rA": 1.07,
    "rB": 0.89,
@@ -3990,17 +3990,17 @@
   "word": "بَصْۜطَةًۭ ۖ",
   "source": "marks",
   "families": [
-   "pause",
-   "shadda"
+   "waqf",
+   "shaddah"
   ],
   "detail": [
    [
-    "shadda",
+    "shaddah",
     "1",
     "0"
    ],
    [
-    "pause",
+    "waqf",
     "1",
     "2"
    ]
@@ -4014,11 +4014,11 @@
   "word": "ءَابَآؤُنَا ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4032,11 +4032,11 @@
   "word": "وَءَابَآؤُكُم",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "2"
    ]
@@ -4059,7 +4059,7 @@
    "holder": "ٱلْمَلَأُ",
    "inside": "مِن",
    "key": "7:109:2",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 200.6,
    "rA": 1.01,
    "rB": 0.83,
@@ -4075,11 +4075,11 @@
   "word": "ٱلْعَذَابِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4093,11 +4093,11 @@
   "word": "مَعَهُۥٓ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4111,11 +4111,11 @@
   "word": "يَسْبِتُونَ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4129,11 +4129,11 @@
   "word": "قَوْمًا ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4147,11 +4147,11 @@
   "word": "ٱلْعِقَابِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4165,11 +4165,11 @@
   "word": "بَلَىٰ ۛ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4183,11 +4183,11 @@
   "word": "أَعْيُنٌۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ]
@@ -4201,11 +4201,11 @@
   "word": "رَمَىٰ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4219,11 +4219,11 @@
   "word": "هَـٰذَآ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4237,11 +4237,11 @@
   "word": "ٱلْمِيعَـٰدِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4255,11 +4255,11 @@
   "word": "قَلِيلًۭا",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -4282,7 +4282,7 @@
    "holder": "أَعْيُنِكُمْ",
    "inside": "قَلِيلًۭا",
    "key": "8:44:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 107.5,
    "rA": 1.05,
    "rB": 1.0,
@@ -4298,11 +4298,11 @@
   "word": "كَفَرُوا۟ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4316,11 +4316,11 @@
   "word": "فِرْعَوْنَ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4334,11 +4334,11 @@
   "word": "بِأَنفُسِهِمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4352,11 +4352,11 @@
   "word": "فِرْعَوْنَ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4379,7 +4379,7 @@
    "holder": "وَبِٱلْمُؤْمِنِينَ",
    "inside": "بِنَصْرِهِۦ",
    "key": "8:62:12",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 280.4,
    "rA": 0.87,
    "rB": 1.22,
@@ -4395,11 +4395,11 @@
   "word": "ٱللَّهِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4413,11 +4413,11 @@
   "word": "ٱلْمُشْرِكِينَ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4431,11 +4431,11 @@
   "word": "ٱلْكُفْرِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4467,11 +4467,11 @@
   "word": "كَثِيرَةٍۢ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4485,11 +4485,11 @@
   "word": "حُنَيْنٍ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4512,7 +4512,7 @@
    "holder": "وَٱللَّهُ",
    "inside": "بِأَمْرِهِۦ ۗ",
    "key": "9:24:29",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 284.6,
    "rA": 0.69,
    "rB": 1.26,
@@ -4528,11 +4528,11 @@
   "word": "مِنكُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4555,7 +4555,7 @@
    "holder": "أَمْرُ",
    "inside": "وَظَهَرَ",
    "key": "9:48:13",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 228.5,
    "rA": 1.2,
    "rB": 1.11,
@@ -4580,7 +4580,7 @@
    "holder": "وَٱلْمَسَـٰكِينِ",
    "inside": "لِلْفُقَرَآءِ",
    "key": "9:60:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 63.5,
    "rA": 0.94,
    "rB": 1.3,
@@ -4596,11 +4596,11 @@
   "word": "مِنْهُمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4632,11 +4632,11 @@
   "word": "ٱلْمَدِينَةِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -4668,11 +4668,11 @@
   "word": "جُرُفٍ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "0"
    ]
@@ -4686,11 +4686,11 @@
   "word": "لَهُۥٓ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -4704,11 +4704,11 @@
   "word": "عَدُوٌّۭ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "1",
     "0"
    ]
@@ -4741,11 +4741,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ],
@@ -4764,7 +4764,7 @@
   "word": "ثُمَّ",
   "source": "marks",
   "families": [
-   "shadda",
+   "shaddah",
    "sukun"
   ],
   "detail": [
@@ -4774,7 +4774,7 @@
     "0"
    ],
    [
-    "shadda",
+    "shaddah",
     "0",
     "1"
    ]
@@ -4789,11 +4789,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "shadda"
+   "shaddah"
   ],
   "detail": [
    [
-    "shadda",
+    "shaddah",
     "1",
     "0"
    ],
@@ -4812,12 +4812,12 @@
   "word": "هُمْ",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "ligatures"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "0"
    ],
@@ -4845,7 +4845,7 @@
    "holder": "ثُمَّ",
    "inside": "لَا",
    "key": "9:126:11",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 26.2,
    "rA": 0.94,
    "rB": 1.91,
@@ -4895,7 +4895,7 @@
    "holder": "بَعْضُهُمْ",
    "inside": "نَّظَرَ",
    "key": "9:127:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 261.6,
    "rA": 0.96,
    "rB": 1.05,
@@ -4911,11 +4911,11 @@
   "word": "مُّبِينٌ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -4938,7 +4938,7 @@
    "holder": "ٱلَّذِينَ",
    "inside": "ءَامَنُوا۟",
    "key": "10:4:13",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 258.6,
    "rA": 0.72,
    "rB": 1.16,
@@ -4963,7 +4963,7 @@
    "holder": "ءَامَنُوا۟",
    "inside": "ٱلَّذِينَ",
    "key": "10:4:14",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 267.1,
    "rA": 1.16,
    "rB": 0.72,
@@ -4979,11 +4979,11 @@
   "word": "ظَلَمُوا۟ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5015,11 +5015,11 @@
   "word": "بَيِّنَـٰتٍۢ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5033,11 +5033,11 @@
   "word": "بِهِمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5069,11 +5069,11 @@
   "word": "سَاعَةًۭ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5087,11 +5087,11 @@
   "word": "بِٱلْقِسْطِ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5123,11 +5123,11 @@
   "word": "سَيُبْطِلُهُۥٓ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5141,11 +5141,11 @@
   "word": "ٱلظَّـٰلِمِينَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -5186,7 +5186,7 @@
    "holder": "فِرْعَوْنُ",
    "inside": "وَجُنُودُهُۥ",
    "key": "10:90:6",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 294.1,
    "rA": 0.78,
    "rB": 1.13,
@@ -5227,11 +5227,11 @@
   "word": "عَنْهُمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -5263,11 +5263,11 @@
   "word": "كَنزٌ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "1",
     "0"
    ]
@@ -5281,17 +5281,17 @@
   "word": "افْتَرَاهُ ۖ",
   "source": "marks",
   "families": [
-   "small-alef",
-   "wasla"
+   "omitted_alif",
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "small-alef",
+    "omitted_alif",
     "1",
     "0"
    ],
    [
-    "wasla",
+    "hamzat_al_wasl",
     "1",
     "0"
    ]
@@ -5305,11 +5305,11 @@
   "word": "أَنفُسِهِمْ  ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5323,11 +5323,11 @@
   "word": "ظَلَمُوٓا۟ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5342,11 +5342,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ],
@@ -5374,7 +5374,7 @@
    "holder": "مَلَأٌۭ",
    "inside": "مِّن",
    "key": "11:38:6",
-   "mark": "dammatan",
+   "mark": "tanwin_al_damm",
    "x": 128.5,
    "rA": 1.03,
    "rB": 0.89,
@@ -5390,12 +5390,12 @@
   "word": "وَرَبِّكُم ۚ",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "ligatures"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ],
@@ -5450,11 +5450,11 @@
   "word": "دَآبَّةٍ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -5477,7 +5477,7 @@
    "holder": "مَّا",
    "inside": "وَرَبِّكُم ۚ",
    "key": "11:56:7",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 35.6,
    "rA": 1.72,
    "rB": 1.38,
@@ -5493,11 +5493,11 @@
   "word": "ءَايَةًۭ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -5511,11 +5511,11 @@
   "word": "ٱللَّهِ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -5529,11 +5529,11 @@
   "word": "وَجَآءَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -5547,11 +5547,11 @@
   "word": "قَوْمُهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "2",
     "1"
    ]
@@ -5565,11 +5565,11 @@
   "word": "ٱلْمِكْيَالَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -5601,11 +5601,11 @@
   "word": "وَكَانُوا۟",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -5619,11 +5619,11 @@
   "word": "بِظُلْمٍۢ",
   "source": "marks",
   "families": [
-   "kasra"
+   "kasrah"
   ],
   "detail": [
    [
-    "kasra",
+    "kasrah",
     "0",
     "1"
    ]
@@ -5638,11 +5638,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ],
@@ -5661,17 +5661,17 @@
   "word": "كَيْدَهُنَّ ۚ",
   "source": "marks",
   "families": [
-   "pause",
-   "shadda"
+   "waqf",
+   "shaddah"
   ],
   "detail": [
    [
-    "shadda",
+    "shaddah",
     "0",
     "1"
    ],
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5685,23 +5685,23 @@
   "word": "إِنَّهُۥ",
   "source": "marks",
   "families": [
-   "fatha",
-   "pause",
-   "shadda"
+   "fathah",
+   "waqf",
+   "shaddah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
    [
-    "shadda",
+    "shaddah",
     "2",
     "1"
    ],
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -5715,11 +5715,11 @@
   "word": "رَأَوُا۟",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -5742,7 +5742,7 @@
    "holder": "إِنَّهُۥ",
    "inside": "كَيْدَهُنَّ ۚ",
    "key": "12:34:7",
-   "mark": "pause",
+   "mark": "waqf",
    "x": 96.8,
    "rA": 0.59,
    "rB": 1.46,
@@ -5767,7 +5767,7 @@
    "holder": "إِنَّهُۥ",
    "inside": "كَيْدَهُنَّ ۚ",
    "key": "12:34:7",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 96.9,
    "rA": 0.59,
    "rB": 1.46,
@@ -5792,7 +5792,7 @@
    "holder": "إِنَّهُۥ",
    "inside": "كَيْدَهُنَّ ۚ",
    "key": "12:34:7",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 97.4,
    "rA": 0.59,
    "rB": 1.46,
@@ -5808,11 +5808,11 @@
   "word": "لِلَّهِ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5826,11 +5826,11 @@
   "word": "قَبْلُ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5853,7 +5853,7 @@
    "holder": "نَّشَآءُ ۖ",
    "inside": "وَلَا",
    "key": "12:110:13",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 162.8,
    "rA": 0.75,
    "rB": 1.12,
@@ -5869,11 +5869,11 @@
   "word": "كُلٌّۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ]
@@ -5912,11 +5912,11 @@
   "word": "ٱلْكَـٰفِرِينَ",
   "source": "marks",
   "families": [
-   "small-alef"
+   "omitted_alif"
   ],
   "detail": [
    [
-    "small-alef",
+    "omitted_alif",
     "0",
     "1"
    ]
@@ -5930,11 +5930,11 @@
   "word": "وَمِثْلَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -5948,11 +5948,11 @@
   "word": "مَعَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "2",
     "1"
    ]
@@ -5966,11 +5966,11 @@
   "word": "ٱلْأَرْضِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -5985,12 +5985,12 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
+   "fathah",
    "sukun"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "5",
     "3"
    ],
@@ -6014,12 +6014,12 @@
   "word": "بَعْدَ مَا",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "sukun"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ],
@@ -6039,11 +6039,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ],
@@ -6071,7 +6071,7 @@
    "holder": "وَٱللَّهُ",
    "inside": "أَطْرَافِهَا ۚ",
    "key": "13:41:9",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 257.3,
    "rA": 0.69,
    "rB": 1.28,
@@ -6087,11 +6087,11 @@
   "word": "عِندَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -6123,11 +6123,11 @@
   "word": "بَعْدِهِمْ ۛ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6159,11 +6159,11 @@
   "word": "بِمُصْرِخِىَّ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6186,7 +6186,7 @@
    "holder": "وَسَخَّرَ",
    "inside": "بِأَمْرِهِۦ ۖ",
    "key": "14:32:23",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 229.0,
    "rA": 0.91,
    "rB": 1.22,
@@ -6202,11 +6202,11 @@
   "word": "شَىْءٍۢ",
   "source": "marks",
   "families": [
-   "kasratan"
+   "tanwin_al_kasr"
   ],
   "detail": [
    [
-    "kasratan",
+    "tanwin_al_kasr",
     "0",
     "1"
    ]
@@ -6220,11 +6220,11 @@
   "word": "لِى",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "1",
     "0"
    ]
@@ -6238,11 +6238,11 @@
   "word": "بِهِۦ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6256,11 +6256,11 @@
   "word": "رَّجِيمٍ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -6274,17 +6274,17 @@
   "word": "شَىْءٍۢ",
   "source": "marks",
   "families": [
-   "hamza",
-   "kasratan"
+   "hamzah",
+   "tanwin_al_kasr"
   ],
   "detail": [
    [
-    "kasratan",
+    "tanwin_al_kasr",
     "0",
     "1"
    ],
    [
-    "hamza",
+    "hamzah",
     "1",
     "0"
    ]
@@ -6298,11 +6298,11 @@
   "word": "قَدَّرْنَآ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6343,7 +6343,7 @@
    "holder": "ءَالَ",
    "inside": "جَآءَ",
    "key": "15:61:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 185.1,
    "rA": 1.17,
    "rB": 1.21,
@@ -6368,7 +6368,7 @@
    "holder": "لُوطٍ",
    "inside": "ءَالَ",
    "key": "15:61:4",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 159.7,
    "rA": 0.66,
    "rB": 1.17,
@@ -6393,7 +6393,7 @@
    "holder": "أَنْ",
    "inside": "عِبَادِهِۦٓ",
    "key": "16:2:11",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 281.1,
    "rA": 0.66,
    "rB": 1.18,
@@ -6409,11 +6409,11 @@
   "word": "تَلْبَسُونَهَا",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -6427,11 +6427,11 @@
   "word": "رَبُّكُمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6445,11 +6445,11 @@
   "word": "ٱلْقِيَـٰمَةِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6463,11 +6463,11 @@
   "word": "ٱلْعِلْمَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -6481,11 +6481,11 @@
   "word": "تَتَوَفَّىٰهُمُ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "4"
    ]
@@ -6499,11 +6499,11 @@
   "word": "بَلَىٰٓ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -6517,11 +6517,11 @@
   "word": "طَيِّبِينَ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6553,11 +6553,11 @@
   "word": "أَيْمَـٰنِهِمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6571,11 +6571,11 @@
   "word": "ظِلَـٰلُهُۥ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -6589,11 +6589,11 @@
   "word": "وَٰحِدٌۭ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6607,11 +6607,11 @@
   "word": "فَتَمَتَّعُوا۟ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6625,11 +6625,11 @@
   "word": "سُبْحَـٰنَهُۥ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6643,11 +6643,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -6661,11 +6661,11 @@
   "word": "ٱلْحَكِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -6679,11 +6679,11 @@
   "word": "سَاعَةًۭ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6697,11 +6697,11 @@
   "word": "يَكْرَهُونَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -6715,11 +6715,11 @@
   "word": "فِيهِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6733,11 +6733,11 @@
   "word": "بِخَيْرٍ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6751,11 +6751,11 @@
   "word": "بِٱلْعَدْلِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6769,11 +6769,11 @@
   "word": "وَٱلْأَفْـِٔدَةَ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6787,11 +6787,11 @@
   "word": "إِقَامَتِكُمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6805,11 +6805,11 @@
   "word": "شَىْءٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -6823,11 +6823,11 @@
   "word": "وَهُدًۭى",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -6841,11 +6841,11 @@
   "word": "تَذَكَّرُونَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "5",
     "4"
    ]
@@ -6859,11 +6859,11 @@
   "word": "ٱلْأَيْمَـٰنَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ]
@@ -6886,7 +6886,7 @@
    "holder": "شَىْءٍۢ",
    "inside": "وَهُدًۭى",
    "key": "16:89:20",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 294.7,
    "rA": 0.94,
    "rB": 1.07,
@@ -6902,11 +6902,11 @@
   "word": "ٱللَّهِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6920,11 +6920,11 @@
   "word": "يَنفَدُ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6938,11 +6938,11 @@
   "word": "ءَايَةٍۢ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -6965,7 +6965,7 @@
    "holder": "وَٱلْخَوْفِ",
    "inside": "ٱلْجُوعِ",
    "key": "16:112:21",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 287.3,
    "rA": 0.87,
    "rB": 1.26,
@@ -6981,11 +6981,11 @@
   "word": "سَبِيلِهِۦ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -7008,7 +7008,7 @@
    "holder": "وَّٱلَّذِينَ",
    "inside": "ٱتَّقَوا۟",
    "key": "16:128:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 176.3,
    "rA": 0.89,
    "rB": 1.33,
@@ -7033,7 +7033,7 @@
    "holder": "وَّٱلَّذِينَ",
    "inside": "ٱتَّقَوا۟",
    "key": "16:128:6",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 177.0,
    "rA": 0.89,
    "rB": 1.33,
@@ -7049,11 +7049,11 @@
   "word": "حَوْلَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -7067,11 +7067,11 @@
   "word": "لِنُرِيَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "2",
     "1"
    ]
@@ -7130,7 +7130,7 @@
    "holder": "دُعَآءَهُۥ",
    "inside": "بِٱلشَّرِّ",
    "key": "17:11:4",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 211.7,
    "rA": 1.08,
    "rB": 1.2,
@@ -7155,7 +7155,7 @@
    "holder": "بِٱلْخَيْرِ ۖ",
    "inside": "دُعَآءَهُۥ",
    "key": "17:11:5",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 173.3,
    "rA": 1.06,
    "rB": 1.08,
@@ -7180,7 +7180,7 @@
    "holder": "وَٱلْحِسَابَ ۚ",
    "inside": "وَكُلَّ",
    "key": "17:12:19",
-   "mark": "pause",
+   "mark": "waqf",
    "x": 233.2,
    "rA": 0.81,
    "rB": 1.01,
@@ -7205,7 +7205,7 @@
    "holder": "وَٱلْحِسَابَ ۚ",
    "inside": "وَكُلَّ",
    "key": "17:12:19",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 236.9,
    "rA": 0.81,
    "rB": 1.01,
@@ -7246,11 +7246,11 @@
   "word": "أَكِنَّةً",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -7264,11 +7264,11 @@
   "word": "كَفَرْتُمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -7282,11 +7282,11 @@
   "word": "لِّلْمُؤْمِنِينَ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -7300,11 +7300,11 @@
   "word": "بِجَانِبِهِۦ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -7318,11 +7318,11 @@
   "word": "كُلٌّۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ]
@@ -7354,11 +7354,11 @@
   "word": "لَّهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -7372,11 +7372,11 @@
   "word": "وَأَسْمِعْ ۚ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -7390,11 +7390,11 @@
   "word": "أَحَدًۭا",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -7408,11 +7408,11 @@
   "word": "ٱلَّذِينَ",
   "source": "marks",
   "families": [
-   "shadda"
+   "shaddah"
   ],
   "detail": [
    [
-    "shadda",
+    "shaddah",
     "0",
     "1"
    ]
@@ -7426,11 +7426,11 @@
   "word": "ثَوَابًۭا",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -7462,11 +7462,11 @@
   "word": "فَأَتْبَعَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "4"
    ]
@@ -7489,7 +7489,7 @@
    "holder": "لِلْكَـٰفِرِينَ",
    "inside": "جَهَنَّمَ",
    "key": "18:102:13",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 272.4,
    "rA": 0.83,
    "rB": 0.98,
@@ -7505,11 +7505,11 @@
   "word": "بَيْنِهِمْ ۖ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -7523,11 +7523,11 @@
   "word": "يَوْمَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -7541,11 +7541,11 @@
   "word": "يَأْتُونَنَا ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -7559,11 +7559,11 @@
   "word": "خَرُّوا۟",
   "source": "marks",
   "families": [
-   "shadda"
+   "shaddah"
   ],
   "detail": [
    [
-    "shadda",
+    "shaddah",
     "0",
     "1"
    ]
@@ -7613,11 +7613,11 @@
   "word": "نَعْلَيْكَ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -7631,11 +7631,11 @@
   "word": "بَيْنَهُمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -7649,11 +7649,11 @@
   "word": "طَرِيقَةً",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -7667,11 +7667,11 @@
   "word": "ٱلْـَٔاخِرَةِ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -7694,7 +7694,7 @@
    "holder": "وَٱصْطَبِرْ",
    "inside": "بِٱلصَّلَوٰةِ",
    "key": "20:132:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 279.4,
    "rA": 0.98,
    "rB": 1.22,
@@ -7710,11 +7710,11 @@
   "word": "وَٱلْأَرْضَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "4",
     "3"
    ]
@@ -7728,11 +7728,11 @@
   "word": "لَّٱتَّخَذْنَـٰهُ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "4"
    ]
@@ -7755,7 +7755,7 @@
    "holder": "وَٱرْجِعُوٓا۟",
    "inside": "تَرْكُضُوا۟",
    "key": "21:13:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 270.6,
    "rA": 0.87,
    "rB": 1.3,
@@ -7771,11 +7771,11 @@
   "word": "أَيْدِيهِمْ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -7807,11 +7807,11 @@
   "word": "إِسْحَـٰقَ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -7834,7 +7834,7 @@
    "holder": "وَٱنصُرُوٓا۟",
    "inside": "حَرِّقُوهُ",
    "key": "21:68:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 154.6,
    "rA": 0.83,
    "rB": 1.27,
@@ -7868,11 +7868,11 @@
   "word": "نُـۨجِى",
   "source": "marks",
   "families": [
-   "small-noon"
+   "small_noon"
   ],
   "detail": [
    [
-    "small-noon",
+    "small_noon",
     "0",
     "1"
    ]
@@ -7886,17 +7886,17 @@
   "word": "سَوَآءٍۢ ۖ",
   "source": "marks",
   "families": [
-   "fatha",
-   "kasratan"
+   "fathah",
+   "tanwin_al_kasr"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ],
    [
-    "kasratan",
+    "tanwin_al_kasr",
     "0",
     "1"
    ]
@@ -7910,11 +7910,11 @@
   "word": "أَدْرِىٓ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -7928,11 +7928,11 @@
   "word": "ٱلْجَهْرَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -7955,7 +7955,7 @@
    "holder": "فَقُلْ",
    "inside": "تَوَلَّوْا۟",
    "key": "21:109:3",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 262.2,
    "rA": 0.17,
    "rB": 2.04,
@@ -7980,7 +7980,7 @@
    "holder": "فَقُلْ",
    "inside": "تَوَلَّوْا۟",
    "key": "21:109:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 270.9,
    "rA": 0.17,
    "rB": 2.04,
@@ -8055,7 +8055,7 @@
    "holder": "فَقُلْ",
    "inside": "تَوَلَّوْا۟",
    "key": "21:109:3",
-   "mark": "two-dots",
+   "mark": "two_dots",
    "x": 263.1,
    "rA": 0.17,
    "rB": 2.04,
@@ -8080,7 +8080,7 @@
    "holder": "ءَاذَنتُكُمْ",
    "inside": "فَقُلْ",
    "key": "21:109:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 238.8,
    "rA": 1.1,
    "rB": 0.17,
@@ -8096,11 +8096,11 @@
   "word": "ذَٰلِكَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -8114,11 +8114,11 @@
   "word": "يَنصُرُهُۥٓ ۗ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "2",
     "1"
    ]
@@ -8132,11 +8132,11 @@
   "word": "مُوسَىٰ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -8150,11 +8150,11 @@
   "word": "أَفَلَمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ]
@@ -8168,11 +8168,11 @@
   "word": "تَعْمَى",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -8186,11 +8186,11 @@
   "word": "۞ ذَٰلِكَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -8204,23 +8204,23 @@
   "word": "ٱجْتَمَعُوا۟",
   "source": "marks",
   "families": [
-   "damma",
-   "fatha",
-   "pause"
+   "dammah",
+   "fathah",
+   "waqf"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ],
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ],
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -8234,23 +8234,23 @@
   "word": "لَهُۥ ۖ",
   "source": "marks",
   "families": [
-   "damma",
-   "pause",
-   "small-waw"
+   "dammah",
+   "waqf",
+   "small_waw"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ],
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ],
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -8264,11 +8264,11 @@
   "word": "وَإِن",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -8282,11 +8282,11 @@
   "word": "مِنْهُ ۚ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "1",
     "0"
    ]
@@ -8300,11 +8300,11 @@
   "word": "أَيْدِيهِمْ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -8327,7 +8327,7 @@
    "holder": "وَٱسْجُدُوا۟",
    "inside": "ٱرْكَعُوا۟",
    "key": "22:77:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 129.7,
    "rA": 0.81,
    "rB": 1.15,
@@ -8343,11 +8343,11 @@
   "word": "فَأُو۟لَـٰٓئِكَ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "1",
     "2"
    ]
@@ -8361,11 +8361,11 @@
   "word": "ٱلتَّنُّورُ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -8379,11 +8379,11 @@
   "word": "ظَلَمُوٓا۟ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -8397,11 +8397,11 @@
   "word": "بِٱلْحَقِّ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -8539,7 +8539,7 @@
    "holder": "ٱلْكَرِيمِ",
    "inside": "ٱلْعَرْشِ",
    "key": "23:116:11",
-   "mark": "three-dots",
+   "mark": "three_dots",
    "x": 81.0,
    "rA": 0.73,
    "rB": 0.9,
@@ -8555,11 +8555,11 @@
   "word": "ءَايَـٰتٍۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -8591,12 +8591,12 @@
   "word": "وَٱلزَّانِيَةُ",
   "source": "marks",
   "families": [
-   "damma",
+   "dammah",
    "dots"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ],
@@ -8652,11 +8652,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ],
@@ -8675,12 +8675,12 @@
   "word": "يَرْمُونَ",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "sukun"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ],
@@ -8699,14 +8699,14 @@
   "word": "ٱلْمُحْصَنَـٰتِ",
   "source": "marks",
   "families": [
-   "damma",
+   "dammah",
    "dots",
    "ligatures",
    "sukun"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ],
@@ -8735,11 +8735,11 @@
   "word": "شُهَدَآءَ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -8789,11 +8789,11 @@
   "word": "شُهَدَآءُ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "3",
     "2"
    ]
@@ -8825,11 +8825,11 @@
   "word": "بِٱللَّهِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -8843,11 +8843,11 @@
   "word": "بِٱللَّهِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -8870,7 +8870,7 @@
    "holder": "وَٱلزَّانِى",
    "inside": "ٱلزَّانِيَةُ",
    "key": "24:2:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 295.5,
    "rA": 0.76,
    "rB": 1.3,
@@ -8895,7 +8895,7 @@
    "holder": "رَأْفَةٌۭ",
    "inside": "فِى",
    "key": "24:2:12",
-   "mark": "dammatan",
+   "mark": "tanwin_al_damm",
    "x": 312.6,
    "rA": 1.02,
    "rB": 0.89,
@@ -8920,7 +8920,7 @@
    "holder": "مُشْرِكَةًۭ",
    "inside": "زَانِيَةً",
    "key": "24:3:7",
-   "mark": "fathatan",
+   "mark": "tanwin_al_fath",
    "x": 101.6,
    "rA": 1.0,
    "rB": 1.0,
@@ -8945,7 +8945,7 @@
    "holder": "مُشْرِكَةًۭ",
    "inside": "وَٱلزَّانِيَةُ",
    "key": "24:3:7",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 47.5,
    "rA": 1.0,
    "rB": 0.61,
@@ -8970,7 +8970,7 @@
    "holder": "وَٱلزَّانِيَةُ",
    "inside": "مُشْرِكَةًۭ",
    "key": "24:3:8",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 62.4,
    "rA": 0.61,
    "rB": 1.0,
@@ -8995,7 +8995,7 @@
    "holder": "وَٱلزَّانِيَةُ",
    "inside": "مُشْرِكَةًۭ",
    "key": "24:3:8",
-   "mark": "two-dots",
+   "mark": "two_dots",
    "x": 55.9,
    "rA": 0.61,
    "rB": 1.0,
@@ -9020,7 +9020,7 @@
    "holder": "وَٱلزَّانِيَةُ",
    "inside": "مُشْرِكَةًۭ",
    "key": "24:3:8",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 66.9,
    "rA": 0.61,
    "rB": 1.0,
@@ -9070,7 +9070,7 @@
    "holder": "أَنزَلْنَآ",
    "inside": "إِلَيْكُمْ",
    "key": "24:34:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 268.4,
    "rA": 1.02,
    "rB": 1.42,
@@ -9095,7 +9095,7 @@
    "holder": "إِلَيْكُمْ",
    "inside": "أَنزَلْنَآ",
    "key": "24:34:3",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 277.7,
    "rA": 1.42,
    "rB": 1.02,
@@ -9111,11 +9111,11 @@
   "word": "ٱلزَّكَوٰةِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -9129,11 +9129,11 @@
   "word": "حِسَابٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -9147,11 +9147,11 @@
   "word": "يَحْسَبُهُ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -9165,11 +9165,11 @@
   "word": "كُلٌّۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ]
@@ -9183,11 +9183,11 @@
   "word": "لَئِنْ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -9219,11 +9219,11 @@
   "word": "عَبْدِهِۦ",
   "source": "marks",
   "families": [
-   "small-ya"
+   "small_yaa"
   ],
   "detail": [
    [
-    "small-ya",
+    "small_yaa",
     "0",
     "1"
    ]
@@ -9246,7 +9246,7 @@
    "holder": "وَٱللَّهُ",
    "inside": "عَمِلُوا۟ ۗ",
    "key": "24:64:19",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 139.4,
    "rA": 0.74,
    "rB": 1.36,
@@ -9262,11 +9262,11 @@
   "word": "ٱلْأَسْوَاقِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -9280,11 +9280,11 @@
   "word": "وَءَابَآءَهُمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "5",
     "4"
    ]
@@ -9298,11 +9298,11 @@
   "word": "كَذَّبُوكُم",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -9334,11 +9334,11 @@
   "word": "كَٱلْأَنْعَـٰمِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -9353,11 +9353,11 @@
   "source": "marks",
   "families": [
    "ligatures",
-   "small-ya"
+   "small_yaa"
   ],
   "detail": [
    [
-    "small-ya",
+    "small_yaa",
     "0",
     "1"
    ],
@@ -9394,17 +9394,17 @@
   "word": "أَن",
   "source": "marks",
   "families": [
-   "fatha",
-   "hamza"
+   "fathah",
+   "hamzah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ],
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -9419,18 +9419,18 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
-   "hamza",
+   "fathah",
+   "hamzah",
    "ligatures"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
    [
-    "hamza",
+    "hamzah",
     "1",
     "0"
    ],
@@ -9463,7 +9463,7 @@
    "holder": "مُّؤْمِنِينَ",
    "inside": "أَكْثَرُهُم",
    "key": "26:8:8",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 176.2,
    "rA": 0.97,
    "rB": 0.72,
@@ -9488,7 +9488,7 @@
    "holder": "فَأَخَافُ",
    "inside": "أَن",
    "key": "26:14:4",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 13.6,
    "rA": 1.1,
    "rB": 1.08,
@@ -9504,17 +9504,17 @@
   "word": "بِشَىْءٍۢ",
   "source": "marks",
   "families": [
-   "fatha",
-   "kasratan"
+   "fathah",
+   "tanwin_al_kasr"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
    [
-    "kasratan",
+    "tanwin_al_kasr",
     "0",
     "1"
    ]
@@ -9546,11 +9546,11 @@
   "word": "كَذَٰلِكَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -9565,12 +9565,12 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
+   "fathah",
    "ligatures"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "1"
    ],
@@ -9594,17 +9594,17 @@
   "word": "لَفِى",
   "source": "marks",
   "families": [
-   "fatha",
-   "small-alef"
+   "fathah",
+   "omitted_alif"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
    [
-    "small-alef",
+    "omitted_alif",
     "1",
     "0"
    ]
@@ -9618,24 +9618,24 @@
   "word": "ضَلَـٰلٍۢ",
   "source": "marks",
   "families": [
-   "damma",
+   "dammah",
    "dots",
-   "shadda",
-   "small-alef"
+   "shaddah",
+   "omitted_alif"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ],
    [
-    "shadda",
+    "shaddah",
     "1",
     "0"
    ],
    [
-    "small-alef",
+    "omitted_alif",
     "0",
     "1"
    ],
@@ -9654,24 +9654,24 @@
   "word": "مُّبِينٍ",
   "source": "marks",
   "families": [
-   "damma",
+   "dammah",
    "dots",
-   "kasratan",
-   "shadda"
+   "tanwin_al_kasr",
+   "shaddah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ],
    [
-    "kasratan",
+    "tanwin_al_kasr",
     "0",
     "1"
    ],
    [
-    "shadda",
+    "shaddah",
     "0",
     "1"
    ],
@@ -9690,11 +9690,11 @@
   "word": "إِذْ",
   "source": "marks",
   "families": [
-   "kasra"
+   "kasrah"
   ],
   "detail": [
    [
-    "kasra",
+    "kasrah",
     "0",
     "1"
    ]
@@ -9717,7 +9717,7 @@
    "holder": "ضَلَـٰلٍۢ",
    "inside": "لَفِى",
    "key": "26:97:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 303.3,
    "rA": 0.81,
    "rB": 2.82,
@@ -9733,11 +9733,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -9751,11 +9751,11 @@
   "word": "ٱلرَّحِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -9769,11 +9769,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -9787,11 +9787,11 @@
   "word": "ٱلرَّحِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -9805,11 +9805,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -9823,11 +9823,11 @@
   "word": "ٱلرَّحِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -9841,11 +9841,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -9859,11 +9859,11 @@
   "word": "ٱلرَّحِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -9877,11 +9877,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -9895,11 +9895,11 @@
   "word": "ٱلرَّحِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -9940,7 +9940,7 @@
    "holder": "ذِكْرَىٰ",
    "inside": "وَمَا",
    "key": "26:209:1",
-   "mark": "small-alef",
+   "mark": "omitted_alif",
    "x": 80.0,
    "rA": 1.01,
    "rB": 0.99,
@@ -9965,7 +9965,7 @@
    "holder": "وَٱنتَصَرُوا۟",
    "inside": "كَثِيرًۭا",
    "key": "26:227:9",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 76.4,
    "rA": 0.88,
    "rB": 1.34,
@@ -9981,11 +9981,11 @@
   "word": "ٱلْقُرْءَانَ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -9999,11 +9999,11 @@
   "word": "جَآءَهَا",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -10026,7 +10026,7 @@
    "holder": "وَهُم",
    "inside": "ٱلزَّكَوٰةَ",
    "key": "27:3:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 69.3,
    "rA": 0.81,
    "rB": 0.93,
@@ -10085,11 +10085,11 @@
   "word": "ءَاتَىٰكُم",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -10103,11 +10103,11 @@
   "word": "مُسْلِمِينَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -10121,11 +10121,11 @@
   "word": "ءَاتِيكَ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "1",
     "0"
    ]
@@ -10148,7 +10148,7 @@
    "holder": "بِمَا",
    "inside": "ظَلَمُوٓا۟ ۗ",
    "key": "27:52:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 91.1,
    "rA": 0.13,
    "rB": 1.69,
@@ -10198,7 +10198,7 @@
    "holder": "بِمَا",
    "inside": "ظَلَمُوٓا۟ ۗ",
    "key": "27:52:4",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 102.5,
    "rA": 0.13,
    "rB": 1.69,
@@ -10214,11 +10214,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -10232,11 +10232,11 @@
   "word": "ٱلْعَلِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -10259,7 +10259,7 @@
    "holder": "ٱلْعَزِيزُ",
    "inside": "وَهُوَ",
    "key": "27:78:7",
-   "mark": "wasla",
+   "mark": "hamzat_al_wasl",
    "x": 252.2,
    "rA": 1.0,
    "rB": 1.28,
@@ -10275,11 +10275,11 @@
   "word": "ٱلْمُسْلِمِينَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -10293,11 +10293,11 @@
   "word": "لَهُۥٓ ۚ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -10311,11 +10311,11 @@
   "word": "إِنَّهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "2",
     "1"
    ]
@@ -10329,11 +10329,11 @@
   "word": "نَارًۭا",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -10347,11 +10347,11 @@
   "word": "إِلَيْكُمَا ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -10365,11 +10365,11 @@
   "word": "بِـَٔايَـٰتِنَآ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -10383,11 +10383,11 @@
   "word": "صَـٰلِحًۭا",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -10401,11 +10401,11 @@
   "word": "وَجْهَهُۥ ۚ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -10419,11 +10419,11 @@
   "word": "ٱللَّهِ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -10437,11 +10437,11 @@
   "word": "لُوطٌۭ ۘ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -10473,11 +10473,11 @@
   "word": "ذَرْعًۭا",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -10491,11 +10491,11 @@
   "word": "تَحْزَنْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -10509,11 +10509,11 @@
   "word": "بِٱلْعَذَابِ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -10527,11 +10527,11 @@
   "word": "ٱلْعَذَابُ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -10545,11 +10545,11 @@
   "word": "ٱلسَّمِيعُ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -10563,11 +10563,11 @@
   "word": "وَسَخَّرَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "4"
    ]
@@ -10626,7 +10626,7 @@
    "holder": "وَٱلْأَرْضُ",
    "inside": "بِأَمْرِهِۦ ۚ",
    "key": "30:25:6",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 129.0,
    "rA": 0.74,
    "rB": 1.44,
@@ -10651,7 +10651,7 @@
    "holder": "يَحْزُنكَ",
    "inside": "كُفْرُهُۥٓ ۚ",
    "key": "31:23:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 76.9,
    "rA": 0.91,
    "rB": 0.94,
@@ -10676,7 +10676,7 @@
    "holder": "أَنَّمَا",
    "inside": "وَلَوْ",
    "key": "31:27:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 100.8,
    "rA": 1.08,
    "rB": 1.08,
@@ -10692,11 +10692,11 @@
   "word": "وَٱلْقَمَرَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -10773,7 +10773,7 @@
    "holder": "مِنَ",
    "inside": "ٱلْأَمْرَ",
    "key": "32:5:3",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 276.9,
    "rA": 0.84,
    "rB": 1.04,
@@ -10798,7 +10798,7 @@
    "holder": "مَّا",
    "inside": "تَشْكُرُونَ",
    "key": "32:9:13",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 241.6,
    "rA": 0.64,
    "rB": 1.07,
@@ -10823,7 +10823,7 @@
    "holder": "مَّا",
    "inside": "تَشْكُرُونَ",
    "key": "32:9:13",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 240.7,
    "rA": 0.64,
    "rB": 1.07,
@@ -10839,13 +10839,13 @@
   "word": "وَتَوَكَّلْ",
   "source": "marks",
   "families": [
-   "fatha",
-   "shadda",
+   "fathah",
+   "shaddah",
    "sukun"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "4"
    ],
@@ -10855,7 +10855,7 @@
     "1"
    ],
    [
-    "shadda",
+    "shaddah",
     "0",
     "1"
    ]
@@ -10869,7 +10869,7 @@
   "word": "عَلَى",
   "source": "marks",
   "families": [
-   "shadda",
+   "shaddah",
    "sukun"
   ],
   "detail": [
@@ -10879,7 +10879,7 @@
     "0"
    ],
    [
-    "shadda",
+    "shaddah",
     "1",
     "0"
    ]
@@ -10893,11 +10893,11 @@
   "word": "ٱللَّهِ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -10912,23 +10912,23 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
-   "pause",
-   "small-alef"
+   "fathah",
+   "waqf",
+   "omitted_alif"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ],
    [
-    "small-alef",
+    "omitted_alif",
     "0",
     "1"
    ],
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ],
@@ -10947,29 +10947,29 @@
   "word": "بِٱللَّهِ",
   "source": "marks",
   "families": [
-   "fatha",
-   "kasra",
-   "shadda",
-   "small-alef"
+   "fathah",
+   "kasrah",
+   "shaddah",
+   "omitted_alif"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
    [
-    "kasra",
+    "kasrah",
     "1",
     "2"
    ],
    [
-    "shadda",
+    "shaddah",
     "0",
     "1"
    ],
    [
-    "small-alef",
+    "omitted_alif",
     "1",
     "0"
    ]
@@ -10984,17 +10984,17 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
-   "shadda"
+   "fathah",
+   "shaddah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
    [
-    "shadda",
+    "shaddah",
     "1",
     "0"
    ],
@@ -11022,7 +11022,7 @@
    "holder": "ٱللَّهِ ۚ",
    "inside": "وَكَفَىٰ",
    "key": "33:3:3",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 19.0,
    "rA": 1.2,
    "rB": 0.53,
@@ -11072,7 +11072,7 @@
    "holder": "وَكِيلًۭا",
    "inside": "بِٱللَّهِ",
    "key": "33:3:6",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 298.7,
    "rA": 0.86,
    "rB": 1.55,
@@ -11088,11 +11088,11 @@
   "word": "ٱلنِّسَآءِ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -11106,11 +11106,11 @@
   "word": "ٱتَّقَيْتُنَّ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -11160,11 +11160,11 @@
   "word": "ٱللَّهِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -11178,17 +11178,17 @@
   "word": "إِلَّا",
   "source": "marks",
   "families": [
-   "fatha",
-   "hamza"
+   "fathah",
+   "hamzah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ],
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -11202,11 +11202,11 @@
   "word": "ٱلْعَلِىُّ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -11220,11 +11220,11 @@
   "word": "ٱلْكَبِيرُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -11247,7 +11247,7 @@
    "holder": "ٱلْعَلِىُّ",
    "inside": "ٱلْكَبِيرُ",
    "key": "34:23:21",
-   "mark": "wasla",
+   "mark": "hamzat_al_wasl",
    "x": 62.1,
    "rA": 0.96,
    "rB": 0.69,
@@ -11263,11 +11263,11 @@
   "word": "ٱلْعَذَابَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -11281,11 +11281,11 @@
   "word": "أَجْرٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -11308,7 +11308,7 @@
    "holder": "فَهُوَ",
    "inside": "أَجْرٍۢ",
    "key": "34:47:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 230.5,
    "rA": 1.25,
    "rB": 1.2,
@@ -11324,11 +11324,11 @@
   "word": "ٱلدُّنْيَا ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -11342,11 +11342,11 @@
   "word": "ٱلْمُلْكُ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "2",
     "1"
    ]
@@ -11360,11 +11360,11 @@
   "word": "يَرْجُونَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -11396,11 +11396,11 @@
   "word": "مَّعَكُمْ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -11432,11 +11432,11 @@
   "word": "وَكُلٌّۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ]
@@ -11459,7 +11459,7 @@
    "holder": "قَدَّرْنَـٰهُ",
    "inside": "وَٱلْقَمَرَ",
    "key": "36:39:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 115.4,
    "rA": 0.89,
    "rB": 1.08,
@@ -11526,7 +11526,7 @@
    "holder": "يَأْكُلُونَ",
    "inside": "وَمِنْهَا",
    "key": "36:72:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 289.8,
    "rA": 1.03,
    "rB": 1.03,
@@ -11551,7 +11551,7 @@
    "holder": "وَلَهُمْ",
    "inside": "يَأْكُلُونَ",
    "key": "36:73:1",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 204.6,
    "rA": 1.01,
    "rB": 1.03,
@@ -11691,7 +11691,7 @@
    "holder": "وَٱلْأَرْضِ",
    "inside": "ٱلسَّمَـٰوَٰتِ",
    "key": "37:5:3",
-   "mark": "two-dots",
+   "mark": "two_dots",
    "x": 229.0,
    "rA": 0.95,
    "rB": 0.99,
@@ -11716,7 +11716,7 @@
    "holder": "إِلَى",
    "inside": "يَسَّمَّعُونَ",
    "key": "37:8:3",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 281.3,
    "rA": 0.77,
    "rB": 1.0,
@@ -11741,7 +11741,7 @@
    "holder": "وَاصِبٌ",
    "inside": "عَذَابٌۭ",
    "key": "37:9:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 301.0,
    "rA": 0.75,
    "rB": 1.33,
@@ -11793,11 +11793,11 @@
   "word": "فَوَٰكِهُ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -11829,11 +11829,11 @@
   "word": "ٱلْـَٔاخِرَةِ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -11856,7 +11856,7 @@
    "holder": "مُّلْكُ",
    "inside": "لَهُم",
    "key": "38:10:3",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 129.6,
    "rA": 1.05,
    "rB": 1.21,
@@ -11881,7 +11881,7 @@
    "holder": "بِمَا",
    "inside": "نَسُوا۟",
    "key": "38:26:27",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 133.5,
    "rA": 0.15,
    "rB": 1.91,
@@ -11931,7 +11931,7 @@
    "holder": "بِمَا",
    "inside": "نَسُوا۟",
    "key": "38:26:27",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 143.6,
    "rA": 0.15,
    "rB": 1.91,
@@ -11947,11 +11947,11 @@
   "word": "ٱلْعَبْدُ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -11965,11 +11965,11 @@
   "word": "ٱلْعَبْدُ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -11983,11 +11983,11 @@
   "word": "وَكُلٌّۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ]
@@ -12019,11 +12019,11 @@
   "word": "مَّعَكُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12037,11 +12037,11 @@
   "word": "مِّنْهُ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12055,11 +12055,11 @@
   "word": "لِعِبَادِهِ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -12073,11 +12073,11 @@
   "word": "قَلِيلًا ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12109,11 +12109,11 @@
   "word": "ٱللَّهِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12127,11 +12127,11 @@
   "word": "بِهِۦٓ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12154,7 +12154,7 @@
    "holder": "وَٱلَّذِينَ",
    "inside": "كَسَبُوا۟ ۚ",
    "key": "39:51:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 271.9,
    "rA": 0.76,
    "rB": 1.25,
@@ -12197,7 +12197,7 @@
    "holder": "وَٱسْتَكْبَرْتَ",
    "inside": "بِهَا",
    "key": "39:59:7",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 133.4,
    "rA": 0.99,
    "rB": 1.27,
@@ -12222,7 +12222,7 @@
    "holder": "وَكُنتَ",
    "inside": "وَٱسْتَكْبَرْتَ",
    "key": "39:59:8",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 58.3,
    "rA": 1.25,
    "rB": 0.99,
@@ -12238,11 +12238,11 @@
   "word": "بِٱلْحَقِّ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -12310,11 +12310,11 @@
   "word": "ءَامَنُوا۟",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -12337,7 +12337,7 @@
    "holder": "وَٱتَّبَعُوا۟",
    "inside": "تَابُوا۟",
    "key": "40:7:23",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 262.8,
    "rA": 0.82,
    "rB": 1.37,
@@ -12353,11 +12353,11 @@
   "word": "كَفَرْتُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12380,7 +12380,7 @@
    "holder": "لَّا",
    "inside": "مُتَكَبِّرٍۢ",
    "key": "40:27:10",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 50.8,
    "rA": 1.16,
    "rB": 1.19,
@@ -12396,11 +12396,11 @@
   "word": "أَتَىٰهُمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12459,7 +12459,7 @@
    "holder": "ءَامَنُوا۟",
    "inside": "ٱلَّذِينَ",
    "key": "41:18:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 258.2,
    "rA": 0.97,
    "rB": 1.13,
@@ -12484,7 +12484,7 @@
    "holder": "وَكَانُوا۟",
    "inside": "ءَامَنُوا۟",
    "key": "41:18:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 224.5,
    "rA": 1.33,
    "rB": 0.97,
@@ -12500,11 +12500,11 @@
   "word": "شَىْءٍۢ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -12518,11 +12518,11 @@
   "word": "ٱلْخُلْدِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12536,11 +12536,11 @@
   "word": "شِئْتُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12555,11 +12555,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ],
@@ -12587,7 +12587,7 @@
    "holder": "بِعِلْمِهِۦ ۚ",
    "inside": "إِلَّا",
    "key": "41:47:18",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 165.1,
    "rA": 0.81,
    "rB": 1.13,
@@ -12612,7 +12612,7 @@
    "holder": "بَعْدِ",
    "inside": "ضَرَّآءَ",
    "key": "41:50:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 102.5,
    "rA": 0.14,
    "rB": 1.82,
@@ -12662,7 +12662,7 @@
    "holder": "بَعْدِ",
    "inside": "ضَرَّآءَ",
    "key": "41:50:6",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 87.1,
    "rA": 0.14,
    "rB": 1.82,
@@ -12703,11 +12703,11 @@
   "word": "أَزْوَٰجًۭا ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12739,11 +12739,11 @@
   "word": "أَسْـَٔلُكُمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -12757,11 +12757,11 @@
   "word": "نَّزِدْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -12793,11 +12793,11 @@
   "word": "سَبِيلٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -12811,17 +12811,17 @@
   "word": "إِنَّا",
   "source": "marks",
   "families": [
-   "fatha",
-   "hamza"
+   "fathah",
+   "hamzah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -12835,11 +12835,11 @@
   "word": "قَبْلِهِمْ ۚ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -12904,7 +12904,7 @@
    "holder": "بِٱلْحَقِّ",
    "inside": "إِلَّا",
    "key": "44:39:4",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 248.2,
    "rA": 0.98,
    "rB": 1.36,
@@ -12929,7 +12929,7 @@
    "holder": "وَلَـٰكِنَّ",
    "inside": "بِٱلْحَقِّ",
    "key": "44:39:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 211.8,
    "rA": 1.12,
    "rB": 0.98,
@@ -12945,17 +12945,17 @@
   "word": "أَفَّاكٍ",
   "source": "marks",
   "families": [
-   "fatha",
-   "kasratan"
+   "fathah",
+   "tanwin_al_kasr"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ],
    [
-    "kasratan",
+    "tanwin_al_kasr",
     "0",
     "1"
    ]
@@ -12969,11 +12969,11 @@
   "word": "لَّمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -12996,7 +12996,7 @@
    "holder": "مُسْتَكْبِرًۭا",
    "inside": "يُصِرُّ",
    "key": "45:8:8",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 315.2,
    "rA": 1.17,
    "rB": 1.24,
@@ -13012,11 +13012,11 @@
   "word": "نَمُوتُ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -13039,7 +13039,7 @@
    "holder": "فِيهِ",
    "inside": "رَيْبَ",
    "key": "45:26:13",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 245.0,
    "rA": 0.81,
    "rB": 1.12,
@@ -13073,12 +13073,12 @@
   "word": "دُونِهِۦٓ",
   "source": "marks",
   "families": [
-   "hamza",
+   "hamzah",
    "ligatures"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "1",
     "0"
    ],
@@ -13097,11 +13097,11 @@
   "word": "أُو۟لَـٰٓئِكَ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "1",
     "2"
    ]
@@ -13115,11 +13115,11 @@
   "word": "بَلَىٰٓ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -13142,7 +13142,7 @@
    "holder": "دُونِهِۦٓ",
    "inside": "مِن",
    "key": "46:32:13",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 307.0,
    "rA": 1.25,
    "rB": 1.07,
@@ -13167,7 +13167,7 @@
    "holder": "أَوْلِيَآءُ ۚ",
    "inside": "دُونِهِۦٓ",
    "key": "46:32:14",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 268.5,
    "rA": 1.3,
    "rB": 1.25,
@@ -13217,7 +13217,7 @@
    "holder": "أُو۟لَـٰٓئِكَ",
    "inside": "أَوْلِيَآءُ ۚ",
    "key": "46:32:15",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 220.7,
    "rA": 1.02,
    "rB": 1.3,
@@ -13242,7 +13242,7 @@
    "holder": "أُو۟لَـٰٓئِكَ",
    "inside": "أَوْلِيَآءُ ۚ",
    "key": "46:32:15",
-   "mark": "small-circle",
+   "mark": "small_circle",
    "x": 216.7,
    "rA": 1.02,
    "rB": 1.3,
@@ -13258,11 +13258,11 @@
   "word": "ءَامَنُوا۟",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -13276,11 +13276,11 @@
   "word": "وَءَامَنُوا۟",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -13294,11 +13294,11 @@
   "word": "رَّبِّهِمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -13312,11 +13312,11 @@
   "word": "ءَامَنُوا۟",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -13330,11 +13330,11 @@
   "word": "فِدَآءً",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -13348,11 +13348,11 @@
   "word": "ذَٰلِكَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -13366,11 +13366,11 @@
   "word": "سَبِيلِ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -13384,11 +13384,11 @@
   "word": "فَتَعْسًۭا",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -13402,11 +13402,11 @@
   "word": "ءَامَنُوا۟",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -13454,7 +13454,7 @@
    "holder": "ءَاسِنٍۢ",
    "inside": "غَيْرِ",
    "key": "47:15:11",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 158.8,
    "rA": 0.94,
    "rB": 1.25,
@@ -13470,11 +13470,11 @@
   "word": "ٱلْقِتَالُ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -13506,11 +13506,11 @@
   "word": "ٱلْهُدَى ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -13533,7 +13533,7 @@
    "holder": "يَنظُرُونَ",
    "inside": "إِلَيْكَ",
    "key": "47:20:19",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 282.2,
    "rA": 1.11,
    "rB": 0.7,
@@ -13558,7 +13558,7 @@
    "holder": "إِلَيْكَ",
    "inside": "يَنظُرُونَ",
    "key": "47:20:20",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 289.5,
    "rA": 0.7,
    "rB": 1.11,
@@ -13574,11 +13574,11 @@
   "word": "وَتُوَقِّرُوهُ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -13655,7 +13655,7 @@
    "holder": "بِنَبَإٍۢ",
    "inside": "فَتَبَيَّنُوٓا۟",
    "key": "49:6:7",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 80.6,
    "rA": 0.15,
    "rB": 1.56,
@@ -13705,7 +13705,7 @@
    "holder": "بِنَبَإٍۢ",
    "inside": "فَتَبَيَّنُوٓا۟",
    "key": "49:6:7",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 75.0,
    "rA": 0.15,
    "rB": 1.56,
@@ -13730,7 +13730,7 @@
    "holder": "بِنَبَإٍۢ",
    "inside": "فَتَبَيَّنُوٓا۟",
    "key": "49:6:7",
-   "mark": "hamza",
+   "mark": "hamzah",
    "x": 72.5,
    "rA": 0.15,
    "rB": 1.56,
@@ -13805,7 +13805,7 @@
    "holder": "بِنَبَإٍۢ",
    "inside": "فَتَبَيَّنُوٓا۟",
    "key": "49:6:7",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 88.1,
    "rA": 0.15,
    "rB": 1.56,
@@ -13830,7 +13830,7 @@
    "holder": "بِنَبَإٍۢ",
    "inside": "فَتَبَيَّنُوٓا۟",
    "key": "49:6:7",
-   "mark": "kasratan",
+   "mark": "tanwin_al_kasr",
    "x": 72.7,
    "rA": 0.15,
    "rB": 1.56,
@@ -13855,7 +13855,7 @@
    "holder": "لَعَنِتُّمْ",
    "inside": "ٱلْأَمْرِ",
    "key": "49:7:12",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 49.0,
    "rA": 0.95,
    "rB": 1.02,
@@ -13880,7 +13880,7 @@
    "holder": "فَأَصْلِحُوا۟",
    "inside": "إِخْوَةٌۭ",
    "key": "49:10:4",
-   "mark": "hamza",
+   "mark": "hamzah",
    "x": 200.8,
    "rA": 0.9,
    "rB": 1.13,
@@ -13905,7 +13905,7 @@
    "holder": "فَأَصْلِحُوا۟",
    "inside": "إِخْوَةٌۭ",
    "key": "49:10:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 205.3,
    "rA": 0.9,
    "rB": 1.13,
@@ -13921,11 +13921,11 @@
   "word": "أَمْرٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -13939,11 +13939,11 @@
   "word": "كُلٌّۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ]
@@ -13976,11 +13976,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "small-circle"
+   "small_circle"
   ],
   "detail": [
    [
-    "small-circle",
+    "small_circle",
     "2",
     "1"
    ],
@@ -13999,11 +13999,11 @@
   "word": "بِظَلَّـٰمٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -14026,7 +14026,7 @@
    "holder": "أَنَا۠",
    "inside": "بِظَلَّـٰمٍۢ",
    "key": "50:29:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 112.4,
    "rA": 1.01,
    "rB": 0.98,
@@ -14042,11 +14042,11 @@
   "word": "إِنَّهُۥ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -14060,11 +14060,11 @@
   "word": "ٱلْحَكِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -14078,11 +14078,11 @@
   "word": "ٱلْعَلِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -14105,7 +14105,7 @@
    "holder": "وَٱشْرَبُوا۟",
    "inside": "كُلُوا۟",
    "key": "52:19:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 109.3,
    "rA": 0.84,
    "rB": 1.44,
@@ -14121,11 +14121,11 @@
   "word": "ٱلْمُصَۣيْطِرُونَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -14139,11 +14139,11 @@
   "word": "مُسْتَمِعُهُم",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -14157,12 +14157,12 @@
   "word": "تُغْنِى",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "ligatures"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "0"
    ],
@@ -14190,7 +14190,7 @@
    "holder": "وَٱلْأُولَىٰ",
    "inside": "ٱلْـَٔاخِرَةُ",
    "key": "53:25:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 207.3,
    "rA": 0.96,
    "rB": 1.47,
@@ -14215,7 +14215,7 @@
    "holder": "فِى",
    "inside": "مَّلَكٍۢ",
    "key": "53:26:4",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 78.9,
    "rA": 1.06,
    "rB": 1.15,
@@ -14240,7 +14240,7 @@
    "holder": "ٱلسَّمَـٰوَٰتِ",
    "inside": "فِى",
    "key": "53:26:5",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 68.2,
    "rA": 0.83,
    "rB": 1.06,
@@ -14265,7 +14265,7 @@
    "holder": "ٱلسَّمَـٰوَٰتِ",
    "inside": "لَا",
    "key": "53:26:5",
-   "mark": "two-dots",
+   "mark": "two_dots",
    "x": 14.1,
    "rA": 0.83,
    "rB": 1.23,
@@ -14290,7 +14290,7 @@
    "holder": "وَٱتَّبَعُوٓا۟",
    "inside": "وَكَذَّبُوا۟",
    "key": "54:3:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 202.7,
    "rA": 0.78,
    "rB": 1.23,
@@ -14324,11 +14324,11 @@
   "word": "مَغْلُوبٌۭ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -14360,11 +14360,11 @@
   "word": "أَمْرٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -14396,11 +14396,11 @@
   "word": "إِنَّا",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -14441,7 +14441,7 @@
    "holder": "مَجْنُونٌۭ",
    "inside": "وَٱزْدُجِرَ",
    "key": "54:9:8",
-   "mark": "dammatan",
+   "mark": "tanwin_al_damm",
    "x": 106.0,
    "rA": 0.82,
    "rB": 1.32,
@@ -14491,7 +14491,7 @@
    "holder": "فَٱنتَصِرْ",
    "inside": "مَغْلُوبٌۭ",
    "key": "54:10:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 250.3,
    "rA": 0.81,
    "rB": 1.23,
@@ -14579,12 +14579,12 @@
   "word": "مَمْنُوعَةٍۢ",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "ligatures"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "4",
     "2"
    ],
@@ -14603,11 +14603,11 @@
   "word": "أَنشَأْنَـٰهُنَّ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "5",
     "4"
    ]
@@ -14621,11 +14621,11 @@
   "word": "لَّا",
   "source": "marks",
   "families": [
-   "shadda"
+   "shaddah"
   ],
   "detail": [
    [
-    "shadda",
+    "shaddah",
     "0",
     "1"
    ]
@@ -14639,11 +14639,11 @@
   "word": "بَارِدٍۢ",
   "source": "marks",
   "families": [
-   "shadda"
+   "shaddah"
   ],
   "detail": [
    [
-    "shadda",
+    "shaddah",
     "1",
     "0"
    ]
@@ -14657,12 +14657,12 @@
   "word": "كَرِيمٍ",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "ligatures"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
@@ -14690,7 +14690,7 @@
    "holder": "وَأَبَارِيقَ",
    "inside": "بِأَكْوَابٍۢ",
    "key": "56:18:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 108.2,
    "rA": 1.01,
    "rB": 1.14,
@@ -14715,7 +14715,7 @@
    "holder": "وَكَأْسٍۢ",
    "inside": "وَأَبَارِيقَ",
    "key": "56:18:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 60.6,
    "rA": 1.31,
    "rB": 1.01,
@@ -14740,7 +14740,7 @@
    "holder": "مَقْطُوعَةٍۢ",
    "inside": "وَلَا",
    "key": "56:33:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 10.2,
    "rA": 0.8,
    "rB": 0.89,
@@ -14765,7 +14765,7 @@
    "holder": "يَحْمُومٍۢ",
    "inside": "لَّا",
    "key": "56:43:3",
-   "mark": "kasratan",
+   "mark": "tanwin_al_kasr",
    "x": 27.7,
    "rA": 0.94,
    "rB": 0.89,
@@ -14808,7 +14808,7 @@
    "holder": "مِّن",
    "inside": "شَجَرٍۢ",
    "key": "56:52:4",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 70.8,
    "rA": 0.88,
    "rB": 1.3,
@@ -14824,11 +14824,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -14842,11 +14842,11 @@
   "word": "ٱلْحَكِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -14860,11 +14860,11 @@
   "word": "بِٱللَّهِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -14878,11 +14878,11 @@
   "word": "فَيُضَـٰعِفَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -14896,11 +14896,11 @@
   "word": "وَلَهُۥٓ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "2",
     "1"
    ]
@@ -14914,11 +14914,11 @@
   "word": "وَبِأَيْمَـٰنِهِم",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -14932,11 +14932,11 @@
   "word": "ٱلْفَوْزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -14950,11 +14950,11 @@
   "word": "ٱلْعَظِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -14968,11 +14968,11 @@
   "word": "نُورًۭا",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -14995,7 +14995,7 @@
    "holder": "وَٱللَّهُ",
    "inside": "ءَاتَىٰكُمْ ۗ",
    "key": "57:23:10",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 33.5,
    "rA": 0.75,
    "rB": 1.19,
@@ -15011,11 +15011,11 @@
   "word": "ٱلْإِنجِيلَ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -15029,11 +15029,11 @@
   "word": "وَرَحْمَةًۭ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -15047,11 +15047,11 @@
   "word": "ٱللَّهِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -15074,7 +15074,7 @@
    "holder": "وَٱللَّهُ",
    "inside": "وَنَسُوهُ ۚ",
    "key": "58:6:11",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 157.6,
    "rA": 0.66,
    "rB": 1.29,
@@ -15090,11 +15090,11 @@
   "word": "أَلَمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -15108,11 +15108,11 @@
   "word": "ثَلَـٰثَةٍ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ]
@@ -15169,11 +15169,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ],
@@ -15193,11 +15193,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ],
@@ -15216,11 +15216,11 @@
   "word": "ٱلرَّسُولِ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -15243,7 +15243,7 @@
    "holder": "نَّجْوَىٰ",
    "inside": "ثَلَـٰثَةٍ",
    "key": "58:7:15",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 293.6,
    "rA": 0.94,
    "rB": 0.94,
@@ -15268,7 +15268,7 @@
    "holder": "عَمِلُوا۟",
    "inside": "بِمَا",
    "key": "58:7:40",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 310.1,
    "rA": 0.74,
    "rB": 2.08,
@@ -15309,11 +15309,11 @@
   "word": "يَـٰٓأَيُّهَا",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ]
@@ -15327,11 +15327,11 @@
   "word": "لَكُمْ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -15354,7 +15354,7 @@
    "holder": "وَٱتَّقُوا۟",
    "inside": "فَٱنتَهُوا۟ ۚ",
    "key": "59:7:32",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 215.0,
    "rA": 0.81,
    "rB": 1.32,
@@ -15379,7 +15379,7 @@
    "holder": "ٱلدَّارَ",
    "inside": "تَبَوَّءُو",
    "key": "59:9:3",
-   "mark": "wasla",
+   "mark": "hamzat_al_wasl",
    "x": 114.9,
    "rA": 1.12,
    "rB": 1.13,
@@ -15404,7 +15404,7 @@
    "holder": "وَٱلْإِيمَـٰنَ",
    "inside": "ٱلدَّارَ",
    "key": "59:9:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 79.6,
    "rA": 0.89,
    "rB": 1.12,
@@ -15457,11 +15457,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ],
@@ -15480,18 +15480,18 @@
   "word": "نَسُوا۟",
   "source": "marks",
   "families": [
-   "damma",
+   "dammah",
    "dots",
-   "small-circle"
+   "small_circle"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ],
    [
-    "small-circle",
+    "small_circle",
     "0",
     "1"
    ],
@@ -15510,18 +15510,18 @@
   "word": "ٱللَّهَ",
   "source": "marks",
   "families": [
-   "damma",
+   "dammah",
    "dots",
-   "small-circle"
+   "small_circle"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ],
    [
-    "small-circle",
+    "small_circle",
     "1",
     "0"
    ],
@@ -15540,11 +15540,11 @@
   "word": "فَأَنسَىٰهُمْ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "4",
     "3"
    ]
@@ -15585,7 +15585,7 @@
    "holder": "تَكُونُوا۟",
    "inside": "كَٱلَّذِينَ",
    "key": "59:19:2",
-   "mark": "small-circle",
+   "mark": "small_circle",
    "x": 73.5,
    "rA": 1.15,
    "rB": 0.77,
@@ -15610,7 +15610,7 @@
    "holder": "كَٱلَّذِينَ",
    "inside": "نَسُوا۟",
    "key": "59:19:3",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 27.5,
    "rA": 0.77,
    "rB": 0.89,
@@ -15635,7 +15635,7 @@
    "holder": "كَٱلَّذِينَ",
    "inside": "نَسُوا۟",
    "key": "59:19:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 30.5,
    "rA": 0.77,
    "rB": 0.89,
@@ -15660,7 +15660,7 @@
    "holder": "كَٱلَّذِينَ",
    "inside": "نَسُوا۟",
    "key": "59:19:3",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 31.7,
    "rA": 0.77,
    "rB": 0.89,
@@ -15685,7 +15685,7 @@
    "holder": "ٱللَّهَ",
    "inside": "فَأَنسَىٰهُمْ",
    "key": "59:19:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 291.6,
    "rA": 1.25,
    "rB": 1.21,
@@ -15710,7 +15710,7 @@
    "holder": "ٱللَّهَ",
    "inside": "فَأَنسَىٰهُمْ",
    "key": "59:19:5",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 291.8,
    "rA": 1.25,
    "rB": 1.21,
@@ -15726,11 +15726,11 @@
   "word": "وَإِيَّاكُمْ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -15744,11 +15744,11 @@
   "word": "وَحْدَهُۥٓ",
   "source": "marks",
   "families": [
-   "kasra"
+   "kasrah"
   ],
   "detail": [
    [
-    "kasra",
+    "kasrah",
     "1",
     "0"
    ]
@@ -15780,11 +15780,11 @@
   "word": "ٱللَّهِ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -15807,7 +15807,7 @@
    "holder": "وَٱللَّهُ",
    "inside": "مَّوَدَّةًۭ ۚ",
    "key": "60:7:11",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 174.0,
    "rA": 0.7,
    "rB": 1.36,
@@ -15823,11 +15823,11 @@
   "word": "مَعْرُوفٍۢ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -15841,11 +15841,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -15859,11 +15859,11 @@
   "word": "ٱلْحَكِيمُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -15886,7 +15886,7 @@
    "holder": "ٱلْـَٔاخِرَةِ",
    "inside": "كَمَا",
    "key": "60:13:13",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 224.0,
    "rA": 1.07,
    "rB": 1.01,
@@ -15902,11 +15902,11 @@
   "word": "فَلَمَّا",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ]
@@ -15929,7 +15929,7 @@
    "holder": "نُورِهِۦ",
    "inside": "وَلَوْ",
    "key": "61:8:8",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 45.4,
    "rA": 0.67,
    "rB": 1.57,
@@ -15954,7 +15954,7 @@
    "holder": "وَلَوْ",
    "inside": "نُورِهِۦ",
    "key": "61:8:9",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 59.4,
    "rA": 1.57,
    "rB": 0.67,
@@ -16004,7 +16004,7 @@
    "holder": "تِجَـٰرَةٍۢ",
    "inside": "تُنجِيكُم",
    "key": "61:10:7",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 306.5,
    "rA": 0.82,
    "rB": 1.17,
@@ -16039,19 +16039,19 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
-   "hamza",
-   "kasra",
+   "fathah",
+   "hamzah",
+   "kasrah",
    "sukun"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "2"
    ],
    [
-    "kasra",
+    "kasrah",
     "0",
     "1"
    ],
@@ -16061,7 +16061,7 @@
     "1"
    ],
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ],
@@ -16081,14 +16081,14 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
-   "hamza",
+   "fathah",
+   "hamzah",
    "ligatures",
    "sukun"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "5",
     "3"
    ],
@@ -16098,7 +16098,7 @@
     "0"
    ],
    [
-    "hamza",
+    "hamzah",
     "2",
     "1"
    ],
@@ -16149,7 +16149,7 @@
    "holder": "وَّٱسْتَغْنَى",
    "inside": "وَتَوَلَّوا۟ ۚ",
    "key": "64:6:12",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 214.1,
    "rA": 0.91,
    "rB": 1.32,
@@ -16174,7 +16174,7 @@
    "holder": "وَّٱسْتَغْنَى",
    "inside": "وَتَوَلَّوا۟ ۚ",
    "key": "64:6:12",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 214.8,
    "rA": 0.91,
    "rB": 1.32,
@@ -16235,7 +16235,7 @@
    "holder": "وَتَغْفِرُوا۟",
    "inside": "وَتَصْفَحُوا۟",
    "key": "64:14:14",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 258.2,
    "rA": 0.99,
    "rB": 1.13,
@@ -16260,7 +16260,7 @@
    "holder": "فَإِنَّ",
    "inside": "وَتَغْفِرُوا۟",
    "key": "64:14:15",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 199.5,
    "rA": 1.28,
    "rB": 0.99,
@@ -16285,7 +16285,7 @@
    "holder": "فَإِنَّ",
    "inside": "وَتَغْفِرُوا۟",
    "key": "64:14:15",
-   "mark": "hamza",
+   "mark": "hamzah",
    "x": 199.2,
    "rA": 1.28,
    "rB": 0.99,
@@ -16310,7 +16310,7 @@
    "holder": "فَإِنَّ",
    "inside": "وَتَغْفِرُوا۟",
    "key": "64:14:15",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 200.4,
    "rA": 1.28,
    "rB": 0.99,
@@ -16326,11 +16326,11 @@
   "word": "أُجُورَهُنَّ ۖ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -16344,11 +16344,11 @@
   "word": "مِثْلَهُنَّ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -16371,7 +16371,7 @@
    "holder": "وَٱمْرَأَتَ",
    "inside": "نُوحٍۢ",
    "key": "66:10:8",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 172.4,
    "rA": 0.8,
    "rB": 1.47,
@@ -16387,11 +16387,11 @@
   "word": "ٱلْعَزِيزُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ]
@@ -16405,11 +16405,11 @@
   "word": "ٱلْغَفُورُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -16423,11 +16423,11 @@
   "word": "ٱلْقِيَـٰمَةِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -16450,7 +16450,7 @@
    "holder": "لَكُمْ",
    "inside": "أَمْ",
    "key": "68:37:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 33.8,
    "rA": 0.93,
    "rB": 1.24,
@@ -16466,11 +16466,11 @@
   "word": "حُسُومًۭا",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -16493,7 +16493,7 @@
    "holder": "وَيَقُولُونَ",
    "inside": "إِنَّهُۥ",
    "key": "68:51:10",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 251.3,
    "rA": 1.07,
    "rB": 0.6,
@@ -16518,7 +16518,7 @@
    "holder": "إِنَّهُۥ",
    "inside": "وَيَقُولُونَ",
    "key": "68:51:11",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 258.3,
    "rA": 0.6,
    "rB": 1.07,
@@ -16543,7 +16543,7 @@
    "holder": "وَعَادٌۢ",
    "inside": "ثَمُودُ",
    "key": "69:4:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 30.7,
    "rA": 0.87,
    "rB": 1.61,
@@ -16559,11 +16559,11 @@
   "word": "وَجَآءَ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -16577,11 +16577,11 @@
   "word": "ٱلْمَآءُ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -16595,11 +16595,11 @@
   "word": "ٱلسَّمَآءُ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -16614,11 +16614,11 @@
   "source": "marks",
   "families": [
    "ligatures",
-   "small-ya"
+   "small_yaa"
   ],
   "detail": [
    [
-    "small-ya",
+    "small_yaa",
     "0",
     "1"
    ],
@@ -16637,11 +16637,11 @@
   "word": "ٱقْرَءُوا۟",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -16655,11 +16655,11 @@
   "word": "أُوتِىَ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -16674,11 +16674,11 @@
   "source": "marks",
   "families": [
    "ligatures",
-   "small-ya"
+   "small_yaa"
   ],
   "detail": [
    [
-    "small-ya",
+    "small_yaa",
     "0",
     "1"
    ],
@@ -16751,11 +16751,11 @@
   "word": "قَوْمِهِۦٓ",
   "source": "marks",
   "families": [
-   "small-ya"
+   "small_yaa"
   ],
   "detail": [
    [
-    "small-ya",
+    "small_yaa",
     "0",
     "1"
    ]
@@ -16769,11 +16769,11 @@
   "word": "وَٱلْمُؤْمِنَـٰتِ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -16796,7 +16796,7 @@
    "holder": "ٱللَّهِ",
    "inside": "كَذِبًۭا",
    "key": "72:5:9",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 253.8,
    "rA": 1.26,
    "rB": 1.0,
@@ -16830,17 +16830,17 @@
   "word": "إِنِّى",
   "source": "marks",
   "families": [
-   "hamza",
-   "kasra"
+   "hamzah",
+   "kasrah"
   ],
   "detail": [
    [
-    "kasra",
+    "kasrah",
     "3",
     "2"
    ],
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -16863,7 +16863,7 @@
    "holder": "رَبِّى",
    "inside": "وَلَآ",
    "key": "72:20:4",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 65.4,
    "rA": 1.48,
    "rB": 1.39,
@@ -16879,11 +16879,11 @@
   "word": "إِلَىٰ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -16916,12 +16916,12 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
+   "fathah",
    "ligatures"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
@@ -16954,7 +16954,7 @@
    "holder": "وَٱلْمُكَذِّبِينَ",
    "inside": "وَذَرْنِى",
    "key": "73:11:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 72.9,
    "rA": 0.91,
    "rB": 1.33,
@@ -16979,7 +16979,7 @@
    "holder": "أَرْسَلْنَآ",
    "inside": "إِلَىٰ",
    "key": "73:15:8",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 257.1,
    "rA": 0.36,
    "rB": 1.58,
@@ -17079,7 +17079,7 @@
    "holder": "أَرْسَلْنَآ",
    "inside": "إِلَىٰ",
    "key": "73:15:8",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 232.8,
    "rA": 0.36,
    "rB": 1.58,
@@ -17104,7 +17104,7 @@
    "holder": "إِلَىٰ",
    "inside": "فِرْعَوْنَ",
    "key": "73:15:9",
-   "mark": "small-alef",
+   "mark": "omitted_alif",
    "x": 220.1,
    "rA": 1.58,
    "rB": 1.07,
@@ -17120,11 +17120,11 @@
   "word": "أَنَّكَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ]
@@ -17138,11 +17138,11 @@
   "word": "وَنِصْفَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -17156,11 +17156,11 @@
   "word": "وَطَآئِفَةٌۭ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "1",
     "0"
    ]
@@ -17174,11 +17174,11 @@
   "word": "مَّرْضَىٰ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -17192,11 +17192,11 @@
   "word": "ٱللَّهِ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -17210,11 +17210,11 @@
   "word": "إِيمَـٰنًۭا ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -17246,11 +17246,11 @@
   "word": "وَٱلْمُؤْمِنُونَ ۙ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "0",
     "1"
    ]
@@ -17282,11 +17282,11 @@
   "word": "يَعْلَمُ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -17327,7 +17327,7 @@
    "holder": "مَلَـٰٓئِكَةًۭ ۙ",
    "inside": "وَمَا",
    "key": "74:31:6",
-   "mark": "fathatan",
+   "mark": "tanwin_al_fath",
    "x": 209.8,
    "rA": 0.96,
    "rB": 1.01,
@@ -17352,7 +17352,7 @@
    "holder": "وَلَا",
    "inside": "يَرْتَابَ",
    "key": "74:31:22",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 34.4,
    "rA": 0.74,
    "rB": 1.02,
@@ -17377,7 +17377,7 @@
    "holder": "بِهَـٰذَا",
    "inside": "مَثَلًۭا ۚ",
    "key": "74:31:37",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 172.5,
    "rA": 0.89,
    "rB": 1.09,
@@ -17402,7 +17402,7 @@
    "holder": "رَبِّكَ",
    "inside": "إِلَّا",
    "key": "74:31:50",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 142.1,
    "rA": 1.1,
    "rB": 0.87,
@@ -17443,11 +17443,11 @@
   "word": "حُمُرٌۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "2"
    ]
@@ -17461,11 +17461,11 @@
   "word": "بِيَوْمِ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ]
@@ -17479,11 +17479,11 @@
   "word": "نَّجْمَعَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ]
@@ -17506,7 +17506,7 @@
    "holder": "شَآءَ",
    "inside": "ذَكَرَهُۥ",
    "key": "74:55:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 78.8,
    "rA": 0.74,
    "rB": 1.19,
@@ -17531,7 +17531,7 @@
    "holder": "يَذْكُرُونَ",
    "inside": "إِلَّآ",
    "key": "74:56:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 287.8,
    "rA": 1.08,
    "rB": 0.83,
@@ -17556,7 +17556,7 @@
    "holder": "إِذَا",
    "inside": "مُّخَلَّدُونَ",
    "key": "76:19:5",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 103.4,
    "rA": 0.76,
    "rB": 1.04,
@@ -17599,7 +17599,7 @@
    "holder": "وَٱشْرَبُوا۟",
    "inside": "كُلُوا۟",
    "key": "77:43:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 77.4,
    "rA": 0.84,
    "rB": 1.46,
@@ -17624,7 +17624,7 @@
    "holder": "بَعْدَهُۥ",
    "inside": "يُؤْمِنُونَ",
    "key": "77:50:3",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 71.3,
    "rA": 0.99,
    "rB": 1.18,
@@ -17640,11 +17640,11 @@
   "word": "جَزَآءًۭ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ]
@@ -17658,11 +17658,11 @@
   "word": "وِفَاقًا",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -17685,7 +17685,7 @@
    "holder": "جَزَآءًۭ",
    "inside": "وِفَاقًا",
    "key": "78:26:1",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 119.2,
    "rA": 0.81,
    "rB": 1.01,
@@ -17701,12 +17701,12 @@
   "word": "حَدِيثُ",
   "source": "marks",
   "families": [
-   "damma",
+   "dammah",
    "dots"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ],
@@ -17725,12 +17725,12 @@
   "word": "مُوسَىٰٓ",
   "source": "marks",
   "families": [
-   "damma",
+   "dammah",
    "dots"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ],
@@ -17750,13 +17750,13 @@
   "source": "marks",
   "families": [
    "dots",
-   "hamza",
-   "kasra",
+   "hamzah",
+   "kasrah",
    "sukun"
   ],
   "detail": [
    [
-    "kasra",
+    "kasrah",
     "2",
     "1"
    ],
@@ -17766,7 +17766,7 @@
     "1"
    ],
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ],
@@ -17836,7 +17836,7 @@
    "holder": "وَٱلْمَلَـٰٓئِكَةُ",
    "inside": "ٱلرُّوحُ",
    "key": "78:38:4",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 158.5,
    "rA": 0.89,
    "rB": 1.31,
@@ -17861,7 +17861,7 @@
    "holder": "حَدِيثُ",
    "inside": "مُوسَىٰٓ",
    "key": "79:15:3",
-   "mark": "two-dots",
+   "mark": "two_dots",
    "x": 254.9,
    "rA": 1.23,
    "rB": 1.01,
@@ -17911,7 +17911,7 @@
    "holder": "مُوسَىٰٓ",
    "inside": "إِذْ",
    "key": "79:15:4",
-   "mark": "small-alef",
+   "mark": "omitted_alif",
    "x": 210.5,
    "rA": 1.01,
    "rB": 0.36,
@@ -17936,7 +17936,7 @@
    "holder": "إِذْ",
    "inside": "نَادَىٰهُ",
    "key": "79:16:1",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 184.8,
    "rA": 0.36,
    "rB": 1.46,
@@ -17961,7 +17961,7 @@
    "holder": "إِذْ",
    "inside": "نَادَىٰهُ",
    "key": "79:16:1",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 185.4,
    "rA": 0.36,
    "rB": 1.46,
@@ -17986,7 +17986,7 @@
    "holder": "نَادَىٰهُ",
    "inside": "رَبُّهُۥ",
    "key": "79:16:2",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 149.9,
    "rA": 1.46,
    "rB": 1.21,
@@ -18011,7 +18011,7 @@
    "holder": "نَادَىٰهُ",
    "inside": "رَبُّهُۥ",
    "key": "79:16:2",
-   "mark": "small-alef",
+   "mark": "omitted_alif",
    "x": 154.8,
    "rA": 1.46,
    "rB": 1.21,
@@ -18036,7 +18036,7 @@
    "holder": "يَسْعَىٰ",
    "inside": "أَدْبَرَ",
    "key": "79:22:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 170.3,
    "rA": 0.8,
    "rB": 1.0,
@@ -18052,11 +18052,11 @@
   "word": "جَآءَهُ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -18070,11 +18070,11 @@
   "word": "جَآءَكَ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -18088,11 +18088,11 @@
   "word": "ذَكَرَهُۥ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -18106,11 +18106,11 @@
   "word": "شَآءَ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -18124,11 +18124,11 @@
   "word": "اَنَّا",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "1",
     "0"
    ]
@@ -18142,11 +18142,11 @@
   "word": "ٱلْمَآءَ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -18160,11 +18160,11 @@
   "word": "جَآءَتِ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -18178,11 +18178,11 @@
   "word": "ٱلْمَرْءُ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "2",
     "1"
    ]
@@ -18196,11 +18196,11 @@
   "word": "ضَاحِكَةٌۭ",
   "source": "marks",
   "families": [
-   "damma"
+   "dammah"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ]
@@ -18223,7 +18223,7 @@
    "holder": "يَذَّكَّرُ",
    "inside": "أَوْ",
    "key": "80:4:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 37.8,
    "rA": 1.12,
    "rB": 1.44,
@@ -18248,7 +18248,7 @@
    "holder": "شَآءَ",
    "inside": "ذَكَرَهُۥ",
    "key": "80:12:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 195.9,
    "rA": 0.75,
    "rB": 0.83,
@@ -18273,7 +18273,7 @@
    "holder": "ضَاحِكَةٌۭ",
    "inside": "مُّسْتَبْشِرَةٌۭ",
    "key": "80:39:1",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 217.7,
    "rA": 0.65,
    "rB": 1.14,
@@ -18290,18 +18290,18 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
+   "fathah",
    "ligatures",
-   "shadda"
+   "shaddah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "1"
    ],
    [
-    "shadda",
+    "shaddah",
     "2",
     "1"
    ],
@@ -18326,17 +18326,17 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha",
-   "shadda"
+   "fathah",
+   "shaddah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ],
    [
-    "shadda",
+    "shaddah",
     "0",
     "1"
    ],
@@ -18355,11 +18355,11 @@
   "word": "أَمِينٍۢ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "1"
    ]
@@ -18373,11 +18373,11 @@
   "word": "شَآءَ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "1",
     "0"
    ]
@@ -18400,7 +18400,7 @@
    "holder": "بِقَوْلِ",
    "inside": "هُوَ",
    "key": "81:25:3",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 135.5,
    "rA": 0.81,
    "rB": 1.42,
@@ -18434,11 +18434,11 @@
   "word": "يَوْمَئِذٍۢ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -18506,11 +18506,11 @@
   "word": "كِتَـٰبَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -18543,11 +18543,11 @@
   "source": "marks",
   "families": [
    "ligatures",
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ],
@@ -18567,11 +18567,11 @@
   "source": "marks",
   "families": [
    "ligatures",
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ],
@@ -18591,11 +18591,11 @@
   "source": "marks",
   "families": [
    "ligatures",
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ],
@@ -18614,11 +18614,11 @@
   "word": "بَلَىٰٓ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -18650,11 +18650,11 @@
   "word": "رَبَّهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -18695,7 +18695,7 @@
    "holder": "رَبَّهُۥ",
    "inside": "إِنَّ",
    "key": "84:15:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 173.8,
    "rA": 1.04,
    "rB": 1.45,
@@ -18711,23 +18711,23 @@
   "word": "وَعَمِلُوا۟",
   "source": "marks",
   "families": [
-   "damma",
-   "fatha",
-   "small-circle"
+   "dammah",
+   "fathah",
+   "small_circle"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "0",
     "2"
    ],
    [
-    "damma",
+    "dammah",
     "0",
     "1"
    ],
    [
-    "small-circle",
+    "small_circle",
     "0",
     "1"
    ]
@@ -18741,23 +18741,23 @@
   "word": "ٱلصَّـٰلِحَـٰتِ",
   "source": "marks",
   "families": [
-   "damma",
-   "small-alef",
-   "small-circle"
+   "dammah",
+   "omitted_alif",
+   "small_circle"
   ],
   "detail": [
    [
-    "damma",
+    "dammah",
     "1",
     "0"
    ],
    [
-    "small-alef",
+    "omitted_alif",
     "0",
     "2"
    ],
    [
-    "small-circle",
+    "small_circle",
     "1",
     "0"
    ]
@@ -18771,18 +18771,18 @@
   "word": "لَهُمْ",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "ligatures",
-   "small-alef"
+   "omitted_alif"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "1"
    ],
    [
-    "small-alef",
+    "omitted_alif",
     "2",
     "0"
    ],
@@ -18802,11 +18802,11 @@
   "source": "marks",
   "families": [
    "ligatures",
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "2",
     "1"
    ],
@@ -18825,11 +18825,11 @@
   "word": "وَٱللَّهُ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -18852,7 +18852,7 @@
    "holder": "ٱلصَّـٰلِحَـٰتِ",
    "inside": "وَعَمِلُوا۟",
    "key": "84:25:5",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 210.8,
    "rA": 1.13,
    "rB": 2.33,
@@ -18877,7 +18877,7 @@
    "holder": "ٱلصَّـٰلِحَـٰتِ",
    "inside": "وَعَمِلُوا۟",
    "key": "84:25:5",
-   "mark": "small-circle",
+   "mark": "small_circle",
    "x": 201.5,
    "rA": 1.13,
    "rB": 2.33,
@@ -18902,7 +18902,7 @@
    "holder": "ٱلصَّـٰلِحَـٰتِ",
    "inside": "وَعَمِلُوا۟",
    "key": "84:25:5",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 222.4,
    "rA": 1.13,
    "rB": 2.33,
@@ -18927,7 +18927,7 @@
    "holder": "ٱلصَّـٰلِحَـٰتِ",
    "inside": "وَعَمِلُوا۟",
    "key": "84:25:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 228.2,
    "rA": 1.13,
    "rB": 2.33,
@@ -18952,7 +18952,7 @@
    "holder": "لَهُمْ",
    "inside": "ٱلصَّـٰلِحَـٰتِ",
    "key": "84:25:6",
-   "mark": "small-alef",
+   "mark": "omitted_alif",
    "x": 173.5,
    "rA": 0.78,
    "rB": 1.13,
@@ -18977,7 +18977,7 @@
    "holder": "لَهُمْ",
    "inside": "ٱلصَّـٰلِحَـٰتِ",
    "key": "84:25:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 170.3,
    "rA": 0.78,
    "rB": 1.13,
@@ -19002,7 +19002,7 @@
    "holder": "وَٱلْأَرْضِ ۚ",
    "inside": "ٱلسَّمَـٰوَٰتِ",
    "key": "85:9:5",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 276.4,
    "rA": 1.09,
    "rB": 1.2,
@@ -19052,7 +19052,7 @@
    "holder": "وَٱلطَّارِقِ",
    "inside": "وَٱلسَّمَآءِ",
    "key": "86:1:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 296.7,
    "rA": 0.85,
    "rB": 1.2,
@@ -19077,7 +19077,7 @@
    "holder": "إِن",
    "inside": "فَذَكِّرْ",
    "key": "87:9:2",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 217.6,
    "rA": 0.72,
    "rB": 1.35,
@@ -19111,17 +19111,17 @@
   "word": "إِلَّا",
   "source": "marks",
   "families": [
-   "hamza",
-   "kasra"
+   "hamzah",
+   "kasrah"
   ],
   "detail": [
    [
-    "kasra",
+    "kasrah",
     "2",
     "1"
    ],
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -19135,11 +19135,11 @@
   "word": "فَأَكْرَمَهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -19153,11 +19153,11 @@
   "word": "فَيَقُولُ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "1",
     "0"
    ]
@@ -19171,11 +19171,11 @@
   "word": "كَلَّآ",
   "source": "marks",
   "families": [
-   "pause"
+   "waqf"
   ],
   "detail": [
    [
-    "pause",
+    "waqf",
     "1",
     "0"
    ]
@@ -19190,11 +19190,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "3",
     "2"
    ],
@@ -19213,11 +19213,11 @@
   "word": "ٱلْمُطْمَئِنَّةُ",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -19240,7 +19240,7 @@
    "holder": "إِطْعَـٰمٌۭ",
    "inside": "أَوْ",
    "key": "90:14:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 265.7,
    "rA": 0.99,
    "rB": 1.59,
@@ -19265,7 +19265,7 @@
    "holder": "ٱنۢبَعَثَ",
    "inside": "أَشْقَىٰهَا",
    "key": "91:12:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 132.6,
    "rA": 0.25,
    "rB": 1.67,
@@ -19290,7 +19290,7 @@
    "holder": "ٱنۢبَعَثَ",
    "inside": "أَشْقَىٰهَا",
    "key": "91:12:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 142.5,
    "rA": 0.25,
    "rB": 1.67,
@@ -19315,7 +19315,7 @@
    "holder": "ٱنۢبَعَثَ",
    "inside": "أَشْقَىٰهَا",
    "key": "91:12:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 148.1,
    "rA": 0.25,
    "rB": 1.67,
@@ -19340,7 +19340,7 @@
    "holder": "ٱنۢبَعَثَ",
    "inside": "أَشْقَىٰهَا",
    "key": "91:12:2",
-   "mark": "three-dots",
+   "mark": "three_dots",
    "x": 134.1,
    "rA": 0.25,
    "rB": 1.67,
@@ -19393,11 +19393,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "2",
     "3"
    ],
@@ -19461,7 +19461,7 @@
    "holder": "إِذَا",
    "inside": "مَالُهُۥٓ",
    "key": "92:11:5",
-   "mark": "hamza",
+   "mark": "hamzah",
    "x": 116.7,
    "rA": 0.97,
    "rB": 1.31,
@@ -19486,7 +19486,7 @@
    "holder": "تَرَدَّىٰٓ",
    "inside": "إِذَا",
    "key": "92:11:6",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 93.9,
    "rA": 0.74,
    "rB": 0.97,
@@ -19511,7 +19511,7 @@
    "holder": "تَرَدَّىٰٓ",
    "inside": "إِذَا",
    "key": "92:11:6",
-   "mark": "shadda",
+   "mark": "shaddah",
    "x": 88.1,
    "rA": 0.74,
    "rB": 0.97,
@@ -19552,11 +19552,11 @@
   "word": "صَلَّىٰٓ",
   "source": "marks",
   "families": [
-   "small-alef"
+   "omitted_alif"
   ],
   "detail": [
    [
-    "small-alef",
+    "omitted_alif",
     "0",
     "1"
    ]
@@ -19570,11 +19570,11 @@
   "word": "أَرَءَيْتَ",
   "source": "marks",
   "families": [
-   "kasra"
+   "kasrah"
   ],
   "detail": [
    [
-    "kasra",
+    "kasrah",
     "1",
     "0"
    ]
@@ -19588,11 +19588,11 @@
   "word": "إِن",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -19606,11 +19606,11 @@
   "word": "لَئِن",
   "source": "marks",
   "families": [
-   "hamza"
+   "hamzah"
   ],
   "detail": [
    [
-    "hamza",
+    "hamzah",
     "0",
     "1"
    ]
@@ -19633,7 +19633,7 @@
    "holder": "أَرَءَيْتَ",
    "inside": "إِن",
    "key": "96:13:1",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 297.1,
    "rA": 1.17,
    "rB": 0.45,
@@ -19709,11 +19709,11 @@
   "word": "أُو۟لَـٰٓئِكَ",
   "source": "marks",
   "families": [
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ]
@@ -19770,11 +19770,11 @@
   "source": "marks",
   "families": [
    "ligatures",
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "1",
     "0"
    ],
@@ -19793,11 +19793,11 @@
   "word": "ٱلَّذِينَ",
   "source": "marks",
   "families": [
-   "wasla"
+   "hamzat_al_wasl"
   ],
   "detail": [
    [
-    "wasla",
+    "hamzat_al_wasl",
     "0",
     "1"
    ]
@@ -19811,12 +19811,12 @@
   "word": "بِأَنَّ",
   "source": "marks",
   "families": [
-   "fatha",
+   "fathah",
    "ligatures"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "4",
     "2"
    ],
@@ -19836,11 +19836,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ],
@@ -19860,11 +19860,11 @@
   "source": "marks",
   "families": [
    "dots",
-   "fatha"
+   "fathah"
   ],
   "detail": [
    [
-    "fatha",
+    "fathah",
     "1",
     "2"
    ],
@@ -19892,7 +19892,7 @@
    "holder": "ٱلَّذِينَ",
    "inside": "إِنَّ",
    "key": "98:6:2",
-   "mark": "wasla",
+   "mark": "hamzat_al_wasl",
    "x": 311.5,
    "rA": 1.52,
    "rB": 0.41,
@@ -19917,7 +19917,7 @@
    "holder": "وَٱلْمُشْرِكِينَ",
    "inside": "فِى",
    "key": "98:6:7",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 82.4,
    "rA": 1.33,
    "rB": 0.94,
@@ -19967,7 +19967,7 @@
    "holder": "أُو۟لَـٰٓئِكَ",
    "inside": "هُمْ",
    "key": "98:6:13",
-   "mark": "hamza",
+   "mark": "hamzah",
    "x": 232.5,
    "rA": 1.61,
    "rB": 1.22,
@@ -19992,7 +19992,7 @@
    "holder": "أُو۟لَـٰٓئِكَ",
    "inside": "هُمْ",
    "key": "98:6:13",
-   "mark": "kasra",
+   "mark": "kasrah",
    "x": 232.7,
    "rA": 1.61,
    "rB": 1.22,
@@ -20017,7 +20017,7 @@
    "holder": "أُو۟لَـٰٓئِكَ",
    "inside": "هُمْ",
    "key": "98:6:13",
-   "mark": "small-alef",
+   "mark": "omitted_alif",
    "x": 238.0,
    "rA": 1.61,
    "rB": 1.22,
@@ -20042,7 +20042,7 @@
    "holder": "هُمْ",
    "inside": "شَرُّ",
    "key": "98:6:14",
-   "mark": "damma",
+   "mark": "dammah",
    "x": 205.9,
    "rA": 1.22,
    "rB": 1.2,
@@ -20067,7 +20067,7 @@
    "holder": "شَرُّ",
    "inside": "هُمْ",
    "key": "98:6:15",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 221.2,
    "rA": 1.2,
    "rB": 1.22,
@@ -20092,7 +20092,7 @@
    "holder": "ٱلْبَرِيَّةِ",
    "inside": "شَرُّ",
    "key": "98:6:16",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 187.4,
    "rA": 0.69,
    "rB": 1.2,
@@ -20117,7 +20117,7 @@
    "holder": "ءَامَنُوا۟",
    "inside": "ٱلَّذِينَ",
    "key": "98:7:3",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 45.7,
    "rA": 0.65,
    "rB": 1.45,
@@ -20142,7 +20142,7 @@
    "holder": "رَبَّكَ",
    "inside": "أَوْحَىٰ",
    "key": "99:5:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 52.7,
    "rA": 0.79,
    "rB": 1.52,
@@ -20192,7 +20192,7 @@
    "holder": "ٱلْإِنسَـٰنَ",
    "inside": "لِرَبِّهِۦ",
    "key": "100:6:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 290.6,
    "rA": 0.65,
    "rB": 1.01,
@@ -20217,7 +20217,7 @@
    "holder": "ٱلْإِنسَـٰنَ",
    "inside": "لِرَبِّهِۦ",
    "key": "100:6:2",
-   "mark": "fatha",
+   "mark": "fathah",
    "x": 278.4,
    "rA": 0.65,
    "rB": 1.01,
@@ -20267,7 +20267,7 @@
    "holder": "ٱلْإِنسَـٰنَ",
    "inside": "لِرَبِّهِۦ",
    "key": "100:6:2",
-   "mark": "small-alef",
+   "mark": "omitted_alif",
    "x": 285.3,
    "rA": 0.65,
    "rB": 1.01,
@@ -20326,11 +20326,11 @@
   "word": "إِنَّهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]
@@ -20344,11 +20344,11 @@
   "word": "لَّهُۥ",
   "source": "marks",
   "families": [
-   "small-waw"
+   "small_waw"
   ],
   "detail": [
    [
-    "small-waw",
+    "small_waw",
     "0",
     "1"
    ]

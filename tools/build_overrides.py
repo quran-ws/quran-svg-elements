@@ -38,7 +38,7 @@ def main():
             continue
         if decisions.get(e["id"]) == "rejected":
             continue
-        moves.setdefault(e["page"], {})[e["payload"]["eid"]] = (
+        moves.setdefault(e["page"], {})[e["payload"]["element_id"]] = (
             e["payload"]["to"], e["payload"].get("box"))
     if not moves:
         print("no move-element edits found")

@@ -65,7 +65,7 @@ from svg_lines import mul, parse_transform                        # noqa: E402
 ROOT = (os.environ.get("QSVG_ROOT")
         or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-MUSHAFS = ("douri", "hafs", "qalon", "shubah", "warsh")
+MUSHAFS = ("duri", "hafs", "qalun", "shubah", "warsh")
 BLOCK = '<g id="ayah_markers"'
 GTAG = re.compile(r"<g\b([^>]*)>", re.S)
 CHILD = re.compile(r"<g\b([^>]*)>((?:(?!<g\b).)*?)</g>", re.S)
@@ -119,7 +119,7 @@ def bbox_of(d, T):
     return ((x1 + x2) / 2.0, (y1 + y2) / 2.0, x2 - x1, y2 - y1)
 
 
-def markers_of(svg):
+def marks_of(svg):
     """Pair each ornament group with the numeral group that follows it.
 
     Both are direct children of `<g id="ayah_markers">` and hold exactly one
@@ -152,7 +152,7 @@ def markers_of(svg):
             "scaled": "scale(" in t.group(1),
             "t": t.group(1),
             # A group with no <path> is a numeral the artwork failed to draw
-            # (11 of them, all in Qalon); it is carried so the pairing stays in
+            # (11 of them, all in Qalun); it is carried so the pairing stays in
             # step, and reported rather than measured.
             "d": dm.group(1) if dm else None,
             "xy": AYAH_XY.search(attrs),
@@ -178,7 +178,7 @@ def markers_of(svg):
 def measure_file(args):
     path, tol = args
     svg = open(path, encoding="utf-8").read()
-    pairs, A, unpaired = markers_of(svg)
+    pairs, A, unpaired = marks_of(svg)
     ascale = math.hypot(A[0], A[1]) or 1.0
     recs, edits, inkless = [], [], 0
     for run, num in pairs:

@@ -147,7 +147,7 @@ def scan_page(pg):
         rows.append({
             "page": pg, "key": "%d:%d:%d" % (word["surah"], word["ayah"],
                                              word["pos"]),
-            "form": word["uthmani"], "n": n, "runs": runs,
+            "form": word["rasm_uthmani"], "n": n, "runs": runs,
             "x": round(min(xs), 2) if xs else None,
         })
     return pg, rows

@@ -11,7 +11,7 @@
  * first ayah of each page is enough to answer pageOf() by binary search.
  */
 
-const num = aid => { const [s, a] = String(aid).split(':').map(Number); return s * 1000 + a; };
+const num = ayahKey => { const [s, a] = String(ayahKey).split(':').map(Number); return s * 1000 + a; };
 
 export class MushafAtlas {
   constructor(data) {
@@ -25,8 +25,8 @@ export class MushafAtlas {
   get edition() { return this.data.edition; }
 
   /** Which page draws this ayah? */
-  pageOf(aid) {
-    const k = num(aid);
+  pageOf(ayahKey) {
+    const k = num(ayahKey);
     const f = this._first;
     if (k < f[0]) return null;
     let lo = 0, hi = f.length - 1;
@@ -34,7 +34,7 @@ export class MushafAtlas {
     return lo + 1;
   }
   /** Which page is a whole word key on? */
-  pageOfWord(wid) { const p = String(wid).split(':'); return this.pageOf(p[0] + ':' + p[1]); }
+  pageOfWord(wordKey) { const p = String(wordKey).split(':'); return this.pageOf(p[0] + ':' + p[1]); }
 
   /** The first and last ayah drawn on a page. */
   pageRange(n) {
@@ -61,7 +61,7 @@ export class MushafAtlas {
   division(kind, n) { return (this.data[kind] || []).find(d => d.n === Number(n)) || null; }
   juz(n) { return this.division('juz', n); }
   hizb(n) { return this.division('hizb', n); }
-  rub(n) { return this.division('rub', n); }
+  rubu_al_hizb(n) { return this.division('rubu_al_hizb', n); }
   nisf(n) { return this.division('nisf', n); }
 
   /** [firstPage, lastPage] of a juz. */
@@ -72,15 +72,15 @@ export class MushafAtlas {
   }
 
   /** Which juz / hizb / rubʿ is this ayah in? */
-  divisionAt(kind, aid) {
-    const k = num(aid), list = this.data[kind] || [];
+  divisionAt(kind, ayahKey) {
+    const k = num(ayahKey), list = this.data[kind] || [];
     let out = null;
-    for (const d of list) { if (num(d.aid) <= k) out = d; else break; }
+    for (const d of list) { if (num(d.ayahKey) <= k) out = d; else break; }
     return out;
   }
-  juzAt(aid) { return this.divisionAt('juz', aid); }
-  hizbAt(aid) { return this.divisionAt('hizb', aid); }
-  rubAt(aid) { return this.divisionAt('rub', aid); }
+  juzAt(ayahKey) { return this.divisionAt('juz', ayahKey); }
+  hizbAt(ayahKey) { return this.divisionAt('hizb', ayahKey); }
+  rubuAlHizbAt(ayahKey) { return this.divisionAt('rubu_al_hizb', ayahKey); }
 }
 
 export async function loadAtlas(url = 'atlas.json', { fetch: f = null } = {}) {

@@ -1,6 +1,6 @@
 # Semantic Decomposition of the Mushaf Pages — التفكيك الدلالي لصفحات المصحف
 
-**In one paragraph:** What we did is convert the original page SVG from one big drawing into individual elements, then regroup those elements at the word level (each word tagged surah:ayah:word with its verified text) and at the symbol level — every fatha, kasra, damma, shadda, sukun, dot, madd, waqf sign, and the rest named individually. Nothing is redrawn: the 604 pages stay pixel-identical to the original, but become machine-readable down to the single diacritic, verified at 100% mark coverage and human-reviewed through a dedicated platform.
+**In one paragraph:** What we did is convert the original page SVG from one big drawing into individual elements, then regroup those elements at the word level (each word tagged surah:ayah:word with its verified text) and at the symbol level — every fathah, kasrah, dammah, shaddah, sukun, dot, madd, waqf sign, and the rest named individually. Nothing is redrawn: the 604 pages stay pixel-identical to the original, but become machine-readable down to the single diacritic, verified at 100% mark coverage and human-reviewed through a dedicated platform.
 
 **في فقرة واحدة:** ما قمنا بعمله هو تحويل ملف الـ SVG الأصلي لكل صفحة من رسمٍ واحد كبير إلى عناصر مستقلة، ثم إعادة تجميع هذه العناصر على مستوى الكلمات (كل كلمة موسومة بسورة:آية:كلمة مع نصّها الموثَّق) وعلى مستوى الرموز — فكل فتحة وكسرة وضمة وشدّة وسكون ونقطة ومدّة وعلامة وقف وغيرها لها اسمها الخاص. لا يُعاد رسم أي شيء: تبقى الصفحات الـ604 مطابقة للأصل بكسلًا بكسل، لكنها تصبح مقروءة آليًا حتى مستوى العلامة الواحدة، بتغطية موثَّقة 100% للعلامات ومراجعةٍ بشرية عبر منصة مخصصة.
 
@@ -10,7 +10,7 @@
 
 ### What is this?
 
-This project takes the page SVGs of the printed KFGQPC mushaf (in `mushafs/*/svg/`) and gives every piece of ink on every page a **meaning**: which word it belongs to, whether it is a letter body or a mark, and — for marks — exactly which mark it is (fatha, kasra, damma, shadda, sukun, dots, maddah, wasla, dagger-alef, waqf signs, hizb, sajdah…). The original artwork is never redrawn: every output page renders **pixel-identical** to the source.
+This project takes the page SVGs of the printed KFGQPC mushaf (in `mushafs/*/svg/`) and gives every piece of ink on every page a **meaning**: which word it belongs to, whether it is a letter body or a mark, and — for marks — exactly which mark it is (fathah, kasrah, dammah, shaddah, sukun, dots, maddah, hamzat_al_wasl, dagger-alef, waqf signs, hizb, sajdah…). The original artwork is never redrawn: every output page renders **pixel-identical** to the source.
 
 ### Why?
 
@@ -21,7 +21,7 @@ A page image can only be displayed. A decomposed page can be *used*: per-word hi
 1. **Element splitting** (`tools/split_line_elements.py`) — each page path is split into its connected ink pieces, preserving `evenodd` holes. A pixel verifier proves the split renders identically (~3.58M elements across all editions).
 2. **Classification** (`tools/assign_words.py`) — each element becomes a *body* (letter ink) or a *mark*, decided first by its **shape signature** (a scale-free outline fingerprint looked up in a visually-verified table, `.cache/marks/labels.json`, ~3,900 shapes), then by geometry (baseline position, size) for unknown shapes. Guards keep letter twins apart from their mark look-alikes (a dagger-alef vs. a full alef, a sukun ring vs. a final heh).
 3. **Word assignment** — the text of each line comes verbatim from the quran.com API (cached, never typed by hand), with **line breaks taken from the QCF v2 page fonts**, which replicate the printed mushaf exactly. A dynamic program splits the line's ink into one cluster per word using letter-level alignment, inter-word gaps, ayah-polygon constraints, and a **width prior from the QCF fonts** (each word's true advance in the page font). Repair passes fix sweeping tails (a qaf bowl under the next word) and trailing-alef ownership.
-4. **Mark labeling** — every mark is labeled by its shape signature; welded stacks are split back into single marks; position rules distinguish fatha from kasra; tanween pairs are composed. Each mark carries `data-sig`, so one reviewed decision about a shape applies across the whole mushaf.
+4. **Mark labeling** — every mark is labeled by its shape signature; welded stacks are split back into single marks; position rules distinguish fathah from kasrah; tanwin pairs are composed. Each mark carries `data-sig`, so one reviewed decision about a shape applies across the whole mushaf.
 
 ### Verification (current status)
 

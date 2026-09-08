@@ -18,7 +18,7 @@ def run(pipe, pg):
         bods=[e for e in els if e["kind"]=="body"]
         if not bods: continue
         out["%d:%d:%d"%(w["surah"],w["ayah"],w["pos"])]=(
-            w["uthmani"], min(e["x1"] for e in bods), max(e["x2"] for e in bods),
+            w["rasm_uthmani"], min(e["x1"] for e in bods), max(e["x2"] for e in bods),
             len(bods), bods[0].get("line"))
     return out
 pg=int(sys.argv[1]); keys=sys.argv[2:]

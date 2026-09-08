@@ -76,10 +76,10 @@ def cases(pg):
                 "gap": round(-ovl(r["b"], e), 1),
                 "reachable": ovl(t["b"], e) >= -REACH,
                 "e": [e["x1"], e["y1"], e["x2"], e["y2"]],
-                "holder": {"k": r["k"], "t": r["w"]["uthmani"], "ln": r["ln"],
+                "holder": {"k": r["k"], "t": r["w"]["rasm_uthmani"], "ln": r["ln"],
                            "box": [min(x["x1"] for x in r["b"]), min(x["y1"] for x in r["b"]),
                                    max(x["x2"] for x in r["b"]), max(x["y2"] for x in r["b"])]},
-                "target": {"k": t["k"], "t": t["w"]["uthmani"], "ln": t["ln"],
+                "target": {"k": t["k"], "t": t["w"]["rasm_uthmani"], "ln": t["ln"],
                            "box": [min(x["x1"] for x in t["b"]), min(x["y1"] for x in t["b"]),
                                    max(x["x2"] for x in t["b"]), max(x["y2"] for x in t["b"])]}})
     return out

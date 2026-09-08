@@ -10,10 +10,10 @@
     "24:3:7 مُشْرِكَةًۭ",
     "24:4:3 ٱلْمُحْصَنَـٰتِ"
    ],
-   "reported": "floating harakat far from the text; each word took diacritics from words far away",
+   "reported": "floating harakahs far from the text; each word took diacritics from words far away",
    "cause": "ownership, not naming — a mark filed under a word whose ink is elsewhere",
    "status": "fixed",
-   "detail": "The floating-diacritic pass resolved most of the line, and ٱلْمُحْصَنَـٰتِ's missing fatha was found by the label-vs-kind rule: two elements the shape classifier had already named `fatha`, the right size for one, in a word short of one. The word is now exact."
+   "detail": "The floating-diacritic pass resolved most of the line, and ٱلْمُحْصَنَـٰتِ's missing fathah was found by the label-vs-kind rule: two elements the shape classifier had already named `fathah`, the right size for one, in a word short of one. The word is now exact."
   },
   {
    "id": 2,
@@ -22,7 +22,7 @@
     "26:14:5 أَن",
     "26:14:6 يَقْتُلُونِ"
    ],
-   "reported": "يقتلون stole a fatha from أن",
+   "reported": "يقتلون stole a fathah from أن",
    "cause": "same floating-mark family",
    "status": "fixed",
    "detail": "Both words now match their spelling exactly."
@@ -35,17 +35,17 @@
     "86:1:2 وَٱلطَّارِقِ",
     "86:11:1 وَٱلسَّمَآءِ"
    ],
-   "reported": "السماء has an extra fatha and lost the kasra sitting directly under its hamza; the kasra leaked to the next word and was named fatha",
-   "cause": "a mutual exchange across a word boundary. Both halves had to move together, but the reverse half was never proposed: the guard skipped any mark whose `line` TAG differed from its word's, and this kasra hangs low enough to be tagged to the next line while being drawn inside its own line's band.",
+   "reported": "السماء has an extra fathah and lost the kasrah sitting directly under its hamzah; the kasrah leaked to the next word and was named fathah",
+   "cause": "a mutual exchange across a word boundary. Both halves had to move together, but the reverse half was never proposed: the guard skipped any mark whose `line` TAG differed from its word's, and this kasrah hangs low enough to be tagged to the next line while being drawn inside its own line's band.",
    "status": "fixed",
-   "detail": "The guard now tests POSITION against the line's measured y band (±10u, from a 160x cliff in the distribution) instead of the tag. 86:1:1 fatha 3/3 kasra 1/1, 86:1:2 fatha 2/2 kasra 2/2, 86:11:1 fatha 3/3 kasra 1/1, none floating."
+   "detail": "The guard now tests POSITION against the line's measured y band (±10u, from a 160x cliff in the distribution) instead of the tag. 86:1:1 fathah 3/3 kasrah 1/1, 86:1:2 fathah 2/2 kasrah 2/2, 86:11:1 fathah 3/3 kasrah 1/1, none floating."
   },
   {
    "id": 4,
    "page": null,
    "words": [],
-   "reported": "do you audit the expected number of hamzas per word?",
-   "cause": "the acceptance test counted marks per GROUP, so a fatha and a kasra could cancel",
+   "reported": "do you audit the expected number of hamzahs per word?",
+   "cause": "the acceptance test counted marks per GROUP, so a fathah and a kasrah could cancel",
    "status": "fixed",
    "detail": "Counting is per FAMILY now, which is what exposes an exchange."
   },
@@ -53,7 +53,7 @@
    "id": 5,
    "page": null,
    "words": [],
-   "reported": "'a mutual swap' — I challenge that; compare to the expected number of fathas, kasras etc",
+   "reported": "'a mutual swap' — I challenge that; compare to the expected number of fathahs, kasrahs etc",
    "cause": "correct challenge; the counts balanced only through two compensating mislabels",
    "status": "fixed",
    "detail": "Per-family budgets, plus re-deriving a moved mark's name from where it lands."
@@ -86,7 +86,7 @@
    "reported": "collect a sample of the waqf disagreements and decide which text version to use; test quranpedia mushaf 2, quran.com, QUL",
    "cause": "n/a",
    "status": "answered",
-   "detail": "Measured against MushafDatabase's labels over 77,082 words: uthmani+KFGQPC-waqf 99.974%, text_uthmani 99.729%, text_qpc_hafs 91.303%, quranpedia m2 86.545%, imlaei 65.100%, indopak 32.705%. No single source is right; the split the pipeline uses is. QUL's bulk downloads need a sign-in."
+   "detail": "Measured against MushafDatabase's labels over 77,082 words: rasm_uthmani+KFGQPC-waqf 99.974%, text_uthmani 99.729%, text_qpc_hafs 91.303%, quranpedia m2 86.545%, rasm_imlai 65.100%, indopak 32.705%. No single source is right; the split the pipeline uses is. QUL's bulk downloads need a sign-in."
   },
   {
    "id": 9,
@@ -97,10 +97,10 @@
     "26:97:5 ضَلَـٰلٍۢ",
     "26:97:6 مُّبِينٍ"
    ],
-   "reported": "كنا took a fatha and dot from لفي; لفي took marks from ضلال which is not on the same line; ضلال stole the whole word مبين; مبين holds only one mark",
+   "reported": "كنا took a fathah and dot from لفي; لفي took marks from ضلال which is not on the same line; ضلال stole the whole word مبين; مبين holds only one mark",
    "cause": "ضَلَـٰلٍۢ held both words' letter ink. مُّبِينٍ was one of only 4 body-less words in the mushaf.",
    "status": "mostly fixed",
-   "detail": "Split at the body boundary (QCF widths said 0.54, the gap gave 0.55) and recorded as 8 geometry-keyed overrides. مُّبِينٍ and كُنَّا are now exact; ضَلَـٰلٍۢ still lacks its kasratan, whose two strokes sit in لَفِى and need the tanween pairing logic."
+   "detail": "Split at the body boundary (QCF widths said 0.54, the gap gave 0.55) and recorded as 8 geometry-keyed overrides. مُّبِينٍ and كُنَّا are now exact; ضَلَـٰلٍۢ still lacks its tanwin_al_kasr, whose two strokes sit in لَفِى and need the tanwin pairing logic."
   },
   {
    "id": 10,
@@ -110,9 +110,9 @@
     "84:6:1 يَـٰٓأَيُّهَا"
    ],
    "reported": "are those flagged and fixed?",
-   "cause": "one defect, not two: مُدَّتْ's ت (11.2 x 7.1 units) was read as a fatha and given to يَـٰٓأَيُّهَا on the line below. مُدَّتْ then measures 63% of its expected width and يَـٰٓأَيُّهَا counts 3 pieces where 2 are allowed.",
+   "cause": "one defect, not two: مُدَّتْ's ت (11.2 x 7.1 units) was read as a fathah and given to يَـٰٓأَيُّهَا on the line below. مُدَّتْ then measures 63% of its expected width and يَـٰٓأَيُّهَا counts 3 pieces where 2 are allowed.",
    "status": "fixed",
-   "detail": "One exchange, resolved in both directions. The 80-unit blob is مُدَّتْ's ت — too big to be a fatha (median 25.1), drawn in line 5's band, touching a word there short of exactly one joining piece: three proofs agreeing. Giving it back took مُدَّتْ from 14.1 units to 25.8 against 22.3 expected. يَـٰٓأَيُّهَا then took back its own third fatha, a 12.6-unit element the classifier had named `fatha` but kept as a letter. Both words now exact. Three sibling pages (p467, p529, p576) carry the identical defect and are corrected by the same rule."
+   "detail": "One exchange, resolved in both directions. The 80-unit blob is مُدَّتْ's ت — too big to be a fathah (median 25.1), drawn in line 5's band, touching a word there short of exactly one joining piece: three proofs agreeing. Giving it back took مُدَّتْ from 14.1 units to 25.8 against 22.3 expected. يَـٰٓأَيُّهَا then took back its own third fathah, a 12.6-unit element the classifier had named `fathah` but kept as a letter. Both words now exact. Three sibling pages (p467, p529, p576) carry the identical defect and are corrected by the same rule."
   },
   {
    "id": 11,
@@ -121,9 +121,9 @@
     "84:25:5 ٱلصَّـٰلِحَـٰتِ"
    ],
    "reported": "الصالحات stole a dot from the ayah mark below it",
-   "cause": "correct — a 2.13 x 2.07 blob labelled kasra, sitting 38 units below the word's letters, where its two real kasras are 7.0 and 7.8 wide",
+   "cause": "correct — a 2.13 x 2.07 blob labelled kasrah, sitting 38 units below the word's letters, where its two real kasrahs are 7.0 and 7.8 wide",
    "status": "fixed",
-   "detail": "Confirmed exactly as reported. The blob is 2.13x2.07 — area 4.4 against a kasra median of 21.2 — and falls in NO line's band at all, sitting in the gap between lines where the ayah marker is. Too small to be the mark it is called and in no word's territory, so it is no longer counted. The word's real missing fatha came back through the label-vs-kind rule. ٱلصَّـٰلِحَـٰتِ is now exact."
+   "detail": "Confirmed exactly as reported. The blob is 2.13x2.07 — area 4.4 against a kasrah median of 21.2 — and falls in NO line's band at all, sitting in the gap between lines where the ayah marker is. Too small to be the mark it is called and in no word's territory, so it is no longer counted. The word's real missing fathah came back through the label-vs-kind rule. ٱلصَّـٰلِحَـٰتِ is now exact."
   },
   {
    "id": 12,
@@ -140,8 +140,8 @@
    "words": [
     "86:1:1 وَٱلسَّمَآءِ"
    ],
-   "reported": "we didn't fix the p591 issue — reading the output, the ligature holds the hamza as a body, and the kasra was leaked to the next word and named fatha",
-   "cause": "my own guard. The orphan pass skipped any mark whose `line` TAG differed from its word's, and this kasra hangs low enough to be tagged to the next line while being drawn inside its own line's band. Only one half of the exchange was ever proposed, so the pair could never resolve.",
+   "reported": "we didn't fix the p591 issue — reading the output, the ligature holds the hamzah as a body, and the kasrah was leaked to the next word and named fathah",
+   "cause": "my own guard. The orphan pass skipped any mark whose `line` TAG differed from its word's, and this kasrah hangs low enough to be tagged to the next line while being drawn inside its own line's band. Only one half of the exchange was ever proposed, so the pair could never resolve.",
    "status": "fixed",
    "detail": "The guard now tests POSITION against the line's measured y band (±10u, from a 160x cliff in the distribution) instead of the tag. Also fixed 86:11:1, the second instance on the same page, and took the interval audit from 112 flags to 105."
   },
@@ -158,10 +158,10 @@
    "id": 15,
    "page": null,
    "words": [],
-   "reported": "many three-dots hold the visual of two dots and the third dot above is unlabeled; same for fathatan/kasratan; same for pause ج, which doesn't have its dot in the same group",
-   "cause": "all three are the same display bug as #14 — the second stroke of a tanween, the third blob of a three-dots and the dot inside a ج are all welded pieces carrying `data-mark-part`",
+   "reported": "many three_dots hold the visual of two dots and the third dot above is unlabeled; same for tanwin_al_fath/tanwin_al_kasr; same for waqf ج, which doesn't have its dot in the same group",
+   "cause": "all three are the same display bug as #14 — the second stroke of a tanwin, the third blob of a three_dots and the dot inside a ج are all welded pieces carrying `data-mark-part`",
    "status": "fixed",
-   "detail": "The grouping itself was verified correct: every one of 32 pause masters sampled has all its welded pieces in the SAME ligature group. Nothing had to move; the platform had to stop misreporting them."
+   "detail": "The grouping itself was verified correct: every one of 32 waqf masters sampled has all its welded pieces in the SAME ligature group. Nothing had to move; the platform had to stop misreporting them."
   },
   {
    "id": 16,
@@ -178,10 +178,10 @@
    "words": [
     "86:1:1 وَٱلسَّمَآءِ"
    ],
-   "reported": "the kasra is under the tag data-text=\"وا\" not \"لسما\", and that group now holds لسماء not لسما — either move the kasra and rename, or give the hamza its own group with its kasra. How many similar cases are in the data?",
-   "cause": "two separate faults. The first is mine: the four passes I added this session appended a moved mark to `at[0]`, the word's FIRST ligature group, instead of the group whose ink it sits over — `_omove`, which every older mover uses, picks the nearest atom. The second predates them: `segment_word` cuts وَٱلسَّمَآءِ into ['و','ا','لسما','ء'] and the hamza's ink is emitted inside the `لسما` group, leaving `ء` empty.",
+   "reported": "the kasrah is under the tag data-text=\"وا\" not \"لسما\", and that group now holds لسماء not لسما — either move the kasrah and rename, or give the hamzah its own group with its kasrah. How many similar cases are in the data?",
+   "cause": "two separate faults. The first is mine: the four passes I added this session appended a moved mark to `at[0]`, the word's FIRST ligature group, instead of the group whose ink it sits over — `_omove`, which every older mover uses, picks the nearest atom. The second predates them: `segment_word` cuts وَٱلسَّمَآءِ into ['و','ا','لسما','ء'] and the hamzah's ink is emitted inside the `لسما` group, leaving `ء` empty.",
    "status": "partly fixed",
-   "detail": "Routing fixed — all four passes now call `put_in_ligature()`, the same nearest-atom rule, so the kasra lands with the hamza. The empty `ء` group is a real defect and 18 words share it; the audit that finds them is now `tools/audit_ligatures.py`. Correcting it is not written."
+   "detail": "Routing fixed — all four passes now call `put_in_ligature()`, the same nearest-atom rule, so the kasrah lands with the hamzah. The empty `ء` group is a real defect and 18 words share it; the audit that finds them is now `tools/audit_ligatures.py`. Correcting it is not written."
   },
   {
    "id": 18,
@@ -193,9 +193,9 @@
     "9:102:6 صَـٰلِحًۭا",
     "+8 more iqlab words"
    ],
-   "reported": "our quran svg version draws iqlab as SINGLE diacritic + meem, not double diacritic (tanween pair) + meem — audit every place that assumes otherwise",
-   "cause": "confirmed. uthmani writes tanween+meem (U+064C U+06E2), the KFGQPC text of this print writes single haraka+meem (U+064F U+06E2), the ink draws the single stroke. assign_words.py:4917 knows this but exits early ('already named') before rescuing the meem when the shape table has already named the tanween — the meem stays counted as a letter piece: the 12 CERTAIN ligature-surplus words. Full site survey in docs/defects/iqlab_notation.md",
-   "status": "FIXED 2026-08-26: _IQTAN no longer exits early; the next-word meem claim may claim a word's own piece; a late position-aware self-rescue (QSVG_IQLATE) runs before QSVG_IQFIX, anchored on the word's own tanween. 10 of 12 surplus words fixed (p203/p219 were pen-lift false positives, see item 19). Bench cases added for p143/p222. Side effect: +32 interval flags = naming visibility on tight-kerned iqlab pairs, mark budgets clean; p437 بِيضٌۭ holds a second م-shaped piece at its word START — needs a visual verdict."
+   "reported": "our quran svg version draws iqlab as SINGLE diacritic + meem, not double diacritic (tanwin pair) + meem — audit every place that assumes otherwise",
+   "cause": "confirmed. rasm_uthmani writes tanwin+meem (U+064C U+06E2), the KFGQPC text of this print writes single harakah+meem (U+064F U+06E2), the ink draws the single stroke. assign_words.py:4917 knows this but exits early ('already named') before rescuing the meem when the shape table has already named the tanwin — the meem stays counted as a letter piece: the 12 CERTAIN ligature-surplus words. Full site survey in docs/defects/iqlab_notation.md",
+   "status": "FIXED 2026-08-26: _IQTAN no longer exits early; the next-word meem claim may claim a word's own piece; a late position-aware self-rescue (QSVG_IQLATE) runs before QSVG_IQFIX, anchored on the word's own tanwin. 10 of 12 surplus words fixed (p203/p219 were pen-lift false positives, see item 19). Bench cases added for p143/p222. Side effect: +32 interval flags = naming visibility on tight-kerned iqlab pairs, mark budgets clean; p437 بِيضٌۭ holds a second م-shaped piece at its word START — needs a visual verdict."
   },
   {
    "id": 19,
@@ -220,7 +220,7 @@
    ],
    "reported": "we don't compare with the correct text of the mushaf: the print has two words بعد and ما with ما on the following line, but we link them as a single word بعد ما",
    "cause": "confirmed. quran.com's layout carries بَعْدَ مَا as ONE word on line 6; the print draws بعد at line 6's end and ما at line 7's start. The pipeline cannot split a word across a line boundary, so it forced the whole word onto line 7 — بعد's ink on line 6 was folded into أَهْوَآءَهُم (4/5 pieces, the audit counting بعد's marks in its budget) and the word took a piece from جَآءَكَ (2/3). One mis-expressible word shears BOTH lines: the 12-word 0.47x width cluster, the mushaf's only rtl-order flag, and the interval flags on this page are all this. The letter-space compound family has 5 members; only this one straddles a line break.",
-   "status": "fixed 2026-08-27: QSVG_SPACESPLIT (default ON) — cluster_line partitions a letter-space compound as its two halves (own width prior each, the internal space earns the boundary reward) and merges the clusters back to one word; the density hill-climb no longer moves a compound across a line boundary. 13:37:8 stays on line 6 holding its two chunks (8.8-45.2), أَهْوَآءَهُم back to its 4 pieces, جَآءَكَ regains its piece and fathas; rtl-order flag gone. p254 marks 3->2, intervals 4->1; p27/p117/p177/p451 and controls p1/p3 byte-identical; bench 79 unchanged, pixelfail 0."
+   "status": "fixed 2026-08-27: QSVG_SPACESPLIT (default ON) — cluster_line partitions a letter-space compound as its two halves (own width prior each, the internal space earns the boundary reward) and merges the clusters back to one word; the density hill-climb no longer moves a compound across a line boundary. 13:37:8 stays on line 6 holding its two chunks (8.8-45.2), أَهْوَآءَهُم back to its 4 pieces, جَآءَكَ regains its piece and fathahs; rtl-order flag gone. p254 marks 3->2, intervals 4->1; p27/p117/p177/p451 and controls p1/p3 byte-identical; bench 79 unchanged, pixelfail 0."
   },
   {
    "id": 21,
@@ -229,7 +229,7 @@
     "25 pages: 121-123, 145, 532-534, 565, 568, 570, 576, 584, 586, 588-600 (18 in juz 29-30)"
    ],
    "reported": "can we re-run the pipeline with the DigitalKhatt text and font? (artwork confirmed = KFGQPC V2 1441H print, the edition DigitalKhatt models)",
-   "cause": "Adjudicated three ways: on every disputed page DigitalKhatt's layout DB (QUL export, .cache/digitalkhatt/) and MushafDatabase agree EXACTLY and quran.com mushaf-2 is wrong about WHICH WORDS ARE ON THE PAGE — p599 off by two ayahs (print starts 98:6, quran.com says 98:8), p590 (print starts 84:25 — our worst width defects are exactly those words), p121 (5:78 vs 5:77). 25 pages total, 18 in juz 29-30: THIS IS THE JUZ-30 MECHANISM (defects 2.7x, gaps 62% wider = wrong word count crammed into the page). Also: DigitalKhatt segments بعد/ما as two words (the print's true segmentation, ids 34301/34302, p254 diagnosis item 20) and its text carries the print's own orthography (open tanween U+08F0-08F2).",
+   "cause": "Adjudicated three ways: on every disputed page DigitalKhatt's layout DB (QUL export, .cache/digitalkhatt/) and MushafDatabase agree EXACTLY and quran.com mushaf-2 is wrong about WHICH WORDS ARE ON THE PAGE — p599 off by two ayahs (print starts 98:6, quran.com says 98:8), p590 (print starts 84:25 — our worst width defects are exactly those words), p121 (5:78 vs 5:77). 25 pages total, 18 in juz 29-30: THIS IS THE JUZ-30 MECHANISM (defects 2.7x, gaps 62% wider = wrong word count crammed into the page). Also: DigitalKhatt segments بعد/ما as two words (the print's true segmentation, ids 34301/34302, p254 diagnosis item 20) and its text carries the print's own orthography (open tanwin U+08F0-08F2).",
    "status": "ADOPTED (surgical) 2026-08-26: .cache/dk_lines.json built from the DigitalKhatt DBs replaces qcf_lines.json as the line table (QSVG_DKLINES=0 reverts). Measured: target-page mark flags 22->17, zero regressions, bench clean. Full word-source replacement was measured FIRST and is WORSE (22->64): the polygon/ayah_stream layer already repairs page membership from the artwork's own markers, and a wholesale swap double-corrects. The juz-30 WIDTH clusters (p592-600) are NOT fixed by this - they are the line-partition work in the fix plan. DigitalKhattV2.otf stored in .cache/digitalkhatt/ for the future width-metric phase."
   },
   {
@@ -249,7 +249,7 @@
     "926 words mushaf-wide (R7), e.g. كُلٌّۭ family"
    ],
    "reported": "agent-discovered while executing Abdullah's mark-type validation brief",
-   "cause": "SECOND iqlab-notation finding, bigger than item 18: quran.com uthmani writes tanween+ۢ/ۭ at IDGHAM/IKHFA positions too; the QPC text writes open tanween (ٖ ٗ ٞ) with NO meem there, and the print draws a stroke PAIR with no م. _IQTAN keys on uthmani, so at 926 words it names the pair's second stroke (or welded outline) 'meem-iqlab'. Count-audits blind (meem-iqlab never demanded). Same mechanism produces the لأيات name-crossing (10 words) and most half-pair flags. The QPC encoding IS the drawing convention. Full rule table: docs/defects/marktype_rules.md; audit: tools/audit_marktype.py; trial fix QSVG_MTYPE default OFF pending full-mushaf gate.",
+   "cause": "SECOND iqlab-notation finding, bigger than item 18: quran.com rasm_uthmani writes tanwin+ۢ/ۭ at IDGHAM/IKHFA positions too; the QPC text writes open tanwin (ٖ ٗ ٞ) with NO meem there, and the print draws a stroke PAIR with no م. _IQTAN keys on rasm_uthmani, so at 926 words it names the pair's second stroke (or welded outline) 'small_meem'. Count-audits blind (small_meem never demanded). Same mechanism produces the لأيات name-crossing (10 words) and most half-pair flags. The QPC encoding IS the drawing convention. Full rule table: docs/defects/marktype_rules.md; audit: tools/audit_marktype.py; trial fix QSVG_MTYPE default OFF pending full-mushaf gate.",
    "status": "trial built, gate pending (waiting for label-table stability)"
   },
   {
@@ -259,7 +259,7 @@
     "~900 words mushaf-wide (R7 family)"
    ],
    "reported": "Abdullah's challenge-all-agent-work rule, applied: blind verification of the mark-type rules agent",
-   "cause": "Verifier (external arbitration vs MushafDatabase + blind judging with disguised controls, 28/30 controls passed): R7 DETECTION is right (60/60 flagged words draw no meem; 20/20 true iqlabs confirmed) but the proposed CORRECTION was WRONG — the flagged ink is the word's final LETTER (58/60 bbox-identical to MDB letter text), not a tanween stroke. The corrector branch (b) would have converted ~900 letters into marks with bench/pixel/audit_marks all green. Correct fix: restore to BODY per word, text+reference-witnessed — which the visual labeler's 111 'letter' signature labels already begin to do. Also: this is a real ~900-word semantic divergence from MushafDatabase that the '25 words separate us' figure never counted. Full verdict table: docs/defects/marktype_verification.md. R1's blanket rename also refuted; R2(a) confirmed; detectors R4/R9/R10/R11 confirmed with listed exclusions. Caution recorded: true low ۭ meems reach 9.6u — the iqlab/idgham split must stay text-driven, never geometric.",
+   "cause": "Verifier (external arbitration vs MushafDatabase + blind judging with disguised controls, 28/30 controls passed): R7 DETECTION is right (60/60 flagged words draw no meem; 20/20 true iqlabs confirmed) but the proposed CORRECTION was WRONG — the flagged ink is the word's final LETTER (58/60 bbox-identical to MDB letter text), not a tanwin stroke. The corrector branch (b) would have converted ~900 letters into marks with bench/pixel/audit_marks all green. Correct fix: restore to BODY per word, text+reference-witnessed — which the visual labeler's 111 'letter' signature labels already begin to do. Also: this is a real ~900-word semantic divergence from MushafDatabase that the '25 words separate us' figure never counted. Full verdict table: docs/defects/marktype_verification.md. R1's blanket rename also refuted; R2(a) confirmed; detectors R4/R9/R10/R11 confirmed with listed exclusions. Caution recorded: true low ۭ meems reach 9.6u — the iqlab/idgham split must stay text-driven, never geometric.",
    "status": "QSVG_MTYPE stays OFF permanently as-built; detection rules adopted as AUDIT ONLY; the letter-restoration fix goes through the label channel + a body-restore pass to be built and gated separately"
   },
   {
@@ -270,7 +270,7 @@
     "p600 100:6:3 interval"
    ],
    "reported": "gate exceptions accepted while adopting the visual labeler's 271 labels",
-   "cause": "mushaf-wide gate: MARK 236→212, clean 409→421, intervals +1, two pages worse: p589 +2 is ONE defect (the newly-labeled small-waw ۥ moved into mark reconciliation and attached to the neighbour — the label is right, the attachment pass is the weakness), p600 +1 interval on a juz-30 page. Accepted: 24 flags removed vs 2 new NON-SILENT ones, both in families the correctors already target.",
+   "cause": "mushaf-wide gate: MARK 236→212, clean 409→421, intervals +1, two pages worse: p589 +2 is ONE defect (the newly-labeled small_waw ۥ moved into mark reconciliation and attached to the neighbour — the label is right, the attachment pass is the weakness), p600 +1 interval on a juz-30 page. Accepted: 24 flags removed vs 2 new NON-SILENT ones, both in families the correctors already target.",
    "status": "open, queued for the neighbour-transfer/line-set repairs"
   },
   {
@@ -292,16 +292,16 @@
     "p589 84:21:6 يَسْجُدُونَ ۩"
    ],
    "reported": "Policy P5 (Abdullah): the sajdah overline + ۩ are ONE standalone sign, grouped with the sajdah word on the line below the bar, never counted as any word's mark or letter",
-   "cause": "Verified per site (QSVG_SAJ, default ON). 13 of 15 sites were already standalone and correctly keyed. Fixed: p272 — the overline had been renamed 'kasra' and counted in ظِلَـٰلُهُۥ's budget (the page's only mark flag; bar ejection now accepts a renamed hairline and drops the name, flag gone); p589 — the ۩ outline there has a signature variant not in the shape table and was counted as يَسْجُدُونَ's 4th body (text-driven recovery: word text carries ۩ + the sign's geometry 7.9x11.1/nested contours; piece count back to 3). p597 has NO sajdah ink — the print draws 96:19 on p598 (item 21 family), where both sign and bar were already handled. rewrite() now homes each sajdah group to the wrapper holding the sajdah word's ink, so bar+sign come out in one <g class=\"sajdah-mark\"> in the word's line (per the shape_notes 'same tag as the following sajdah mark'). Mushaf-wide: marks -1 (p272), intervals 0 flat, bench 79 unchanged, pixelfail 0, controls byte-identical.",
+   "cause": "Verified per site (QSVG_SAJ, default ON). 13 of 15 sites were already standalone and correctly keyed. Fixed: p272 — the overline had been renamed 'kasrah' and counted in ظِلَـٰلُهُۥ's budget (the page's only mark flag; bar ejection now accepts a renamed hairline and drops the name, flag gone); p589 — the ۩ outline there has a signature variant not in the shape table and was counted as يَسْجُدُونَ's 4th body (text-driven recovery: word text carries ۩ + the sign's geometry 7.9x11.1/nested contours; piece count back to 3). p597 has NO sajdah ink — the print draws 96:19 on p598 (item 21 family), where both sign and bar were already handled. rewrite() now homes each sajdah group to the wrapper holding the sajdah word's ink, so bar+sign come out in one <g class=\"sajdah-mark\"> in the word's line (per the shape_notes 'same tag as the following sajdah mark'). Mushaf-wide: marks -1 (p272), intervals 0 flat, bench 79 unchanged, pixelfail 0, controls byte-identical.",
    "status": "adopted 2026-08-27"
   },
   {
    "id": 28,
    "page": null,
    "words": [
-    "40 words mushaf-wide (24 fatha, 12 pause, 3 damma, 1 rtl)"
+    "40 words mushaf-wide (24 fathah, 12 waqf, 3 dammah, 1 rtl)"
    ],
-   "reported": "Abdullah confirmed the below-fatha instances by eye (p361 class): 'we don't expect kasrah below the meem — it's the lower word's fatha'",
+   "reported": "Abdullah confirmed the below-fathah instances by eye (p361 class): 'we don't expect kasrah below the meem — it's the lower word's fathah'",
    "cause": "QSVG_LSCNT adopted default-ON: solver trigger extended to budget violations with an overlapping candidate. Full sweep -43 flags, 0 pages worse, 0 new flags.",
    "status": "adopted 2026-08-27"
   },
@@ -312,17 +312,17 @@
     "~927 false meems eliminated; كلا p577, بكم p549 restored; قسورة's م named"
    ],
    "reported": "Abdullah: R7 samples 16/16 letters; كلا 'stole from everywhere but has no ink'; قسورة e190 is its iqlab م",
-   "cause": "All meem-creating passes now gate the MEEM on the print's text (QPC), while tanween NAMING stays uthmani-keyed (first attempt gated both and regressed 5 pages - caught and split). The last two bodyless words restored by overrides (cross-line body thefts by قسورة and قالوا). Gate: marks 163->155, intervals 110->80, clean 445->469, zero worse.",
+   "cause": "All meem-creating passes now gate the MEEM on the print's text (QPC), while tanwin NAMING stays rasm-uthmani-keyed (first attempt gated both and regressed 5 pages - caught and split). The last two bodyless words restored by overrides (cross-line body thefts by قسورة and قالوا). Gate: marks 163->155, intervals 110->80, clean 445->469, zero worse.",
    "status": "adopted 2026-08-27"
   },
   {
    "id": 30,
    "page": null,
    "words": [
-    "wasla 27->1, small-waw 26->1"
+    "hamzat_al_wasl 27->1, small_waw 26->1"
    ],
    "reported": "the two families frozen through every fix wave",
-   "cause": "one mechanism each: tight-kerned divine-name pairs hand the wasla one word early; the suffix ۥ trails into the gap (10 pair/chains) or hangs into an unowned furniture atom (5). Frozen because at reconciliation time the theft is a CHAIN (every word at-cap), only clean after the last mover. QSVG_RESEAT (default ON): per-line re-deal in reading order when the line balances in total but not per word, 8u reach, one miss aborts; + unowned-atom ۥ adoption. Gate: marks 155->107, clean 469->489, intervals flat, zero worse (3 +1 pages A/B-proven pre-existing). 2 needs-eye queued (p337 ه-as-ۥ; p223 quran.com data defect: uthmani==imlaei for one word).",
+   "cause": "one mechanism each: tight-kerned divine-name pairs hand the hamzat_al_wasl one word early; the suffix ۥ trails into the gap (10 pair/chains) or hangs into an unowned furniture atom (5). Frozen because at reconciliation time the theft is a CHAIN (every word at-cap), only clean after the last mover. QSVG_RESEAT (default ON): per-line re-deal in reading order when the line balances in total but not per word, 8u reach, one miss aborts; + unowned-atom ۥ adoption. Gate: marks 155->107, clean 469->489, intervals flat, zero worse (3 +1 pages A/B-proven pre-existing). 2 needs-eye queued (p337 ه-as-ۥ; p223 quran.com data defect: rasm_uthmani==rasm_imlai for one word).",
    "status": "adopted 2026-08-27"
   },
   {
@@ -341,9 +341,9 @@
    "page": 586,
    "words": [
     "هو",
-    "بقول (e784 fatha->kasra of bqwl; e788 kasra->fatha of hw)"
+    "بقول (e784 fatha->kasrah of bqwl; e788 kasra->fathah of hw)"
    ],
-   "reported": "Slash-stroke EXCHANGE between adjacent words: e784 (upper stroke) is بقول's kasra but named fatha and owned by هو; e788 (lower) is هو's fatha but named kasra and owned by بقول. Budgets balance both sides, every counting audit silent — a mutual budget-neutral theft.",
+   "reported": "Slash-stroke EXCHANGE between adjacent words: e784 (upper stroke) is بقول's kasrah but named fathah and owned by هو; e788 (lower) is هو's fathah but named kasrah and owned by بقول. Budgets balance both sides, every counting audit silent — a mutual budget-neutral theft.",
    "turned_out": "The slash families are excluded from neighbour-transfer movers (moving one reopens naming for both words), so a MUTUAL exchange survives untouched. Needs an exchange-specific rule: detect crossed pairs (each stroke over the OTHER word's letter ink), swap both, re-derive both names from position.",
    "fixed": false,
    "status": "family being measured mushaf-wide before the rule"
@@ -356,7 +356,7 @@
     "84:25:5 ٱلصَّـٰلِحَـٰتِ"
    ],
    "reported": "Word steals a dot from below — Abdullah read it as the ayah marker; the crop shows it is the dot of the ب in the surah title سورة البروج (line 2 is the header line). Same blob as the old p590 marksize case.",
-   "turned_out": "Measured mushaf-wide with dk_header_lines: 9 true thefts on 8 pages (p349 x3, p445 x2, p498, p555, p570, p590), 8 of 9 a last-line word reaching into the header line below; stolen marks are the superscript-recovery families (small-waw/maddah/small-alef), which hunt small glyphs and find title letters. Fix: ink on a DK-declared header line with no words is header ink — invisible to all word passes (except p1/p2-style lines the word stream lives on).",
+   "turned_out": "Measured mushaf-wide with dk_header_lines: 9 true thefts on 8 pages (p349 x3, p445 x2, p498, p555, p570, p590), 8 of 9 a last-line word reaching into the header line below; stolen marks are the superscript-recovery families (small_waw/maddah/omitted_alif), which hunt small glyphs and find title letters. Fix: ink on a DK-declared header line with no words is header ink — invisible to all word passes (except p1/p2-style lines the word stream lives on).",
    "fixed": false,
    "status": "rule queued behind the DK budget migration (same file)"
   },
@@ -367,7 +367,7 @@
    "words": [
     "4:78:8 بُرُوجٖ"
    ],
-   "reported": "e876 (kasratan) + e877 (part): Abdullah confirms both ARE بروج's kasratan pair, drawn INSIDE the circular bowl of the ج — an art fact of this print. The unusual seat threw position-based ownership/naming (flags kasratan 0/1 + fathatan 1/0 = one defect wearing two names).",
+   "reported": "e876 (tanwin_al_kasr) + e877 (part): Abdullah confirms both ARE بروج's tanwin_al_kasr pair, drawn INSIDE the circular bowl of the ج — an art fact of this print. The unusual seat threw position-based ownership/naming (flags tanwin_al_kasr 0/1 + tanwin_al_fath 1/0 = one defect wearing two names).",
    "turned_out": "Third acceptance case for the slash-family transfer rule (with p586 exchange and p446 لازب iqlab pair): budget-proven one-way transfers where both signals agree.",
    "fixed": false,
    "status": "SLASHX rule acceptance case"
@@ -380,8 +380,8 @@
     "37:11 لَّازِبِۭ",
     "37:14:2 رَأَوْا۟"
    ],
-   "reported": "Abdullah: رأوا steals لازب's iqlab kasra + low meem (the pair hangs into the line below's band).",
-   "turned_out": "The composite build hid it by fake-balancing names; the DK budget exposes it (fatha 3/2 on رأوا). Fix = budget-proven one-way slash transfer, SLASHX acceptance case.",
+   "reported": "Abdullah: رأوا steals لازب's iqlab kasrah + low meem (the pair hangs into the line below's band).",
+   "turned_out": "The composite build hid it by fake-balancing names; the DK budget exposes it (fathah 3/2 on رأوا). Fix = budget-proven one-way slash transfer, SLASHX acceptance case.",
    "fixed": false,
    "status": "SLASHX rule acceptance case"
   },
@@ -390,9 +390,9 @@
    "date": "2026-08-27",
    "page": null,
    "words": [
-    "e496/e497 sample: three-dots as master(2 dots)+part(1 dot)"
+    "e496/e497 sample: three_dots as master(2 dots)+part(1 dot)"
    ],
-   "reported": "Abdullah: three dots split into 2 marks (two-dots + one-dot part); we want them as ONE mark.",
+   "reported": "Abdullah: three dots split into 2 marks (two_dots + one-dot part); we want them as ONE mark.",
    "turned_out": "Emitter design: mkpart contours emit as separate paths. Fix: merge dot-family part contours into the master's single path at emission (same source frame only; cross-frame keeps _reframe parts).",
    "fixed": true,
    "status": "FIXED 2026-08-28, gated (bench cases p249/p583; dot merge flag-neutral + pixel-identical)"
@@ -404,8 +404,8 @@
    "words": [
     "كُلࣱّ p90/249/290/355/442/456/518... (11 flags)"
    ],
-   "reported": "Ledger family: damma 0/1 on كُلࣱّ-type words.",
-   "turned_out": "The word's own damma is welded into the dammatan stack as a 3rd part (measured: master+2 parts on p249). Fix: when budget wants damma+dammatan and the stack holds 3 curls, peel one as damma.",
+   "reported": "Ledger family: dammah 0/1 on كُلࣱّ-type words.",
+   "turned_out": "The word's own dammah is welded into the tanwin_al_damm stack as a 3rd part (measured: master+2 parts on p249). Fix: when budget wants dammah+tanwin_al_damm and the stack holds 3 curls, peel one as dammah.",
    "fixed": true,
    "status": "FIXED 2026-08-28, gated (bench cases p249/p583; dot merge flag-neutral + pixel-identical)"
   },
@@ -414,41 +414,41 @@
    "date": "2026-08-27",
    "page": 583,
    "words": [
-    "79:16:1 إِذْ (e1025) + the 9-flag hamza family (p573, p342, p380...)"
+    "79:16:1 إِذْ (e1025) + the 9-flag hamzah family (p573, p342, p380...)"
    ],
-   "reported": "Abdullah: e1025 is a hamza (his confirmed sig 2fb9f1b6e49c) emitted as data-mark=kasra.",
-   "turned_out": "The naming layer renames a below-position hamza into the kasra family — position beat shape, violating classify()'s own rule ('shape identity outranks position'). Also my r11 label apply left auto:True (now cleared). Fix: a human-confirmed hamza label is never renamed to a slash family. | SECOND FACE (Abdullah, 33:3:6 p418 e295): sig e2d0fd140fc49dfc is table-labeled fatha yet emits as UNLABELED BODY — a labeled slash demoted to letter ink; occurs exactly on the slash-chain pages (418/446/576/583/599). One naming-layer fix covers both faces.",
+   "reported": "Abdullah: e1025 is a hamzah (his confirmed sig 2fb9f1b6e49c) emitted as data-mark=kasrah.",
+   "turned_out": "The naming layer renames a below-position hamzah into the kasrah family — position beat shape, violating classify()'s own rule ('shape identity outranks position'). Also my r11 label apply left auto:True (now cleared). Fix: a human-confirmed hamzah label is never renamed to a slash family. | SECOND FACE (Abdullah, 33:3:6 p418 e295): sig e2d0fd140fc49dfc is table-labeled fathah yet emits as UNLABELED BODY — a labeled slash demoted to letter ink; occurs exactly on the slash-chain pages (418/446/576/583/599). One naming-layer fix covers both faces.",
    "fixed": true,
    "status": "FIXED 2026-08-28, gated (bench cases p249/p583; dot merge flag-neutral + pixel-identical)"
   },
   {
    "id": 39,
    "date": "2026-08-28",
-   "reporter": "pipeline (after Abdullah's p548 two-dots verdict)",
-   "what": "59:22:10 وَٱلشَّهَٰدَةِۖ (p548): both texts carry ۖ but after the ة's stolen two-dots were returned (sig 08eefab4 wore 'pause'), no صلے ink exists anywhere near the word.",
-   "status": "RESOLVED 2026-08-28: the صلے was inside the word as kind=body (e622, sig f5581079 — the canonical صلي outline). QSVG_WQBODY now promotes a body wearing a waqf outline in a word owed a pause; p548 clean, no eye needed."
+   "reporter": "pipeline (after Abdullah's p548 two_dots verdict)",
+   "what": "59:22:10 وَٱلشَّهَٰدَةِۖ (p548): both texts carry ۖ but after the ة's stolen two_dots were returned (sig 08eefab4 wore 'waqf'), no صلے ink exists anywhere near the word.",
+   "status": "RESOLVED 2026-08-28: the صلے was inside the word as kind=body (e622, sig f5581079 — the canonical صلي outline). QSVG_WQBODY now promotes a body wearing a waqf outline in a word owed a waqf; p548 clean, no eye needed."
   },
   {
    "id": 40,
    "date": "2026-08-28",
    "reporter": "pipeline (after the eye-driven sign hunt)",
-   "what": "Three low-iqlab (ۭ) words hold NO separate م ink and no canonical sign outline exists within reach: جَنَّةِۭ p45, لَّازِبِۭ p446, قَسْوَرَةِۭ p577. Their kasras are plain single-contour slashes (no fusion). All other iqlab sites are now complete (p36 فإمساك recovered from بمعروف; p358 متبرجات by eye; p7 already had its sign).",
-   "status": "awaiting Abdullah's eye ON THE PRINT: does the 1441H edition draw a small م at these three sites at all, or is low-ۭ iqlab expressed by the kasra alone there? If drawn, point at the ink; if not, art fact — record and exempt from the sign budget."
+   "what": "Three low-iqlab (ۭ) words hold NO separate م ink and no canonical sign outline exists within reach: جَنَّةِۭ p45, لَّازِبِۭ p446, قَسْوَرَةِۭ p577. Their kasrahs are plain single-contour slashes (no fusion). All other iqlab sites are now complete (p36 فإمساك recovered from بمعروف; p358 متبرجات by eye; p7 already had its sign).",
+   "status": "awaiting Abdullah's eye ON THE PRINT: does the 1441H edition draw a small م at these three sites at all, or is low-ۭ iqlab expressed by the kasrah alone there? If drawn, point at the ink; if not, art fact — record and exempt from the sign budget."
   },
   {
    "id": 41,
    "date": "2026-08-29",
    "reporter": "Abdullah (eye, review platform)",
-   "what": "أَيْدِيهِمْ hamza 0/1 at 21:28:4 (p324, e236) and 22:76:4 (p341, e373): the hamza is DRAWN CONNECTED to the alif — one 4.4x19.8 contour carries both letter and hamza. No separate hamza ink exists; a contour split would cut ink and break pixel identity.",
-   "verdict": "ART FACT — the print fuses hamza+alif at these two sites. The two flags stand explained. Encoding belongs to schema v2 (a logical hamza mark whose geometry is shared with the letter), same seam as the letter-dot bridge ruling in attr_schema_v3.md §5a.",
-   "status": "DECIDED by Abdullah 2026-08-29: mark the fused contour as hamza — applied as overrides on both sites"
+   "what": "أَيْدِيهِمْ hamzah 0/1 at 21:28:4 (p324, e236) and 22:76:4 (p341, e373): the hamzah is DRAWN CONNECTED to the alif — one 4.4x19.8 contour carries both letter and hamzah. No separate hamzah ink exists; a contour split would cut ink and break pixel identity.",
+   "verdict": "ART FACT — the print fuses hamzah+alif at these two sites. The two flags stand explained. Encoding belongs to schema v2 (a logical hamzah mark whose geometry is shared with the letter), same seam as the letter_dot bridge ruling in attr_schema_v3.md §5a.",
+   "status": "DECIDED by Abdullah 2026-08-29: mark the fused contour as hamzah — applied as overrides on both sites"
   },
   {
    "id": 42,
    "date": "2026-08-29",
    "reporter": "Abdullah (eye)",
-   "what": "Interval record p350 24:2:12 رَأْفَةࣱ ↔ فِى [dammatan]: 'I don't see issue with it'.",
-   "verdict": "NOT A DEFECT — the print draws the dammatan of a word-final ة floating in the gap toward the next word. Both words' counts are exact; only the audit's territory model is too crude here. Recorded in .cache/review/explained.json and shown on remaining.html under 'Examined by eye', NOT suppressed in the audit — if the ink ever moves, the record returns to the open list.",
+   "what": "Interval record p350 24:2:12 رَأْفَةࣱ ↔ فِى [tanwin_al_damm]: 'I don't see issue with it'.",
+   "verdict": "NOT A DEFECT — the print draws the tanwin_al_damm of a word-final ة floating in the gap toward the next word. Both words' counts are exact; only the audit's territory model is too crude here. Recorded in .cache/review/explained.json and shown on remaining.html under 'Examined by eye', NOT suppressed in the audit — if the ink ever moves, the record returns to the open list.",
    "status": "explained"
   },
   {
@@ -458,7 +458,7 @@
    "what": "مجموعتا سجدة ناقصتان: p379 (27:24 و 27:26) و p480 (41:37 و 41:38) — الرمز ۩ والخط الأفقي في مجموعتين منفصلتين تحملان رقمي آيتين مختلفتين.",
    "verdict": "REAL — root cause in assign_words.py's standalone-ejection loop. The hairline overline is normally collected into `bars` and joined to the ۩ of the same site, but the `is_bar` test excluded any element already named mark=='sajdah'. On these two pages a namer had given the bar that name, so it skipped the bar path and ejected as a sign of its own, keyed by _ayah_at at ITS OWN centre — the ayah on the line ABOVE the bar. Two ejected keys => two <g class=\"sajdah-mark\"> groups with different data-aid. Fixed at cause: geometry decides (h<2.5<=w), the name no longer vetoes it; the ۩ is 8x11 and can never match.",
    "status": "fixed",
-   "evidence": "all 15 sajdah sites now emit ONE group with the correct aid (1 sajdah-line + 1 sajdah-sign each); bench SCORE 137, no failures, pixelfail 0; audit_pixels clean on all 15 pages; annotations rebuilt 1-604 and validate_annotations OK. Note the annotation gate was BLIND to this: counts were 15+15 either way."
+   "evidence": "all 15 sajdah sites now emit ONE group with the correct aid (1 sajdah_line + 1 sajdah_mark each); bench SCORE 137, no failures, pixelfail 0; audit_pixels clean on all 15 pages; annotations rebuilt 1-604 and validate_annotations OK. Note the annotation gate was BLIND to this: counts were 15+15 either way."
   }
  ]
 }

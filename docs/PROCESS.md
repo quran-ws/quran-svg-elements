@@ -28,17 +28,17 @@ Run `python3 tools/make_queue.py <sweep-dir>` to route every open defect into
 
 ### Lane A — automatic
 
-Defects with a mechanical invariant: side rules (kasra hangs below, fatha rides
+Defects with a mechanical invariant: side rules (kasrah hangs below, fathah rides
 above), text budgets, the joining-rule piece count, reading order, band
 membership. I work these in leverage order, root-causing with `QSVG_TRACE`
 rather than patching symptoms.
 
-Open: ligature surplus (89), fatha (138), MARK-STEAL (172), BODY-STEAL (83),
-hamza composites (62), wasla chains (35).
+Open: ligature surplus (89), fathah (138), MARK-STEAL (172), BODY-STEAL (83),
+hamzah composites (62), hamzat_al_wasl chains (35).
 
 ### Lane B — labelling  *(needs you)*
 
-The art reuses one outline for every fatha, every waqf sign, every sajdah mark.
+The art reuses one outline for every fathah, every waqf sign, every sajdah mark.
 A shape signature therefore names ink for the whole mushaf, and one answer fixes
 every occurrence.
 
@@ -52,7 +52,7 @@ python3 tools/apply_labels.py decisions.json      # folds into labels.json
 ```
 
 The sheet asks only about shapes that are genuinely contested. It does not ask
-about position swaps — the same stroke is a fatha above a letter and a kasra
+about position swaps — the same stroke is a fathah above a letter and a kasrah
 below it, and the pipeline is right to swap it. Tick *leave* on anything you are
 unsure of; unanswered shapes simply stay in the queue.
 
@@ -128,7 +128,7 @@ max alpha change must not grow).
 - **Human input is captured as data, never as a code edit.** Shapes go to
   `labels.json`, places to `overrides.json`. A decision written into a branch
   is a decision lost.
-- **Grep for a second copy before editing a pass.** The fatha/kasra renaming
+- **Grep for a second copy before editing a pass.** The fathah/kasrah renaming
   exists twice in `assign_words.py`; fixing one has no observable effect.
 - **Fix the layer that is wrong.** Words in the wrong line looked like a
   line-cutting bug; the cut was fine and the emitter was wrong.

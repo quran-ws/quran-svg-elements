@@ -61,7 +61,7 @@
   "group": 1,
   "names": "ا",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -81,7 +81,7 @@
   "group": 1,
   "names": "ة",
   "holds": [
-   "dammatan"
+   "tanwin_al_damm"
   ]
  },
  {
@@ -236,7 +236,7 @@
   "group": 1,
   "names": "ا",
   "holds": [
-   "meem-iqlab",
+   "small_meem",
    "dot"
   ]
  },
@@ -264,9 +264,9 @@
   "word": "وَأَذَٰنࣱ",
   "kind": "misplaced",
   "group": 2,
-  "names": "small-alef sits on group 3's letters",
+  "names": "omitted_alif sits on group 3's letters",
   "holds": [
-   "small-alef"
+   "omitted_alif"
   ]
  },
  {
@@ -286,7 +286,7 @@
   "group": 2,
   "names": "ء",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -297,7 +297,7 @@
   "group": 2,
   "names": "ء",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -344,7 +344,7 @@
   "group": 2,
   "names": "ا",
   "holds": [
-   "sifr-mustadir"
+   "rounded_zero"
   ]
  },
  {
@@ -382,7 +382,7 @@
   "group": 1,
   "names": "ا",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -427,9 +427,9 @@
   "word": "دَٰخِرُونَ",
   "kind": "misplaced",
   "group": 0,
-  "names": "small-alef sits on group 1's letters",
+  "names": "omitted_alif sits on group 1's letters",
   "holds": [
-   "small-alef"
+   "omitted_alif"
   ]
  },
  {
@@ -449,9 +449,9 @@
   "group": 1,
   "names": "ة",
   "holds": [
-   "meem-iqlab",
-   "two-dots",
-   "kasra"
+   "small_meem",
+   "two_dots",
+   "kasrah"
   ]
  },
  {
@@ -469,9 +469,9 @@
   "word": "هَٰذَٰنِ",
   "kind": "misplaced",
   "group": 0,
-  "names": "small-alef sits on group 1's letters",
+  "names": "omitted_alif sits on group 1's letters",
   "holds": [
-   "small-alef"
+   "omitted_alif"
   ]
  },
  {
@@ -509,8 +509,8 @@
   "group": 0,
   "names": "ا",
   "holds": [
-   "hamza",
-   "fatha"
+   "hamzah",
+   "fathah"
   ]
  },
  {
@@ -521,7 +521,7 @@
   "group": 3,
   "names": "ة",
   "holds": [
-   "pause"
+   "waqf"
   ]
  },
  {
@@ -550,7 +550,7 @@
   "group": 1,
   "names": "ا",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -633,8 +633,8 @@
   "group": 0,
   "names": "ا",
   "holds": [
-   "hamza",
-   "fatha"
+   "hamzah",
+   "fathah"
   ]
  },
  {
@@ -663,7 +663,7 @@
   "group": 0,
   "names": "الا",
   "holds": [
-   "wasla"
+   "hamzat_al_wasl"
   ]
  },
  {
@@ -683,7 +683,7 @@
   "group": 2,
   "names": "ة",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -757,7 +757,7 @@
   "group": 2,
   "names": "ء",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -840,7 +840,7 @@
   "group": 1,
   "names": "ا",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -878,8 +878,8 @@
   "group": 0,
   "names": "ا",
   "holds": [
-   "hamza",
-   "kasra"
+   "hamzah",
+   "kasrah"
   ]
  },
  {
@@ -890,7 +890,7 @@
   "group": 1,
   "names": "ا",
   "holds": [
-   "wasla"
+   "hamzat_al_wasl"
   ]
  },
  {
@@ -901,8 +901,8 @@
   "group": 0,
   "names": "ا",
   "holds": [
-   "hamza",
-   "kasra"
+   "hamzah",
+   "kasrah"
   ]
  },
  {
@@ -931,8 +931,8 @@
   "group": 1,
   "names": "ذ",
   "holds": [
-   "kasra",
-   "hamza"
+   "kasrah",
+   "hamzah"
   ]
  },
  {
@@ -986,9 +986,9 @@
   "word": "وَذَٰلِكَ",
   "kind": "misplaced",
   "group": 1,
-  "names": "small-alef sits on group 0's letters",
+  "names": "omitted_alif sits on group 0's letters",
   "holds": [
-   "small-alef"
+   "omitted_alif"
   ]
  },
  {
@@ -1008,8 +1008,8 @@
   "group": 0,
   "names": "ا",
   "holds": [
-   "hamza",
-   "kasra"
+   "hamzah",
+   "kasrah"
   ]
  },
  {
@@ -1092,7 +1092,7 @@
   "group": 2,
   "names": "ء",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -1103,7 +1103,7 @@
   "group": 1,
   "names": "ة",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -1168,7 +1168,7 @@
   "group": 0,
   "names": "يشا",
   "holds": [
-   "two-dots"
+   "two_dots"
   ]
  },
  {
@@ -1231,9 +1231,9 @@
   "word": "وِلْدَٰنࣱ",
   "kind": "misplaced",
   "group": 1,
-  "names": "small-alef sits on group 2's letters",
+  "names": "omitted_alif sits on group 2's letters",
   "holds": [
-   "small-alef"
+   "omitted_alif"
   ]
  },
  {
@@ -1262,7 +1262,7 @@
   "group": 2,
   "names": "ء",
   "holds": [
-   "meem-iqlab"
+   "small_meem"
   ]
  },
  {
@@ -1489,8 +1489,8 @@
   "group": 0,
   "names": "ا",
   "holds": [
-   "hamza",
-   "kasra"
+   "hamzah",
+   "kasrah"
   ]
  },
  {
@@ -1537,7 +1537,7 @@
   "group": 2,
   "names": "ء",
   "holds": [
-   "small-waw"
+   "small_waw"
   ]
  },
  {
@@ -1602,7 +1602,7 @@
   "group": 2,
   "names": "ء",
   "holds": [
-   "damma"
+   "dammah"
   ]
  },
  {
@@ -1640,7 +1640,7 @@
   "group": 2,
   "names": "ه",
   "holds": [
-   "small-waw"
+   "small_waw"
   ]
  },
  {
@@ -1651,7 +1651,7 @@
   "group": 2,
   "names": "ه",
   "holds": [
-   "small-waw"
+   "small_waw"
   ]
  },
  {
@@ -1662,7 +1662,7 @@
   "group": 2,
   "names": "ه",
   "holds": [
-   "small-waw"
+   "small_waw"
   ]
  },
  {
@@ -1673,7 +1673,7 @@
   "group": 1,
   "names": "ه",
   "holds": [
-   "small-waw"
+   "small_waw"
   ]
  },
  {
@@ -1693,8 +1693,8 @@
   "group": 2,
   "names": "ه",
   "holds": [
-   "damma",
-   "small-waw"
+   "dammah",
+   "small_waw"
   ]
  },
  {
@@ -1705,8 +1705,8 @@
   "group": 2,
   "names": "ه",
   "holds": [
-   "damma",
-   "small-waw"
+   "dammah",
+   "small_waw"
   ]
  },
  {
@@ -1717,8 +1717,8 @@
   "group": 2,
   "names": "ه",
   "holds": [
-   "damma",
-   "small-waw"
+   "dammah",
+   "small_waw"
   ]
  },
  {
@@ -1756,7 +1756,7 @@
   "group": 1,
   "names": "ة",
   "holds": [
-   "dammatan"
+   "tanwin_al_damm"
   ]
  },
  {
@@ -1886,7 +1886,7 @@
   "group": 1,
   "names": "ه",
   "holds": [
-   "small-ya"
+   "small_yaa"
   ]
  },
  {

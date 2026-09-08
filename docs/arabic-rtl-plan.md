@@ -154,7 +154,7 @@ page chrome) while their **content** stays LTR. Those are different properties a
 
 | selector | what it holds |
 |---|---|
-| `code` (inline, in prose) | `viewBox`, `data-wid`, `querySelectorAll`, `2:255` |
+| `code` (inline, in prose) | `viewBox`, `data-word-key`, `querySelectorAll`, `2:255` |
 | `.shead .sel` | CSS/JS selector strings |
 | `.mono`, `td.mono`, `th.mono` | identifiers and keys |
 | `kbd` | `Ctrl`, `⌘`, `Enter` — never translated |
@@ -175,7 +175,7 @@ code, kbd, samp, pre, textarea,
 ```
 
 `unicode-bidi: isolate` is what stops a code span from dragging the neutral characters beside it —
-the trailing full stop after `<code>data-wid</code>` in an Arabic sentence lands on the wrong side
+the trailing full stop after `<code>data-word-key</code>` in an Arabic sentence lands on the wrong side
 without it.
 
 **Not LTR:** `input#s-all` is an Arabic search box. It should be `dir="auto"` so it follows whatever
@@ -220,9 +220,9 @@ Mirroring the artwork would render the mushaf backwards and break the raster-dif
 `hitLayer()`, which is a fitting transform on an HTML span, not on the artwork.
 
 **Add a guard** so this cannot regress silently: a grep in the demo's build or CI step that fails if
-a mirroring transform ever appears on `.paper`, `svg`, or any `g.word` / `g.ayah` selector.
+a mirroring transform ever appears on `.paper`, `svg`, or any `g.word` / `g.ayah-fragment` selector.
 
-Also unchanged: `data-line`, `data-wid`, `data-aid`, every attribute name and every attribute value.
+Also unchanged: `data-line`, `data-word-key`, `data-aid`, every attribute name and every attribute value.
 Direction is a presentation concern; the schema is not.
 
 ---
@@ -334,7 +334,7 @@ the punctuation between them lands on the wrong side.
 - Every inline `code` span gets `unicode-bidi: isolate` (already in §5's CSS block). That covers the
   authored cases.
 - Every **interpolated** value — anything JavaScript writes into prose, such as a word's text, a
-  `data-wid`, a search hit, a file name in an error message — goes in `<bdi>`, or a container with
+  `data-word-key`, a search hit, a file name in an error message — goes in `<bdi>`, or a container with
   `dir="auto"`. This is what `<bdi>` exists for and it is the difference between a page that holds
   together and one that scrambles for certain inputs.
 - Where markup is not available — an `aria-label`, a `title`, a `placeholder`, an alt text — use
