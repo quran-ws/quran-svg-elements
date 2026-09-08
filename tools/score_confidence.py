@@ -105,7 +105,7 @@ def scan_page(pg):
         els = [e for a in at for e in a["els"]]
         bods = [e for e in els if e["kind"] == "body"]
         rec = {"k": "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]),
-               "t": w["uthmani"], "qpc": w.get("qpc"), "els": els, "b": bods}
+               "t": w["rasm_uthmani"], "qpc": w.get("qpc"), "els": els, "b": bods}
         if bods:
             ln = [e.get("line") for e in bods if e.get("line")]
             rec["ln"] = max(set(ln), key=ln.count) if ln else 0
@@ -114,7 +114,7 @@ def scan_page(pg):
             # while their QCF advance counts the suffix
             # span over ALL elements, but a mark stranded 40u+ from the
             # body ink is a DEFECT (audit_strayink's empty band), not width:
-            # p418's stray fathas stretched وكفى to 2.7x and poisoned 11
+            # p418's stray fathahs stretched وكفى to 2.7x and poisoned 11
             # neighbouring words' shares (width_diagnosis.md, class c2)
             _bx1 = min(e["x1"] for e in bods); _bx2 = max(e["x2"] for e in bods)
             _in = [e for e in els
@@ -156,7 +156,7 @@ def scan_page(pg):
                                     aw.segment_word(x["t"])) or 3.0
             else:
                 exp_l[x["k"]] = aw.letters({"surah": s0, "ayah": a0,
-                                            "pos": p0, "uthmani": x["t"]})
+                                            "pos": p0, "rasm_uthmani": x["t"]})
         tl = sum(exp_l.values())
         ta = sum(x["x2"] - x["x1"] for x in ws)
         if not tl or not ta:
@@ -278,8 +278,8 @@ def _ramp(v, a, b, pa, pb):
 
 def p_size(area, med, proof_ok=True):
     """A shape's drawn area is a point: outside [1/3, 3] x median is a proof.
-    proof_ok=False (pause family, composite labels) caps it as soft evidence:
-    the muʿānaqah ۛ is a legitimately tiny member of the pause family, and a
+    proof_ok=False (waqf family, composite labels) caps it as soft evidence:
+    the muʿānaqah ۛ is a legitimately tiny member of the waqf family, and a
     composite outline's area is the sum of two glyphs."""
     if not med or not area:
         return 0.0, None
@@ -389,7 +389,7 @@ def _line_expected(pairs):
 
 
 def fam_want(word):
-    """(lo, hi) budget per family; pause becomes a RANGE where the two text
+    """(lo, hi) budget per family; waqf becomes a RANGE where the two text
     editions disagree (audit_marks' rule -- neither edition can be quoted as
     the expectation, so an editorial difference is never convicted)."""
     txt, qpc = word["text"], word.get("qpc")
@@ -397,12 +397,12 @@ def fam_want(word):
     out = {}
     for fam, chars in TEXT_WANT.items():
         n = sum(txt.count(c) for c in chars)
-        if fam in ("saktah", "seen-reading") and RARE_SITES.get(_site) != fam:
+        if fam in ("saktah", "seen_al_qiraah") and RARE_SITES.get(_site) != fam:
             n = 0                 # the ۜ here belongs to the OTHER job (place table)
-        if fam == "pause" and qpc and qpc != txt:
+        if fam == "waqf" and qpc and qpc != txt:
             m = sum(qpc.count(c) for c in chars)
             out[fam] = (min(n, m), max(n, m))
-        elif fam == "pause" and qpc:
+        elif fam == "waqf" and qpc:
             n = sum(qpc.count(c) for c in chars)
             out[fam] = (n, n)
         else:
@@ -437,7 +437,7 @@ def score_word(word, med, ref_keys=()):
     want = fam_want(word)
     have = Counter(word["have"])
     # only families the text budget actually tracks can be in surplus; the
-    # iqlab meem is fused into the tanween glyph in this art and is deliberately
+    # iqlab meem is fused into the tanwin glyph in this art and is deliberately
     # absent from TEXT_WANT, so it must never be convicted of surplus here
     surplus_f = {f for f in have
                  if f in want and have[f] > want[f][1]}
@@ -447,9 +447,9 @@ def score_word(word, med, ref_keys=()):
         fam = m["mark"].split("+")[0]
         med_fam, med_sig = med
         # a signature's median beats its family's: each SHAPE has one size,
-        # while a family (pause especially) mixes glyphs of very different sizes
+        # while a family (waqf especially) mixes glyphs of very different sizes
         m_med = med_sig.get(m.get("sig")) or med_fam.get(fam)
-        size_proof_ok = ("+" not in m["mark"] and fam != "pause"
+        size_proof_ok = ("+" not in m["mark"] and fam != "waqf"
                          and m.get("sig") in med_sig)
         if m.get("place_ok"):        # identity confirmed by a human, by place
             m_med = None
@@ -892,10 +892,10 @@ const cards = [...grid.querySelectorAll(".card")];
 const KEY = "confidence-active", RKEY = "confidence-rejected";
 let active = new Set(JSON.parse(localStorage.getItem(KEY) || "[]"));
 let rejected = new Set(JSON.parse(localStorage.getItem(RKEY) || "[]"));
-const widOf = c => `${c.dataset.page}:${c.dataset.s}:${c.dataset.a}:${c.dataset.w}`;
+const wordKeyOf = c => `${c.dataset.page}:${c.dataset.s}:${c.dataset.a}:${c.dataset.w}`;
 function sync(){
   cards.forEach(c => {
-    const k = widOf(c);
+    const k = wordKeyOf(c);
     c.classList.toggle("active", active.has(k));
     c.classList.toggle("rejected", rejected.has(k));
   });
@@ -909,7 +909,7 @@ function sync(){
    localStorage stays only as the page's own cache */
 let postTimer = null;
 function verdictOf(k){
-  const c = cards.find(x => widOf(x) === k);
+  const c = cards.find(x => wordKeyOf(x) === k);
   if (!c) return null;
   const status = rejected.has(k) ? "no-issue"
                : active.has(k) ? "confirmed"
@@ -935,7 +935,7 @@ function postVerdicts(){
 window.addEventListener("load", () => setTimeout(postVerdicts, 1500));
 cards.forEach(c => c.onclick = e => {
   if (e.target.closest("a") || e.target.closest(".note")) return;
-  const k = widOf(c);
+  const k = wordKeyOf(c);
   if (e.target.closest(".xbtn")) {          // ✗ = false positive, no issue
     rejected.has(k) ? rejected.delete(k) : (rejected.add(k), active.delete(k));
   } else {
@@ -949,7 +949,7 @@ const NKEY = "confidence-notes";
 let notes = JSON.parse(localStorage.getItem(NKEY) || "{}");
 cards.forEach(c => {
   const ta = c.querySelector(".note");
-  const k = widOf(c);
+  const k = wordKeyOf(c);
   if (notes[k]) { ta.value = notes[k]; c.classList.add("noted"); }
   ta.addEventListener("input", () => {
     if (ta.value.trim()) notes[k] = ta.value.trim();
@@ -998,7 +998,7 @@ function statusOf(k){
                        : "commented";
 }
 function lineOf(c){
-  const k = widOf(c);
+  const k = wordKeyOf(c);
   return `p${c.dataset.page} ${c.dataset.s}:${c.dataset.a}:${c.dataset.w} ` +
          `${c.querySelector(".artxt").textContent.trim()} [${statusOf(k)} ` +
          `${c.dataset.tier} P=${c.dataset.p}] ${c.dataset.why}` +
@@ -1006,8 +1006,8 @@ function lineOf(c){
 }
 /* the shareable set: confirmed + rejected + commented */
 function pickedCards(){
-  return cards.filter(c => active.has(widOf(c)) || rejected.has(widOf(c))
-                           || notes[widOf(c)]);
+  return cards.filter(c => active.has(wordKeyOf(c)) || rejected.has(wordKeyOf(c))
+                           || notes[wordKeyOf(c)]);
 }
 document.getElementById("copyBtn").onclick = () => {
   const picked = pickedCards();
@@ -1021,8 +1021,8 @@ document.getElementById("copyJson").onclick = () => {
     page: +c.dataset.page, key: `${c.dataset.s}:${c.dataset.a}:${c.dataset.w}`,
     text: c.querySelector(".artxt").textContent.trim(),
     tier: c.dataset.tier, P: +c.dataset.p, evidence: c.dataset.why,
-    status: statusOf(widOf(c)).toLowerCase(),
-    note: notes[widOf(c)] || ""})), null, 1);
+    status: statusOf(wordKeyOf(c)).toLowerCase(),
+    note: notes[wordKeyOf(c)] || ""})), null, 1);
   navigator.clipboard.writeText(t);
 };
 sync();
@@ -1051,7 +1051,7 @@ const NS = "http://www.w3.org/2000/svg";
 async function renderInk(c){
   const holder = await pageHolder(+c.dataset.page);
   const svg = holder.querySelector("svg");
-  const sel = `g.word[data-wid="${c.dataset.s}:${c.dataset.a}:${c.dataset.w}"]`;
+  const sel = `g.word[data-word-key="${c.dataset.s}:${c.dataset.a}:${c.dataset.w}"]`;
   const gs = [...svg.querySelectorAll(sel)];
   const box = c.querySelector(".ink");
   if (!gs.length) { box.innerHTML = "<span class=wait>not in build</span>"; return; }

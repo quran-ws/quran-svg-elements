@@ -8,7 +8,7 @@ count is simply wrong, so the word is credited with dots the page does not draw.
 The pipeline already narrows a label to the blobs it measures, using the fact that the
 art draws every dot at 2.38 units and every pair at ~4.55 (see `QSVG_DOTLBL` in
 assign_words.py). What survives that is genuinely ambiguous from the ink: on p142
-`شَىْءٍۢ` holds a `dot` plus a `three-dots` master with one twin, three blobs called
+`شَىْءٍۢ` holds a `dot` plus a `three_dots` master with one twin, three blobs called
 four, while elsewhere the same master-and-twin shape really does stand for three. Label,
 contour count and member count are identical in both cases.
 
@@ -63,7 +63,7 @@ REFDIR = None
 # so a coverage test matches the letter every time.
 IOU = 0.35
 
-_NAME = {"dot": "dot", "two dots": "two-dots", "three dots": "three-dots"}
+_NAME = {"dot": "dot", "two dots": "two_dots", "three dots": "three_dots"}
 
 
 def our_page(pg):
@@ -79,9 +79,9 @@ def our_page(pg):
             continue
         out[(w["surah"], w["ayah"], w["pos"])] = {
             "x1": min(e["x1"] for e in body), "x2": max(e["x2"] for e in body),
-            "y2": max(e["y2"] for e in body), "text": w["uthmani"],
+            "y2": max(e["y2"] for e in body), "text": w["rasm_uthmani"],
             "els": els, "body": body,
-            "nseg": max(1, len(aw.segment_word(w["uthmani"]))),
+            "nseg": max(1, len(aw.segment_word(w["rasm_uthmani"]))),
         }
     return out
 

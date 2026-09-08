@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Measure word-owned ink vs ayah-marker footprints (84:25:5 p590, item 33).
+"""Measure word-owned ink vs ayah-mark footprints (84:25:5 p590, item 33).
 
 For every word-owned element, distance from its bbox center to the nearest
-ayah-marker center (the ayah: groups' translate origins, viewBox frame).
+ayah-mark center (the ayah: groups' translate origins, viewBox frame).
 True word ink should never sit inside a medallion; a theft does. The
 distribution's empty band sets the footprint radius for the rule.
 

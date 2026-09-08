@@ -54,16 +54,16 @@ def scan_page(pg):
             flags_extra = getattr(scan_page, "_nobody", None)
             if flags_extra is None:
                 scan_page._nobody = flags_extra = []
-            flags_extra.append((key, word["uthmani"], 0.0, 0.0, 0.0))
+            flags_extra.append((key, word["rasm_uthmani"], 0.0, 0.0, 0.0))
             continue
         btop = min(e["y1"] for e in bods)
         ext_top = min(e["y1"] for e in els)
         ext_bot = max(e["y2"] for e in els)
         key = "%d:%d:%d" % (word["surah"], word["ayah"], word["pos"])
-        words.append((btop, ext_bot - ext_top, key, word["uthmani"]))
-        wrecs.append((btop, key, word["uthmani"], els))
+        words.append((btop, ext_bot - ext_top, key, word["rasm_uthmani"]))
+        wrecs.append((btop, key, word["rasm_uthmani"], els))
         scan_page._raw.setdefault(pg, []).append(
-            (key, word["uthmani"], ext_bot - ext_top))
+            (key, word["rasm_uthmani"], ext_bot - ext_top))
     if not words:
         return pg, [], []
     words.sort()

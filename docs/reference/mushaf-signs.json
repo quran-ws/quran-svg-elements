@@ -54,7 +54,7 @@
       "appendix_pdf_page": 630
     },
     {
-      "id": "waqf_awla",
+      "id": "waqf_jaiz_waqf_awla",
       "glyph": "ۗ",
       "codepoint": "U+06D7",
       "name_ar": "الوقف الجائز مع كون الوقف أولى",
@@ -68,7 +68,7 @@
       "appendix_pdf_page": 630
     },
     {
-      "id": "waqf_jaiz",
+      "id": "waqf_jaiz_mustawi_al_tarafayn",
       "glyph": "ۚ",
       "codepoint": "U+06DA",
       "name_ar": "الوقف الجائز جوازا مستوي الطرفين",
@@ -82,7 +82,7 @@
       "appendix_pdf_page": 630
     },
     {
-      "id": "wasl_awla",
+      "id": "waqf_jaiz_wasl_awla",
       "glyph": "ۖ",
       "codepoint": "U+06D6",
       "name_ar": "الوقف الجائز مع كون الوصل أولى",
@@ -96,11 +96,11 @@
       "appendix_pdf_page": 630
     },
     {
-      "id": "muanaqah",
+      "id": "waqf_al_muanaqah",
       "glyph": "ۛ ۛ",
       "codepoint": "U+06DB (always in pairs)",
       "name_ar": "تعانق الوقف (المعانقة)",
-      "name_en": "Embracing pause",
+      "name_en": "Embracing waqf",
       "rule": "Two candidate stops; stopping at one forbids stopping at the other.",
       "example": {
         "ref": "2:2",
@@ -122,21 +122,21 @@
   ],
   "dabt_marks": [
     {
-      "id": "sifr_mustadir",
+      "id": "rounded_zero",
       "codepoint": "U+06DF",
       "name_ar": "الصفر المستدير",
       "name_en": "Round zero",
-      "rule": "Letter present in the rasm but never pronounced, in wasl or waqf.",
+      "rule": "Letter present in the rasm but never pronounced, in hamzat_al_wasl or waqf.",
       "count": 3988,
       "folio": "و",
       "appendix_pdf_page": 613
     },
     {
-      "id": "sifr_mustatil",
+      "id": "rectangular_zero",
       "codepoint": "U+06E0",
       "name_ar": "الصفر المستطيل القائم",
       "name_en": "Upright rectangular zero",
-      "rule": "Alif dropped in wasl, pronounced in waqf.",
+      "rule": "Alif dropped in hamzat_al_wasl, pronounced in waqf.",
       "count": 66,
       "note": "Almost all occurrences are أَنَا۠; the exceptions are لَّٰكِنَّا۠ 18:38, ٱلظُّنُونَا۠ 33:10, ٱلرَّسُولَا۠ 33:66, ٱلسَّبِيلَا۠ 33:67, قَوَارِيرَا۠ 76:15.",
       "folio": "و",
@@ -164,8 +164,8 @@
       "id": "idgham_kamil",
       "codepoint": null,
       "name_ar": "تعرية الحرف مع تشديد التالي",
-      "name_en": "Complete assimilation",
-      "rule": "Bare letter + shadda on the next: the first letter vanishes entirely, body and quality.",
+      "name_en": "Complete idgham",
+      "rule": "Bare letter + shaddah on the next: the first letter vanishes entirely, body and quality.",
       "folio": "ز",
       "appendix_pdf_page": 614
     },
@@ -173,8 +173,8 @@
       "id": "idgham_naqis",
       "codepoint": null,
       "name_ar": "تعرية الحرف مع عدم تشديد التالي",
-      "name_en": "Incomplete assimilation / ikhfa",
-      "rule": "Bare letter, no shadda: body goes, quality remains — or ikhfa (oral or labial).",
+      "name_en": "Incomplete idgham / ikhfa",
+      "rule": "Bare letter, no shaddah: body goes, quality remains — or ikhfa (oral or labial).",
       "folio": "ز، ح",
       "appendix_pdf_page": 614
     },
@@ -193,7 +193,7 @@
       "codepoint": "U+06ED",
       "name_ar": "الميم الصغيرة (تحت)",
       "name_en": "Small low meem — iqlab",
-      "rule": "Same rule, placed below the line when the tanwin is a kasratan.",
+      "rule": "Same rule, placed below the line when the tanwin is a tanwin_al_kasr.",
       "count": 99,
       "folio": "ط",
       "appendix_pdf_page": 616
@@ -203,7 +203,7 @@
       "codepoint": "U+0670 and others",
       "name_ar": "الحروف الصغيرة",
       "name_en": "Miniature letters",
-      "rule": "Letters omitted from the Uthmani rasm but obligatory in pronunciation. Historically inserted in red at full size; reduced to small black because early presses could not print colour.",
+      "rule": "Letters omitted from the RasmUthmani rasm but obligatory in pronunciation. Historically inserted in red at full size; reduced to small black because early presses could not print colour.",
       "count": 9726,
       "note": "count is for the dagger alif U+0670 only",
       "folio": "ط، ي",
@@ -219,30 +219,30 @@
       "appendix_pdf_page": 618
     },
     {
-      "id": "hamzat_wasl",
+      "id": "hamzat_al_wasl",
       "codepoint": "U+0671",
       "name_ar": "رأس صاد صغيرة فوق ألف الوصل",
-      "name_en": "Hamzat al-wasl",
+      "name_en": "Hamzat hamzat-al-wasl",
       "rule": "Connecting hamzah, dropped when the word is reached in continuation.",
       "count": 13483,
       "folio": "ن",
       "appendix_pdf_page": 621
     },
     {
-      "id": "silah_waw",
+      "id": "madd_al_silah_waw",
       "codepoint": "U+06E5",
       "name_ar": "الواو الصغيرة — صلة هاء الضمير",
-      "name_en": "Small waw (silah)",
+      "name_en": "Small waw (madd_al_silah)",
       "rule": "After the pronoun ha with dammah; two-count natural madd, four or five if a hamzah follows.",
       "count": 1257,
       "folio": "ف",
       "appendix_pdf_page": 624
     },
     {
-      "id": "silah_ya",
+      "id": "madd_al_silah_ya",
       "codepoint": "U+06E6",
       "name_ar": "الياء الصغيرة المردودة — صلة هاء الضمير",
-      "name_en": "Small yeh (silah)",
+      "name_en": "Small yeh (madd_al_silah)",
       "rule": "After the pronoun ha with kasrah; same lengths.",
       "count": 995,
       "folio": "ف",
@@ -266,7 +266,7 @@
       "codepoint": "U+06DD",
       "name_ar": "الدائرة المحلاة",
       "name_en": "Ayah medallion",
-      "rule": "Marks the END of a verse and carries its number. The appendix forbids placing it before the verse.",
+      "rule": "Marks the END of a ayah and carries its number. The appendix forbids placing it before the ayah.",
       "count": 6236,
       "folio": "ن",
       "appendix_pdf_page": 621
@@ -286,7 +286,7 @@
       "codepoint": "U+06E9",
       "name_ar": "خط أفقي فوق الكلمة + علامة المحراب",
       "name_en": "Sajdah — overline plus mihrab",
-      "rule": "Overline identifies the word making prostration due; the mihrab glyph marks where you prostrate. The two can sit on different verses.",
+      "rule": "Overline identifies the word making sajdah due; the mihrab glyph marks where you prostrate. The two can sit on different ayahs.",
       "count": 15,
       "folio": "س",
       "appendix_pdf_page": 622
@@ -296,7 +296,7 @@
       "codepoint": "U+06DC",
       "name_ar": "السين فوق الحرف الأخير — السكتة",
       "name_en": "Saktah",
-      "rule": "Brief pause, no breath, then continue.",
+      "rule": "Brief waqf, no breath, then continue.",
       "count": 5,
       "folio": "س، ع",
       "appendix_pdf_page": 622
@@ -331,7 +331,7 @@
       "folio": "ن"
     },
     {
-      "mark": "Seen above sad — read with seen",
+      "mark": "Seen above saad — read with seen",
       "word": "وَيَبْصُۜطُ",
       "ref": "2:245",
       "mushaf_page": 39,
@@ -340,7 +340,7 @@
       "folio": "ك"
     },
     {
-      "mark": "Seen above sad — read with seen",
+      "mark": "Seen above saad — read with seen",
       "word": "بَصْۜطَةً",
       "ref": "7:69",
       "mushaf_page": 159,
@@ -349,7 +349,7 @@
       "folio": "ك"
     },
     {
-      "mark": "Seen below sad — read with sad",
+      "mark": "Seen below saad — read with saad",
       "word": "ٱلْمُصَۣيْطِرُونَ",
       "ref": "52:37",
       "mushaf_page": 525,
@@ -358,7 +358,7 @@
       "folio": "ك"
     },
     {
-      "mark": "Bare sad, no seen at all",
+      "mark": "Bare saad, no seen at all",
       "word": "بِمُصَيْطِرٍ",
       "ref": "88:22",
       "mushaf_page": 592,
@@ -431,7 +431,7 @@
       ],
       "mushaf_page": 147,
       "pdf_page": 150,
-      "issue": "Interrogative hamzah over hamzat al-wasl",
+      "issue": "Interrogative hamzah over hamzat hamzat-al-wasl",
       "ways": [
         "substitute a full alif with six-count madd (how this mushaf points it, preferred in performance)",
         "tashil"
@@ -445,7 +445,7 @@
       ],
       "mushaf_page": 214,
       "pdf_page": 217,
-      "issue": "Interrogative hamzah over hamzat al-wasl"
+      "issue": "Interrogative hamzah over hamzat hamzat-al-wasl"
     },
     {
       "item": "ا",
@@ -455,7 +455,7 @@
       ],
       "mushaf_page": 215,
       "pdf_page": 218,
-      "issue": "Interrogative hamzah over hamzat al-wasl"
+      "issue": "Interrogative hamzah over hamzat hamzat-al-wasl"
     },
     {
       "item": "ا",
@@ -465,7 +465,7 @@
       ],
       "mushaf_page": 219,
       "pdf_page": 222,
-      "issue": "Interrogative hamzah over hamzat al-wasl"
+      "issue": "Interrogative hamzah over hamzat hamzat-al-wasl"
     },
     {
       "item": "ا",
@@ -475,7 +475,7 @@
       ],
       "mushaf_page": 382,
       "pdf_page": 385,
-      "issue": "Interrogative hamzah over hamzat al-wasl"
+      "issue": "Interrogative hamzah over hamzat hamzat-al-wasl"
     },
     {
       "item": "ب",
@@ -520,13 +520,13 @@
       ]
     }
   ],
-  "silah_exceptions": [
+  "madd_al_silah_exceptions": [
     {
       "word": "يَرْضَهُ",
       "ref": "39:7",
       "mushaf_page": 459,
       "pdf_page": 462,
-      "pointing": "plain dammah, no small waw — read without silah"
+      "pointing": "plain dammah, no small waw — read without madd_al_silah"
     },
     {
       "word": "أَرْجِهْ",
@@ -554,7 +554,7 @@
       "ref": "25:69",
       "mushaf_page": 366,
       "pdf_page": 369,
-      "pointing": "kasrah plus small ya — silah present against the general pattern"
+      "pointing": "kasrah plus small ya — madd_al_silah present against the general pattern"
     }
   ],
   "sajdah_locations": [
@@ -576,7 +576,7 @@
     },
     {
       "n": 3,
-      "surah": "al-Nahl",
+      "surah": "Nahl",
       "overline_ayah": "16:49",
       "glyph_ayah": "16:50",
       "mushaf_page": 272,
@@ -584,7 +584,7 @@
     },
     {
       "n": 4,
-      "surah": "al-Isra",
+      "surah": "Isra",
       "overline_ayah": "17:107",
       "glyph_ayah": "17:109",
       "mushaf_page": 293,
@@ -600,7 +600,7 @@
     },
     {
       "n": 6,
-      "surah": "al-Hajj",
+      "surah": "Hajj",
       "overline_ayah": "22:18",
       "glyph_ayah": "22:18",
       "mushaf_page": 334,
@@ -608,7 +608,7 @@
     },
     {
       "n": 7,
-      "surah": "al-Hajj (second)",
+      "surah": "Hajj (second)",
       "overline_ayah": "22:77",
       "glyph_ayah": "22:77",
       "mushaf_page": 341,
@@ -616,7 +616,7 @@
     },
     {
       "n": 8,
-      "surah": "al-Furqan",
+      "surah": "Furqan",
       "overline_ayah": "25:60",
       "glyph_ayah": "25:60",
       "mushaf_page": 365,
@@ -624,7 +624,7 @@
     },
     {
       "n": 9,
-      "surah": "al-Naml",
+      "surah": "Naml",
       "overline_ayah": "27:25",
       "glyph_ayah": "27:26",
       "mushaf_page": 379,
@@ -632,7 +632,7 @@
     },
     {
       "n": 10,
-      "surah": "al-Sajdah",
+      "surah": "Sajdah",
       "overline_ayah": "32:15",
       "glyph_ayah": "32:15",
       "mushaf_page": 416,
@@ -640,7 +640,7 @@
     },
     {
       "n": 11,
-      "surah": "Sad",
+      "surah": "Saad",
       "overline_ayah": "38:24",
       "glyph_ayah": "38:24",
       "mushaf_page": 454,
@@ -656,7 +656,7 @@
     },
     {
       "n": 13,
-      "surah": "al-Najm",
+      "surah": "Najm",
       "overline_ayah": "53:62",
       "glyph_ayah": "53:62",
       "mushaf_page": 528,
@@ -664,7 +664,7 @@
     },
     {
       "n": 14,
-      "surah": "al-Inshiqaq",
+      "surah": "Inshiqaq",
       "overline_ayah": "84:21",
       "glyph_ayah": "84:21",
       "mushaf_page": 589,
@@ -693,17 +693,17 @@
     {
       "element": "Running header",
       "ar": "الترويسة",
-      "description": "Outside the frame: juz name at the outer end, then names of the suras on the page. No juz digit."
+      "description": "Outside the frame: juz name at the outer end, then names of the surahs on the page. No juz digit."
     },
     {
-      "element": "Sura banner",
+      "element": "Surah banner",
       "ar": "عنوان السورة",
-      "description": "Green band with lobed cartouche and flanking rosettes. Sura name only — no ayah count, no Makki/Madani label."
+      "description": "Green band with lobed cartouche and flanking rosettes. Surah name only — no ayah count, no Makki/Madani label."
     },
     {
       "element": "Basmalah line",
       "ar": "البسملة",
-      "description": "Own centred line under each sura banner, extended calligraphic form"
+      "description": "Own centred line under each surah banner, extended calligraphic form"
     },
     {
       "element": "Ayah medallions",
@@ -727,20 +727,20 @@
     }
   ],
   "digital_notes": [
-    "U+06DC serves two unrelated functions: seen above a sad (2 places, alternative letter reading) and the saktah marker (5 places). Classification requires inspecting the base character.",
-    "Tanwin shape is not in the encoding. U+064B/064C/064D each cover both the stacked and the staggered arrangement, so a codepoint-level diff will call two texts identical while one prints the wrong tajwid ruling. Unicode's U+08F0-U+08F2 open forms exist for the distinction but are unused by mainstream Uthmani corpora — normalising between the two conventions destroys it. Test by rendering, not by string comparison.",
+    "U+06DC serves two unrelated functions: seen above a saad (2 places, alternative letter reading) and the saktah marker (5 places). Classification requires inspecting the base character.",
+    "Tanwin shape is not in the encoding. U+064B/064C/064D each cover both the stacked and the staggered arrangement, so a codepoint-level diff will call two texts identical while one prints the wrong tajwid ruling. Unicode's U+08F0-U+08F2 open forms exist for the distinction but are unused by mainstream RasmUthmani corpora — normalising between the two conventions destroys it. Test by rendering, not by string comparison.",
     "Unicode names can contradict the printed form. U+06EA is named 'Empty Centre Low Stop' but the appendix specifies a filled dot (نقطة كبيرة مطموسة) and that is how it prints.",
-    "The widely circulated Tanzil 'uthmani' text contains zero U+06D6-U+06DB characters — the waqf signs are stripped. Verify a corpus before building pause-aware features on it.",
-    "The sajdah has two anchors. In 4 of 15 cases the overline and the mihrab glyph sit on different verses, up to two lines apart."
+    "The widely circulated Tanzil 'rasm_uthmani' text contains zero U+06D6-U+06DB characters — the waqf signs are stripped. Verify a corpus before building waqf-aware features on it.",
+    "The sajdah has two anchors. In 4 of 15 cases the overline and the mihrab glyph sit on different ayahs, up to two lines apart."
   ],
   "tanwin": {
     "principle": "A tanwin is always two marks. Their ARRANGEMENT encodes the tajwid ruling; the letter that follows decides the arrangement. Defined on appendix folio ح (PDF 615), which prints both arrangements as bracketed specimens for all three tanwins.",
     "codepoints": {
-      "fathatan": "U+064B",
-      "dammatan": "U+064C",
-      "kasratan": "U+064D",
-      "note": "The same codepoint is used for BOTH arrangements. Stacked vs staggered exists only in the glyph the font selects from context. Unicode does encode separate open forms (U+08F0 Arabic Open Fathatan, U+08F1 Arabic Open Dammatan, U+08F2 Arabic Open Kasratan) but mainstream Uthmani corpora do not use them.",
-      "counts_in_uthmani_text": {
+      "tanwin_al_fath": "U+064B",
+      "tanwin_al_damm": "U+064C",
+      "tanwin_al_kasr": "U+064D",
+      "note": "The same codepoint is used for BOTH arrangements. Stacked vs staggered exists only in the glyph the font selects from context. Unicode does encode separate open forms (U+08F0 Arabic Open TanwinAlFath, U+08F1 Arabic Open TanwinAlDamm, U+08F2 Arabic Open TanwinAlKasr) but mainstream RasmUthmani corpora do not use them.",
+      "counts_in_rasm_uthmani_text": {
         "U+064B": 3741,
         "U+064C": 2519,
         "U+064D": 2633,
@@ -751,21 +751,21 @@
     },
     "shapes": [
       {
-        "tanwin": "dammatan",
+        "tanwin": "tanwin_al_damm",
         "glyph": "ــٌ",
         "stacked": "Second dammah nested on top of the first, sharing its tail — reads as one compound curl.",
         "staggered": "Two separate loops side by side, each with its own tail — reads as وو.",
         "legibility": "unmistakable"
       },
       {
-        "tanwin": "fathatan",
+        "tanwin": "tanwin_al_fath",
         "glyph": "ــً",
         "stacked": "Two strokes vertically aligned, one directly above the other.",
         "staggered": "Two strokes offset, trailing one after the other diagonally.",
         "legibility": "clear"
       },
       {
-        "tanwin": "kasratan",
+        "tanwin": "tanwin_al_kasr",
         "glyph": "ــٍ",
         "stacked": "Two strokes vertically aligned below the line, one under the other.",
         "staggered": "Two strokes offset diagonally below the line.",
@@ -782,39 +782,39 @@
       {
         "next_letters": "ب",
         "treatment": "iqlab",
-        "shape": "second mark replaced by a small meem (U+06E2 above, U+06ED below after kasratan)",
+        "shape": "second mark replaced by a small meem (U+06E2 above, U+06ED below after tanwin_al_kasr)",
         "example": "صُمٌّۢ بُكْمٌ"
       },
       {
         "next_letters": "ن م",
         "treatment": "complete idgham with ghunnah",
-        "shape": "staggered + shadda on the next letter",
+        "shape": "staggered + shaddah on the next letter",
         "example": "رَسُولٌ مِّنْ"
       },
       {
         "next_letters": "ل ر",
         "treatment": "complete idgham without ghunnah",
-        "shape": "staggered + shadda on the next letter",
+        "shape": "staggered + shaddah on the next letter",
         "example": "رَءُوفٌ رَّحِيمٌ"
       },
       {
         "next_letters": "ي و",
         "treatment": "incomplete idgham with ghunnah",
-        "shape": "staggered, no shadda",
+        "shape": "staggered, no shaddah",
         "example": "جَنَّٰتٍ وَعُيُونٍ"
       },
       {
         "next_letters": "the other 15",
         "treatment": "ikhfa",
-        "shape": "staggered, no shadda",
+        "shape": "staggered, no shaddah",
         "example": "شِهَابٌ ثَاقِبٌ"
       }
     ],
     "verified_specimens": [
       {
-        "tanwin": "dammatan",
+        "tanwin": "tanwin_al_damm",
         "ref": "9:128",
-        "surah": "al-Tawbah",
+        "surah": "Tawbah",
         "mushaf_page": 207,
         "pdf_page": 210,
         "stacked_words": [
@@ -825,12 +825,12 @@
           "رَسُولٌ مِّنْ",
           "رَءُوفٌ رَّحِيمٌ"
         ],
-        "note": "Four dammatans in one verse, two of each kind — the single best specimen in the mushaf."
+        "note": "Four tanwin_al_damms in one ayah, two of each kind — the single best specimen in the mushaf."
       },
       {
-        "tanwin": "fathatan",
+        "tanwin": "tanwin_al_fath",
         "ref": "78:36",
-        "surah": "al-Naba",
+        "surah": "Naba",
         "mushaf_page": 583,
         "pdf_page": 586,
         "stacked_words": [
@@ -841,9 +841,9 @@
         ]
       },
       {
-        "tanwin": "kasratan",
+        "tanwin": "tanwin_al_kasr",
         "ref": "96:16",
-        "surah": "al-Alaq",
+        "surah": "Alaq",
         "mushaf_page": 598,
         "pdf_page": 601,
         "stacked_words": [
@@ -854,9 +854,9 @@
         ]
       },
       {
-        "tanwin": "dammatan + iqlab",
+        "tanwin": "tanwin_al_damm + iqlab",
         "ref": "2:18",
-        "surah": "al-Baqarah",
+        "surah": "Baqarah",
         "mushaf_page": 4,
         "pdf_page": 7,
         "stacked_words": [

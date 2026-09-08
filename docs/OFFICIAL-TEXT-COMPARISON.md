@@ -1,7 +1,7 @@
 # Our word text vs the King Fahd Complex's own data
 
 Reference: **`UthmanicHafs_v2-0`** (`hafsData_v2-0.json`), the Complex's published
-Uthmani text for the 1441H Hafs mushaf — the same body of text this artwork was
+RasmUthmani text for the 1441H Hafs mushaf — the same body of text this artwork was
 set from. Kept at `.cache/official/`. Reproduce any figure here with:
 
 ```bash
@@ -42,9 +42,9 @@ Six substitutions account for **50,645 of 51,261** character edits:
 | 36,641 | `U+06E1` small high dotless head | `U+0652` sukun | sukun |
 | 3,973 | `U+0652` sukun | `U+06DF` small high rounded zero | the silent circle |
 | 3,400 | `U+064A` yeh | `U+0649` alef maksura | word-final dotless ya |
-| 2,901 | `U+0657` inverted damma | `U+08F0` open fathatan | open tanween |
-| 1,931 | `U+0656` subscript alef | `U+08F2` open kasratan | open tanween |
-| 1,799 | `U+065E` fatha with two dots | `U+08F1` open dammatan | open tanween |
+| 2,901 | `U+0657` inverted dammah | `U+08F0` open tanwin_al_fath | open tanwin |
+| 1,931 | `U+0656` subscript alef | `U+08F2` open tanwin_al_kasr | open tanwin |
+| 1,799 | `U+065E` fathah with two dots | `U+08F1` open tanwin_al_damm | open tanwin |
 
 The first two are a **swap**, and that is a trap worth naming: fold them one
 after another and `06E1` becomes `0652` and then continues on to `06DF`,
@@ -62,7 +62,7 @@ positions where the texts disagree.
 ### 24 — the sajdah overline (modelling, not a defect)
 
 The Complex marks the sajdah recitation phrase by putting `U+06E4` SMALL HIGH
-MADDA on each of its words. Measured across the whole text, that character
+MADDAH on each of its words. Measured across the whole text, that character
 appears in **exactly 15 ayahs — one per sajdah site**, and nowhere else:
 
     7:206  13:15  16:49  17:107  19:58  22:18  22:77  25:60
@@ -82,11 +82,11 @@ and one sign*. Same ink, expressed one layer down. Examples:
 
 | ayah | Complex | ours | what it is |
 |---|---|---|---|
-| 2:72 | `فَٱدَّٰرَٰءۡتُمۡ` | `فَٱدَّٰرَْٰٔتُمْ` | hamza seat on a maddah |
+| 2:72 | `فَٱدَّٰرَٰءۡتُمۡ` | `فَٱدَّٰرَْٰٔتُمْ` | hamzah seat on a maddah |
 | 2:97 | `لِّـجِبۡرِيلَ` | `لِّجِبْرِيلَ` | a tatweel we do not carry |
 | 17:7 | `لِيَسُـُٔواْ` | `لِيَسُۥٓـُٔوا۟` | small waw + maddah |
 | 52:37 | `ٱلۡمُصَۜيۡطِرُونَ` | `ٱلْمُصَۣيْطِرُونَ` | `U+065C` vs `U+06E3`, the dot below |
-| 56:23 | `ٱللُّؤۡلُوِٕ` | `ٱللُّؤْلُؤِ` | hamza seat, waw vs ya |
+| 56:23 | `ٱللُّؤۡلُوِٕ` | `ٱللُّؤْلُؤِ` | hamzah seat, waw vs ya |
 
 These are the honest residue. Each is one site, none is a family, and none has
 been folded away to flatter the number.

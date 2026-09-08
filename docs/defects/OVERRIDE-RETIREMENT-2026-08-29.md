@@ -85,7 +85,7 @@ class and reason. Classified against a build made with **no** overrides, so
 | family | entries | what the entry does |
 |---|---|---|
 | MOVE-only, body | 117 | re-owns a LETTER piece between words |
-| MOVE-only, mark | 67 | re-owns a mark (fatha 20, dot 11, pause 9, kasra 6, …) |
+| MOVE-only, mark | 67 | re-owns a mark (fathah 20, dot 11, waqf 9, kasrah 6, …) |
 | MOVE + RENAME | 33 | name inversion — the stroke arrives wearing the opposite name |
 | CONTOUR-SPLIT | 14 | fused pair: one element, two touching strokes |
 | RENAME-only | 10 | fused letter+mark, or a shape the table cannot separate |
@@ -212,8 +212,8 @@ And p337 has **zero** retired overrides. Its difference is the concurrent
 agent's own correction in 689936e, which swapped two names on p337:
 
 ```
-265.6,483.9,271.8,487.2   22:46:8|fatha     ->  22:46:8|two-dots
-268.1,499.1,272.6,501.9   22:46:8|two-dots  ->  22:46:8|kasra
+265.6,483.9,271.8,487.2   22:46:8|fathah     ->  22:46:8|two_dots
+268.1,499.1,272.6,501.9   22:46:8|two_dots  ->  22:46:8|kasrah
 ```
 
 My before-snapshot predates that fix, so p337 differs for their reason, not
@@ -253,7 +253,7 @@ isolated output directories.
 ### One disclosure that is not a semantic change
 
 p548 emits the same elements before and after, but two of them swap order:
-in 59:19:5 a `fatha` (e258/e259) and a `shadda` exchange positions, and with
+in 59:19:5 a `fathah` (e258/e259) and a `shaddah` exchange positions, and with
 them their sequential `data-eid` labels. Same owner, same name, same
 d-string, same pixels; the element multiset is identical.
 
@@ -289,10 +289,10 @@ left in this file.
   two-contour slash element is a PAIR and not a letter with an `evenodd`
   hole; the p218 ظ-loop cost one wrong fix exactly there.
 - **RENAME-only, 10.** Ink that is identical to another sign and can only be
-  named, never derived: p341 22:76:4 and p324 21:28:4 (the hamza drawn
+  named, never derived: p341 22:76:4 and p324 21:28:4 (the hamzah drawn
   connected to its alif — Abdullah's standing ruling "name it, never cut
-  it"); p251 13:14:24 small-alef; p552 61:10:7 kasratan half; p585 80:39:2
-  dammatan. `audit_overrides.py` reports the two hamzas as CONTRADICTS only
+  it"); p251 13:14:24 omitted_alif; p552 61:10:7 tanwin_al_kasr half; p585 80:39:2
+  tanwin_al_damm. `audit_overrides.py` reports the two hamzahs as CONTRADICTS only
   because its `CHARS` table has no entry for the pre-composed `أ`.
 
 **3. No discriminating signal — 129 entries.**
@@ -334,7 +334,7 @@ Measured on the final code with the reduced overrides file (sweep
 | gate | before | after |
 |---|---|---|
 | `audit_pixels 1 604` | 0 failures | **0 failures**, every page pixel-identical |
-| `audit_taxonomy` | OK | **OK** — 35 mark names, 3 muanaqah pairs, 8 rare sites |
+| `audit_taxonomy` | OK | **OK** — 35 mark names, 3 waqf_al_muanaqah pairs, 8 rare sites |
 | `bench.py` | SCORE 137, no failures | **SCORE 137, FAILURES none**, pixelfail 0, budget-mismatch 0/2706 |
 | mark flags (sweep, 604 pages) | 0 | **0** |
 | open interval records | 1 (p350, pre-existing) | **1 (p350, pre-existing)** |

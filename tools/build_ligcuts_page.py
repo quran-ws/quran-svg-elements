@@ -93,7 +93,7 @@ def _group(s, start):
 
 
 def _slim(t):
-    return re.sub(r'\s(?:fill|fill-rule|data-sig|data-imlaei|data-qpc|'
+    return re.sub(r'\s(?:fill|fill-rule|data-sig|data-rasm-imlai|data-qpc|'
                   r'data-rasm|data-mark-family)="[^"]*"', "", t)
 
 
@@ -104,7 +104,7 @@ def ours_svg(pg, key):
     if not s:
         return "", 0
     su, ay, pos = key.split(":")
-    i = s.find('<g class="word" data-wid="%s:%s:%s"'
+    i = s.find('<g class="word" data-word-key="%s:%s:%s"'
                % (su, ay, pos))
     if i < 0:
         return "", 0
@@ -134,13 +134,13 @@ def theirs_svg(pg, key):
     """key is "surah:ayah:pos" in OUR numbering; the reference numbers words
     differently (waw-alatf and stop signs are words of their own), so the word
     is located by matching the reference's own group ids recorded at audit
-    time. Falls back to a surah/aya scan and picks the group whose folded
+    time. Falls back to a surah/ayah scan and picks the group whose folded
     letters match."""
     s = _refpage(pg)
     if not s:
         return "", 0
     su, ay, _ = key.split(":")
-    pat = 'data-surah="%03d" data-aya="%03d"' % (int(su), int(ay))
+    pat = 'data-surah="%03d" data-ayah="%03d"' % (int(su), int(ay))
     return s, pat
 
 
@@ -155,7 +155,7 @@ def theirs_word_svgs(pg, su, ay):
         a = dict(re.findall(r'data-([a-z-]+)="([^"]*)"', tag))
         if a.get("type") != "text":
             continue
-        if int(a.get("surah", -1)) != su or int(a.get("aya", -1)) != ay:
+        if int(a.get("surah", -1)) != su or int(a.get("ayah", -1)) != ay:
             continue
         grp = _group(s, m.start())
         if not grp:
@@ -234,8 +234,8 @@ h1{margin-bottom:2px} .sub{color:#666;font-size:13px;margin-bottom:18px}
 .pane{width:230px;height:110px;flex:none;text-align:center}
 .pane svg{width:100%;height:88px} .pane .lab{font-size:11px;color:#888}
 .meta{flex:1;font-size:13px;line-height:1.5}
-.w{font-size:24px;font-family:'KFGQPC Uthmanic Script HAFS','Amiri',serif}
-.runs{font-family:'KFGQPC Uthmanic Script HAFS','Amiri',serif;font-size:16px}
+.w{font-size:24px;font-family:'KFGQPC RasmUthmani Script HAFS','Amiri',serif}
+.runs{font-family:'KFGQPC RasmUthmani Script HAFS','Amiri',serif;font-size:16px}
 .k{color:#777;font-size:12px}
 .ev{color:#444;font-size:12.5px}
 .v{display:inline-block;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:600;

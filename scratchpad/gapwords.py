@@ -26,19 +26,19 @@ def page(pg):
         b = [e for e in els if e["kind"] == "body"]
         if not b: continue
         runs = SB._groups([(e["x1"], e["x2"]) for e in b])
-        allowed = max(1, len(AW.segment_word(w["uthmani"])))
+        allowed = max(1, len(AW.segment_word(w["rasm_uthmani"])))
         if runs > allowed:
             piece.append((pg, "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]),
-                          w["uthmani"], runs, allowed))
+                          w["rasm_uthmani"], runs, allowed))
         got = 0
         for e in els:
             if e.get("mkpart"): continue
             m = e.get("mark") or ""
-            got += {"dot": 1, "two-dots": 2, "three-dots": 3}.get(m, 0)
-        want = AW.dot_budget(w["uthmani"])
+            got += {"dot": 1, "two_dots": 2, "three_dots": 3}.get(m, 0)
+        want = AW.dot_budget(w["rasm_uthmani"])
         if got != want:
             dots.append((pg, "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]),
-                         w["uthmani"], got, want))
+                         w["rasm_uthmani"], got, want))
     return pg, piece, dots
 
 if __name__ == "__main__":

@@ -39,18 +39,18 @@ regenerated from the final build, so the review platform serves the result.
 ## P9 — p341, the لَهُۥ chain (PRE-APPROVED; "show the result after")
 
 **Re-verified before acting** (`find_word.py`): exactly as diagnosed.
-ٱجْتَمَعُوا۟ (22:73:17) held لَهُۥ's whole body (13.9–23.8), its ۖ pause, its
-damma AND its fatha; لَهُۥ (22:73:18) held only وَإِن's و (321.4–331.4) plus
-وَإِن's fatha; مِنْهُ (22:73:25) held لَهُۥ's small-waw ۥ (6.7–12.2, drawn in
+ٱجْتَمَعُوا۟ (22:73:17) held لَهُۥ's whole body (13.9–23.8), its ۖ waqf, its
+dammah AND its fathah; لَهُۥ (22:73:18) held only وَإِن's و (321.4–331.4) plus
+وَإِن's fathah; مِنْهُ (22:73:25) held لَهُۥ's small_waw ۥ (6.7–12.2, drawn in
 line 2's band at the page's far left).
 
-**Done:** 7 overrides on p341 — body/pause/damma/fatha → 22:73:18; و body +
-fatha → 22:73:19; small-waw → 22:73:18. Each piece one step back, exactly the
-approved chain (the fatha over ل had to travel with the body or both words'
+**Done:** 7 overrides on p341 — body/waqf/dammah/fathah → 22:73:18; و body +
+fathah → 22:73:19; small_waw → 22:73:18. Each piece one step back, exactly the
+approved chain (the fathah over ل had to travel with the body or both words'
 slash budgets stay broken; measured below).
 
-**Result:** page flags 5 → 1; the survivor (22:76:4 hamza 0/1) is unrelated and
-pre-existing. لَهُۥ now holds body+fatha+damma+pause+small-waw — its complete
+**Result:** page flags 5 → 1; the survivor (22:76:4 hamzah 0/1) is unrelated and
+pre-existing. لَهُۥ now holds body+fathah+dammah+waqf+small_waw — its complete
 spelling — and all its ink sits on line 2, which also resolves the p341 entry
 of `reference_confirmed.json` (لَهُۥ pulled to line 3). Intervals 0.
 
@@ -62,18 +62,18 @@ line 2's end; وَإِن's و in لَهُۥ's color at line 3's start) vs
 
 **Re-verified:** يُؤَدِّهِۦٓ (3:75:8) held 4 bodies; the 4th (299.9–311.7 ×
 339.5–355.6) sits in line 10's band exactly at مَا's slot; مَا held only a
-fatha. Diagnosis unchanged.
+fathah. Diagnosis unchanged.
 
 **Done:** 1 override (the body → 3:75:19). `QSVG_TRACE` located the original
 theft: the cross-line repair at `assign_words.py:5276` moved it AND retagged
 its line to 9, which is why the returned word first registered on line 9 and
 tripped rtl-order — hence the band-retag added to the override stage (below).
 Plus 1 `marks.json` entry: the stroke 310.3–316.0 × 320.6–323.7 drawn BELOW
-the دّ renamed fatha→kasra (text gives دِّ a kasra; the stolen body had dragged
-the word's baseline down and the positional namer read it as a fatha).
+the دّ renamed fathah→kasrah (text gives دِّ a kasrah; the stolen body had dragged
+the word's baseline down and the positional namer read it as a fathah).
 
 **Result:** p59 fully clean — 1 flagged word → **0**. Emitted SVG verified:
-مَا = 1 body + 1 fatha; يُؤَدِّهِۦٓ = 3 bodies (its allowed count).
+مَا = 1 body + 1 fathah; يُؤَدِّهِۦٓ = 3 bodies (its allowed count).
 
 **Evidence:** `p059_ma_before.png` (مَا drawn in يُؤَدِّهِۦٓ's red) vs
 `p059_ma_after.png`.
@@ -81,21 +81,21 @@ the word's baseline down and the positional namer read it as a fatha).
 ## P8 — p535, بَارِدٍۢ swallowed لَّا (56:44:1)
 
 **Re-verified with a twist:** بارد held لا's body (319.5–331.5, the lam-alef at
-line 12's start) + its shadda + its fatha, as approved — and لا meanwhile held
+line 12's start) + its shaddah + its fathah, as approved — and لا meanwhile held
 two pieces of يَحْمُومٍۢ from line 11's end: its final م (23.3–34.3) and the
-second stroke of its kasratan pair (28.5–33.4; idgham tanween is drawn as a
+second stroke of its tanwin_al_kasr pair (28.5–33.4; idgham tanwin is drawn as a
 stroke PAIR in this print, reported.json item 23).
 
-**Done:** 5 overrides — body+shadda+fatha → 56:44:1; the م and the twin stroke
+**Done:** 5 overrides — body+shaddah+fathah → 56:44:1; the م and the twin stroke
 → 56:43:3. Plus 2 `marks.json` entries naming both unpaired idgham twins
-`kasratan` (28.5… in يحموم, 286.8–291.1 in بارد) — truthful family names; the
-pair-welding itself is the known open kasratan-pairing family
+`tanwin_al_kasr` (28.5… in يحموم, 286.8–291.1 in بارد) — truthful family names; the
+pair-welding itself is the known open tanwin-al-kasr-pairing family
 (shape_notes), not part of this batch.
 
 **Result:** flags 5 → 4, intervals 10 → **5**. لَّا is complete and clean;
-بارد holds exactly its 3 pieces, and its real ب fatha (307.8–316.2, previously
-misnamed kasra) renamed itself once the foreign fatha left. The two remaining
-kasratan 2/1 flags (يحموم, بارد) are the unpaired twins counting as two — same
+بارد holds exactly its 3 pieces, and its real ب fathah (307.8–316.2, previously
+misnamed kasrah) renamed itself once the foreign fathah left. The two remaining
+tanwin_al_kasr 2/1 flags (يحموم, بارد) are the unpaired twins counting as two — same
 defect family, now correctly named and owned, queued for the pairing fix.
 
 **Evidence:** `p535_la-barid_before.png` (لا in بارد's color; يحموم's م in
@@ -106,7 +106,7 @@ defect family, now correctly named and owned, queued for the pairing fix.
 **Re-verified with dk_lines active (the brief's instruction):** the case no
 longer exists. فأنذرتكم holds 4 bodies = its 4 joining-rule pieces, spanning
 78.1–130.9 (فأ، نذ، ر، تكم all its own); نارا holds نا + را-welded + its ۭ
-iqlab meem and fathatan pair. Mark audit 0 flags, intervals 0 (baseline
+iqlab meem and tanwin_al_fath pair. Mark audit 0 flags, intervals 0 (baseline
 `vlabels` agrees). The zoomed colorized render shows no cross-word ink. The
 residual `audit_width` ratios on this page (2.67x/0.49x) are the known juz-30
 expected-width key-shift — quran.com's wrong page boundary feeding the width
@@ -119,18 +119,18 @@ ownership, both correct).
 ## P2 — p437, the two م-shaped glyphs at جُدَدٌۢ / بِيضٌۭ
 
 **Re-verified:** still as decided. جدد held the piece 304.1–309.5 as its
-meem-iqlab MARK (it is the second د) and had 1 body for 2 allowed pieces; بيض
+small_meem MARK (it is the second د) and had 1 body for 2 allowed pieces; بيض
 held the true iqlab م (301.4–304.7, w3.3) as a surplus BODY (ligatures 2/1
 flag + two BODY-STEAL intervals).
 
 **Done, exactly Abdullah's resolution:** 1 override (301.4… → 35:27:16) + 1
 `kinds.json` entry (304.1… → body). No mark table entry needed: with the
 surplus piece present and the false meem demoted, the existing late
-`QSVG_IQLATE` self-rescue names 301.4–304.7 `meem-iqlab` from the word's own
-tanween anchor — the two-signals rule doing the naming rather than a forced
+`QSVG_IQLATE` self-rescue names 301.4–304.7 `small_meem` from the word's own
+tanwin anchor — the two-signals rule doing the naming rather than a forced
 label.
 
-**Result:** جدد = جد + د bodies + meem-iqlab mark + damma/fatha/dammatan/dot;
+**Result:** جدد = جد + د bodies + small_meem mark + dammah/fathah/tanwin_al_damm/dot;
 بيض = 1 body (its allowed count). Page: 2 mark flags + 2 intervals →
 1 mark flag (35:29:14, unrelated pre-existing) + **0 intervals**.
 
@@ -157,8 +157,8 @@ translucent mark of جدد).
 ### p418, the one +1 (intervals 5 → 6, marks unchanged 3 → 3)
 
 A/B isolates it to `QSVG_OVRLIG`. It is added VISIBILITY, not a new defect:
-وَكَفَىٰ (33:3:4) holds fatha 5/3 in the baseline too, and its two surplus
-fathas are drawn at line 5's far left over ٱللَّهِ (8.0–13.6 and 14.4–22.2,
+وَكَفَىٰ (33:3:4) holds fathah 5/3 in the baseline too, and its two surplus
+fathahs are drawn at line 5's far left over ٱللَّهِ (8.0–13.6 and 14.4–22.2,
 y≈156–180). Baseline registered one of them against جَوْفِهِۦ on line 6 (the
 wrong line); now both register against الله on the line they are drawn in.
 Ownership and counts identical to baseline — same precedent as the iqlab

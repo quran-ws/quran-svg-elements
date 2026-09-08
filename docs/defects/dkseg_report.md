@@ -1,5 +1,12 @@
 # DKSEG migration — the print's segmentation of بَعْدَ مَا is now canonical
 
+> **Superseded 2026-09-08, and the record kept.** These splits are no longer
+> argued from DigitalKhatt or MushafDatabase: word boundaries now come from
+> the word-by-word-translation release alone, and `tools/build_word_by_word_translation_seg.py` DERIVES the
+> same four splits (plus one fuse, 15:7) into `.cache/word_by_word_translation/seg_plan.json`.
+> Same sites, same positions — see docs/HAFS-JSON-SOURCE.md. Also note
+> 37:130 was later split, contradicting the summary below.
+
 **Summary.** The three بَعْدَ مَا compounds (2:181 p27, 8:6 p177, 13:37 p254) are
 now keyed as TWO words each, exactly as the DigitalKhatt DB of this print and
 MushafDatabase both segment them; every later position in those ayahs shifts +1.
@@ -69,7 +76,7 @@ internal space (never hand-typed). Verified directly against
 - **`.cache/review/overrides.json`** (backup: `overrides.json.bak-dkseg`), p254 —
   3 entries remapped:
   - `322.4,231.2,333.5,247.5` (مَا body) `13:37:8 → 13:37:9`
-  - `326.0,232.5,333.0,236.1` (مَا fatha) `13:37:8 → 13:37:9`
+  - `326.0,232.5,333.0,236.1` (مَا fathah) `13:37:8 → 13:37:9`
   - `314.1,248.5,316.5,250.8` (جَآءَكَ mark) `13:37:9 → 13:37:10`
   - بَعْدَ's five line-6 entries stay `13:37:8`; `28.4,200.9,45.2,217.4` stays
     `13:37:7`. Note: under `QSVG_DKSEG=0` these three entries are keyed for the
@@ -92,7 +99,7 @@ internal space (never hand-typed). Verified directly against
 | bench | **SCORE 78** (was 79 — one aggregate metric improved), FAILURES none, pixelfail 0, budget-mismatch 5/1655, width bad 1/1655 |
 | marks+intervals, p27/p117/p177/p254/p451 vs `.cache/sweeps/reseat` | 27: 0/0→0/0 · 117: 0/0→0/0 · 177: 0/0→0/0 · 254: 0/0→0/0 · 451: 1/0→1/0 (the pre-existing إِلْ يَاسِينَ ligature-surplus flag, untouched) — **no page worse** |
 | 10 control pages (5, 50, 100, 150, 200, 300, 350, 400, 500, 600), HEAD build vs migrated build | **all byte-identical** |
-| p254 emitted SVG | TWO groups: `data-word="8"` بَعْدَ (ligature بعد, body+fatha, inside the line-6 wrapper) and `data-word="9"` مَا (ligature ما, body+fatha, inside the line-7 wrapper); جَآءَكَ is `data-word="10"` |
+| p254 emitted SVG | TWO groups: `data-word="8"` بَعْدَ (ligature بعد, body+fathah, inside the line-6 wrapper) and `data-word="9"` مَا (ligature ما, body+fathah, inside the line-7 wrapper); جَآءَكَ is `data-word="10"` |
 | MushafDatabase, all 5 pages | line disagreements **0**; every position in 2:181/8:6/13:37 aligns 1:1 (incl. both halves); residual text diffs are orthography only (kashida, ى/ي) |
 
 ## For Abdullah

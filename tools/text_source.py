@@ -8,7 +8,7 @@ follows.
 
 Code points are normalised first: the same mark is written differently by different
 conventions (KFGQPC writes sukun U+06E1 and the silent circle U+0652, quran.com's
-uthmani writes them U+0652 and U+06DF), so a raw comparison measures encoding, not
+rasm_uthmani writes them U+0652 and U+06DF), so a raw comparison measures encoding, not
 content.
 """
 import sys, os, io, json, gzip, glob, re
@@ -21,57 +21,57 @@ SP = os.path.dirname(os.path.abspath(__file__))
 REFDIR = sys.argv[1]
 
 # ---- the reference's label vocabulary, folded to families -------------------
-# The iqlab variants fold into their tanween: this art fuses the iqlab meem into the
-# tanween glyph, and quran.com's uthmani writes one U+064B for the pair. Folding is what
+# The iqlab variants fold into their tanwin: this art fuses the iqlab meem into the
+# tanwin glyph, and quran.com's rasm_uthmani writes one U+064B for the pair. Folding is what
 # makes the two comparable — 734 + 2901 + 106 is exactly the 3741 U+064B it writes.
 REF_FAM = {
-    "fatha": "fatha", "kasra": "kasra", "damma": "damma",
-    "sukun": "sukun", "shadda": "shadda",
-    "hamza": "hamza", "wasla": "wasla",
-    "superscript alef": "small-alef", "maddah": "maddah",
-    "rounded zero": "small-circle", "rectangular zero": "rect-zero",
-    "fathatan": "fathatan", "successive fathatan": "fathatan", "fatha iqlab": "fathatan",
-    "kasratan": "kasratan", "successive kasratan": "kasratan", "kasra iqlab": "kasratan",
-    "dammatan": "dammatan", "successive dammatan": "dammatan", "damma iqlab": "dammatan",
-    "small waw": "small-waw", "small yeh": "small-ya",
-    "small meem": "meem", "small seen": "small-seen", "small noon": "small-noon",
+    "fathah": "fathah", "kasrah": "kasrah", "dammah": "dammah",
+    "sukun": "sukun", "shaddah": "shaddah",
+    "hamzah": "hamzah", "hamzat_al_wasl": "hamzat_al_wasl",
+    "superscript alef": "omitted_alif", "maddah": "maddah",
+    "rounded zero": "small_circle", "rectangular zero": "rect-zero",
+    "tanwin_al_fath": "tanwin_al_fath", "successive tanwin_al_fath": "tanwin_al_fath", "fathah iqlab": "tanwin_al_fath",
+    "tanwin_al_kasr": "tanwin_al_kasr", "successive tanwin_al_kasr": "tanwin_al_kasr", "kasrah iqlab": "tanwin_al_kasr",
+    "tanwin_al_damm": "tanwin_al_damm", "successive tanwin_al_damm": "tanwin_al_damm", "dammah iqlab": "tanwin_al_damm",
+    "small waw": "small_waw", "small yeh": "small_yaa",
+    "small meem": "meem", "small seen": "small-seen", "small noon": "small_noon",
     "vowel sign": None,
 }
 WAQF_CP = set(range(0x06D6, 0x06DD)) | {0x06E9}
 
 # ---- code point -> family, per convention ----------------------------------
 BASE = {
-    0x064E: "fatha", 0x0650: "kasra", 0x064F: "damma",
-    0x064B: "fathatan", 0x064D: "kasratan", 0x064C: "dammatan",
-    0x08F0: "fathatan", 0x08F2: "kasratan", 0x08F1: "dammatan",
-    0x0651: "shadda", 0x0653: "maddah", 0x06E4: "maddah",
-    0x0670: "small-alef", 0x06E0: "rect-zero",
-    0x06E5: "small-waw", 0x06E6: "small-ya", 0x06E7: "small-ya",
-    0x06E2: "meem", 0x06ED: "meem", 0x06E8: "small-noon",
+    0x064E: "fathah", 0x0650: "kasrah", 0x064F: "dammah",
+    0x064B: "tanwin_al_fath", 0x064D: "tanwin_al_kasr", 0x064C: "tanwin_al_damm",
+    0x08F0: "tanwin_al_fath", 0x08F2: "tanwin_al_kasr", 0x08F1: "tanwin_al_damm",
+    0x0651: "shaddah", 0x0653: "maddah", 0x06E4: "maddah",
+    0x0670: "omitted_alif", 0x06E0: "rect-zero",
+    0x06E5: "small_waw", 0x06E6: "small_yaa", 0x06E7: "small_yaa",
+    0x06E2: "meem", 0x06ED: "meem", 0x06E8: "small_noon",
     0x06DC: "small-seen", 0x06E3: "small-seen",
-    0x0654: "hamza", 0x0655: "hamza",
+    0x0654: "hamzah", 0x0655: "hamzah",
 }
-# KFGQPC writes the open tanween with these; quran.com's uthmani has no separate
-# code point for them and writes the plain tanween instead.
-QPC_EXTRA = {0x06E1: "sukun", 0x0652: "small-circle",
-             0x0657: "fathatan", 0x0656: "kasratan", 0x065E: "dammatan"}
-UTH_EXTRA = {0x0652: "sukun", 0x06DF: "small-circle",
-             0x0657: "dammatan", 0x0656: "kasratan", 0x065E: "fathatan"}
-# The reference takes a hamza SEAT apart: `أ` is a text alef plus a `hamza` diacritic,
-# and the same for إ ؤ ئ — 16,385 hamza diacritics against 773 combining U+0654 in the
+# KFGQPC writes the open tanwin with these; quran.com's rasm_uthmani has no separate
+# code point for them and writes the plain tanwin instead.
+QPC_EXTRA = {0x06E1: "sukun", 0x0652: "small_circle",
+             0x0657: "tanwin_al_fath", 0x0656: "tanwin_al_kasr", 0x065E: "tanwin_al_damm"}
+UTH_EXTRA = {0x0652: "sukun", 0x06DF: "small_circle",
+             0x0657: "tanwin_al_damm", 0x0656: "tanwin_al_kasr", 0x065E: "tanwin_al_fath"}
+# The reference takes a hamzah SEAT apart: `أ` is a text alef plus a `hamzah` diacritic,
+# and the same for إ ؤ ئ — 16,385 hamzah diacritics against 773 combining U+0654 in the
 # text, so the seats must be counted. A bare `ء` is not a seat; it is its own letter and
 # the reference labels it `text`. Counting it as well charged 2,715 false disagreements
-# (`سَوَآءٌ` was said to spell a hamza the page does not draw); counting no letters at
+# (`سَوَآءٌ` was said to spell a hamzah the page does not draw); counting no letters at
 # all charged 15,198.
-HAMZA_LETTERS = set("أإؤئ")
-WASLA_LETTERS = {0x0671}
+HAMZAH_LETTERS = set("أإؤئ")
+HAMZAT_AL_WASL_LETTERS = {0x0671}
 
 # families the ink and the text can actually be compared on. `meem` is out: this art
-# fuses the iqlab meem into the tanween glyph, so the reference draws 270 where the
-# uthmani text spells 7,252.
-FAMS = ("fatha", "kasra", "damma", "fathatan", "kasratan", "dammatan",
-        "shadda", "sukun", "small-circle", "rect-zero", "maddah",
-        "small-alef", "small-waw", "small-ya", "hamza", "wasla")
+# fuses the iqlab meem into the tanwin glyph, so the reference draws 270 where the
+# rasm_uthmani text spells 7,252.
+FAMS = ("fathah", "kasrah", "dammah", "tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm",
+        "shaddah", "sukun", "small_circle", "rect-zero", "maddah",
+        "omitted_alif", "small_waw", "small_yaa", "hamzah", "hamzat_al_wasl")
 
 
 def text_counts(t):
@@ -83,10 +83,10 @@ def text_counts(t):
         fam = BASE.get(o) or style.get(o)
         if fam:
             c[fam] += 1
-        elif ch in HAMZA_LETTERS:
-            c["hamza"] += 1
-        elif o in WASLA_LETTERS:
-            c["wasla"] += 1
+        elif ch in HAMZAH_LETTERS:
+            c["hamzah"] += 1
+        elif o in HAMZAT_AL_WASL_LETTERS:
+            c["hamzat_al_wasl"] += 1
         elif o in WAQF_CP:
             c["waqf"] += 1
     return c
@@ -212,10 +212,10 @@ def main():
             if (key[0], key[1]) in ((2, 181), (8, 6), (13, 37)):
                 _dkk = None            # split ayahs: indexing shifts, skip
             cand["digitalkhatt (print)"] = DK.get(_dkk, "") if _dkk else ""
-            # What this pipeline actually uses: uthmani for every mark, the KFGQPC text
+            # What this pipeline actually uses: rasm_uthmani for every mark, the KFGQPC text
             # for the waqf signs alone. Each is the best available source for its own
             # part, and neither is best for both.
-            cand["uthmani + kfgqpc waqf"] = (
+            cand["rasm_uthmani + kfgqpc waqf"] = (
                 "".join(c for c in (w.get("text_uthmani") or "") if ord(c) not in WAQF_CP)
                 + "".join(c for c in QPC.get("%d:%d:%d" % key, "") if ord(c) in WAQF_CP))
             cand["mushafdatabase_own"] = rec["hafs"]

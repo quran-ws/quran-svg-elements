@@ -88,9 +88,9 @@ them.
 - **p2 2:4:4 `أُنزِلَ`** — null contour area 0.00364 in seg `نز`. The same
   word at 2:4:7 on the same page has one too (0.00444). Both are whole
   elements.
-- **p346 23:61:6 `لَهَا`** — a *mark* case: the `fatha` element has two
+- **p346 23:61:6 `لَهَا`** — a *mark* case: the `fathah` element has two
   contours, one real and one of area 0.00060. Six of the fourteen mark cases
-  are `لَهَا`/`وَلَهَا` fathas (p262, p346 twice, p370, p453, p590), which is a
+  are `لَهَا`/`وَلَهَا` fathahs (p262, p346 twice, p370, p453, p590), which is a
   strong hint they share one upstream cause rather than being fourteen
   accidents.
 
@@ -164,15 +164,15 @@ letter body's height, so no pen overhang reaches it.
 `.cache/marks/labels.json` is the forward map, signature → label. Nobody had
 run it **backwards** as an outlier hunt.
 
-The pipeline legitimately gives one signature several *names* — fatha / kasra /
-fathatan / kasratan are one stroke named by position, and a dot cluster's
+The pipeline legitimately gives one signature several *names* — fathah / kasrah /
+tanwin_al_fath / tanwin_al_kasr are one stroke named by position, and a dot cluster's
 members share the single-dot outline. What it must never give one signature is
 two **families**:
 
 ```
-slash = fatha | kasra | fathatan | kasratan
-damma = damma | dammatan
-dots  = dot | two-dots | three-dots | muanaqah
+slash = fathah | kasrah | tanwin_al_fath | tanwin_al_kasr
+dammah = dammah | tanwin_al_damm
+dots  = dot | two_dots | three_dots | waqf_al_muanaqah
 everything else is its own family
 ```
 
@@ -183,8 +183,8 @@ family:
 ```
 share = 0.000000   88 of 90 signatures   PERFECT
 --------- EMPTY BAND: the entire open interval ---------
-share = 0.000018   sig d7a8b5e19121fbe4  (slash outline, 54,276x) once "two-dots"
-share = 0.000040   sig a316a3b8eb2508b0  (two-dots outline, 24,854x) once "fatha"
+share = 0.000018   sig d7a8b5e19121fbe4  (slash outline, 54,276x) once "two_dots"
+share = 0.000040   sig a316a3b8eb2508b0  (two_dots outline, 24,854x) once "fathah"
 ```
 
 There is no threshold to tune. Every other outline in the book is 100.000% one
@@ -195,12 +195,12 @@ on **p337 22:46:8 `يَعْقِلُونَ`**:
 
 | element | outline | outline used elsewhere | named | drawn at y |
 |---|---|---|---|---|
-| `[265.6, 483.9, 271.8, 487.2]` | `d7a8b5e1…` | slash, 54,276x | **two-dots** | 483.9 — **above** the letters |
-| `[268.1, 499.1, 272.6, 501.9]` | `a316a3b8…` | two-dots, 24,854x | **fatha** | 499.1 — **below** the letters |
+| `[265.6, 483.9, 271.8, 487.2]` | `d7a8b5e1…` | slash, 54,276x | **two_dots** | 483.9 — **above** the letters |
+| `[268.1, 499.1, 272.6, 501.9]` | `a316a3b8…` | two_dots, 24,854x | **fathah** | 499.1 — **below** the letters |
 
-The ya's two dots belong below and the fatha above; both the shape and the
+The ya's two dots belong below and the fathah above; both the shape and the
 position say the two names are exchanged. It is **mark-count neutral** — one
-fatha and one two-dots either way — so no counting audit can ever see it, and
+fathah and one two_dots either way — so no counting audit can ever see it, and
 `audit_slashpos` cannot either, because it only reasons about marks *already
 named* as slashes.
 
@@ -260,7 +260,7 @@ That is precisely why both axes are kept.
 ### Other flags I read by ink
 
 - **p579 76:11:2 `ٱللَّهُ`** (2 contours vs 3, in 660 occurrences) — **REAL.**
-  Its ligature group 0, seg `ا`, holds only a `wasla` mark and **no body at
+  Its ligature group 0, seg `ا`, holds only a `hamzat_al_wasl` mark and **no body at
   all**. The previous word `فَوَقَىٰهُمُ` holds an extra body at
   `[42.489, 122.963, 45.216, 137.930]` — a 2.7 × 15.0 stroke, an alif — and
   `ٱللَّهُ`'s own group-0 atom declares its x-range as `[42.489, 45.216]`,
@@ -344,7 +344,7 @@ alif**, drawn exactly where the print draws it.
 I then added the obvious second signal — require that the two words are **not**
 mutually nested — and re-measured. 781 pieces, depths
 `6.04, 5.62, 5.05, 4.17, 3.84, 3.76 …`: **no band at all**, a smooth decay, and
-the whole tail is one legitimate pattern — the wasla-alif of `ٱل…` tucking
+the whole tail is one legitimate pattern — the hamzat-al-wasl-alif of `ٱل…` tucking
 under the previous word's final ر/ز/م (`وَبَشِّرِ ٱلْمُؤْمِنِينَ`,
 `نَحْشُرُ ٱلْمُتَّقِينَ`, `ذِكْرِ ٱللَّهِ`, and about fifty more of the same
 shape). **Rejected.** The mark version of this audit works because a mark is
@@ -405,7 +405,7 @@ whose *word-level* mark multiset is correct, still **12,623 words (16%)**.
 *from* the group's merged seg list, so for anything the late movers did not
 touch the comparison is **circular**. What is left is dominated by
 `align_segs_atoms` merge imprecision — e.g. p1 1:1:4 `ٱلرَّحِيمِ`, where the
-shadda and fatha of the ر are filed under group `ا`. A 16% flag rate is not a
+shaddah and fathah of the ر are filed under group `ا`. A 16% flag rate is not a
 detector. The non-circular version of this question is geometric, and that is
 §2, which does have empty bands.
 
@@ -427,12 +427,12 @@ Ranked by my confidence. Everything here I read element-by-element myself.
 | # | page | word key | word | what is wrong | confidence |
 |---|---|---|---|---|---|
 | 1 | **384** | 27:78:6 / 7 / 8 | `وَهُوَ` `ٱلْعَزِيزُ` `ٱلْعَلِيمُ` | **A theft chain.** Each word holds its left neighbour's alif. `ٱلْعَزِيزُ`'s group 0 (`ا`) is empty while a 2.9 × 15.8 alif sits at its far-left edge inside group `يز`; `وَهُوَ` holds a 2.4 × 15.0 alif it has no letter for; `ٱلْعَلِيمُ` has lost its alif. | **very high** |
-| 2 | **579** | 76:11:2 | `ٱللَّهُ` | **Its alif is held by `فَوَقَىٰهُمُ`.** Group 0 holds only the wasla, no body; the neighbour holds a 2.7 × 15.0 stroke at exactly the x-range group 0 declares (`[42.489, 45.216]`). | **very high** |
-| 3 | **337** | 22:46:8 | `يَعْقِلُونَ` | **fatha and two-dots have swapped names.** The two-dots outline (24,854 uses) is called `fatha` and drawn *below*; the slash outline (54,276 uses) is called `two-dots` and drawn *above*. Count-neutral, so nothing else can see it. | **very high** |
+| 2 | **579** | 76:11:2 | `ٱللَّهُ` | **Its alif is held by `فَوَقَىٰهُمُ`.** Group 0 holds only the hamzat_al_wasl, no body; the neighbour holds a 2.7 × 15.0 stroke at exactly the x-range group 0 declares (`[42.489, 45.216]`). | **very high** |
+| 3 | **337** | 22:46:8 | `يَعْقِلُونَ` | **fathah and two_dots have swapped names.** The two_dots outline (24,854 uses) is called `fathah` and drawn *below*; the slash outline (54,276 uses) is called `two_dots` and drawn *above*. Count-neutral, so nothing else can see it. | **very high** |
 | 4 | **366** | 25:68:20 | `ذَٰلِكَ` | **Ligature groups scrambled.** The real dotted ذ at `[280.6, 286.4]` is filed under `data-text="لك"`; a piece of the لك run is filed under `data-text="ذ"`. | **very high** |
 | 5 | **585** | 80:38:1 | `وُجُوهࣱ` | **The final ه is grouped with the initial و.** Group `و` holds `[39.6, 44.1]` and `[58.0, 67.8]` with a 13.95-unit hole between; group `جوه` spans `[39.9, 62.5]` in between. | **very high** |
 | 6 | **536** | 56:61:7 | `مَا` | A body element of area **0.00052** (0.019 × 0.028 units) counted as a letter piece. Draws nothing. | **certain, but cosmetic** |
-| 7 | — | — | 46 more | The rest of `audit_nullink` — 31 further null body elements and 14 null mark contours. Six of the mark cases are `لَهَا`-family fathas (p262, p346 ×2, p370, p453, p590): likely one cause, not six. | **certain, but cosmetic** |
+| 7 | — | — | 46 more | The rest of `audit_nullink` — 31 further null body elements and 14 null mark contours. Six of the mark cases are `لَهَا`-family fathahs (p262, p346 ×2, p370, p453, p590): likely one cause, not six. | **certain, but cosmetic** |
 | 8 | **435** | 35:6:3 | `لَكُمْ` | 1 body contour where its other 142 occurrences draw 2 — the meem's counter is missing. The element is 33.3 units tall against 21.9 for its neighbour. | medium — needs eyes |
 | 9 | **324** | 21:30:18 | `يُؤْمِنُونَ` | 7 contours vs 6 (85 occurrences) **and** 2 runs vs 1 — flagged on both axes independently. | medium |
 | 10 | **203** | 9:102:6 | `صَٰلِحࣰا` | 4 contours vs 3, in a form whose spread is already split `3:14 / 2:13` — weaker than it looks. | low–medium |
@@ -477,7 +477,7 @@ misplaced   1181      marks-only    0   <- dead code, can never fire
 ```
 
 **The defect.** The tool treats **one atom = one `<g class="ligature">`** and
-pairs `atoms[i]` with `segment_word(uthmani)[i]` by index. It *does* guard the
+pairs `atoms[i]` with `segment_word(rasm_uthmani)[i]` by index. It *does* guard the
 index pairing with a count check — but the guard is aimed at the wrong
 quantity, because the emitter does not emit one group per atom:
 
@@ -521,11 +521,11 @@ and `empty` (670 rows, **83%**). Two real defects found while adjudicating five
 random hits, both from `misplaced`:
 
 - **p115 5:44:25 `تَخْشَوُا۟`** — group 1 is the bare `ا` (48.1–50.7) and holds
-  a damma at 51.9–57.3, no overlap with its own body, full overlap with group
-  0's `تخشو` (46.9–87.7) where the waw's damma belongs.
+  a dammah at 51.9–57.3, no overlap with its own body, full overlap with group
+  0's `تخشو` (46.9–87.7) where the waw's dammah belongs.
 - **p267 16:2:2 `ٱلْمَلَٰٓئِكَةَ`** — group 0 is the alef (292.2–295.2) and
-  holds the `wasla` (correct) **plus** a `sukun` at 285.0–289.4 **and** a
-  `fatha` at 277.5–284.5, both drawn over group 1's body (220.0–290.2). Two
+  holds the `hamzat_al_wasl` (correct) **plus** a `sukun` at 285.0–289.4 **and** a
+  `fathah` at 277.5–284.5, both drawn over group 1's body (220.0–290.2). Two
   marks in the wrong group; the audit named one. **Under-reported, not
   over-reported.**
 - One real `count` hit worth keeping: **p588 83:6:2 `يَقُومُ`**, whose single
@@ -556,5 +556,5 @@ ink inspection.)*
   thefts §4 is structurally blind to, since it needs no repetition.
 - **Reading order of elements within the emitted SVG** vs text order — I built
   the geometric version (§2) but not the emitted-order version.
-- **Ayah-level and line-level invariants** (words per ayah, ayah-marker
+- **Ayah-level and line-level invariants** (words per ayah, ayah-mark
   placement, ligature counts per line) — not measured at all.

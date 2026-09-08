@@ -13,12 +13,12 @@ for w, at in cap["a"]:
     if not w:
         continue
     key = "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"])
-    if needle not in w["uthmani"] and needle != key:
+    if needle not in w["rasm_uthmani"] and needle != key:
         continue
     els = [e for a in at for e in a["els"]]
     if not els: continue
     ln = els[0].get("line")
-    print("\n%s  (%d:%d:%d)  line %s" % (w["uthmani"], w["surah"], w["ayah"], w["pos"], ln))
+    print("\n%s  (%d:%d:%d)  line %s" % (w["rasm_uthmani"], w["surah"], w["ayah"], w["pos"], ln))
     for e in sorted(els, key=lambda e: -(e["x1"]+e["x2"])/2):
         print("   L%-3s %-6s %-13s x %6.1f-%-6.1f y %6.1f-%-6.1f%s"
               % (e.get("line"), e["kind"], e.get("mark") or "",

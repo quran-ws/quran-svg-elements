@@ -12,17 +12,17 @@
 import { SVGNS } from './core.mjs';
 
 /**
- * @param target  anything MushafPage#resolve accepts: '2:255', {line: 7}, wids…
+ * @param target  anything MushafPage#resolve accepts: '2:255', {line: 7}, wordKeys…
  * @param mode    'hide' | 'block' | 'blur'
- * @param order   'reading' (data-wid order) | 'reverse'
+ * @param order   'reading' (data-word-key order) | 'reverse'
  */
 export function mask(page, target = 'page', {
   mode = 'hide', color = '#d8d3c6', blur = 2.2, rx = 1.2, padX = 0.6, padY = 0.8, order = 'reading'
 } = {}) {
-  const words = page.resolve(target).slice().sort(byWid);
+  const words = page.resolve(target).slice().sort(byWordKey);
   if (order === 'reverse') words.reverse();
 
-  const hidden = new Set(words.map(w => w.wid));
+  const hidden = new Set(words.map(w => w.wordKey));
   const undo = [];
   let filter = null, cover = null;
 
@@ -55,7 +55,7 @@ export function mask(page, target = 'page', {
     }
     /* block */
     if (on) {
-      if (rects.has(w.wid)) { rects.get(w.wid).style.display = ''; return; }
+      if (rects.has(w.wordKey)) { rects.get(w.wordKey).style.display = ''; return; }
       const b = w.box();
       const r = document.createElementNS(SVGNS, 'rect');
       r.setAttribute('x', (b.x0 - padX).toFixed(3));
@@ -65,9 +65,9 @@ export function mask(page, target = 'page', {
       r.setAttribute('rx', String(rx));
       r.setAttribute('fill', color);
       cover.appendChild(r);
-      rects.set(w.wid, r);
+      rects.set(w.wordKey, r);
     } else {
-      const r = rects.get(w.wid);
+      const r = rects.get(w.wordKey);
       if (r) r.style.display = 'none';
     }
   }
@@ -84,8 +84,8 @@ export function mask(page, target = 'page', {
       let done = 0;
       for (const w of words) {
         if (done >= n) break;
-        if (!hidden.has(w.wid)) continue;
-        hidden.delete(w.wid); paint(w, false); done++;
+        if (!hidden.has(w.wordKey)) continue;
+        hidden.delete(w.wordKey); paint(w, false); done++;
       }
       return api.revealedCount;
     },
@@ -95,18 +95,18 @@ export function mask(page, target = 'page', {
       let done = 0;
       for (let i = words.length - 1; i >= 0 && done < n; i--) {
         const w = words[i];
-        if (hidden.has(w.wid)) continue;
-        hidden.add(w.wid); paint(w, true); done++;
+        if (hidden.has(w.wordKey)) continue;
+        hidden.add(w.wordKey); paint(w, true); done++;
       }
       return api.revealedCount;
     },
-    revealWord(wid) {
-      const w = words.find(x => x.wid === wid);
-      if (w && hidden.has(wid)) { hidden.delete(wid); paint(w, false); }
+    revealWord(wordKey) {
+      const w = words.find(x => x.wordKey === wordKey);
+      if (w && hidden.has(wordKey)) { hidden.delete(wordKey); paint(w, false); }
       return api.revealedCount;
     },
-    revealAll() { for (const w of words) if (hidden.has(w.wid)) { hidden.delete(w.wid); paint(w, false); } return words.length; },
-    hideAll() { for (const w of words) if (!hidden.has(w.wid)) { hidden.add(w.wid); paint(w, true); } return 0; },
+    revealAll() { for (const w of words) if (hidden.has(w.wordKey)) { hidden.delete(w.wordKey); paint(w, false); } return words.length; },
+    hideAll() { for (const w of words) if (!hidden.has(w.wordKey)) { hidden.add(w.wordKey); paint(w, true); } return 0; },
     remove() {
       for (const w of undo) { w.el.style.visibility = ''; w.el.style.filter = ''; }
       filter && filter.remove();
@@ -118,9 +118,9 @@ export function mask(page, target = 'page', {
 }
 
 /** Mask everything from a word onward — the usual "cover the rest" drill. */
-export function maskFrom(page, wid, opts = {}) {
-  const all = page.words().sort(byWid);
-  const i = all.findIndex(w => w.wid === wid);
+export function maskFrom(page, wordKey, opts = {}) {
+  const all = page.words().sort(byWordKey);
+  const i = all.findIndex(w => w.wordKey === wordKey);
   return mask(page, i < 0 ? [] : all.slice(i), opts);
 }
 
@@ -145,14 +145,14 @@ export function reveal(page, {
   lit = 1, byAyah = false, grey = '#c9c4b8', ink = '#231f20', markers = true, at = 0
 } = {}) {
   const theme = page.theme({ ink: grey });
-  const steps = byAyah ? page.ayahKeys() : page.words().map(w => w.wid);
+  const steps = byAyah ? page.ayahKeys() : page.words().map(w => w.wordKey);
 
   const closes = new Map();
   if (markers) {
-    for (const mk of page.markers()) {
-      const ayah = page.ayah(mk.aid);
+    for (const mk of page.ayahMarks()) {
+      const ayah = page.ayah(mk.ayahKey);
       const last = ayah && ayah.words().pop();
-      if (last) closes.set(mk.aid, steps.indexOf(byAyah ? mk.aid : last.wid));
+      if (last) closes.set(mk.ayahKey, steps.indexOf(byAyah ? mk.ayahKey : last.wordKey));
     }
   }
 
@@ -164,8 +164,8 @@ export function reveal(page, {
     if (i < 0) return;
     const keys = steps.slice(Math.max(0, i - lit + 1), i + 1);
     if (keys.length) held.push(page.highlight(keys, { fill: ink }));
-    for (const [aid, k] of closes)
-      if (k >= 0 && i >= k) held.push(inkPaths(page.ayah(aid).marker, ink));
+    for (const [ayahKey, k] of closes)
+      if (k >= 0 && i >= k) held.push(inkPaths(page.ayah(ayahKey).mark, ink));
   }
   paint(Math.min(steps.length - 1, Math.max(0, at)));
 
@@ -192,7 +192,6 @@ function inkPaths(el, fill) {
   };
 }
 
-function byWid(a, b) {
-  const x = a.parts, y = b.parts;
-  return (x[0] - y[0]) || (x[1] - y[1]) || (x[2] - y[2]);
+function byWordKey(a, b) {
+  return (a.surah - b.surah) || (a.ayah - b.ayah) || (a.number - b.number);
 }

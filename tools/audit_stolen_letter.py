@@ -75,7 +75,7 @@ def scan(pg):
         lines = [e.get("line") for a in at for e in a["els"] if e.get("line")]
         words.append({
             "key": "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]),
-            "text": w["uthmani"], "groups": groups,
+            "text": w["rasm_uthmani"], "groups": groups,
             "line": max(set(lines), key=lines.count) if lines else None,
             "x1": min((b["x1"] for b in allb), default=None),
             "x2": max((b["x2"] for b in allb), default=None),

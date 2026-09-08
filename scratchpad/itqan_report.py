@@ -43,7 +43,7 @@ A("\nAnd `37:130`: the Complex's text and the V4 layout both give **two** words;
 A("DigitalKhatt and quran.com give one. (We fixed this one — it also closed a")
 A("long-standing flag in our own audit, where one word held two words' ink.)\n")
 A("## Why we think the three are an inconsistency, not a convention\n")
-A("The obvious defence is that word-by-word tokenisation follows ordinary modern")
+A("The obvious defence is that word-by-word-translation-translation tokenisation follows ordinary modern")
 A("orthography rather than the rasm. That does not survive the data. In the very")
 A("same construction, every source **welds** `ما`+`لـ` where the rasm welds it:\n")
 A("| ayah | sources emit | the Complex's text | agree? |")

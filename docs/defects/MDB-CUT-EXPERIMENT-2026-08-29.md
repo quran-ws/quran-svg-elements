@@ -163,7 +163,7 @@ code physically removed.
 | class | words | |
 |---|---|---|
 | **more groups** | 2,824 | RIGHT — the Tier E family |
-| **same count, marks reseated** | 381 | RIGHT — the small-alef / tanween family §4 |
+| **same count, marks reseated** | 381 | RIGHT — the omitted_alif / tanwin family §4 |
 | **fewer groups** | 2 | WRONG-ish, see below |
 
 The two are `أَيْدِيهِمْ` on p324 21:28:4 and p341 22:76:4:
@@ -190,18 +190,18 @@ and the third row (p451 `إِلْ يَاسِينَ`) is the known incomparable w
 ```
 p76 3:199:22 أُو۟لَٰٓئِكَ
 OFF  اوليك   bodies 230.4‑282.3, 245.7‑250.5, 279.9‑289.8, 293.0‑296.1
-             marks  fatha maddah small-alef hamza kasra fatha damma hamza sifr
-ON   ا       body 293.0‑296.1   marks damma, hamza        <- the أُ
-     و       body 279.9‑289.8   marks sifr-mustadir       <- the و۟, its own circle
+             marks  fathah maddah omitted_alif hamzah kasrah fathah dammah hamzah sifr
+ON   ا       body 293.0‑296.1   marks dammah, hamzah        <- the أُ
+     و       body 279.9‑289.8   marks rounded_zero       <- the و۟, its own circle
      ليك     bodies 230.4‑282.3, 245.7‑250.5  the rest
 
 p8 2:54:16 ذَٰلِكُمْ
-OFF  ذ    marks fatha, dot          لكم  marks small-alef, damma, sukun, kasra
-ON   ذ    marks fatha, dot, small-alef   لكم  marks damma, sukun, kasra
+OFF  ذ    marks fathah, dot          لكم  marks omitted_alif, dammah, sukun, kasrah
+ON   ذ    marks fathah, dot, omitted_alif   لكم  marks dammah, sukun, kasrah
 ```
 
 The second is the dagger alef of `ذَٰ`, which the `QSVG_LIGFIX` work
-(LIGATURE-REGROUP-2026-08-29.md §5) recorded as *unfixable* — 91 small-alef
+(LIGATURE-REGROUP-2026-08-29.md §5) recorded as *unfixable* — 91 omitted_alif
 cases where "`cluster_line` merged separate narrow bodies into one atom, so no
 regrouping pass downstream can separate them". Changing the cut separates them.
 
@@ -243,7 +243,7 @@ Refusing to run the width-prior DP when the atom count already equals the
 number of pieces the joining rules allow:
 
 ```python
-segs = segment_word(w["uthmani"])
+segs = segment_word(w["rasm_uthmani"])
 if len(cl) == len(segs):
     groups, cost = [([a], [s]) for a, s in zip(cl, segs)], 0.0
 else:
@@ -272,7 +272,7 @@ the four lines above, at `assign_words.py`'s `groups, cost = align_segs_atoms(cl
 ## 6. Two things found on the way
 
 * **`audit_inkidentity.py` was reading retired attributes.** The emitter moved
-  to a single `data-wid="surah:ayah:word"` on 2026-08-29; the audit still read
+  to a single `data-word-key="surah:ayah:word"` on 2026-08-29; the audit still read
   `data-surah`/`data-ayah`/`data-word` and so keyed every contour on a page
   `"None:None:None"`, collapsing the whole page into one word. It was fixed by
   a parallel session while this experiment ran. Any ink-identity number quoted

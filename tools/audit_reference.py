@@ -64,7 +64,7 @@ def reference(path):
         if a.get("type") != "text":
             continue
         try:
-            sa = (int(a["surah"]), int(a["aya"]))
+            sa = (int(a["surah"]), int(a["ayah"]))
             idx = int(a["word-index-in-ayah"])
         except (KeyError, ValueError):
             continue
@@ -107,7 +107,7 @@ def ours(pg):
             continue
         out[(w["surah"], w["ayah"], w["pos"])] = (
             max(set(lns), key=lns.count),
-            min(e["x1"] for e in b), max(e["x2"] for e in b), w["uthmani"])
+            min(e["x1"] for e in b), max(e["x2"] for e in b), w["rasm_uthmani"])
     return out
 
 

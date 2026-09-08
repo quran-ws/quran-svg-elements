@@ -105,9 +105,9 @@ units, i.e. **1.6% of a ring's width**. `--tol 0.05` would take even those.
 
 | mushaf | files changed (of 722) |
 |---|---|
-| `mushafs/douri/kfqc/svg` | 540 |
+| `mushafs/duri/kfqc/svg` | 540 |
 | `mushafs/hafs/kfqc/svg` | 423 |
-| `mushafs/qalon/kfqc/svg` | 703 |
+| `mushafs/qalun/kfqc/svg` | 703 |
 | `mushafs/shubah/kfqc/svg` | 530 |
 | `mushafs/warsh/kfqc/svg` | 683 |
 
@@ -170,7 +170,7 @@ the new source exactly.
 |---|---|
 | `tools/audit_pixels.py 1 604` | **604/604 pixel-identical, FAILURES 0** |
 | `scratchpad/bench.py` | **SCORE 137, FAILURES none, pixelfail 0** |
-| `tools/audit_taxonomy.py` | **OK**, pages 1-604, 35 mark names, 3 muanaqah pairs |
+| `tools/audit_taxonomy.py` | **OK**, pages 1-604, 35 mark names, 3 waqf_al_muanaqah pairs |
 | full sweep `1 604` (`.cache/sweeps/medcentre`) | **marks 0, intervals 1** — p350 only, the standing one |
 | `centre_medallions.py` (2nd run) | 0 files to rewrite, all five mushafs |
 
@@ -189,7 +189,7 @@ These are pre-existing and were left alone:
   page plus variants) and skips them.
 * **`ayah:x`/`ayah:y` are scrambled in Qālūn**, and on the al-Dūrī opening
   spread. The residual against them there is ~460 page units, i.e. the attribute
-  names a different marker. This is the known `tag_ayah_markers` ordering bug; it
+  names a different marker. This is the known `tag_ayah_marks` ordering bug; it
   does not affect the correction, which never reads those attributes.
 * **12 rings drawn twice** on the opening spread of every mushaf (7 on page 1,
   4–5 on page 2), byte-identical duplicates one on top of the other. The tool

@@ -57,7 +57,7 @@ difference.** Measured here over all 604 pages, after folding:
 
 The nine are three sites, not nine independent ones:
 
-* **p11 2:72:4** `فَٱدَّٰرَٰءۡتُمۡ` vs our `فَٱدَّٰرَْٰٔتُمْ` — a hamza-above
+* **p11 2:72:4** `فَٱدَّٰرَٰءۡتُمۡ` vs our `فَٱدَّٰرَْٰٔتُمْ` — a hamzah-above
   encoded two ways. One word.
 * **p262 15:7** — they write `لَّوۡمَا` as ONE word, we write `لَّوْ` + `مَا`.
   Every position in the ayah shifts by one, so seven words plus one only-ours
@@ -164,14 +164,14 @@ Our elements:
 ```
 3:65:9  ٱلتَّوْرَىٰةُ  atom3 seg "ىة"  body 235.77..248.98   <- the real ىة
                                       body 222.96..232.87   <- a SECOND, detached body
-3:65:10 وَٱلْإِنجِيلُ  atom0 seg "و"   mark fatha 226.09..232.36   and NO BODY AT ALL
+3:65:10 وَٱلْإِنجِيلُ  atom0 seg "و"   mark fathah 226.09..232.36   and NO BODY AT ALL
 ```
 
 Three independent signals agree:
 
 * **They draw it.** Their `و` run is at 222.8–233.0 in our units.
-* **We do not.** Our `و` group holds a fatha and no letter ink.
-* **Our own mark says so.** The waw's fatha sits at 226.1–232.4, directly over
+* **We do not.** Our `و` group holds a fathah and no letter ink.
+* **Our own mark says so.** The waw's fathah sits at 226.1–232.4, directly over
   the disputed stroke at 223.0–232.9 and nowhere near anything else.
 
 `audit_ligatures.py` does flag this word as `empty` — but it flags 195 words
@@ -249,7 +249,7 @@ legal break. Neither can be called right. Sixteen more rows are of this shape
 ### 7. p76 `أُو۟لَٰٓئِكَ` 3:199:22 — OURS-WRONG, read straight out of the emitted file
 
 ```
-<g class="word" … data-uthmani="أُو۟لَٰٓئِكَ">
+<g class="word" … data-rasm-uthmani="أُو۟لَٰٓئِكَ">
   <g class="ligature" data-text="اوليك">   ← ONE group, four body paths
 ```
 
@@ -312,7 +312,7 @@ ink on both sides, different bookkeeping. Not counted as a disagreement.
 
 ## What did not work
 
-* **Comparing by word text without folding hamza carriers.** 30% of words look
+* **Comparing by word text without folding hamzah carriers.** 30% of words look
   different when only the encoding is; the real figure is 0.012%.
 * **Normalising x per word.** The first plan. It divides out precisely the
   quantity that detects a stolen piece — a word that gained ink is wider, and
@@ -499,7 +499,7 @@ quantity does not separate this family. The outside opinion does.
 Each is a reciprocal swap: our word A holds a mark they give to B and vice
 versa. In seven of the nine the two words are on ADJACENT LINES, so the mark
 sits in the gap between two stacked lines — the known crossband family, and
-CLAUDE.md's standing rule is that fatha/kasra-family marks are not moved on one
+CLAUDE.md's standing rule is that fathah/kasrah-family marks are not moved on one
 signal.
 
 | page | words | their lines | pieces |
@@ -515,7 +515,7 @@ signal.
 | 499 | 45:8:7 `يُصِرُّ` / 45:8:8 `مُسْتَكْبِرࣰا` | 9 / 9 | 5.49x6.87 + dot, twice |
 
 **p499 is decidable and OURS-WRONG.** Both words are on line 9. Our
-`مُسْتَكْبِرࣰا`'s agreed ink spans x 262.1..312.6; the damma we give it sits at
+`مُسْتَكْبِرࣰا`'s agreed ink spans x 262.1..312.6; the dammah we give it sits at
 x 315.1 and its dot at 315.9 — the dot is 2.5u **outside** the word's own ink
 altogether, while `يُصِرُّ`'s agreed ink (306.2..334.0) contains both. The
 reference has them the other way round, which is the only way that reads.
@@ -526,7 +526,7 @@ reference has them the other way round, which is the only way that reads.
 p570  70:44:4   theirs: 4.39 x 6.64 @ (187.1, 123.8) + dot 1.35 x 1.20 @ (188.0, 122.2)
 ```
 
-The word is `ذِلَّةٞ` and the piece is its **dammatan** — a damma and its dot.
+The word is `ذِلَّةٞ` and the piece is its **tanwin_al_damm** — a dammah and its dot.
 Our page **draws exactly that ink**, at exactly those coordinates, and it sits
 outside every `<g class="word">`, next to the word's own 4.98 x 6.64 piece. Every mark audit here counts marks *per word*; ink that
 belongs to no word is invisible to all of them. Worth a detector of its own.

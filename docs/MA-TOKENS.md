@@ -77,7 +77,7 @@ transmitted, site by site — which is exactly what المقطوع والموص�
 So the two remaining sites are not a defensible convention, they are an
 **internal inconsistency**: we treat one construction two different ways, and the
 side we get wrong is the side the print's own text disagrees with. The earlier
-explanation in `MAQTU-MAWSUL.md` — that our unit is the "word-by-word token" and
+explanation in `MAQTU-MAWSUL.md` — that our unit is the "word-by-word-translation-translation token" and
 follows ordinary modern orthography — does not survive this table, because
 ordinary orthography would not weld `مَالِ` at 18:49 either, and we do weld it.
 
@@ -125,7 +125,9 @@ The union of every disagreement, so nothing is hidden by a total:
   V4 have two. We used to, and no longer do; that fix is what brings us level
   with the print's own layout.
 * **2:181, 8:6, 13:37** — quran.com fuses `بَعْدَ مَا`. We already split these
-  (`_DKSEG_SPLITS`), forced independently by p254's line break.
+  (now derived from the word-by-word-translation-translation release into `.cache/word_by_word_translation/seg_plan.json`;
+  it was the hand-written `_DKSEG_SPLITS`), forced independently by p254's line
+  break.
 
 So we now match the print's own layout exactly, and are ahead of DigitalKhatt
 and quran.com. The only remaining gap is the three sites where V4 itself

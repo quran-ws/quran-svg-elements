@@ -35,14 +35,14 @@ command that produced it is named.
    versioned CDN path for web consumers. §7.
 5. **Three defects block shipping**, all found while measuring for this
    document and all verified independently:
-   - the ayah-marker `data-aid` is **reversed** on 441 pages (§8.1) — the demo
+   - the ayah-mark `data-aid` is **reversed** on 441 pages (§8.1) — the demo
      already routes around it;
    - 54 words on 51 pages sit in the wrong `<g class="line">` (§8.2);
    - 4 surahs have no `<g class="surah-name">` anywhere, and surah 17's
      basmalah is emitted as two groups (§8.3).
-6. **`data-wid` is drop-in compatible with quran.com's word keys** — verified:
+6. **`data-word-key` is drop-in compatible with quran.com's word keys** — verified:
    1:1 = 4 words, 2:255 = 50, 77,432 in the corpus. Every word-keyed dataset in
-   the open-source ecosystem (timings from `quran-align`, word-by-word
+   the open-source ecosystem (timings from `quran-align`, word-by-word-translation-translation
    translations, morphology) joins to our ink with no mapping table. §6b.
 7. **The format documentation ships with the bundle** —
    `docs/shipping/FORMAT.md`, written for a consumer who has never seen the
@@ -78,11 +78,11 @@ That is a strong result and it should be the headline of the README.
 | `geom.json` — 5,966 B of bounding boxes measured **in a browser** | the pipeline emits no bbox at any level. The build is not reproducible without opening the page in a browser and pasting numbers back | **ship boxes** (§5.3) |
 | a hand-derived marker→ayah pairing | `data-aid` on markers is wrong (§8.1) | **fix, do not document** |
 | word index within its line, words-per-line, last word of an ayah | counted by regex over document order | ship in the index |
-| the ayah number split back out of `data-wid` | CSS has no substring match on an attribute | acceptable; note in the spec |
+| the ayah number split back out of `data-word-key` | CSS has no substring match on an attribute | acceptable; note in the spec |
 | a minted `id` per word | words carry no `id`, and `:target` needs one | **ship `id` per word** — free, enables the no-script mode |
 | the page matrix `1.3333 / -55` retyped as a literal | markers live in the flipped frame, crops in viewBox units | document the frames (§6) |
 | a surah NAME | at demo build time there was none. There is now (`data-surah-name-ar` etc. on the header groups) but it is only present on a surah's FIRST page | ship the page→surah index |
-| Amiri from Google Fonts | `data-uthmani` is *text*, not ink; rendering it needs a font | consumer's problem, but say so |
+| Amiri from Google Fonts | `data-rasm-uthmani` is *text*, not ink; rendering it needs a font | consumer's problem, but say so |
 
 And the one thing that is **impossible in principle**: there are no `<text>`
 nodes, so browser find-in-page, text selection and copy of the Quranic text do
@@ -106,7 +106,7 @@ extrapolated to 604. Raw / gzip -9 / brotli q11.
 | P0 dev, as emitted today | 429.5 | 104.3 | 66.4 | 100.0 | 100.0 |
 | P1 = P0 − `data-eid`, `data-sig` | 406.3 | 98.5 | 63.3 | 94.6 | 95.3 |
 | P2 = P1 − `<g class="ligature">` | 400.5 | 97.6 | 62.9 | 93.2 | 94.7 |
-| P3 = P2 − `data-mark-family`, − `data-rasm/imlaei/qpc` | 392.1 | 95.7 | 61.8 | 91.3 | 93.1 |
+| P3 = P2 − `data-mark-family`, − `data-rasm/rasm_imlai/qpc` | 392.1 | 95.7 | 61.8 | 91.3 | 93.1 |
 | P4 = P2 + `fill` moved to CSS | 392.1 | 97.2 | 62.8 | 91.3 | 94.5 |
 | P6 = one `<path>` per word, no marks at all | 358.9 | 94.2 | 61.9 | 83.6 | 93.2 |
 
@@ -145,17 +145,17 @@ Rendered with `rsvg-convert -w 1400` and compared with PIL, page 3.
 ### 3.1 Recommendation
 
 ```
-<g class="word" id="w-2-6-2" data-wid="2:6:2"
-   data-uthmani="ٱلَّذِينَ" data-rasm="ٱلذين" data-imlaei="الَّذِينَ" data-qpc="ٱلَّذِينَ">
-  <path data-kind="mark" data-mark="wasla"     d="…"/>
+<g class="word" id="w-2-6-2" data-word-key="2:6:2"
+   data-rasm-uthmani="ٱلَّذِينَ" data-rasm="ٱلذين" data-rasm-imlai="الَّذِينَ" data-qpc="ٱلَّذِينَ">
+  <path data-kind="mark" data-mark="hamzat_al_wasl"     d="…"/>
   <path data-kind="body"                        d="…"/>
-  <path data-kind="mark" data-mark="fatha"      d="…"/>
+  <path data-kind="mark" data-mark="fathah"      d="…"/>
   …
 </g>
 ```
 
 - **One `<g class="word">` per word — this already holds.** Measured: 77,432
-  word groups, 77,432 distinct `data-wid`, zero duplicates anywhere in the
+  word groups, 77,432 distinct `data-word-key`, zero duplicates anywhere in the
   corpus. Every word in the mushaf is exactly one node. This is the single
   strongest structural property of the product and it should be the first
   sentence of the spec.
@@ -166,7 +166,7 @@ Rendered with `rsvg-convert -w 1400` and compared with PIL, page 3.
   explicitly documented as *not stable across builds*, and shipping an unstable
   id invites consumers to key on it.
 - **The `<g class="ligature">` wrapper is dropped.** Justification below.
-- **`id="w-s-a-w"` is added** on each word, mirroring `data-wid`. Free, and it
+- **`id="w-s-a-w"` is added** on each word, mirroring `data-word-key`. Free, and it
   is the one thing the demo had to mint 127 of by hand.
 
 ### 3.2 "One element per word" — what it would mean, and why not that
@@ -176,7 +176,7 @@ per word, not per ligature". There are two readings and they are very different:
 
 | reading | what it means | what it costs |
 |---|---|---|
-| **(a) one GROUP per word** — the ligature wrapper goes, the paths stay | every mark keeps its `data-mark`; recolouring, mark-level highlighting, dot/haraka styling all keep working | 5.3 % of raw bytes vs today (P2) |
+| **(a) one GROUP per word** — the ligature wrapper goes, the paths stay | every mark keeps its `data-mark`; recolouring, mark-level highlighting, dot/harakah styling all keep working | 5.3 % of raw bytes vs today (P2) |
 | **(b) one PATH per word** — the whole word becomes a single `d` | `data-mark` disappears entirely; 436,708 named marks become anonymous ink | 16.4 % raw / **6.8 % brotli** — and it deletes the thing that makes this product different from a page image |
 
 **Recommend (a).** Reading (b) buys 6.8 % of the transfer size and destroys
@@ -196,9 +196,9 @@ live.
 ### 3.3 What is lost by the production profile, honestly
 
 - **Mark-part / fused-mark detail.** Some signs are one contour carrying two
-  marks (`fatha+hamza`) or two contours carrying one sign (muʿānaqah's three
+  marks (`fathah+hamzah`) or two contours carrying one sign (muʿānaqah's three
   dots). Schema v2 solves this with logical-mark records; until phase 3 lands,
-  a consumer counting `[data-mark="fatha"]` paths gets the *path* count, not
+  a consumer counting `[data-mark="fathah"]` paths gets the *path* count, not
   the *sign* count. **This must be stated in the spec** and is why the
   annotation sidecar (§5.4) matters.
 - **The letter/ligature boundary.** Nothing in the production file says where
@@ -250,8 +250,8 @@ anything whose value depends on being regenerated (caches, sweeps, baselines).
 | `FORMAT.md` | the format specification — see `docs/shipping/FORMAT.md` | ~60 KB |
 | `README.md` | what this is, one worked example, how to cite, where the artwork comes from | ~10 KB |
 | `index.json` | edition manifest + page→(surahs, first/last ayah, word count) + juz/hizb/rubʿ starts + sajdah sites + the 114 surah records | **99 KiB raw / 10 KiB brotli** |
-| `words.json` | 77,432 rows of `[wid, page, rasm, imlaei]` — the search index | **3,497 KiB raw / 478 KiB brotli** |
-| `wordboxes.json` | 77,432 rows of `[wid, line, x0, y0, x1, y1]` in page viewBox units | **3,118 KiB raw / 896 KiB brotli** |
+| `words.json` | 77,432 rows of `[word_key, page, rasm, rasm_imlai]` — the search index | **3,497 KiB raw / 478 KiB brotli** |
+| `wordboxes.json` | 77,432 rows of `[word_key, line, x0, y0, x1, y1]` in page viewBox units | **3,118 KiB raw / 896 KiB brotli** |
 | `mark-taxonomy.json` | the 36 mark names, their category, family and features — a consumer cannot interpret `data-mark` without it. Copy of `.cache/schema/mark-taxonomy.v2.json` | 4 KiB |
 | `VERSION.json` | see §5.5 | < 1 KiB |
 | `CHECKSUMS.txt` | sha256 per file | ~50 KiB |
@@ -294,9 +294,9 @@ exact extents from the pipeline, which already computes them.
 
 `.cache/annotations/NNN.json` already exists (schema v2 phase 1) and is
 **75.2 MiB** over 604 files. On page 3 the split is: `marks` 101,489 B (84 %),
-`words` 18,148 B, `ayat` 984 B, `surahs` 241 B, `relations` 68 B.
+`words` 18,148 B, `ayahs` 984 B, `surahs` 241 B, `relations` 68 B.
 
-- The `words` / `ayat` / `surahs` / `relations` part is small and useful →
+- The `words` / `ayahs` / `surahs` / `relations` part is small and useful →
   it is what `index.json` and `words.json` above are built from.
 - The `marks` part duplicates, in JSON, information already in the SVG, plus
   boxes. Shipping it at 75 MiB alongside a 400 MiB bundle is a 19 % increase
@@ -314,11 +314,11 @@ default bundle.
   "version": "1.0.0",
   "edition": "hafs-kfgqpc",
   "print": "KFGQPC Madani mushaf, V2 1441H",
-  "pages": 604, "words": 77432, "ayat": 6236, "surahs": 114,
+  "pages": 604, "words": 77432, "ayahs": 6236, "surahs": 114,
   "profile": "production",
   "format_spec": "FORMAT.md@1.0",
   "built": "2026-08-29",
-  "text_sources": ["uthmani (quran.com)", "KFGQPC waqf", "DigitalKhatt budgets"],
+  "text_sources": ["rasm_uthmani (quran.com)", "KFGQPC waqf", "DigitalKhatt budgets"],
   "layout_source": "DigitalKhatt QPC v2 1441H layout DB",
   "gates": {"pixel_identical_pages": 604, "taxonomy": "ok", "mark_flags": 0}
 }
@@ -373,19 +373,19 @@ run against a real page.
 | capability | what makes it possible | status |
 |---|---|---|
 | **Render a page** | the SVG. Fixed `viewBox`, all ink one colour | ✅ today |
-| **Extract the text of a page, ayah or word** | `data-uthmani` / `data-rasm` / `data-imlaei` / `data-qpc` on 77,432 word groups | ✅ today |
-| **Address a word** | `data-wid="2:6:3"` — globally unique, 77,432/77,432 | ✅ today |
-| **Highlight an ayah** | `[data-aid="2:255"]` on `<g class="ayah">` | ✅ today, but see the fragment caveat below |
-| **Highlight a word / a run of words** | `[data-wid]`, plus `id="w-2-6-3"` for `:target` | ⬅ needs the `id` (§3.1) |
+| **Extract the text of a page, ayah or word** | `data-rasm-uthmani` / `data-rasm` / `data-rasm-imlai` / `data-qpc` on 77,432 word groups | ✅ today |
+| **Address a word** | `data-word-key="2:6:3"` — globally unique, 77,432/77,432 | ✅ today |
+| **Highlight an ayah** | `[data-aid="2:255"]` on `<g class="ayah-fragment">` | ✅ today, but see the fragment caveat below |
+| **Highlight a word / a run of words** | `[data-word-key]`, plus `id="w-2-6-3"` for `:target` | ⬅ needs the `id` (§3.1) |
 | **Hit-test / hover a word without rendering** | `wordboxes.json` | ⬅ needs the index |
-| **Crop to an ayah or a word run** | filter by `data-aid`/`data-wid`, recompute `viewBox` from the boxes | ⬅ needs the index (the demo used a browser) |
-| **Search for a word** | `words.json` (rasm + imlaei per wid) → resolves to a page and a `data-wid` | ⬅ needs the index. **Impossible in the SVG itself** — there are no `<text>` nodes |
+| **Crop to an ayah or a word run** | filter by `data-aid`/`data-word-key`, recompute `viewBox` from the boxes | ⬅ needs the index (the demo used a browser) |
+| **Search for a word** | `words.json` (rasm + rasm_imlai per word_key) → resolves to a page and a `data-word-key` | ⬅ needs the index. **Impossible in the SVG itself** — there are no `<text>` nodes |
 | **Find the page of an ayah** | `index.json` page index | ⬅ needs the index |
 | **Render a range "2:255 → 2:257"** | `index.json` gives the pages; `data-aid` selects the fragments | ⬅ needs the index |
 | **Style marks vs letters vs dots** | `data-kind="mark|body"`, `data-mark`, and the taxonomy registry for families | ✅ today |
 | **Count the diacritics of a word** | `[data-mark]` paths inside the word | ⚠️ **paths, not signs** — fused and split marks make the two differ (§3.3) |
-| **Reach an ayah's end-marker** | `<g class="ayah-marker" data-aid>` | ❌ **broken — reversed on 441 pages** (§8.1) |
-| **Know surah / juz / hizb / rubʿ** | `data-surah-name-*` on header groups; `<g class="hizb-mark">` with `data-juz/-hizb/-rub/-nisf`; `index.json` | ⚠️ header attrs only on a surah's first page; the index closes it |
+| **Reach an ayah's end-mark** | `<g class="ayah-mark" data-aid>` | ❌ **broken — reversed on 441 pages** (§8.1) |
+| **Know surah / juz / hizb / rubʿ** | `data-surah-name-*` on header groups; `<g class="division-mark">` with `data-juz/-hizb/-rub/-nisf`; `index.json` | ⚠️ header attrs only on a surah's first page; the index closes it |
 | **Know the reading line of a word** | `data-line="1".."15"` | ⚠️ wrong for 54 words on 51 pages (§8.2) |
 | **Build a reader** | all of the above | ⬅ after the three fixes |
 | **Letter-level anything** | — | ❌ not in scope; `docs/TASKS.md` §5 |
@@ -396,21 +396,21 @@ run against a real page.
 ```js
 // the page SVG is inlined or fetched into `doc`
 // 1. highlight ayah 2:255 — NOTE: several fragments, one per printed line
-doc.querySelectorAll('g.ayah[data-aid="2:255"]')
+doc.querySelectorAll('g.ayah-fragment[data-aid="2:255"]')
    .forEach(g => g.classList.add('hl'));
 
 // 2. the third word of that ayah
-doc.querySelector('g.word[data-wid="2:255:3"]');
+doc.querySelector('g.word[data-word-key="2:255:3"]');
 
 // 3. read the text of the whole ayah, in reading order
 [...doc.querySelectorAll('g.word')]
-  .filter(w => w.dataset.wid.startsWith('2:255:'))
-  .map(w => w.dataset.uthmani).join(' ');
+  .filter(w => w.dataset.word_key.startsWith('2:255:'))
+  .map(w => w.dataset.rasm_uthmani).join(' ');
 
-// 4. paint the dots differently from the harakat
-//    (family comes from mark-taxonomy.json: dot|two-dots|three-dots => "dots")
-doc.querySelectorAll('path[data-mark="dot"],path[data-mark="two-dots"],'
-                   + 'path[data-mark="three-dots"]')
+// 4. paint the dots differently from the harakahs
+//    (family comes from mark-taxonomy.json: dot|two_dots|three_dots => "dots")
+doc.querySelectorAll('path[data-mark="dot"],path[data-mark="two_dots"],'
+                   + 'path[data-mark="three_dots"]')
    .forEach(p => p.setAttribute('fill', '#b03030'));
 
 // 5. every word of the 15th printed line
@@ -419,7 +419,7 @@ doc.querySelectorAll('g.line[data-line="15"] g.word');
 
 ```python
 # 6. search, against the shipped index — no SVG needed
-rows = json.load(open("words.json"))["rows"]           # [wid, page, rasm, imlaei]
+rows = json.load(open("words.json"))["rows"]           # [word_key, page, rasm, rasm_imlai]
 hits = [r for r in rows if r[2] == "الرحمن"]
 # -> [['1:3:1', 1, 'الرحمن', 'الرَّحْمَٰنِ'], ...]  then fetch pages/001.svg
 
@@ -431,8 +431,8 @@ page = next(p["page"] for p in idx["page_index"]
 
 ```css
 /* 8. script-free: dim everything except one ayah */
-svg:has(g.ayah[data-aid="2:255"]) g.word { opacity: .25 }
-svg g.ayah[data-aid="2:255"] g.word      { opacity: 1 }
+svg:has(g.ayah-fragment[data-aid="2:255"]) g.word { opacity: .25 }
+svg g.ayah-fragment[data-aid="2:255"] g.word      { opacity: 1 }
 ```
 
 ---
@@ -445,7 +445,7 @@ entries from that list with their star counts, used as example consumers.
 
 ### The interoperability fact that makes all of this cheap
 
-**Our `data-wid` is drop-in compatible with quran.com's word keys.** Verified
+**Our `data-word-key` is drop-in compatible with quran.com's word keys.** Verified
 against the emitted files: 1:1 has 4 words, 2:255 has 50, surah 1 has 29, and
 the corpus has **77,432** words — the same numbering and the same totals the
 quran.com API, `quranwbw`, `Word-By-Word-Quran-Android` and `quran-align` all
@@ -458,11 +458,11 @@ second sentence of the README.
 | recurring need in that ecosystem | example consumers | do we serve it? |
 |---|---|---|
 | **Mushaf-page rendering with real layout** | `quran_android` ⭐2192, `quran-ios` ⭐506, `quran.com-frontend` ⭐1023, `quran.com-images` ⭐448, `quran-pages-images`, `mushaf-imad-expo` | **Yes, and this is the strongest case.** These projects ship *raster page images* (quran.com-images is a whole repo of them) or hand-tune line breaks. We ship the real page geometry as vectors: resolution-independent, recolourable, and addressable. Nothing else in that list does this. |
-| **Word-by-word display and word-level audio sync** | `quranwbw` ⭐76, `quranwbw.com`, `Word-By-Word-Quran-Android` ⭐97, `quran-align` ⭐229 (produces per-word timings) | **Yes.** `quran-align` emits `(surah, ayah, word)` timings; `data-wid` is that key exactly. Highlighting the current word during recitation is one selector. Today they highlight a *text* span; with our files they can highlight the actual printed ink. |
-| **Search and verse lookup** | `alfanous` ⭐267, `quran-cli`, `quranize`, `quran-search-engine`, `lafzi-web`, `quranlookup` ⭐50 | **Only via the index.** There are no `<text>` nodes, so find-in-page is impossible in the SVG. `words.json` (478 KiB brotli) gives rasm + imlaei per `data-wid` and resolves a hit to a page. Honest boundary: we are not a search engine; we are what a search result can *point at*. |
-| **Memorisation / hifz tools** | `quran_memorization_helper` ⭐27, `AyatuRabbi_Quran` ⭐17, `AL-Khatma` ⭐14, `qari-stats` | **Yes, unusually well.** Hide-and-reveal is a CSS rule on our structure: `g.word[data-wid^="2:255:"] { visibility: hidden }`, or reveal word by word by `data-wid` ordinal. Today these apps re-render text; with our files the *printed page the user memorised from* stays on screen with words masked. That is a materially better memorisation experience and it needs nothing new from us. |
-| **Tajweed colouring** | `quran-tajweed` ⭐157, `tajweed` ⭐72, `TajweedParser` ⭐26, `colorful-quran` ⭐72 | **Partial — this is the honest one.** These tools emit rules as *character ranges in the uthmani text*. Mapping a character range to ink needs **letter-level** decomposition, which we do not have (§3.3). What we *can* colour directly is anything that is a named mark: `meem-iqlab` (iqlab, 609 sites), `shadda` (ghunnah), `maddah` (madd, 5,376), the `sifr` family (silent letters, 4,054), and every waqf sign. That already covers several tajweed classes with zero work. Full letter-level tajweed is blocked on the letter work in `docs/TASKS.md` §5. |
-| **Multiple translations, tafsir** | `quran-api` ⭐784, `tafsir_api` ⭐109, `quran-json` ⭐471/⭐341, `quranic-universal-library` ⭐586 | **Out of scope, and correctly so** — but joinable, because `data-aid`/`data-wid` are the same keys those datasets use. We should say "bring your own translation" explicitly rather than leave it ambiguous. |
+| **Word-by-word-translation display and word-level audio sync** | `quranwbw` ⭐76, `quranwbw.com`, `Word-By-Word-Quran-Android` ⭐97, `quran-align` ⭐229 (produces per-word timings) | **Yes.** `quran-align` emits `(surah, ayah, word)` timings; `data-word-key` is that key exactly. Highlighting the current word during recitation is one selector. Today they highlight a *text* span; with our files they can highlight the actual printed ink. |
+| **Search and verse lookup** | `alfanous` ⭐267, `quran-cli`, `quranize`, `quran-search-engine`, `lafzi-web`, `quranlookup` ⭐50 | **Only via the index.** There are no `<text>` nodes, so find-in-page is impossible in the SVG. `words.json` (478 KiB brotli) gives rasm + rasm_imlai per `data-word-key` and resolves a hit to a page. Honest boundary: we are not a search engine; we are what a search result can *point at*. |
+| **Memorisation / hifz tools** | `quran_memorization_helper` ⭐27, `AyatuRabbi_Quran` ⭐17, `AL-Khatma` ⭐14, `qari-stats` | **Yes, unusually well.** Hide-and-reveal is a CSS rule on our structure: `g.word[data-word-key^="2:255:"] { visibility: hidden }`, or reveal word by word by `data-word-key` ordinal. Today these apps re-render text; with our files the *printed page the user memorised from* stays on screen with words masked. That is a materially better memorisation experience and it needs nothing new from us. |
+| **Tajwid colouring** | `quran-tajweed` ⭐157, `tajwid` ⭐72, `TajweedParser` ⭐26, `colorful-quran` ⭐72 | **Partial — this is the honest one.** These tools emit rules as *character ranges in the rasm_uthmani text*. Mapping a character range to ink needs **letter-level** decomposition, which we do not have (§3.3). What we *can* colour directly is anything that is a named mark: `small_meem` (iqlab, 609 sites), `shaddah` (ghunnah), `maddah` (madd, 5,376), the `sifr` family (silent letters, 4,054), and every waqf sign. That already covers several tajwid classes with zero work. Full letter-level tajwid is blocked on the letter work in `docs/TASKS.md` §5. |
+| **Multiple translations, tafsir** | `quran-api` ⭐784, `tafsir_api` ⭐109, `quran-json` ⭐471/⭐341, `quranic-universal-library` ⭐586 | **Out of scope, and correctly so** — but joinable, because `data-aid`/`data-word-key` are the same keys those datasets use. We should say "bring your own translation" explicitly rather than leave it ambiguous. |
 | **Audio recitation** | `audio.quran.com` ⭐140, `quranicaudio-app` ⭐82, `QuranFM` | **Out of scope.** The join key is `data-aid`. |
 | **Offline access** | `quran_android`, `the-holy-quran-app` ⭐852, `Quran-Flutter` ⭐230 | **Yes, with a caveat: size.** 70 MiB brotli for the whole mushaf is fine for a desktop app and heavy for a phone. Per-page fetch is the right shape (119 KiB brotli per page). A mobile consumer wanting the whole thing offline is the one case where the 2 dp option (§9 D-4, 44 MiB) would matter. |
 | **Quranic text validation** | `quran-validator` ⭐173, `PyQuran` ⭐144, `quran-words` ⭐11, `QURAN-NLP` ⭐117 | **Yes, and in a new way.** We are the only dataset in that list that ties text to *the ink of a specific printed edition*. `quran-validator` validates text against text; our files let it validate text against what a mushaf actually draws. Niche, but nobody else offers it. |
@@ -479,18 +479,18 @@ recommendation; the ones marked ★ are decisions for Abdullah.
 | **Search index** (`words.json`) | already built — `index_poc.py` | **in bundle** | done |
 | **Word box index** (`wordboxes.json`) | exact extents from the pipeline instead of my control-point hull | **in bundle** | small |
 | **Page/ayah index** (`index.json`) | already built | **in bundle** | done |
-| **Word-timing overlay** keyed to `data-wid` | nothing from us — a consumer joins `quran-align` output directly. We should ship a 20-line *example*, not the data | README example | tiny |
-| **Mark-level tajweed stylesheet** — a CSS file colouring `meem-iqlab`, `shadda`, `maddah`, `sifr-*`, waqf signs | nothing new; it is a stylesheet over existing attributes | **separate artifact**, linked from the README | small ★ (is a tajweed opinion ours to publish?) |
-| **Memorisation demo** — mask/reveal by `data-wid` | nothing new | example in the README or the demo page | tiny |
+| **Word-ayah-timing overlay** keyed to `data-word-key` | nothing from us — a consumer joins `quran-align` output directly. We should ship a 20-line *example*, not the data | README example | tiny |
+| **Mark-level tajwid stylesheet** — a CSS file colouring `small_meem`, `shaddah`, `maddah`, `sifr-*`, waqf signs | nothing new; it is a stylesheet over existing attributes | **separate artifact**, linked from the README | small ★ (is a tajwid opinion ours to publish?) |
+| **Memorisation demo** — mask/reveal by `data-word-key` | nothing new | example in the README or the demo page | tiny |
 | **Crop service / library** — "give me 2:255 as a standalone SVG" | word boxes + the polygon-removal rule; the demo already implements it in JS | **separate artifact** (a small JS/Python package) | medium |
 | **Per-ayah pre-cropped SVGs** | the crop library, run over 6,236 ayahs | separate download; do NOT put 6,236 more files in the bundle | medium |
-| **Accessibility layer** — `<title>` per word, `role`, `aria-label` on the page | the emitter adds `<title>` from `data-uthmani`; the demo already mints 127 per page | **in the production profile** — but measure the size first (≈4 KiB/page, +2.5 MiB corpus) | small ★ |
+| **Accessibility layer** — `<title>` per word, `role`, `aria-label` on the page | the emitter adds `<title>` from `data-rasm-uthmani`; the demo already mints 127 per page | **in the production profile** — but measure the size first (≈4 KiB/page, +2.5 MiB corpus) | small ★ |
 | **Full letter-level decomposition** | the hard work in `docs/TASKS.md` §5 | future major version | large |
-| **Warsh / Qalun / other riwayat** | the pipeline ports (memory: `quran-svg-warsh-portability`); only the word source and mark labels are Hafs-specific | future editions in the same format | large |
+| **Warsh / Qalun / other riwayahs** | the pipeline ports (memory: `quran-svg-warsh-portability`); only the word source and mark labels are Hafs-specific | future editions in the same format | large |
 
 ### Where our boundary is — say this plainly in the README
 
-We do **not** provide: translations, tafsir, audio, word timings, tajweed rule
+We do **not** provide: translations, tafsir, audio, word timings, tajwid rule
 data, prayer times, or a search engine. We provide **the printed page, with
 every word and every mark addressable by the same keys those datasets already
 use.** That is a clearer and more defensible product statement than trying to
@@ -569,7 +569,7 @@ the thing to avoid: it doubled the repo permanently.
 All four were found while writing this document and all are verified here, not
 taken from another agent's report.
 
-### 8.1 The ayah-marker `data-aid` is reversed on 441 of 604 pages — BLOCKER
+### 8.1 The ayah-mark `data-aid` is reversed on 441 of 604 pages — BLOCKER
 
 Page 3, root matrix `matrix(1.3333 0 0 -1.3333 -55 640)` (y is flipped, so
 screen y = 640 − 1.3333·y). Converting each marker's own translate:
@@ -592,7 +592,7 @@ strictly ascending       2 pages   (84, 162)
 too few markers          1
 ```
 
-`tools/assign_words.py:3222` (`tag_ayah_markers`) states the assumption in its
+`tools/assign_words.py:3222` (`tag_ayah_marks`) states the assumption in its
 own docstring — *"Markers appear in ayah order"* — and zips the page's sorted
 ayah list onto the marker group in document order. The artwork's marker layer
 is in bottom-to-top document order on almost every page.
@@ -605,7 +605,7 @@ the headline capabilities, and it is wrong nearly everywhere. It should go in
 
 ### 8.2 54 words are in the wrong `<g class="line">` — 51 pages
 
-Within each printed line, the words are in ascending `data-wid` order on
+Within each printed line, the words are in ascending `data-word-key` order on
 **9,046 of 9,046 lines**. But across line boundaries the sequence breaks on 51
 pages, 54 times. Verified geometrically against `wordboxes.json`:
 
@@ -630,8 +630,8 @@ needs no reference decomposition and no eye.
 
 - **4 surahs have no `<g class="surah-name">` anywhere in the corpus**: 27, 33,
   37, 47. Their start pages (377, 418, 446, 507) carry a `basmalah` group and
-  18–28 `header-ink` paths, but no name banner group. On p2, by contrast, both
-  groups exist and carry 45 header-ink paths between them.
+  18–28 `header_ink` paths, but no name banner group. On p2, by contrast, both
+  groups exist and carry 45 header_ink paths between them.
 - **Surah 17's basmalah is emitted as two groups** on p282 — one holding 1
   path, the other 31. That is why the corpus has 113 `class="basmalah"` groups
   for 112 distinct `data-sid`. `edition-hafs-kfgqpc.json` expects
@@ -643,7 +643,7 @@ needs no reference decomposition and no eye.
 ### 8.4 The demo is broken against the current schema
 
 `docs/demo/index.html` and `template.html` still read `data-surah` /
-`data-ayah` / `data-word`; the emitter now writes `data-wid` / `data-aid`. The
+`data-ayah` / `data-word`; the emitter now writes `data-word-key` / `data-aid`. The
 selector at `template.html:637` returns `null` and throws, killing the script.
 `build_embed.py` was updated, `build.py`/`template.html` were not. If the demo
 is to ship as the advertisement (§5.6) it must be rebuilt and opened first.
@@ -651,7 +651,7 @@ is to ship as the advertisement (§5.6) it must be rebuilt and opened first.
 ### 8.5 Element order inside a word is not right-to-left yet
 
 Measured: **77,432 words, 15,160 (19.6 %) have their paths in descending x**.
-Word order within a line is correct (9,046/9,046 lines ascending by `data-wid`).
+Word order within a line is correct (9,046/9,046 lines ascending by `data-word-key`).
 The brief says a concurrent agent is landing RTL element ordering; it is not in
 this build. `FORMAT.md` documents the current state and must be updated when it
 lands — a spec that promises an order the files do not have is worse than one
@@ -769,12 +769,12 @@ descriptive prose (`docs/semantic-decomposition.md:51`). No `license` key in
 ### Third-party inputs that would need their own notice
 
 - **`DigitalKhattV2.otf`** — name table: `Copyright (c) 2020-2024 Amine Anane,
-  Copyright © 2024 Tarteel Inc.`, licensed **SIL Open Font License 1.1**
+  Copyright © 2024 Tartil Inc.`, licensed **SIL Open Font License 1.1**
   (nameID 13/14). Not currently shipped; if a rendering demo ever embeds it,
   OFL requires the licence to travel with it.
 - **The DigitalKhatt DBs** (`.cache/digitalkhatt/*.db`) carry no licence data
   at all — no README, no licence file, no licence strings.
-- **`tools/data/qiraat-ayah-map/`** — MIT, attributed in its own `SOURCE.md`.
+- **`tools/data/qiraahs-ayah-map/`** — MIT, attributed in its own `SOURCE.md`.
 - **Text sources**: quran.com `text_uthmani`, the KFGQPC text, and the
   DigitalKhatt text all have their own terms not examined here.
 
@@ -807,6 +807,6 @@ descriptive prose (`docs/semantic-decomposition.md:51`). No `license` key in
 | index sizes | `python3 docs/shipping/index_poc.py` |
 | box index | `python3 docs/shipping/wordbox_poc.py --all` |
 | marker reversal | per-page marker translate → screen y via the root matrix, sorted by `data-aid` |
-| line-order breaks | per-line `data-wid` sequence, confirmed against `wordboxes.json` |
+| line-order breaks | per-line `data-word-key` sequence, confirmed against `wordboxes.json` |
 | header coverage | `data-sid` scan over all 604 pages |
 | licence facts | verbatim quotes from `LICENSE`, `NOTICE.md`, `README.md` in each repo; `fontTools` name table for the OTF |

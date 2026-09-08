@@ -2,7 +2,7 @@
 """Read the MushafDatabase ligature SVGs as data, and register them onto our pages.
 
 MushafDatabase publishes the same KFGQPC Madani artwork decomposed independently:
-one `<g id="md-word-NNN">` per word carrying surah / aya / word-index-in-ayah /
+one `<g id="md-word-NNN">` per word carrying surah / ayah / word-index-in-ayah /
 line-number / hafs text, and inside it one `<path>` per drawn piece, each labelled
 `data-type="text"` (a letter or ligature, with `data-text` naming it),
 `"diacritic"` (with `data-diacritic`), or `"dots"` (with `data-dots`).
@@ -37,7 +37,7 @@ PATH = re.compile(r'<path\b([^>]*?)/>', re.S)
 ATTR = re.compile(r'([a-zA-Z:-]+)="([^"]*)"')
 
 # The letters, and only the letters. The two sources spell the marks differently — one
-# writes a fathatan as two strokes and the other as one glyph — so a word is identified
+# writes a tanwin_al_fath as two strokes and the other as one glyph — so a word is identified
 # by its skeleton, never by its full text.
 # U+0640 TATWEEL has to be SUBTRACTED, not merely left out: it sits inside the
 # 0621..064A run. It is a justification stretch, not a letter — quran.com writes it
@@ -139,7 +139,7 @@ def read_page(path):
         end = _close(s, m.start())
         if gid.startswith("md-word-") and a.get("data-type") == "text":
             try:
-                rec = {"surah": int(a["data-surah"]), "aya": int(a["data-aya"]),
+                rec = {"surah": int(a["data-surah"]), "ayah": int(a["data-ayah"]),
                        "idx": int(a["data-word-index-in-ayah"])}
             except (KeyError, ValueError):
                 continue
@@ -149,7 +149,7 @@ def read_page(path):
             rec["waw"] = a.get("data-waw-alatf") == "true"
             rec["pieces"] = _pieces(s, m.end(), end)
             page["words"].append(rec)
-        elif gid.startswith("md-aya-mark-"):
+        elif gid.startswith("md-ayah-mark-"):
             pcs = _pieces(s, m.end(), end)
             if not pcs:
                 continue
@@ -158,7 +158,7 @@ def read_page(path):
             x2 = max(p[2][2] for p in pcs)
             y2 = max(p[2][3] for p in pcs)
             try:
-                sa = (int(a["data-surah"]), int(a["data-aya"]))
+                sa = (int(a["data-surah"]), int(a["data-ayah"]))
             except (KeyError, ValueError):
                 sa = None
             page["marks"].append({"key": sa, "line": int(a.get("data-line-number", 0) or 0),
@@ -180,7 +180,7 @@ def fold(page):
     """
     seq = {}
     for w in page["words"]:
-        seq.setdefault((w["surah"], w["aya"]), []).append(w)
+        seq.setdefault((w["surah"], w["ayah"]), []).append(w)
     out = {}
     for sa, items in seq.items():
         items.sort(key=lambda w: w["idx"])
@@ -320,7 +320,7 @@ def register(x_pairs, y_pairs, basis="landmarks"):
                         min(len(x_pairs), len(y_pairs)), scale)
 
 
-def medallion_pairs(our_markers, ref_page):
+def medallion_pairs(our_marks, ref_page):
     """Landmarks from the ayah medallions, matched by surah and ayah.
 
     Exact but scarce, and they come from `mushafs/.../json/NNN.json`, whose ayah
@@ -329,12 +329,12 @@ def medallion_pairs(our_markers, ref_page):
     and then reports every word on it as misplaced — which is how p397, p431 and p551
     produced 258 of 689 "defects" that were nothing of the kind.
     """
-    if not our_markers or not ref_page["marks"]:
+    if not our_marks or not ref_page["marks"]:
         return [], []
     theirs = {m["key"]: (m["cx"], m["cy"]) for m in ref_page["marks"] if m["key"]}
-    common = sorted(set(k for k in our_markers if k) & set(theirs))
-    return ([(our_markers[k][0], theirs[k][0]) for k in common],
-            [(our_markers[k][1], theirs[k][1]) for k in common])
+    common = sorted(set(k for k in our_marks if k) & set(theirs))
+    return ([(our_marks[k][0], theirs[k][0]) for k in common],
+            [(our_marks[k][1], theirs[k][1]) for k in common])
 
 
 if __name__ == "__main__":

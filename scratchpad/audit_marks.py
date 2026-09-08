@@ -14,51 +14,51 @@ PIPE = os.environ.get("QSVG_PIPE", ROOT + "/tools/assign_words.py")
 S = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(S, "marks_pages")
 
-_DOTU = {"dot": 1, "two-dots": 2, "three-dots": 3}
+_DOTU = {"dot": 1, "two_dots": 2, "three_dots": 3}
 
 # pages whose ayah-polygon data is known broken and is being repaired upstream
 POLY_SUSPECT = {294, 305, 431, 551, 602, 604}
 
 TEXT_WANT = {
-    "fatha": ("َ",), "kasra": ("ِ",), "damma": ("ُ",),
-    "fathatan": ("ً", "ࣰ"), "kasratan": ("ٍ", "ࣲ"), "dammatan": ("ٌ", "ࣱ"),
-    "sukun": ("ْ", "ۡ"), "shadda": ("ّ",), "maddah": ("ٓ", "ۤ"),
-    "small-alef": ("ٰ",), "wasla": ("ٱ",), "small-waw": ("ۥ",),
-    "small-ya": ("ۦ", "ۧ"),
+    "fathah": ("َ",), "kasrah": ("ِ",), "dammah": ("ُ",),
+    "tanwin_al_fath": ("ً", "ࣰ"), "tanwin_al_kasr": ("ٍ", "ࣲ"), "tanwin_al_damm": ("ٌ", "ࣱ"),
+    "sukun": ("ْ", "ۡ"), "shaddah": ("ّ",), "maddah": ("ٓ", "ۤ"),
+    "omitted_alif": ("ٰ",), "hamzat_al_wasl": ("ٱ",), "small_waw": ("ۥ",),
+    "small_yaa": ("ۦ", "ۧ"),
     # taxonomy phase 1: the two zeros are different signs with different rules
     # (U+06DF round, U+06E0 upright); no word carries both, so the text splits
     # the family exactly (3988 + 66 sites, measured mushaf-wide)
-    "sifr-mustadir": ("۟",), "sifr-mustatil": ("۠",),
-    "hamza": ("أ", "إ", "ؤ", "ئ", "ٔ", "ٕ"),
+    "rounded_zero": ("۟",), "rectangular_zero": ("۠",),
+    "hamzah": ("أ", "إ", "ؤ", "ئ", "ٔ", "ٕ"),
     # ۜ (U+06DC) left this bucket: it is a saktah at five sites and a reading
     # sign at two, named BY JOB from the place table below. ۣ (U+06E3, 52:37)
     # stays: phase 1 did not rename the seen-below/imalah/ishmam/tashil dots.
-    "pause": ("ۖ", "ۗ", "ۘ", "ۙ", "ۚ"),
-    "muanaqah": ("ۛ",),
-    "small-noon": ("ۨ",),
-    "meem-iqlab": ("ۢ", "ۭ"),
-    "saktah": ("ۜ",), "seen-reading": ("ۜ", "ۣ"),
+    "waqf": ("ۖ", "ۗ", "ۘ", "ۙ", "ۚ"),
+    "waqf_al_muanaqah": ("ۛ",),
+    "small_noon": ("ۨ",),
+    "small_meem": ("ۢ", "ۭ"),
+    "saktah": ("ۜ",), "seen_al_qiraah": ("ۜ", "ۣ"),
     # phase-3 rare dots (Abdullah 2026-08-28): each is ONE site mushaf-wide
     "imalah": ("۪",), "ishmam": ("۬", "۫"), "tashil": ("۬",),
 }
 # The U+06DC sites by JOB (mirrors .cache/marks/rare_places.json, which the
 # pipeline's naming pass reads): the same character is a saktah on one page and
-# a seen-for-sad on another, so the budget is place-gated — a site demands its
+# a seen-for-saad on another, so the budget is place-gated — a site demands its
 # OWN job's family and zero of the other.
 RARE_SITES = {(18, 1): "saktah", (36, 52): "saktah", (75, 27): "saktah",
               (83, 14): "saktah", (69, 28): "saktah",
-              (2, 245): "seen-reading", (7, 69): "seen-reading",
+              (2, 245): "seen_al_qiraah", (7, 69): "seen_al_qiraah",
               # U+06E3 seen-below, one site
-              (52, 37): "seen-reading",
+              (52, 37): "seen_al_qiraah",
               # U+06EC serves TWO jobs, split by site exactly like U+06DC:
               # 12:11 تَأْمَ۬نَّا is the ishmam, 41:44 ءَا۬عْجَمِى the tashil
               (12, 11): "ishmam", (41, 44): "tashil",
               (11, 41): "imalah"}
 # legacy input names (an older build under QSVG_PIPE) fold into the new family
 # the word's own text selects
-_LEGACY_ZERO = "small-circle"
+_LEGACY_ZERO = "small_circle"
 # The iqlab meem WAS excluded here on the grounds that it is "fused into the
-# tanween glyph in this art". That is true of the LOW form (U+06ED ۭ, often
+# tanwin glyph in this art". That is true of the LOW form (U+06ED ۭ, often
 # fused) but NOT of the HIGH form (U+06E2 ۢ), which CLAUDE.md itself records as
 # "a separate glyph". The exclusion therefore left every iqlab site unguarded,
 # and on 2026-08-29 p455 مُغْتَسَلُۢ was found holding NO meem at all — its
@@ -72,8 +72,8 @@ _LEGACY_ZERO = "small-circle"
 
 def dot_want(txt, aw):
     raw = aw._LETTER.findall(txt)
-    # a hamza seat (ئ ؤ أ إ) is drawn WITHOUT the dots of its base letter
-    sk = [(aw.HAMZA_MAP[c][0] if c in aw.HAMZA_MAP else c, c in aw.HAMZA_MAP)
+    # a hamzah seat (ئ ؤ أ إ) is drawn WITHOUT the dots of its base letter
+    sk = [(aw.HAMZAH_MAP[c][0] if c in aw.HAMZAH_MAP else c, c in aw.HAMZAH_MAP)
           for c in raw]
     n = 0
     for i, (ch, seat) in enumerate(sk):
@@ -82,7 +82,7 @@ def dot_want(txt, aw):
         if ch == "ي" and (i == len(sk) - 1
                           or (i + 1 < len(sk) and sk[i + 1][0] == "ء")):
             # A final ya is drawn undotted here, and so is a ya carrying a following
-            # hamza: شَيۡءٖ is drawn with three dots, not five. Ours and MushafDatabase's
+            # hamzah: شَيۡءٖ is drawn with three dots, not five. Ours and MushafDatabase's
             # decompositions independently agree on three, against a budget counting the
             # ya's two — and every one of the 21 words where the two decompositions
             # agreed and the budget did not was شيء or بشيء.
@@ -133,7 +133,7 @@ def scan(pg):
         for i in range(len(ws) - 1):
             a, ax2 = ws[i]
             b, bx2 = ws[i + 1]
-            if (" " in a["uthmani"].strip() or " " in b["uthmani"].strip()):
+            if (" " in a["rasm_uthmani"].strip() or " " in b["rasm_uthmani"].strip()):
                 continue  # a letter-space compound straddles the break legitimately
             # trust DRAWN position over the line tag (p59 إليك/إلا: a stale
             # tag grouped a line-9 end with a line-10 start): words whose
@@ -146,14 +146,14 @@ def scan(pg):
                 continue
             if bx2 > ax2 + 1.0:       # the next word sits right of this one
                 rows.append(("%d:%d:%d" % (a["surah"], a["ayah"], a["pos"]),
-                             a["uthmani"], [("rtl-order", int(ax2), int(bx2))]))
+                             a["rasm_uthmani"], [("rtl-order", int(ax2), int(bx2))]))
     for w, at in cap["a"]:
         if not w:
             continue
         els = [e for a in at for e in a["els"]]
-        txt = w["uthmani"]
+        txt = w["rasm_uthmani"]
         have, dots = Counter(), 0
-        _zero_fam = ("sifr-mustatil" if "۠" in txt else "sifr-mustadir")
+        _zero_fam = ("rectangular_zero" if "۠" in txt else "rounded_zero")
         for e in els:
             if e.get("mkpart"):
                 continue              # a welded twin counts through its master
@@ -165,21 +165,21 @@ def scan(pg):
                 elif part:
                     have[part] += 1
         # The waqf budget comes from the King Fahd Complex's own text of THIS print, not
-        # from quran.com's uthmani. The two are different editions: they disagree about
+        # from quran.com's rasm_uthmani. The two are different editions: they disagree about
         # the waqf sign at 424 of 4,416 positions — 87 of them where the text says قلى
         # and the page draws ج — and taking the expectation from the wrong edition
-        # reported 181 of 202 `pause` defects that were not defects at all. Every other
-        # family still reads uthmani, whose spelling conventions the rest of this table
+        # reported 181 of 202 `waqf` defects that were not defects at all. Every other
+        # family still reads rasm_uthmani, whose spelling conventions the rest of this table
         # and segment_word() are built around.
         wtxt = w.get("qpc") or txt
         bad = []
         for fam, chars in TEXT_WANT.items():
-            if fam == "pause" and wtxt is not txt:
+            if fam == "waqf" and wtxt is not txt:
                 # Where the two editions disagree about a waqf sign, neither one can be
                 # quoted as the expectation, so the budget becomes a RANGE and the audit
                 # says nothing. Measured over all 77,429 words the sources differ at only
                 # 190 — 0.245% — and the drawn ink follows the KFGQPC text at 164 of them,
-                # quran.com's uthmani at 9, and neither at 17. Those 9 are what a
+                # quran.com's rasm_uthmani at 9, and neither at 17. Those 9 are what a
                 # single-source budget gets wrong: `بَعْدِى` (p20), `ٱلْخَيْرَٰتِ` (p64),
                 # `كَذَٰلِكَ` (p303) and four more were each reported missing a صلى that
                 # the page does not draw and that the other edition does not ask for.
@@ -191,9 +191,9 @@ def scan(pg):
                 if not (lo <= have.get(fam, 0) <= hi):
                     bad.append((fam, have.get(fam, 0), hi))
                 continue
-            src = wtxt if fam == "pause" else txt
+            src = wtxt if fam == "waqf" else txt
             want = sum(src.count(c) for c in chars)
-            if fam in ("saktah", "seen-reading", "imalah", "ishmam",
+            if fam in ("saktah", "seen_al_qiraah", "imalah", "ishmam",
                        "tashil") \
                     and RARE_SITES.get((w["surah"], w["ayah"])) != fam:
                 want = 0              # this char here belongs to the OTHER job
@@ -250,7 +250,7 @@ def scan(pg):
                     and abs((w1["ayah"] * 1000 + w1["pos"])
                             - (w2["ayah"] * 1000 + w2["pos"])) <= 3:
                 rows.append(("%d:%d:%d" % (w1["surah"], w1["ayah"],
-                                           w1["pos"]), w1["uthmani"],
+                                           w1["pos"]), w1["rasm_uthmani"],
                              [("pieces", e1, n1)]))
                 break
     return (pg, rows)
@@ -267,7 +267,7 @@ def report(a, b):
         rows = json.load(open(f))
         if not rows:
             clean += 1
-        for wid, txt, bad in rows:
+        for word_key, txt, bad in rows:
             total += 1
             per[pg] += 1
             for k, got, want in bad:
@@ -275,7 +275,7 @@ def report(a, b):
                 key = "%s %d/%d" % (k, got, want)
                 pat[key] += 1
                 if len(ex[key]) < 6:
-                    ex[key].append("p%d %s %s" % (pg, wid, txt))
+                    ex[key].append("p%d %s %s" % (pg, word_key, txt))
     with open(os.path.join(S, "marks_report.txt"), "w") as fh:
         fh.write("pages %d | fully clean %d | flagged words %d "
                  "(%d on polygon-suspect pages)\n\n"

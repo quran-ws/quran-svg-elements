@@ -20,9 +20,9 @@
     "key": "26:196:4",
     "word": "ٱلْأَوَّلِينَ",
     "segments": ["ا", "لا", "و", "لين"],
-    "before": "group الا held the alef body + the wasla",
-    "after": "group الا holds only the wasla; its alef body moved into the و group",
-    "note": "the hamza moving from لين into و in the same word IS right (it is drawn over the و's ink); only the body move is wrong",
+    "before": "group الا held the alef body + the hamzat_al_wasl",
+    "after": "group الا holds only the hamzat_al_wasl; its alef body moved into the و group",
+    "note": "the hamzah moving from لين into و in the same word IS right (it is drawn over the و's ink); only the body move is wrong",
     "verdict": "the alef body belongs in the الا group"
    },
    {
@@ -32,7 +32,7 @@
     "segments": ["ا", "ذ", "ا"],
     "before": "group ذ held one body; group ا held two",
     "after": "group ذ holds no body at all; group ا holds all three",
-    "verdict": "cluster_line merged all three narrow bodies (alef-hamza 38.9-41.5, ذ 32.4-37.7, alef 27.7-30.7) into ONE atom, so no regrouping pass can separate them — the cut is what is wrong"
+    "verdict": "cluster_line merged all three narrow bodies (alef-hamzah 38.9-41.5, ذ 32.4-37.7, alef 27.7-30.7) into ONE atom, so no regrouping pass can separate them — the cut is what is wrong"
    }
   ]
  },
@@ -55,6 +55,6 @@
   "from": "audit_ligatures `misplaced`, residual after the fix",
   "class": "AUDIT FALSE POSITIVE — verified by reading the atoms, no action",
   "count": 6,
-  "note": "All six sit in the group whose data-text NAMES the letter they belong to, and miss the overlap test by 0.4-1.7u because the mark is drawn just past the end of that letter's ink. The text budget refuses to move them, which is the right answer. p187 وَأَذَٰنࣱ (small-alef, 1.5u past ذ), p272 دَٰخِرُونَ (1.0u past د), p315 هَٰذَٰنِ (1.9u past هذ), p468 وَذَٰلِكَ (1.2u past ذلك), p535 وِلْدَٰنࣱ (1.3u past لد), p549 بُرَءَٰٓؤُا۟ (maddah, 0.8u past ء). If audit_ligatures ever wants zero here, the fix is in the audit: a mark whose OWN group's data-text names the letter it is a mark of is not misplaced."
+  "note": "All six sit in the group whose data-text NAMES the letter they belong to, and miss the overlap test by 0.4-1.7u because the mark is drawn just past the end of that letter's ink. The text budget refuses to move them, which is the right answer. p187 وَأَذَٰنࣱ (omitted_alif, 1.5u past ذ), p272 دَٰخِرُونَ (1.0u past د), p315 هَٰذَٰنِ (1.9u past هذ), p468 وَذَٰلِكَ (1.2u past ذلك), p535 وِلْدَٰنࣱ (1.3u past لد), p549 بُرَءَٰٓؤُا۟ (maddah, 0.8u past ء). If audit_ligatures ever wants zero here, the fix is in the audit: a mark whose OWN group's data-text names the letter it is a mark of is not misplaced."
  }
 ]

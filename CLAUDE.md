@@ -43,15 +43,15 @@ a new audit dimension lands, re-state the table under it rather than letting
 the old figure stand as truth.
 
 Baseline numbers are re-measured with the current audits (`.cache/sweeps/base2`); the
-old figures in this table were taken with a pause budget that has since been corrected,
+old figures in this table were taken with a waqf budget that has since been corrected,
 so they are not comparable to today's. Current sweep: `.cache/sweeps/jaa-full`
 (2026-08-28 overnight: taxonomy phases 1+2 complete + audit_taxonomy gate;
 items 36-38 fixed at cause — dot-family marks emit as ONE path, the كُلࣱّ
-stack yields its damma back, and the shape table outranks position at a late
+stack yields its dammah back, and the shape table outranks position at a late
 reconciliation pass. marks 84, intervals 62, clean 520, bench 104/19 pages,
 all 604 pixel-identical, taxonomy audit green.) Previous: `.cache/sweeps/slashx2`
 (marks 101, intervals 62, clean 510, bench 99 over 17 pages. The evening's
-passes: QSVG_HDRGUARD header-ink eviction, QSVG_PAUSEDOTS, and the
+passes: QSVG_HDRGUARD header_ink eviction, QSVG_PAUSEDOTS, and the
 QSVG_SLASHX exchange completion inside the orphan pass — a floating leg is
 geometric proof, the reciprocal is budget-forced, and the exchange is
 accepted only when EVERY touched word snaps to exact budget; a true mutual
@@ -77,7 +77,7 @@ DB's line_type (QSVG_HDR).
 Two figures need context. **Bench** now covers 12 pages (143 and 222 were added as
 iqlab cases); on the previous 10-page set the score is still 76, and the +3 is one
 pre-existing budget flag on the added pages. **Intervals rose 106 → 138 while mark
-flags FELL** because the iqlab fix names previously-anonymous tanween+م ink: the
+flags FELL** because the iqlab fix names previously-anonymous tanwin+م ink: the
 interval audit only examines named marks, so tightly-kerned word-final iqlab pairs it
 had always ignored became visible (mark budgets on every affected page are clean —
 p414, p63, p490 — the ownership did not change, its visibility did). Verify a few by
@@ -124,6 +124,8 @@ python3 scratchpad/bench.py                 # ~2 min. Any FAILURE or pixelfail >
 python3 scratchpad/cmp_pages.py 350 418     # the pages a change was aimed at
 python3 scratchpad/full_sweep.py 1 604      # ~25 min, writes one JSON per page
 python3 scratchpad/cmp_full.py <sweep-dir>  # against the pinned baseline
+python3 tools/audit_segmentation.py         # ~30 s. Word boundaries vs the word-by-word-translation release;
+                                            #   count/skeleton/ids must all be 0.
 python3 tools/audit_export.py 1 604         # ~1 min. Export shape; every count must be 0.
 python3 tools/audit_pixels.py 1 604 32      # ~10 min. FAILURES must be 0 after anything touching rewrite().
 ```
@@ -164,7 +166,8 @@ After anything touching the artwork or the line cut, also run
 | `tools/score_confidence.py` | ALL of the above in one pass, combined into a per-mark/word/page P(defect): proof-class violations (empty bands, arithmetic) ⇒ CERTAIN, soft priors noisy-OR'd ⇒ HIGH/REVIEW. Ranked output `docs/defects/confidence.html`, per-page JSON `.cache/confidence/pages/` | anything every input metric is blind to; line placement only via `--ref` |
 | `tools/text_source.py` | which published text this print was set from | — |
 | `tools/audit_pixels.py` | ink added/removed (contour conservation) or moved (raster vs artwork), all 604 pages | AA seams under 10 px; semantic mis-labels |
-| `tools/audit_export.py` | the export SHAPE a consumer's converter measured (2026-09-04): one marker per ayah with id, viewBox `0 0 345 550` everywhere, `data-kind` on every path, no `<path transform>`, three-decimal movetos, production word groups carrying `data-wid` + `data-uthmani` only. Six properties, every page, production profile | anything about the ink itself |
+| `tools/audit_segmentation.py` | that the emitted words ARE the word-by-word-translation release's — count per ayah and letters per word, all 6,236 ayahs, so `data-word-key`'s third number IS the release's word number (`--svg` asks it of the artefact) | which of two spellings is right; anything that is not a boundary |
+| `tools/audit_export.py` | the export SHAPE a consumer's converter measured (2026-09-04): one marker per ayah with id, viewBox `0 0 345 550` everywhere, `data-kind` on every path, no `<path transform>`, three-decimal movetos, production word groups carrying `data-word-key` + `data-rasm-uthmani` only. Six properties, every page, production profile | anything about the ink itself |
 
 `tools/audit_split.py` is named above in older notes but **does not exist in the repo**.
 `audit_lines.py` and `verify_render.py` do.
@@ -183,7 +186,7 @@ of that and must be part of the gate.
   sign, an iqlab meem ۢ, the small waw ۥ and small ya ۦ are letter shapes drawn
   small and clear of the line. Nothing in the ink says "mark"; the spelling
   does. Take the COUNT from the text and the POSITION from the ink. Biggest
-  single win of the session: pause 457 → 200, dots 255 → 148.
+  single win of the session: waqf 457 → 200, dots 255 → 148.
 - **Two signals agreeing.** A transfer between neighbouring words is made only
   where the text budget says a transfer is owed AND the ink says which mark and
   confirms direction. Neither alone is safe.
@@ -219,7 +222,7 @@ of that and must be part of the gate.
   noise — while fixing `أَوْ` on p350 by taking 16u from `وَٱلزَّانِيَةُ`, and
   fixing `إِلَىٰ` on p574 by robbing `أَرْسَلْنَآ`. Buys nothing, breaks words
   visibly.
-- **Moving fatha/kasra between words.** They are one stroke named later from
+- **Moving fathah/kasrah between words.** They are one stroke named later from
   position and budget, so carrying one across a boundary re-opens that decision
   for both words. Both the neighbour transfer and the cross-line repair now
   skip the slash families. Ignoring this cost +2 on p508, p526, p446, p576.
@@ -233,23 +236,23 @@ of that and must be part of the gate.
 `.cache/marks/labels.json` maps a shape signature to one label applied
 mushaf-wide, so a wrong entry costs hundreds of flags at once.
 
-1. **Composites** (`fatha+hamza`, `damma+shadda`). NOT mistakes — one outline
+1. **Composites** (`fathah+hamzah`, `dammah+shaddah`). NOT mistakes — one outline
    carries two marks and the audit splits the label on `+`. Collapsing
-   `fatha+hamza` to `hamza` deleted a fatha everywhere: 991 → 1601 flags,
-   hamza +763. `apply_labels.py` now refuses without `--force`.
-2. **Derived families.** fatha/kasra/fathatan/kasratan are ONE stroke; the name
-   comes from position (`_POS_SWAP`) and proximity (two side by side = tanween).
-   Same for damma/dammatan. Asking a reviewer to choose is a question with no
+   `fathah+hamzah` to `hamzah` deleted a fathah everywhere: 991 → 1601 flags,
+   hamzah +763. `apply_labels.py` now refuses without `--force`.
+2. **Derived families.** fathah/kasrah/tanwin_al_fath/tanwin_al_kasr are ONE stroke; the name
+   comes from position (`_POS_SWAP`) and proximity (two side by side = tanwin).
+   Same for dammah/tanwin_al_damm. Asking a reviewer to choose is a question with no
    answer — 161 of the first sheet's 187 words were this artefact.
-3. **hamza vs letter-hamza.** Identical ink. `letter-hamza` is grouped with
-   `letter`/`letter-part` everywhere and is never counted; `hamza` is a
-   diacritic that is. One entry changed from `letter-hamza` to `hamza` cost
+3. **hamzah vs letter_hamzah.** Identical ink. `letter_hamzah` is grouped with
+   `letter`/`letter_part` everywhere and is never counted; `hamzah` is a
+   diacritic that is. One entry changed from `letter_hamzah` to `hamzah` cost
    ~+527 flags mushaf-wide.
-4. **Iqlab is ONE haraka + small meem in this print, not tanween + meem.**
-   uthmani writes `ٌ`+`ۢ`; the KFGQPC text and the INK have a single stroke plus
+4. **Iqlab is ONE harakah + small meem in this print, not tanwin + meem.**
+   rasm_uthmani writes `ٌ`+`ۢ`; the KFGQPC text and the INK have a single stroke plus
    a small م (the high `ۢ` a separate glyph, the low `ۭ` often fused). Every
-   pass that assumes a tanween is a stroke PAIR, and every budget read from
-   uthmani, is exposed at iqlab positions — full site survey in
+   pass that assumes a tanwin is a stroke PAIR, and every budget read from
+   rasm_uthmani, is exposed at iqlab positions — full site survey in
    `docs/defects/iqlab_notation.md`. The 12 CERTAIN ligature-surplus words are
    `assign_words.py:4917` exiting early ("already named") before rescuing the
    meem, which stays counted as a letter piece.
@@ -262,7 +265,7 @@ that do not make things worse — it found the one bad entry out of 18.
 
 ## Traps in `tools/assign_words.py`
 
-- **The fatha/kasra slash-renaming pass exists TWICE**, hundreds of lines
+- **The fathah/kasrah slash-renaming pass exists TWICE**, hundreds of lines
   apart. Fixing one has no observable effect. Patch both.
 - **`ROOT` comes from `__file__`.** A pipeline snapshot copied outside `tools/`
   silently resolves to the wrong data root and produces plausible-but-wrong
@@ -282,8 +285,8 @@ that do not make things worse — it found the one bad entry out of 18.
   A word is emitted as one `<g class="ligature">` per piece the joining rules allow, and
   appending to `at[0]` puts the mark in the word's FIRST group whatever it is drawn over.
   Every older mover goes through `_omove`, which picks the nearest atom; four passes
-  added in one session did not, and p591's kasra landed in `data-text="وا"` at the far
-  end of the word from the hamza it sits under. Use `put_in_ligature()`.
+  added in one session did not, and p591's kasrah landed in `data-text="وا"` at the far
+  end of the word from the hamzah it sits under. Use `put_in_ligature()`.
 - **`segment_word()`'s cut and the emitted groups can disagree** — 2,455 words emit a
   different number of groups than the rules allow. Anything that pairs group *i* with
   segment *i* is meaningless for those words; check the counts match first, or you
@@ -291,7 +294,7 @@ that do not make things worse — it found the one bad entry out of 18.
 
 Env switches for A/B: `QSVG_WDECIDE` (width carries a body move, default off),
 `QSVG_NB` (neighbour transfer), `QSVG_SUP` (superscript recovery),
-`QSVG_HZA`/`QSVG_HZB` (hamza demote/promote), `QSVG_PIPE` (which build an audit
+`QSVG_HZA`/`QSVG_HZB` (hamzah demote/promote), `QSVG_PIPE` (which build an audit
 loads), `QSVG_OUT` (sweep output dir).
 
 Newer passes, all on by default, all late in `assign_page` and all measured:
@@ -304,6 +307,7 @@ Newer passes, all on by default, all late in `assign_page` and all measured:
 | `QSVG_NULLMARK` | a degenerate contour (area < 0.5, draws nothing) stops being counted as a mark | 11 elements |
 | `QSVG_RENAME` | re-derive every slash name before planning — **off, measured worse** | — |
 | `QSVG_ODBG` | print every orphan-pass proposal and the accept/reject decision | debug |
+| `QSVG_WBWSEG` | the derived boundary plan (`.cache/word_by_word_translation/seg_plan.json`) — 4 splits + 1 fuse; off means quran.com's raw boundaries. `QSVG_DKSEG` is the older name for the same switch | 5 sites |
 
 ---
 
@@ -362,7 +366,7 @@ ayahs/page, "gaps 62% wider", and p589/p590's width chaos (quran.com puts
 84:25 on p589; the print draws it on p590, and 84:25's words are our worst
 width defects). The DigitalKhatt DBs also carry the print's true segmentation
 (بعد/ما as TWO words — the p254 wreck, item 20) and its orthography (open
-tanween U+08F0-08F2). **Adoption, measured 2026-08-26:** wholesale word-source
+tanwin U+08F0-08F2). **Adoption, measured 2026-08-26:** wholesale word-source
 replacement is WORSE (22→64 flags on the target pages) because the
 polygon/ayah_stream layer already repairs page membership from the artwork's
 own markers — a naive swap double-corrects. What works is the surgical form:
@@ -388,14 +392,14 @@ are NOT fixed by this; they are the line-partition work in
 Two families are diagnosed and NOT yet corrected, both found by making the mark-size
 test two-sided:
 
-- **9 letters read as marks** (area more than 3x the family median). Five are fathas of
+- **9 letters read as marks** (area more than 3x the family median). Five are fathahs of
   area ~80.4 against a median of 25.1, all near the left margin at a line end: p467,
   p529, p576, p588, p589. On p589 this is one defect wearing two faces — `مُدَّتْ` loses
   its `ت` and measures 63% of its width, while `يَـٰٓأَيُّهَا` counts 3 pieces where 2
   are allowed.
 - **4 marks too small to be one** (under a third of the family median), e.g. p590
-  `ٱلصَّـٰلِحَـٰتِ` holding a 2.13x2.07 blob called a kasra, 38 units below its letters,
-  where its two real kasras are 7.0 and 7.8 wide. Abdullah spotted this one by eye.
+  `ٱلصَّـٰلِحَـٰتِ` holding a 2.13x2.07 blob called a kasrah, 38 units below its letters,
+  where its two real kasrahs are 7.0 and 7.8 wide. Abdullah spotted this one by eye.
 
 ### 3. Four confirmed line errors
 Reference and QCF layout both disagree with us; all four are words at a line
@@ -407,17 +411,17 @@ p543 `بِمَا`, p599 `لَهَا`.
 ### 4. Open queue
 `python3 tools/make_queue.py <sweep-dir> --sig-flags <sig_flags.json>` →
 `docs/defects/queue.json`. Currently ~948 auto (mine), 9 label, 40 judge.
-Largest families: pause 200, mark-steal 171, dots 148, fatha 134,
+Largest families: waqf 200, mark-steal 171, dots 148, fathah 134,
 body-steal 85, ligatures 76.
 
 ### 5. Reviewer notes not yet acted on
 `docs/defects/shape_notes.json` — 20 observations from Abdullah. Themes: ه/ة/و
-stolen across lines, kasratan strokes not being paired (6 shapes), the sajdah
+stolen across lines, tanwin_al_kasr strokes not being paired (6 shapes), the sajdah
 line needing to group with the word below, and signature `9514d0381190`
 covering both 2 dots and 3 dots (an outline that does not discriminate).
 
 ### 6. Known open regressions
-p368 `بِشَىْءٍۢ` (kasratan read as fatha) and p122 `مِّنْ` (ligature surplus).
+p368 `بِشَىْءٍۢ` (tanwin_al_kasr read as fathah) and p122 `مِّنْ` (ligature surplus).
 Both +1 versus the session baseline; neither is explained.
 
 ---
@@ -442,30 +446,112 @@ Both +1 versus the session baseline; neither is explained.
 
 ---
 
+## Names come from the Quran.ws Terminology Standard
+
+Adopted in full 2026-09-08, snapshot `499bc74667765196`. One concept, one
+canonical name, everywhere — code, data values, emitted attributes, docs.
+`.terminology.json` at the root records every deliberate exception with its
+reason; `python3 ~/.claude/skills/quranic-terminology/scripts/audit_terminology.py
+--strict` reports **0 errors, 0 warnings** and must stay there.
+
+What changed that you will trip over if you do not know it:
+
+| was | is |
+|---|---|
+| `fatha` `kasra` `damma` `shadda` `hamza` `madda` | `fathah` `kasrah` `dammah` `shaddah` `hamzah` `maddah` |
+| `fathatan` `kasratan` `dammatan` | `tanwin_al_fath` `tanwin_al_kasr` `tanwin_al_damm` |
+| `tanween` `haraka` `wasla` | `tanwin` `harakah` `hamzat_al_wasl` |
+| `small-alef` `small-ya` `meem-iqlab` | `omitted_alif` `small_yaa` `small_meem` |
+| `sifr-mustadir` `sifr-mustatil` | `rounded_zero` `rectangular_zero` |
+| `pause` `waqf-jaiz` `wasl-awla` `waqf-awla` | `waqf` `waqf_jaiz_mustawi_al_tarafayn` `waqf_jaiz_wasl_awla` `waqf_jaiz_waqf_awla` |
+| `sajdah-sign` `hizb-mark` `seen-reading` | `sajdah_mark` `division_mark` `seen_al_qiraah` |
+| `two-dots` `three-dots` (kebab enum values) | `two_dots` `three_dots` — every emitted value is snake_case |
+| `uthmani` `imlaei` | `rasm_uthmani` `rasm_imlai` |
+| `verse` `aya` `ayat` `sura` `wbw` `rub` | `ayah` `ayahs` `surah` `word_by_word_translation` `rubu_al_hizb` |
+| `data-word-id` `data-ayah-id` `data-uthmani` | `data-word-key` `data-ayah-key` `data-rasm-uthmani` |
+| `g.ayah` `data-part` `data-marker` | `g.ayah-fragment` `data-fragment` `data-ayah-mark` |
+| `.cache/wbw/` `tools/build_wbw_seg.py` | `.cache/word_by_word_translation/` `tools/build_word_by_word_translation_seg.py` |
+
+**Attribute NAMES and CSS class names keep the hyphen** (`data-ayah-key`,
+`class="ayah-fragment"`) — that is the HTML rendering of the snake_case code
+name. **Attribute VALUES are snake_case**, because they are enum literals.
+
+**Four names in this tree are NOT ours and must never be renamed**, and each one
+broke the pipeline once during the adoption:
+
+- `<g id="ayah_markers">` — the artwork's id for the medallion group. We find
+  the group by it and emit `g.ayah-mark` from it.
+- `verse-N` — the artwork's id on each ayah polygon.
+- `text_uthmani`, `text_imlaei`, `verse_key`, `verse_number`, `position`,
+  `char_type_name`, `rub_el_hizb_number`, `"verses"` — quran.com's fields, read
+  verbatim out of `.cache/words/page-*.json`.
+- `suras`, `ayat`, `sura` — the UthmanicHafs release's own keys in
+  `.cache/word_by_word_translation/hafs.json`.
+
+The whole adoption was proven behaviour-neutral: bench **SCORE 136, no
+failures, budget-mismatch 0, pixelfail 0** before and after, all 604 pages
+pixel-identical, `audit_segmentation` 0/0, `audit_taxonomy` green,
+`audit_export` unchanged (`viewbox=2` on p1/p2 is pre-existing, measured
+against the pre-rename build).
+
+---
+
+### The library's API is named for the caller
+
+`docs/shipping/lib/DESIGN.md` §0 is the rule; the short version is one
+vocabulary per concept. The end-of-ayah medallion is an **ayah mark**
+(`page.ayahMarks()`, `styleAyahMarks`, `ayah.mark`, `data-ayah-mark`); a
+diacritic or sign is a **mark** (`page.marks()`, `styleMarks`, `data-mark`); a
+juz/hizb/rubʿ rosette is a **division mark** (`page.divisionMarks()`,
+`g.division-mark`). Collapsing the first two onto one name is what made
+`page.hideMarks({family:'diacritic'})` silently hide nothing — two definitions
+of `hideMarks` on `MushafPage`, and the later one won.
+
+`docs/shipping/lib/test/` is the gate: **313 assertions**, run in Chrome
+against the emitted pages.
+
+```bash
+mkdir -p /tmp/serve && ln -s $PWD/docs/shipping/lib /tmp/serve/lib
+ln -s $PWD/.cache/words-svg/hafs-kfqc /tmp/serve/pages
+cp docs/shipping/lib/test/atlas.json /tmp/serve/
+(cd /tmp/serve && python3 -m http.server 8931)
+# open http://127.0.0.1:8931/lib/test/?pages=/pages/&atlas=/atlas.json&v=1
+# window.__RESULTS__ carries {pass, fail, tests[]} once __RESULTS__.done
+```
+
+**Eight of the 313 fail, and all eight pre-date this work** (measured against
+the pinned pre-rename build): six are one defect — page 1 emits viewBox
+`0 0 235 235` with 7 lines and no surah banner, so the 2026-09-04 frame
+normalisation is not in force there and surah 1 is missing from the atlas;
+`1.17b` asserts `data-w`, which was withdrawn 2026-09-08; `3.6` wants the
+`qpc` form, and `.cache/words-qpc/` has never been warmed on this machine.
+
+---
+
 ## Ground rules
 
 - Never hand-type Quranic text. Word text comes only from the verified cached
   sources. **Which source, measured 2026-08-26** against MushafDatabase's own labelling
   of the same artwork over 77,082 words: quran.com's `text_uthmani` is EXACTLY right on
-  14 of 16 diacritic families and wrong only on 3 maddah, 3 hamza and **203 waqf**; the
+  14 of 16 diacritic families and wrong only on 3 maddah, 3 hamzah and **203 waqf**; the
   KFGQPC text (`qpc_uthmani_hafs`) gets waqf right (14 wrong) and is worse everywhere
-  else. Uthmani alone scores 99.729%, KFGQPC alone 91.303%, quranpedia mushaf-2 86.545%,
-  imlaei 65.100%, indopak 32.705% — and **uthmani + KFGQPC waqf 99.974%**, which is what
+  else. RasmUthmani alone scores 99.729%, KFGQPC alone 91.303%, quranpedia mushaf-2 86.545%,
+  rasm_imlai 65.100%, indopak 32.705% — and **rasm_uthmani + KFGQPC waqf 99.974%**, which is what
   the pipeline uses. Do not migrate the other families to QPC; it was measured and it is
   worse. Compare after normalising code points to families, or you measure encoding
   rather than content (KFGQPC writes sukun U+06E1 and the silent circle U+0652 where
-  uthmani writes U+0652 and U+06DF). **The DigitalKhatt TEXT, measured 2026-08-27**
+  rasm_uthmani writes U+0652 and U+06DF). **The DigitalKhatt TEXT, measured 2026-08-27**
   (same contest, snapshot = `tools/texts/qc/` symlinks into `.cache/words`): 99.543%
   raw — but 335 of its 352 differs are the 339 iqlab sites where DK writes the print's
-  single haraka + small م and the reference follows uthmani's tanween. Net of that
+  single harakah + small م and the reference follows rasm_uthmani's tanwin. Net of that
   convention (which the pipeline already expresses once, as the print-gated meem rule)
   DK is 17 differs vs the composite's 20 — a tie, from one source instead of two. Not
-  adopted for budgets: swapping would re-key every tanween count for zero measured gain.
+  adopted for budgets: swapping would re-key every tanwin count for zero measured gain.
   DK is canonical for SEGMENTATION/LAYOUT/KEYS (QSVG_DKSEG, dk_lines). **Then
   adjudicated by eye 2026-08-27 (docs/defects/text_contest_eyes.json): of the 21
   sites where the finalists differ from MushafDatabase, 16 are shared referee
-  errors; ALL FIVE genuine disagreements went DK's way (3 maddah, 1 hamza, 1
-  small-waw — each a composite budget error). DK is strictly better on
+  errors; ALL FIVE genuine disagreements went DK's way (3 maddah, 1 hamzah, 1
+  small_waw — each a composite budget error). DK is strictly better on
   adjudicated ink; budget-source migration to DK text is approved in principle
   and pending as its own measured phase.** DONE and DEFAULT-ON 2026-08-27:
   `QSVG_DKTEXT=1` reads budgets from the DK DB (normalised in `_dk_norm`,
@@ -474,12 +560,20 @@ Both +1 versus the session baseline; neither is explained.
   is byte-identical for A/B (`QSVG_DKTEXT=0`).
 - Human input is captured as DATA — shapes to `labels.json`, places to
   `overrides.json` — never as a code edit.
-- **The word-by-word source** (`.cache/wbw/hafs.json`, KFGQPC UthmanicHafs v3.0
-  release, Abdullah's word-by-word product is built on it) gives every word group
-  its `data-w` global id via `tools/build_wbw_map.py` → `.cache/wbw/wid_to_w.json`;
-  the emitter refuses a word the map does not know, so rebuild the map after any
-  segmentation change. Measured 2026-09-04 (`docs/HAFS-JSON-SOURCE.md`): page
-  membership identical on all 604 pages, segmentation differs only at 15:7. Its `t`
+- **The word-by-word-translation source** (`.cache/word_by_word_translation/hafs.json`, KFGQPC UthmanicHafs v3.0
+  release, from `quran-ws/quran-text`) is the pipeline's **only source of word
+  boundaries** (2026-09-08): `tools/build_word_by_word_translation_seg.py` derives the plan — 4 splits
+  (the `بَعْدَ مَا` compounds, `إِلۡ يَاسِينَ`) and 1 fuse (15:7 `لَّوۡمَا`) — into
+  `.cache/word_by_word_translation/seg_plan.json`, `assign_words.py` applies it under `QSVG_WBWSEG` and
+  REFUSES to run without it, and the hand-written `_DKSEG_SPLITS` table is gone.
+  Enforced by `tools/audit_segmentation.py` (count 0, skeleton 0 over 6,236 ayahs,
+  from the pipeline and from the emitted SVGs). **A word is identified by
+  `data-word-key="surah:ayah:word"` and nothing else** — three ordinals, dense, in
+  order, Hafs-specific; ayah groups carry `data-ayah-key`. The release's
+  cross-mushaf number was carried as `data-w` for four days and withdrawn: its
+  space is 1-77,434 over 77,432 words (25685 is a word Hafs does not write;
+  72:16:1 `وَأَلَّوِ` holds both 73950 and 73951), and those gaps belong to a scheme
+  spanning every mushaf, not to this one (`docs/HAFS-JSON-SOURCE.md`). Its `t`
   text is a candidate text of record but NOT adopted — it needs the measured contest
   first; its `e`/`ln` are not adopted either.
 - Every hard-won fix should become a bench case, or it comes back.

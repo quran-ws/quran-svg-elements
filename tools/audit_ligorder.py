@@ -122,7 +122,7 @@ def scan_page(pg):
             if hole > LIMIT:
                 flags.append({
                     "page": pg, "law": "CONTIGUITY", "key": key,
-                    "word": word["uthmani"], "lig": li,
+                    "word": word["rasm_uthmani"], "lig": li,
                     "seg": segtext.get(li), "hole": round(hole, 2),
                     "at_x": round(at_x, 2) if at_x is not None else None,
                     "pieces": [[round(e["x1"], 2), round(e["x2"], 2)]
@@ -138,7 +138,7 @@ def scan_page(pg):
             if over > LIMIT:
                 flags.append({
                     "page": pg, "law": "ORDER", "key": key,
-                    "word": word["uthmani"],
+                    "word": word["rasm_uthmani"],
                     "lig": q, "prev_lig": p,
                     "seg": segtext.get(q), "prev_seg": segtext.get(p),
                     "overshoot": round(over, 2),

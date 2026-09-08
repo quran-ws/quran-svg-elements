@@ -20,7 +20,7 @@ Every claim below was checked against the SVGs emitted tonight
 docs/demo/index.html` is empty). I made no writes anywhere in `docs/demo/`.
 The one modified file, `docs/demo/build_embed.py`, was already modified when I
 arrived — my first directory listing showed its mtime as `29 Aug 21:16`, before
-my first tool call — and it belongs to whoever is doing the `data-wid`
+my first tool call — and it belongs to whoever is doing the `data-word-key`
 migration. I have left it alone.
 
 ---
@@ -32,7 +32,7 @@ migration. I have left it alone.
 | `template.html` | 52 KB, 1053 lines | source of truth for `index.html`. **Its JS is dead against the current schema.** Keep the CSS and ~4 of 8 sections; rewrite the JS. |
 | `index.html` | 783 KB | built artefact, frozen on the *old* schema. Regenerate. |
 | `003-embed.svg` | 792 KB | page 3 + `<view>`s + `:target` CSS. Clever; keep the mechanism, shrink the ambition (§4). |
-| `build_embed.py` | 175 lines | already half-migrated to `data-wid`. Not mine to edit. |
+| `build_embed.py` | 175 lines | already half-migrated to `data-word-key`. Not mine to edit. |
 | `nojs-template.html` / `nojs.html` | 11 KB → **2.5 MB** | inlines the 792 KB embed SVG **three times**. See §4 — I propose dropping it as a separate page and folding its idea into one section. |
 | `build.py` | 19 lines | fine as-is. |
 | `geom.json` | 6 KB | measured-in-browser bounding boxes for page 3. **Now obsolete** — see §3.4. |
@@ -58,7 +58,7 @@ migration. I have left it alone.
 
 1. **It is broken as of tonight, and silently.** `template.html` reads
    `w.dataset.ayah` / `.word` / `.surah`; the emitter now writes
-   `data-wid="2:6:1"`. I built a probe copy from tonight's `003.svg` and loaded
+   `data-word-key="2:6:1"`. I built a probe copy from tonight's `003.svg` and loaded
    it: it throws at `template.html:637`
 
    ```
@@ -98,19 +98,19 @@ the files as emitted tonight, with no emitter change.
 click one, and the exact printed word lights up on its exact printed page.
 
 **What makes it possible:** every `g.word` carries
-`data-rasm` (consonantal skeleton) and `data-imlaei` alongside `data-uthmani`
+`data-rasm` (consonantal skeleton) and `data-rasm-imlai` alongside `data-rasm-uthmani`
 and `data-qpc`. Verified on `003.svg`:
 
 ```
-data-wid="2:6:2" data-uthmani="ٱلَّذِينَ" data-rasm="ٱلذين"
-                 data-imlaei="الَّذِينَ" data-qpc="ٱلَّذِينَ"
+data-word-key="2:6:2" data-rasm-uthmani="ٱلَّذِينَ" data-rasm="ٱلذين"
+                 data-rasm-imlai="الَّذِينَ" data-qpc="ٱلَّذِينَ"
 ```
 
 `data-rasm` is a clean skeleton — **36 distinct characters mushaf-wide**, no
-harakat at all, 14,809 distinct tokens.
+harakahs at all, 14,809 distinct tokens.
 
 **The one thing the demo must teach, with the number that proves it:**
-`data-rasm` preserves orthographic hamza forms and U+0671 ALEF WASLA, so a naive
+`data-rasm` preserves orthographic hamzah forms and U+0671 ALEF HAMZAT_AL_WASL, so a naive
 substring match fails. Measured across all 604 pages:
 
 | query | raw `data-rasm` matches | after a 9-character fold |
@@ -133,8 +133,8 @@ we hand them the trap and the fix together, and they trust the rest.
 
 **Scope:** in-page search over the loaded page is trivially today. **Mushaf-wide
 search is also today**, because `docs/shipping/out/words.json` already exists —
-all 77,432 words as `["wid", page, rasm, imlaei]`, **3.5 MB raw / 792 KB
-gzipped**. Search that, get `wid` + page, fetch that one page SVG, highlight.
+all 77,432 words as `["word_key", page, rasm, rasm_imlai]`, **3.5 MB raw / 792 KB
+gzipped**. Search that, get `wordKey` + page, fetch that one page SVG, highlight.
 Dependency: that file must actually ship (§5).
 
 ### 2.2 Metadata without a database — **today**
@@ -146,18 +146,18 @@ file and read it off.
 
 ```html
 <g class="surah-name" data-sid="2" data-surah-name-ar="البقرة"
-   data-surah-name-latin="Al-Baqarah" data-surah-name-en="The Cow"
+   data-surah-name-latin="Baqarah" data-surah-name-en="The Cow"
    data-revelation-place="madinah" data-ayah-count="286">
 <g class="basmalah" data-sid="2" …same six attributes…>
-<g class="ayah" data-aid="2:142" data-juz-start="2" data-hizb-start="3"
-   data-rub-start="9">
-<g class="ayah" data-aid="2:44" data-nisf-start="1" data-rub-start="3">
+<g class="ayah-fragment" data-ayah-key="2:142" data-juz-start="2" data-hizb-start="3"
+   data-rubu-al-hizb-start="9">
+<g class="ayah-fragment" data-ayah-key="2:44" data-nisf-start="1" data-rubu-al-hizb-start="3">
 ```
 
 Mushaf-wide counts I measured: 110 `surah-name` groups on 94 pages, 113
 `basmalah` groups, and complete division coverage — **30 distinct
 `data-juz-start`, 60 `data-hizb-start`, 60 `data-nisf-start`, 240
-`data-rub-start`**. That is every juz, every hizb, every half and every quarter.
+`data-rubu-al-hizb-start`**. That is every juz, every hizb, every half and every quarter.
 
 **The demo:** a "what is on this page?" panel that is populated by nine lines of
 DOM reading, no fetch, no JSON — surah name in Arabic and English, revelation
@@ -165,27 +165,27 @@ place, ayah range, and a badge when a juz/hizb/rubʿ opens here.
 
 **Honest limit to print on the page:** four surahs have no `surah-name` group
 yet — **27, 33, 37, 47** (starting on pages 377, 418, 446, 507). The demo should
-degrade to the `data-wid` surah number rather than pretend.
+degrade to the `data-word-key` surah number rather than pretend.
 
-### 2.3 Pin a translation or tafsir to a word via `data-wid` — **today, and nobody expects it**
+### 2.3 Pin a translation or tafsir to a word via `data-word-key` — **today, and nobody expects it**
 
 **Demonstrates:** the word ids are a join key to the rest of the ecosystem. Hover
 a printed word, get its gloss.
 
-**What makes it possible:** `data-wid="surah:ayah:word"` and the fact that this
+**What makes it possible:** `data-word-key="surah:ayah:word"` and the fact that this
 is the standard quran.com word key. I tested the join on page 3 against the
-cached word-by-word data: **127 of 127 words joined, zero misses.** The payload
-for a whole page, reduced to `{wid: {en, translit}}`, is **5.9 KB**.
+cached word-by-word-translation-translation data: **127 of 127 words joined, zero misses.** The payload
+for a whole page, reduced to `{wordKey: {en, translit}}`, is **5.9 KB**.
 
 ```js
 const gloss = await (await fetch('gloss/003.json')).json();
 svg.querySelectorAll('g.word').forEach(w => {
-  const g = gloss[w.dataset.wid];
+  const g = gloss[w.dataset.wordKey];
   if (g) w.insertAdjacentHTML('afterbegin', `<title>${g.en}</title>`);
 });
 ```
 
-The same key carries an `audio_url` per word (`wbw/002_006_001.mp3`), so
+The same key carries an `audio_url` per word (`word_by_word_translation/002_006_001.mp3`), so
 word-level highlight-during-recitation is the same join — worth *stating* as a
 one-liner even if we do not host audio.
 
@@ -198,8 +198,8 @@ attributed and shipped separately from the SVGs, not implied to be ours.
 This is the first thing anyone building a reader needs and the thing they most
 often get wrong.
 
-**What makes it possible:** `g.ayah[data-aid="2:255"]`, plus
-`g.ayah-marker[data-aid]` which names the ayah the marker *closes* — so you no
+**What makes it possible:** `g.ayah-fragment[data-ayah-key="2:255"]`, plus
+`g.ayah-mark[data-ayah-key]` which names the ayah the marker *closes* — so you no
 longer need geometry to pair a marker with its ayah (§3.4).
 
 **Must be shown correctly, because this is the trap (§3.1):** an ayah is
@@ -207,7 +207,7 @@ longer need geometry to pair a marker with its ayah (§3.4).
 is a class on all of them:
 
 ```js
-document.querySelectorAll(`g.ayah[data-aid="${id}"]`)
+document.querySelectorAll(`g.ayah-fragment[data-ayah-key="${id}"]`)
         .forEach(g => g.classList.add('lit'));
 ```
 
@@ -220,15 +220,15 @@ genuinely useful to a reader author and are one selector each:
 
 - **Hide all diacritics** — `path[data-kind="mark"]{display:none}`. Page 3 has
   698 of them; the letters underneath are untouched.
-- **Pause marks only** — `path[data-mark-family="waqf"]`. Four on page 3, and it
+- **Waqf marks only** — `path[data-mark-family="waqf"]`. Four on page 3, and it
   is exactly what a tajwid app wants to colour.
 - **Colour by family** — the vocabulary really present: `data-kind` is
-  `body` (2348 on my sample) / `mark` (5988) / `header-ink` (487) /
-  `ayah-marker-ornament` / `ayah-number`; `data-mark-family` is
-  `dots` / `tanween` / `sifr` / `waqf`; `data-mark` names 12+ marks on page 3
-  alone (`fatha` 201, `dot` 104, `damma` 81, `kasra` 71, `sukun` 55,
-  `two-dots` 49, `hamza` 28, `shadda` 28, `wasla` 20, `sifr-mustadir` 15,
-  `small-alef` 15, `maddah` 14).
+  `body` (2348 on my sample) / `mark` (5988) / `header_ink` (487) /
+  `ayah_mark_ornament` / `ayah_number`; `data-mark-family` is
+  `dots` / `tanwin` / `sifr` / `waqf`; `data-mark` names 12+ marks on page 3
+  alone (`fathah` 201, `dot` 104, `dammah` 81, `kasrah` 71, `sukun` 55,
+  `two_dots` 49, `hamzah` 28, `shaddah` 28, `hamzat_al_wasl` 20, `rounded_zero` 15,
+  `omitted_alif` 15, `maddah` 14).
 
 The existing section is close; it needs the vocabulary printed and the toggles
 added, not a rewrite.
@@ -237,9 +237,9 @@ added, not a rewrite.
 
 **Demonstrates:** select a run of words on the *image* and get real text.
 
-Verified: joining `data-uthmani` over `2:6:*` on page 3 reproduces
+Verified: joining `data-rasm-uthmani` over `2:6:*` on page 3 reproduces
 `إِنَّ ٱلَّذِينَ كَفَرُوا۟ سَوَآءٌ عَلَيْهِمْ ءَأَنذَرْتَهُمْ أَمْ لَمْ تُنذِرْهُمْ لَا يُؤْمِنُونَ`
-exactly. Offer all four scripts (`uthmani` / `rasm` / `imlaei` / `qpc`) from one
+exactly. Offer all four scripts (`rasm_uthmani` / `rasm` / `rasm_imlai` / `qpc`) from one
 selection — that four-way choice is itself the selling point.
 
 ### 2.7 A reader view — **today, and it is the "why" section made visible**
@@ -271,7 +271,7 @@ svg.setAttribute('role','img');
 svg.setAttribute('lang','ar');
 svg.querySelectorAll('g.word').forEach(w => {
   w.setAttribute('role','text');
-  w.insertAdjacentHTML('afterbegin', `<title>${w.dataset.uthmani}</title>`);
+  w.insertAdjacentHTML('afterbegin', `<title>${w.dataset.rasm_uthmani}</title>`);
 });
 ```
 
@@ -318,7 +318,7 @@ number that implies it is the audit's number.
 |---|---|---|---|
 | 1 | Search (in-page → mushaf-wide) | yes | headline |
 | 2 | Ayah addressing / deep link | yes | headline |
-| 3 | Translation pinned by `data-wid` | yes | headline |
+| 3 | Translation pinned by `data-word-key` | yes | headline |
 | 4 | Reader view / two-page spread | yes | headline |
 | 5 | Metadata without a database | yes | strong |
 | 6 | Style by meaning (upgraded) | yes | strong |
@@ -339,13 +339,13 @@ number that implies it is the audit's number.
 
 ### 3.1 An ayah is several nodes — measured
 
-Across all 604 pages: **13,510 `g.ayah` nodes for 6,236 distinct ayahs**.
+Across all 604 pages: **13,510 `g.ayah-fragment` nodes for 6,236 distinct ayahs**.
 **4,458 ayahs are split across more than one node.** Anything using
 `querySelector` for an ayah silently gets a fragment.
 
 It is worse than "one per line". On **page 144**, ayah `6:128` has **35
-`g.ayah` nodes on a 15-line page** — I dumped line 3 and every single word is
-wrapped in its own `g.ayah`:
+`g.ayah-fragment` nodes on a 15-line page** — I dumped line 3 and every single word is
+wrapped in its own `g.ayah-fragment`:
 
 ```
 AYAH 6:125 → word 6:125:18
@@ -353,7 +353,7 @@ AYAH 6:125 → word 6:125:19
 AYAH 6:125 → word 6:125:20   … nine in a row
 ```
 
-Four pages are in this state — **017, 144, 535, 585** (`g.ayah` count > 3× line
+Four pages are in this state — **017, 144, 535, 585** (`g.ayah-fragment` count > 3× line
 count). The other 600 group normally (page 3: 24 nodes for 11 ayahs). This is
 somebody else's bug to fix, not mine; the demo must be correct regardless, which
 is exactly why the "always `querySelectorAll`, always `.forEach`" idiom is the
@@ -361,8 +361,8 @@ thing to teach.
 
 ### 3.2 An ayah does **not** currently span pages — correct the brief
 
-I checked every `data-wid` on every page: **zero ayahs have words on two pages,
-and zero `data-aid` values appear on two pages.** Every page ends on a complete
+I checked every `data-word-key` on every page: **zero ayahs have words on two pages,
+and zero `data-ayah-key` values appear on two pages.** Every page ends on a complete
 ayah (p105 ends `4:175:15`, p106 begins `4:176:1`, and 4:176's marker is on
 p106).
 
@@ -375,16 +375,16 @@ page in this print, or the page-membership repair is forcing whole ayahs onto
 pages. **Worth one line of confirmation from whoever owns the layout stage
 before we write a sentence about it on a public page.**
 
-### 3.3 The `data-wid` migration is live and the demo is downstream of it
+### 3.3 The `data-word-key` migration is live and the demo is downstream of it
 
 Old (in shipped `index.html`): `data-surah` / `data-ayah` / `data-word`.
-New (tonight): `data-wid="2:6:1"`, `data-rasm`, and `g.ayah[data-aid]`.
+New (tonight): `data-word-key="2:6:1"`, `data-rasm`, and `g.ayah-fragment[data-ayah-key]`.
 
 Consequences:
-- Every code sample must read `data-wid` and split it, or use
-  `[data-wid^="2:6:"]`.
-- **CSS cannot substring-match `data-wid`.** `[data-wid^="2:6:"]` works for
-  prefix, but "ayah 6, words 4–7" does not express in CSS from `data-wid` alone.
+- Every code sample must read `data-word-key` and split it, or use
+  `[data-word-key^="2:6:"]`.
+- **CSS cannot substring-match `data-word-key`.** `[data-word-key^="2:6:"]` works for
+  prefix, but "ayah 6, words 4–7" does not express in CSS from `data-word-key` alone.
   `build_embed.py` already works around this by injecting a demo-local
   `data-ayah`/`data-ge`/`data-le`; the plan should either keep that as an
   openly-labelled demo-local convenience, or drop the CSS-only range demo.
@@ -393,21 +393,21 @@ Consequences:
 - Anything written now must tolerate a missing attribute
   (`w.dataset.rasm ?? ''`) because the schema is still moving.
 
-### 3.4 `geom.json` and the geometric marker-pairing are now dead weight
+### 3.4 `geom.json` and the geometric mark-pairing are now dead weight
 
-`template.html:633-646` pairs each ayah with its end-marker by comparing
+`template.html:633-646` pairs each ayah with its end-mark by comparing
 `getBoundingClientRect()` — same line band, nearest to the left — and
 `geom.json` stores a hand-measured `closes` table for the same reason.
-**Both are obsolete:** `g.ayah-marker` now carries `data-aid`, which states
+**Both are obsolete:** `g.ayah-mark` now carries `data-ayah-key`, which states
 directly which ayah it closes (verified on p3: markers `2:6`…`2:16` for ayahs
 6–16; on p106 the first marker is `4:176`). Delete ~30 lines of geometry and
 the `geom.json` dependency with it.
 
 ### 3.5 Header ink belongs to no word
 
-`data-kind="header-ink"` — **5,550 paths mushaf-wide** — lives inside
+`data-kind="header_ink"` — **5,550 paths mushaf-wide** — lives inside
 `g.surah-name` and `g.basmalah`, never inside a `g.word`, and carries no
-`data-wid`, no `data-uthmani`, no ligature. So:
+`data-word-key`, no `data-rasm-uthmani`, no ligature. So:
 
 - "Extract the text of this page" by walking `g.word` **silently omits every
   surah title and every basmalah**. Page 106 draws two of them.
@@ -432,7 +432,7 @@ is wrong on the two most-linked pages in the mushaf. Read the attribute.
 `g.line` 1. Document order is therefore *not* reading order at the top level,
 even though within a line it is (page 105 line 1 emits `4:171:1 … 4:171:9` in
 order). Text extraction and reader views must interleave markers by their
-`data-aid`, not by position in the DOM.
+`data-ayah-key`, not by position in the DOM.
 
 ---
 
@@ -560,11 +560,11 @@ sentence of what to watch for. In this order (each earning its place from §2):
    with the 2 → 2557 number
 3. **Highlight ayah 2:255 and link to it** — `querySelectorAll`, the
    several-nodes idiom, and a working `#2:255` on this page
-4. **Read a word** — hover for `wid`, four scripts, ligatures, marks
+4. **Read a word** — hover for `wordKey`, four scripts, ligatures, marks
    *(this is today's inspector, reframed as "read a word", not "look how
    decomposed it is")*
-5. **Pin a translation** to `data-wid` — the 5.9 KB payload
-6. **Style by meaning** — hide diacritics, pause marks only, colour by family,
+5. **Pin a translation** to `data-word-key` — the 5.9 KB payload
+6. **Style by meaning** — hide diacritics, waqf marks only, colour by family,
    plus the print/styled A/B slider that carries the "we never alter the print"
    guarantee
 7. **Crop anything** — word / ayah / line as three components from one function
@@ -580,7 +580,7 @@ adopt anything:
   **736 KB raw / 187 KB gzipped**; the whole corpus **454 MB raw, ≈118 MB
   gzipped**; the search index `words.json` **3.5 MB / 792 KB gzipped**;
   `index.json` **101 KB / 15 KB gzipped**
-- versioning and schema stability — and an explicit warning that `data-wid` is
+- versioning and schema stability — and an explicit warning that `data-word-key` is
   new and the old `data-surah`/`data-ayah`/`data-word` attributes are gone
 - browser support: this is plain SVG + DOM. The only modern thing used is
   `:has()` in the CSS-only tricks; the JS path needs nothing exotic
@@ -591,14 +591,14 @@ adopt anything:
   §A1. Any third-party gloss (§2.3) is separate again and must be named
   independently.
 - **honest limits** in their own box: no accessibility metadata in the shipped
-  files yet; four surah headers untagged; `data-kind="header-ink"` is not
-  segmented; four pages currently over-fragment `g.ayah`
+  files yet; four surah headers untagged; `data-kind="header_ink"` is not
+  segmented; four pages currently over-fragment `g.ayah-fragment`
 
 **E. The full attribute reference** — keep today's table, updated to the real
-current vocabulary (`data-wid`, `data-aid`, `data-rasm`, `data-sid`,
+current vocabulary (`data-word-key`, `data-ayah-key`, `data-rasm`, `data-sid`,
 `data-surah-name-*`, `data-juz-start`, `data-hizb-start`, `data-nisf-start`,
-`data-rub-start`, `data-kind`, `data-mark`, `data-mark-family`, `data-form`,
-`data-pair`, `data-iqlab`, `data-eid`, `data-sig`), with counts. It is the page
+`data-rubu-al-hizb-start`, `data-kind`, `data-mark`, `data-mark-family`, `data-form`,
+`data-pair`, `data-iqlab`, `data-element-id`, `data-sig`), with counts. It is the page
 people come back to.
 
 ### What to drop, and why
@@ -638,7 +638,7 @@ reader types.
    generated-on-demand and owned by another agent. Without a real URL,
    mushaf-wide search becomes an in-page-only demo — still good, much less
    impressive.
-2. **A per-page gloss file.** The word-by-word English lives in
+2. **A per-page gloss file.** The word-by-word-translation-translation English lives in
    `.cache/words/page-NNN.json` (50 KB/page). The demo needs the reduced 5.9 KB
    form, plus a decision on attribution and redistribution of quran.com data.
 3. **A confirmation on §3.2** — does an ayah ever span a page in this print, or
@@ -666,7 +666,7 @@ reader types.
    teaching it is one of the most convincing moments on the page.
 10. **Accessibility behind a build flag** (§2.8) — turns an honest "not yet" into
    a headline.
-11. **`g.ayah` fragmentation fixed on pages 017/144/535/585** (§3.1). Not
+11. **`g.ayah-fragment` fragmentation fixed on pages 017/144/535/585** (§3.1). Not
    blocking; the correct idiom survives it.
 12. **A `data-sajdah` attribute.** The source data has `sajdah_number` per ayah
    and the emitter does not carry it. Fourteen places in the mushaf where a
@@ -711,16 +711,16 @@ All from `/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-work` with
 
 | figure | method |
 |---|---|
-| 604 pages, 77,432 words, 6,236 ayahs, 13,510 `g.ayah` nodes, 4,458 split | regex scan of all 604 files |
-| 0 cross-page ayahs | `data-wid` → page set, and `data-aid` → page set; both max 1 |
-| 35 `g.ayah` for 6:128; pages 017/144/535/585 | per-page `g.ayah` count vs `g.line` count |
+| 604 pages, 77,432 words, 6,236 ayahs, 13,510 `g.ayah-fragment` nodes, 4,458 split | regex scan of all 604 files |
+| 0 cross-page ayahs | `data-word-key` → page set, and `data-ayah-key` → page set; both max 1 |
+| 35 `g.ayah-fragment` for 6:128; pages 017/144/535/585 | per-page `g.ayah-fragment` count vs `g.line` count |
 | `الله` 2 → 2557 | substring over all `data-rasm`, before and after the fold |
 | 36 distinct rasm characters, 14,809 tokens | character histogram over every `data-rasm` |
-| 30 juz / 60 hizb / 60 nisf / 240 rub | distinct `data-*-start` values, all pages |
+| 30 juz / 60 hizb / 60 nisf / 240 rubu_al_hizb | distinct `data-*-start` values, all pages |
 | 110 surah-name groups, 94 pages, missing 27/33/37/47 | `data-sid` set vs 1–114 |
-| 5,550 header-ink paths | `data-kind="header-ink"` count |
+| 5,550 header_ink paths | `data-kind="header_ink"` count |
 | 2 pages with a shifted `viewBox` | `viewBox` histogram: 602 × `0 0 345 550`, 2 × `-53.3109 -198.4777 345 550` |
-| 127/127 gloss join, 5.9 KB | join `.cache/words/page-003.json` to `003.svg` on `wid` |
+| 127/127 gloss join, 5.9 KB | join `.cache/words/page-003.json` to `003.svg` on `wordKey` |
 | 736 KB / 187 KB gz; 454 MB total | `stat` + `gzip -c9` |
 | index files 101 KB/15 KB, 3.5 MB/792 KB | `docs/shipping/out/*.json` |
 | current demo works; rebuild throws at `template.html:637` | loaded both in a real browser over `python3 -m http.server`; console captured |

@@ -6,15 +6,15 @@ Murattal. `fields=segments` is REQUIRED — without it the API returns
 `segments: null` with no error, which reads as a bug in your own code.
 
 A segment is [segment_index, word_number, start_ms, end_ms], and `word_number`
-is 1-based within the ayah — the third component of our `data-wid`, so the join
+is 1-based within the ayah — the third component of our `data-word-key`, so the join
 needs no mapping table.
 
 There is ONE MP3 PER AYAH and each ayah's times are relative to its own file.
 
-Writes data/timings-042.json (~2 KB), which build.py inlines so the section
+Writes data/ayah-timings-042.json (~2 KB), which build.py inlines so the section
 still works with no network. Run it again to refresh.
 
-Run:  python3 docs/demo/build_timings.py [page]
+Run:  python3 docs/demo/build_ayah_timings.py [page]
 """
 import json
 import pathlib

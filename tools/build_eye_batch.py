@@ -3,7 +3,7 @@
 
 Rows come from the detector JSONs (.cache/topmost.json, slashpos.json,
 wordheight.json, wordheight_form.json, crossline.json and
-docs/defects/tanween_singles.json), ranked by how many independent detectors
+docs/defects/tanwin_singles.json), ranked by how many independent detectors
 convict each word. Every path of a word render is CLICKABLE: a click marks
 the piece as "does not belong to this word" (orange), a second click
 unmarks; Save posts the verdict, note, and picked eids to /api/eidflag.
@@ -23,7 +23,7 @@ def snippet(pg, word_txt, red_fams):
     if not os.path.exists(f):
         return ""
     s = open(f, encoding="utf-8").read()
-    i = s.find('data-uthmani="%s"' % word_txt)
+    i = s.find('data-rasm-uthmani="%s"' % word_txt)
     if i < 0:
         i = s.find(word_txt)
         if i < 0:
@@ -84,7 +84,7 @@ def neighbors(pg, word_txt):
                      max(e["x2"] for e in bods)))
     tgt = None
     for i, w, ty, x1, x2 in recs:
-        if w["uthmani"] == word_txt:
+        if w["rasm_uthmani"] == word_txt:
             tgt = (i, w, ty, x1, x2)
             break
     if tgt is None:
@@ -92,17 +92,17 @@ def neighbors(pg, word_txt):
     ti, tw, ty, tx1, tx2 = tgt
     out = {}
     if ti > 0:
-        out["before"] = words[ti - 1][0]["uthmani"]
+        out["before"] = words[ti - 1][0]["rasm_uthmani"]
     if ti + 1 < len(words):
-        out["after"] = words[ti + 1][0]["uthmani"]
+        out["after"] = words[ti + 1][0]["rasm_uthmani"]
     ups = [(abs(ty - oy), w2) for i2, w2, oy, ox1, ox2 in recs
            if 12 < ty - oy < 55 and min(tx2, ox2) - max(tx1, ox1) > 2]
     dns = [(abs(oy - ty), w2) for i2, w2, oy, ox1, ox2 in recs
            if 12 < oy - ty < 55 and min(tx2, ox2) - max(tx1, ox1) > 2]
     if ups:
-        out["above"] = min(ups)[1]["uthmani"]
+        out["above"] = min(ups)[1]["rasm_uthmani"]
     if dns:
-        out["below"] = min(dns)[1]["uthmani"]
+        out["below"] = min(dns)[1]["rasm_uthmani"]
     return out
 
 
@@ -119,7 +119,7 @@ def load_cases():
             if len(row) >= 5:
                 cases[(int(pg), row[1])].append((row[2],
                                                  "position: %s" % row[4]))
-    for h in jload("docs/defects/tanween_singles.json") or []:
+    for h in jload("docs/defects/tanwin_singles.json") or []:
         cases[(h["page"], h["word"])].append((None,
                                               "missing %s" % h["missing"]))
     for pg, rows in jload(".cache/wordheight.json").items():
@@ -148,7 +148,7 @@ def main():
 .ink{width:250px;height:120px;flex:none}.ink svg{width:100%;height:100%}
 .ink path{cursor:pointer}
 .ink path.picked{fill:#e67e22 !important;stroke:#e67e22;stroke-width:.6}
-.w{font-size:22px;font-family:'KFGQPC Uthmanic Script HAFS',serif}
+.w{font-size:22px;font-family:'KFGQPC RasmUthmani Script HAFS',serif}
 .n{color:#666;font-size:12.5px;flex:1}
 select,input{font-size:12.5px;padding:2px}
 button{padding:3px 10px;border:1px solid #bbb;border-radius:5px;background:#f4f4f4;cursor:pointer}
@@ -195,7 +195,7 @@ document.querySelectorAll('.ink').forEach(box=>{
     p.classList.toggle('picked');
     const row=box.closest('.row');
     const ids=[...row.querySelectorAll('path.picked')]
-      .map(x=>x.getAttribute('data-eid')).filter(Boolean);
+      .map(x=>x.getAttribute('data-element-id')).filter(Boolean);
     const pk=row.querySelector('.pk');
     if(pk)pk.textContent=ids.length?('not-mine: '+ids.join(', ')):'';
   });
@@ -206,9 +206,9 @@ document.querySelectorAll('button[data-k]').forEach(b=>b.onclick=()=>{
   const sel=row.querySelector(`select[data-k="${k}"]`).value;
   const note=row.querySelector(`input[data-k="${k}"]`).value;
   const picked=[...row.querySelectorAll('path.picked')]
-    .map(x=>x.getAttribute('data-eid')).filter(Boolean);
+    .map(x=>x.getAttribute('data-element-id')).filter(Boolean);
   const claimed=[...row.querySelectorAll('path.claimed')]
-    .map(x=>x.getAttribute('data-eid')).filter(Boolean);
+    .map(x=>x.getAttribute('data-element-id')).filter(Boolean);
   fetch('/api/eidflag',{method:'POST',headers:{'Content-Type':'application/json'},
     body:JSON.stringify({page:parseInt(k), eid:'eye:'+k, correct:sel, note,
                          picked, claimed})})
@@ -224,10 +224,10 @@ fetch('/api/eyeflags').then(r=>r.json()).then(d=>{
     if(btn){const row=btn.closest('.row');
       const sv=row.querySelector('.sv');if(sv)sv.textContent='saved ✓';
       (v.picked||[]).forEach(id=>{
-        const p=row.querySelector(`path[data-eid="${id}"]`);
+        const p=row.querySelector(`path[data-element-id="${id}"]`);
         if(p)p.classList.add('picked');});
       (v.claimed||[]).forEach(id=>{
-        row.querySelectorAll(`.nbi path[data-eid="${id}"]`)
+        row.querySelectorAll(`.nbi path[data-element-id="${id}"]`)
           .forEach(p=>p.classList.add('claimed'));});
       const ids=v.picked||[];
       const pk=row.querySelector('.pk');

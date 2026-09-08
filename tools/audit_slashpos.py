@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Slash marks named AGAINST their drawn position.
 
-fatha/kasra (and their tanween doubles) are one stroke; the pipeline derives
+fathah/kasrah (and their tanwin doubles) are one stroke; the pipeline derives
 the name from position and budget. When a word's budget has no room for what
-position says (p97 أَوْ: budget wants one fatha, zero kasras, so the stroke
-drawn BELOW the letters was forced to be called fatha), the wrong name
+position says (p97 أَوْ: budget wants one fathah, zero kasrahs, so the stroke
+drawn BELOW the letters was forced to be called fathah), the wrong name
 survives every counting audit — the count is exactly what the text allows.
-Position cannot be forced: a "fatha" drawn clear under its word's letter band,
-or a "kasra" riding clear above it, is either a mis-named stroke or a stolen
+Position cannot be forced: a "fathah" drawn clear under its word's letter band,
+or a "kasrah" riding clear above it, is either a mis-named stroke or a stolen
 neighbour's mark. Both need eyes or an ownership pass, and neither is visible
 to any other audit (Abdullah, 2026-08-28, the p97 e79 find).
 
@@ -24,8 +24,8 @@ from concurrent.futures import ProcessPoolExecutor
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 
-ABOVE = ("fatha", "fathatan")
-BELOW = ("kasra", "kasratan")
+ABOVE = ("fathah", "tanwin_al_fath")
+BELOW = ("kasrah", "tanwin_al_kasr")
 
 
 def scan_page(pg):
@@ -67,31 +67,31 @@ def scan_page(pg):
             hist.append((mk, round(off, 1)))
             key = "%d:%d:%d" % (word["surah"], word["ayah"], word["pos"])
             if mk in ABOVE and off > 2.0:
-                flags.append((key, word["uthmani"], mk, round(off, 1),
+                flags.append((key, word["rasm_uthmani"], mk, round(off, 1),
                               "named %s, drawn %.1fu BELOW the letters"
                               % (mk, off)))
             elif mk in BELOW and off < -2.0:
-                flags.append((key, word["uthmani"], mk, round(off, 1),
+                flags.append((key, word["rasm_uthmani"], mk, round(off, 1),
                               "named %s, drawn %.1fu ABOVE the letters"
                               % (mk, -off)))
     # SIDE-ORDER law (Abdullah 2026-08-28 23:09, refined): above-marks
-    # (fatha/damma) and below-marks (kasra) each keep the TEXT's order
-    # right-to-left; the first letter's haraka is rightmost ON ITS SIDE and
+    # (fathah/dammah) and below-marks (kasrah) each keep the TEXT's order
+    # right-to-left; the first letter's harakah is rightmost ON ITS SIDE and
     # the last letter's leftmost on its side. Sides are not compared to
-    # each other — a kasra legitimately tucks under the ligature join.
-    HK = {"\u064e": "fatha", "\u0650": "kasra", "\u064f": "damma"}
+    # each other — a kasrah legitimately tucks under the ligature join.
+    HK = {"\u064e": "fathah", "\u0650": "kasrah", "\u064f": "dammah"}
     for word, atoms in cap:
         if not word:
             continue
-        txt = word["uthmani"]
+        txt = word["rasm_uthmani"]
         els = [e for a in atoms for e in a["els"]]
         seq = [HK[c] for c in txt if c in HK]
-        above_txt = [f for f in seq if f in ("fatha", "damma")]
-        below_txt = [f for f in seq if f == "kasra"]
+        above_txt = [f for f in seq if f in ("fathah", "dammah")]
+        below_txt = [f for f in seq if f == "kasrah"]
         above = sorted([e for e in els if e.get("mark") in
-                        ("fatha", "damma") and not e.get("mkpart")],
+                        ("fathah", "dammah") and not e.get("mkpart")],
                        key=lambda e: -(e["x1"] + e["x2"]))
-        below = sorted([e for e in els if e.get("mark") == "kasra"
+        below = sorted([e for e in els if e.get("mark") == "kasrah"
                         and not e.get("mkpart")],
                        key=lambda e: -(e["x1"] + e["x2"]))
         key = "%d:%d:%d" % (word["surah"], word["ayah"], word["pos"])

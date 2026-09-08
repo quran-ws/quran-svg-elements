@@ -9,11 +9,11 @@ are stated in this directory].**
 **Conventions used throughout**
 
 - **`target`** — anything [`page.resolve()`](#pageresolvetarget) accepts: `'page'`,
-  an ayah key `'2:255'`, a word key `'2:255:3'`, `{line: 7}`, `{ayah, wids, surah}`,
+  an ayah key `'2:255'`, a word key `'2:255:3'`, `{line: 7}`, `{ayah, wordKeys, surah}`,
   a `Word`, an `Ayah`, a `Line`, an element, or an array of any of those.
-- **`form`** — one of `'uthmani' | 'imlaei' | 'qpc' | 'rasm' | 'search'`
-  (`TEXT_FORMS`). Default `'uthmani'` for display, `'search'` for searching.
-  A production page carries only `uthmani` inline; the other four come from the
+- **`form`** — one of `'rasm_uthmani' | 'rasm_imlai' | 'qpc' | 'rasm' | 'search'`
+  (`TEXT_FORMS`). Default `'rasm_uthmani'` for display, `'search'` for searching.
+  A production page carries only `rasm_uthmani` inline; the other four come from the
   page's sidecar `index/by-page/NNN.json` once attached (`createLoader({words:
   true})` or `page.attachWords()`), and read as `null` before that.
 - **Handles.** Every mutating call returns an object with **`.remove()`** that undoes
@@ -26,7 +26,7 @@ are stated in this directory].**
 [Metadata](#metadata) · [Words, ayahs, lines](#words-ayahs-and-lines) ·
 [Text](#text) · [Search](#search) · [Highlighting](#highlighting) ·
 [Hit testing](#hit-testing) · [Marks](#marks) · [Theme](#theme) ·
-[Ayah markers](#ayah-end-markers) · [Layout](#layout) · [Crop](#crop) ·
+[Ayah markers](#ayah-end-marks) · [Layout](#layout) · [Crop](#crop) ·
 [Overlay, hover, tap](#overlay-hover-and-tap) · [Selection](#selection-and-copy) ·
 [Memorisation](#memorisation) · [Accessibility](#accessibility) ·
 [View](#view) · [Raster](#raster-export) · [Atlas](#atlas-cross-page-lookup) ·
@@ -49,7 +49,7 @@ two callers can never disturb each other.
 | `fetch` | `globalThis.fetch` | inject your own |
 | `cache` | `true` | |
 | `stripPolygons` | `true` | drop the dev-only `path.ayahPolygon` layer (§5.3 of FORMAT: different frame, sits on top, swallows pointer events) |
-| `words` | `null` | also fetch and attach the page's text sidecar `index/by-page/NNN.json` (FORMAT §6.1). `true` → `baseUrl + '../index/by-page/'`; a string → that base; a function → `n => url`. A production page has only `data-uthmani` inline, so `search()` and the other four forms need this. A sidecar that fails to fetch throws. |
+| `words` | `null` | also fetch and attach the page's text sidecar `index/by-page/NNN.json` (FORMAT §6.1). `true` → `baseUrl + '../index/by-page/'`; a string → that base; a function → `n => url`. A production page has only `data-rasm-uthmani` inline, so `search()` and the other four forms need this. A sidecar that fails to fetch throws. |
 
 ```js
 const load = createLoader({ baseUrl: '/quran/pages/', words: true });
@@ -59,13 +59,13 @@ const page = await load(42);            // page.search() works: the sidecar is a
 ### `page.attachWords(sidecar)` → `number`
 
 Attach `index/by-page/NNN.json` by hand (the object, its `words` array, or a
-wid-keyed object / `Map`). Returns the record count. Carried by `clone()`. After
+wordKey-keyed object / `Map`). Returns the record count. Carried by `clone()`. After
 this, `word.form()`, `word.text`, `page.text()` and `page.search()` read the four
 derived forms from it; an inline attribute (dev profile) always wins.
 
 ### `page.hasForm(form)` → `boolean`
 
-Whether `form` is readable on this page — inline or attached. `uthmani` always is.
+Whether `form` is readable on this page — inline or attached. `rasm_uthmani` always is.
 
 ### `MushafPage.load(n, options)`
 
@@ -81,7 +81,7 @@ Wrap an `<svg>` already in your document. **Does not clone and does not mutate.*
 
 ### `page.clone()` → `MushafPage`
 
-Deep copy with every `id` namespaced (and `data-marker` kept in step), so two copies
+Deep copy with every `id` namespaced (and `data-mark` kept in step), so two copies
 can live in one document without id collisions.
 
 ---
@@ -101,12 +101,12 @@ Detected by whether `g.ligature` is present. The files do not announce it.
 **Read off the file.** Never assume `0 0 345 550` — pages 1 and 2 are
 `-53.3109 -198.4777 345 550`.
 
-### `page.info()`
+### `page.summary()`
 Everything at once: profile, viewBox, line and word and ayah counts, surah numbers,
 marker count, decorative-rosette count (always 0 on pages built since 2026-09-04 — every
-marker group now carries `data-aid`), sajdahs, rosettes, divisions.
+marker group now carries `data-ayah-key`), sajdahs, rosettes, divisions.
 
-### `page.dropPolygons()` → `number`
+### `page.stripPolygons()` → `number`
 Remove the dev-only polygon layer. Mutates. The loader does it for you.
 
 ### `page.refreshGeometry()`
@@ -124,45 +124,45 @@ Invalidate cached boxes and line bands. Call after you move things yourself.
 
 Banner attributes exist **only on a surah's first page**. A surah merely *present* on
 the page comes back with `hasBanner: false` and only its `number` — read out of
-`data-wid`, so you always get a complete list.
+`data-word-key`, so you always get a complete list.
 
 ```js
 (await load(582)).surahs();
-// [{number: 78, arabic: 'النبإ', latin: 'An-Naba', english: 'The Tidings',
+// [{number: 78, arabic: 'النبإ', latin: 'Naba', english: 'The Tidings',
 //   revelationPlace: 'makkah', ayahCount: 40,
 //   hasBanner: true, hasBasmalah: true}]
 // On a page that continues a surah, that surah comes back with only its
 // number and hasBanner: false — the banner attributes exist nowhere else.
 ```
 
-### `page.divisions()` → `{juz, hizb, nisf, rub}`
+### `page.divisions()` → `{juz, hizb, nisf, rubu_al_hizb}`
 
-Divisions that **start** on this page: `{n, aid, line}[]`, sorted. All 240 rubʿ
+Divisions that **start** on this page: `{n, ayahKey, line}[]`, sorted. All 240 rubʿ
 boundaries are tagged even where no rosette is drawn.
 
 ```js
-(await load(582)).divisions().juz;   // [{n: 30, aid: '78:1', line: 3}]
+(await load(582)).divisions().juz;   // [{n: 30, ayahKey: '78:1', line: 3}]
 ```
 
-### `page.rosettes()` → the *drawn* `g.hizb-mark`
+### `page.divisionMarks()` → the *drawn* `g.division-mark`
 
-`{el, aid, rub, rubInHizb, nisf, hizb, juz}[]`. 199 exist for 240 boundaries — use
+`{el, ayahKey, rubu_al_hizb, rubuAlHizbInHizb, nisf, hizb, juz}[]`. 199 exist for 240 boundaries — use
 `divisions()` for the boundaries, this for the drawing.
 
-### `page.sajdahs()` → `{el, sign, aid, line}[]`
+### `page.sajdahs()` → `{el, sign, ayahKey, line}[]`
 
-Counted by `data-mark="sajdah-sign"`, **not** by group: two sites in the corpus are
-split into two groups with unreliable `data-aid`.
+Counted by `data-mark="sajdah_mark"`, **not** by group: two sites in the corpus are
+split into two groups with unreliable `data-ayah-key`.
 
-### `page.markers()` → `{el, aid, id, ring, numeral}[]`
+### `page.ayahMarks()` → `{el, ayahKey, id, ring, numeral}[]`
 
-`g.ayah-marker[data-aid]` — one per ayah. On pages 1–2 the group holds a second
+`g.ayah-mark[data-ayah-key]` — one per ayah. On pages 1–2 the group holds a second
 ornament path tagged `data-duplicate="1"` (the artwork draws the ring twice; FORMAT
 §9.2); `ring` is the first. Page files built before 2026-09-04 carried 12 id-less
-"decorative" groups on those pages; they are excluded here and by `styleMarkers`.
+"decorative" groups on those pages; they are excluded here and by `styleMarks`.
 
-### `page.allMarkerGroups()` → `Element[]`
-Every `.ayah-marker`, id-less groups of older page files included.
+### `page.ayahMarkGroups()` → `Element[]`
+Every `.ayah-mark`, id-less groups of older page files included.
 
 ### `page.ayahKeys()` → `string[]`
 Ayah keys in reading order, deduplicated.
@@ -172,18 +172,13 @@ Ayah keys in reading order, deduplicated.
 ## Words, ayahs and lines
 
 ### `page.words(selector)` → `Word[]`
-`{line}`, `{ayah}`, `{surah}`, `{wids}` — combinable. No selector: every word.
+`{line}`, `{ayah}`, `{surah}`, `{wordKeys}` — combinable. No selector: every word.
 
-### `page.word(wid)` → `Word | null`
+### `page.word(wordKey)` → `Word | null`
 
-A **`Word`** has `el`, `wid`, `parts`, `surah`, `ayah`, `index`, `aid`, `line`,
+A **`Word`** has `el`, `wordKey`, `surah`, `ayah`, `number` (which word of its
+ayah it is — the third number of the word key), `ayahKey`, `line`,
 `text` (all five forms), `form(which)`, `paths()`, and `box()`.
-
-### `word.w` → `number | null`
-
-The global word id (`data-w`, FORMAT §6.1): the same integer for this word in every
-mushaf that has it — the key a word-by-word app joins on. The two pieces of 15:7
-`لَّوْ مَا` share one; `word.wid` stays unique.
 
 ### `word.box()` → `{x, y, w, h, x0, y0, x1, y1}`
 
@@ -191,13 +186,15 @@ mushaf that has it — the key a word-by-word app joins on. The two pieces of 15
 `g.line` has its own frame and the page matrix flips y. Do not use `getBBox()`
 yourself; it reports a group's own user space and ignores every transform above it.
 
-### `page.ayah(aid)` → `Ayah | null`
+### `page.ayah(ayahKey)` → `Ayah | null`
 
 **An ayah is several fragments, one per printed line — see [Traps](#traps).** This
 returns *all* of them.
 
-`Ayah` has `aid`, `surah`, `number`, `fragments`, `parts`, `complete`, `markerId`,
-`marker`, `lines`, `words()`, `text(form)`.
+`Ayah` has `ayahKey`, `surah`, `number`, `fragments` (the groups on this page),
+`fragmentCount` (how many the file says the ayah has here), `isComplete`,
+`markId` and `mark` (its end-mark's id and element), `lines`, `words()`,
+`text(form)`.
 
 ### `page.ayahs()` → `Ayah[]`
 
@@ -227,7 +224,7 @@ page.text(hits.map(h => h.word));          // whatever you just found
 ```
 
 Never tokenise the result on whitespace to recover words: one printed word can contain
-a space (`إِلْ يَاسِينَ`, and 367 `data-search` values). `data-wid` is the only key.
+a space (`إِلْ يَاسِينَ`, and 367 `data-search` values). `data-word-key` is the only key.
 
 ---
 
@@ -235,22 +232,22 @@ a space (`إِلْ يَاسِينَ`, and 367 `data-search` values). `data-wid` 
 
 ### `page.search(query, options)` → `Match[]`
 
-`Match` is `{word, wid, value, index}` — the `Word` object, so you can highlight or
+`Match` is `{word, wordKey, value, index}` — the `Word` object, so you can highlight or
 scroll to it directly.
 
 | option | default | |
 |---|---|---|
-| `form` | `'search'` | the diacritic-free key. **Never use `'rasm'` for a search box** — it is the *uthmani* skeleton, so stripping deletes long vowels written as combining marks. On a production page the form lives in the sidecar: load with `createLoader({words: true})` or call `page.attachWords()` first, or `search()` throws an error that says so |
+| `form` | `'search'` | the diacritic-free key. **Never use `'rasm'` for a search box** — it is the *rasm_uthmani* skeleton, so stripping deletes long vowels written as combining marks. On a production page the form lives in the sidecar: load with `createLoader({words: true})` or call `page.attachWords()` first, or `search()` throws an error that says so |
 | `mode` | `'includes'` | `'exact'`, `'prefix'`, `'regex'` |
 | `normalize` | `true` | apply [`normalizeQuery`](#normalizequerys) to both sides |
-| `loose` | `true` | if the strict pass found **nothing**, retry with [`looseKey`](#loosekeys). Never widens a query that already matched |
+| `loose` | `true` | if the strict pass found **nothing**, retry with [`loosenQuery`](#loosekeys). Never widens a query that already matched |
 | `limit` | `Infinity` | |
 
 ```js
-page.search('الله', {mode: 'exact'}).map(m => m.wid);
+page.search('الله', {mode: 'exact'}).map(m => m.wordKey);
 // p42 → ['2:253:10','2:253:24','2:253:45','2:253:49','2:255:1']
 
-(await load(1)).search('الرحمان', {mode: 'exact'}).map(m => m.wid);
+(await load(1)).search('الرحمان', {mode: 'exact'}).map(m => m.wordKey);
 // ['1:1:3','1:3:1'] — the printed word is الرحمن with a dagger alef, which is
 // not in data-search at all. The loose pass is what makes this work.
 
@@ -318,7 +315,7 @@ highlight and the selection band alike.
 
 Recolours the ink itself. `remove()` restores the exact previous inline values.
 
-### `page.highlightAyah(aid, options)` → handle
+### `page.highlightAyah(ayahKey, options)` → handle
 
 Band plus an ink class, the common case. `{band, ink, bands, remove()}`. Pass
 `{ink: false}` for band only, or `{band: {...}, ink: {...}}` to configure each.
@@ -333,7 +330,7 @@ The pitch-derived vertical band of each printed line, in viewBox units. Cached.
 
 ## Hit testing
 
-### `page.hitTest(x, y, options)` → `{word, wid, aid, line, distance, exact} | null`
+### `page.hitTest(x, y, options)` → `{word, wordKey, ayahKey, line, distance, exact} | null`
 
 **Pure geometry — no DOM, no overlay.** The opt-out path.
 
@@ -346,7 +343,7 @@ The pitch-derived vertical band of each printed line, in viewBox units. Cached.
 **Nearest with direction, not naive nearest.** The point is resolved to a printed line
 by its band, then to a word on that line; a point in the gap between two words is
 biased toward the *preceding* (right-hand) word, because in this print a word's
-trailing ink — the tanween of a final `ة`, the small waw of a pronominal suffix — is
+trailing ink — the tanwin of a final `ة`, the small waw of a pronominal suffix — is
 drawn *into* the following gap. Naive nearest gets those gaps wrong systematically,
 always in the same direction. `distance` is measured to the chosen word's own box.
 
@@ -363,7 +360,7 @@ Listens on the page's container, so it works whether the ink or the shared hit l
 owns pointer events.
 
 ```js
-page.onTap(({wid, aid, exact}) => console.log(wid, aid, exact));
+page.onTap(({wordKey, ayahKey, exact}) => console.log(wordKey, ayahKey, exact));
 ```
 
 If you are already using the hit layer, prefer [`onWordClick`](#onwordclickpage-handler-options)
@@ -378,13 +375,13 @@ registry**, to `data-mark` names — never through the `data-mark-family` attrib
 which does not match `FORMAT.md` in the current build (see [Traps](#traps)).
 
 ### `page.marks(selector)` → `Element[]`
-`{name, family, category, wid, ayah, line}`. `name` may be a string or an array.
+`{name, family, category, wordKey, ayah, line}`. `name` may be a string or an array.
 
-Families: `dots`, `waqf`, `tanween`, `sifr`, `sajdah`, `reading-sign`, plus the
-convenience aliases `diacritic` (harakat + tanween + maddah — what the files
-themselves write), `haraka` and `vowels`.
-Categories: `haraka`, `tanween`, `letter-dot`, `orthographic`, `dabt`,
-`reading-sign`, `waqf`, `standalone`.
+Families: `dots`, `waqf`, `tanwin`, `sifr`, `sajdah`, `reading_sign`, plus the
+convenience aliases `diacritic` (harakahs + tanwin + maddah — what the files
+themselves write), `harakah` and `vowels`.
+Categories: `harakah`, `tanwin`, `letter_dot`, `orthographic`, `dabt`,
+`reading_sign`, `waqf`, `standalone`.
 
 ### `page.styleMarks(selectorOrPaths, style)` → handle
 CSS properties as an object. `remove()` restores the previous inline style.
@@ -394,7 +391,7 @@ CSS properties as an object. `remove()` restores the previous inline style.
 ```js
 page.hideMarks({family: 'diacritic'});   // vowels gone; dots and waqf signs untouched
 page.styleMarks({family: 'dots'}, {fill: '#b03030'});
-page.marks({name: 'meem-iqlab'});        // the iqlab meems ON THIS PAGE
+page.marks({name: 'small_meem'});        // the iqlab meems ON THIS PAGE
                                          // (3 on page 42; 609 corpus-wide)
 ```
 
@@ -419,9 +416,9 @@ page.theme({paper: '#0d1b2a', ink: '#cfe3ff', diacritics: '#7fb0e8'});
 
 ---
 
-## Ayah end-markers
+## Ayah end-marks
 
-### `page.styleMarkers(options)` → handle
+### `page.styleAyahMarks(options)` → handle
 
 | option | |
 |---|---|
@@ -431,16 +428,16 @@ page.theme({paper: '#0d1b2a', ink: '#cfe3ff', diacritics: '#7fb0e8'});
 | `hide` | `true` for a reading view with no markers |
 | `replaceRing` | `true` for a plain circle, or `fn({x,y,w,h,cx,cy,r}, marker) → Element` for your own shape, **keeping the printed numeral** |
 
-Only `g.ayah-marker[data-aid]` groups are touched — every marker on a current page;
+Only `g.ayah-mark[data-ayah-key]` groups are touched — every marker on a current page;
 older page files' 12 id-less groups on pages 1–2 are left alone.
 
-### `page.hideMarkers()` → handle
+### `page.hideAyahMarks()` → handle
 
 ---
 
 ## Layout
 
-### `setLineGap(page, gap, {pad, carryMarkers})` → handle
+### `setLineGap(page, gap, {pad, carryMarks})` → handle
 
 Moves each `g.line` apart and grows the viewBox so nothing is cropped. Every printed
 line is its own group, so nothing is scaled or re-set and no glyph is touched.
@@ -495,7 +492,7 @@ solver that computes a number and calls the setter.
 
 ## Crop
 
-### `page.crop(target, {pad, keepMarkers, background})` → `{el, page, viewBox, words, toString(), toDataUrl()} | null`
+### `page.crop(target, {pad, keepMarks, background})` → `{el, page, viewBox, words, toString(), toDataUrl()} | null`
 
 A standalone SVG around anything, usable as an image anywhere. **Does not touch the
 original page** — it clones. A medallion is kept only when the *whole* ayah survived,
@@ -524,10 +521,10 @@ must `release()` exactly once**, and the layer is torn down when the last one do
 The page must be mounted in the document.
 
 Handle: `layer`, `stage`, `count`, `refs`, `form`, `setForm(f)`, `spans()`,
-`spanOf(wid)`, `widOf(node)`, `rebuild()`, `onRebuild(fn) → off`,
+`spanOf(wordKey)`, `wordKeyOf(node)`, `rebuild()`, `onRebuild(fn) → off`,
 `wordAt(clientX, clientY, opts)`, `release()`.
 
-Each span carries `data-wid`, `data-line`, `data-aid` and `data-ink`
+Each span carries `data-word-key`, `data-line`, `data-ayah-key` and `data-ink`
 (`"x y w h"` of the word's **ink** box, relative to the layer — for drawing).
 The span's own geometry is the **hit** box.
 
@@ -539,7 +536,7 @@ Fires **once per word entered**. `{level: 'word'|'ayah', maxDistance, gapBias, o
 plus any `acquireHitLayer` option.
 
 ```js
-const h = onWordHover(page, ({word}) => tip.textContent = word.text.uthmani);
+const h = onWordHover(page, ({word}) => tip.textContent = word.text.rasm_uthmani);
 h.remove();     // releases its reference to the layer; other consumers keep theirs
 ```
 
@@ -562,7 +559,7 @@ the class you pass; the only rule it sets is `position: absolute`.
 | | | plus any `onWordHover` option except `onLeave` |
 
 ```js
-const tip = wordTooltip(page, w => gloss[w.wid] || null, {className: 'q-tip'});
+const tip = wordTooltip(page, w => gloss[w.wordKey] || null, {className: 'q-tip'});
 tip.remove();      // takes the element and the layer reference with it
 ```
 
@@ -589,16 +586,16 @@ on top of the shared hit layer. The page must be mounted.
 | option | default | |
 |---|---|---|
 | `mount` | the svg's parent | the positioned container |
-| `form` | `'uthmani'` | what the spans carry **and** what Ctrl+C copies |
-| `citation` | `false` | `true` → `"…text… (2:255)"`; or `fn(words, text, aids) → string` |
-| `onSelect` | – | `({text, words, aids})` on every change |
+| `form` | `'rasm_uthmani'` | what the spans carry **and** what Ctrl+C copies |
+| `citation` | `false` | `true` → `"…text… (2:255)"`; or `fn(words, text, ayahKeys) → string` |
+| `onSelect` | – | `({text, words, ayahKeys})` on every change |
 | `copy` | `true` | install the `copy` handler |
 | `paintBand` | `true` | draw the selection band |
 | `bandFill`, `bandOpacity`, `bandPadX` | `'#2d6fd6'`, `0.25`, `0.6` | |
 
 Handle: `layer`, `hitLayer`, `form`, `setForm(f)`, `setCopyForm(f)`, `count`,
 `rebuild()`, `spans()`, `words()`, `text(form)`, `payload(form)`,
-`selectWords(wids)`, `clear()`, `band`, `repaint()`, `detach()`.
+`selectWords(wordKeys)`, `clear()`, `band`, `repaint()`, `detach()`.
 
 ```js
 const sel = attachSelection(page, {citation: true, onSelect: s => ui.show(s.text)});
@@ -631,7 +628,7 @@ Hide or mask an arbitrary set of words and reveal them progressively.
 | `order` | `'reading'` | `'reverse'` |
 
 Handle: `words`, `hidden`, `hiddenCount`, `revealedCount`, `reveal(n)`, `revealNext()`,
-`hide(n)`, `revealWord(wid)`, `revealAll()`, `hideAll()`, `remove()`.
+`hide(n)`, `revealWord(wordKey)`, `revealAll()`, `hideAll()`, `remove()`.
 
 ```js
 const m = mask(page, '2:255');
@@ -671,7 +668,7 @@ to the ayah it closes, so it lights when that ayah's **last** word is reached.
 A medallion is not a word, so it is painted directly — `page.highlight()` resolves an
 element to the `g.word` groups inside it, and a medallion has none.
 
-### `maskFrom(page, wid, options)` → handle
+### `maskFrom(page, wordKey, options)` → handle
 Mask everything from a word onward.
 
 ---
@@ -680,21 +677,21 @@ Mask everything from a word onward.
 
 ### `followRecitation(page, options)` → `Promise<handle>`
 
-Word-by-word follow-along against per-ayah audio. The library owns the **join** and
+Word-by-word-translation follow-along against per-ayah audio. The library owns the **join** and
 the **clock**; the caller owns the buttons.
 
 | option | default | |
 |---|---|---|
 | `reciter` | `9` | quran.com recitation id (9 = Minshawi, murattal) |
-| `timings` | – | `{aid: [url, [[startMs, endMs]…]]}` — given, nothing is fetched |
+| `timings` | – | `{ayahKey: [url, [[startMs, endMs]…]]}` — given, nothing is fetched |
 | `endpoint`, `cdn`, `timeout` | quran.com, qurancdn, 6000 | |
 | `paint` | `true` | `false` reports position and leaves the ink alone |
 | `grey`, `ink` | `'#c9c4b8'`, `'#231f20'` | |
-| `onWord` | – | `({aid, index, count, file, files, whole})` on every change |
+| `onWord` | – | `({ayahKey, index, count, file, files, whole})` on every change |
 | `onEnd`, `onError` | – | |
 
 ```js
-const f = await followRecitation(page, {onWord: w => bar.textContent = w.aid});
+const f = await followRecitation(page, {onWord: w => bar.textContent = w.ayahKey});
 await f.play();
 f.pause(); f.remove();
 ```
@@ -763,7 +760,7 @@ img.src = await toPngDataUrl(page.crop('2:255'), {scale: 4, background: '#fbf9f4
 
 ---
 
-## Swappable ayah end-markers (`markers.mjs`)
+## Swappable ayah end-marks (`markers.mjs`)
 
 Replace the printed ornament **ring** on every medallion with an outline from an
 external marker set, recolour it part by part, and put the print back exactly.
@@ -773,23 +770,23 @@ rendering of it, and it is not touched by anything in this module. The replaceme
 positioned so that the design's **own** number-centre lands on the printed numeral, and
 scaled from the box the ring occupied.
 
-**Nothing is redistributed.** No outline ships with this library. `loadMarkerSet()`
+**Nothing is redistributed.** No outline ships with this library. `loadMarkSet()`
 takes a base URL and fetches at runtime. The reference set is
-[`quranpedia/ayah-markers`](https://github.com/quranpedia/ayah-markers), which traces
+[`quranpedia/ayah-marks`](https://github.com/quranpedia/ayah-marks), which traces
 its 47 markers (20 designs across weights) from twenty type families — fifteen from
 Google Fonts, five from fonts.quran.ws. **They carry those families' licences, which
 differ from one another**; every marker names its own `sources` in that repository's
 `collection.json`. Read it before you redistribute anything. This library states no
 licence terms and grants none: it is the mechanism, not the material.
 
-### `loadMarkerSet(baseUrl, {fetch, cache})` → `Promise<MarkerSet>`
+### `loadMarkSet(baseUrl, {fetch, cache})` → `Promise<MarkSet>`
 
 Fetches `collection.json` once. Cached per URL; a *failed* load is not cached, so a
 retry when the network returns works. Rejects with the URL in the message — catch it
 and say so rather than showing a dead pane.
 
 ```js
-const set = await loadMarkerSet('https://quranpedia.github.io/ayah-markers/');
+const set = await loadMarkSet('https://quranpedia.github.io/ayah-marks/');
 set.list();       // [{id, family, weight, codepoint, width, upem, number, sources[]}, …]
 set.families();   // [{family: '017', weights: [...]}, …]  — what a picker wants
 set.record('017-regular').sources;   // the licence trail
@@ -810,7 +807,7 @@ upstream publishes tomorrow. `numberCentre(outline)` reads only `cx`/`cy` and re
 record is present but has no usable centre — a trimmed field must not silently hang the
 design off the wrong point.
 
-### `setAyahMarker(page, outline, options)` → handle
+### `setAyahMark(page, outline, options)` → handle
 
 | option | | |
 |---|---|---|
@@ -818,18 +815,18 @@ design off the wrong point.
 | `size` | `1` | factor on the fitted size; `1` matches the ring's box |
 | `colours` | `null` | `{part: colour}` — sets upstream's `--<part>` custom properties on the `<svg>` |
 | `anchorOnNumber` | `true` | put the design's own number-centre on the printed numeral; `false` centres box on box |
-| `decorative` | `false` | include the `g.ayah-marker` groups with **no** `data-aid` (none on pages built since 2026-09-04; kept for older page files) |
+| `decorative` | `false` | include the `g.ayah-mark` groups with **no** `data-ayah-key` (none on pages built since 2026-09-04; kept for older page files) |
 
-**Only `g.ayah-marker[data-aid]` is touched unless you ask for the rest.** On pages 1–2
+**Only `g.ayah-mark[data-ayah-key]` is touched unless you ask for the rest.** On pages 1–2
 the artwork draws each ring twice and the copy sits inside the same group as
 `data-duplicate="1"`; `replaceRing` swaps the first ring and hides the copy.
 
 `handle.remove()` restores the printed rings exactly — the original `<path>` node is
 kept, not re-serialised — and unsets any custom properties `colours` set.
 
-### `resetAyahMarkers(page, {decorative})` → `{count}`
-### `hasSwappedMarkers(page)` → `boolean`
-### `colourAyahMarkers(page, colours)` → handle
+### `resetAyahMarks(page, {decorative})` → `{count}`
+### `hasSwappedMarks(page)` → `boolean`
+### `colourAyahMarks(page, colours)` → handle
 
 Recolours what is already on the page by setting the custom properties on the `<svg>`,
 without rebuilding anything. Pass `null` for a part to unset it.
@@ -855,17 +852,17 @@ it. Setting the custom property on any ancestor recolours it, live:
 ```
 
 ```js
-const set = await loadMarkerSet(BASE);
-const h = setAyahMarker(page, await set.outline('017-regular'),
+const set = await loadMarkSet(BASE);
+const h = setAyahMark(page, await set.outline('017-regular'),
                         { colours: { 'ink-base': '#b08d2e' } });
-colourAyahMarkers(page, { 'ink-1': '#8a6d1f' });     // same thing, later
+colourAyahMarks(page, { 'ink-1': '#8a6d1f' });     // same thing, later
 h.remove();                                          // the print is back
 ```
 
 Each design uses only some of the seven; `outline.parts` lists the ones it draws, and a
 control offering a part the design does not have is a lie about the drawing.
 
-**The `--ayah-marker-<part>` names this library once used are retired.** They were a
+**The `--ayah-mark-<part>` names this library once used are retired.** They were a
 workaround for a format that no longer exists.
 
 ### What this module used to do
@@ -891,16 +888,16 @@ Generate with `python3 build-atlas.py <pages-dir> -o atlas.json`.
 ### `loadAtlas(url, {fetch})` → `Promise<MushafAtlas>`
 ### `atlasFrom(data)` → `MushafAtlas`
 
-`pageOf(aid)`, `pageOfWord(wid)`, `pageRange(n)`, `surah(n)`, `pageOfSurah(n)`,
-`surahs`, `findSurah(text)`, `juz(n)`, `hizb(n)`, `rub(n)`, `nisf(n)`,
-`pagesOfJuz(n)`, `juzAt(aid)`, `hizbAt(aid)`, `rubAt(aid)`, `divisionAt(kind, aid)`.
+`pageOf(ayahKey)`, `pageOfWord(wordKey)`, `pageRange(n)`, `surah(n)`, `pageOfSurah(n)`,
+`surahs`, `findSurah(text)`, `juz(n)`, `hizb(n)`, `rubu_al_hizb(n)`, `nisf(n)`,
+`pagesOfJuz(n)`, `juzAt(ayahKey)`, `hizbAt(ayahKey)`, `rubuAlHizbAt(ayahKey)`, `divisionAt(kind, ayahKey)`.
 
 ```js
 const atlas = await loadAtlas('atlas.json');
 atlas.pageOf('2:255');        // 42
-atlas.juz(30);                // {n: 30, aid: '78:1', page: 582}
+atlas.juz(30);                // {n: 30, ayahKey: '78:1', page: 582}
 atlas.pagesOfJuz(30);         // [582, 604]
-atlas.findSurah('The Cow');   // [{n: 2, latin: 'Al-Baqarah', page: 2, …}]
+atlas.findSurah('The Cow');   // [{n: 2, latin: 'Baqarah', page: 2, …}]
 ```
 
 `pageOf` is a binary search over one first-ayah key per page — valid because **no ayah
@@ -914,19 +911,19 @@ spans two pages**.
 Strip + fold + collapse whitespace. The default search key.
 
 ### `stripArabicMarks(s)`
-Harakat, tanween (including the open forms U+08F0–08F2 this print uses), the dagger
+Harakahs, tanwin (including the open forms U+08F0–08F2 this print uses), the dagger
 alef, the waqf/dabt block, tatweel, and the rubʿ sign.
 
 ### `foldArabic(s)`
 `أإآٱ→ا`, `ى→ي`, `ة→ه`, `ؤ→و`, `ئ→ي`. **Nothing is folded in the stored data on
 purpose** — fold on your side and keep the file as written.
 
-### `looseKey(s)`
-Additionally drops bare alef and hamza, so a typed `الرحمان` finds the printed
+### `loosenQuery(s)`
+Additionally drops bare alef and hamzah, so a typed `الرحمان` finds the printed
 `الرحمن`. Used only as the second pass in `search`.
 
 ### `TEXT_FORMS`, `SVGNS`, `version`
-### `boxInView(svg, el)` · `measured(el, fn)`
+### `boxInView(svg, el)` · `whileRendered(el, fn)`
 The geometry primitives, exported for building your own helpers.
 
 ---
@@ -934,8 +931,8 @@ The geometry primitives, exported for building your own helpers.
 ## Traps
 
 **An ayah is not a subtree.** It is emitted once per printed line, so
-`querySelector('g.ayah[data-aid="2:255"]')` gives you fragment 1 of N. `page.ayah()`
-returns all of them; `ayah.parts` and `ayah.complete` tell you whether you have the
+`querySelector('g.ayah-fragment[data-ayah-key="2:255"]')` gives you fragment 1 of N. `page.ayah()`
+returns all of them; `ayah.fragments` and `ayah.isComplete` tell you whether you have the
 lot. On page 42, 2:255 is six fragments on six printed lines (8–13).
 
 **Pages 1 and 2 are the opening spread.** A different page matrix, **8 printed lines
@@ -950,15 +947,15 @@ lies about units**: it maps to the nearest *viewport*, i.e. CSS pixels after the
 viewBox scaling, so anything you write back as a viewBox coordinate lands in the wrong
 place. Use `word.box()` / `boxInView()`, which compose the screen CTMs.
 
-**Never key on `data-eid` or `data-sig`.** The first is explicitly not stable across
+**Never key on `data-element-id` or `data-sig`.** The first is explicitly not stable across
 builds; the second is a shape hash, not an identity (98 signatures serve more than one
 mark name). This library uses neither.
 
 **`data-mark-family` is not a reliable selector.** It does not match `FORMAT.md` and
-it has changed shape during this project. FORMAT §6.5 documents `dots, tanween, waqf,
-sifr, sajdah, reading-sign`; the build emitted `diacritic, dots, waqf, sifr, sajdah`
-(no `tanween` at all, `diacritic` undocumented), and now emits the **multi-valued**
-`data-mark-family="diacritic tanween"` on tanween paths. Every exact-match selector —
+it has changed shape during this project. FORMAT §6.5 documents `dots, tanwin, waqf,
+sifr, sajdah, reading_sign`; the build emitted `diacritic, dots, waqf, sifr, sajdah`
+(no `tanwin` at all, `diacritic` undocumented), and now emits the **multi-valued**
+`data-mark-family="diacritic tanwin"` on tanwin paths. Every exact-match selector —
 including FORMAT §11's own recipes — breaks on at least one of those builds; `~=`
 would be needed today. `page.marks({family: …})` is unaffected because it resolves a
 family to `data-mark` **names** and selects on those.
@@ -970,7 +967,7 @@ Each releases its own listeners and observers; the shared hit layer goes away wh
 last holder releases it.
 
 **A mark can be drawn outside its word**, so word boxes overlap and a hit box can be
-narrower than the ink it names. Trust `data-wid`, never geometry, for ownership.
+narrower than the ink it names. Trust `data-word-key`, never geometry, for ownership.
 
 ---
 
@@ -983,7 +980,7 @@ banners) — plus the interactive checks: a genuine mouse drag across a line bre
 Ctrl+C, hover, a click in a 6.96 px gap, and a window resize. Zero console errors, no
 failed requests.
 
-The end-marker assertions run against a **synthetic** marker set served by a stub
+The end-mark assertions run against a **synthetic** marker set served by a stub
 `fetch` — a square ring whose counter is annotated into a different part, which is
 exactly the shape of the real trap — because no outline may ship here. Point the page
 at a real set with `?markers=<url>` and it additionally checks that set for

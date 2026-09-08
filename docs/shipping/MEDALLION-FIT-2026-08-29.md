@@ -1,4 +1,4 @@
-# How well the ayah-marker rings fit — all 6,248 of them
+# How well the ayah-mark rings fit — all 6,248 of them
 
 **2026-08-29.** Measurement only; no artwork was changed.
 
@@ -40,7 +40,7 @@ attribute that is stale, not the transform — on p113 every `ayah:y` is ~3 unit
 off while the numerals sit dead centre in their rings (verified by rendering).
 
 Ayah identity comes from **position**, not document order: each marker is named
-by the ayah polygon whose recorded centre it sits on. The known `tag_ayah_markers`
+by the ayah polygon whose recorded centre it sits on. The known `tag_ayah_marks`
 reversal bug (441 pages) is therefore not inherited here.
 
 Accuracy: curves are flattened to 8 chords and then resampled so no gap exceeds
@@ -113,7 +113,7 @@ ink box, and that rule holds almost everywhere.
 
 ## 2. Clearance — does the ring touch other ink?
 
-Distance from the ring's outer silhouette to the nearest non-marker ink on the
+Distance from the ring's outer silhouette to the nearest non-mark ink on the
 page (words and marks; other medallions are handled separately):
 
 ```
@@ -244,7 +244,7 @@ medallions visibly different sizes down the same page:
 None of them reaches zero, and all of them change 6,000 medallions that were
 already fine to fix 221 that were not.
 
-**A per-marker shrink, applied only where it is needed, reaches zero and costs
+**A per-mark shrink, applied only where it is needed, reaches zero and costs
 nothing anywhere else.** Requiring clearance ≥ 0.3 *and* numeral gap ≥ 0.5:
 
 ```
@@ -344,7 +344,7 @@ python3 tools/audit_medallions.py --jobs 32 --proof      # ~2 min, all 604 pages
 ```
 
 `--proof` prints the transform residual against the artwork's own `ayah:x/y`.
-Per-marker output carries the ring and numeral boxes, the containment margins on
+Per-mark output carries the ring and numeral boxes, the containment margins on
 all four sides, the clearance and its contact point, the overlap depth, and both
 the clearance and the numeral gap re-measured at eleven candidate ring scales —
 which is where every table above comes from.

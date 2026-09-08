@@ -30,7 +30,7 @@ def one(pg):
                     "hafs/kfqc", str(pg), "--out-dir", td],
                    capture_output=True, env=env)
     svg = open(os.path.join(td, "%03d.svg" % pg), encoding="utf-8").read()
-    box = {r["eid"]: r["x2"] for r in json.load(open(em))}
+    box = {r["element_id"]: r["x2"] for r in json.load(open(em))}
     lig = ligbad = word = wordbad = 0
     for wm in re.finditer(r'<g class="word"[^>]*>', svg):
         i = wm.start()
@@ -44,7 +44,7 @@ def one(pg):
         word += 1
         firsts = []
         for part in re.split(r'(?=<g class="ligature")', grp)[1:]:
-            xs = [box[e] for e in re.findall(r'data-eid="(e\d+)"', part)
+            xs = [box[e] for e in re.findall(r'data-element-id="(e\d+)"', part)
                   if e in box]
             if not xs:
                 continue

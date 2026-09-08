@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Every pause sign vs its dots (Abdullah 2026-08-27: قلى must always carry
+"""Every waqf sign vs its dots (Abdullah 2026-08-27: قلى must always carry
 its 2 dots, ج its dot).
 
-For each pause-labeled element: its waqf type (waqf_types by sig), how many
+For each waqf-labeled element: its waqf type (waqf_types by sig), how many
 dot elements it already carries (mkpart members / same-element contours are
-invisible here, so count separate dot/two-dots elements overlapping its box
+invisible here, so count separate dot/two_dots elements overlapping its box
 +-3u), and who owns them.
 
     python3 scratchpad/pausedots_scan.py <page>
@@ -36,12 +36,12 @@ def scan(pg, outdir):
                             if w else None))
     out = []
     for e, owner in els:
-        if e.get("mark") != "pause" or e.get("mkpart"):
+        if e.get("mark") != "waqf" or e.get("mkpart"):
             continue
         typ = wt.get(e.get("sig"))
         near = []
         for d, downer in els:
-            if d is e or d.get("mark") not in ("dot", "two-dots", "three-dots"):
+            if d is e or d.get("mark") not in ("dot", "two_dots", "three_dots"):
                 continue
             if (d["x1"] < e["x2"] + 3 and d["x2"] > e["x1"] - 3
                     and d["y1"] < e["y2"] + 3 and d["y2"] > e["y1"] - 3):
@@ -54,7 +54,7 @@ def scan(pg, outdir):
         out.append({"owner": owner, "sig": e.get("sig"), "type": typ,
                     "contours": len(e.get("contours", [])),
                     "parts": parts, "near_dots": near})
-    json.dump({"page": pg, "pauses": out},
+    json.dump({"page": pg, "waqfs": out},
               open(os.path.join(outdir, "%03d.json" % pg), "w",
                    encoding="utf-8"), ensure_ascii=False)
 

@@ -21,4 +21,4 @@ for w,at in cap["a"]:
 for cx,e,w in sorted(rows, key=lambda t:-t[0]):
     print("   %-6s %-12s x %6.1f-%-6.1f y %6.1f-%-6.1f  owner=%s"
           %(e["kind"], e.get("mark") or e.get("lab") or "", e["x1"], e["x2"],
-            e["y1"], e["y2"], (w or {}).get("uthmani","(none)")))
+            e["y1"], e["y2"], (w or {}).get("rasm_uthmani","(none)")))

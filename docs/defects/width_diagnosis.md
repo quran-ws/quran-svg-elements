@@ -19,7 +19,7 @@ Everything below was measured on the CURRENT build (the one behind sweep
 
 ### Mechanism C1 — the QCF advance table is scrambled on the drift pages
 
-`.cache/qcf_widths.json` was paired word-by-word per QCF page font using
+`.cache/qcf_widths.json` was paired word-by-word-translation per QCF page font using
 quran.com's mushaf-2 layout. On the 25-26 pages where that layout lies about page
 membership (reported.json item 21: p121–123, p145, p532–534, p565, p568, p570,
 p576, p584, p586, p588–600) the pairing is rotated, so words carry OTHER WORDS'
@@ -72,7 +72,7 @@ in 0.84–1.19. The 6 flags are the scrambled table, not the partition.
 
 `score_confidence._scan_page` measures a word's span over ALL elements
 (deliberate, for the ۥ/ۦ suffix family — `score_confidence.py:111-116`).
-p418 33:3:4 وَكَفَىٰ still carries two fathas with `gap≈290u` (the confirmed
+p418 33:3:4 وَكَفَىٰ still carries two fathahs with `gap≈290u` (the confirmed
 ref-line/slashx defect from round 10), so its span reads 267u wide → width 5.5x,
 and every other word on p418 L6 dilutes to ~0.5x. **All 11 of p418's off-drift
 width flags sit on lines poisoned this way; mushaf-wide, p418 is the only such
@@ -138,8 +138,8 @@ Abdullah's round-10 verdicts (27 Aug ~20:30) predate the i39full build
   **rebuild p596 and re-eye before writing any corrector for this line**; if his
   verdict still stands against the fresh render, the cut is wrong in a way piece
   arithmetic cannot see and the line goes to the proposals page, not to a pass.
-- **p599 98:6:2 / :11 / :13**: his notes name kasra/fatha thefts — MARK defects
-  (slashx / band family, 98:6:13 has `fatha 1/2`), not body-boundary defects.
+- **p599 98:6:2 / :11 / :13**: his notes name kasrah/fathah thefts — MARK defects
+  (slashx / band family, 98:6:13 has `fathah 1/2`), not body-boundary defects.
   Body counts on those words are exact (the 4/3 on أولئك is the detached-ك
   stroke, §4). Their width flags are mechanism C1.
 
@@ -163,13 +163,13 @@ stray-mark-poisoned span (score_confidence only).
 | p598 L1, L2 | 3+2 | c1 | — |
 | p598 L3 | 4 | c1 + b | كَلَّا 1.6x stretch; وَٱقْتَرِب۩ 0.78 (۩ shares) |
 | p599 L1 | 6 | c1 | (98:6:2 verdict = mark family) |
-| p599 L2 | 5 | c1 + b | البرية 0.79x print-tight; 98:6:13 fatha = slashx |
+| p599 L2 | 5 | c1 + b | البرية 0.79x print-tight; 98:6:13 fathah = slashx |
 | p599 L3 | 4 | c1 + b | البرية 0.77x (same, second instance) |
 | p600 L1 | 8 | **a** + c1 | move لكنود's 251.6–261.8 piece → لربه |
 | p600 L2, L14 | 5+1 | c1 | — |
 | p121 L13, L14, L15 | 2+3+6 | c1 (drift page) | مِنَ 1.75x → b |
 | p341 L5, L6, L7, L10, L11, L12 | 8 total | b | إِنَّ 2.04x/1.87x, فِى 1.53x, مِن 1.69x — all counts exact, kashida |
-| p418 L5, L6, L11, L12 | 15 (confidence) | c2 | root = 33:3:4 stray fathas (known, slashx queue) |
+| p418 L5, L6, L11, L12 | 15 (confidence) | c2 | root = 33:3:4 stray fathahs (known, slashx queue) |
 
 ## 4. Trap for any repair pass: the detached-ك / pen-lift surplus family
 
@@ -215,7 +215,7 @@ A count-driven re-deal must use effective pieces (the overlap-merge in
      (p546/p164/p129/p549/p71/p413) and p123 أَوْ clear where the pair signature
      holds; Abdullah re-eyes p596/p599 fresh renders.
    - *Regression guards:* none of p592–600/121/341/418 are DKSEG/RESEAT pages
-     (p254/p27/p177 بَعْدَ مَا, wasla/small-waw reseat) — still, skip
+     (p254/p27/p177 بَعْدَ مَا, hamzat_al_wasl/small_waw reseat) — still, skip
      letter-space compounds and any word pair straddling a line boundary; skip
      pairs where the surplus is the detached-ك family (§4: surplus piece
      overlaps its own word's span — the لكنود piece does NOT, it overlaps the
