@@ -239,14 +239,65 @@ function render(card) {
     status.textContent = '✗ no ink for ' + missing.join(' ') + ' — draw another line, or click a piece to give it that letter';
   }
 }
+// The split as it stands, one letter at a time. Most cuts are already right, and
+// redrawing a right one wastes the only scarce thing here, so the page opens on the
+// current answer and asks for a verdict; a line is only needed where the answer is wrong.
+function currentTile(g, k) {
+  const ds = (g.model || [])[k] || [];
+  if (!ds.length) return null;
+  const pad = 0.4, S = 11;
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  const paths = ds.map(d => new Path2D(d));
+  for (const d of ds) {
+    for (const m of d.matchAll(/-?\d+(?:\.\d+)?/g)) { /* bbox from the numbers */ }
+  }
+  const nums = ds.join(' ').match(/-?\d+(?:\.\d+)?/g) || [];
+  for (let i = 0; i + 1 < nums.length; i += 2) {
+    const x = +nums[i], y = +nums[i + 1];
+    if (x < x0) x0 = x; if (x > x1) x1 = x;
+    if (y < y0) y0 = y; if (y > y1) y1 = y;
+  }
+  if (x1 < x0) return null;
+  const w = Math.max(1, (x1 - x0 + 2 * pad)), h = Math.max(1, (y1 - y0 + 2 * pad));
+  const cv = document.createElement('canvas');
+  cv.width = Math.round(w * S); cv.height = Math.round(h * S);
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(S, 0, 0, -S, -(x0 - pad) * S, (y1 + pad) * S);
+  ctx.fillStyle = COLS[k % COLS.length];
+  for (const p of paths) ctx.fill(p, 'evenodd');
+  const cell = document.createElement('div');
+  cell.className = 'piece';
+  cell.appendChild(cv);
+  const lb = document.createElement('div');
+  lb.className = 'plab';
+  lb.textContent = g.letters[k] || '?';
+  lb.style.color = COLS[k % COLS.length];
+  cell.appendChild(lb);
+  return cell;
+}
+function showCurrent(card, g) {
+  const box = card.querySelector('.pieces'), status = card.querySelector('.status');
+  box.textContent = '';
+  let shown = 0;
+  for (let k = 0; k < g.letters.length; k++) {
+    const cell = currentTile(g, k);
+    if (cell) { box.appendChild(cell); shown++; }
+  }
+  const v = card.dataset.verdict || '';
+  status.className = 'status' + (v === 'ok' ? ' ok' : v === 'bad' ? ' bad' : '');
+  status.textContent = !shown
+    ? g.letters.length + ' letters — nothing split yet, draw a line across each joint'
+    : v === 'ok' ? '\u2713 confirmed right as it stands'
+    : v === 'bad' ? '\u2717 marked wrong — draw the lines that fix it'
+    : 'the split as it stands, ' + shown + ' of ' + g.letters.length
+      + ' letters — is it right?';
+}
 function preview(card) {
   const g = JSON.parse(card.querySelector('.rundata').textContent);
   const cuts = [...card.querySelectorAll('.cutlist span')].map(s => JSON.parse(s.dataset.cut));
   const status = card.querySelector('.status');
   if (!cuts.length) {
-    status.className = 'status';
-    status.textContent = g.letters.length + ' letters — draw a line across each joint';
-    card.querySelector('.pieces').textContent = '';
+    showCurrent(card, g);
     card._assign = null;
     return;
   }
@@ -485,7 +536,10 @@ def main():
                      '<script type="application/json" class="rundata">%s</script>'
                      '<div class="meta"><b>%s</b> p%d %s <span class="ar">%s</span> run <span class="ar">%s</span>'
                      ' <span class="count">0 cuts</span></div><div class="cutlist"></div>'
-                     '<div class="split"><div class="status"></div><div class="pieces"></div></div></div>'
+                     '<div class="split"><div class="verdict">'
+                     '<button class="yes" onclick="verdict(this,\'ok\')">\u2713 right as it is</button>'
+                     '<button class="no" onclick="verdict(this,\'bad\')">\u2717 wrong</button>'
+                     '</div><div class="status"></div><div class="pieces"></div></div></div>'
                      % (page, wid, ri, html.escape(text), svg,
                         json.dumps(geom, ensure_ascii=False).replace("<", "\\u003c"),
                         pr, page, wid, html.escape(word["uthmani"]), html.escape(text)))
@@ -502,9 +556,17 @@ def main():
             ".piece{text-align:center;cursor:pointer}.piece canvas{display:block;image-rendering:pixelated}"
             ".piece:hover{outline:1px solid #999}"
             ".plab{font-size:20px;direction:rtl}.status{font-size:12px;margin-bottom:4px}"
-            ".status.ok{color:#2a7}.status.bad{color:#b00}.status.warn{color:#b70}</style>"
-            "<button class=copy onclick='copyAll()'>Copy cuts</button>"
-            "<h1>Draw the letter cuts</h1><p>Dark grey is the run to cut; pale colours are the model's current guess, one per letter. Click two points to draw one cut line across the stroke, "
+            ".status.ok{color:#2a7}.status.bad{color:#b00}.status.warn{color:#b70}"
+            ".verdict{margin:2px 0 4px}.verdict button{font-size:11px;margin-right:6px;padding:2px 8px}"
+            ".card.ok{border-color:#2a7;background:#f6fffa}.card.bad{border-color:#b00;background:#fff7f7}"
+            "#tally{position:fixed;top:10px;right:150px;background:#fff;border:1px solid #ccc;"
+            "border-radius:6px;padding:8px 12px;font-size:13px;z-index:9}</style>"
+            "<button class=copy onclick='copyAll()'>Copy</button><div id=tally></div>"
+            "<h1>Draw the letter cuts</h1><p><b>Each card opens on the split as it stands, "
+            "letter by letter.</b> Most are already right, so say so with \u2713 and move on \u2014 "
+            "a confirmation is as good a label as a drawing, and costs a click instead of two "
+            "lines. Only where it is wrong do you need to draw: mark it \u2717, then "
+            "click two points to draw one cut line across the stroke, "
             "one line per joint, from right to left. ✕ removes a line. Then Copy and paste into "
             "<code>docs/defects/letters_hand_cuts.jsonl</code>. Under each word the pieces your lines make are "
             "shown one letter at a time, in reading order, exactly as the label builder cuts them. Where no line can give one "
@@ -528,10 +590,36 @@ def main():
             "card.querySelector('.count').textContent=n+' cuts';try{preview(card)}catch(e){"
             "card.querySelector('.status').textContent='preview failed: '+e.message}}"
             "document.querySelectorAll('.card').forEach(c=>{try{preview(c)}catch(e){}});"
-            "function copyAll(){const out=[];document.querySelectorAll('.card').forEach(c=>{const cuts=[...c.querySelectorAll('.cutlist span')].map(s=>JSON.parse(s.dataset.cut));"
-            "if(!cuts.length)return;const o={page:+c.dataset.page,wid:c.dataset.wid,run:+c.dataset.run,text:c.dataset.text,cuts};"
-            "const as=assignOf(c);if(as)o.assign=as;out.push(o)});"
-            "navigator.clipboard.writeText(out.map(o=>JSON.stringify(o)).join('\\n'));alert(out.length+' words copied');}"
+            "function verdict(btn,v){const c=btn.closest('.card');"
+            "c.dataset.verdict=(c.dataset.verdict===v?'':v);"
+            "c.classList.remove('ok');c.classList.remove('bad');"
+            "if(c.dataset.verdict)c.classList.add(c.dataset.verdict);"
+            "preview(c);tally();"
+            "try{const o={};document.querySelectorAll('.card').forEach(x=>{if(x.dataset.verdict)"
+            "o[x.dataset.page+'|'+x.dataset.wid+'|'+x.dataset.run]=x.dataset.verdict});"
+            "localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}"
+            "const KEY='letters_label_'+location.pathname.split('/').pop();"
+            "function tally(){const t=document.querySelectorAll('.card').length;"
+            "const ok=document.querySelectorAll('.card.ok').length;"
+            "const bad=document.querySelectorAll('.card.bad').length;"
+            "const drawn=[...document.querySelectorAll('.card')].filter(c=>c.querySelector('.cutlist span')).length;"
+            "document.getElementById('tally').textContent="
+            "ok+' right, '+bad+' wrong, '+drawn+' drawn, of '+t;}"
+            "(function(){try{const o=JSON.parse(localStorage.getItem(KEY)||'{}');"
+            "document.querySelectorAll('.card').forEach(c=>{"
+            "const v=o[c.dataset.page+'|'+c.dataset.wid+'|'+c.dataset.run];"
+            "if(v){c.dataset.verdict=v;c.classList.add(v);}});}catch(e){}"
+            "document.querySelectorAll('.card').forEach(c=>preview(c));tally();})();"
+            "function copyAll(){const out=[];document.querySelectorAll('.card').forEach(c=>{"
+            "const cuts=[...c.querySelectorAll('.cutlist span')].map(s=>JSON.parse(s.dataset.cut));"
+            "const v=c.dataset.verdict||'';"
+            "if(!cuts.length&&!v)return;"
+            "const o={page:+c.dataset.page,wid:c.dataset.wid,run:+c.dataset.run,text:c.dataset.text};"
+            "if(cuts.length){o.cuts=cuts;const as=assignOf(c);if(as)o.assign=as;}"
+            "if(v)o.verdict=(v==='ok'?'right':'wrong');"
+            "out.push(o)});"
+            "navigator.clipboard.writeText(out.map(o=>JSON.stringify(o)).join('\\n'));"
+            "alert(out.length+' words copied');}"
             "</script>")
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:

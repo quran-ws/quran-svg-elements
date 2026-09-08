@@ -110,6 +110,74 @@ def load_hand_cuts():
     return out
 
 
+CONFIRMED_PATH = os.path.join(L.ROOT, "docs", "defects", "letters_confirmed.jsonl")
+
+
+def load_confirmations():
+    """Runs Abdullah looked at and called right, keyed (page, wid, run text).
+
+    Confirming a split is as exact a label as drawing one: it says every pixel of the run
+    is where it belongs. It costs a click instead of two drawn lines, so the drawing page
+    now opens on the split as it stands and asks for a verdict -- most cuts are already
+    right, and redrawing a right one spends the only scarce thing here.
+    """
+    out = {}
+    if not os.path.exists(CONFIRMED_PATH):
+        return out
+    for line in open(CONFIRMED_PATH, encoding="utf-8"):
+        line = line.strip()
+        if not line:
+            continue
+        e = json.loads(line)
+        if e.get("verdict") != "right":
+            continue
+        out[(e["page"], e["wid"], e.get("text", ""))] = True
+    return out
+
+
+def confirmed_mask(page, wid, lig_text, idx, frame, ink, n):
+    """The letters build's own split of this run, as a single-bit mask per pixel."""
+    import re as _re
+    path = os.path.join(L.LETTERS_SVG, "%03d.svg" % page)
+    if not os.path.exists(path):
+        return None
+    words, _ = L.read_words(page, L.LETTERS_SVG)
+    w = next((x for x in words if x["wid"] == wid), None)
+    if w is None:
+        return None
+    mask = np.zeros((H, W), dtype=np.uint16)
+    seen = 0
+    for m in _re.finditer(r'<g class="letter"([^>]*)>(.*?)</g>', w["inner"], _re.S):
+        at = L.parse_attrs(m.group(1))
+        if at.get("data-unsplit") == "1":
+            continue
+        try:
+            li = int(at.get("data-index", -1))
+        except ValueError:
+            continue
+        if li not in idx:
+            continue
+        k = idx.index(li)
+        polys = []
+        for pm in _re.finditer(r'<path ([^>]*?)/>', m.group(2)):
+            pa = L.parse_attrs(pm.group(1))
+            if pa.get("data-kind") == "body" and pa.get("d"):
+                polys += L.flatten(pa["d"])
+        if not polys:
+            continue
+        mk = raster_on_canvas(polys, frame) & ink
+        if not mk.any():
+            continue
+        mask[mk] = np.uint16(1 << k)
+        seen += 1
+    if seen != n:
+        return None                      # the build does not hold every letter: not exact
+    if (mask[ink] == 0).any():
+        rest = ink & (mask == 0)
+        mask[rest] = np.uint16((1 << n) - 1)    # a stray pixel keeps every option
+    return mask
+
+
 SHAPE_TRIMS_PATH = os.path.join(L.ROOT, "docs", "defects", "letter_shape_verdicts.jsonl")
 
 
@@ -307,7 +375,8 @@ def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None):
     return mask
 
 
-def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None, trims=None):
+def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None, trims=None,
+               confirmed=None, page=None):
     bodies = [p for p in lig["paths"] if p["kind"] == "body" and p["d"]]
     polys = [poly for p in bodies for poly in L.flatten(p["d"])]
     if not polys:
@@ -326,6 +395,15 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None, trims=Non
             return {"ink": ink, "mask": mask, "n": n, "frame": frame, "known": n, "drawn": True,
                     "exact_px": int(ink.sum()), "ink_px": int(ink.sum()), "wid": word["wid"],
                     "text": lig["text"], "letters": [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]}
+    if confirmed:
+        cm = confirmed_mask(page, word["wid"], lig["text"], idx, frame, ink, n)
+        if cm is not None:
+            if trims:
+                apply_trims(cm, ink, frame, trims, idx, n)
+            return {"ink": ink, "mask": cm, "n": n, "frame": frame, "known": n,
+                    "confirmed": True, "exact_px": int(ink.sum()), "ink_px": int(ink.sum()),
+                    "wid": word["wid"], "text": lig["text"],
+                    "letters": [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]}
     mask = np.zeros((H, W), dtype=np.uint16)
     known = {}                                   # letter position → pixel mask
     if pair is not None and font is not None:
@@ -378,6 +456,7 @@ def build_page(page):
     samples = []
     drawn_all = load_hand_cuts()
     trims_all = load_shape_trims()
+    confirmed_all = load_confirmations()
     for w in words:
         wrec = rec["words"].get(w["wid"])
         if not wrec:
@@ -402,9 +481,10 @@ def build_page(page):
             run_rec = by_letters.get(tuple(idx), {})
             drawn = drawn_all.get((page, w["wid"], lig["text"]))
             trims = [t for t in trims_all.get((page, w["wid"]), []) if t["index"] in idx]
+            ok = confirmed_all.get((page, w["wid"], lig["text"]))
             try:
                 s = run_sample(w, lig, idx, run_rec, font, pair, scale, drawn=drawn,
-                               trims=trims)
+                               trims=trims, confirmed=ok, page=page)
             except Exception:
                 s = None
             if drawn and (s is None or not s.get("drawn")):

@@ -59,7 +59,13 @@ def main():
         return
     ink, mask, n, meta, codes = tr
     # runs cut by hand on letters_label.html are few and cover what nothing else does
-    weight = torch.tensor([a.drawn_weight if m.get("drawn") else (1.0 if m.get("known") else 0.2) for m in meta])
+    # A loop drawn on the shapes page is as exact a label as a drawn cut line -- it names
+    # the letter's pixels outright -- so it carries the same weight. Without this the 84
+    # trims sat at the weight of an ordinary run and the review would not have reached
+    # the model at all.
+    weight = torch.tensor([a.drawn_weight if (m.get("drawn") or m.get("trimmed")
+                                              or m.get("confirmed"))
+                           else (1.0 if m.get("known") else 0.2) for m in meta])
     dropped = 0
     if a.drawn_min_letters:
         keep = []
@@ -72,6 +78,10 @@ def main():
         keep = set(keep)
     else:
         keep = None
+    print("exact runs in the epoch: %d drawn, %d trimmed, %d confirmed"
+          % (sum(1 for m in meta if m.get("drawn")),
+             sum(1 for m in meta if m.get("trimmed")),
+             sum(1 for m in meta if m.get("confirmed"))), flush=True)
     drawn_idx = torch.tensor([i for i, m in enumerate(meta)
                               if m.get("drawn") and (keep is None or i in keep)], dtype=torch.long)
     other_idx = torch.tensor([i for i, m in enumerate(meta)
