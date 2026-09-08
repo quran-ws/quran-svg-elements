@@ -105,13 +105,14 @@ def main():
             '<div class="card" data-i="%d" data-id="%s">'
             '<div class="hd"><b class="ar">%s</b> %s &middot; p%d %s &middot; %s words draw this shape</div>'
             '<div class="row">'
-            '<div class="opt now"><img src="%s"><div class="lbl">as it stands &mdash; %.0f%%</div></div>'
+            '<div class="opt now pick" data-side="keep" onclick="pick(this)"><img src="%s">'
+            '<div class="lbl">as it stands &mdash; %.0f%% &middot; <b>the split was right</b></div></div>'
             '<div class="opt pick" data-side="in" onclick="pick(this)"><img src="%s">'
             '<div class="lbl">inside the loop &mdash; %.0f%%</div></div>'
             '<div class="opt pick" data-side="out" onclick="pick(this)"><img src="%s">'
             '<div class="lbl">outside the loop &mdash; %.0f%%</div></div>'
             '<div class="opt drop" onclick="pick(this)" data-side="none"><div class="x">&times;</div>'
-            '<div class="lbl">drop this trim</div></div>'
+            '<div class="lbl">neither &mdash; drop it,<br>I will redraw</div></div>'
             '</div></div>'
             % (k, r["id"], html.escape(r["letter"]), r["form"], r["page"], r["wid"],
                "{:,}".format(r["n"]), now, s_now, ins, s_in, out, s_out))
@@ -124,17 +125,18 @@ def main():
             ".opt img{display:block;max-height:120px;width:auto}"
             ".opt.pick{cursor:pointer}.opt.pick:hover{border-color:#999}"
             ".opt.chosen{border-color:#2a7;background:#f2fff8}"
-            ".opt.now{opacity:.75}.opt.drop{cursor:pointer;padding:20px 14px;color:#b00}"
+            ".opt.now{opacity:.9}.opt.drop{cursor:pointer;padding:20px 14px;color:#b00}"
             ".opt.drop .x{font-size:30px}.lbl{font-size:12px;color:#666;margin-top:3px}"
             "button{position:fixed;top:10px;right:10px;padding:8px 14px}"
             "#t{position:fixed;top:10px;right:160px;background:#fff;border:1px solid #ccc;"
             "border-radius:6px;padding:8px 12px;font-size:13px}</style>"
             "<button onclick='copyAll()'>Copy confirmations</button><div id=t>0 of %d</div>"
             "<h1>Confirm the trims</h1>"
-            "<p>Each of these was drawn as a loop around part of a word. The first version of the "
-            "shapes page read the click by connectivity, so a click landing on the loop's own line "
-            "could select the complement. Here is what each trim gives both ways, rendered from the "
-            "ink. <b>Click the one that is the letter</b>, or drop the trim.</p>"
+            "<p>Each of these is a trim whose stored side makes the letter hold most of its word, "
+            "which no single letter does &mdash; so the side may have flipped. Here is what each one "
+            "gives, rendered from the ink: the letter as the split already has it, the ink inside "
+            "your loop, and the ink outside it. <b>Click whichever is the letter</b> &mdash; the "
+            "first card means the split was right and the trim is dropped.</p>"
             % len(cards)
             + "".join(cards) +
             "<script>"
