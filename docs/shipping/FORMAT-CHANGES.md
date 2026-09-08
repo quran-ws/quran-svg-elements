@@ -1,3 +1,26 @@
+# What changed in `FORMAT.md` — 2026-09-04
+
+Driven by a consumer's converter report (`docs/defects/upstream_svg_issues.md`),
+measured on the emitted corpus and gated by `tools/audit_export.py` (all six
+properties hold on every one of the 604 pages) and `tools/audit_pixels.py`.
+
+| section | was | is | evidence |
+|---|---|---|---|
+| §9.2, §6.3, groups table | "12 `<g class="ayah-marker">` groups with no id — decorative rosettes"; 6,248 marker groups | The artwork draws each ornament of the opening spread **twice**, byte-identical and in place (7 pairs on p1, 5 on p2, no other page). The copy used to become its own marker and shift every id by one. Now it sits inside its ayah's group as `data-duplicate="1"`; 6,236 groups, all with `id` + `data-aid`. Not removed: collapsing it darkens the anti-aliased rim by up to 57/255 (3,264 px on p1). | `tag_ayah_markers`; raster diff. |
+| §5.1 | pages 1–2 use `viewBox="-53.3109 -198.4777 345 550"` | every page uses `0 0 345 550`; the offset is folded into the page frame (`-82.6891 680.4777`) and into `ayah:x`/`ayah:y`. Pixel-identical. Word boxes for p1–2 in the index are in the new frame. | `normalize_frame`; `audit_pixels` 1–2 clean. |
+| §5.2 | "72 ink paths on p17 and p144 carry a `transform`" | none does: all 72 were pure translations, now baked into the absolute movetos. | `_reframe` + `build_d(shift)`; raster diff on p17/p144. |
+| §6.5 | 4 paths on p17 without `data-kind` | `page-number` (2) and `running-head` (2): p17's page furniture, outside the viewBox. | `tag_page_furniture`. |
+| §5.2 (new paragraph) | absolute movetos written as exact float repr (`166.17999999999796`) | three decimals: every contour start is within 7.3e-12 of a three-decimal number (1.86 M measured). ~3% smaller pages. | `svg_lines.fmt`; `audit_pixels` all 604. |
+| §2, §6.1, §10.9 | all six text attributes on every word group in both profiles | **production carries `data-wid`, `data-w` + `data-uthmani` only**; `rasm`, `imlaei`, `search`, `qpc` ship in `index/by-page/NNN.json` and `words.json`, from the same cache and derivations; dev keeps them inline. Library: `createLoader({words: true})`, `page.attachWords()`. | emitter `_PROD` branch; `bundle_extract.text_forms`; `verify_bundle` cross-check. |
+| §6.1 (new) | — | **`data-w`**, the global word id of the word-by-word source (KFGQPC UthmanicHafs v3.0 release), on every word group in both profiles and as `w` in `index/by-page/NNN.json` and `words.json` (new second column). Derived by `tools/build_wbw_map.py`; page membership of the source agrees with ours on all 604 pages; segmentation on 6,235 of 6,236 ayahs (15:7's two pieces share one id). | `docs/HAFS-JSON-SOURCE.md`. |
+
+Refused, with measurement, from the same report: sharing ayah-number digit
+glyphs (13,648 distinct digit outlines among ~14,000 — the ink is per-instance),
+sharing surah-name / basmalah frames (3,500 of 3,501 contours unique), and
+per-letter segmentation (not derivable from the artwork).
+
+---
+
 # What changed in `FORMAT.md` — 2026-08-30
 
 Every statement in the new `FORMAT.md` was re-measured against the **emitted
