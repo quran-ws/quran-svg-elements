@@ -230,22 +230,42 @@ def check(bands, info, contours, expected):
 # Rewriting the SVG
 # ---------------------------------------------------------------------------
 
-def build_d(contours):
+def build_d(contours, shift=None):
     """Path data for one line, from contours of one original path, in document order.
 
     A contour that still follows its original predecessor keeps its source text exactly —
     including its relative `moveto`, whose meaning is unchanged because the current point
     before it is unchanged. A contour that has been separated from its predecessor gets an
     absolute `moveto` instead, since there is no longer a previous point to be relative to.
+
+    A contour whose source text already starts with an absolute moveto — the line cut
+    wrote one when it separated the contour in the artwork worktree — is re-written from
+    its parsed start point rather than copied, so the number goes through `fmt` here and
+    the emitted page does not depend on how an earlier tool formatted it (24 over-precise
+    movetos per page came from exactly that, 2026-09-04).
+
+    `shift=(dx, dy)` bakes a translation into the data: every contour that starts with an
+    absolute point is written at that point plus the shift, and a contour that follows its
+    predecessor with a RELATIVE moveto is copied verbatim, because its start is relative to
+    an end point that has already moved. The first contour of the chain always starts
+    absolute under a shift (its `m0 0` is absolute in disguise: there is no current point
+    before it). Relative segments are translation-invariant, so nothing inside a contour
+    changes — which is what lets the emitter drop the `transform` attribute it used to
+    write for a contour drawn under another path's frame (72 paths, all pure translations,
+    measured 2026-09-04) without touching a single segment.
     """
     parts = []
     prev = None
+    dx, dy = shift or (0.0, 0.0)
     for c in contours:
         sp = c["sp"]
-        if (prev is None and sp["index"] == 0) or (prev is not None and sp["index"] == prev + 1):
+        follows = ((prev is None and sp["index"] == 0)
+                   or (prev is not None and sp["index"] == prev + 1))
+        if follows and sp["text"][:1] != "M" and not (shift and prev is None):
             parts.append(sp["text"])
         else:
             x, y = sp["abs_start"]
+            x, y = x + dx, y + dy
             tail = sp["tail"]
             # `m dx dy dx2 dy2` is a moveto followed by an implicit *relative* lineto.
             # Once the moveto is absolute the implicit lineto would turn absolute too, so

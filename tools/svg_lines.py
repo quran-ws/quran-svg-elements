@@ -604,7 +604,21 @@ def fmt(v):
     accumulates the same float64 sum this does, so writing that sum back out losslessly is
     what makes the split invisible. Rounding to nine decimals instead was measured to
     shift a handful of pixels per page by up to 23/1020 of full ink.
+
+    The sum is float noise around the designer's number: every relative segment in the
+    artwork has at most three decimals, so the exact sum is a multiple of 0.001 and the
+    accumulated error is tiny. Measured over all 1,857,168 contour starts in the mushaf
+    (2026-09-04): the farthest any sum sits from a three-decimal number is 7.3e-12 —
+    29,173 exact, 1,168,588 under 1e-12, 659,407 under 1e-11, none beyond. A value within
+    1e-9 of a three-decimal number IS that number and is written as such
+    (166.17999999999796 -> 166.18); the threshold sits three orders of magnitude inside
+    the empty band. Anything farther keeps the exact repr, so a genuinely odd value can
+    never be quietly rounded. Cuts ~3% of a page's bytes (25.7 KB of 900 KB on p36) and
+    makes diffs readable; the raster gate in audit_pixels decides whether it moved ink.
     """
+    r = round(v, 3)
+    if abs(r - v) < 1e-9:
+        v = r
     s = repr(float(v))
     if s.endswith(".0"):
         s = s[:-2]

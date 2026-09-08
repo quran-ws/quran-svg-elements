@@ -36,6 +36,18 @@ class Page:
         self.svg = svg if svg is not None else open(path, encoding="utf-8").read()
         vb = re.search(r'viewBox="([^"]*)"', self.svg)
         self.viewbox = [float(x) for x in vb.group(1).split()] if vb else None
+        # The opening spread (p1, p2) is drawn under viewBox="-53.3109 -198.4777
+        # 345 550" while every other page uses "0 0 345 550". Nothing inside the
+        # pipeline cares — the artwork's lines table, polygons, overrides and
+        # marker centres all share that frame — but the EMITTED page should not
+        # make every consumer special-case two pages. This is the translation
+        # that moves the viewBox origin to 0,0; the emitter folds it into the
+        # page frame and into every viewBox-space number it writes
+        # (assign_words.normalize_frame), and build_annotations adds it to the
+        # boxes it reports. Zero on 602 pages.
+        self.frame_offset = ((-self.viewbox[0], -self.viewbox[1])
+                             if self.viewbox and (self.viewbox[0] or self.viewbox[1])
+                             else (0.0, 0.0))
 
         open_at = self.svg.find(CONTENT_OPEN)
         if open_at < 0:
