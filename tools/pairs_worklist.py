@@ -26,6 +26,11 @@ from tools import letters_lib as L                       # noqa: E402
 from tools.build_letters_label_page import pair_coverage  # noqa: E402
 
 PLATES = os.path.join(L.ROOT, "docs", "khatt_plates.json")
+# A letter that never joins the one after it makes no joint: the two are drawn on
+# separate contours and the cutter has nothing to cut. Counting those as work is asking
+# for a drawing that cannot exist -- رة was top of the list with 198 "guessed joints"
+# and every one of them is already two contours.
+NOJOIN = set("اأإآٱدذرزوؤءةى")
 
 
 def plate_for(ch, book):
@@ -62,7 +67,8 @@ def main():
     ap.add_argument("--top", type=int, default=30)
     ap.add_argument("--json")
     a = ap.parse_args()
-    counts = mushaf_pairs()
+    counts = {pr: v for pr, v in mushaf_pairs().items()
+              if len(pr) == 2 and pr[0] not in NOJOIN}
     cov = pair_coverage(set(counts))
     idx = json.load(open(PLATES, encoding="utf-8")) if os.path.exists(PLATES) else {}
     rows = []
@@ -78,6 +84,7 @@ def main():
     tot = sum(r["joints"] for r in rows)
     guessed = sum(r["guessed"] for r in rows)
     untaught = [r for r in rows if r["taught"] == 0]
+    print("(pairs whose first letter never joins are not joints at all and are left out)")
     print("%d pairs over %s joints | %s joints still guessed (%.0f%%) | %d pairs with "
           "nothing taught at all"
           % (len(rows), "{:,}".format(tot), "{:,}".format(guessed),

@@ -347,6 +347,19 @@ function seedAssign(g, r) {
     for (let i = 1; i < r.n; i++) if (cnt[i] > cnt[best]) best = i;
     out[k] = best;
   }
+  // The seeding above copies the model, so where the model is wrong the labels inherit
+  // the error: on حكم it put two pieces on the kaf and none on the ha, and the card then
+  // asked for a line that was already drawn. Two things the script itself guarantees fix
+  // that. Letters do not interleave, so the assignment must not decrease along reading
+  // order; and if a letter still ends with no piece while there are pieces enough to go
+  // round, the model's opinion is worth less than reading order, so drop it.
+  for (let k = 1; k < r.k; k++) if (out[k] < out[k - 1]) out[k] = out[k - 1];
+  const held = new Set(out);
+  let missing = false;
+  for (let i = 0; i < r.n; i++) if (!held.has(i)) missing = true;
+  if (missing && r.k >= r.n) {
+    for (let k = 0; k < r.k; k++) out[k] = Math.min(k, r.n - 1);
+  }
   return out;
 }
 function assignOf(card) {                       // [[x, y, letter], …] in page units
