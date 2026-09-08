@@ -22,17 +22,11 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Fetch the standard
-        run: |
-          git clone --depth 1 https://github.com/quran-ws/guidelines.git /tmp/guidelines
-          echo "SKILL=/tmp/guidelines/skills/quranic-terminology" >> "$GITHUB_ENV"
-
-      - name: Is the snapshot we audit against still the published one?
-        continue-on-error: true          # offline or moved is not a build failure
-        run: python3 "$SKILL/scripts/update_check.py"
-
       - name: One concept, one canonical name
-        run: python3 "$SKILL/scripts/audit_terminology.py" --strict
+        # tools/terminology is a pinned copy of the standard: quran-ws/guidelines
+        # is private, a workflow cannot clone it, and a gate that cannot run is
+        # not a gate. tools/terminology/README.md says how to refresh it.
+        run: python3 tools/terminology/scripts/audit_terminology.py --strict
 
       - name: Every Python file still parses
         run: |
