@@ -110,6 +110,71 @@ def load_hand_cuts():
     return out
 
 
+SHAPE_TRIMS_PATH = os.path.join(L.ROOT, "docs", "defects", "letter_shape_verdicts.jsonl")
+
+
+def load_shape_trims():
+    """Loops drawn on the shapes page, keyed (page, wid) → [{index, path}].
+
+    A trim is a loop around the ink that IS one letter, drawn on the word itself. All 87
+    of them mean the ink INSIDE the loop (87 of 87, measured 2026-09-08), so a trim is a
+    stronger statement than a cut line: it names the letter's pixels outright, and by
+    the same stroke denies that letter every other pixel of the run. Both halves are
+    written into the bitmask.
+    """
+    out = {}
+    if not os.path.exists(SHAPE_TRIMS_PATH):
+        return out
+    for line in open(SHAPE_TRIMS_PATH, encoding="utf-8"):
+        line = line.strip()
+        if not line:
+            continue
+        e = json.loads(line)
+        if e.get("verdict") != "trim" or not e.get("trim"):
+            continue
+        t = e["trim"]
+        if t.get("kind") != "loop" or t.get("select", "in") != "in":
+            continue                      # a line cut is a cut, not a region
+        out.setdefault((e["page"], e["wid"]), []).append(
+            {"index": e["index"], "path": [tuple(q) for q in t["page_path"]], "id": e["id"]})
+    return out
+
+
+def loop_on_canvas(path, frame):
+    """A drawn loop rasterised onto the label canvas."""
+    from PIL import Image, ImageDraw
+    x0, y0, z = frame
+    im = Image.new("1", (W, H), 0)
+    ImageDraw.Draw(im).polygon([(int((qx - x0) * z), int((qy - y0) * z)) for qx, qy in path],
+                               fill=1)
+    return np.array(im, dtype=bool)
+
+
+def apply_trims(mask, ink, frame, trims, idx, n):
+    """Fold the drawn loops into the bitmask. Returns how many were used."""
+    used = 0
+    for t in trims:
+        if t["index"] not in idx:
+            continue
+        k = idx.index(t["index"])
+        if k >= n:
+            continue
+        loop = loop_on_canvas(t["path"], frame)
+        inside = ink & loop
+        if not inside.any():
+            continue
+        mask[inside] = np.uint16(1 << k)
+        rest = ink & ~loop
+        if rest.any():
+            cleared = mask[rest] & np.uint16(~(1 << k) & 0xFFFF)
+            # a pixel left with no letter at all is a contradiction between the layers
+            # and the drawing; the drawing wins, so give it every position but this one
+            cleared[cleared == 0] = np.uint16(((1 << n) - 1) & ~(1 << k))
+            mask[rest] = cleared
+        used += 1
+    return used
+
+
 NOJOIN = set("اأإآٱدذرزوؤءةى")          # letters that never join the letter after them
 
 
@@ -242,7 +307,7 @@ def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None):
     return mask
 
 
-def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None):
+def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None, trims=None):
     bodies = [p for p in lig["paths"] if p["kind"] == "body" and p["d"]]
     polys = [poly for p in bodies for poly in L.flatten(p["d"])]
     if not polys:
@@ -256,6 +321,8 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None):
         letters = [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]
         mask = drawn_cut_labels(polys, drawn[0], n, frame, ink, letters, drawn[1])
         if mask is not None:
+            if trims:
+                apply_trims(mask, ink, frame, trims, idx, n)
             return {"ink": ink, "mask": mask, "n": n, "frame": frame, "known": n, "drawn": True,
                     "exact_px": int(ink.sum()), "ink_px": int(ink.sum()), "wid": word["wid"],
                     "text": lig["text"], "letters": [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]}
@@ -292,8 +359,10 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None):
             mask[comp] = bits
     else:
         mask[ink] = (1 << n) - 1
+    trimmed = apply_trims(mask, ink, frame, trims, idx, n) if trims else 0
     exact = int(((mask & (mask - 1)) == 0).sum() - (mask == 0).sum())
     return {"ink": ink, "mask": mask, "n": n, "frame": frame, "known": len(known),
+            "trimmed": trimmed,
             "exact_px": exact, "ink_px": int(ink.sum()), "wid": word["wid"],
             "text": lig["text"], "letters": [word and L.letters_of(word["uthmani"])[i]["ch"] for i in idx]}
 
@@ -308,12 +377,14 @@ def build_page(page):
     scale = rec.get("scale", T.DEFAULT_SCALE)
     samples = []
     drawn_all = load_hand_cuts()
+    trims_all = load_shape_trims()
     for w in words:
         wrec = rec["words"].get(w["wid"])
         if not wrec:
             continue
-        if wrec.get("flags") and not any(k[:2] == (page, w["wid"]) for k in drawn_all):
-            continue                      # no tajweed registration; drawn cuts need none
+        if (wrec.get("flags") and not any(k[:2] == (page, w["wid"]) for k in drawn_all)
+                and (page, w["wid"]) not in trims_all):
+            continue                      # no tajweed registration; a drawing needs none
         reg = wrec.get("reg")
         pair = None
         if reg and font is not None:
@@ -330,8 +401,10 @@ def build_page(page):
                 continue
             run_rec = by_letters.get(tuple(idx), {})
             drawn = drawn_all.get((page, w["wid"], lig["text"]))
+            trims = [t for t in trims_all.get((page, w["wid"]), []) if t["index"] in idx]
             try:
-                s = run_sample(w, lig, idx, run_rec, font, pair, scale, drawn=drawn)
+                s = run_sample(w, lig, idx, run_rec, font, pair, scale, drawn=drawn,
+                               trims=trims)
             except Exception:
                 s = None
             if drawn and (s is None or not s.get("drawn")):

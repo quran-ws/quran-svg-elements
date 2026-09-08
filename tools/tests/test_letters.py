@@ -245,3 +245,33 @@ class DigitalKhatt(unittest.TestCase):
         mx = sum(p[0] for p in nc["poly"]) / 2
         loop_x1 = L.bbox([p for p in rp if L._shoelace(p) and L.bbox([p])[2] > mx][0:1] or rp)[0]
         self.assertGreater(mx, L.bbox(rp)[0] + 0.55 * (L.bbox(rp)[2] - L.bbox(rp)[0]))
+
+
+class ShapeTrims(unittest.TestCase):
+    """The loops drawn on the shapes page, as training labels."""
+
+    def test_only_confirmed_loops_become_labels(self):
+        from tools.build_letter_labels import load_shape_trims
+        got = load_shape_trims()
+        self.assertTrue(got, "no trims loaded")
+        flat = [t for v in got.values() for t in v]
+        self.assertGreaterEqual(len(flat), 80)
+        for t in flat:
+            self.assertGreaterEqual(len(t["path"]), 4)
+
+    def test_a_loop_names_its_letter_and_denies_the_rest(self):
+        import numpy as np
+        from tools.build_letter_labels import apply_trims, H, W, Z
+        ink = np.zeros((H, W), dtype=bool)
+        ink[10:20, 10:60] = True                      # a run of ink, two letters wide
+        mask = np.zeros((H, W), dtype=np.uint16)
+        mask[ink] = 0b11                              # both positions still possible
+        frame = (0.0, 0.0, float(Z))                  # canvas units = page units
+        loop = [(10 / Z, 10 / Z), (35 / Z, 10 / Z), (35 / Z, 20 / Z), (10 / Z, 20 / Z)]
+        used = apply_trims(mask, ink, frame, [{"index": 3, "path": loop}], [3, 4], 2)
+        self.assertEqual(used, 1)
+        inside = mask[12:18, 12:30]
+        self.assertTrue((inside == 0b01).all(), "inside the loop must be letter 0 alone")
+        outside = mask[12:18, 40:58]
+        self.assertTrue((outside == 0b10).all(), "outside must lose letter 0")
+        self.assertTrue((mask[~ink] == 0).all(), "non-ink must stay ignored")

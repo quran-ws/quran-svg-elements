@@ -157,6 +157,36 @@ and the gate is the one that ships.
 
 ---
 
+## The 87 corrections, and what they now drive
+
+Recorded, then applied. Each trim is a loop around the ink that IS one letter, so it is
+two things at once and both are wired up:
+
+* **a training label.** `build_letter_labels.load_shape_trims()` folds each loop into the
+  bitmask: the pixels inside it are that letter alone, and every other ink pixel of the
+  run loses that letter. That is a stronger statement than a cut line, which only says
+  where the boundary crosses. 84 of the 87 land as labels; the remaining three are not
+  label-shaped and are reported as such (two sit on a single-letter run, where the split
+  is not what is wrong, and one names ink that the build put in a different run
+  altogether — a run-boundary defect, not a letter one).
+* **an audit.** `tools/audit_shape_trims.py` measures IoU between each loop and what the
+  build emitted. **71 of the 87 disagree**, and because a trim is attached to a shape
+  CLUSTER it indicts every letter drawn that way: the 87 shapes carry 18,192 letters, of
+  which **5,674 sit under a shape the build gets wrong**. Ranked by ink at stake, the
+  worst are و-only (288 letters, IoU 0.66), ك-initial (554, 0.82) and ا-final (269, 0.65).
+
+The dominant failure is not a missing piece but an overfed letter: for most of the 71 the
+loop is a strict subset of what the build gave, so the letter is holding ink that belongs
+to its neighbour.
+
+## Choosing what to draw next
+
+`tools/pairs_worklist.py` ranks every letter pair in the mushaf by joints still guessed —
+neither taught by a tajweed layer nor by a drawing — and names the calligraphy plate that
+draws that join (`docs/KHATT-REFERENCES.md`, `docs/khatt_plates.json`). Measured over the
+rebuilt labels: 657 pairs, 164,429 joints, **78% still guessed**, and 190 pairs with
+nothing taught at all, worst being بم 389, عذ 323, هذ 271, فم 228.
+
 ## The bottleneck, and what to do next
 
 **The starved letter is fixed (2026-09-08).** Of 533 runs the cutter could not realise,

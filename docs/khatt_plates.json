@@ -1,0 +1,51 @@
+{
+  "_": "Where each letter is taught in the calligraphy references Abdullah supplied. Page numbers are PDF page numbers, read off the plates by eye (2026-09-08). The books are NOT ground truth: they are pen Naskh by hand, not the KFGQPC V4 typeface, and they are scans with no vectors. They are the authority on CONVENTION -- how the script is built, where a join is made, what proportion a letter holds -- which is the one thing our own ink cannot tell us.",
+  "books": {
+    "mizan": {
+      "title": "ميزان الخط العربي — عباس شاكر جودي البغدادي (خط النسخ المصحفي)",
+      "file": "ميزان الخط العربي أ.عباس البغدادي رحمه الله خط النسخ المصحفي.pdf",
+      "pages": 65,
+      "sections": {
+        "front": [1, 9],
+        "connection drills": [10, 25],
+        "letter anatomy with nuqta measurements": [26, 42],
+        "quranic specimens": [43, 65]
+      },
+      "note": "The drills pair one letter with every letter it joins (جم جح جن جل, سم سح سن سل, صم صح صن صل, طم طن طل طق طه …), which is the same unit our cutter fails on. The anatomy plates mark each letter with rhombic nuqta squares and numbered notes, so a letter's proportions are stated in dots rather than guessed."
+    },
+    "qawaid": {
+      "title": "قواعد الخط العربي",
+      "file": "قواعد الخط العربي.pdf",
+      "pages": 78,
+      "note": "One plate per letter with its forms and connections, each numbered against a note. Page 22 is kaf: كا كل كك كم كه — our worst letter, where a medial ك+ل is an arm plus a bowl plus a stem plus a foot and no chord can give one piece per letter."
+    },
+    "kurras": {
+      "title": "كراس الخط النسخ — هاشم البغدادي",
+      "file": "كراس الخط النسخ للخطاط هاشم البغدادى.pdf",
+      "pages": 17,
+      "note": "A teaching workbook: how to hold the pen and form each letter. Least useful of the three for us, because it teaches production rather than where one letter ends inside a join."
+    }
+  },
+  "anatomy": {
+    "ا": ["mizan", 26], "ب": ["mizan", 27], "ت": ["mizan", 27], "ث": ["mizan", 27],
+    "ج": ["mizan", 28], "ح": ["mizan", 28], "خ": ["mizan", 28],
+    "د": ["mizan", 29], "ذ": ["mizan", 29],
+    "ر": ["mizan", 30], "ز": ["mizan", 30],
+    "س": ["mizan", 31], "ش": ["mizan", 31],
+    "ص": ["mizan", 32], "ض": ["mizan", 32], "ط": ["mizan", 32], "ظ": ["mizan", 32],
+    "ع": ["mizan", 33], "غ": ["mizan", 33],
+    "ف": ["mizan", 34], "ق": ["mizan", 35], "ك": ["mizan", 36],
+    "م": ["mizan", 37], "ن": ["mizan", 38], "ه": ["mizan", 39],
+    "و": ["mizan", 40], "ل": ["mizan", 41], "لا": ["mizan", 41], "ي": ["mizan", 42], "ى": ["mizan", 42]
+  },
+  "drills": {
+    "_": "The connection drills run continuously over mizan 10-25; a page carries several leading letters. These are the pages where each leading letter's joins are drawn.",
+    "ب": [11], "ت": [11], "ث": [11], "ن": [11, 15],
+    "ج": [13, 14], "ح": [13], "خ": [13],
+    "س": [14, 15], "ش": [15],
+    "ص": [15, 16, 18], "ض": [16], "ط": [16, 17, 18], "ظ": [17],
+    "ع": [19], "غ": [19], "ف": [19, 20], "ق": [19, 20, 21],
+    "ك": [21, 22], "ل": [22, 13], "م": [14, 20], "ه": [23, 24],
+    "و": [24], "ي": [21, 25], "ر": [24, 25], "ز": [25]
+  }
+}
