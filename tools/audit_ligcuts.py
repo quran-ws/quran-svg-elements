@@ -24,7 +24,7 @@ WORD ALIGNMENT reuses audit_reference.py's folding: the reference counts a
 conjunction waw and a stop sign as words of their own, so both are folded back
 into the neighbour they belong to in our numbering before positions are
 compared. A word enters the comparison only when the two sides' LETTER
-SKELETONS agree, after folding hamza carriers to their bases (ٱأإآ→ا, ؤ→و,
+SKELETONS agree, after folding hamzah carriers to their bases (ٱأإآ→ا, ؤ→و,
 ئى→ي) and dropping tatweel — the two sources encode the carriers differently
 and without that fold 30% of words look different when only the encoding is.
 
@@ -70,7 +70,7 @@ _FOLD = {0x0671: "ا", 0x0623: "ا", 0x0625: "ا", 0x0622: "ا",
 
 
 def skel(t):
-    """The letters only, hamza carriers folded to their base, no tatweel."""
+    """The letters only, hamzah carriers folded to their base, no tatweel."""
     out = []
     for c in t or "":
         n = ord(c)
@@ -183,7 +183,7 @@ def ref_page(pg, refdir):
         if w.get("data-type") != "text":
             continue
         try:
-            sa = (int(w.get("data-surah")), int(w.get("data-aya")))
+            sa = (int(w.get("data-surah")), int(w.get("data-ayah")))
             idx = int(w.get("data-word-index-in-ayah"))
         except (TypeError, ValueError):
             continue
@@ -246,7 +246,7 @@ def _load():
 
 
 def our_page(pg):
-    """{(surah, ayah, pos): {uthmani, runs, segs}} with the EMITTER's groups.
+    """{(surah, ayah, pos): {rasm_uthmani, runs, segs}} with the EMITTER's groups.
 
     A `<g class="ligature">` opens only when atom["lig"] changes and its
     data-text is that atom's `seg`; pairing groups to atoms or to
@@ -287,8 +287,8 @@ def our_page(pg):
                          max((e["x2"] for e in body), default=None),
                          len(body)))
         out[(w["surah"], w["ayah"], w["pos"])] = {
-            "uthmani": w["uthmani"], "runs": runs, "unemitted": unemitted,
-            "segs": [s["text"] for s in (AW.segment_word(w["uthmani"]) or [])]}
+            "rasm_uthmani": w["rasm_uthmani"], "runs": runs, "unemitted": unemitted,
+            "segs": [s["text"] for s in (AW.segment_word(w["rasm_uthmani"]) or [])]}
     return out
 
 
@@ -347,7 +347,7 @@ def compare(pg, refdir, extent=EXTENT):
     stats = Counter()
     stats["only_ref"] = len(set(ref) - set(mine))
     stats["only_ours"] = len(set(mine) - set(ref))
-    comparable = [k for k in both if skel(ref[k]["hafs"]) == skel(mine[k]["uthmani"])]
+    comparable = [k for k in both if skel(ref[k]["hafs"]) == skel(mine[k]["rasm_uthmani"])]
     stats["words_both_index"] = len(both)
     stats["excluded_text"] = len(both) - len(comparable)
     f = fit(ref, mine, comparable)
@@ -364,7 +364,7 @@ def compare(pg, refdir, extent=EXTENT):
         rtx = [skel(t) for t, _, _ in rr]
         otx = [skel(t[0]) for t in oo]
         sg = [skel(s) for s in mine[k]["segs"]]
-        base = {"page": pg, "key": key, "word": mine[k]["uthmani"],
+        base = {"page": pg, "key": key, "word": mine[k]["rasm_uthmani"],
                 "hafs": ref[k]["hafs"], "line": ref[k]["line"],
                 "ref_runs": rtx, "our_runs": otx, "segs": sg,
                 "ref_raw": [t for t, _, _ in rr], "our_raw": [t[0] for t in oo],
@@ -513,7 +513,7 @@ def main(argv=None):
         for pg in (3, 50, 143, 300, 384, 500, 579):
             ref, mine = ref_page(pg, args.ref), our_page(pg)
             comp = [k for k in sorted(set(ref) & set(mine))
-                    if skel(ref[k]["hafs"]) == skel(mine[k]["uthmani"])]
+                    if skel(ref[k]["hafs"]) == skel(mine[k]["rasm_uthmani"])]
             f = fit(ref, mine, comp)
             if not f:
                 print("p%-4d fit failed" % pg)

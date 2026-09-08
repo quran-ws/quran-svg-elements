@@ -64,11 +64,11 @@ Where a mark is drawn in the gap between two ligature pieces, `cluster_line`'s
 geometric choice is a coin toss, and the two families where the coin lands wrong are
 systematic:
 
-* **small-alef (91 of the 184 left after cause A was fixed)** — the dagger alef after
+* **omitted_alif (91 of the 184 left after cause A was fixed)** — the dagger alef after
   a non-joining `ذ`/`د` is drawn past the end of its own piece. p37 `ذَٰلِكُمْ`: the
   alef spans 168.3-170.3 with `ذ` at 170.8-176.2 and `لكم` at 143.3-167.4 — 0.5u from
   the piece that owns it, 0.9u from the piece holding it.
-* **tanween (87)** — the open `ࣰ ࣱ ࣲ` of a final `ء` or `ة` is drawn over the piece
+* **tanwin (87)** — the open `ࣰ ࣱ ࣲ` of a final `ء` or `ة` is drawn over the piece
   BEFORE it. p85 `مَآءࣰ`, p20 `أُمَّةࣰ`, p27 `حَيَوٰةࣱ`.
 
 ---
@@ -84,11 +84,11 @@ Threshold −0.6u is the audit's; it is quoted in the pipeline comment so a futu
 change to one moves the other.
 
 **The text budget, per segment.** `segment_word()` already returns each piece's mark
-list, e.g. `مَآءࣰ → [('ما', [fatha, maddah]), ('ء', [fathatan])]`. That is the second
+list, e.g. `مَآءࣰ → [('ما', [fathah, maddah]), ('ء', [tanwin_al_fath])]`. That is the second
 signal, and it is what makes the geometry safe to act on. It also refuses moves that
-geometry alone would get wrong: in `أُمَّةࣰ` the damma of `أُ` overlaps the `مة` group
+geometry alone would get wrong: in `أُمَّةࣰ` the dammah of `أُ` overlaps the `مة` group
 and belongs to the alef, so a purely geometric rule would move it the wrong way. It is
-left alone because the alef group is not short of a damma by the overlap test.
+left alone because the alef group is not short of a dammah by the overlap test.
 
 **Element-level diff of all 604 emitted pages** (word key, `data-kind`, `data-mark`,
 `d` — never `data-eid`, which is not stable across builds):
@@ -172,14 +172,14 @@ about diacritics. Full detail in the for-eye file.
   misplaced.
 * **The 195 remaining `empty` groups** are a BODY problem (a group that names letters
   and holds none) and out of scope here. `p447 إِذَا` shows the shape of it —
-  `cluster_line` merged three separate narrow bodies (alef-hamza, `ذ`, alef) into one
+  `cluster_line` merged three separate narrow bodies (alef-hamzah, `ذ`, alef) into one
   atom, so no regrouping pass downstream can separate them. That is the next piece of
   work in this area and it is a change to the CUT, not to the grouping.
 * **Reciprocal exchanges were tried and abandoned.** In `أُمَّةࣰ` the budgets are
-  satisfied exactly by a MUTUAL swap — fathatan to `مة`, damma to `ا`. Only the
-  fathatan half has both signals; the damma half has the text and the geometry against
+  satisfied exactly by a MUTUAL swap — tanwin_al_fath to `مة`, dammah to `ا`. Only the
+  tanwin_al_fath half has both signals; the dammah half has the text and the geometry against
   it. A mutual exchange would have been count-perfect and half of it unproven, so only
-  the proven half ships. The damma stays where the ink puts it.
+  the proven half ships. The dammah stays where the ink puts it.
 
 ---
 

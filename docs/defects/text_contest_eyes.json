@@ -1,12 +1,12 @@
 {
- "_": "Ink adjudication of the 5 sites where the two text finalists (uthmani+QPC-waqf composite vs DigitalKhatt) genuinely disagree; judged by Abdullah's eye against the drawn page. 16 further differ-sites are shared (both differ from MushafDatabase identically = referee errors).",
+ "_": "Ink adjudication of the 5 sites where the two text finalists (rasm_uthmani+QPC-waqf composite vs DigitalKhatt) genuinely disagree; judged by Abdullah's eye against the drawn page. 16 further differ-sites are shared (both differ from MushafDatabase identically = referee errors).",
  "verdicts": [
   {
    "key": "17:7:12",
    "page": 282,
    "word": "لِيَسُـُٔوا۟",
-   "question": "small-waw after the su?",
-   "eye": "PRESENT — e844 data-mark=small-waw in the build, confirmed by Abdullah 2026-08-27",
+   "question": "small_waw after the su?",
+   "eye": "PRESENT — e844 data-mark=small_waw in the build, confirmed by Abdullah 2026-08-27",
    "winner": "digitalkhatt",
    "loser": "composite+referee"
   },
@@ -15,9 +15,9 @@
    "page": 568,
    "word": "سَآئِلٌۢ",
    "question": "maddah drawn?",
-   "eye": "MADDAH PRESENT (e635 data-mark=maddah) and the ink draws ONE damma + small meem (iqlab convention), Abdullah 2026-08-27",
+   "eye": "MADDAH PRESENT (e635 data-mark=maddah) and the ink draws ONE dammah + small meem (iqlab convention), Abdullah 2026-08-27",
    "winner": "digitalkhatt",
-   "loser": "composite (no separate maddah, tanween pair)"
+   "loser": "composite (no separate maddah, tanwin pair)"
   },
   {
    "key": "82:1:2",
@@ -41,11 +41,11 @@
    "key": "80:25:1",
    "page": 585,
    "word": "أَنَّا/اَنَّا",
-   "question": "hamza on the alef?",
-   "eye": "HAMZA DRAWN above the alef (e659 data-mark=hamza), Abdullah 2026-08-27",
+   "question": "hamzah on the alef?",
+   "eye": "HAMZAH DRAWN above the alef (e659 data-mark=hamzah), Abdullah 2026-08-27",
    "winner": "digitalkhatt",
-   "loser": "composite (uthmani writes bare alef)"
+   "loser": "composite (rasm_uthmani writes bare alef)"
   }
  ],
- "result": "DK 5-0. Every genuinely-disputed site adjudicated by eye against the ink went DigitalKhatt's way. The composite's four losses are all budget errors (missing maddah x3, missing hamza, missing small-waw at 17:7:12). The DK text is strictly better than uthmani+QPC-waqf on adjudicated ink; budget-source migration is now the principled move (2026-08-27)."
+ "result": "DK 5-0. Every genuinely-disputed site adjudicated by eye against the ink went DigitalKhatt's way. The composite's four losses are all budget errors (missing maddah x3, missing hamzah, missing small_waw at 17:7:12). The DK text is strictly better than rasm_uthmani+QPC-waqf on adjudicated ink; budget-source migration is now the principled move (2026-08-27)."
 }

@@ -72,13 +72,13 @@ REFDIR = None
 MARGIN_ABS = 1.5        # reference units of width error
 MARGIN_REL = 0.25       # and a quarter of the better side's error
 
-_DOTU = {"dot": 1, "two-dots": 2, "three-dots": 3, "two dots": 2, "three dots": 3}
+_DOTU = {"dot": 1, "two_dots": 2, "three_dots": 3, "two dots": 2, "three dots": 3}
 
 
 def _dot_budget(txt):
     """Dot units the word's letters own — the rule audit_marks.dot_want uses."""
     raw = aw._LETTER.findall(txt)
-    sk = [(aw.HAMZA_MAP[c][0] if c in aw.HAMZA_MAP else c, c in aw.HAMZA_MAP) for c in raw]
+    sk = [(aw.HAMZAH_MAP[c][0] if c in aw.HAMZAH_MAP else c, c in aw.HAMZAH_MAP) for c in raw]
     n = 0
     for i, (ch, seat) in enumerate(sk):
         if seat or ch not in aw.DOTS:
@@ -115,10 +115,10 @@ def our_page(pg):
             "line": max(set(lns), key=lns.count) if lns else 0,
             "x1": min(e["x1"] for e in body), "x2": max(e["x2"] for e in body),
             "y1": min(e["y1"] for e in body), "y2": max(e["y2"] for e in body),
-            "pieces": len(eff), "text": w["uthmani"], "qpc": w.get("qpc") or "",
+            "pieces": len(eff), "text": w["rasm_uthmani"], "qpc": w.get("qpc") or "",
             "dots": sum(_DOTU.get(e.get("mark") or "", 0)
                         for e in els if not e.get("mkpart")),
-            "nseg": max(1, len(aw.segment_word(w["uthmani"]))),
+            "nseg": max(1, len(aw.segment_word(w["rasm_uthmani"]))),
         }
     return out
 

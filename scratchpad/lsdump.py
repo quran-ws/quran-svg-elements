@@ -44,7 +44,7 @@ def main():
         els = [e for a in at for e in a["els"]]
         b = [e for e in els if e["kind"] == "body"]
         if not b:
-            print("BODYLESS %d:%d:%d %s" % (w["surah"], w["ayah"], w["pos"], w["uthmani"]))
+            print("BODYLESS %d:%d:%d %s" % (w["surah"], w["ayah"], w["pos"], w["rasm_uthmani"]))
             continue
         ls = [e.get("line") for e in b if e.get("line")]
         recs.append({"w": w, "els": els, "b": b,
@@ -64,7 +64,7 @@ def main():
         w = r["w"]
         bx1 = min(b["x1"] for b in r["b"]); bx2 = max(b["x2"] for b in r["b"])
         print("L%d %d:%d:%d %s  body x %.1f-%.1f" % (
-            r["ln"], w["surah"], w["ayah"], w["pos"], w["uthmani"], bx1, bx2))
+            r["ln"], w["surah"], w["ayah"], w["pos"], w["rasm_uthmani"], bx1, bx2))
         lo, hi = band[r["ln"]]
         for e in r["els"]:
             if e["kind"] == "body" or e.get("mkpart"):

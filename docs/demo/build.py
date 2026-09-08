@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Assemble docs/demo/index.html.
 
-NOTHING IS INLINED ANY MORE. The hero (page 42, Ayat al-Kursi) used to be
+NOTHING IS INLINED ANY MORE. The hero (page 42, Ayahs al-Kursi) used to be
 inlined and was 745 KiB of the 965 KiB index.html weighed. It is now fetched at
 runtime from the same place and through the same cache as every other page the
 demo shows, so page 42 costs one request however many sections stage it.
@@ -14,15 +14,15 @@ browser instead, in the `heroReady` block of the template:
     -- done for the hero only, since the demo teaches how to detect the dev
        profile by looking for that layer on the pages it fetches
 
-`data-eid` / `data-sig` used to be stripped here as well, purely to save the
+`data-element-id` / `data-sig` used to be stripped here as well, purely to save the
 ~45 KB they cost in an inlined page. Nothing inlines a page now, so nothing
 strips them, and the demo is closer to a file you would actually download.
 
 This script now only writes:
-  data/gloss-042.json   {wid: [english, transliteration]}  (source: quran.com)
+  data/gloss-042.json   {wordKey: [english, transliteration]}  (source: quran.com)
 
 and inlines, at the /*TIMINGS*/ placeholder, the cached word timings for the
-hero page written by build_timings.py. They are ~2 KB and exist only so the
+hero page written by build_ayah_timings.py. They are ~2 KB and exist only so the
 audio section still renders and explains itself with no network. The section
 itself fetches live; this is the fallback.
 
@@ -64,10 +64,10 @@ def main() -> None:
     gloss = build_gloss(HERO)
     (HERE / f"data/gloss-{HERO:03d}.json").write_bytes(gloss)
 
-    timings_path = HERE / f"data/timings-{HERO:03d}.json"
-    if not timings_path.exists():
-        raise SystemExit(f"{timings_path.name} missing — run build_timings.py")
-    timings = timings_path.read_text(encoding="utf-8").strip()
+    ayah_timings_path = HERE / f"data/timings-{HERO:03d}.json"
+    if not ayah_timings_path.exists():
+        raise SystemExit(f"{ayah_timings_path.name} missing — run build_ayah_timings.py")
+    timings = ayah_timings_path.read_text(encoding="utf-8").strip()
 
     def assemble(tpl_name: str, out_name: str) -> None:
         """Inline the cached timings into one template.

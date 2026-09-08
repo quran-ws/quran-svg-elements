@@ -9,6 +9,40 @@ demo demonstrates, or a direct consequence of the schema in `../FORMAT.md`.
 
 ---
 
+## 0. How things are named
+
+A developer who has not read this file should be able to guess the call. Two
+rules do most of the work.
+
+**One vocabulary per concept, and the concept is the one the standard fixes.**
+The medallion at the end of an ayah is an *ayah mark* everywhere:
+`page.ayahMarks()`, `page.ayahMarkGroups()`, `page.styleAyahMarks()`,
+`page.hideAyahMarks()`, `ayah.mark`, `setAyahMark()`, `resetAyahMarks()`,
+`colourAyahMarks()`, `data-ayah-mark`. A diacritic or sign is a *mark*:
+`page.marks()`, `page.styleMarks()`, `page.hideMarks()`, `data-mark`. A juz,
+hizb or rubʿ rosette is a *division mark*: `page.divisionMarks()`,
+`g.division-mark`. These three were once all called some form of "mark", and
+`hideMarks` silently meant two different things depending on which definition
+won.
+
+**A name says what the caller gets, not how it is found.** `page.summary()`
+rather than `info()`; `word.number` rather than `index`; `ayah.fragmentCount`
+rather than `parts` beside an `ayah.fragments` that held the elements;
+`ayah.isComplete` beside `line.isHeader`; `whileRendered(el, fn)` rather than
+`measured`; `loosenQuery` rather than `looseKey`; `page.stripPolygons()`,
+matching the `stripPolygons` loader option it undoes.
+
+**Casing per layer.** Attribute and class names are hyphenated because that is
+what HTML reads (`data-ayah-key`, `g.ayah-fragment`); the `dataset` key and
+every JS property is camelCase (`ayahKey`); the mark names and text forms that
+travel as *values* are snake_case (`data-mark="tanwin_al_kasr"`, the form
+`rasm_uthmani`). `datasetKey()` bridges the last two in one place — a value
+like `rasm_uthmani` names the attribute `data-rasm-uthmani`, whose key is
+`rasmUthmani`. Reading `dataset[form]` directly is the bug that made
+`word.form('rasm_uthmani')` return null for every word on every page.
+
+---
+
 ## 1. Shape of the thing
 
 **A small core class plus separate opt-in modules.** Not one god object.
@@ -42,8 +76,8 @@ Two rules hold across the whole surface:
   own. `page.clone()` gives you a second one. Every mutating method says so in its name or
   its doc line, and **every one returns a handle with `.remove()`** that undoes exactly what
   it did — no `resetEverything()`, no global state.
-- **No `data-eid`, no `data-sig`.** Neither is stable or an identity (FORMAT §6.5, §9.0e).
-  `data-wid` and `data-aid` are the only keys.
+- **No `data-element-id`, no `data-sig`.** Neither is stable or an identity (FORMAT §6.5, §9.0e).
+  `data-word-key` and `data-ayah-key` are the only keys.
 
 ---
 
@@ -60,7 +94,7 @@ Two rules hold across the whole surface:
 | `page.el` | the `<svg>` element |
 | `page.profile` | `'dev'` \| `'production'`, detected by `g.ligature` (FORMAT §2) |
 | `page.viewBox` | `{x, y, w, h}` **read off the file** — never assumed |
-| `page.info()` | one object: profile, viewBox, line numbers, word/ayah counts, surahs |
+| `page.summary()` | one object: profile, viewBox, line numbers, word/ayah counts, surahs |
 
 Pages 1–2 have a different viewBox, a different page matrix and 8 lines. Nothing in the
 library hardcodes `0 0 345 550` or `15`; both come from the file, and page 1 is in the test
@@ -70,30 +104,30 @@ suite for exactly this reason.
 
 - `page.surahs()` → `{number, arabic, latin, english, revelationPlace, ayahCount, hasBanner, hasBasmalah}[]`
   from the banner attributes, plus surahs merely *present* on the page (read out of
-  `data-wid`) with `hasBanner: false` — because those attributes only exist on a surah's
+  `data-word-key`) with `hasBanner: false` — because those attributes only exist on a surah's
   first page (FORMAT §6.6).
-- `page.divisions()` → `{juz, hizb, nisf, rub}`, each an array of `{n, aid, line}` for the
-  divisions that **start** on this page, from `data-*-start` on `g.ayah`. All 240 rubʿ
+- `page.divisions()` → `{juz, hizb, nisf, rubu_al_hizb}`, each an array of `{n, ayahKey, line}` for the
+  divisions that **start** on this page, from `data-*-start` on `g.ayah-fragment`. All 240 rubʿ
   boundaries are tagged even where no rosette is drawn (FORMAT §9.6).
-- `page.rosettes()` → the *drawn* `g.hizb-mark` with `{rub, rubInHizb, nisf, hizb, juz, aid}`.
-- `page.sajdahs()` → sites, counted by `data-mark="sajdah-sign"` (15 corpus-wide), not by
-  group, because two sites are split into two groups with unreliable `data-aid` (§10.6).
+- `page.divisionMarks()` → the *drawn* `g.division-mark` with `{rubu_al_hizb, rubuAlHizbInHizb, nisf, hizb, juz, ayahKey}`.
+- `page.sajdahs()` → sites, counted by `data-mark="sajdah_mark"` (15 corpus-wide), not by
+  group, because two sites are split into two groups with unreliable `data-ayah-key` (§10.6).
 - `page.ayahKeys()`, `page.lineNumbers()`, `page.wordCount`.
 
 ### Words, ayahs, lines
 
-`page.words({ayah, line, wids, surah})`, `page.word(wid)`, `page.ayahs()`, `page.ayah(aid)`,
+`page.words({ayah, line, wordKeys, surah})`, `page.word(wordKey)`, `page.ayahs()`, `page.ayah(ayahKey)`,
 `page.lines()`, `page.line(n)`.
 
-A `Word` carries `wid, surah, ayah, index, aid, line, el`, `text` (all five forms) and
-`box()` in the page's own viewBox units. An `Ayah` carries `aid, fragments[], words[],
-parts, markerId, marker`, and knows it is **several fragments** (FORMAT §7) — `page.ayah()`
+A `Word` carries `wordKey, surah, ayah, index, ayahKey, line, el`, `text` (all five forms) and
+`box()` in the page's own viewBox units. An `Ayah` carries `ayahKey, fragments[], words[],
+parts, markId, marker`, and knows it is **several fragments** (FORMAT §7) — `page.ayah()`
 never returns fragment 1 of N pretending to be the ayah.
 
 ### Text
 
-`page.text(target, {form, wordSep, lineSep})` where `target` is `'page'`, an aid string, a
-`{line}`, a `{wids}`, or an array of words. Line breaks are the mushaf's own. This is #3
+`page.text(target, {form, wordSep, lineSep})` where `target` is `'page'`, an ayahKey string, a
+`{line}`, a `{wordKeys}`, or an array of words. Line breaks are the mushaf's own. This is #3
 from the brief and it is four lines of code that everybody writes wrong once.
 
 ### Search
@@ -104,11 +138,11 @@ from the brief and it is four lines of code that everybody writes wrong once.
 Normalisation is exported on its own, because it is the difference between a search box that
 works and one that demos:
 
-- `stripArabicMarks(s)` — harakat, tanween (including the open forms U+08F0–08F2), the
+- `stripArabicMarks(s)` — harakahs, tanwin (including the open forms U+08F0–08F2), the
   dagger alef, the waqf and dabt block, tatweel.
 - `foldArabic(s)` — `أإآٱ→ا`, `ى→ي`, `ة→ه`, `ؤ→و`, `ئ→ي`, `ء` kept.
 - `normalizeQuery(s)` — strip + fold + collapse whitespace. **The default match key.**
-- `looseKey(s)` — additionally drops bare alef, so a typed `الرحمان` finds the printed
+- `loosenQuery(s)` — additionally drops bare alef, so a typed `الرحمان` finds the printed
   `الرحمن`, whose alef is a dagger alef and is not in `data-search` at all (FORMAT §6.1).
   Used only as a **second pass when the strict pass finds nothing**, so it cannot silently
   widen a query that already worked.
@@ -131,7 +165,7 @@ the wrong choice for a search box.
   once filled the counter of a ح as a solid blob. Horizontal extent from the ink boxes,
   vertical from the line pitch, painted as the first child of `<svg>` with
   `pointer-events: none` — behind the ink, unable to eat a click.
-- `page.highlightAyah(aid, opts)` = band + highlight, the common case.
+- `page.highlightAyah(ayahKey, opts)` = band + highlight, the common case.
 - `page.clearHighlights()`.
 
 All of them take the same `target` as `text()`, and all handle an ayah being several
@@ -146,7 +180,7 @@ fragments across several lines.
   **Nearest-with-direction, not naive nearest.** The point is first resolved to a printed
   *line* by its band, then to a word on that line; a point in the gap between two words is
   awarded with a bias toward the **preceding** word (`gapBias`, default 0.6), because in
-  this print a word's trailing ink — the tanween of a final ة, the small waw of a pronominal
+  this print a word's trailing ink — the tanwin of a final ة, the small waw of a pronominal
   suffix — is drawn *into* the following gap (FORMAT §9.9, §9.10). Naive nearest gets those
   gaps wrong systematically, always in the same direction.
 - `page.onTap(handler, {level:'word'|'ayah', halo, maxDistance})` — one delegated listener,
@@ -154,12 +188,12 @@ fragments across several lines.
 
 ### Marks
 
-`page.marks({name, family, category, ayah, line, wid})`, `page.styleMarks(sel, style)`,
+`page.marks({name, family, category, ayah, line, wordKey})`, `page.styleMarks(sel, style)`,
 `page.hideMarks(sel)`.
 
 **Family and category are resolved through an embedded copy of the taxonomy registry, not
 through `data-mark-family`.** See §6 — the emitted attribute does not agree with
-`FORMAT.md` in the current build, and selecting `[data-mark-family="tanween"]` finds nothing.
+`FORMAT.md` in the current build, and selecting `[data-mark-family="tanwin"]` finds nothing.
 Resolving a family to its list of `data-mark` names is correct under both vocabularies.
 `MARK_REGISTRY`, `markNames({family})` and `familyOf(name)` are exported.
 
@@ -173,9 +207,9 @@ instead of living on a container the export does not see. Returns a disposer.
 
 ### Crop
 
-`page.crop(target, {pad, keepMarkers, background})` → `{el, viewBox, toString(), toDataUrl()}`.
+`page.crop(target, {pad, keepMarks, background})` → `{el, viewBox, toString(), toDataUrl()}`.
 
-Clone → drop the words you did not ask for → drop the emptied `g.ayah` / `g.line` wrappers →
+Clone → drop the words you did not ask for → drop the emptied `g.ayah-fragment` / `g.line` wrappers →
 `getBBox()` → write the viewBox back. A medallion is kept only when the **whole** ayah
 survived, otherwise a one-word crop frames itself around a marker at the far end of the ayah.
 Measuring needs the element rendered, so the library parks it in a hidden host and removes
@@ -187,7 +221,7 @@ it again; the caller sees only the result.
 
 ### `layout.mjs`
 
-- `setLineGap(page, gap, {pad, carryMarkers})` — moves each `g.line` apart and carries each
+- `setLineGap(page, gap, {pad, carryMarks})` — moves each `g.line` apart and carries each
   medallion with its ayah's **last** fragment, then grows the viewBox. Returns the new
   viewBox and a disposer.
 - `gapToFill({pageW, pageH, lines, viewW, viewH, max})` — **pure arithmetic, no DOM.**
@@ -237,14 +271,14 @@ This is #2 from the brief: only the selection layer knows which ayahs the select
 
 `hide` = `visibility:hidden` on the word group (the printed page keeps its shape and its
 spacing, which is the whole point); `block` = an opaque rect over the word box; `blur` = an
-SVG filter. Progressive reveal walks the words in `data-wid` order. Impossible with a page
+SVG filter. Progressive reveal walks the words in `data-word-key` order. Impossible with a page
 image, three lines with per-word groups.
 
 ### `a11y.mjs`
 
 `annotate(page, {form, level})` — an SVG of paths is silent to a screen reader. Adds
 `role="img"` + `aria-label` on the `<svg>`, `<title>` per `g.word`, and `aria-label` per
-`g.ayah` fragment carrying its ayah key.
+`g.ayah-fragment` fragment carrying its ayah key.
 
 It does **not** duplicate the selection layer. Where a page already has a selection layer
 attached, that layer is real DOM text in reading order and is the better screen-reader
@@ -259,17 +293,17 @@ generated index:
 ```json
 { "schema": "mushaf-atlas", "version": 1, "edition": "hafs-kfgqpc", "pages": 604,
   "pageFirstAyah": ["1:1", "2:1", …],
-  "surahs":  [{"n":1,"ar":"الفاتحة","latin":"Al-Fatihah","en":"The Opener",
+  "surahs":  [{"n":1,"ar":"الفاتحة","latin":"Fatihah","en":"The Opener",
                "place":"makkah","ayahs":7,"page":1}, …],
-  "juz": [{"n":1,"aid":"1:1","page":1}, …], "hizb": […], "nisf": […], "rub": […] }
+  "juz": [{"n":1,"ayah_key":"1:1","page":1}, …], "hizb": […], "nisf": […], "rubu_al_hizb": […] }
 ```
 
-`pageFirstAyah` is 604 entries and answers `pageOf(aid)` by binary search, because **no ayah
+`pageFirstAyah` is 604 entries and answers `pageOf(ayahKey)` by binary search, because **no ayah
 spans two pages** (FORMAT §12). ~30 KB raw, ~8 KB gzip. `build-atlas.py` generates it from
 the real SVGs; nothing is hand-typed.
 
-API: `loadAtlas(url)` → `pageOf(aid)`, `pageOfSurah(n)`, `surah(n)`, `findSurah(text)`,
-`juz(n)`, `hizb(n)`, `rub(n)`, `nisf(n)`, `pageRange(n)`, `pagesOfJuz(n)`.
+API: `loadAtlas(url)` → `pageOf(ayahKey)`, `pageOfSurah(n)`, `surah(n)`, `findSurah(text)`,
+`juz(n)`, `hizb(n)`, `rubu_al_hizb(n)`, `nisf(n)`, `pageRange(n)`, `pagesOfJuz(n)`.
 
 **Whether an extra data file ships alongside the SVGs is Abdullah's decision.** The library
 works without it — every core method operates on the page in hand — and gains cross-page
@@ -288,13 +322,13 @@ Verified headless before being promised (test 12).
 
 ### `markers.mjs`
 
-- `loadMarkerSet(baseUrl)` / `set.outline(id)` / `setAyahMarker(page, outline, …)` /
-  `resetAyahMarkers(page)` / `colourAyahMarkers(page, colours)`.
+- `loadMarkSet(baseUrl)` / `set.outline(id)` / `setAyahMark(page, outline, …)` /
+  `resetAyahMarks(page)` / `colourAyahMarks(page, colours)`.
 
 Four decisions worth the words:
 
 1. **The library takes a base URL and ships nothing.** The reference set
-   (`quranpedia/ayah-markers`) has no licence file and grants none for the outlines,
+   (`quranpedia/ayah-marks`) has no licence file and grants none for the outlines,
    which are traced from twenty type families with twenty licences. Bundling even one
    would make this repository the redistributor of material it has no terms for. So the
    module is a mechanism: it fetches, and it says so in the API docs and on the demo
@@ -329,11 +363,11 @@ Four decisions worth the words:
 - **Two-page spread** — that is a reader's layout, not a page operation. Two pages side by
   side in a flex row, with `dir="rtl"` so page N+1 lands on the left. Two lines in the
   README, no API.
-- **Anything keyed on `data-eid` / `data-sig`.** Explicitly not stable, explicitly not an
+- **Anything keyed on `data-element-id` / `data-sig`.** Explicitly not stable, explicitly not an
   identity.
 - **A word-level polygon or letter API.** There is no letter segmentation and the ligature
   layer is not one (FORMAT §10.3); an API implying otherwise would be a lie.
-- **A built-in translation store.** The demo's gloss join is `data-wid` → your JSON. The
+- **A built-in translation store.** The demo's gloss join is `data-word-key` → your JSON. The
   library has no opinion about whose translation it is, and shipping one would be a
   licensing question, not a technical one.
 - **`page.polygons()`** — the `ayahPolygon` layer is dev-only, in a different frame, and
@@ -358,26 +392,26 @@ does not work.
 Recorded here because the plan depends on them; repeated in the final report.
 
 1. **`data-mark-family` does not match FORMAT §6.5, and its shape CHANGED during this
-   session.** FORMAT documents the vocabulary `dots, tanween, waqf, sifr, sajdah,
-   reading-sign`. Three states were observed against real builds:
+   session.** FORMAT documents the vocabulary `dots, tanwin, waqf, sifr, sajdah,
+   reading_sign`. Three states were observed against real builds:
 
-   | build | tanween paths carry | `[data-mark-family="tanween"]` |
+   | build | tanwin paths carry | `[data-mark-family="tanwin"]` |
    |---|---|---|
-   | FORMAT.md as written | `tanween` | works |
-   | build of 2026-08-29 | `diacritic` (undocumented; `tanween` never emitted) | finds nothing |
-   | build of 2026-08-30 02:17 | **`diacritic tanween`** — multi-valued | finds nothing |
+   | FORMAT.md as written | `tanwin` | works |
+   | build of 2026-08-29 | `diacritic` (undocumented; `tanwin` never emitted) | finds nothing |
+   | build of 2026-08-30 02:17 | **`diacritic tanwin`** — multi-valued | finds nothing |
 
-   So FORMAT §8.2's `data-mark-family="tanween"` and §11's family selectors are wrong
+   So FORMAT §8.2's `data-mark-family="tanwin"` and §11's family selectors are wrong
    against both builds, and the demo's `[data-mark-family="diacritic"]` — right against
    the first, undocumented — is now wrong too: the current attribute needs `~=`, not `=`.
    The registry (`mark-taxonomy.v2.json`) agrees with FORMAT, not with either emitter.
    **This is exactly why the library resolves a family through the registry to
    `data-mark` names and never selects on the attribute** — the 217-assertion suite
    passes unchanged against both builds.
-2. **`data-form` is emitted but the `tanween` family was not**, so FORMAT §6.5's "only on
-   the `tanween` family" was unverifiable from the attribute alone on the older build.
+2. **`data-form` is emitted but the `tanwin` family was not**, so FORMAT §6.5's "only on
+   the `tanwin` family" was unverifiable from the attribute alone on the older build.
 3. FORMAT's §11 "colour the dots differently" recipe is correct (`dots` is emitted as a
-   single value); `[data-mark-family="waqf"]` is correct; the tanween and reading-sign
+   single value); `[data-mark-family="waqf"]` is correct; the tanwin and reading_sign
    families are the affected ones.
 
 ---

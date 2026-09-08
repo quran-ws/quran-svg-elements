@@ -48,7 +48,7 @@ def main():
         was = (cur or {}).get("label") or ""
         # A composite label says ONE outline carries TWO marks, and the audit
         # splits it on "+" to count both. Replacing it with a single name
-        # deletes the other mark everywhere that outline is drawn — 763 hamza
+        # deletes the other mark everywhere that outline is drawn — 763 hamzah
         # flags appeared the first time this went through unchecked.
         if "+" in was and "+" not in lab and not a.force:
             print("  REFUSED %s  %s -> %s  (composite; pass --force to override)"

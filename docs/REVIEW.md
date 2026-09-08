@@ -50,8 +50,8 @@ A judgement about first impressions, so it is yours.
 You suggested it, and I think yes. Our pages are the same pages plus structure,
 pixel-identical, so they **replace** the published SVGs rather than sitting
 beside them — measured cost **+33% raw, +22% gzip, +18% brotli** for the whole
-semantic layer. The repo already has the `mushafs/<riwaya>/<edition>/` layout,
-already carries `qiraat_map.py` and the ayah-count dataset, and is already public
+semantic layer. The repo already has the `mushafs/<riwayah>/<edition>/` layout,
+already carries `qiraahs_map.py` and the ayah-count dataset, and is already public
 under CC0 with the KFGQPC grant.
 
 **One condition, and it is not optional.** Our pixel gate proves each page
@@ -74,7 +74,7 @@ finding was that flagging the second as `data-mark-part` was correct. Your
 instruction was that all three dots should be **one mark, not split**.
 
 That is now what happens. The members' contours are folded into the primary's
-path, so the cluster is a single element carrying `data-mark="three-dots"` with
+path, so the cluster is a single element carrying `data-mark="three_dots"` with
 three contours, and `data-mark-part` is **retired** — zero occurrences in the
 corpus, removed from the specification.
 
@@ -112,8 +112,8 @@ lone fragment that would look like an ordinary mark and inflate every count.
 ## C. What changed while you were away
 
 ### C1. Medallion ring centring — all five mushafs
-**12,290 of 41,396 markers were off-centre; now 0.** douri 1,348 · hafs 377 ·
-qalon 3,448 · shubah 1,350 · warsh 3,079.
+**12,290 of 41,396 markers were off-centre; now 0.** duri 1,348 · hafs 377 ·
+qalun 3,448 · shubah 1,350 · warsh 3,079.
 
 Derived, not tabulated: measure the numeral's ink box and the ring's, shift the
 ring so the centres coincide. **The numeral never moves** — it is the print's own
@@ -133,28 +133,28 @@ Five commits, touching only pages 1-2 of each mushaf (the opening-spread surah
 name, drawn twice then fixed) plus `tools/`. Hafs 1-2 rebuilt, full gate green.
 
 ### C3. `data-mark-family` is now a token list — **corrects a regression I caused**
-Adding the `diacritic` family gave `fathatan`/`kasratan`/`dammatan` the value
-`diacritic`, which silently **emptied the `tanween` family** documented in §8.2.
-`[data-mark-family="tanween"]` matched nothing.
+Adding the `diacritic` family gave `tanwin_al_fath`/`tanwin_al_kasr`/`tanwin_al_damm` the value
+`diacritic`, which silently **emptied the `tanwin` family** documented in §8.2.
+`[data-mark-family="tanwin"]` matched nothing.
 
 Both groupings are real, so the attribute carries both, like `class`:
 
-    data-mark-family="diacritic tanween"
+    data-mark-family="diacritic tanwin"
 
-Match with `~=`, not `=`. Single-family marks keep one token. `tanween` is back to
+Match with `~=`, not `=`. Single-family marks keep one token. `tanwin` is back to
 **8,554** — the exact figure it had before, which is what tells us the old
 semantics were restored rather than new ones invented.
 
 ### C4. Page identity on the root `<svg>`
 Nine attributes per page, so a file downloaded alone is self-describing:
-`data-mushaf`, `data-qiraa`, `data-riwaya`, `data-edition`,
-`data-riwaya-name-ar`, `data-riwaya-name-en`, `data-ayah-numbering`,
+`data-mushaf`, `data-qiraah`, `data-riwayah`, `data-edition`,
+`data-riwayah-name-ar`, `data-riwayah-name-en`, `data-ayah-numbering`,
 `data-ayah-total`, `data-page`. Values from the vendored
-`quranpedia/qiraat-ayah-map` dataset. See `docs/MULTI-MUSHAF-DESIGN.md`.
+`quranpedia/qiraahs-ayah-map` dataset. See `docs/MULTI-MUSHAF-DESIGN.md`.
 
 ### C5. A division opens once — **the bug you spotted**
-`rub 230 opens at 73:20` printed seven times because 73:20 spans seven lines and
-every fragment carried `data-rub-start`. Emitted on `data-part="1"` alone, the
+`rubu_al_hizb 230 opens at 73:20` printed seven times because 73:20 spans seven lines and
+every fragment carried `data-rubu-al-hizb-start`. Emitted on `data-part="1"` alone, the
 attribute counts become the division counts exactly:
 
 | | before | after | canonical |
@@ -238,5 +238,5 @@ The Arabic translation of the demo, against the now-frozen English page.
   The group is already the semantic unit. Third appearance of the same trap:
   express "these pieces are one thing" through the GROUP, never by fusing
   geometry.
-- **Cross-riwaya word alignment** — a real research problem; a half-correct
+- **Cross-riwayah word alignment** — a real research problem; a half-correct
   mapping would be worse than none. See `docs/MULTI-MUSHAF-DESIGN.md` §3.

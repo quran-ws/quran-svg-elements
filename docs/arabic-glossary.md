@@ -24,22 +24,22 @@ English. That rule is absolute and the translation does not relax it.
 | hizb | **حزب** (ج. **أحزاب**) | |
 | rubʿ | **رُبع** (ج. **أرباع**) | |
 | nisf | **نصف** | |
-| sajdah sign | **علامة السجدة** | The drawn sign. Bare `سجدة` is the prostration, not the sign — keep `علامة` when the sign is meant. |
-| waqf sign | **علامة الوقف** (ج. **علامات الوقف**) | Same distinction: the sign, not the pause. |
+| sajdah sign | **علامة السجدة** | The drawn sign. Bare `سجدة` is the sajdah, not the sign — keep `علامة` when the sign is meant. |
+| waqf sign | **علامة الوقف** (ج. **علامات الوقف**) | Same distinction: the sign, not the waqf. |
 | ayah medallion / marker | **علامة رأس الآية** | The decorative circle ending an ayah. Short form `علامة الآية` once introduced. Do **not** call it `فاصلة` — that is the comma. |
 | basmalah | **البسملة** | |
 | surah header | **عنوان السورة** | |
 | iqlab meem | **ميم الإقلاب** | |
-| tanween | **تنوين** | |
-| fatha / kasra / damma | **فتحة / كسرة / ضمة** | |
-| shadda / sukun / maddah | **شدّة / سكون / مدّة** | |
+| tanwin | **تنوين** | |
+| fathah / kasrah / dammah | **فتحة / كسرة / ضمة** | |
+| shaddah / sukun / maddah | **شدّة / سكون / مدّة** | |
 | dagger alef | **الألف الخنجرية** | |
-| alef wasla | **ألف الوصل** | |
-| hamza | **همزة** | The project distinguishes a hamza that is a diacritic from one that is a letter: **الهمزة علامةً** vs **الهمزة حرفاً**, or gloss with `data-kind`. |
+| alef hamzat_al_wasl | **ألف الوصل** | |
+| hamzah | **همزة** | The project distinguishes a hamzah that is a diacritic from one that is a letter: **الهمزة علامةً** vs **الهمزة حرفاً**, or gloss with `data-kind`. |
 
 ---
 
-## 1a. Qiraa, riwaya and the counting system
+## 1a. Qiraah, riwayah and the counting system
 
 The nine new root attributes need these. **Every one of these terms is a technical term of the
 Quranic sciences with a settled Arabic form** — there is nothing to coin, and no transliteration is
@@ -47,30 +47,30 @@ ever correct in the Arabic text. Use the Arabic; keep the attribute name and val
 
 | English | Arabic | attribute | notes |
 |---|---|---|---|
-| qiraa / reading | **قراءة** (ج. **قراءات**) | `data-qiraa` | The reading tradition, named for its imam. Value stays Latin (`asim`); prose says **عاصم**. |
-| riwaya / transmission | **رواية** (ج. **روايات**) | `data-riwaya` | The transmission from that imam. Value Latin (`hafs`); prose says **حفص**. |
+| qiraah / reading | **قراءة** (ج. **قراءات**) | `data-qiraah` | The reading tradition, named for its imam. Value stays Latin (`asim`); prose says **عاصم**. |
+| riwayah / transmission | **رواية** (ج. **روايات**) | `data-riwayah` | The transmission from that imam. Value Latin (`hafs`); prose says **حفص**. |
 | Hafs from Asim | **رواية حفص عن عاصم** | — | The full standard formula. Use it in full on first mention; `رواية حفص` after. Note `عن`, not `من`. |
 | Warsh from Nafi | **رواية ورش عن نافع** | — | Same pattern, for the portability note. |
 | ayah numbering system | **نظام عدّ الآي** | `data-ayah-numbering` | Also **العدّ** alone once introduced. `عدّ الآي` is the established term of the discipline (علم الفواصل); `ترقيم` is a printing word and is weaker here. |
 | total ayahs | **إجمالي الآيات** | `data-ayah-total` | |
 | edition | **الطبعة** | `data-edition` | |
-| ~~mushaf name~~ **riwaya name** | **تسمية الرواية** | `data-riwaya-name-ar` / `-en` | **Corrected 2026-08-30 against the actual data.** An earlier version of this row said `اسم المصحف`, guessing from the attribute's *name*. The attribute does not hold a mushaf name: page 042 carries `data-riwaya-name-ar="حفص عن عاصم"` and `data-riwaya-name-en="Hafs 'an Asim"` — the riwaya formula. Never re-translate the `-ar` value; reproduce it. **The attribute name WAS misleading; it was renamed to `data-riwaya-name-*` on 2026-08-30, which is the correct home for it.** |
+| ~~mushaf name~~ **riwayah name** | **تسمية الرواية** | `data-riwayah-name-ar` / `-en` | **Corrected 2026-08-30 against the actual data.** An earlier version of this row said `اسم المصحف`, guessing from the attribute's *name*. The attribute does not hold a mushaf name: page 042 carries `data-riwayah-name-ar="حفص عن عاصم"` and `data-riwayah-name-en="Hafs 'an Asim"` — the riwayah formula. Never re-translate the `-ar` value; reproduce it. **The attribute name WAS misleading; it was renamed to `data-riwayah-name-*` on 2026-08-30, which is the correct home for it.** |
 | mushaf | **المصحف** | `data-mushaf` | |
 | page | **الصفحة** | `data-page` | |
 
 ### The counting systems
 
 `data-ayah-numbering` names which madhhab of ayah-division the edition follows. The Madinah Mushaf
-uses the **Kufan** count, which is why the total is 6,236.
+uses the **Kufi** count, which is why the total is 6,236.
 
 | system | Arabic | value |
 |---|---|---|
-| Kufan | **العدّ الكوفي** | `kufi` |
+| Kufi | **العدّ الكوفي** | `kufi` |
 | Madani first | **العدّ المدني الأول** | `madani-first` |
 | Madani last | **العدّ المدني الأخير** | `madani-last` |
-| Basran | **العدّ البصري** | `basri` |
+| Basri | **العدّ البصري** | `basri` |
 | Meccan | **العدّ المكي** | `makki` |
-| Damascene | **العدّ الشامي** | `shami` |
+| Dimashqi | **العدّ الشامي** | `dimashqi` |
 
 **Translated, not transliterated, and here is the reason.** These are ordinary Arabic nisba
 adjectives — `كوفي` is simply "of Kufa". Writing `كوفي` is not a translation choice at all, it is the
@@ -84,8 +84,8 @@ pair is "first" and "last", not "first" and "second".
 ### The trap here
 
 `قراءة` and `رواية` are **not interchangeable**, and English-language sources routinely blur them —
-"the Hafs qiraa" is a common error. A `قراءة` is the reading of one of the imams; a `رواية` is one
-transmitter's line from that imam. **Hafs is a riwaya, Asim is the qiraa.** The English demo may
+"the Hafs qiraah" is a common error. A `قراءة` is the reading of one of the imams; a `رواية` is one
+rawi's line from that imam. **Hafs is a riwayah, Asim is the qiraah.** The English demo may
 be loose about this; the Arabic must not be, because an Arabic reader will notice immediately.
 
 Likewise `عدّ` (counting the ayahs, a science with named madhhabs) is not `ترقيم` (putting numbers on
@@ -101,9 +101,9 @@ them, a printing operation). The attribute is about the former.
 | line | **سطر** (ج. **أسطر**) | A printed line of the mushaf. |
 | word | **كلمة** (ج. **كلمات**) | See §4 — the project's "word" is a keyed unit, not always a written word. |
 | letter | **حرف** (ج. **حروف**) | |
-| mark | **علامة** (ج. **علامات**) | The **superset**: any named non-letter ink — vowels, tanween, waqf and sajdah signs, iqlab meems. |
-| diacritic / haraka | **حركة** (ج. **حركات**) | The **vowel subset only**. Not interchangeable with `علامة`. See §4. |
-| tashkeel (the system) | **التشكيل** | The practice of vocalisation, not an individual mark. |
+| mark | **علامة** (ج. **علامات**) | The **superset**: any named non-letter ink — vowels, tanwin, waqf and sajdah signs, iqlab meems. |
+| diacritic / harakah | **حركة** (ج. **حركات**) | The **vowel subset only**. Not interchangeable with `علامة`. See §4. |
+| tashkil (the system) | **التشكيل** | The practice of tashkil, not an individual mark. |
 | element | **عنصر** (ج. **عناصر**) | |
 | group | **مجموعة** | |
 | ligature | *see §4 — unresolved* | Do not guess. |
@@ -130,7 +130,7 @@ them, a printing operation). The attribute is about the former.
 | highlight | **تظليل** | The band behind the ink. Verb `يُظلِّل`. |
 | hit area / tap target | **منطقة اللمس** | |
 | spelling / orthography | **الرسم الإملائي** | Careful — see §4 on `رسم`. |
-| uthmani spelling | **الرسم العثماني** | Established term; use it. |
+| rasm_uthmani spelling | **الرسم العثماني** | Established term; use it. |
 | glyph | **الشكل الحرفي (glyph)** | Gloss on first use, then keep the Latin `glyph` if it recurs in a technical sense. |
 | ink | **الحبر** | See §4. **Never** `رسم`. |
 | artwork | **العمل الفني** / **الرسوم المتجهة** | The source vector artwork. The KFGQPC portal's own wording is `رسم المتجهات المتقدمة`. |
@@ -150,7 +150,7 @@ them, a printing operation). The attribute is about the former.
 | library | **مكتبة** | |
 | plain JS / library toggle | **بدون مكتبة** / **بمكتبة** | Proposed. Avoids transliterating "JS"; the code itself stays Latin either way. |
 | polygon | **مضلّع** | The single highlight polygon. |
-| completeness rule | **قاعدة الاكتمال** | For the ayah-number stamping rule. |
+| completeness rule | **قاعدة الاكتمال** | For the ayah_number stamping rule. |
 
 ---
 
@@ -187,7 +187,7 @@ resolution and its reason are recorded.
 | headless browser | **متصفح بلا واجهة رسومية** | |
 | combining marks | **علامات متراكبة** | |
 | long vowels | **حروف المدّ** | |
-| stroke (of a fatha/kasra) | **شَرطة** | Avoids `رسم`, which is reserved. |
+| stroke (of a fathah/kasrah) | **شَرطة** | Avoids `رسم`, which is reserved. |
 | rosette | **وردة** | `ورود الأرباع`, `وردة حزب`. |
 | signature (`data-sig`) | **بصمة شكل** | |
 | slider | **منزلق** | |
@@ -216,7 +216,7 @@ say something the English does not.
 
 ### `رسم` is already taken
 
-`data-rasm` is the **uthmani spelling skeleton**, and `الرسم العثماني` is the established Arabic term
+`data-rasm` is the **rasm_uthmani spelling skeleton**, and `الرسم العثماني` is the established Arabic term
 for it. The demo's §5 explains exactly this attribute.
 
 So **`رسم` must never be used to translate "ink", "drawing", "artwork" or "rendering."** A reader who
@@ -262,11 +262,11 @@ decided.**
 ### "word" is a keyed unit, not a written word
 
 The demo already warns that 367 `data-search` values contain a space, and that word `37:130:3` has a
-space in its own text. So `كلمة` in the Arabic page means "the unit keyed by `data-wid`", which
+space in its own text. So `كلمة` in the Arabic page means "the unit keyed by `data-word-key`", which
 occasionally is not one written word.
 
 Where the English relies on this precision, the Arabic must too — `الكلمة` alone is not enough in
-those sentences. Use `وحدة الكلمة` or name the key: `الوحدة التي يعرّفها data-wid`.
+those sentences. Use `وحدة الكلمة` or name the key: `الوحدة التي يعرّفها data-word-key`.
 
 ---
 
@@ -274,14 +274,14 @@ those sentences. Use `وحدة الكلمة` or name the key: `الوحدة ال
 
 Reproduce byte-for-byte. These are what a reader searches for and what the product actually prints.
 
-- Every attribute name: `data-wid`, `data-aid`, `data-search`, `data-rasm`, `data-imlaei`,
-  `data-uthmani`, `data-qpc`, `data-kind`, `data-line`, `data-part`, `data-marker`, `viewBox`.
-- The nine root attributes: `data-mushaf`, `data-qiraa`, `data-riwaya`, `data-edition`,
-  `data-riwaya-name-ar`, `data-riwaya-name-en`, `data-ayah-numbering`, `data-ayah-total`,
+- Every attribute name: `data-word-key`, `data-aid`, `data-search`, `data-rasm`, `data-rasm-imlai`,
+  `data-rasm-uthmani`, `data-qpc`, `data-kind`, `data-line`, `data-part`, `data-mark`, `viewBox`.
+- The nine root attributes: `data-mushaf`, `data-qiraah`, `data-riwayah`, `data-edition`,
+  `data-riwayah-name-ar`, `data-riwayah-name-en`, `data-ayah-numbering`, `data-ayah-total`,
   `data-page` — **and their values**: `asim`, `hafs`, `kufi`, `madani-first`. The Arabic prose names
   the concept (§1a); the attribute keeps the Latin key.
 - Every attribute *value* and key: `2:255`, `2:255:4`, `#231f20`.
-- Every class name: `g.word`, `g.ayah`, `g.ligature`, `.q-hits`.
+- Every class name: `g.word`, `g.ayah-fragment`, `g.ligature`, `.q-hits`.
 - All code: `querySelectorAll`, `getBBox`, `getBoundingClientRect`, `DOMParser`, `fetch`,
   `AbortSignal`, `H.band`, `H.crop`.
 - Format and standard names: `SVG`, `CSS`, `HTML`, `JSON`, `DOM`, `API`, `UTF-8`, `KiB`, `MiB`.
@@ -299,7 +299,7 @@ Reproduce byte-for-byte. These are what a reader searches for and what the produ
 **Western digits (`0–9`) throughout the prose.** Counts, page numbers, byte sizes, tolerances,
 percentages, ayah keys, versions: `604` pages, `77,432` words, `2.0 MiB`, tolerance `24/255`, `2:255`.
 
-Reasons, all of them binding here: the keys must match `data-wid` and `data-aid` exactly or they stop
+Reasons, all of them binding here: the keys must match `data-word-key` and `data-aid` exactly or they stop
 being copy-pasteable; the numbers appear beside Latin identifiers; and they must match what the code
 in the lab snippets prints.
 
@@ -368,8 +368,8 @@ Note `أجاب عن` in that last block, not `أجاب على` — the guide's t
    work and should be decided before the translation starts, not after.
 5. **`plain JS` / `library` toggle labels** — §3 proposes `بدون مكتبة` / `بمكتبة` to avoid
    transliterating "JS". Confirm, or supply preferred wording.
-6. **If the English says "the Hafs qiraa" anywhere, that is an error worth fixing in the English
-   too** — Hafs is a riwaya. See §1a. The Arabic cannot reproduce the mistake, so the two pages
+6. **If the English says "the Hafs qiraah" anywhere, that is an error worth fixing in the English
+   too** — Hafs is a riwayah. See §1a. The Arabic cannot reproduce the mistake, so the two pages
    would silently disagree unless the English is corrected.
 
 ---

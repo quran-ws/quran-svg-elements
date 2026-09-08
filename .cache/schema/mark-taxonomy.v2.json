@@ -1,9 +1,9 @@
 {
  "aliases": {
-  "sajdah": "sajdah-sign",
-  "waqf qila": "waqf-jaiz",
-  "waqf sali": "wasl-awla",
-  "waqf taanuq": "muanaqah"
+  "sajdah": "sajdah_mark",
+  "waqf qila": "waqf_jaiz_mustawi_al_tarafayn",
+  "waqf sali": "waqf_jaiz_wasl_awla",
+  "waqf taanuq": "waqf_al_muanaqah"
  },
  "features": {
   "arrangement": [
@@ -20,53 +20,53 @@
   "sajdah": "standalone"
  },
  "kinds": {
-  "ayah-marker-ornament": "the medallion ring",
-  "ayah-number": "the numeral inside the medallion",
+  "ayah_mark_ornament": "the medallion ring",
+  "ayah_number": "the numeral inside the medallion",
   "body": "letter ink of a word",
-  "header-ink": "ink inside a surah-name or basmalah banner, undecomposed",
+  "header_ink": "ink inside a surah-name or basmalah banner, undecomposed",
   "mark": "a named diacritic or sign",
   "ornament": "banner decoration, not a mark"
  },
  "marks": {
-  "damma": {
+  "dammah": {
    "active": true,
-   "category": "haraka",
+   "category": "harakah",
    "family": null,
    "features": [
     "placement"
    ]
   },
-  "dammatan": {
+  "tanwin_al_damm": {
    "active": true,
-   "category": "tanween",
-   "family": "tanween",
+   "category": "tanwin",
+   "family": "tanwin",
    "features": [
     "arrangement"
    ]
   },
   "dot": {
    "active": true,
-   "category": "letter-dot",
+   "category": "letter_dot",
    "family": "dots",
    "features": []
   },
-  "fatha": {
+  "fathah": {
    "active": true,
-   "category": "haraka",
+   "category": "harakah",
    "family": null,
    "features": [
     "placement"
    ]
   },
-  "fathatan": {
+  "tanwin_al_fath": {
    "active": true,
-   "category": "tanween",
-   "family": "tanween",
+   "category": "tanwin",
+   "family": "tanwin",
    "features": [
     "arrangement"
    ]
   },
-  "hamza": {
+  "hamzah": {
    "active": true,
    "category": "orthographic",
    "family": null,
@@ -80,28 +80,28 @@
   },
   "imalah": {
    "active": true,
-   "category": "reading-sign",
-   "family": "reading-sign",
+   "category": "reading_sign",
+   "family": "reading_sign",
    "features": []
   },
   "ishmam": {
    "active": true,
-   "category": "reading-sign",
-   "family": "reading-sign",
+   "category": "reading_sign",
+   "family": "reading_sign",
    "features": []
   },
-  "kasra": {
+  "kasrah": {
    "active": true,
-   "category": "haraka",
+   "category": "harakah",
    "family": null,
    "features": [
     "placement"
    ]
   },
-  "kasratan": {
+  "tanwin_al_kasr": {
    "active": true,
-   "category": "tanween",
-   "family": "tanween",
+   "category": "tanwin",
+   "family": "tanwin",
    "features": [
     "arrangement"
    ]
@@ -112,7 +112,7 @@
    "family": null,
    "features": []
   },
-  "meem-iqlab": {
+  "small_meem": {
    "active": true,
    "category": "dabt",
    "family": null,
@@ -120,25 +120,25 @@
     "placement"
    ]
   },
-  "muanaqah": {
+  "waqf_al_muanaqah": {
    "active": true,
    "category": "waqf",
    "family": "waqf",
    "features": []
   },
-  "pause": {
+  "waqf": {
    "active": true,
    "category": "waqf",
    "family": "waqf",
    "features": []
   },
-  "sajdah-line": {
+  "sajdah_line": {
    "active": true,
    "category": "standalone",
    "family": "sajdah",
    "features": []
   },
-  "sajdah-sign": {
+  "sajdah_mark": {
    "active": true,
    "category": "standalone",
    "family": "sajdah",
@@ -146,53 +146,53 @@
   },
   "saktah": {
    "active": true,
-   "category": "reading-sign",
-   "family": "reading-sign",
+   "category": "reading_sign",
+   "family": "reading_sign",
    "features": []
   },
-  "seen-reading": {
+  "seen_al_qiraah": {
    "active": true,
-   "category": "reading-sign",
-   "family": "reading-sign",
+   "category": "reading_sign",
+   "family": "reading_sign",
    "features": []
   },
-  "shadda": {
+  "shaddah": {
    "active": true,
-   "category": "haraka",
+   "category": "harakah",
    "family": null,
    "features": []
   },
-  "sifr-mustadir": {
+  "rounded_zero": {
    "active": true,
    "category": "dabt",
    "family": "sifr",
    "features": []
   },
-  "sifr-mustatil": {
+  "rectangular_zero": {
    "active": true,
    "category": "dabt",
    "family": "sifr",
    "features": []
   },
-  "small-alef": {
+  "omitted_alif": {
    "active": true,
    "category": "orthographic",
    "family": null,
    "features": []
   },
-  "small-noon": {
+  "small_noon": {
    "active": true,
    "category": "orthographic",
    "family": null,
    "features": []
   },
-  "small-waw": {
+  "small_waw": {
    "active": true,
    "category": "orthographic",
    "family": null,
    "features": []
   },
-  "small-ya": {
+  "small_yaa": {
    "active": true,
    "category": "orthographic",
    "family": null,
@@ -200,60 +200,60 @@
   },
   "sukun": {
    "active": true,
-   "category": "haraka",
+   "category": "harakah",
    "family": null,
    "features": []
   },
   "tashil": {
    "active": true,
-   "category": "reading-sign",
-   "family": "reading-sign",
+   "category": "reading_sign",
+   "family": "reading_sign",
    "features": []
   },
-  "three-dots": {
+  "three_dots": {
    "active": true,
-   "category": "letter-dot",
+   "category": "letter_dot",
    "family": "dots",
    "features": []
   },
-  "two-dots": {
+  "two_dots": {
    "active": true,
-   "category": "letter-dot",
+   "category": "letter_dot",
    "family": "dots",
    "features": []
   },
-  "waqf-awla": {
+  "waqf_jaiz_waqf_awla": {
    "active": true,
    "category": "waqf",
    "family": "waqf",
    "features": []
   },
-  "waqf-jaiz": {
+  "waqf_jaiz_mustawi_al_tarafayn": {
    "active": true,
    "category": "waqf",
    "family": "waqf",
    "features": []
   },
-  "waqf-lazim": {
+  "waqf_lazim": {
    "active": true,
    "category": "waqf",
    "family": "waqf",
    "features": []
   },
-  "waqf-mamnu": {
+  "waqf_mamnu": {
    "active": false,
    "category": "waqf",
    "family": "waqf",
    "features": [],
    "note": "this print emits no لا sign (ALLOWED_WAQF is the five-value set); token reserved, not active"
   },
-  "wasl-awla": {
+  "waqf_jaiz_wasl_awla": {
    "active": true,
    "category": "waqf",
    "family": "waqf",
    "features": []
   },
-  "wasla": {
+  "hamzat_al_wasl": {
    "active": true,
    "category": "orthographic",
    "family": null,

@@ -1116,7 +1116,7 @@
    "page": 418,
    "line": 5,
    "class": "c2",
-   "evidence": "confidence-only cluster: line poisoned by 33:3:4's stray fathas (gap 290u, known ref-line/slashx defect); body-span audit sees وتوكل 1.68 qcf / 0.97 letter-sum only",
+   "evidence": "confidence-only cluster: line poisoned by 33:3:4's stray fathahs (gap 290u, known ref-line/slashx defect); body-span audit sees وتوكل 1.68 qcf / 0.97 letter-sum only",
    "flagged_keys": [
     "33:2:11",
     "33:3:2"
@@ -4401,7 +4401,7 @@
    "page": 599,
    "line": 2,
    "class": "c1+b",
-   "evidence": "ٱلْبَرِيَّةِ 0.79x both metrics (print-tight); أولئك 4/3 & هم 2/1 = detached-ك strokes; 98:6:13 fatha deficit = slashx family; width flags = QCF scramble",
+   "evidence": "ٱلْبَرِيَّةِ 0.79x both metrics (print-tight); أولئك 4/3 & هم 2/1 = detached-ك strokes; 98:6:13 fathah deficit = slashx family; width flags = QCF scramble",
    "flagged_keys": [
     "98:6:11",
     "98:6:12",

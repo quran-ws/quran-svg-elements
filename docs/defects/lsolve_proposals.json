@@ -15,28 +15,28 @@
    "cost": 0.0,
    "moves": [
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 47.5,
      "y": 201.8,
      "from": "24:3:7 مُشْرِكَةًۭ",
      "to": "24:3:8 وَٱلزَّانِيَةُ"
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 62.4,
      "y": 193.8,
      "from": "24:3:8 وَٱلزَّانِيَةُ",
      "to": "24:3:7 مُشْرِكَةًۭ"
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 66.9,
      "y": 219.4,
      "from": "24:3:8 وَٱلزَّانِيَةُ",
      "to": "24:3:7 مُشْرِكَةًۭ"
     },
     {
-     "mark": "fathatan",
+     "mark": "tanwin_al_fath",
      "x": 101.6,
      "y": 194.4,
      "from": "24:3:7 مُشْرِكَةًۭ",
@@ -59,14 +59,14 @@
    "cost": 0.0,
    "moves": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 304.9,
      "y": 270.3,
      "from": "24:4:3 ٱلْمُحْصَنَـٰتِ",
      "to": "24:4:2 يَرْمُونَ"
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 331.3,
      "y": 228.3,
      "from": "24:3:10 يَنكِحُهَآ",
@@ -88,14 +88,14 @@
    "cost": 6.0,
    "moves": [
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 305.6,
      "y": 289.9,
      "from": "26:97:4 لَفِى",
      "to": "26:97:5 ضَلَـٰلٍۢ"
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 324.0,
      "y": 269.5,
      "from": "26:97:4 لَفِى",
@@ -117,14 +117,14 @@
    "cost": 19.9,
    "moves": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 8.3,
      "y": 251.4,
      "from": "56:33:3 وَلَا",
      "to": "56:33:2 مَقْطُوعَةٍۢ"
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 11.3,
      "y": 248.1,
      "from": "56:33:3 وَلَا",
@@ -147,21 +147,21 @@
    "cost": 16.9,
    "moves": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 36.2,
      "y": 60.3,
      "from": "98:7:2 ٱلَّذِينَ",
      "to": "98:7:3 ءَامَنُوا۟"
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 45.7,
      "y": 39.7,
      "from": "98:7:3 ءَامَنُوا۟",
      "to": "98:6:9 نَارِ"
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 68.6,
      "y": 38.8,
      "from": "98:6:9 نَارِ",
@@ -184,14 +184,14 @@
    "cost": 8.6,
    "moves": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 187.4,
      "y": 53.2,
      "from": "98:6:16 ٱلْبَرِيَّةِ",
      "to": "98:6:15 شَرُّ"
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 221.2,
      "y": 53.3,
      "from": "98:6:15 شَرُّ",
@@ -215,7 +215,7 @@
    "cost": 2.7,
    "moves": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 195.9,
      "y": 106.5,
      "from": "37:5:3 وَٱلْأَرْضِ",
@@ -236,7 +236,7 @@
    "cost": 5.3,
    "moves": [
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 68.2,
      "y": 502.4,
      "from": "53:26:5 ٱلسَّمَـٰوَٰتِ",
@@ -257,7 +257,7 @@
    "cost": 0.0,
    "moves": [
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 19.9,
      "y": 109.9,
      "from": "58:7:38 يُنَبِّئُهُم",
@@ -281,14 +281,14 @@
    "cost": 40.6,
    "moves": [
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 172.5,
      "y": 267.5,
      "from": "74:31:37 بِهَـٰذَا",
      "to": "74:31:38 مَثَلًۭا ۚ"
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 208.0,
      "y": 286.6,
      "from": "74:31:48 يَعْلَمُ",
@@ -313,7 +313,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 276.6,
      "holder": "عِبَادِهِۦٓ",
      "cands": [
@@ -323,7 +323,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 281.1,
      "holder": "أَنْ",
      "cands": [
@@ -333,7 +333,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 303.0,
      "holder": "عِبَادِهِۦٓ",
      "cands": [
@@ -342,7 +342,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 315.5,
      "holder": "عِبَادِهِۦٓ",
      "cands": [
@@ -352,7 +352,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 327.4,
      "holder": "عِبَادِهِۦٓ",
      "cands": [
@@ -375,7 +375,7 @@
    ],
    "entities": [
     {
-     "mark": "kasratan",
+     "mark": "tanwin_al_kasr",
      "x": 19.7,
      "holder": "وَكَأْسٍۢ",
      "cands": [
@@ -384,7 +384,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 60.6,
      "holder": "وَكَأْسٍۢ",
      "cands": [
@@ -393,7 +393,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 85.3,
      "holder": "وَأَبَارِيقَ",
      "cands": [
@@ -402,7 +402,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 95.4,
      "holder": "وَأَبَارِيقَ",
      "cands": [
@@ -411,7 +411,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 99.2,
      "holder": "وَأَبَارِيقَ",
      "cands": [
@@ -420,7 +420,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 108.2,
      "holder": "وَأَبَارِيقَ",
      "cands": [
@@ -429,7 +429,7 @@
      ]
     },
     {
-     "mark": "kasratan",
+     "mark": "tanwin_al_kasr",
      "x": 122.0,
      "holder": "بِأَكْوَابٍۢ",
      "cands": [
@@ -438,7 +438,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 151.6,
      "holder": "بِأَكْوَابٍۢ",
      "cands": [
@@ -462,7 +462,7 @@
    ],
    "entities": [
     {
-     "mark": "fathatan",
+     "mark": "tanwin_al_fath",
      "x": 53.7,
      "holder": "مَآءًۭ",
      "cands": [
@@ -471,7 +471,7 @@
      ]
     }
    ],
-   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+   "class": "trailing-tanwin-after-hamzah (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
   },
   {
    "page": 4,
@@ -486,7 +486,7 @@
    ],
    "entities": [
     {
-     "mark": "fathatan",
+     "mark": "tanwin_al_fath",
      "x": 177.3,
      "holder": "بِنَآءًۭ",
      "cands": [
@@ -495,7 +495,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 199.5,
      "holder": "بِنَآءًۭ",
      "cands": [
@@ -505,7 +505,7 @@
      ]
     }
    ],
-   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+   "class": "trailing-tanwin-after-hamzah (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
   },
   {
    "page": 4,
@@ -520,7 +520,7 @@
    ],
    "entities": [
     {
-     "mark": "kasratan",
+     "mark": "tanwin_al_kasr",
      "x": 271.4,
      "holder": "شَىْءٍۢ",
      "cands": [
@@ -529,7 +529,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 289.6,
      "holder": "شَىْءٍۢ",
      "cands": [
@@ -539,7 +539,7 @@
      ]
     }
    ],
-   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+   "class": "trailing-tanwin-after-hamzah (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
   },
   {
    "page": 63,
@@ -553,7 +553,7 @@
    ],
    "entities": [
     {
-     "mark": "fathatan",
+     "mark": "tanwin_al_fath",
      "x": 128.8,
      "holder": "أَعْدَآءًۭ",
      "cands": [
@@ -562,7 +562,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 161.8,
      "holder": "أَعْدَآءًۭ",
      "cands": [
@@ -572,7 +572,7 @@
      ]
     }
    ],
-   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+   "class": "trailing-tanwin-after-hamzah (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
   },
   {
    "page": 64,
@@ -587,7 +587,7 @@
    ],
    "entities": [
     {
-     "mark": "fathatan",
+     "mark": "tanwin_al_fath",
      "x": 305.0,
      "holder": "سَوَآءًۭ ۗ",
      "cands": [
@@ -596,7 +596,7 @@
      ]
     }
    ],
-   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+   "class": "trailing-tanwin-after-hamzah (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
   },
   {
    "page": 129,
@@ -611,7 +611,7 @@
    ],
    "entities": [
     {
-     "mark": "kasratan",
+     "mark": "tanwin_al_kasr",
      "x": 56.5,
      "holder": "شَىْءٍۢ",
      "cands": [
@@ -621,7 +621,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 74.0,
      "holder": "شَىْءٍۢ",
      "cands": [
@@ -630,7 +630,7 @@
      ]
     }
    ],
-   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+   "class": "trailing-tanwin-after-hamzah (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
   },
   {
    "page": 129,
@@ -645,7 +645,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 156.6,
      "holder": "بِخَيْرٍۢ",
      "cands": [
@@ -655,7 +655,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 165.6,
      "holder": "بِخَيْرٍۢ",
      "cands": [
@@ -665,7 +665,7 @@
      ]
     },
     {
-     "mark": "kasratan",
+     "mark": "tanwin_al_kasr",
      "x": 181.3,
      "holder": "بِخَيْرٍۢ",
      "cands": [
@@ -674,7 +674,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 188.3,
      "holder": "بِخَيْرٍۢ",
      "cands": [
@@ -684,7 +684,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 247.4,
      "holder": "فَوْقَ",
      "cands": [
@@ -708,7 +708,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 251.8,
      "holder": "عَنْهُمْ",
      "cands": [
@@ -717,7 +717,7 @@
      ]
     },
     {
-     "mark": "damma",
+     "mark": "dammah",
      "x": 263.3,
      "holder": "عَنْهُمْ",
      "cands": [
@@ -726,7 +726,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 276.1,
      "holder": "عَنْهُمْ",
      "cands": [
@@ -735,7 +735,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 301.3,
      "holder": "مَّعْدُودَةٍۢ",
      "cands": [
@@ -758,7 +758,7 @@
    ],
    "entities": [
     {
-     "mark": "kasratan",
+     "mark": "tanwin_al_kasr",
      "x": 77.9,
      "holder": "وَاقٍۢ",
      "cands": [
@@ -767,7 +767,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 90.2,
      "holder": "وَاقٍۢ",
      "cands": [
@@ -790,7 +790,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 291.4,
      "holder": "جَآءَكَ",
      "cands": [
@@ -799,7 +799,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 302.2,
      "holder": "جَآءَكَ",
      "cands": [
@@ -822,7 +822,7 @@
    ],
    "entities": [
     {
-     "mark": "kasratan",
+     "mark": "tanwin_al_kasr",
      "x": 290.3,
      "holder": "شَىْءٍۢ",
      "cands": [
@@ -832,7 +832,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 307.3,
      "holder": "شَىْءٍۢ",
      "cands": [
@@ -842,7 +842,7 @@
      ]
     }
    ],
-   "class": "trailing-tanween-after-hamza (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
+   "class": "trailing-tanwin-after-hamzah (probably legitimate drawing; the ٍۢ of شَىْءٍۢ sits clear of the ء)"
   },
   {
    "page": 368,
@@ -856,7 +856,7 @@
    ],
    "entities": [
     {
-     "mark": "dammatan",
+     "mark": "tanwin_al_damm",
      "x": 68.8,
      "holder": "ثُعْبَانٌۭ",
      "cands": [
@@ -865,7 +865,7 @@
      ]
     },
     {
-     "mark": "damma",
+     "mark": "dammah",
      "x": 99.7,
      "holder": "ثُعْبَانٌۭ",
      "cands": [
@@ -889,7 +889,7 @@
    ],
    "entities": [
     {
-     "mark": "kasratan",
+     "mark": "tanwin_al_kasr",
      "x": 92.8,
      "holder": "أَيَّامٍۢ",
      "cands": [
@@ -913,7 +913,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 258.9,
      "holder": "مِنَ",
      "cands": [
@@ -923,7 +923,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 276.9,
      "holder": "مِنَ",
      "cands": [
@@ -947,7 +947,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 283.6,
      "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
      "cands": [
@@ -957,7 +957,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 292.4,
      "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
      "cands": [
@@ -966,7 +966,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 301.1,
      "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
      "cands": [
@@ -975,7 +975,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 307.6,
      "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
      "cands": [
@@ -984,7 +984,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 329.3,
      "holder": "وَٱلْأَفْـِٔدَةَ ۚ",
      "cands": [
@@ -1010,7 +1010,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 270.1,
      "holder": "إِلَى",
      "cands": [
@@ -1020,7 +1020,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 281.3,
      "holder": "إِلَى",
      "cands": [
@@ -1029,7 +1029,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 322.1,
      "holder": "عَذَابٌۭ",
      "cands": [
@@ -1057,7 +1057,7 @@
    ],
    "entities": [
     {
-     "mark": "damma",
+     "mark": "dammah",
      "x": 71.0,
      "holder": "سَبِيلِ",
      "cands": [
@@ -1067,7 +1067,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 75.5,
      "holder": "سَبِيلِ",
      "cands": [
@@ -1077,7 +1077,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 90.4,
      "holder": "سَبِيلِ",
      "cands": [
@@ -1087,7 +1087,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 95.7,
      "holder": "سَبِيلِ",
      "cands": [
@@ -1115,7 +1115,7 @@
    ],
    "entities": [
     {
-     "mark": "damma",
+     "mark": "dammah",
      "x": 243.2,
      "holder": "ءَامَنُوٓا۟",
      "cands": [
@@ -1124,7 +1124,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 250.1,
      "holder": "ءَامَنُوٓا۟",
      "cands": [
@@ -1133,7 +1133,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 258.9,
      "holder": "فَتَعْسًۭا",
      "cands": [
@@ -1142,7 +1142,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 260.8,
      "holder": "ءَامَنُوٓا۟",
      "cands": [
@@ -1151,7 +1151,7 @@
      ]
     },
     {
-     "mark": "damma",
+     "mark": "dammah",
      "x": 261.8,
      "holder": "فَتَعْسًۭا",
      "cands": [
@@ -1160,7 +1160,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 265.0,
      "holder": "فَتَعْسًۭا",
      "cands": [
@@ -1188,7 +1188,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 254.7,
      "holder": "كَفَرُوا۟",
      "cands": [
@@ -1198,7 +1198,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 257.5,
      "holder": "كَفَرُوا۟",
      "cands": [
@@ -1221,7 +1221,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 177.2,
      "holder": "وَٱلْأُولَىٰ",
      "cands": [
@@ -1230,7 +1230,7 @@
      ]
     },
     {
-     "mark": "damma",
+     "mark": "dammah",
      "x": 187.8,
      "holder": "وَٱلْأُولَىٰ",
      "cands": [
@@ -1240,7 +1240,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 207.3,
      "holder": "وَٱلْأُولَىٰ",
      "cands": [
@@ -1264,7 +1264,7 @@
    ],
    "entities": [
     {
-     "mark": "fathatan",
+     "mark": "tanwin_al_fath",
      "x": 54.1,
      "holder": "جَزَآءًۭ",
      "cands": [
@@ -1273,7 +1273,7 @@
      ]
     },
     {
-     "mark": "kasratan",
+     "mark": "tanwin_al_kasr",
      "x": 80.8,
      "holder": "أَمْرٍۢ",
      "cands": [
@@ -1283,7 +1283,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 84.5,
      "holder": "أَمْرٍۢ",
      "cands": [
@@ -1308,7 +1308,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 176.6,
      "holder": "وَٱلْمُؤْتَفِكَـٰتُ",
      "cands": [
@@ -1317,7 +1317,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 210.9,
      "holder": "وَٱلْمُؤْتَفِكَـٰتُ",
      "cands": [
@@ -1341,7 +1341,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 308.7,
      "holder": "وَجَآءَ",
      "cands": [
@@ -1367,7 +1367,7 @@
    ],
    "entities": [
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 23.7,
      "holder": "يَرْتَابَ",
      "cands": [
@@ -1376,7 +1376,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 31.5,
      "holder": "يَرْتَابَ",
      "cands": [
@@ -1386,7 +1386,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 34.4,
      "holder": "وَلَا",
      "cands": [
@@ -1396,7 +1396,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 43.7,
      "holder": "يَرْتَابَ",
      "cands": [
@@ -1406,7 +1406,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 49.4,
      "holder": "وَلَا",
      "cands": [
@@ -1430,7 +1430,7 @@
    ],
    "entities": [
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 280.2,
      "holder": "إِلَّآ",
      "cands": [
@@ -1440,7 +1440,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 283.7,
      "holder": "إِلَّآ",
      "cands": [
@@ -1464,7 +1464,7 @@
    ],
    "entities": [
     {
-     "mark": "dammatan",
+     "mark": "tanwin_al_damm",
      "x": 166.3,
      "holder": "قُرْءَانٌۭ",
      "cands": [
@@ -1473,7 +1473,7 @@
      ]
     },
     {
-     "mark": "damma",
+     "mark": "dammah",
      "x": 187.4,
      "holder": "قُرْءَانٌۭ",
      "cands": [
@@ -1497,7 +1497,7 @@
    ],
    "entities": [
     {
-     "mark": "dammatan",
+     "mark": "tanwin_al_damm",
      "x": 245.2,
      "holder": "لَقَادِرٌۭ",
      "cands": [
@@ -1506,7 +1506,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 261.2,
      "holder": "لَقَادِرٌۭ",
      "cands": [
@@ -1515,7 +1515,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 266.8,
      "holder": "لَقَادِرٌۭ",
      "cands": [
@@ -1539,7 +1539,7 @@
    ],
    "entities": [
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 217.6,
      "holder": "إِن",
      "cands": [
@@ -1562,7 +1562,7 @@
    ],
    "entities": [
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 253.7,
      "holder": "لِرَبِّهِۦ",
      "cands": [
@@ -1571,7 +1571,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 258.9,
      "holder": "لِرَبِّهِۦ",
      "cands": [
@@ -1581,7 +1581,7 @@
      ]
     },
     {
-     "mark": "fatha",
+     "mark": "fathah",
      "x": 265.9,
      "holder": "لِرَبِّهِۦ",
      "cands": [
@@ -1590,7 +1590,7 @@
      ]
     },
     {
-     "mark": "kasra",
+     "mark": "kasrah",
      "x": 270.0,
      "holder": "لِرَبِّهِۦ",
      "cands": [

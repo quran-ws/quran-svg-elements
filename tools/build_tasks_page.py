@@ -56,7 +56,7 @@ def main():
                                                      or p.get("title") or "")[:120]))
     # standing manual tasks that live outside the two boards
     rows.append((4, 0, "labels", "61 shapes",
-                 "Name each shape on the label sheet (hamza sections)."))
+                 "Name each shape on the label sheet (hamzah sections)."))
     rows.append((4, 27, "2:181", "بَعْدَ مَا",
                  "One glance: are the two words on the right lines? (line 15)"))
     rows.append((4, 177, "8:6", "بَعْدَ مَا",
@@ -68,7 +68,7 @@ def main():
     rows.append((4, 329, "21:88", "نُـۨجِى",
                  "One glance: the small high noon above — confirm it is drawn."))
     rows.append((4, 159, "2:247", "بَصْۜطَةً",
-                 "One glance: is the small seen wrongly tagged as shadda?"))
+                 "One glance: is the small seen wrongly tagged as shaddah?"))
     rows.sort()
     order = {0: "CERTAIN — do these first", 1: "CHANGED — review again",
              2: "LIKELY — one look each", 3: "DECISIONS",
@@ -79,7 +79,7 @@ body{font-family:system-ui;margin:20px auto;max-width:900px;background:#fafafa}
 h1{font-size:22px} h2{font-size:16px;margin:26px 0 8px;color:#444}
 .row{background:#fff;border:1px solid #ddd;border-radius:8px;padding:10px 14px;
 margin:6px 0;display:flex;gap:14px;align-items:center}
-.w{font-size:22px;font-family:'KFGQPC Uthmanic Script HAFS',serif;min-width:130px;text-align:center}
+.w{font-size:22px;font-family:'KFGQPC RasmUthmani Script HAFS',serif;min-width:130px;text-align:center}
 .t{flex:1;font-size:14px;color:#222}
 a.go{background:#2563eb;color:#fff;padding:6px 14px;border-radius:6px;
 text-decoration:none;font-size:13px;white-space:nowrap}

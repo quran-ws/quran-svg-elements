@@ -24,29 +24,29 @@ from collections import Counter, defaultdict
 # A count that is SHORT of the text usually means ink we failed to name; a
 # count that is OVER it usually means ink we named twice or stole.
 LANE = {
-    "pause": "label",        # waqf glyphs are ligatures of real letters
-    "damma": "label",        # the ornate damma and a dot pair look alike
+    "waqf": "label",        # waqf glyphs are ligatures of real letters
+    "dammah": "label",        # the ornate dammah and a dot pair look alike
     "dots": "label",
-    "small-circle": "label",
-    "sifr-mustadir": "label",   # taxonomy phase 1: the two zeros
-    "sifr-mustatil": "label",
+    "small_circle": "label",
+    "rounded_zero": "label",   # taxonomy phase 1: the two zeros
+    "rectangular_zero": "label",
     "saktah": "label",         # the U+06DC sites, named by job
-    "seen-reading": "label",
-    "small-noon": "label",
+    "seen_al_qiraah": "label",
+    "small_noon": "label",
     "ligatures": "auto",     # surplus pieces = ink stolen from a neighbour
-    "fatha": "auto",         # side rule + budget
-    "kasra": "auto",
-    "fathatan": "auto",
-    "kasratan": "auto",
+    "fathah": "auto",         # side rule + budget
+    "kasrah": "auto",
+    "tanwin_al_fath": "auto",
+    "tanwin_al_kasr": "auto",
     "sukun": "auto",
-    "shadda": "auto",
+    "shaddah": "auto",
     "maddah": "auto",
-    "wasla": "auto",         # a wasla only ever sits on an alef
-    "small-alef": "auto",
-    "small-waw": "auto",     # the pronoun suffix trails its own word
-    "small-ya": "auto",
-    "hamza": "auto",
-    "dammatan": "auto",
+    "hamzat_al_wasl": "auto",         # a hamzat_al_wasl only ever sits on an alef
+    "omitted_alif": "auto",
+    "small_waw": "auto",     # the pronoun suffix trails its own word
+    "small_yaa": "auto",
+    "hamzah": "auto",
+    "tanwin_al_damm": "auto",
     "rtl-order": "auto",
 }
 IV_LANE = {"BODY-STEAL": "auto", "BODY-GRAB": "auto",
@@ -56,14 +56,14 @@ IV_LANE = {"BODY-STEAL": "auto", "BODY-GRAB": "auto",
 def contested_words(sig_flags, labels):
     """Words whose ink actually contains a shape nobody has settled.
 
-    Routing by family alone sent every pause and dot flag to the reviewer, but
+    Routing by family alone sent every waqf and dot flag to the reviewer, but
     a family is not evidence: what makes a defect answerable by naming a SHAPE
     is that one of the word's own outlines is unnamed or disputed. Measured
     against the real data, that is a few dozen words, not a few hundred.
     """
     if not sig_flags or not os.path.exists(sig_flags):
         return None
-    derived = ({"fatha", "kasra", "fathatan", "kasratan"}, {"damma", "dammatan"})
+    derived = ({"fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr"}, {"dammah", "tanwin_al_damm"})
     out = set()
     for r in json.load(open(sig_flags)):
         if r.get("kind") != "mark":

@@ -5,7 +5,7 @@ quran.com's mushaf-2 layout is wrong about which words are on the page for 25
 pages (reported.json item 21; 18 of them in juz 29-30 — the juz-30 mechanism).
 The DigitalKhatt DBs (QUL export, .cache/digitalkhatt/) model this exact print
 and agree with MushafDatabase on every disputed page, so PAGE and LINE
-membership come from them; the diacritic TEXT stays quran.com's uthmani
+membership come from them; the diacritic TEXT stays quran.com's rasm_uthmani
 (measured best, CLAUDE.md ground rules), joined by location.
 
 Output: .cache/words-dk/page-NNN.json in the exact shape page_words() reads
@@ -14,7 +14,7 @@ from cache, so the pipeline runs unchanged with cache_dir pointed here.
 Location mapping: DigitalKhatt segments بَعْدَ مَا as TWO words (the print's
 own segmentation) in all three ayahs it occurs — 2:181 (p27), 8:6 (p177),
 13:37 (p254) — so those ayahs' positions run one ahead of quran.com's after
-the split. The uthmani join maps through that shift; the two halves of each
+the split. The rasm_uthmani join maps through that shift; the two halves of each
 compound take the split texts بَعْدَ and مَا directly.
 
     python3 tools/build_dk_words.py            # writes all 604 pages
@@ -35,7 +35,7 @@ SPLITS = {(2, 181): 3, (8, 6): 4, (13, 37): 8}
 
 
 def load_qc_text():
-    """location -> (uthmani, imlaei) from the existing quran.com caches.
+    """location -> (rasm_uthmani, rasm_imlai) from the existing quran.com caches.
     Global, because on the 25 bad pages the right words live in NEIGHBOURING
     page files."""
     out = {}
@@ -79,10 +79,10 @@ def build_lines():
             " FROM pages ORDER BY page_number, line_number"):
         if ltype != "ayah":
             continue
-        for wid in range(lo, hi + 1):
-            if wid not in words:
+        for word_key in range(lo, hi + 1):
+            if word_key not in words:
                 continue
-            loc, txt = words[wid]
+            loc, txt = words[word_key]
             if txt.startswith("۝"):
                 continue                       # ayah-end medallion
             out.setdefault(str(pg), {})[loc] = ln
@@ -117,20 +117,20 @@ def main():
             "SELECT line_number, line_type, CAST(first_word_id AS INT),"
             " CAST(last_word_id AS INT) FROM pages WHERE page_number=?"
             " ORDER BY line_number", (pg,)).fetchall()
-        verses = {}
+        ayahs = {}
         for ln, ltype, lo, hi in rows:
             if ltype != "ayah":
                 continue                      # surah frames / basmalah lines
-            for wid in range(lo, hi + 1):
-                if wid not in words:
+            for word_key in range(lo, hi + 1):
+                if word_key not in words:
                     continue
-                loc, dk_text = words[wid]
+                loc, dk_text = words[word_key]
                 s, ay = (int(x) for x in loc.split(":")[:2])
                 vk = "%d:%d" % (s, ay)
                 if dk_text.startswith("۝") or dk_text.startswith("۝"):
                     # the ayah-end medallion: keep as 'end' so downstream
                     # consumers see the same shape quran.com files have
-                    verses.setdefault(vk, []).append({
+                    ayahs.setdefault(vk, []).append({
                         "position": int(loc.split(":")[2]),
                         "char_type_name": "end", "line_number": ln,
                         "text_uthmani": dk_text, "text_imlaei": dk_text})
@@ -153,19 +153,19 @@ def main():
                     else:
                         ut = im = unicodedata.normalize("NFC", dk_text)
                         missing += 1
-                verses.setdefault(vk, []).append({
+                ayahs.setdefault(vk, []).append({
                     "position": int(loc.split(":")[2]),
                     "char_type_name": "word", "line_number": ln,
                     "text_uthmani": ut, "text_imlaei": im})
         data = {"verses": [{"verse_key": vk, "words": ws}
                            for vk, ws in sorted(
-                               verses.items(),
+                               ayahs.items(),
                                key=lambda kv: tuple(int(x) for x in
                                                     kv[0].split(":")))],
-                "source": "digitalkhatt-1441H layout + uthmani text"}
+                "source": "digitalkhatt-1441H layout + rasm_uthmani text"}
         json.dump(data, open(os.path.join(OUT, "page-%03d.json" % pg), "w",
                              encoding="utf-8"), ensure_ascii=False)
-    print("wrote pages %d-%d to %s | words with no uthmani join (kept "
+    print("wrote pages %d-%d to %s | words with no rasm_uthmani join (kept "
           "DigitalKhatt text): %d" % (a, b, OUT, missing))
 
 

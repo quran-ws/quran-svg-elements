@@ -16,15 +16,15 @@ from collections import Counter, defaultdict
 ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
 
-FAMS = ["fatha", "kasra", "fathatan", "kasratan", "damma", "dammatan",
-        "sukun", "shadda", "hamza", "maddah", "wasla", "small-alef",
-        "small-waw", "small-ya", "small-noon", "sifr-mustadir",
-        "sifr-mustatil", "meem-iqlab", "pause", "saktah", "seen-reading",
-        "dot", "two-dots", "three-dots", "sajdah-line", "sajdah-sign", "hizb"]
-CHOICES = ["fatha", "kasra", "damma", "sukun", "shadda", "hamza", "maddah",
-           "wasla", "small-alef", "small-waw", "small-ya", "meem-iqlab",
-           "pause", "dot", "two-dots", "three-dots", "letter", "letter-part",
-           "letter-hamza"]
+FAMS = ["fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr", "dammah", "tanwin_al_damm",
+        "sukun", "shaddah", "hamzah", "maddah", "hamzat_al_wasl", "omitted_alif",
+        "small_waw", "small_yaa", "small_noon", "rounded_zero",
+        "rectangular_zero", "small_meem", "waqf", "saktah", "seen_al_qiraah",
+        "dot", "two_dots", "three_dots", "sajdah_line", "sajdah_mark", "hizb"]
+CHOICES = ["fathah", "kasrah", "dammah", "sukun", "shaddah", "hamzah", "maddah",
+           "hamzat_al_wasl", "omitted_alif", "small_waw", "small_yaa", "small_meem",
+           "waqf", "dot", "two_dots", "three_dots", "letter", "letter_part",
+           "letter_hamzah"]
 
 
 def main():
@@ -33,7 +33,7 @@ def main():
         pg = int(f[-7:-4])
         svg = open(f, encoding="utf-8").read()
         for m in re.finditer(
-                r'<path data-eid="(e\d+)" data-kind="mark" '
+                r'<path data-element-id="(e\d+)" data-kind="mark" '
                 r'(?:data-mark(?:-part)?="([^"]+)" )?[^>]*?data-sig="([0-9a-f]+)"'
                 r'(?:[^>]*?data-waqf="([^"]+)")?',
                 svg):
@@ -42,9 +42,9 @@ def main():
             attrs = dict(re.findall(r'data-([a-z-]+)="([^"]*)"',
                                     svg[m.start():tag_end]))
             # EVERY distinguishing attribute makes its own section: the
-            # catalog's waqf types, tanween arrangement, iqlab membership,
+            # catalog's waqf types, tanwin arrangement, iqlab membership,
             # welded parts, standalone signs
-            if mark == "pause" and attrs.get("waqf"):
+            if mark == "waqf" and attrs.get("waqf"):
                 mark = attrs["waqf"]        # legacy pages
             if attrs.get("form"):
                 mark += " (%s)" % attrs["form"]
@@ -58,7 +58,7 @@ def main():
             if attrs.get("standalone"):
                 mark += " [standalone]"
             w0 = svg.rfind('<g class="word"', 0, m.start())
-            wt = re.search(r'data-uthmani="([^"]*)"', svg[w0:w0 + 400]) \
+            wt = re.search(r'data-rasm-uthmani="([^"]*)"', svg[w0:w0 + 400]) \
                 if w0 > -1 else None
             occ[sig].append((pg, wt.group(1) if wt else "", mark, eid, attrs))
     lab = json.load(open(os.path.join(ROOT, ".cache", "marks", "labels.json")))
@@ -79,7 +79,7 @@ def main():
     def snippet(pg, eid):
         f = os.path.join(CACHE, "%03d.svg" % pg)
         svg = open(f, encoding="utf-8").read()
-        m = re.search('<path data-eid="%s"' % eid, svg)
+        m = re.search('<path data-element-id="%s"' % eid, svg)
         if not m:
             return ""
         w0 = svg.rfind('<g class="word"', 0, m.start())
@@ -93,7 +93,7 @@ def main():
                 break
         else:
             return ""
-        if 'data-eid="%s"' % eid not in grp:
+        if 'data-element-id="%s"' % eid not in grp:
             # a STANDALONE sign (hizb, sajdah) lives outside every word
             # group: the nearest word's group cannot show it. Render the
             # sign's own path alone instead of an unrelated word.
@@ -106,15 +106,15 @@ def main():
                 grp = svg[m.start():tail + 2]
             if not grp:
                 return ""
-        grp = grp.replace('data-eid="%s" ' % eid,
-                          'data-eid="%s" style="fill:#c22" ' % eid)
+        grp = grp.replace('data-element-id="%s" ' % eid,
+                          'data-element-id="%s" style="fill:#c22" ' % eid)
         # the sign's welded parts (the ج's dot, the قلى dots, the small
         # noon's dot) belong to the shape — colour them too so the variant
         # shows the COMPLETE sign
-        mk_m = re.search(r'data-eid="%s"[^>]*data-mark="([^"]+)"' % eid, grp)
+        mk_m = re.search(r'data-element-id="%s"[^>]*data-mark="([^"]+)"' % eid, grp)
         if mk_m:
             grp = re.sub(
-                r'(<path data-eid="e\d+" data-kind="mark" '
+                r'(<path data-element-id="e\d+" data-kind="mark" '
                 r'data-mark-part="%s" )' % re.escape(mk_m.group(1)),
                 r'\1style="fill:#c22" ', grp)
         root = re.search(r'<g transform="matrix[^"]*">', svg)
@@ -127,8 +127,8 @@ def main():
     for sig, rows in occ.items():
         # one row per (signature, FINAL family) — a shared outline must not
         # bury a rare sign in a common family's section (the generic dot
-        # sig carries 3 of the 6 muanaqah masters; they belong in the
-        # muanaqah section, Abdullah 2026-08-28)
+        # sig carries 3 of the 6 waqf_al_muanaqah masters; they belong in the
+        # waqf_al_muanaqah section, Abdullah 2026-08-28)
         per = defaultdict(list)
         for r in rows:
             per[r[2]].append(r)
@@ -144,7 +144,7 @@ background:#eee;border-radius:6px;cursor:pointer}
 margin:6px 0;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
 .ink{width:170px;height:80px;} .ink.zoom{width:80px;height:80px;flex:none;border:1px solid #eee;border-radius:6px}
 .ink svg{width:100%;height:100%}
-.w{font-size:20px;font-family:'KFGQPC Uthmanic Script HAFS',serif}
+.w{font-size:20px;font-family:'KFGQPC RasmUthmani Script HAFS',serif}
 .k{color:#888;font-size:12px}
 .btns button{margin:2px;padding:3px 8px;border:1px solid #bbb;border-radius:5px;
 background:#f4f4f4;cursor:pointer;font-size:12px}
@@ -202,10 +202,10 @@ wrong; it saves immediately. Click a family title to open it.</p>"""]
                              ' class="on"' if (fl and fl["label"] == c)
                              or (not fl and c == tl) else "", c)
                           for c in CHOICES)
-            tl_show = ("slash — fatha/kasra by position"
-                       if tl in ("fatha", "kasra", "fathatan", "kasratan")
-                       else ("damma-family — by pairing" if tl in
-                             ("damma", "dammatan") else tl))
+            tl_show = ("slash — fathah/kasrah by position"
+                       if tl in ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr")
+                       else ("dammah-family — by pairing" if tl in
+                             ("dammah", "tanwin_al_damm") else tl))
             snip = snippet(pg0, eid0)
             out.append(
                 '<div class="row"><div class="ink">%s</div>'
@@ -381,9 +381,9 @@ function loadGroup(sig, btn){
       d.samples.forEach(x => {
         const cell = document.createElement('div');
         cell.style.cssText = 'border:1px solid #eee;border-radius:6px;padding:5px';
-        const opts = ['fatha','kasra','fathatan','kasratan','damma','dammatan',
-                      'hamza','sukun','shadda','maddah','wasla','meem-iqlab',
-                      'pause','dot','two-dots','three-dots','letter','letter-part']
+        const opts = ['fathah','kasrah','tanwin_al_fath','tanwin_al_kasr','dammah','tanwin_al_damm',
+                      'hamzah','sukun','shaddah','maddah','hamzat_al_wasl','small_meem',
+                      'waqf','dot','two_dots','three_dots','letter','letter_part']
           .map(o => '<option' + (o === x.mark ? ' selected' : '') + '>'
                     + o + '</option>').join('');
         cell.innerHTML = '<div style="height:70px">' + x.svg + '</div>'

@@ -18,8 +18,8 @@ for w, at in cap["a"]:
     rows.append((w, at, els))
 rows.sort(key=lambda r: -max(e["x2"] for e in r[2]))
 for w, at, els in rows:
-    if want and w["uthmani"] not in want: continue
-    print("\n%s  (%d:%d:%d)   %d atom(s)" % (w["uthmani"], w["surah"], w["ayah"], w["pos"], len(at)))
+    if want and w["rasm_uthmani"] not in want: continue
+    print("\n%s  (%d:%d:%d)   %d atom(s)" % (w["rasm_uthmani"], w["surah"], w["ayah"], w["pos"], len(at)))
     for a in sorted(at, key=lambda a: -a["x2"]):
         bod = [e for e in a["els"] if e["kind"] == "body"]
         print("   atom x %6.1f-%-6.1f  %d els (%d body)  bodies: %s"

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Marks that should be the TOPMOST ink over their spot, but are not.
 
-Abdullah's rule (2026-08-28): fatha, damma and sukun ride ABOVE everything
+Abdullah's rule (2026-08-28): fathah, dammah and sukun ride ABOVE everything
 of their own word at their x — nothing but a waqf/reading sign (which floats
-higher still) legitimately sits over them. A "fatha" with letter-body ink
-above it is a mis-named or mis-owned stroke: the kasra inside the ح bowl of
-p531 كَلَمْحِۭ and the p97 أَوْ below-letters "fatha" are both this shape of
+higher still) legitimately sits over them. A "fathah" with letter-body ink
+above it is a mis-named or mis-owned stroke: the kasrah inside the ح bowl of
+p531 كَلَمْحِۭ and the p97 أَوْ below-letters "fathah" are both this shape of
 defect, and no counting audit can see either.
 
-Flags: mark in (fatha, damma, sukun), non-welded, with a BODY element of the
+Flags: mark in (fathah, dammah, sukun), non-welded, with a BODY element of the
 same word fully above it (body.y2 <= mark.y1 + tol) overlapping >= 30% of
 the mark's width. Small overlaps are ignored per the rule.
 
@@ -22,10 +22,10 @@ from concurrent.futures import ProcessPoolExecutor
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 
-FAMS = ("fatha", "damma", "sukun")
+FAMS = ("fathah", "dammah", "sukun")
 # waqf signs are the TOPMOST ink of their word, full stop (Abdullah
 # 2026-08-28): anything of the same word above one — body OR mark — flags.
-WAQF = ("pause", "muanaqah")
+WAQF = ("waqf", "waqf_al_muanaqah")
 
 
 def scan_page(pg):
@@ -67,7 +67,7 @@ def scan_page(pg):
                 if b["y2"] <= e["y1"] + 0.5:      # fully above the mark
                     key = "%d:%d:%d" % (word["surah"], word["ayah"],
                                         word["pos"])
-                    flags.append((key, word["uthmani"], e["mark"],
+                    flags.append((key, word["rasm_uthmani"], e["mark"],
                                   "body %.1fu above it, %.0f%% x-overlap"
                                   % (e["y1"] - b["y2"], 100 * ov / w)))
                     break

@@ -22,11 +22,11 @@ SWEEP = sys.argv[1] if len(sys.argv) > 1 else os.path.join(
     ROOT, ".cache", "sweeps", "r17")
 
 GROUPS = [
-    ("Slash strays (fatha/kasra counts)",
-     {"fatha", "kasra", "kasratan", "fathatan"}),
+    ("Slash strays (fathah/kasrah counts)",
+     {"fathah", "kasrah", "tanwin_al_kasr", "tanwin_al_fath"}),
     ("Patterned small marks",
-     {"small-alef", "small-ya", "small-waw", "hamza", "pause", "meem-iqlab"}),
-    ("Dammatan residue", {"damma", "dammatan"}),
+     {"omitted_alif", "small_yaa", "small_waw", "hamzah", "waqf", "small_meem"}),
+    ("TanwinAlDamm residue", {"dammah", "tanwin_al_damm"}),
     ("Pieces / art cases", {"ligatures", "pieces"}),
 ]
 
@@ -86,7 +86,7 @@ def main():
            'padding:4px 10px;border-radius:6px}',
            'td{padding:4px 10px;border-bottom:1px solid #eee;'
            'vertical-align:middle}',
-           '.w{font-size:24px;font-family:"KFGQPC Uthmanic Script HAFS",'
+           '.w{font-size:24px;font-family:"KFGQPC RasmUthmani Script HAFS",'
            'serif;white-space:nowrap}',
            'a{color:#68c;text-decoration:none}.b{color:#a33;'
            'font-size:12.5px}',
@@ -157,9 +157,9 @@ def main():
     npos = 0
     for cachename, title, note in (
             ("topmost", "Topmost law",
-             "a letter body drawn above a fatha/damma/sukun — forbidden"),
+             "a letter body drawn above a fathah/dammah/sukun — forbidden"),
             ("slashpos", "Slash on the wrong side",
-             "a fatha below its letters, or a kasra above them — the "
+             "a fathah below its letters, or a kasrah above them — the "
              "name-inversion signature of a mis-owned stroke"),
             ("crossline", "Drawn in another line's territory", ""),
             ("wordheight_form", "Too tall for this word elsewhere",

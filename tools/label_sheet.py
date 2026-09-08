@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Build the review sheet for shapes the pipeline cannot name with confidence.
 
-The art reuses one outline for every fatha, every waqf sign, every sajdah mark,
+The art reuses one outline for every fathah, every waqf sign, every sajdah mark,
 so a shape signature names ink for the WHOLE mushaf: one answer here fixes every
 occurrence. This asks only about shapes that are genuinely contested, ordered by
 how many flagged words each answer settles.
@@ -14,7 +14,7 @@ depending on where it sits, and that is exactly the judgement being asked for.
     open docs/defects/label_sheet.html
 
 Shapes whose element name differs from the table only by drawn POSITION are not
-asked about: the same stroke is a fatha above the letter and a kasra below it,
+asked about: the same stroke is a fathah above the letter and a kasrah below it,
 and the pipeline is right to swap it.
 """
 import argparse, html, json, os, sys
@@ -24,21 +24,21 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 # Families whose final name is DERIVED from one outline rather than chosen by
 # shape, so a disagreement inside them is not a question for a reviewer:
-#   position    - the same stroke is a fatha above the letter, a kasra below it
-#   proximity   - two of that stroke side by side are a tanween
+#   position    - the same stroke is a fathah above the letter, a kasrah below it
+#   proximity   - two of that stroke side by side are a tanwin
 # Dots are NOT such a family: one blob, two and three are different outlines,
 # so a signature called both is a real conflict and stays on the sheet.
-DERIVED = ({"fatha", "kasra", "fathatan", "kasratan"},
-           {"damma", "dammatan"})
-ALL = ["fatha", "kasra", "damma", "fathatan", "kasratan", "dammatan",
-       "sukun", "shadda", "maddah", "small-alef", "small-waw", "small-ya",
-       "small-circle", "sifr-mustadir", "sifr-mustatil", "small-noon",
-       "saktah", "seen-reading", "sajdah-line", "sajdah-sign",
-       "wasla", "hamza", "pause", "meem-iqlab",
-       "dot", "two-dots", "three-dots", "letter-part", "word", "ignore"]
+DERIVED = ({"fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr"},
+           {"dammah", "tanwin_al_damm"})
+ALL = ["fathah", "kasrah", "dammah", "tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm",
+       "sukun", "shaddah", "maddah", "omitted_alif", "small_waw", "small_yaa",
+       "small_circle", "rounded_zero", "rectangular_zero", "small_noon",
+       "saktah", "seen_al_qiraah", "sajdah_line", "sajdah_mark",
+       "hamzat_al_wasl", "hamzah", "waqf", "small_meem",
+       "dot", "two_dots", "three_dots", "letter_part", "word", "ignore"]
 # offered as one-tap buttons beside whatever the shape is already called
-COMMON = ["fatha", "kasra", "damma", "sukun", "shadda", "pause",
-          "dot", "two-dots", "three-dots", "hamza", "maddah", "meem-iqlab"]
+COMMON = ["fathah", "kasrah", "dammah", "sukun", "shaddah", "waqf",
+          "dot", "two_dots", "three_dots", "hamzah", "maddah", "small_meem"]
 
 
 def contested(rows):
@@ -167,7 +167,7 @@ def gather(cand, per):
                                                    (y2 - y1) + 2 * pad),
                     "mvb": "%.2f %.2f %.2f %.2f" % (e["x1"] - mp, e["y1"] - mp,
                                                     mw + 2 * mp, mh + 2 * mp),
-                    "word": w["uthmani"], "page": pg,
+                    "word": w["rasm_uthmani"], "page": pg,
                     "mark": e.get("mark") or "unnamed",
                 })
     return shots

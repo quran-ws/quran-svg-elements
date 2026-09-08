@@ -145,7 +145,7 @@ def build_indexes(out, recs, manifest):
     # ---- index/pages.json: one summary record per page ----------------
     pages = []
     for r in recs:
-        aids = r["ayat"]
+        aids = r["ayahs"]
         pages.append({
             "page": r["page"],
             "view_box": r["view_box"],
@@ -177,7 +177,7 @@ def build_indexes(out, recs, manifest):
             "revelation_order": s["revelation_order"],
             "ayah_count": s["ayah_count"],
             "pages": s["pages"],
-            "has_basmalah": bool(s.get("bismillah_pre")),
+            "has_basmalah": bool(s.get("basmalah_pre")),
         })
     jdump(envelope("quran-svg/surahs",
                    {"count": len(surahs), "surahs": surahs}),
@@ -188,7 +188,7 @@ def build_indexes(out, recs, manifest):
     # pages; the manifest supplies only the page each division starts on.
     page_of = {}
     for r in recs:
-        for aid in r["ayat"]:
+        for aid in r["ayahs"]:
             page_of.setdefault(aid, r["page"])
     # Each of the four attributes is present only on the ayah that STARTS that
     # division, so an ayah's record carries whichever subset applies to it.
@@ -200,43 +200,43 @@ def build_indexes(out, recs, manifest):
     # order, each with the ayah it begins at and that ayah's page.  The SVG
     # carries an attribute only on the ayah that BEGINS a division (30 juz,
     # 60 hizb, 60 nisf, 240 rubʿ — measured), so the lists come straight from
-    # it.  `hizb` and `rub_in_hizb` on a rubʿ record are arithmetic (a rubʿ is
+    # it.  `hizb` and `rubu_al_hizb_in_hizb` on a rubʿ record are arithmetic (a rubʿ is
     # a quarter of a hizb) and are ASSERTED against the 60 ayahs that state
     # their hizb, rather than assumed.
     #
     # `data-nisf-start` is NOT 1/2: it is emitted on the 60 ayahs whose
-    # rub_in_hizb is 3 — the start of each hizb's second half — and its value
+    # rubu_al_hizb_in_hizb is 3 — the start of each hizb's second half — and its value
     # is that boundary's ordinal, 1..60.  It is listed as its own series here
     # for that reason; the 1-or-2 half a rubʿ falls in is `half`.
-    rubs = []
+    rubu_al_hizbs = []
     for aid, pg, d in starts:
-        if "rub" not in d:
+        if "rubu_al_hizb" not in d:
             continue
-        n = d["rub"]
+        n = d["rubu_al_hizb"]
         hz, rih = (n + 3) // 4, (n - 1) % 4 + 1
         if d.get("hizb") not in (None, hz):
             raise AssertionError(
-                "rub %d: page says hizb=%s, arithmetic says %d"
+                "rubu_al_hizb %d: page says hizb=%s, arithmetic says %d"
                 % (n, d.get("hizb"), hz))
-        rubs.append({"rub": n, "hizb": hz, "rub_in_hizb": rih,
+        rubu_al_hizbs.append({"rubu_al_hizb": n, "hizb": hz, "rubu_al_hizb_in_hizb": rih,
                      "half": 1 if rih <= 2 else 2,
-                     "juz": d.get("juz"), "ayah": aid, "page": pg})
-    rubs.sort(key=lambda x: x["rub"])
+                     "juz": d.get("juz"), "ayah_key": aid, "page": pg})
+    rubu_al_hizbs.sort(key=lambda x: x["rubu_al_hizb"])
     juz = sorted(
-        [{"juz": d["juz"], "ayah": aid, "page": pg}
+        [{"juz": d["juz"], "ayah_key": aid, "page": pg}
          for aid, pg, d in starts if "juz" in d], key=lambda x: x["juz"])
     hizb = sorted(
-        [{"hizb": d["hizb"], "ayah": aid, "page": pg}
+        [{"hizb": d["hizb"], "ayah_key": aid, "page": pg}
          for aid, pg, d in starts if "hizb" in d], key=lambda x: x["hizb"])
     nisf = sorted(
-        [{"nisf": d["nisf"], "ayah": aid, "page": pg}
+        [{"nisf": d["nisf"], "ayah_key": aid, "page": pg}
          for aid, pg, d in starts if "nisf" in d], key=lambda x: x["nisf"])
     jdump(envelope("quran-svg/divisions", {
         "description": "every juz, hizb, half-hizb and rubʿ boundary, with "
                        "the ayah it begins at and that ayah's page. A rubʿ "
                        "record's `half` is which half of its hizb it is in; "
                        "the `nisf` series lists the 60 second-half starts.",
-        "juz": juz, "hizb": hizb, "nisf": nisf, "rub": rubs}),
+        "juz": juz, "hizb": hizb, "nisf": nisf, "rubu_al_hizb": rubu_al_hizbs}),
         os.path.join(idx, "divisions.json"))
 
     # ---- index/words.json: the corpus-wide SEARCH index ----------------
@@ -245,16 +245,15 @@ def build_indexes(out, recs, manifest):
     # one file a consumer parses in full.  Per-page sidecars are objects; the
     # saving there was 0.6 KiB brotli against a 121 KiB page, so readability
     # won.  Always read `fields` rather than assuming the column order.
-    fields = ["wid", "w", "page", "line", "uthmani", "search"]
-    rows = [[w["wid"], w["w"], r["page"], w["line"], w["uthmani"], w["search"]]
+    fields = ["word_key", "page", "line", "rasm_uthmani", "search"]
+    rows = [[w["word_key"], r["page"], w["line"], w["rasm_uthmani"], w["search"]]
             for r in recs for w in r["words"]]
     jdump(envelope("quran-svg/words", {
-        "description": "every word in the corpus, in mushaf order. `w` is "
-                       "the global word id shared with the word-by-word "
-                       "source (the same number for this word in every "
-                       "mushaf that has it; the two pieces of 15:7 لَّوْ مَا "
-                       "share one). `search` is the fold-ready key; "
-                       "`uthmani` is the text of record. Full text forms "
+        "description": "every word in the corpus, in mushaf order. "
+                       "`word_key` is surah:ayah:word, all three ordinals "
+                       "and Hafs-specific, and it is the only word key. "
+                       "`search` is the fold-ready key; "
+                       "`rasm_uthmani` is the text of record. Full text forms "
                        "and boxes: index/by-page/.",
         "count": len(rows), "fields": fields, "rows": rows}),
         os.path.join(idx, "words.json"))
@@ -264,9 +263,10 @@ def build_indexes(out, recs, manifest):
         words = []
         for w in r["words"]:
             words.append({
-                "wid": w["wid"], "w": w["w"], "ayah": w["aid"], "line": w["line"],
-                "uthmani": w["uthmani"], "rasm": w["rasm"],
-                "imlaei": w["imlaei"], "search": w["search"], "qpc": w["qpc"],
+                "word_key": w["word_key"], "ayah_key": w["ayah_key"],
+                "line": w["line"],
+                "rasm_uthmani": w["rasm_uthmani"], "rasm": w["rasm"],
+                "rasm_imlai": w["rasm_imlai"], "search": w["search"], "qpc": w["qpc"],
                 "box": rbox(w["box"]) if w["box"] else None,
             })
         jdump(envelope("quran-svg/page-words", {
@@ -276,7 +276,7 @@ def build_indexes(out, recs, manifest):
             os.path.join(by_page, "%03d.json" % r["page"]))
 
     return {"pages": len(pages), "surahs": len(surahs), "words": len(rows),
-            "rub": len(rubs)}
+            "rubu_al_hizb": len(rubu_al_hizbs)}
 
 
 # --------------------------------------------------------------- JSON Schema
@@ -284,22 +284,22 @@ def build_indexes(out, recs, manifest):
 def _divisions_schema(base, env_props, env_req, aid):
     """One series per division kind; a rubʿ record carries its rollups."""
     def series(key, extra=None):
-        props = {key: {"type": "integer"}, "ayah": aid,
+        props = {key: {"type": "integer"}, "ayah_key": aid,
                  "page": {"type": "integer"}}
         props.update(extra or {})
         return {"type": "array", "items": {
-            "type": "object", "required": [key, "ayah", "page"],
+            "type": "object", "required": [key, "ayah_key", "page"],
             "properties": props}}
 
     return dict(base, title="quran-svg/divisions", type="object",
-                required=env_req + ["juz", "hizb", "nisf", "rub"],
+                required=env_req + ["juz", "hizb", "nisf", "rubu_al_hizb"],
                 properties=dict(
                     env_props, description={"type": "string"},
                     juz=series("juz"), hizb=series("hizb"),
                     nisf=series("nisf"),
-                    rub=series("rub", {
+                    rubu_al_hizb=series("rubu_al_hizb", {
                         "hizb": {"type": "integer"},
-                        "rub_in_hizb": {"type": "integer", "minimum": 1,
+                        "rubu_al_hizb_in_hizb": {"type": "integer", "minimum": 1,
                                         "maximum": 4},
                         "half": {"type": "integer", "minimum": 1,
                                  "maximum": 2},
@@ -318,7 +318,7 @@ def build_schemas(out):
     }
     env_req = ["schema", "schema_version", "edition"]
     aid = {"type": "string", "pattern": r"^\d+:\d+$"}
-    wid = {"type": "string", "pattern": r"^\d+:\d+:\d+$"}
+    word_key = {"type": "string", "pattern": r"^\d+:\d+:\d+$"}
 
     schemas = {
         "pages.schema.json": dict(base, title="quran-svg/pages", type="object",
@@ -378,7 +378,7 @@ def build_schemas(out):
                 fields={"type": "array", "items": {"type": "string"}},
                 rows={"type": "array", "items": {
                     "type": "array", "minItems": 6, "maxItems": 6,
-                    "prefixItems": [wid, {"type": "integer", "minimum": 1},
+                    "prefixItems": [word_key, {"type": "integer", "minimum": 1},
                                     {"type": "integer"}, {"type": "integer"},
                                     {"type": "string"}, {"type": "string"}]}})),
 
@@ -391,17 +391,14 @@ def build_schemas(out):
                 box_space={"type": "string"},
                 count={"type": "integer"},
                 words={"type": "array", "items": {"type": "object",
-                    "required": ["wid", "w", "ayah", "line", "uthmani", "rasm",
-                                 "imlaei", "search", "qpc", "box"],
+                    "required": ["word_key", "ayah_key", "line", "rasm_uthmani", "rasm",
+                                 "rasm_imlai", "search", "qpc", "box"],
                     "properties": {
-                        "wid": wid, "ayah": aid,
-                        "w": {"type": "integer", "minimum": 1,
-                              "description": "global word id, shared with the "
-                                             "word-by-word source"},
+                        "word_key": word_key, "ayah_key": aid,
                         "line": {"type": "integer"},
-                        "uthmani": {"type": "string"},
+                        "rasm_uthmani": {"type": "string"},
                         "rasm": {"type": "string"},
-                        "imlaei": {"type": "string"},
+                        "rasm_imlai": {"type": "string"},
                         "search": {"type": "string"},
                         "qpc": {"type": "string"},
                         "box": {"type": ["array", "null"], "minItems": 4,
@@ -438,7 +435,7 @@ README = """\
 # Quran page SVGs — {edition}
 
 604 pages of the **{print_name}**, as vector outlines with the ink semantically
-decomposed: every word is one `<g class="word">` with a stable `data-wid`, and
+decomposed: every word is one `<g class="word">` with a stable `data-word-key`, and
 every diacritic is its own `<path data-mark="…">`. The pages are pixel-identical
 to the print artwork.
 
@@ -455,7 +452,7 @@ covers only what the bundle contains and how to serve it.
 ```js
 // the words of page 42, with their boxes — no SVG parsing needed
 const page = await (await fetch('index/by-page/042.json')).json();
-page.words[0];   // {{ wid:"2:245:1", line:1, uthmani:"…", box:[x0,y0,x1,y1] }}
+page.words[0];   // {{ word_key:"2:245:1", line:1, rasm_uthmani:"…", box:[x0,y0,x1,y1] }}
 ```
 
 ```js
@@ -476,7 +473,7 @@ const hits = idx.rows.filter(r => fold(r[col.search]).includes(fold('الرحم�
 | `index/surahs.json` | the 114 surah records: names, revelation place, ayah count, page range |
 | `index/divisions.json` | every juz, hizb, half-hizb and rubʿ boundary, with its ayah and page |
 | `index/words.json` | every word in the corpus with its page and search key — the search index |
-| `index/by-page/NNN.json` | one page's words: all five text forms, line, and bounding box. **The page itself carries `data-uthmani` only** — rasm, imlaei, search and qpc live here |
+| `index/by-page/NNN.json` | one page's words: all five text forms, line, and bounding box. **The page itself carries `data-rasm-uthmani` only** — rasm, rasm_imlai, search and qpc live here |
 | `schema/FORMAT.md` | the format specification: structure, attributes, mark taxonomy, known limits |
 | `schema/mark-taxonomy.json` | the closed vocabulary of mark names, with category and family |
 | `schema/*.schema.json` | JSON Schema (2020-12) for every data file above |
@@ -570,7 +567,7 @@ Deterministic: two builds of the same inputs produce byte-identical files, which
 `python3 tools/verify_bundle.py --compare dist/{bundle} other/{bundle}` checks.
 `python3 tools/verify_bundle.py dist/{bundle}` validates a bundle on its own —
 every advertised file present, every checksum correct, every JSON parsing,
-pages 1–604 covered, and every `data-wid` in the index resolving to a word group
+pages 1–604 covered, and every `data-word-key` in the index resolving to a word group
 in the page it names.
 """
 
@@ -737,10 +734,10 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
         "counts": {
             "pages": counts["pages"],
             "surahs": counts["surahs"],
-            "ayahs": len({a for r in recs for a in r["ayat"]}),
+            "ayahs": len({a for r in recs for a in r["ayahs"]}),
             "words": counts["words"],
             "marks": marks,
-            "rub_boundaries": counts["rub"],
+            "rubu_al_hizb_boundaries": counts["rubu_al_hizb"],
         },
         "compression": {"brotli": bool(brotli_pages) and "quality 11",
                         "gzip": bool(gzip_pages) and "level 9, mtime 0"},

@@ -10,10 +10,10 @@ Ordered. Each task says what "done" means and which gates must stay green.
 
 ---
 
-## 1. Verify and land the meem-iqlab gate  *(in flight)*
+## 1. Verify and land the small_meem gate  *(in flight)*
 
-`scratchpad/audit_marks.py` now demands `meem-iqlab` ("ۢ", "ۭ"). It was
-excluded for years on the grounds that the meem is "fused into the tanween
+`scratchpad/audit_marks.py` now demands `small_meem` ("ۢ", "ۭ"). It was
+excluded for years on the grounds that the meem is "fused into the tanwin
 glyph" — true of the LOW form, **false of the HIGH form**, which left all 609
 iqlab sites unguarded. p455 `مُغْتَسَلُۢ` was found holding no meem at all (its
 sign sat in `بَارِدࣱ` as anonymous body ink) — MushafDatabase caught the
@@ -61,7 +61,7 @@ dump IS the cache.
 
 **Done when:** the emitted SVG is BYTE-IDENTICAL, logical mark counts equal
 current master-path counts family by family over 604 pages, relation
-cardinalities hold (muanaqah 2, sajdah line+sign, iqlab by subtype), and
+cardinalities hold (waqf_al_muanaqah 2, sajdah line+sign, iqlab by subtype), and
 `validate_annotations 1 604` is green.
 
 ## 4. The ayah marker belongs to its ayah — by LINK, not nesting
@@ -69,9 +69,9 @@ cardinalities hold (muanaqah 2, sajdah line+sign, iqlab by subtype), and
 Decided with Abdullah: an ayah is emitted once per line and can span pages, so
 it is not a subtree and nesting cannot express the fact. Instead:
 
-- stable `id` on each `<g class="ayah-marker">` (e.g. `mk-2-6`),
-- `data-marker="mk-2-6"` on every `<g class="ayah">` fragment,
-- `data-ayah-parts="N"` / `data-part="i"` so a consumer knows an ayah is split,
+- stable `id` on each `<g class="ayah-mark">` (e.g. `mk-2-6`),
+- `data-mark="mk-2-6"` on every `<g class="ayah-fragment">` fragment,
+- `data-ayah-fragments="N"` / `data-part="i"` so a consumer knows an ayah is split,
 - the same relation becomes a first-class record in phase 1.
 
 Zero ink moves, so the numeral cannot drift and the pixel gate is untouched —
@@ -218,7 +218,7 @@ word with marks kept as paths is the recommendation.
 
 ## Defects found today, proved, not yet all fixed
 
-1. **Ayah-marker labels REVERSED on 441 of 604 pages.** `tag_ayah_markers`
+1. **Ayah-mark labels REVERSED on 441 of 604 pages.** `tag_ayah_marks`
    pairs the Nth marker in document order with the Nth ayah ascending, but the
    artwork's marker layer runs BOTTOM-TO-TOP. Proved on p3 in ONE coordinate
    space: each ayah's true marker is 10-17u from where that ayah ends and the
@@ -242,7 +242,7 @@ word with marks kept as paths is the recommendation.
 - **No ayah crosses a page boundary** — 6,236 ayahs, 6,236 (page, ayah) pairs,
   confirmed independently in the DigitalKhatt layout DB. TASKS §4 assumed
   otherwise.
-- **`data-wid` matches quran.com's word keys EXACTLY** (77,432 words), so any
+- **`data-word-key` matches quran.com's word keys EXACTLY** (77,432 words), so any
   word-keyed dataset in that ecosystem joins with no mapping table.
 - **CLAUDE.md's "~12% of words split differently" is an encoding artefact** —
   the real number is 9 words in 77,431.
@@ -275,6 +275,6 @@ word with marks kept as paths is the recommendation.
    until then).
 2. Fix defects 2 and 3 (line grouping, missing surah-name groups).
 3. Build the production profile (one group per word).
-4. Ayah-marker linking by id.
+4. Ayah-mark linking by id.
 5. Rebuild the demo with the design skill.
 6. Regenerate `docs/defects/ink_identity.json` — per-page tests overwrote it.

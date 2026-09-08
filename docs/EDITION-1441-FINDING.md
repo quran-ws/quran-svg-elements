@@ -74,7 +74,7 @@ overlap. There are **50**. The pipeline has been doing real work to reconcile a
 The word TEXT is a separate question and this evidence does not answer it.
 
 - QCF4's `text` field is a **display rendering**, not the print's orthography:
-  78.7% exact against our `data-imlaei`, 0.04% against our skeleton fields, and
+  78.7% exact against our `data-rasm-imlai`, 0.04% against our skeleton fields, and
   it carries its own conventions — decomposed `ء+ا` for `آ`, `ى` where we write
   `ا`, embedded ZWJ, different word-spacing. Differences from it are not
   evidence of drift.
@@ -85,7 +85,7 @@ The word TEXT is a separate question and this evidence does not answer it.
   `parameters.json`). No text, no layout table; the demo at
   `digitalkhatt.org/hb/newmedina` shapes and justifies at runtime.
 
-Our text is uthmani + KFGQPC waqf, measured at 99.974% against MushafDatabase's
+Our text is rasm_uthmani + KFGQPC waqf, measured at 99.974% against MushafDatabase's
 labelling of **this** artwork. That validation was against the ink, not against
 DigitalKhatt, so it survives this finding intact.
 

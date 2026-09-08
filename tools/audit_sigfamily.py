@@ -2,17 +2,17 @@
 """One outline, one mark FAMILY -- mushaf-wide.
 
 `.cache/marks/labels.json` maps a shape signature to a label, but the pipeline
-then re-derives slash names from position (fatha/kasra/fathatan/kasratan are
+then re-derives slash names from position (fathah/kasrah/tanwin_al_fath/tanwin_al_kasr are
 ONE stroke) and splits dot clusters into single-dot members. So the same
 signature legitimately wears several NAMES. What it must never wear is a
 different FAMILY: the outline of a two-dot cluster's member dot cannot also be
-the outline of a fatha stroke. Families here:
+the outline of a fathah stroke. Families here:
 
-    slash = fatha | kasra | fathatan | kasratan     (derived by position)
-    damma = damma | dammatan                        (derived by position)
-    dots  = dot | two-dots | three-dots | muanaqah  (cluster vs member)
-    everything else is its own family (shadda, sukun, hamza, wasla,
-    small-alef, maddah, pause, sifr-*, small-waw, small-ya, meem-iqlab, ...)
+    slash = fathah | kasrah | tanwin_al_fath | tanwin_al_kasr     (derived by position)
+    dammah = dammah | tanwin_al_damm                        (derived by position)
+    dots  = dot | two_dots | three_dots | waqf_al_muanaqah  (cluster vs member)
+    everything else is its own family (shaddah, sukun, hamzah, hamzat_al_wasl,
+    omitted_alif, maddah, waqf, sifr-*, small_waw, small_yaa, small_meem, ...)
 
 MEASURED, all 604 pages, 2,143 distinct mark signatures, 271,163 mark
 elements (2026-08-29). For every signature seen 50+ times, the share of its
@@ -20,8 +20,8 @@ occurrences that fall outside its own dominant family:
 
     share = 0.000000   every signature but two   (2,141 of 2,143: PERFECT)
     ------------------ EMPTY BAND, the whole interval -----------------
-    share = 0.000018   sig d7a8b5e19121fbe4  (slash outline, 54,280x) once "two-dots"
-    share = 0.000040   sig a316a3b8eb2508b0  (two-dots outline, 24,854x) once "fatha"
+    share = 0.000018   sig d7a8b5e19121fbe4  (slash outline, 54,280x) once "two_dots"
+    share = 0.000040   sig a316a3b8eb2508b0  (two_dots outline, 24,854x) once "fathah"
 
 There is no threshold to tune: the band is the entire open interval. Every
 other outline in the book is 100.000% one family. A single cross-family use is
@@ -29,11 +29,11 @@ therefore a proof in the same class as the joining-rule piece count, and it is
 mark-COUNT NEUTRAL, so no counting audit can see it.
 
 The two hits are the two halves of one swap on a single word (p337
-22:46:8 يَعْقِلُونَ): the two-dots outline is named fatha and sits BELOW the
-letters where the ya's dots belong, and the slash outline is named two-dots
-and sits ABOVE where the fatha belongs.
+22:46:8 يَعْقِلُونَ): the two_dots outline is named fathah and sits BELOW the
+letters where the ya's dots belong, and the slash outline is named two_dots
+and sits ABOVE where the fathah belongs.
 
-MIN_N=50 keeps a rare sign (muanaqah, sifr-mustatil, seen-reading) from
+MIN_N=50 keeps a rare sign (waqf_al_muanaqah, rectangular_zero, seen_al_qiraah) from
 being judged against a handful of occurrences.
 
 Usage: python3 tools/audit_sigfamily.py [start] [end] [jobs] [--all]
@@ -50,11 +50,11 @@ ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(
 sys.path.insert(0, os.path.join(ROOT, "tools"))
 
 FAMILY = {
-    "fatha": "slash", "kasra": "slash",
-    "fathatan": "slash", "kasratan": "slash",
-    "damma": "damma", "dammatan": "damma",
-    "dot": "dots", "two-dots": "dots",
-    "three-dots": "dots", "muanaqah": "dots",
+    "fathah": "slash", "kasrah": "slash",
+    "tanwin_al_fath": "slash", "tanwin_al_kasr": "slash",
+    "dammah": "dammah", "tanwin_al_damm": "dammah",
+    "dot": "dots", "two_dots": "dots",
+    "three_dots": "dots", "waqf_al_muanaqah": "dots",
 }
 MIN_N = 50          # a signature must be common enough to have a "own" family
 
@@ -89,7 +89,7 @@ def scan_page(pg):
                 if el["kind"] == "body" or not el.get("sig") \
                         or not el.get("mark"):
                     continue
-                rows.append((el["sig"], el["mark"], pg, key, word["uthmani"],
+                rows.append((el["sig"], el["mark"], pg, key, word["rasm_uthmani"],
                              at.get("lig"),
                              [round(el["x1"], 2), round(el["y1"], 2),
                               round(el["x2"], 2), round(el["y2"], 2)]))

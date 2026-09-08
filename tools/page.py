@@ -7,7 +7,7 @@ from svg_lines import mul, parse_transform, subpaths, transform_box
 
 CONTENT_OPEN = '<g id="content">'
 PATH_RE = re.compile(r"<path\b[^>]*?\bd=\"([^\"]*)\"[^>]*?/>", re.S)
-MARKER_RE = re.compile(r'ayah:x="([-\d.]+)"\s+ayah:y="([-\d.]+)"')
+MARK_RE = re.compile(r'ayah:x="([-\d.]+)"\s+ayah:y="([-\d.]+)"')
 
 
 def _matching_close(svg, start):
@@ -146,7 +146,7 @@ class Page:
 
     def markers(self):
         """Ayah medallion centres the SVG already carries, in page coordinates."""
-        return [(float(x), float(y)) for x, y in MARKER_RE.findall(self.svg)]
+        return [(float(x), float(y)) for x, y in MARK_RE.findall(self.svg)]
 
     def polygon_bands(self, json_dir):
         """Row edges implied by the per-page ayah polygons — independent of the glyphs."""

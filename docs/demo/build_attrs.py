@@ -4,7 +4,7 @@
 Scans .cache/words-svg/hafs-kfqc/001.svg .. 604.svg and writes
 docs/demo/data/attrs.json: one row per (element scope, attribute) pair, where
 the scope is written the way a developer would select it -- tag name plus the
-element's class, e.g. "g.word", "g.ayah-marker", "path", "svg".
+element's class, e.g. "g.word", "g.ayah-mark", "path", "svg".
 
 Distinct-value sets are carried up to DISTINCT_CAP entries; past that the row
 carries "distinct_capped": true and "distinct" is the number of distinct

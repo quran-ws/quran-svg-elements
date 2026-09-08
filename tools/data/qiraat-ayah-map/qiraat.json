@@ -40,13 +40,13 @@
     "name_en": "Asim",
     "counting_system": "kufi",
     "rawis": {
-      "shuba": { "name_ar": "شعبة", "name_en": "Shu'ba" },
+      "shubah": { "name_ar": "شعبة", "name_en": "Shu'ba" },
       "hafs":  { "name_ar": "حفص", "name_en": "Hafs" }
     }
   },
-  "hamza": {
+  "hamzah": {
     "name_ar": "حمزة",
-    "name_en": "Hamza",
+    "name_en": "Hamzah",
     "counting_system": "kufi",
     "rawis": {
       "khalaf":  { "name_ar": "خلف", "name_en": "Khalaf" },

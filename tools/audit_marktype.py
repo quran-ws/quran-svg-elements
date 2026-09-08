@@ -36,43 +36,43 @@ CACHE = os.environ.get("QSVG_MTCACHE") or os.path.join(ROOT, ".cache", "marktype
 # ---------------------------------------------------------------------------
 # text budgets (same tables the pipeline and audit_marks use; never hand-typed)
 # ---------------------------------------------------------------------------
-TANW = {"fathatan": "ًࣰ", "kasratan": "ٍࣲ", "dammatan": "ٌࣱ"}
-# KFGQPC open-tanween signs: drawn as a stroke PAIR (stacked/diagonal), no meem
+TANW = {"tanwin_al_fath": "ًࣰ", "tanwin_al_kasr": "ٍࣲ", "tanwin_al_damm": "ٌࣱ"}
+# KFGQPC open-tanwin signs: drawn as a stroke PAIR (stacked/diagonal), no meem
 # — measured on the لأيات family, whose QPC ends U+0656 and whose ink is two
 # strokes below the word (marktype_rules.md §iqlab)
-OPEN_TANW = {"fathatan": "ٗ", "kasratan": "ٖ", "dammatan": "٘"}
-PLAIN_CH = {"fathatan": "َ", "kasratan": "ِ", "dammatan": "ُ"}
+OPEN_TANW = {"tanwin_al_fath": "ٗ", "tanwin_al_kasr": "ٖ", "tanwin_al_damm": "٘"}
+PLAIN_CH = {"tanwin_al_fath": "َ", "tanwin_al_kasr": "ِ", "tanwin_al_damm": "ُ"}
 # marks this art never draws below their letter (assign_words._ABOVE_ONLY)
-ABOVE_ONLY = {"damma", "dammatan", "pause", "sukun", "shadda", "small-circle",
-              "sifr-mustadir", "sifr-mustatil", "saktah", "seen-reading",
-              "small-waw", "small-alef", "maddah", "wasla"}
-# pause signs the TEXT itself places low (U+06EA/U+06E3 below-letter stops):
-# p226 مَجْر۪ىٰهَا carries ۪ and its pause sits 2.9u below the band — legal
-LOW_PAUSE = "۪ۣ"
-DOTV = {"dot": 1, "two-dots": 2, "three-dots": 3}
+ABOVE_ONLY = {"dammah", "tanwin_al_damm", "waqf", "sukun", "shaddah", "small_circle",
+              "rounded_zero", "rectangular_zero", "saktah", "seen_al_qiraah",
+              "small_waw", "omitted_alif", "maddah", "hamzat_al_wasl"}
+# waqf signs the TEXT itself places low (U+06EA/U+06E3 below-letter stops):
+# p226 مَجْر۪ىٰهَا carries ۪ and its waqf sits 2.9u below the band — legal
+LOW_WAQF = "۪ۣ"
+DOTV = {"dot": 1, "two_dots": 2, "three_dots": 3}
 DOT_W = 2.38          # one drawn dot blob, page units (QSVG_DOTLBL, measured)
 # waqf signs, both editions' repertoires (same set audit_marks budgets with)
 # ۜ (U+06DC) left with taxonomy phase 1: its marks are now named
-# saktah/seen-reading by place, so it neither counts in the pause budget nor
-# in the held pause marks -- both sides drop together.
-PAUSE_CH = "ۖۗۘۙۚۛ" + "۪ۣ۬۫"
-DAMMA_CH = "ٌࣱُ"
+# saktah/seen_al_qiraah by place, so it neither counts in the waqf budget nor
+# in the held waqf marks -- both sides drop together.
+WAQF_CH = "ۖۗۘۙۚۛ" + "۪ۣ۬۫"
+DAMMAH_CH = "ٌࣱُ"
 
 
 def iqlab_singles(u, q, fam):
-    """Tanween positions of `fam` the print draws as ONE stroke.
+    """Tanwin positions of `fam` the print draws as ONE stroke.
 
     The single-stroke convention is IQLAB's (docs/defects/iqlab_notation.md),
-    and the reliable detector is the QPC text of THIS print: a PLAIN haraka
-    followed by the small meem (U+06E2/U+06ED). Reading uthmani's tanween+meem
-    instead over-matches: at 6:99:42 لأيات uthmani writes U+064D U+06E2 but QPC
-    writes U+0656 with NO meem, and the ink is a stroke PAIR — an open tanween,
+    and the reliable detector is the QPC text of THIS print: a PLAIN harakah
+    followed by the small meem (U+06E2/U+06ED). Reading rasm_uthmani's tanwin+meem
+    instead over-matches: at 6:99:42 لأيات rasm_uthmani writes U+064D U+06E2 but QPC
+    writes U+0656 with NO meem, and the ink is a stroke PAIR — an open tanwin,
     not an iqlab. Measured: all 10 لأيات occurrences draw the pair below.
     """
     if q:
         return sum(1 for i in range(len(q) - 1)
                    if q[i] == PLAIN_CH[fam] and q[i + 1] in "ۭۢ")
-    # no QPC text: fall back to uthmani tanween+meem (over-matches open tanween)
+    # no QPC text: fall back to rasm_uthmani tanwin+meem (over-matches open tanwin)
     return sum(1 for i in range(len(u) - 1)
                if u[i] in TANW[fam] and u[i + 1] in "ۭۢ")
 
@@ -107,9 +107,9 @@ def collect(pg):
         bods = [e for e in els if e["kind"] == "body"]
         ln = [e.get("line") for e in bods if e.get("line")]
         rec = {"key": "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]),
-               "u": w["uthmani"], "q": w.get("qpc") or "",
+               "u": w["rasm_uthmani"], "q": w.get("qpc") or "",
                "ln": max(set(ln), key=ln.count) if ln else 0,
-               "dots_budget": AW.dot_budget(w["uthmani"]),
+               "dots_budget": AW.dot_budget(w["rasm_uthmani"]),
                "b": [[round(e["x1"], 1), round(e["y1"], 1),
                       round(e["x2"], 1), round(e["y2"], 1)] for e in bods],
                "m": []}
@@ -182,7 +182,7 @@ def blobs(w):
 # ---------------------------------------------------------------------------
 # the rules. Clean-subset histograms measured over all 604 pages, 2026-08-26,
 # with .cache/sweeps/xband + confirmed visual verdicts as the dirty filter
-# (~118k fatha, 44k kasra, 36k damma, 2.5k of each stroke tanween).
+# (~118k fathah, 44k kasrah, 36k dammah, 2.5k of each stroke tanwin).
 # ---------------------------------------------------------------------------
 def run_rules(pages, dirty, noissue, dist_only=False):
     flags = []
@@ -258,55 +258,55 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                          "refused the move)" % outband)
                     continue           # position is not owner-relative now
 
-                # R1: a fatha-family slash BELOW its word's body band. Clean
-                # subset, sbelow histogram (n=118,379 fatha):
+                # R1: a fathah-family slash BELOW its word's body band. Clean
+                # subset, sbelow histogram (n=118,379 fathah):
                 #   <=0: 118,343 | 0-1: 3 | 1-2: 3 | 2-3: 11 | 3-4: 0 |
                 #   4-8: 15 | 8+: 4
-                # The 0-2 stragglers are a final-letter fatha grazing the band
+                # The 0-2 stragglers are a final-letter fathah grazing the band
                 # bottom (لَهُمْ p100 +0.3, رَيْبَ p501 +0.3) — legitimate.
                 # Everything sampled at 2u+ was a defect: the لأيات
                 # name-crossing cluster at ~2.5 (10 words, see R2) and stolen
                 # strays at 4-15u (ٱلصَّلَوٰةَ p437 +14.6 holds تِجَـٰرَةًۭ's
-                # fatha, confirmed by that word's fatha 1/2). Threshold 2.0 —
+                # fathah, confirmed by that word's fathah 1/2). Threshold 2.0 —
                 # above every verified-legitimate case.
-                if fam in ("fatha", "fathatan") and sbelow > 2.0:
-                    fix = {"fatha": "kasra", "fathatan": "kasratan"}[fam]
-                    emit("R1-fatha-below", "name-swap", m,
-                         "centre %.1fu BELOW its word's body band; a fatha "
+                if fam in ("fathah", "tanwin_al_fath") and sbelow > 2.0:
+                    fix = {"fathah": "kasrah", "tanwin_al_fath": "tanwin_al_kasr"}[fam]
+                    emit("R1-fathah-below", "name-swap", m,
+                         "centre %.1fu BELOW its word's body band; a fathah "
                          "rides above its letter" % sbelow, fix)
 
-                # R2: a kasra-family mark ABOVE its word's band TOP (the
-                # ascender top — a kasra tucked under a shadda still sits well
+                # R2: a kasrah-family mark ABOVE its word's band TOP (the
+                # ascender top — a kasrah tucked under a shaddah still sits well
                 # below it). Clean subset, sabove:
-                #   kasra   (n=44,437): 3 in 0-1, 1 at 2.3 (غَيْرِ p508, flag
+                #   kasrah   (n=44,437): 3 in 0-1, 1 at 2.3 (غَيْرِ p508, flag
                 #           kept — matches the stolen-slash pattern), rest <=0
-                #   kasratan (n=2,467): EMPTY from -4 to +1, then 8 — all the
-                #           لأيات cluster. Threshold: kasra 2.0, kasratan 0.0
+                #   tanwin_al_kasr (n=2,467): EMPTY from -4 to +1, then 8 — all the
+                #           لأيات cluster. Threshold: kasrah 2.0, tanwin_al_kasr 0.0
                 #           (inside the empty band, not at its edge).
-                elif fam == "kasra" and sabove > 2.0:
-                    emit("R2-kasra-above", "name-swap", m,
+                elif fam == "kasrah" and sabove > 2.0:
+                    emit("R2-kasrah-above", "name-swap", m,
                          "centre %.1fu ABOVE its word's band top (above even "
-                         "the ascenders); a kasra hangs below" % sabove,
-                         "fatha")
-                elif fam == "kasratan" and sabove > 0.0:
-                    emit("R2-kasratan-above", "name-swap", m,
-                         "kasratan %.1fu above its word's band top — "
+                         "the ascenders); a kasrah hangs below" % sabove,
+                         "fathah")
+                elif fam == "tanwin_al_kasr" and sabove > 0.0:
+                    emit("R2-tanwin-al-kasr-above", "name-swap", m,
+                         "tanwin_al_kasr %.1fu above its word's band top — "
                          "impossible; where welded from two strokes these are "
-                         "the word's fathas, and its true kasratan pair sits "
-                         "below named fatha+fatha (the لأيات pattern)"
-                         % sabove, "fatha+fatha")
+                         "the word's fathahs, and its true tanwin_al_kasr pair sits "
+                         "below named fathah+fathah (the لأيات pattern)"
+                         % sabove, "fathah+fathah")
 
                 # R3: an above-only family below the band. Clean subset:
-                # damma/dammatan/fathatan/maddah/shadda/sukun/wasla/
-                # small-alef/small-circle/three-dots have NOTHING above
-                # sbelow=-4 (n=36k damma .. 2.4k dammatan); pause has ONE — the
+                # dammah/tanwin_al_damm/tanwin_al_fath/maddah/shaddah/sukun/hamzat_al_wasl/
+                # omitted_alif/small_circle/three_dots have NOTHING above
+                # sbelow=-4 (n=36k dammah .. 2.4k tanwin_al_damm); waqf has ONE — the
                 # low-stop ۪ of مَجْر۪ىٰهَا p226 (+2.9), exempted by its text.
-                # meem-iqlab is EXCLUDED: the low ۭ form legitimately hangs to
+                # small_meem is EXCLUDED: the low ۭ form legitimately hangs to
                 # 11.5u below (19 clean words measured), and QSVG_IQFIX/IQLATE
                 # already police the high ۢ with the text signal.
                 elif fam in ABOVE_ONLY and sbelow > 2.0:
-                    if fam == "pause" and any(c in u or c in q
-                                              for c in LOW_PAUSE):
+                    if fam == "waqf" and any(c in u or c in q
+                                              for c in LOW_WAQF):
                         pass          # the text draws this stop low
                     else:
                         emit("R3-above-only-below", "unexplained", m,
@@ -317,7 +317,7 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                 continue
 
             # ---- pair rules ----
-            for fam in ("fathatan", "kasratan", "dammatan"):
+            for fam in ("tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm"):
                 want = sum(u.count(c) for c in TANW[fam])
                 if not want and have.get(fam, 0) == 0:
                     continue
@@ -330,8 +330,8 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                         dx = abs((m["x1"] + m["x2"]) / 2 - (a[0] + a[2]) / 2)
                         dy = abs((m["y1"] + m["y2"]) / 2 - (a[1] + a[3]) / 2)
                         # R5 intra-pair spacing. Clean welded pairs measured:
-                        # dx <=6 for all but 10 kasratan at 6-8 — the OPEN
-                        # tanween ٖ drawn as a DIAGONAL pair (مُتَكَبِّرٍۢ
+                        # dx <=6 for all but 10 tanwin_al_kasr at 6-8 — the OPEN
+                        # tanwin ٖ drawn as a DIAGONAL pair (مُتَكَبِّرٍۢ
                         # p470 dx 7.4, شَجَرٍۢ p536 7.5 — verified legit);
                         # dy <=6 everywhere. Nothing beyond 8 on either axis
                         # (the weld windows cap at 8/7), so this is an
@@ -340,17 +340,17 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                             emit("R5-pair-spacing", "pair-grouping", m,
                                  "welded %s strokes %.1f/%.1fu apart — "
                                  "implausible pair" % (fam, dx, dy))
-                # R4: a stroke-tanween master with NO twin where the print
-                # draws a full pair. fathatan/kasratan are drawn as TWO
-                # strokes in this art (dammatan alone has a one-outline glyph
+                # R4: a stroke-tanwin master with NO twin where the print
+                # draws a full pair. tanwin_al_fath/tanwin_al_kasr are drawn as TWO
+                # strokes in this art (tanwin_al_damm alone has a one-outline glyph
                 # and is exempt); single strokes are correct only at QPC
-                # iqlab positions (plain haraka + small meem) or in a fused
+                # iqlab positions (plain harakah + small meem) or in a fused
                 # compound. Only judged when masters == budget exactly, so
                 # count errors stay with audit_marks. Measured: 4 words in
                 # the whole mushaf (بَغْتَةً p133, زَانِيَةً p350 line 6,
                 # فِدَآءً p507, جُرُفٍ p204) — every one in or beside a known
                 # steal cluster.
-                if fam in ("fathatan", "kasratan") and want \
+                if fam in ("tanwin_al_fath", "tanwin_al_kasr") and want \
                         and len(mine) == want:
                     paired = sum(1 for m in mine
                                  if m["fused"] or any(x[4] == fam
@@ -363,17 +363,17 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                              "pair here (not a QPC iqlab position) — its twin "
                              "is unwelded or lost" % fam)
 
-            # R6: a tanween the text wants, absent, while the word holds a
+            # R6: a tanwin the text wants, absent, while the word holds a
             # surplus PLAIN pair sitting within the weld windows — the residue
-            # the weld passes (:3608, :3653, compose_tanween) missed.
-            for fam, plain in (("dammatan", ("damma",)),
-                               ("kasratan", ("kasra", "fatha"))):
+            # the weld passes (:3608, :3653, compose_tanwin) missed.
+            for fam, plain in (("tanwin_al_damm", ("dammah",)),
+                               ("tanwin_al_kasr", ("kasrah", "fathah"))):
                 want = sum(u.count(c) for c in TANW[fam])
                 if not want or have.get(fam, 0) >= want:
                     continue
                 if iqlab_singles(u, q, fam):
                     continue            # a single stroke is CORRECT there
-                pw = (u.count("ُ") if fam == "dammatan"
+                pw = (u.count("ُ") if fam == "tanwin_al_damm"
                       else u.count("َ") + u.count("ِ"))
                 pl = [m for m in masters if m["f"] in plain]
                 if len(pl) - pw >= 2 * (want - have.get(fam, 0)):
@@ -387,45 +387,45 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                             if dx < 8.0 and dy < 8.0:
                                 cand = (pl[i], dx, dy)
                     if cand:
-                        emit("R6-unwelded-tanween", "pair-grouping", cand[0],
+                        emit("R6-unwelded-tanwin", "pair-grouping", cand[0],
                              "text wants %s, word holds a surplus plain pair "
                              "%.1f/%.1fu apart the welds missed"
                              % (fam, cand[1], cand[2]), fam)
 
-            # R7: a meem-iqlab element in a word whose QPC text draws NO meem.
-            # uthmani writes tanween + small meem (U+06E2/06ED) at EVERY
-            # non-izhar tanween — idgham and ikhfa included — while the print
-            # only draws the م at IQLAB, encoded in QPC as plain haraka +
+            # R7: a small_meem element in a word whose QPC text draws NO meem.
+            # rasm_uthmani writes tanwin + small meem (U+06E2/06ED) at EVERY
+            # non-izhar tanwin — idgham and ikhfa included — while the print
+            # only draws the م at IQLAB, encoded in QPC as plain harakah +
             # meem. At the other positions QPC writes the open signs ٖ/ٗ/ٞ
             # and the ink is a stroke PAIR with no meem (verified on the
             # لأيات family and p275/p536 stacked pairs). Keying the meem
-            # rescue on uthmani therefore names the pair's second stroke (or
-            # the whole welded pair outline) "meem-iqlab": measured, the 571
+            # rescue on rasm_uthmani therefore names the pair's second stroke (or
+            # the whole welded pair outline) "small_meem": measured, the 571
             # QPC-confirmed meems are one uniform glyph (w 3.2-3.3, h 9.5)
             # while the 926 QPC-meemless "meems" are ragged (w 4.5-11.0,
             # h 6-10.5) — stroke ink, not a م. Invisible to every count
-            # audit because meem-iqlab is deliberately never demanded.
+            # audit because small_meem is deliberately never demanded.
             if q and not any(c in q for c in "ۭۢ"):
                 for m in masters:
-                    if m["f"] != "meem-iqlab":
+                    if m["f"] != "small_meem":
                         continue
                     tans = [t for t in masters
-                            if t["f"] in ("fathatan", "kasratan", "dammatan")]
+                            if t["f"] in ("tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm")]
                     near = min((abs((t["x1"] + t["x2"]) / 2
                                     - (m["x1"] + m["x2"]) / 2)
                                 + abs((t["y1"] + t["y2"]) / 2
                                       - (m["y1"] + m["y2"]) / 2)
                                 for t in tans), default=1e9)
                     emit("R7-meem-not-in-print", "name-swap", m,
-                         "meem-iqlab where this print draws no meem (QPC "
-                         "writes an open tanween, no ۢ/ۭ); w %.1f h %.1f, "
-                         "%.1fu from the word's tanween — the pair's second "
+                         "small_meem where this print draws no meem (QPC "
+                         "writes an open tanwin, no ۢ/ۭ); w %.1f h %.1f, "
+                         "%.1fu from the word's tanwin — the pair's second "
                          "stroke or its welded outline"
                          % (m["x2"] - m["x1"], m["y2"] - m["y1"],
                             near if near < 1e8 else -1),
-                         "tanween-part")
+                         "tanwin-part")
 
-            # R10: the pause budget against the held pause marks, with the
+            # R10: the waqf budget against the held waqf marks, with the
             # DRAWN sign located where possible. The budget is a RANGE across
             # the two editions exactly as audit_marks treats it (they disagree
             # at 190 positions). Nine round-7 verdicts are deficits where the
@@ -434,10 +434,10 @@ def run_rules(pages, dirty, noissue, dist_only=False):
             # split/miscounted (p112/p114, waqf_places territory). Candidates
             # reported: unnamed mark elements, and letter-classified boxes
             # 3-13u square (a drawn صلى/قلى measures ~9x7-11).
-            pu = sum(u.count(c) for c in PAUSE_CH)
-            pq = sum(q.count(c) for c in PAUSE_CH) if q else pu
+            pu = sum(u.count(c) for c in WAQF_CH)
+            pq = sum(q.count(c) for c in WAQF_CH) if q else pu
             lo_p, hi_p = min(pu, pq), max(pu, pq)
-            p_have = have.get("pause", 0)
+            p_have = have.get("waqf", 0)
             if not (lo_p <= p_have <= hi_p):
                 cands = []
                 for m in masters:
@@ -451,12 +451,12 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                         cands.append(("letter-box", b[0], b[1],
                                       round(bw, 1), round(bh, 1)))
                 anchor = (masters[0] if masters else
-                          {"f": "pause", "x1": w["b"][0][0], "y1": w["b"][0][1],
+                          {"f": "waqf", "x1": w["b"][0][0], "y1": w["b"][0][1],
                            "x2": w["b"][0][2], "y2": w["b"][0][3]})
-                pm = next((m for m in masters if m["f"] == "pause"), anchor)
-                emit("R10-pause-vs-ink",
+                pm = next((m for m in masters if m["f"] == "waqf"), anchor)
+                emit("R10-waqf-vs-ink",
                      "pair-grouping" if p_have > hi_p else "unexplained", pm,
-                     ("holds %d pause mark(s), budget %s; " %
+                     ("holds %d waqf mark(s), budget %s; " %
                       (p_have, ("%d" % lo_p if lo_p == hi_p
                                 else "%d-%d" % (lo_p, hi_p)))
                       + ("drawn-sign candidates in word: %s" % (cands,)
@@ -466,16 +466,16 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                          "word's letter ink" if p_have < lo_p else
                          "surplus: a neighbour's sign or a split ۛ piece")))
 
-            # R11: a damma-family deficit with a damma-sized blob available.
-            # Damma is excluded from auto shape labels (its curl matches a
-            # hamza outline), so UNLABELED damma-shaped blobs are expected to
+            # R11: a dammah-family deficit with a dammah-sized blob available.
+            # Dammah is excluded from auto shape labels (its curl matches a
+            # hamzah outline), so UNLABELED dammah-shaped blobs are expected to
             # exist and only the text budget may promote one — the same
-            # two-signal recovery as the waqf and small-waw families.
+            # two-signal recovery as the waqf and small_waw families.
             # Candidates: unnamed mark elements, and letter-classified boxes
-            # 3.5-9u square (a drawn damma measures 5.3 x 6.6) in the upper
+            # 3.5-9u square (a drawn dammah measures 5.3 x 6.6) in the upper
             # two thirds of the band or above it.
-            dw_want = sum(u.count(c) for c in DAMMA_CH)
-            dw_have = have.get("damma", 0) + have.get("dammatan", 0)
+            dw_want = sum(u.count(c) for c in DAMMAH_CH)
+            dw_have = have.get("dammah", 0) + have.get("tanwin_al_damm", 0)
             if dw_have < dw_want:
                 cands = []
                 for m in masters:
@@ -492,15 +492,15 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                         cands.append(("letter-box", b[0], b[1],
                                       round(bw, 1), round(bh, 1)))
                 dm = next((m for m in masters
-                           if m["f"] in ("damma", "dammatan")), None)
+                           if m["f"] in ("dammah", "tanwin_al_damm")), None)
                 anchor = dm or (masters[0] if masters else None)
                 if anchor is not None:
-                    emit("R11-damma-deficit",
+                    emit("R11-dammah-deficit",
                          "pair-grouping" if cands else "unexplained", anchor,
-                         "holds %d of %d damma-family marks; %s"
+                         "holds %d of %d dammah-family marks; %s"
                          % (dw_have, dw_want,
                             ("recovery candidates: %s" % (cands,)) if cands
-                            else "no damma-sized blob inside the word — "
+                            else "no dammah-sized blob inside the word — "
                                  "the curl is in a neighbour or welded"))
 
             # R8 dot label vs drawn content, width unit 2.38u/blob (measured,
@@ -508,7 +508,7 @@ def run_rules(pages, dirty, noissue, dist_only=False):
             # here survived it, mostly because the label arrived later).
             # UNDER direction (label counts more dots than the ink draws):
             # 33 mushaf-wide, 24 of them one auto signature
-            # (d2506e4f8b4e28e5, labeled 'dot') serving as a two/three-dots
+            # (d2506e4f8b4e28e5, labeled 'dot') serving as a two/three_dots
             # master — the reviewer's 9514d038 note ("one outline covering
             # both 2 and 3 dots") measured. OVER direction (blob wider than
             # its label): ZERO in the whole mushaf.
@@ -525,7 +525,7 @@ def run_rules(pages, dirty, noissue, dist_only=False):
                 if n == DOTV[m["f"]]:
                     continue
                 gap = w["dots_budget"] - dot_have   # +ve: word under budget
-                name = {1: "dot", 2: "two-dots", 3: "three-dots"}.get(n)
+                name = {1: "dot", 2: "two_dots", 3: "three_dots"}.get(n)
                 if n > DOTV[m["f"]] and gap >= n - DOTV[m["f"]]:
                     emit("R8-dot-content", "pair-grouping", m,
                          "'%s' measures %d dot-widths and the word is %d "
