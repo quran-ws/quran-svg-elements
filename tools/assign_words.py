@@ -53,6 +53,25 @@ import quran_meta                       # surah / juz / hizb metadata + rasm
 ROOT = (os.environ.get("QSVG_ROOT")
         or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+def _load_confirmed(path, what):
+    """Read a human-confirmed file. Absent is fine; corrupt is a fault.
+
+    These files ARE the human input this project captures as data — a shape's
+    label, a place's override. Swallowing a parse error turns "the file is
+    broken" into "every correction in it quietly stopped applying", with
+    nothing on screen to say so. The surah banners lost their name, ayah count
+    and revelation place on all 604 pages for exactly that reason, behind a
+    bare `except` (2026-09-08).
+    """
+    if not os.path.exists(path):
+        return {}
+    try:
+        return json.load(open(path, encoding="utf-8"))
+    except (ValueError, OSError) as e:
+        raise RuntimeError("%s exists but cannot be read — fix or remove it: "
+                           "%s (%s)" % (what, path, e)) from e
+
+
 def _ovr_file():
     """Where the human geometry overrides live.
 
@@ -307,7 +326,16 @@ def qpc_words(page_no):
     what the page says.
 
     Cached under .cache/words-qpc/ by scratchpad/warm_qpc.py. Absent, everything falls
-    back to `text_uthmani` exactly as before.
+    back to `text_uthmani` exactly as before — which is what happened everywhere
+    until 2026-09-08, because that script did not exist and `data-qpc` was never
+    emitted at all.
+
+    The text is NOT fetched: quran.com does not serve `qpc_uthmani_hafs` as a
+    word field (asking for it returns the default fields, silently) and its
+    /quran/verses/qpc_uthmani_hafs endpoint answers with `text_uthmani`. It
+    comes from `.cache/official/hafsData_v2-0.json`, the UthmanicHafs v2.0
+    release already in this repo, aligned one ayah at a time — 77,355 of 77,432 words;
+    the 7 ayahs left out are the split/fuse sites the segmentation plan moves.
     """
     if page_no in _QPC:
         return _QPC[page_no]
@@ -8547,10 +8575,8 @@ def assign_page(edition, page_no, cache_dir):
 
     _ovr_path = _ovr_file()
     if os.path.exists(_ovr_path):
-        try:
-            _ovr = json.load(open(_ovr_path)).get(str(page_no), {})
-        except Exception:
-            _ovr = {}
+        _ovr = _load_confirmed(_ovr_path,
+                               "the confirmed overrides").get(str(page_no), {})
         if _ovr:
             _by_word = {}
             for _w9, _at9 in assignment:
@@ -11907,10 +11933,8 @@ def assign_page(edition, page_no, cache_dir):
     def _enforce_overrides(rename=True):
         _ovp = _ovr_file()
         if os.path.exists(_ovp):
-            try:
-                _ov2 = json.load(open(_ovp)).get(str(page_no), {})
-            except Exception:
-                _ov2 = {}
+            _ov2 = _load_confirmed(
+                _ovp, "the confirmed overrides").get(str(page_no), {})
             if _ov2:
                 _bw2 = {}
                 for _w9, _at9 in assignment:
