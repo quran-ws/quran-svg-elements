@@ -86,7 +86,7 @@ def word_paths(page, wid):
     return out
 
 
-def card(c, scale=9):
+def card(c, scale=9, with_word=True):
     polys = [poly for d in c["example"]["d"] for poly in L.flatten(d)]
     if not polys:
         return ""
@@ -99,20 +99,22 @@ def card(c, scale=9):
         parts.append('<path d="%s" fill="#222" fill-rule="evenodd"/>' % d)
     parts.append("</g></svg>")
     ex = c["example"]
-    wp = word_paths(ex["page"], ex["wid"])
-    data = json.dumps({"word": wp["paths"], "of": wp["of"], "index": ex["index"],
-                       "box": [round(x0, 3), round(y0, 3), round(x1, 3), round(y1, 3)]},
-                      ensure_ascii=False).replace("<", "\\u003c")
+    if with_word:
+        wp = word_paths(ex["page"], ex["wid"])
+        data = json.dumps({"word": wp["paths"], "of": wp["of"], "index": ex["index"],
+                           "box": [round(x0, 3), round(y0, 3), round(x1, 3), round(y1, 3)]},
+                          ensure_ascii=False).replace("<", "\\u003c")
+        cut = '<div class="cut" onclick="openTrim(event,this.parentNode)">\u2702</div>'
+        blob = '<script type="application/json" class="wd">%s</script>' % data
+    else:
+        cut = blob = ""                      # the rare pass judges the shape, it does not edit it
     return ('<div data-id="%s" data-ch="%s" data-form="%s" data-n="%d" '
             'data-page="%d" data-wid="%s" data-index="%d" data-w="%.3f" '
             'data-box="%.3f,%.3f,%.3f,%.3f" onclick="mark(event,this)" class="sh good" '
-            'title="p%d %s letter %d">'
-            '<div class="cut" onclick="openTrim(event,this.parentNode)">\u2702</div>'
-            '<script type="application/json" class="wd">%s</script>'
-            '%s<div class="cnt">%s</div></div>'
+            'title="p%d %s letter %d">%s%s%s<div class="cnt">%s</div></div>'
             % (shape_id(ex), html.escape(c["ch"]), c["form"], c["n"], ex["page"], ex["wid"],
                ex["index"], x1 - x0, x0, y0, x1, y1, ex["page"], ex["wid"], ex["index"],
-               data, "".join(parts), "{:,}".format(c["n"])))
+               cut, blob, "".join(parts), "{:,}".format(c["n"])))
 
 
 def main():
@@ -120,7 +122,12 @@ def main():
     ap.add_argument("--cover", type=float, default=0.8,
                     help="show the most-used shapes covering this fraction of all letters")
     ap.add_argument("--limit", type=int, default=0, help="hard cap on cards (0 = none)")
+    ap.add_argument("--skip", type=int, default=0, help="skip this many shapes first (paging the tail)")
     ap.add_argument("--letter", help="only this letter")
+    ap.add_argument("--rare", type=int, default=0,
+                    help="instead of the common shapes, the tail: every shape used FEWER than this many "
+                         "times, rarest first. A shape drawn once in the whole Quran is more often a bad "
+                         "cut than a rare form, so the tail is a defect list, not a catalogue.")
     ap.add_argument("--shapes", default=SHAPES)
     ap.add_argument("--out", default=OUT)
     a = ap.parse_args()
@@ -128,13 +135,20 @@ def main():
     if a.letter:
         clusters = [c for c in clusters if c["ch"] == a.letter]
     total = sum(c["n"] for c in clusters)
-    ranked = sorted(clusters, key=lambda c: -c["n"])
-    keep, run = [], 0
-    for c in ranked:
-        keep.append(c)
-        run += c["n"]
-        if run >= a.cover * total or (a.limit and len(keep) >= a.limit):
-            break
+    if a.rare:
+        keep = sorted((c for c in clusters if c["n"] < a.rare), key=lambda c: (c["n"], c["ch"]))
+        keep = keep[a.skip:]
+        if a.limit:
+            keep = keep[:a.limit]
+        run = sum(c["n"] for c in keep)
+    else:
+        ranked = sorted(clusters, key=lambda c: -c["n"])
+        keep, run = [], 0
+        for c in ranked:
+            keep.append(c)
+            run += c["n"]
+            if run >= a.cover * total or (a.limit and len(keep) >= a.limit):
+                break
     by_letter = defaultdict(lambda: defaultdict(list))
     for c in keep:
         by_letter[c["ch"]][c["form"]].append(c)
@@ -146,12 +160,26 @@ def main():
                     % (html.escape(ch), "{:,}".format(n_ch),
                        sum(len(v) for v in by_letter[ch].values())))
         for form in FORMS:
-            cs = sorted(by_letter[ch].get(form, []), key=lambda c: -c["n"])
+            cs = sorted(by_letter[ch].get(form, []), key=(lambda c: c["n"]) if a.rare else (lambda c: -c["n"]))
             if not cs:
                 continue
             body.append('<h3 class="frm">%s <span class="ar">%s</span> <small>%s letters</small></h3>'
                         % (form, FORM_AR[form], "{:,}".format(sum(c["n"] for c in cs))))
-            body.append('<div class="row">%s</div>' % "".join(card(c) for c in cs))
+            body.append('<div class="row">%s</div>' % "".join(card(c, with_word=not a.rare) for c in cs))
+    if a.rare:
+        intro = ("Shapes drawn fewer than %d times in the whole Quran, rarest first. A shape this rare "
+                 "is more often a bad cut than a rare form, so read these as suspects: "
+                 "<b>click any that is genuinely wrong</b> and leave the rest green. This pass judges "
+                 "the shape only; correcting one is the job of the common-shapes page." % a.rare)
+    else:
+        intro = ("Every shape the split produced, one card per shape, with the number of words that "
+                 "draws it. <b>Everything starts marked right \u2014 click a shape to mark it wrong, "
+                 "click again to put it back. Press \u2702 to open the whole word, draw a line across "
+                 "the ink or a loop around it, then click the part that IS the letter \u2014 the preview "
+                 "shows what the letter becomes, and the same gesture trims a sliver off or takes a "
+                 "missing piece back.</b> The shapes are ordered by how much of the mushaf they carry, "
+                 "so the first few cards of each letter are worth far more than the last. Then press "
+                 "Copy and paste the lines back.")
     page = ("<!doctype html><meta charset=utf-8><title>Letter shapes — mark the good ones</title>"
             "<style>body{font-family:system-ui;margin:20px;background:#fafafa}"
             "h2.sec{border-bottom:2px solid #333;margin:26px 0 4px;font-size:20px}"
@@ -185,13 +213,7 @@ def main():
             "<button onclick='clearTrim()'>clear</button>"
             "<button onclick='closeTrim()'>done</button></div></div></div>"
             "<h1>Letter shapes</h1>"
-            "<p>Every shape the split produced, one card per shape, with the number of words that "
-            "draw it. <b>Everything starts marked right — click a shape to mark it wrong, click again "
-            "to put it back. Press \u2702 to open the whole word, draw a line across the ink or a loop "
-            "around it, then click the part that IS the letter \u2014 the preview shows what the letter "
-            "becomes, and the same gesture trims a sliver off or takes a missing piece back.</b> "
-            "The shapes are ordered by how much of the mushaf they carry, so the first few cards of "
-            "each letter are worth far more than the last. Then press Copy and paste the lines back.</p>"
+            "<p>" + intro + "</p>"
             + "".join(body) +
             "<script>"
             "let cur=null,drawing=false,pts=[],side=null,inv=false;"
@@ -306,7 +328,7 @@ def main():
             "document.getElementById('ovmsg').textContent="
             "'draw a line across it or a loop around it, then click the part that IS the letter';tally();}"
             "function closeTrim(){document.getElementById('ov').style.display='none';cur=null;drawing=false;}"
-            "const KEY='letter_shape_verdicts';"
+            "const KEY='letter_shape_verdicts_'+location.pathname.split('/').pop();"
             "function store(){const o={};document.querySelectorAll('.sh').forEach(e=>{"
             "const v=e.classList.contains('bad')?'bad':e.dataset.trim?'trim':'good';"
             "if(v!=='good'||e.dataset.trim)o[e.dataset.id]={v:v,t:e.dataset.trim||null}});"
