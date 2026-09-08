@@ -1,5 +1,8 @@
 # Letter-level decomposition
 
+**Where the work stands, in short: `docs/LETTERS-STATE.md`.** This file is the method
+and the dated log of every measurement behind it.
+
 Every word of the emitted mushaf becomes a sequence of `<g class="letter">` groups, one
 per letter of its text, each holding the letter's body ink and its own marks. The
 output is `.cache/letters-svg/hafs-kfqc/NNN.svg`, a post-pass over the word build in
