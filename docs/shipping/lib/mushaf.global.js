@@ -174,18 +174,33 @@
   class Word {
     constructor(el, page) { this.el = el; this._page = page; }
     get wid()   { return this.el.dataset.wid; }
+    /** The GLOBAL word id (`data-w`, FORMAT §6.1): the same number for this word
+     *  in every mushaf that has it — the key a word-by-word app joins on. Two
+     *  pieces of one word (15:7 لَّوْ مَا) share it; `wid` stays unique. */
+    get w()     { const v = this.el.dataset.w; return v == null ? null : Number(v); }
     get parts() { return this.wid.split(':').map(Number); }
     get surah() { return this.parts[0]; }
     get ayah()  { return this.parts[1]; }
     get index() { return this.parts[2]; }
     get aid()   { return this.surah + ':' + this.ayah; }
     get line()  { const l = this.el.closest('g.line'); return l ? Number(l.dataset.line) : null; }
-    /** All five forms. FORMAT §6.1 — every word has all of them. */
+    /** All five forms. FORMAT §6.1. A production page carries only `uthmani`
+     *  inline; the other four come from the page's sidecar once it is attached
+     *  (`page.attachWords`), and are `null` until then. */
     get text() {
-      const d = this.el.dataset;
-      return { uthmani: d.uthmani, imlaei: d.imlaei, qpc: d.qpc, rasm: d.rasm, search: d.search };
+      const out = {};
+      for (const f of TEXT_FORMS) out[f] = this.form(f);
+      return out;
     }
-    form(which = 'uthmani') { return this.el.dataset[which]; }
+    /** One text form: the inline attribute when the page carries it (dev
+     *  profile, or `uthmani` on every profile), else the attached sidecar,
+     *  else `null`. */
+    form(which = 'uthmani') {
+      const v = this.el.dataset[which];
+      if (v != null) return v;
+      const rec = this._page && this._page._forms ? this._page._forms.get(this.wid) : null;
+      return rec && rec[which] != null ? rec[which] : null;
+    }
     /** Bounding box in the page's own viewBox units. */
     box() { return boxInView(this._page.el, this.el); }
     paths() { return [...this.el.querySelectorAll('path')]; }
@@ -267,7 +282,38 @@
       if (!el || el.nodeName.toLowerCase() !== 'svg') throw new TypeError('MushafPage needs an <svg> element');
       this.el = el;
       this.number = number;
+      this._forms = null;
       if (stripPolygons) this.dropPolygons();
+    }
+
+    /**
+     * Attach the page's text sidecar, `index/by-page/NNN.json`. A production
+     * page carries `data-uthmani` only (FORMAT §6.1); `rasm`, `imlaei`,
+     * `search` and `qpc` live in the sidecar, and `word.form()`, `word.text`,
+     * `page.text()` and `page.search()` read them from here once attached.
+     * Accepts the sidecar object (`{words: [...]}`), an array of its word
+     * records, or an object / Map keyed by wid. Returns the record count.
+     * Carried by `clone()`. `createLoader({words: true})` does this for you.
+     */
+    attachWords(data) {
+      let recs;
+      if (!data) recs = [];
+      else if (Array.isArray(data)) recs = data;
+      else if (Array.isArray(data.words)) recs = data.words;
+      else if (data instanceof Map) recs = [...data.values()];
+      else recs = Object.values(data);
+      const m = new Map();
+      for (const r of recs) if (r && r.wid) m.set(r.wid, r);
+      this._forms = m;
+      return m.size;
+    }
+
+    /** Is `form` readable for this page's words — inline, or attached? */
+    hasForm(form = 'search') {
+      if (form === 'uthmani') return true;
+      const w = this.el.querySelector('g.word');
+      if (w && w.dataset[form] != null) return true;
+      return !!(this._forms && this._forms.size);
     }
 
     /** Parse SVG source. Returns a page you own. */
@@ -308,7 +354,9 @@
       svg.removeAttribute('id');
       svg.querySelectorAll('[id]').forEach(e => { e.id = tag + e.id; });
       svg.querySelectorAll('g.ayah[data-marker]').forEach(g => { g.dataset.marker = tag + g.dataset.marker; });
-      return new MushafPage(svg, { number: this.number });
+      const c = new MushafPage(svg, { number: this.number });
+      c._forms = this._forms;           // the sidecar is data about the page, not about this element
+      return c;
     }
 
     /* ---- structure ---- */
@@ -411,16 +459,21 @@
       });
     }
 
-    /** Real ayah medallions only. Pages 1-2 carry 12 decorative rosettes with
-     *  no ayah, which is why this filters on [data-aid] (FORMAT §9.2). */
+    /** One record per ayah marker, `g.ayah-marker[data-aid]`. Since 2026-09-04
+     *  every marker group carries data-aid; the filter still excludes the 12
+     *  id-less "decorative" groups of page files built before that. On pages
+     *  1-2 the artwork draws each ring twice and the copy sits inside the same
+     *  group as [data-duplicate] (FORMAT §9.2): `ring` is the first, `ringCopies`
+     *  the rest, so a replacement ring can hide them too. */
     markers() {
       return [...this.el.querySelectorAll('g.ayah-marker[data-aid]')].map(g => ({
         el: g, aid: g.dataset.aid, id: g.id,
-        ring: g.querySelector('[data-kind="ayah-marker-ornament"]'),
+        ring: g.querySelector('[data-kind="ayah-marker-ornament"]:not([data-duplicate])'),
+        ringCopies: [...g.querySelectorAll('[data-kind="ayah-marker-ornament"][data-duplicate]')],
         numeral: g.querySelector('[data-kind="ayah-number"]')
       }));
     }
-    /** Every .ayah-marker group, decorative rosettes included. */
+    /** Every .ayah-marker group, the id-less groups of older page files included. */
     allMarkerGroups() { return [...this.el.querySelectorAll('g.ayah-marker')]; }
 
     info() {
@@ -491,14 +544,21 @@
 
     /**
      * Search this page's words.
-     * Defaults to data-search, the diacritic-free form, normalised — so a plain
-     * typed query works. FORMAT §6.1: never use data-rasm for a search box.
+     * Defaults to the `search` form, the diacritic-free modern spelling,
+     * normalised — so a plain typed query works. FORMAT §6.1: never search the
+     * rasm. On a production page the form comes from the sidecar: attach it
+     * first (`page.attachWords`, or `createLoader({words: true})`).
      */
     search(query, {
       form = 'search', mode = 'includes', normalize = true, loose = true, limit = Infinity
     } = {}) {
       const q0 = String(query ?? '');
       if (!q0.trim()) return [];
+      if (!this.hasForm(form)) {
+        throw new Error(`text form '${form}' is not on this page: a production page carries ` +
+          `data-uthmani only. Attach the sidecar first — page.attachWords(await (await ` +
+          `fetch('index/by-page/NNN.json')).json()) — or load with createLoader({words: true}).`);
+      }
       const words = this.words();
       const key = normalize ? normalizeQuery : (s => String(s ?? ''));
 
@@ -932,13 +992,25 @@
             const old = m.ring, parent = old.parentNode, next = old.nextSibling;
             old.replaceWith(made);
             undo.push(() => { made.remove(); parent.insertBefore(old, next); });
+            // pages 1-2: the artwork's second copy of the ring would show
+            // through the replacement — hide it with the ring it duplicates
+            for (const c of m.ringCopies) {
+              // presentation attribute, not el.style: exact restore (see markers.mjs)
+              const prev = c.getAttribute('display');
+              c.setAttribute('display', 'none');
+              undo.push(() => prev == null ? c.removeAttribute('display') : c.setAttribute('display', prev));
+            }
             continue;
           }
         }
         if (ring) {
-          const prev = m.ring.getAttribute('fill');
-          m.ring.setAttribute('fill', ring);
-          undo.push(() => m.ring.setAttribute('fill', prev));
+          // the ring and, on pages 1-2, the artwork's copy of it drawn on top:
+          // colouring only the first would leave the copy in the old ink
+          for (const r of [m.ring, ...m.ringCopies]) {
+            const prev = r.getAttribute('fill');
+            r.setAttribute('fill', ring);
+            undo.push(() => r.setAttribute('fill', prev));
+          }
         }
       }
       return { count: this.markers().length, remove() { undo.reverse().forEach(f => f()); } };
@@ -1021,14 +1093,23 @@
    * callers can never disturb each other.
    *   const load = createLoader({baseUrl: 'pages/'});
    *   const page = await load(42);
+   *
+   * `words` also fetches and attaches the page's text sidecar
+   * (`index/by-page/NNN.json`, the four forms a production page does not carry
+   * inline): `true` resolves it next to `baseUrl` as `../index/by-page/`, a
+   * string is a base URL, a function is `n => url`. A sidecar that fails to
+   * fetch is an error, not a silent page without search.
    */
   function createLoader({
     baseUrl = 'pages/', pad = 3, ext = '.svg', fetch: f = null,
-    cache = true, stripPolygons = true, name = null
+    cache = true, stripPolygons = true, name = null, words = null
   } = {}) {
     const store = new Map();
     const fetcher = f || ((...a) => globalThis.fetch(...a));
     const url = n => baseUrl + (name ? name(n) : String(n).padStart(pad, '0') + ext);
+    const wordsUrl = words === true ? (n => baseUrl + '../index/by-page/' + String(n).padStart(3, '0') + '.json')
+      : typeof words === 'string' ? (n => words + String(n).padStart(3, '0') + '.json')
+      : typeof words === 'function' ? words : null;
 
     return async function load(n) {
       const key = String(n);
@@ -1037,6 +1118,11 @@
         const res = await fetcher(url(n));
         if (!res.ok) throw new Error(`HTTP ${res.status} for page ${n} (${url(n)})`);
         const page = MushafPage.parse(await res.text(), { number: Number(n), stripPolygons });
+        if (wordsUrl) {
+          const wr = await fetcher(wordsUrl(n));
+          if (!wr.ok) throw new Error(`HTTP ${wr.status} for the words of page ${n} (${wordsUrl(n)})`);
+          page.attachWords(await wr.json());
+        }
         return page;
       })();
       if (cache) store.set(key, p);
@@ -1045,7 +1131,7 @@
     };
   }
 
-  const version = '0.1.0';
+  const version = '0.2.0';
 
   /* ===== layout.mjs ===== */
   /* mushaf.js — layout: leading, and filling a viewport with it. */
@@ -2536,9 +2622,11 @@
    * design's OWN number-centre lands on the printed numeral, and scaled from the
    * box the ring occupied.
    *
-   * DECORATIVE ROSETTES ARE LEFT ALONE. Pages 1-2 carry 12 `g.ayah-marker`
-   * groups with no `data-aid` — the frame of the opening spread, closing no ayah.
-   * Pass `decorative: true` to include them.
+   * Only `g.ayah-marker[data-aid]` groups are touched. Since 2026-09-04 that is
+   * every marker; page files built before it carried 12 id-less groups on pages
+   * 1-2 ("decorative rosettes" — in fact the artwork's doubled rings), and
+   * `decorative: true` includes those. On current pages the doubled ring sits
+   * INSIDE the marker group as `[data-duplicate]` and is hidden with the ring.
    *
    * @param page     a MushafPage
    * @param outline  what `set.outline(id)` resolved to
@@ -2556,6 +2644,7 @@
 
     const groups = markerGroups(page, target, decorative);
     const undo = [];
+    let swapped = 0;
 
     for (const g of groups) {
       const ring = currentRing(g);
@@ -2584,12 +2673,23 @@
       const parent = ring.parentNode, next = ring.nextSibling;
       ring.replaceWith(swap);
       undo.push(() => { swap.remove(); parent.insertBefore(ring, next); });
+      swapped++;
+      // pages 1-2: the artwork's second copy of the ring (FORMAT §9.2) would
+      // show through the replacement — hide it with the ring it duplicates.
+      // The presentation attribute, not el.style: once Chrome's inline-style
+      // object has been touched, removing the attribute still serialises an
+      // empty style="", and remove() must give the group back byte for byte.
+      for (const c of g.querySelectorAll('[data-kind="ayah-marker-ornament"][data-duplicate]')) {
+        const prev = c.getAttribute('display');
+        c.setAttribute('display', 'none');
+        undo.push(() => prev == null ? c.removeAttribute('display') : c.setAttribute('display', prev));
+      }
     }
 
     const paint = colours ? colourAyahMarkers(page, colours) : null;
 
     return {
-      count: undo.length,
+      count: swapped,
       marker: outline.id,
       remove() {
         undo.reverse().forEach(f => f());
@@ -2650,7 +2750,7 @@
 
   /* The ring, or the group that stands in its place. */
   function currentRing(g) {
-    return g.querySelector('[data-kind="ayah-marker-ornament"]') ||
+    return g.querySelector('[data-kind="ayah-marker-ornament"]:not([data-duplicate])') ||
            g.querySelector('g.ayah-marker-swap');
   }
 

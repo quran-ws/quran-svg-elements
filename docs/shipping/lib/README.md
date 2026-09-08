@@ -20,7 +20,7 @@ Quranic text.
 <div id="stage"><!-- the page goes here --></div>
 <script type="module">
   import { MushafPage, attachSelection } from './lib/mushaf.mjs';
-  const page = await MushafPage.load(42, { baseUrl: 'pages/' });  // 1. fetch
+  const page = await MushafPage.load(42, { baseUrl: 'pages/', words: true });  // 1. fetch the page + its text sidecar
   document.getElementById('stage').append(page.el);               // 2. show
   page.highlightAyah('2:255');                                    // 3. highlight
   console.log(page.search('الله').map(m => m.wid));               // 4. search

@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-30T05:24:31",
+ "generated": "2026-09-04T19:55:15",
  "pages": 604,
  "rows": [
   {
@@ -161,7 +161,7 @@
   {
    "scope": "g.ayah-marker",
    "attr": "class",
-   "count": 6248,
+   "count": 6236,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
@@ -443,7 +443,7 @@
   {
    "scope": "g.ligature",
    "attr": "class",
-   "count": 156707,
+   "count": 156717,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
@@ -453,7 +453,7 @@
   {
    "scope": "g.ligature",
    "attr": "data-text",
-   "count": 156707,
+   "count": 156717,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
@@ -464,7 +464,7 @@
     "ت",
     "ج",
     "ح",
-    "خ"
+    "د"
    ]
   },
   {
@@ -495,9 +495,29 @@
    ]
   },
   {
+   "scope": "g.page-number",
+   "attr": "class",
+   "count": 2,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "page-number"
+   ]
+  },
+  {
+   "scope": "g.running-head",
+   "attr": "class",
+   "count": 2,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "running-head"
+   ]
+  },
+  {
    "scope": "g.sajdah-mark",
    "attr": "class",
-   "count": 17,
+   "count": 15,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
@@ -507,8 +527,8 @@
   {
    "scope": "g.sajdah-mark",
    "attr": "data-aid",
-   "count": 17,
-   "distinct": 17,
+   "count": 15,
+   "distinct": 15,
    "distinct_capped": false,
    "samples": [
     "13:15",
@@ -517,14 +537,14 @@
     "22:18",
     "22:77",
     "25:60",
-    "27:24",
-    "27:26"
+    "27:26",
+    "32:15"
    ]
   },
   {
    "scope": "g.sajdah-mark",
    "attr": "data-mark",
-   "count": 17,
+   "count": 15,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
@@ -640,7 +660,7 @@
   {
    "scope": "g.word",
    "attr": "class",
-   "count": 77432,
+   "count": 77433,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
@@ -650,92 +670,109 @@
   {
    "scope": "g.word",
    "attr": "data-imlaei",
-   "count": 77432,
+   "count": 77433,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
     "أَن",
     "إِن",
     "الم",
-    "ذِي",
-    "عَن",
+    "ذُو",
     "فِي",
     "لَا",
-    "مَا"
+    "مَا",
+    "مَن"
    ]
   },
   {
    "scope": "g.word",
    "attr": "data-qpc",
-   "count": 77432,
+   "count": 77433,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
     "أَن",
     "إِن",
-    "ذِي",
-    "عَن",
+    "ذُو",
     "فِي",
     "لَا",
     "مَا",
-    "مَن"
+    "مَن",
+    "مِن"
    ]
   },
   {
    "scope": "g.word",
    "attr": "data-rasm",
-   "count": 77432,
+   "count": 77433,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
     "أم",
     "أن",
     "أو",
+    "إذ",
     "إن",
     "بل",
     "به",
-    "ثم",
-    "ذى"
+    "ثم"
    ]
   },
   {
    "scope": "g.word",
    "attr": "data-search",
-   "count": 77432,
+   "count": 77433,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
     "أم",
     "أن",
     "أو",
+    "إذ",
     "إن",
     "بل",
     "به",
-    "ذي",
-    "رب"
+    "ثم"
    ]
   },
   {
    "scope": "g.word",
    "attr": "data-uthmani",
-   "count": 77432,
+   "count": 77433,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
     "أَن",
     "إِن",
-    "ذِى",
-    "عَن",
+    "ذُو",
     "فِى",
     "لَا",
     "مَا",
-    "مَن"
+    "مَن",
+    "مِن"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-w",
+   "count": 77433,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
    ]
   },
   {
    "scope": "g.word",
    "attr": "data-wid",
-   "count": 77432,
+   "count": 77433,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
@@ -753,7 +790,7 @@
    "scope": "path",
    "attr": "data-aid",
    "count": 229,
-   "distinct": 216,
+   "distinct": 214,
    "distinct_capped": false,
    "samples": [
     "11:6",
@@ -768,8 +805,18 @@
   },
   {
    "scope": "path",
+   "attr": "data-duplicate",
+   "count": 12,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "1"
+   ]
+  },
+  {
+   "scope": "path",
    "attr": "data-eid",
-   "count": 598405,
+   "count": 598406,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
@@ -786,7 +833,7 @@
   {
    "scope": "path",
    "attr": "data-form",
-   "count": 8506,
+   "count": 8508,
    "distinct": 2,
    "distinct_capped": false,
    "samples": [
@@ -814,21 +861,23 @@
   {
    "scope": "path",
    "attr": "data-kind",
-   "count": 616559,
-   "distinct": 5,
+   "count": 611120,
+   "distinct": 7,
    "distinct_capped": false,
    "samples": [
     "body",
     "mark",
     "header-ink",
     "ayah-number",
+    "page-number",
+    "running-head",
     "ayah-marker-ornament"
    ]
   },
   {
    "scope": "path",
    "attr": "data-mark",
-   "count": 436627,
+   "count": 436625,
    "distinct": 34,
    "distinct_capped": false,
    "samples": [
@@ -845,7 +894,7 @@
   {
    "scope": "path",
    "attr": "data-mark-family",
-   "count": 393969,
+   "count": 393967,
    "distinct": 7,
    "distinct_capped": false,
    "samples": [
@@ -873,7 +922,7 @@
   {
    "scope": "path",
    "attr": "data-sig",
-   "count": 598391,
+   "count": 598392,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
@@ -961,7 +1010,7 @@
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
-    "kfgqpc-1421"
+    "kfgqpc-1441"
    ]
   },
   {

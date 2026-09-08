@@ -441,7 +441,7 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
       الصفحات ومعها قاعدة بيانات تقول ما فيها، أما هنا فالمعلومات محمولة على العناصر نفسها: رقم
       السورة واسمها بالعربية وبالحروف اللاتينية وبالإنجليزية وموضع نزولها وعدد آياتها؛ ومفتاح الآية
       <code>2:255</code> وأيّ مقاطعها يقع في هذه الصفحة؛ ومفتاح الكلمة <code>2:255:4</code> ونصّها
-      في خمس صور؛ والجزء والحزب والرُبع والنصف وموضع بداية كل منها؛ ورقم الصفحة ورقم السطر؛ وكل
+      في صورة <code>uthmani</code>، وصورها الأربع الأخرى في الملف المرافق للصفحة؛ والجزء والحزب والرُبع والنصف وموضع بداية كل منها؛ ورقم الصفحة ورقم السطر؛ وكل
       علامة مسمّاة، بما فيها علامات السجدة وميمات الإقلاب. وبهذا تصير عبارة
       <i>«الآية 2:255 في الصفحة 42، السطر 3»</i> مُحدِّد CSS لا استعلاماً في قاعدة بيانات — ولأن
       الهندسة في الملف ذاته، تحصل أيضاً على ما لا تعطيه قاعدة بيانات: موضع كل واحد من هذه على
@@ -695,23 +695,26 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
 <section id="search" data-toc-group="القراءة والمعنى" data-toc-note="البحث عن كلمة في المصحف كله والوصول إلى حبرها المطبوع.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">لماذا data-search وليس data-rasm</p>
+      <p class="sel">صورة search — ولماذا لا تصلح صورة rasm</p>
       <h2>5 · البحث والوصول إلى الحبر</h2>
       <p>لا توجد هنا عُقد <code>&lt;text&gt;</code>، فالحبر كله مسارات، ولذلك يعجز بحث المتصفح داخل
-        الصفحة عن العمل. يجري البحث عبر <code>data-search</code> على مجموعات الكلمات. غيّر الاستعلام
-        في المقتطف، أو ضع <code>data-rasm</code> مكان <code>data-search</code> وراقب النتائج
-        تتلاشى.</p>
+        الصفحة عن العمل. يجري البحث عبر صورة <code>search</code>، وهي تُشحن مرةً واحدة لكل صفحة في
+        <code>index/by-page/NNN.json</code>، وتحملها صفحات وضع التطوير أيضاً في السمة
+        <code>data-search</code>. غيّر الاستعلام في المقتطف، أو ضع <code>rasm</code> مكان
+        <code>search</code> وراقب النتائج تتلاشى.</p>
     </div>
     <div class="lab" id="lab-search"></div>
 
     <div class="callout">
-      <h3>المزلق — استخدم data-search ولا تستخدم data-rasm أبداً</h3>
-      <p><code>data-rasm</code> هو هيكل <b>الرسم العثماني</b>، وهو ما ترسمه الصفحة. والرسم العثماني
+      <h3>المزلق — استخدم <code>search</code> ولا تستخدم <code>rasm</code> أبداً</h3>
+      <p>الصورتان في الإنتاج حقلان في الملف المرافق للصفحة، <code>index/by-page/NNN.json</code>،
+        ولا تكونان سمتين على الكلمة إلا في وضع التطوير. و<code>rasm</code> هو هيكل
+        <b>الرسم العثماني</b>، وهو ما ترسمه الصفحة. والرسم العثماني
         يكتب عدداً من حروف المدّ في صورة <i>علامات متراكبة</i>، فتجريد العلامات يحذفها من أصلها،
         والناتج شيء لا يكتبه أحد. القياس على 77,432 كلمة كاملة:</p>
       <div class="scroll">
         <table>
-          <thead><tr><th>الاستعلام</th><th>المطابقات في <code>data-rasm</code></th><th>المطابقات في <code>data-search</code></th></tr></thead>
+          <thead><tr><th>الاستعلام</th><th>المطابقات في <code>rasm</code></th><th>المطابقات في <code>search</code></th></tr></thead>
           <tbody>
             <tr><td class="mono ar">الله</td><td class="no">2</td><td class="yes">2,555</td></tr>
             <tr><td class="mono ar">الذين</td><td class="no">0</td><td class="yes">999</td></tr>
@@ -720,10 +723,10 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
         </table>
       </div>
       <p class="note">في <span class="ar" style="font-size:1em">ٱللَّهُ</span> <b>ألف الوصل</b> (U+0671) في موضع تكتب فيه لوحة المفاتيح ألفاً عادية،
-        فتكون <code>data-rasm</code> هي <span class="ar" style="font-size:1em">ٱلله</span> ولا تطابق شيئاً أبداً. و<span class="ar" style="font-size:1em">دَرَجَٰتࣲ</span> تحمل
+        فتكون <code>rasm</code> هي <span class="ar" style="font-size:1em">ٱلله</span> ولا تطابق شيئاً أبداً. و<span class="ar" style="font-size:1em">دَرَجَٰتࣲ</span> تحمل
         <b>ألفاً خنجرية</b> (U+0670)، وهي علامة لا حرف، فيصير الرسم <span class="ar" style="font-size:1em">درجت</span> بلا ألف البتة. أما
-        <code>data-search</code> فهو هيكل الرسم الحديث (<code>data-imlaei</code>) ولا تعتريه
-        المشكلتان. استخدم <code>data-rasm</code> فيما وُضع له: مطابقة النص بما هو مرسوم فعلاً على
+        <code>search</code> فهو هيكل الرسم الحديث (صورة <code>imlaei</code>) ولا تعتريه
+        المشكلتان. استخدم <code>rasm</code> فيما وُضع له: مطابقة النص بما هو مرسوم فعلاً على
         الصفحة.</p>
       <p class="note"><b>لا يُوحَّد لك شيء</b>، عن قصد. تبقى <span class="ar" style="font-size:1em">ا أ إ آ</span> متمايزة، وكذلك
         <span class="ar" style="font-size:1em">ى</span>/<span class="ar" style="font-size:1em">ي</span> و<span class="ar" style="font-size:1em">ة</span>/<span class="ar" style="font-size:1em">ه</span>.
@@ -747,7 +750,7 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
       <div class="paper tight empty" id="s-all-stage">لم تُجلب أي صفحة بعد</div>
     </div>
     <p class="note"><b>تحذيران عند تقطيع النص إلى وحدات.</b> 367 قيمة من قيم
-      <code>data-search</code> تحتوي على مسافة، إذ يكتب عُرف النداء <span class="ar" style="font-size:1em">يَٰٓأَيُّهَا</span> هكذا:
+      <code>search</code> تحتوي على مسافة، إذ يكتب عُرف النداء <span class="ar" style="font-size:1em">يَٰٓأَيُّهَا</span> هكذا:
       <span class="ar" style="font-size:1em">يا أيها</span>، وفي كلمة مطبوعة واحدة، <code>37:130:3</code>، مسافة داخل نصها نفسه.
       و<code>data-wid</code> هو مفتاح الكلمة الوحيد، فلا تقسّم صفحةً على المسافات أبداً.</p>
   </div>
@@ -756,9 +759,10 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
 <section id="word" data-toc-group="القراءة والمعنى" data-toc-note="قراءة صور الكلمة الخمس وكل علامة عليها.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">w.dataset.uthmani · rasm · imlaei · search · qpc</p>
+      <p class="sel">على الصفحة data-uthmani · وفي الملف المرافق rasm imlaei search qpc</p>
       <h2>6 · قراءة كلمة</h2>
-      <p>تحمل كل مجموعة كلمة نصَّها في خمس صور ومفتاحَها، ويُعلن كل مسار عن نوع الحبر الذي هو منه،
+      <p>تحمل كل مجموعة كلمة مفتاحَها ونصَّها في صورة <code>uthmani</code>، وتأتي صورها الأربع الأخرى
+        من الملف المرافق للصفحة، <code>index/by-page/NNN.json</code>؛ ويُعلن كل مسار عن نوع الحبر الذي هو منه،
         وعن العلامة بعينها إن كان علامة. يركّب المقتطف المستمع — مرّر المؤشر فوق الصفحة المجاورة
         له، ثم غيّر ما تعرضه لوحة القراءة.</p>
     </div>
@@ -1280,7 +1284,7 @@ svg.inert, svg.inert * { pointer-events: none }
           <tr><td class="mono">&nbsp;&nbsp;— صفحة واحدة</td><td>المتوسط عبر المصحف كله</td><td>762 KiB</td><td>186 KiB</td><td>118 KiB</td></tr>
           <tr><td class="mono">FORMAT.md</td><td>مواصفة التنسيق — كل سمة وكل حالة خاصة وكل حدّ معروف</td><td>57 KB</td><td>—</td><td>—</td></tr>
           <tr><td class="mono">index/index.json</td><td>من الصفحة إلى سُوَرها، وأول آية فيها وآخرها، وعدد الكلمات؛ ومواضع بدء الأجزاء والأحزاب والأرباع؛ و114 سجلاً للسُوَر</td><td>99 KiB</td><td>—</td><td>10 KiB</td></tr>
-          <tr><td class="mono">index/words.json</td><td>نص كل كلمة مفهرساً بـ<code>data-wid</code> مع صفحتها — ابنِ منه فهرس بحث، أو ابنه من <code>data-search</code> في الصفحات نفسها كما يفعل هذا العرض</td><td>3.4 MiB</td><td>—</td><td>478 KiB</td></tr>
+          <tr><td class="mono">index/words.json</td><td>نص كل كلمة مفهرساً بـ<code>data-wid</code> مع صفحتها — ابنِ منه فهرس بحث، أو ابنه من <code>data-search</code> في صفحات وضع التطوير، وبه بُني فهرس هذا العرض نفسه</td><td>3.4 MiB</td><td>—</td><td>478 KiB</td></tr>
           <tr><td class="mono">index/wordboxes.json</td><td>77,432 مربعاً محيطاً للكلمات، فتستطيع اختبار اللمس دون عرض الصفحة</td><td>3.0 MiB</td><td>—</td><td>896 KiB</td></tr>
           <tr><td class="mono">index/mark-taxonomy.json</td><td>أسماء العلامات وفئاتها وعائلاتها</td><td>4 KiB</td><td>—</td><td>—</td></tr>
           <tr><td class="mono">VERSION.json · CHECKSUMS.txt</td><td>ما ثبّتّ عليه، وبرهانٌ على ما وصلك</td><td>~50 KiB</td><td>—</td><td>—</td></tr>
@@ -1301,8 +1305,9 @@ svg.inert, svg.inert * { pointer-events: none }
 <pre><code><span class="tok-k">const</span> isDev = doc.querySelector(<span class="tok-s">'g.ligature'</span>) !== <span class="tok-k">null</span>;</code></pre>
         </figure>
         <p class="note">طبقة الوصلات <b>تقطيعٌ للعرض لا هجاء</b>. وهي ليست تقسيماً
-          موثوقاً للحروف — إذ إن 156 كلمةً تُهجّى فيها بحروف أقل مما تحمله فعلاً — فاعتمد
-          <code>data-uthmani</code> / <code>data-rasm</code> على الكلمة بوصفه النص المعتمد. والصفحة
+          موثوقاً للحروف — إذ إن 156 كلمةً تُهجّى فيها بحروف أقل مما تحمله فعلاً — فالنص
+          المعتمد هو <code>data-uthmani</code> على الكلمة، أو صورة <code>rasm</code> في الملف المرافق
+          للصفحة. والصفحة
           التي في أعلى هذا المستند معروضة في وضع الإنتاج.</p>
 
         <h3 style="font-size:19px;margin:26px 0 10px">مستويان للتفكيك</h3>
@@ -1338,7 +1343,7 @@ svg.inert, svg.inert * { pointer-events: none }
           <ul class="plain-list" style="margin-top:0">
             <li><b>لا عناصر <code>&lt;text&gt;</code> البتة.</b> فالحبر كله مسارات، ولذلك لا يعمل
               بحث المتصفح داخل الصفحة ولا تحديد النص القرآني ولا نسخه. والبحث يمرّ عبر
-              <code>data-search</code> أو عبر فهرس مبني منه. وهذا لازمٌ لأي عرض للخط الحقيقي
+              صورة <code>search</code> في <code>index/by-page/NNN.json</code> أو عبر فهرس مبني منها. وهذا لازمٌ لأي عرض للخط الحقيقي
               بالمسارات وحدها.</li>
             <li><b>لا بيانات وصفية لإمكانية الوصول في الملفات المُسلَّمة بعد.</b> لا <code>&lt;title&gt;</code>
               ولا <code>role</code> ولا <code>lang</code>. والمقوّمات كلها متوفرة — فالمقتطف في
@@ -1457,6 +1462,10 @@ const LOCAL = location.protocol === 'file:' ||
 /* Where every page is fetched from — the hero included, since nothing is
    inlined any more. In the published bundle this is SITE_BASE + 'pages/'. */
 const PAGES = LOCAL ? '../../.cache/words-svg/hafs-kfqc/' : SITE_BASE + 'pages/';
+/* Where each page's sidecar lives. A production page carries only data-wid
+   and data-uthmani inline; rasm, imlaei, search and qpc ship once per page
+   as index/by-page/NNN.json. */
+const INDEX = LOCAL ? '../../dist/quran-svg-hafs-kfgqpc/index/by-page/' : SITE_BASE + 'index/by-page/';
 const SVGNS = 'http://www.w3.org/2000/svg';
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -1522,6 +1531,7 @@ let PRISTINE = null;
 let cloneSeq = 0;
 function clonePage(src = PRISTINE) {
   const svg = src.cloneNode(true);
+  svg.__words = src.__words;   // expando: cloneNode does not copy it
   const tag = 'c' + (++cloneSeq) + '-';
   svg.removeAttribute('id');
   svg.querySelectorAll('[id]').forEach(el => { el.id = tag + el.id; });
@@ -1533,9 +1543,14 @@ function clonePage(src = PRISTINE) {
 
 /* ---------- fetch a page, parse it, hand back an <svg> ---------- */
 const pageCache = new Map();
+/* `__words` is an expando on the cached <svg>: the page's sidecar as a Map
+   wid → record, or null when it could not be fetched. cloneNode does not
+   copy expandos, so every clone handed out is given it explicitly. */
+const withWords = src => { const c = src.cloneNode(true); c.__words = src.__words; return c; };
+let sidecarWarned = false;
 async function getPage(n) {
   const key = pad3(n);
-  if (pageCache.has(key)) return pageCache.get(key).cloneNode(true);
+  if (pageCache.has(key)) return withWords(pageCache.get(key));
   const res = await fetch(PAGES + key + '.svg');
   if (!res.ok) throw new Error('HTTP ' + res.status + ' للصفحة ' + key);
   const doc = new DOMParser().parseFromString(await res.text(), 'image/svg+xml');
@@ -1544,8 +1559,23 @@ async function getPage(n) {
   /* dev-profile pages carry a legacy invisible polygon layer: different frame,
      last in document order, and it swallows pointer events. */
   svg.querySelectorAll('path.ayahPolygon').forEach(p => p.remove());
+  /* The sidecar beside it. A local checkout without a built bundle has none,
+     and the dev-profile pages it serves carry all five forms inline anyway. */
+  let words = null;
+  try {
+    const r = await fetch(INDEX + key + '.json');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const json = await r.json();
+    words = new Map(json.words.map(w => [w.wid, w]));
+  } catch (e) {
+    if (!sidecarWarned) {
+      sidecarWarned = true;
+      console.warn('no sidecar at ' + INDEX + key + '.json — text forms come from inline attributes only', e);
+    }
+  }
+  svg.__words = words;
   pageCache.set(key, svg);
-  return svg.cloneNode(true);
+  return withWords(svg);
 }
 
 const heroReady = getPage(HERO_PAGE).then(svg => {
@@ -1554,7 +1584,15 @@ const heroReady = getPage(HERO_PAGE).then(svg => {
      of it, and it is what `build.py` used to do on the way in. Every selector
      the reader sees on the hero is one that ships. */
   svg.querySelectorAll('g.ligature').forEach(g => g.replaceWith(...g.childNodes));
+  /* And the four sidecar forms: a production page carries only data-wid and
+     data-uthmani inline. When the sidecar could not be fetched (a local
+     checkout without a built bundle) the attributes stay, so the labs still
+     have text to read. */
+  if (svg.__words) svg.querySelectorAll('g.word').forEach(w => {
+    for (const k of ['rasm', 'imlaei', 'search', 'qpc']) delete w.dataset[k];
+  });
   PRISTINE = svg.cloneNode(true);
+  PRISTINE.__words = svg.__words;
   svg.id = 'hero';
   hero = svg;
   const paper = $('#hero-paper');
@@ -1916,7 +1954,25 @@ function refit(svg, pad = 4) {
    live; this is the fallback. Source: quran.com, reciter 9. */
 const FALLBACK_TIMINGS = /*TIMINGS*/null;
 
+/* A word's five text forms wherever they live. The inline attribute wins
+   when present (the dev profile carries all five; every profile carries
+   data-uthmani), the page's sidecar fills the rest, a missing form is
+   undefined. */
+const SIDECAR_FORMS = ['rasm', 'imlaei', 'search', 'qpc'];
+function forms(w) {
+  const side = w.ownerSVGElement?.__words?.get(w.dataset.wid) || {};
+  const out = { uthmani: w.dataset.uthmani };
+  for (const k of SIDECAR_FORMS) out[k] = k in w.dataset ? w.dataset[k] : side[k];
+  return out;
+}
+/* The page's sidecar in its shipped shape, {words: [...]}, rebuilt from the
+   attached Map — or null — so a lib snippet can page.attachWords() it. */
+function sidecar(svg) {
+  return svg && svg.__words ? { words: [...svg.__words.values()] } : null;
+}
+
 const H = { band, clearBands, fold, crop, refit, getPage, toRoot, clonePage, SVGNS,
+            forms, sidecar,
             hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_TIMINGS,
             /* Where the pages live. A snippet must never hardcode the dev
                checkout path: the same page is served from the bundle, from a
@@ -2877,9 +2933,10 @@ const QUERY = 'الله';          // جرّب: درجات · الرسل · ال
 // لا توحيد للأشكال نيابةً عنك: وحّدها في جانبك وابقِ البيانات كما كُتبت
 const fold = s => s.replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
 
-// استبدل data-rasm بـ data-search وراقب اختفاء هذه النتائج
+// صورة search تأتي من index/by-page/NNN.json، وتحملها صفحات وضع التطوير على الكلمة نفسها
+// استبدل .rasm بـ .search وراقب اختفاء هذه النتائج
 const hits = [...svg.querySelectorAll('g.word')]
-  .filter(w => fold(w.dataset.search).includes(fold(QUERY)));
+  .filter(w => fold(H.forms(w).search).includes(fold(QUERY)));
 
 hits.forEach(w => w.classList.add('q-word'));   // بالأحمر على الصفحة
 
@@ -2887,14 +2944,15 @@ log(hits.length, 'مطابقة في هذه الصفحة للكلمة', QUERY);
 log('');
 hits.slice(0, 10).forEach(w =>
   log(w.dataset.wid.padEnd(10), w.dataset.uthmani,
-      '  rasm:', w.dataset.rasm, '  search:', w.dataset.search));
+      '  rasm:', H.forms(w).rasm, '  search:', H.forms(w).search));
 `,
   lib: { code: `
 const QUERY = 'الله';          // جرّب: درجات · الرسل · البينات · الرحمان
 
 // يوحّد الجانبين، ولا يوسّع إلى تمريرة متساهلة إلا إذا لم تجد الصارمة
-// شيئاً. جرّب الرحمان: ألفها الخنجرية ليست في data-search.
+// شيئاً. جرّب الرحمان: ألفها الخنجرية ليست في صورة search أصلاً.
 const page = new M.MushafPage(svg);
+page.attachWords(H.sidecar(svg));   // الصور الأربع تُشحن في index/by-page/NNN.json
 const hits = page.search(QUERY);
 
 hits.forEach(m => m.word.el.classList.add('q-word'));   // بالأحمر على الصفحة
@@ -2916,14 +2974,15 @@ svg.addEventListener('pointermove', e => {
   const word = e.target.closest('g.word');
   const path = e.target.closest('path');
   if (!word) return;
+  const t = H.forms(word);   // rasm وimlaei وsearch وqpc من index/by-page/NNN.json
 
   out(
     '<b>' + word.dataset.wid + '</b>\\n' +
     'uthmani  ' + word.dataset.uthmani + '\\n' +
-    'rasm     ' + word.dataset.rasm    + '\\n' +
-    'imlaei   ' + word.dataset.imlaei  + '\\n' +
-    'search   ' + word.dataset.search  + '\\n' +
-    'qpc      ' + word.dataset.qpc     + '\\n' +
+    'rasm     ' + t.rasm    + '\\n' +
+    'imlaei   ' + t.imlaei  + '\\n' +
+    'search   ' + t.search  + '\\n' +
+    'qpc      ' + t.qpc     + '\\n' +
     'ayah     ' + word.closest('g.ayah').dataset.aid +
         '   line ' + word.closest('g.line').dataset.line + '\\n' +
     'path     ' + (path ? [path.dataset.kind, path.dataset.mark,
@@ -2935,6 +2994,7 @@ out('مرّر المؤشر على الصفحة ←');
 `,
   lib: { code: `
 const page = new M.MushafPage(svg);
+page.attachWords(H.sidecar(svg));   // الصور الأربع تُشحن في index/by-page/NNN.json
 
 svg.style.cursor = 'crosshair';
 svg.addEventListener('pointermove', e => {
@@ -3015,7 +3075,7 @@ function payload(which) {
   let text = '', prevLine = null, aid = null, first = null, last = null;
   for (const s of picked) {
     const w = wordOf(s);
-    const v = w && w.dataset[which];
+    const v = w && H.forms(w)[which];
     if (!v) continue;
     const a = w.closest('g.ayah').dataset.aid;
     if (aid && a !== aid) { text += stamp(aid, first, last); aid = null; }
@@ -3064,6 +3124,7 @@ report();
 const WHICH = 'uthmani';   // ما تحمله العناصر وما ينسخه Ctrl+C
 
 const page = new M.MushafPage(svg);
+page.attachWords(H.sidecar(svg));   // الصور الأربع تُشحن في index/by-page/NNN.json
 
 const sel = M.attachSelection(page, {
   mount: stage,
@@ -4357,11 +4418,12 @@ mod('attrs', () => {
   /* keyed 'scope|attr', or 'attr' for a note that holds on every scope */
   const NOTE = {
     'g.word|data-wid': ['<code>surah:ayah:word</code>، يبدأ العدّ من 1. فريد في المصحف كله. <b>هو المفتاح.</b>', 1],
+    'g.word|data-w': ['<b>المعرِّف العالمي للكلمة</b> في مصدر «كلمة بكلمة» (إصدار مجمع الملك فهد UthmanicHafs v3.0): العدد نفسه لهذه الكلمة في كل مصحف يحتويها. 77,432 معرِّفاً؛ ويشترك جزءا الكلمة في 15:7 <span class="ar">لَّوْ مَا</span> في معرِّف واحد', 1],
     'g.word|data-uthmani': ["نص الطبعة نفسها بتشكيل كامل — وهو النص المعتمد", 1],
-    'g.word|data-rasm': ['هيكل الرسم العثماني — <b>الأشكال المرسومة</b>', 1],
-    'g.word|data-imlaei': ['الرسم الإملائي الحديث، بالعلامات', 1],
-    'g.word|data-search': ['هيكل الرسم الإملائي الحديث — <b>مفتاح البحث</b>', 1],
-    'g.word|data-qpc': ['النص نفسه بنقاط ترميز KFGQPC', 1],
+    'g.word|data-rasm': ['هيكل الرسم العثماني — <b>الأشكال المرسومة</b> — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
+    'g.word|data-imlaei': ['الرسم الإملائي الحديث، بالعلامات — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
+    'g.word|data-search': ['هيكل الرسم الإملائي الحديث — <b>مفتاح البحث</b> — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
+    'g.word|data-qpc': ['النص نفسه بنقاط ترميز KFGQPC — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
     'g.ayah|data-aid': ['<code>surah:ayah</code> — مقطع واحد لكل سطر مطبوع', 1],
     'g.ayah|data-marker': ["قيمة <code>id</code> لعلامة رأس هذه الآية، في الصفحة نفسها", 1],
     'g.ayah|data-part': ['أيّ مقطع هذا، بترتيب القراءة', 1],
@@ -4371,7 +4433,8 @@ mod('attrs', () => {
     'g.ayah|data-nisf-start': ['تفتتح ذلك النصف من الحزب', 1],
     'g.ayah|data-rub-start': ['تفتتح ذلك الرُّبع — جميع حدود الأرباع الـ240، ومنها 41 بلا وردة مرسومة', 1],
     'g.ayah-marker|id': ['<code>mk-&lt;surah&gt;-&lt;ayah&gt;</code>، فريد في المصحف كله', 1],
-    'g.ayah-marker|data-aid': ['الآية التي تختمها علامة رأس الآية هذه. <b>12 مجموعة من مجموعات العلامات الـ6,248 لا تحمل أياً منهما</b> — وهي الورود الزخرفية المؤطِّرة للصفحتين 1–2، ولا تختم آية. استخدم <code>g.ayah-marker[data-aid]</code> حين تقصد العلامات الحقيقية.', 1],
+    'g.ayah-marker|data-aid': ['الآية التي تختمها علامة رأس الآية هذه — على كل مجموعة من مجموعات العلامات الـ6,236. في الصفحتين 1–2 يرسم العمل الفني الحلقة مرتين، وتقع النسخة الثانية داخل المجموعة نفسها بالسمة <code>data-duplicate="1"</code>.', 1],
+    'path|data-duplicate': ['الحلقة الثانية المطابقة حرفياً التي يرسمها العمل الفني في الصفحتين 1–2 (12 مساراً). أُبقيت لأن حذفها يخفّف حافة الحلقة المنعَّمة؛ احذف <code>[data-duplicate]</code> بنفسك إن شئت', 1],
     'g.line|data-line': ['رقم السطر المطبوع، 1–15 (1–8 في الصفحتين 1–2)', 1],
     'data-sid': ["رقم السورة. <b>على الصفحة الأولى من السورة فقط</b>، ولذلك العدد هنا 114 و112 لا 604.", 1],
     'data-surah-name-ar': ['مثال: <bdi class="ar" style="font-size:1em">البقرة</bdi>', 1],
@@ -4379,7 +4442,7 @@ mod('attrs', () => {
     'data-surah-name-en': ['مثال: <code>The Cow</code>', 1],
     'data-revelation-place': ['<code>makkah</code> / <code>madinah</code>', 1],
     'data-ayah-count': ['عدد آيات السورة', 1],
-    'path|data-kind': ['<code>body</code> (حبر الحروف) · <code>mark</code> · <code>header-ink</code> · <code>ayah-marker-ornament</code> · <code>ayah-number</code>', 1],
+    'path|data-kind': ['<code>body</code> (حبر الحروف) · <code>mark</code> · <code>header-ink</code> · <code>ornament</code> · <code>ayah-marker-ornament</code> · <code>ayah-number</code> · <code>page-number</code> و<code>running-head</code> (أربعة مسارات غير مرئية من أثاث الصفحة 17 خارج إطار العرض)', 1],
     'path|data-mark': ['أيّ علامة هي — مفردات مغلقة من 34 اسماً', 1],
     'path|data-mark-family': ['يجمع العلامات حسب المعنى. <b>قائمة رموز مفصولة بمسافات</b> مثل <code>class</code>: التنوين يحمل <code>"diacritic tanween"</code>. طابِق بـ<code>~=</code> لا بـ<code>=</code> أبداً.', 1],
     'path|data-form': ['<code>staggered</code> / <code>stacked</code> — كيف يُرسم زوج التنوين', 1],

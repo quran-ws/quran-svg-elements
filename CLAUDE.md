@@ -124,7 +124,16 @@ python3 scratchpad/bench.py                 # ~2 min. Any FAILURE or pixelfail >
 python3 scratchpad/cmp_pages.py 350 418     # the pages a change was aimed at
 python3 scratchpad/full_sweep.py 1 604      # ~25 min, writes one JSON per page
 python3 scratchpad/cmp_full.py <sweep-dir>  # against the pinned baseline
+python3 tools/audit_export.py 1 604         # ~1 min. Export shape; every count must be 0.
+python3 tools/audit_pixels.py 1 604 32      # ~10 min. FAILURES must be 0 after anything touching rewrite().
 ```
+
+**Two things that LOOK pixel-free and are not** (measured 2026-09-04): collapsing
+an exact in-place duplicate contour (p1/p2's doubled ornaments darken their
+anti-aliased rim by up to 57/255 — keep both, tag the copy `data-duplicate`), and
+trusting a "same ink" argument without the raster. The frame normalisation of
+p1/p2 (viewBox offset folded into the page matrix) IS pixel-free; the raster diff
+said so, not the argument.
 
 Accept only if the total falls, **no page worsens by more than +1**, pixelfail
 is 0, and no bench case fails. The pinned "before" build is
@@ -155,6 +164,7 @@ After anything touching the artwork or the line cut, also run
 | `tools/score_confidence.py` | ALL of the above in one pass, combined into a per-mark/word/page P(defect): proof-class violations (empty bands, arithmetic) ⇒ CERTAIN, soft priors noisy-OR'd ⇒ HIGH/REVIEW. Ranked output `docs/defects/confidence.html`, per-page JSON `.cache/confidence/pages/` | anything every input metric is blind to; line placement only via `--ref` |
 | `tools/text_source.py` | which published text this print was set from | — |
 | `tools/audit_pixels.py` | ink added/removed (contour conservation) or moved (raster vs artwork), all 604 pages | AA seams under 10 px; semantic mis-labels |
+| `tools/audit_export.py` | the export SHAPE a consumer's converter measured (2026-09-04): one marker per ayah with id, viewBox `0 0 345 550` everywhere, `data-kind` on every path, no `<path transform>`, three-decimal movetos, production word groups carrying `data-wid` + `data-uthmani` only. Six properties, every page, production profile | anything about the ink itself |
 
 `tools/audit_split.py` is named above in older notes but **does not exist in the repo**.
 `audit_lines.py` and `verify_render.py` do.
@@ -464,6 +474,14 @@ Both +1 versus the session baseline; neither is explained.
   is byte-identical for A/B (`QSVG_DKTEXT=0`).
 - Human input is captured as DATA — shapes to `labels.json`, places to
   `overrides.json` — never as a code edit.
+- **The word-by-word source** (`.cache/wbw/hafs.json`, KFGQPC UthmanicHafs v3.0
+  release, Abdullah's word-by-word product is built on it) gives every word group
+  its `data-w` global id via `tools/build_wbw_map.py` → `.cache/wbw/wid_to_w.json`;
+  the emitter refuses a word the map does not know, so rebuild the map after any
+  segmentation change. Measured 2026-09-04 (`docs/HAFS-JSON-SOURCE.md`): page
+  membership identical on all 604 pages, segmentation differs only at 15:7. Its `t`
+  text is a candidate text of record but NOT adopted — it needs the measured contest
+  first; its `e`/`ln` are not adopted either.
 - Every hard-won fix should become a bench case, or it comes back.
 - Backups live outside the repo in `~/Documents/quran-svg-backups/`.
 
