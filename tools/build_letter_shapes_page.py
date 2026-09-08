@@ -14,10 +14,15 @@ the reviewer's work is to click the wrong ones, not to confirm hundreds of good 
 
 A shape is often not simply right or wrong: the curve is the letter's own, but it carries
 a sliver of its neighbour, or it is missing one. So a card can also be CORRECTED — press
-✂ and the whole word opens, the letter dark and the rest of it grey. Draw the boundary
-freehand (a joint is rarely a straight line) and click the side that belongs to THIS
-letter. Because the whole word is there, the same gesture takes ink back from a
-neighbour as easily as it gives ink away.
+✂ and the whole word opens, the letter dark and the rest of it grey. Draw freehand: a
+line across a stroke, or a loop right around the part you mean. Then click inside the
+part that IS the letter, and the preview shows what the letter becomes.
+
+One rule covers both gestures: the drawing is painted over the ink as a barrier and the
+letter is the ink region holding the click. A line across a stroke separates two sides
+and the click picks one; a closed loop separates inside from outside and the click picks
+the inside. Because the whole word is there, the same gesture takes ink back from a
+neighbour as easily as it gives a sliver away.
 
 A correction that stays inside the letter's own box is a fact about the SHAPE and is
 recorded in fractions of that box, so it transfers to every instance of it. One that
@@ -161,21 +166,24 @@ def main():
             "align-items:center;justify-content:center}"
             "#ov .box{background:#fff;padding:14px;border-radius:8px;text-align:center;max-width:92vw}"
             "#ov svg{cursor:crosshair;background:#fff}#ov .btns{margin-top:8px}"
+            "#ovwrap{display:flex;gap:14px;align-items:flex-start}"
+            "#ovprev{border-left:1px dashed #ccc;padding-left:14px;min-width:120px}"
+            "#ovprev canvas{background:#fff}#ovprev .lbl{font-size:12px;color:#666;margin-top:4px}"
             "#ov button{position:static;margin:0 4px;padding:6px 12px}"
             "button{position:fixed;top:10px;right:10px;padding:8px 14px;z-index:9}"
             "#tally{position:fixed;top:10px;right:150px;padding:8px 12px;background:#fff;"
             "border:1px solid #ccc;border-radius:6px;font-size:13px;z-index:9}</style>"
             "<button onclick='copyAll()'>Copy verdicts</button><div id=tally>0 wrong</div>"
             "<div id=ov onclick='if(event.target.id==\"ov\")closeTrim()'><div class=box>"
-            "<div id=ovsvg></div><div class=btns><b id=ovmsg>draw the cut across the shape</b><br>"
+            "<div id=ovwrap><div id=ovsvg></div><div id=ovprev></div></div><div class=btns><b id=ovmsg>draw the cut across the shape</b><br>"
             "<button onclick='clearTrim()'>clear</button>"
             "<button onclick='closeTrim()'>done</button></div></div></div>"
             "<h1>Letter shapes</h1>"
             "<p>Every shape the split produced, one card per shape, with the number of words that "
             "draw it. <b>Everything starts marked right — click a shape to mark it wrong, click again "
-            "to put it back. Press \u2702 to open the whole word, draw the boundary freehand and click the "
-            "side that belongs to the dark letter \u2014 that both trims a sliver off and takes a missing "
-            "piece back from a neighbour.</b> "
+            "to put it back. Press \u2702 to open the whole word, draw a line across the ink or a loop "
+            "around it, then click the part that IS the letter \u2014 the preview shows what the letter "
+            "becomes, and the same gesture trims a sliver off or takes a missing piece back.</b> "
             "The shapes are ordered by how much of the mushaf they carry, so the first few cards of "
             "each letter are worth far more than the last. Then press Copy and paste the lines back.</p>"
             + "".join(body) +
@@ -203,10 +211,11 @@ def main():
             "svg.addEventListener('mousemove',e=>{if(!drawing)return;const p=svgPt(svg,e);"
             "const q=pts[pts.length-1];if((p[0]-q[0])**2+(p[1]-q[1])**2>(vb.width/300)**2){pts.push(p);redraw()}});"
             "svg.addEventListener('mouseup',()=>{if(drawing){drawing=false;"
-            "document.getElementById('ovmsg').textContent='now click the piece that belongs to the neighbour'}});"
-            "svg.addEventListener('click',e=>{if(drawing||pts.length<2||side)return;side=svgPt(svg,e);redraw();save();});"
+            "document.getElementById('ovmsg').textContent='now click the part that IS the letter'}});"
+            "svg.addEventListener('click',e=>{if(drawing||pts.length<2)return;side=svgPt(svg,e);redraw();"
+            "if(preview())save();});"
             "document.getElementById('ovmsg').textContent="
-            "'draw the boundary, then click the side that belongs to the dark letter';"
+            "'draw a line across it or a loop around it, then click the part that IS the letter';"
             "if(el.dataset.trim){const t=JSON.parse(el.dataset.trim);"
             "pts=(t.page_path||[]).map(q=>[q[0],-q[1]]);"
             "side=t.page_side?[t.page_side[0],-t.page_side[1]]:null;redraw();}}"
@@ -214,11 +223,43 @@ def main():
             "[...svg.querySelectorAll('.tl,.tp')].forEach(e=>e.remove());"
             "if(pts.length>1){const pl=document.createElementNS('http://www.w3.org/2000/svg','polyline');"
             "pl.setAttribute('points',pts.map(p=>p[0]+','+p[1]).join(' '));pl.setAttribute('fill','none');"
-            "pl.setAttribute('stroke','#b00');pl.setAttribute('stroke-width',vb.width/90);"
+            "pl.setAttribute('stroke','#b00');pl.setAttribute('stroke-width',vb.width/260);"
             "pl.setAttribute('stroke-linecap','round');pl.setAttribute('class','tl');svg.appendChild(pl);}"
             "if(side){const c=document.createElementNS('http://www.w3.org/2000/svg','circle');"
-            "c.setAttribute('cx',side[0]);c.setAttribute('cy',side[1]);c.setAttribute('r',vb.width/45);"
+            "c.setAttribute('cx',side[0]);c.setAttribute('cy',side[1]);c.setAttribute('r',vb.width/90);"
             "c.setAttribute('fill','rgba(200,0,0,.55)');c.setAttribute('class','tp');svg.appendChild(c);}}"
+            "function preview(){const svg=document.getElementById('tsvg');const vb=svg.viewBox.baseVal;"
+            "const w=JSON.parse(cur.querySelector('.wd').textContent);"
+            "const W=Math.min(360,Math.round(vb.width*14)),H=Math.round(W*vb.height/vb.width),z=W/vb.width;"
+            "const ink=document.createElement('canvas');ink.width=W;ink.height=H;"
+            "const ic=ink.getContext('2d',{willReadFrequently:true});"
+            "ic.setTransform(z,0,0,-z,-vb.x*z,-vb.y*z);ic.fillStyle='#000';"
+            "w.word.forEach(d=>ic.fill(new Path2D(d),'evenodd'));"
+            "const bar=document.createElement('canvas');bar.width=W;bar.height=H;"
+            "const bc=bar.getContext('2d',{willReadFrequently:true});"
+            "bc.setTransform(z,0,0,z,-vb.x*z,-vb.y*z);bc.strokeStyle='#000';bc.lineWidth=Math.max(0.12,1.2/z);"
+            "bc.lineJoin='round';bc.lineCap='round';bc.beginPath();bc.moveTo(pts[0][0],pts[0][1]);"
+            "pts.slice(1).forEach(p=>bc.lineTo(p[0],p[1]));bc.stroke();"
+            "const ia=ic.getImageData(0,0,W,H).data,ba=bc.getImageData(0,0,W,H).data;"
+            "const free=new Uint8Array(W*H);for(let i=0;i<W*H;i++)free[i]=(ia[i*4+3]>110&&ba[i*4+3]<110)?1:0;"
+            "const sx=Math.round((side[0]-vb.x)*z),sy=Math.round((side[1]-vb.y)*z);"
+            "let seed=-1,best=1e9;"
+            "for(let y=0;y<H;y++)for(let x=0;x<W;x++){if(!free[y*W+x])continue;"
+            "const d=(x-sx)*(x-sx)+(y-sy)*(y-sy);if(d<best){best=d;seed=y*W+x}}"
+            "if(seed<0){document.getElementById('ovmsg').textContent='that click is not on any ink \u2014 click on the part that IS the letter';return false;}"
+            "const sel=new Uint8Array(W*H);const st=[seed];sel[seed]=1;"
+            "while(st.length){const j=st.pop(),x=j%W,y=(j/W)|0;"
+            "[[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{const nx=x+dx,ny=y+dy;"
+            "if(nx<0||ny<0||nx>=W||ny>=H)return;const k=ny*W+nx;if(free[k]&&!sel[k]){sel[k]=1;st.push(k)}});}"
+            "const out=document.createElement('canvas');out.width=W;out.height=H;"
+            "const oc=out.getContext('2d');const im=oc.createImageData(W,H);let n=0,tot=0;"
+            "for(let i=0;i<W*H;i++){if(ia[i*4+3]<=110)continue;tot++;const o=i*4;"
+            "if(sel[i]){n++;im.data[o]=20;im.data[o+1]=140;im.data[o+2]=60;im.data[o+3]=255}"
+            "else{im.data[o]=205;im.data[o+1]=205;im.data[o+2]=205;im.data[o+3]=255}}"
+            "oc.putImageData(im,0,0);const box=document.getElementById('ovprev');box.innerHTML='';"
+            "box.appendChild(out);const lb=document.createElement('div');lb.className='lbl';"
+            "lb.textContent='the letter becomes this \u2014 '+Math.round(100*n/Math.max(tot,1))+'% of the word\u2019s ink';"
+            "box.appendChild(lb);return true;}"
             "function save(){if(!cur||pts.length<2||!side)return;const svg=document.getElementById('tsvg');"
             "const bx=svg.dataset.box.split(',').map(Number);"
             "const pg=p=>[+p[0].toFixed(3),+(-p[1]).toFixed(3)];"
@@ -233,10 +274,11 @@ def main():
             "?'saved for this SHAPE \u2014 it applies to every word that draws it'"
             ":'saved for this WORD \u2014 it reaches into a neighbour, so it is one example')"
             "+' \u2014 press done';tally();}"
-            "function clearTrim(){pts=[];side=null;redraw();if(cur){delete cur.dataset.trim;"
+            "function clearTrim(){pts=[];side=null;redraw();document.getElementById('ovprev').innerHTML='';"
+            "if(cur){delete cur.dataset.trim;"
             "cur.classList.remove('trim');cur.classList.add('good');}"
             "document.getElementById('ovmsg').textContent="
-            "'draw the boundary, then click the side that belongs to the dark letter';tally();}"
+            "'draw a line across it or a loop around it, then click the part that IS the letter';tally();}"
             "function closeTrim(){document.getElementById('ov').style.display='none';cur=null;drawing=false;}"
             "function tally(){const b=document.querySelectorAll('.sh.bad').length;"
             "const m=document.querySelectorAll('.sh.trim').length;"
