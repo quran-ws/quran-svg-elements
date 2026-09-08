@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Build docs/demo/data/search-index.json from the pages' own data-search.
+"""Build docs/demo/data/search-index.json from the DEV pages' data-search.
 
 77,432 rows of [wid, page, search]. ~2.1 MB raw / ~480 KB gzipped, and the demo
-fetches it only when someone types in the search box. Nothing here comes from
-outside the SVGs — the index IS the shipped attribute, transposed.
+fetches it only when someone types in the search box. Reads the dev-profile
+cache, which still carries data-search inline; a production page does not
+(FORMAT §6.1, 2026-09-04) — its search key is in index/words.json, which is
+the same value.
 
 Run:  QSVG_ROOT=$PWD python3 docs/demo/build_search_index.py
 """

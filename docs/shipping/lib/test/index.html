@@ -57,12 +57,16 @@ try {
   eq('1.5 polygons dropped by the loader', p42.el.querySelectorAll('path.ayahPolygon').length, 0);
 
   const p1 = await load(1);
-  eq('1.6 page 1 has its own viewBox, not 0 0 345 550',
-     p1.viewBox, { x: -53.3109, y: -198.4777, w: 345, h: 550 });
+  eq('1.6 page 1 uses the same viewBox as every page (normalised since 2026-09-04)',
+     p1.viewBox, { x: 0, y: 0, w: 345, h: 550 });
   eq('1.7 page 1 has 8 printed lines', p1.lines().length, 8);
   eq('1.8 page 1 word count', p1.wordCount, 29);
-  eq('1.9 page 1: 12 decorative rosettes are excluded from markers()',
-     [p1.allMarkerGroups().length, p1.markers().length], [14, 7]);
+  eq('1.9 page 1: one marker group per ayah, every one with data-aid',
+     [p1.allMarkerGroups().length, p1.markers().length], [7, 7]);
+  eq('1.9b page 1: each marker holds the ring, one tagged copy of it, and the numeral',
+     p1.markers().map(m => [!!m.ring, m.ringCopies.length, !!m.numeral]).every(x => x[0] && x[1] === 1 && x[2]), true);
+  eq('1.9c page 42: no ring copies outside the opening spread',
+     p42.markers().every(m => m.ringCopies.length === 0), true);
 
   const p604 = await load(604), p176 = await load(176), p582 = await load(582);
   eq('1.10 page 604 words', p604.wordCount, 58);
@@ -90,6 +94,51 @@ try {
   eq('1.17 core still works on the production profile',
      [prod.ayah('2:255').words().length, prod.search('الله', { mode: 'exact' }).length],
      [p42.ayah('2:255').words().length, 5]);
+
+  /* production profile, as SHIPPED since 2026-09-04: data-uthmani only on the
+     word group; rasm / imlaei / search / qpc come from index/by-page/NNN.json */
+  const sidecar = { words: p42.words().map(w => ({ wid: w.wid, ...w.text })) };
+  prod.el.querySelectorAll('g.word').forEach(g => {
+    for (const k of ['rasm', 'imlaei', 'search', 'qpc']) delete g.dataset[k];
+  });
+  ok('1.17b every word carries the global word id (data-w), a positive integer',
+     p42.words().every(w => Number.isInteger(w.w) && w.w > 0), p42.word('2:255:1').w);
+  eq('1.18 a shipped production word has uthmani inline and the rest null',
+     [prod.word('2:255:1').form('uthmani') !== null, prod.word('2:255:1').form('search'),
+      prod.word('2:255:1').text.rasm],
+     [true, null, null]);
+  eq('1.19 hasForm() says search is missing', [prod.hasForm('uthmani'), prod.hasForm('search')],
+     [true, false]);
+  let threw = null;
+  try { prod.search('الله'); } catch (e) { threw = e.message; }
+  ok('1.20 search() on a bare production page throws a message naming the sidecar',
+     threw && /attachWords|index\/by-page/.test(threw), threw);
+  eq('1.21 attachWords() returns the record count', prod.attachWords(sidecar), p42.wordCount);
+  eq('1.22 after attachWords the five forms match the dev page',
+     prod.word('2:255:1').text, p42.word('2:255:1').text);
+  eq('1.23 search works from the sidecar',
+     prod.search('الله', { mode: 'exact' }).map(m => m.wid),
+     p42.search('الله', { mode: 'exact' }).map(m => m.wid));
+  eq('1.24 page.text() reads the sidecar form',
+     prod.text('2:255', { form: 'search' }), p42.text('2:255', { form: 'search' }));
+  eq('1.25 clone() carries the sidecar',
+     prod.clone().word('2:255:1').form('search'), p42.word('2:255:1').form('search'));
+  eq('1.26 inline attributes win over the sidecar',
+     p42.clone().attachWords({ words: [{ wid: '2:255:1', search: 'WRONG' }] }) && p42.word('2:255:1').form('search'),
+     sidecar.words.find(r => r.wid === '2:255:1').search);
+  {
+    const seen = [];
+    const stub = async u => {
+      seen.push(u);
+      if (u.endsWith('.json')) return { ok: true, json: async () => sidecar };
+      return { ok: true, text: async () => new XMLSerializer().serializeToString(prod.el) };
+    };
+    const ld = M.createLoader({ baseUrl: 'x/pages/', fetch: stub, words: true });
+    const pg = await ld(42);
+    eq('1.27 createLoader({words:true}) fetches ../index/by-page/NNN.json and attaches it',
+       [seen[1], pg.word('2:255:1').form('search')],
+       ['x/pages/../index/by-page/042.json', p42.word('2:255:1').form('search')]);
+  }
 
   /* ============================================ 2. metadata, no database */
   const s582 = p582.surahs();
@@ -404,14 +453,21 @@ try {
   const hm = p42.hideMarkers();
   eq('9.7 markers hidden', p42.markers().every(m => m.el.style.display === 'none'), true);
   hm.remove();
-  /* pages 1-2: the decorative rosettes must be left alone */
+  /* pages 1-2: no id-less groups any more; the doubled ring is INSIDE the group
+     and must be styled with the ring, or the copy shows through in the old ink */
   show(p1);
   const st1 = p1.styleMarkers({ ring: '#0a0' });
-  const decorative = [...p1.allMarkerGroups()].filter(g => !g.dataset.aid);
-  eq('9.8 page 1: 12 decorative rosettes are not touched',
-     [decorative.length,
-      decorative.every(g => !g.querySelector('[fill="#0a0"]'))], [7, true]);
+  const idless = [...p1.allMarkerGroups()].filter(g => !g.dataset.aid);
+  eq('9.8 page 1: no id-less marker groups, and the ring copies take the ring colour',
+     [idless.length,
+      p1.markers().every(m => m.ringCopies.every(c => getComputedStyle(c).fill === getComputedStyle(m.ring).fill))],
+     [0, true]);
   st1.remove();
+  const rr1 = p1.styleMarkers({ replaceRing: true });
+  eq('9.8b page 1: replacing the ring hides its copy, and remove() brings it back',
+     [p1.markers().every(m => m.ringCopies.every(c => c.getAttribute('display') === 'none')),
+      (rr1.remove(), p1.markers().every(m => m.ringCopies.every(c => !c.hasAttribute('display'))))],
+     [true, true]);
 
   /* ============================================ 10. layout */
   show(p42);
@@ -451,7 +507,7 @@ try {
   ok('10.14 page 1 gap differs from the 15-line answer', Math.abs(fit1.state.gap - 14.0) > 5, fit1.state.gap);
   fit1.remove();
   eq('10.15 page 1 viewBox restored',
-     p1.el.getAttribute('viewBox'), '-53.3109 -198.4777 345 550');
+     p1.el.getAttribute('viewBox'), '0 0 345 550');
 
   /* ============================================ 11. crop */
   show(p42);
@@ -1071,22 +1127,21 @@ try {
       hh.remove();
     }
 
-    /* ---- pages 1-2 decorative rosettes ---- */
+    /* ---- pages 1-2: every group has an ayah; the doubled ring is INSIDE it ---- */
     {
       const p = await load(1);
-      const rosettes = p.allMarkerGroups().filter(g => !g.dataset.aid);
-      eq('21.45 page 1 carries 7 rosettes closing no ayah (12 over pages 1-2)',
-         rosettes.length, 7);
-      const before = rosettes.map(g => g.innerHTML);
+      eq('21.45 page 1: no marker group without data-aid (every one closes an ayah)',
+         p.allMarkerGroups().filter(g => !g.dataset.aid).length, 0);
+      const before = p.markers().map(m => m.el.innerHTML);
       const hh = M.setAyahMarker(p, out);
-      eq('21.46 only the real medallions were swapped', hh.count, p.markers().length);
-      eq('21.47 the decorative rosettes are untouched by default',
-         rosettes.map(g => g.innerHTML), before);
+      eq('21.46 all seven medallions were swapped', hh.count, 7);
+      eq('21.47 the doubled ring is hidden with the ring it copies',
+         p.markers().every(m => m.ringCopies.length === 1 && m.ringCopies[0].getAttribute('display') === 'none'), true);
       hh.remove();
+      eq('21.48 remove() restores the group exactly', p.markers().map(m => m.el.innerHTML), before);
       const h2 = M.setAyahMarker(p, out, { decorative: true });
-      eq('21.48 decorative:true reaches them', h2.count, p.allMarkerGroups().length);
+      eq('21.49 decorative:true changes nothing on a current page', h2.count, 7);
       h2.remove();
-      eq('21.49 and puts them back', rosettes.map(g => g.innerHTML), before);
     }
 
     /* ---- the size factor ---- */

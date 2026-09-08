@@ -271,9 +271,11 @@ function numeralCentreIn(group, host) {
  * design's OWN number-centre lands on the printed numeral, and scaled from the
  * box the ring occupied.
  *
- * DECORATIVE ROSETTES ARE LEFT ALONE. Pages 1-2 carry 12 `g.ayah-marker`
- * groups with no `data-aid` — the frame of the opening spread, closing no ayah.
- * Pass `decorative: true` to include them.
+ * Only `g.ayah-marker[data-aid]` groups are touched. Since 2026-09-04 that is
+ * every marker; page files built before it carried 12 id-less groups on pages
+ * 1-2 ("decorative rosettes" — in fact the artwork's doubled rings), and
+ * `decorative: true` includes those. On current pages the doubled ring sits
+ * INSIDE the marker group as `[data-duplicate]` and is hidden with the ring.
  *
  * @param page     a MushafPage
  * @param outline  what `set.outline(id)` resolved to
@@ -291,6 +293,7 @@ export function setAyahMarker(page, outline, {
 
   const groups = markerGroups(page, target, decorative);
   const undo = [];
+  let swapped = 0;
 
   for (const g of groups) {
     const ring = currentRing(g);
@@ -319,12 +322,23 @@ export function setAyahMarker(page, outline, {
     const parent = ring.parentNode, next = ring.nextSibling;
     ring.replaceWith(swap);
     undo.push(() => { swap.remove(); parent.insertBefore(ring, next); });
+    swapped++;
+    // pages 1-2: the artwork's second copy of the ring (FORMAT §9.2) would
+    // show through the replacement — hide it with the ring it duplicates.
+    // The presentation attribute, not el.style: once Chrome's inline-style
+    // object has been touched, removing the attribute still serialises an
+    // empty style="", and remove() must give the group back byte for byte.
+    for (const c of g.querySelectorAll('[data-kind="ayah-marker-ornament"][data-duplicate]')) {
+      const prev = c.getAttribute('display');
+      c.setAttribute('display', 'none');
+      undo.push(() => prev == null ? c.removeAttribute('display') : c.setAttribute('display', prev));
+    }
   }
 
   const paint = colours ? colourAyahMarkers(page, colours) : null;
 
   return {
-    count: undo.length,
+    count: swapped,
     marker: outline.id,
     remove() {
       undo.reverse().forEach(f => f());
@@ -385,7 +399,7 @@ function markerGroups(page, target, decorative) {
 
 /* The ring, or the group that stands in its place. */
 function currentRing(g) {
-  return g.querySelector('[data-kind="ayah-marker-ornament"]') ||
+  return g.querySelector('[data-kind="ayah-marker-ornament"]:not([data-duplicate])') ||
          g.querySelector('g.ayah-marker-swap');
 }
 

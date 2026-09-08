@@ -13,6 +13,9 @@ are stated in this directory].**
   a `Word`, an `Ayah`, a `Line`, an element, or an array of any of those.
 - **`form`** — one of `'uthmani' | 'imlaei' | 'qpc' | 'rasm' | 'search'`
   (`TEXT_FORMS`). Default `'uthmani'` for display, `'search'` for searching.
+  A production page carries only `uthmani` inline; the other four come from the
+  page's sidecar `index/by-page/NNN.json` once attached (`createLoader({words:
+  true})` or `page.attachWords()`), and read as `null` before that.
 - **Handles.** Every mutating call returns an object with **`.remove()`** that undoes
   exactly what it did and nothing else. There is no global reset.
 - **Ownership.** `MushafPage.load()` and `page.clone()` give you a page you own.
@@ -46,11 +49,23 @@ two callers can never disturb each other.
 | `fetch` | `globalThis.fetch` | inject your own |
 | `cache` | `true` | |
 | `stripPolygons` | `true` | drop the dev-only `path.ayahPolygon` layer (§5.3 of FORMAT: different frame, sits on top, swallows pointer events) |
+| `words` | `null` | also fetch and attach the page's text sidecar `index/by-page/NNN.json` (FORMAT §6.1). `true` → `baseUrl + '../index/by-page/'`; a string → that base; a function → `n => url`. A production page has only `data-uthmani` inline, so `search()` and the other four forms need this. A sidecar that fails to fetch throws. |
 
 ```js
-const load = createLoader({ baseUrl: '/quran/pages/' });
-const page = await load(42);
+const load = createLoader({ baseUrl: '/quran/pages/', words: true });
+const page = await load(42);            // page.search() works: the sidecar is attached
 ```
+
+### `page.attachWords(sidecar)` → `number`
+
+Attach `index/by-page/NNN.json` by hand (the object, its `words` array, or a
+wid-keyed object / `Map`). Returns the record count. Carried by `clone()`. After
+this, `word.form()`, `word.text`, `page.text()` and `page.search()` read the four
+derived forms from it; an inline attribute (dev profile) always wins.
+
+### `page.hasForm(form)` → `boolean`
+
+Whether `form` is readable on this page — inline or attached. `uthmani` always is.
 
 ### `MushafPage.load(n, options)`
 
@@ -88,7 +103,8 @@ Detected by whether `g.ligature` is present. The files do not announce it.
 
 ### `page.info()`
 Everything at once: profile, viewBox, line and word and ayah counts, surah numbers,
-marker count, decorative-rosette count, sajdahs, rosettes, divisions.
+marker count, decorative-rosette count (always 0 on pages built since 2026-09-04 — every
+marker group now carries `data-aid`), sajdahs, rosettes, divisions.
 
 ### `page.dropPolygons()` → `number`
 Remove the dev-only polygon layer. Mutates. The loader does it for you.
@@ -140,11 +156,13 @@ split into two groups with unreliable `data-aid`.
 
 ### `page.markers()` → `{el, aid, id, ring, numeral}[]`
 
-**Real ayah medallions only.** Pages 1–2 carry 12 decorative rosettes with no
-`data-aid`; they are excluded here and by `styleMarkers`.
+`g.ayah-marker[data-aid]` — one per ayah. On pages 1–2 the group holds a second
+ornament path tagged `data-duplicate="1"` (the artwork draws the ring twice; FORMAT
+§9.2); `ring` is the first. Page files built before 2026-09-04 carried 12 id-less
+"decorative" groups on those pages; they are excluded here and by `styleMarkers`.
 
 ### `page.allMarkerGroups()` → `Element[]`
-Every `.ayah-marker`, decorative rosettes included.
+Every `.ayah-marker`, id-less groups of older page files included.
 
 ### `page.ayahKeys()` → `string[]`
 Ayah keys in reading order, deduplicated.
@@ -160,6 +178,12 @@ Ayah keys in reading order, deduplicated.
 
 A **`Word`** has `el`, `wid`, `parts`, `surah`, `ayah`, `index`, `aid`, `line`,
 `text` (all five forms), `form(which)`, `paths()`, and `box()`.
+
+### `word.w` → `number | null`
+
+The global word id (`data-w`, FORMAT §6.1): the same integer for this word in every
+mushaf that has it — the key a word-by-word app joins on. The two pieces of 15:7
+`لَّوْ مَا` share one; `word.wid` stays unique.
 
 ### `word.box()` → `{x, y, w, h, x0, y0, x1, y1}`
 
@@ -216,7 +240,7 @@ scroll to it directly.
 
 | option | default | |
 |---|---|---|
-| `form` | `'search'` | the diacritic-free key. **Never use `'rasm'` for a search box** — it is the *uthmani* skeleton, so stripping deletes long vowels written as combining marks |
+| `form` | `'search'` | the diacritic-free key. **Never use `'rasm'` for a search box** — it is the *uthmani* skeleton, so stripping deletes long vowels written as combining marks. On a production page the form lives in the sidecar: load with `createLoader({words: true})` or call `page.attachWords()` first, or `search()` throws an error that says so |
 | `mode` | `'includes'` | `'exact'`, `'prefix'`, `'regex'` |
 | `normalize` | `true` | apply [`normalizeQuery`](#normalizequerys) to both sides |
 | `loose` | `true` | if the strict pass found **nothing**, retry with [`looseKey`](#loosekeys). Never widens a query that already matched |
@@ -407,8 +431,8 @@ page.theme({paper: '#0d1b2a', ink: '#cfe3ff', diacritics: '#7fb0e8'});
 | `hide` | `true` for a reading view with no markers |
 | `replaceRing` | `true` for a plain circle, or `fn({x,y,w,h,cx,cy,r}, marker) → Element` for your own shape, **keeping the printed numeral** |
 
-Only real markers (`g.ayah-marker[data-aid]`) are touched; the 12 decorative rosettes
-on pages 1–2 are left alone.
+Only `g.ayah-marker[data-aid]` groups are touched — every marker on a current page;
+older page files' 12 id-less groups on pages 1–2 are left alone.
 
 ### `page.hideMarkers()` → handle
 
@@ -794,11 +818,11 @@ design off the wrong point.
 | `size` | `1` | factor on the fitted size; `1` matches the ring's box |
 | `colours` | `null` | `{part: colour}` — sets upstream's `--<part>` custom properties on the `<svg>` |
 | `anchorOnNumber` | `true` | put the design's own number-centre on the printed numeral; `false` centres box on box |
-| `decorative` | `false` | include the `g.ayah-marker` groups with **no** `data-aid` |
+| `decorative` | `false` | include the `g.ayah-marker` groups with **no** `data-aid` (none on pages built since 2026-09-04; kept for older page files) |
 
-**Decorative rosettes are left alone by default.** Pages 1–2 carry 12 `g.ayah-marker`
-groups with no `data-aid` — the frame of the opening spread, closing no ayah. Only
-`g.ayah-marker[data-aid]` is touched unless you ask for them.
+**Only `g.ayah-marker[data-aid]` is touched unless you ask for the rest.** On pages 1–2
+the artwork draws each ring twice and the copy sits inside the same group as
+`data-duplicate="1"`; `replaceRing` swaps the first ring and hides the copy.
 
 `handle.remove()` restores the printed rings exactly — the original `<path>` node is
 kept, not re-serialised — and unsets any custom properties `colours` set.
@@ -914,10 +938,11 @@ The geometry primitives, exported for building your own helpers.
 returns all of them; `ayah.parts` and `ayah.complete` tell you whether you have the
 lot. On page 42, 2:255 is six fragments on six printed lines (8–13).
 
-**Pages 1 and 2 are the opening spread.** Different viewBox, different page matrix,
-**8 printed lines instead of 15**, and **12 decorative rosettes with no `data-aid`**.
-Nothing in this library hardcodes `15` or `0 0 345 550`; if you extend it, read both
-off the file. `page.markers()` already excludes the rosettes.
+**Pages 1 and 2 are the opening spread.** A different page matrix, **8 printed lines
+instead of 15**, and every ornament ring drawn twice (the copy is `data-duplicate="1"`
+inside its marker group). Since 2026-09-04 the viewBox is `0 0 345 550` on every page;
+nothing in this library hardcodes `15` or the viewBox — if you extend it, read both off
+the file.
 
 **`getBBox()` lies about position.** It reports a group's own user space and ignores
 every transform above it — it will put line 1 at the bottom of the page. **`getCTM()`
@@ -951,8 +976,8 @@ narrower than the ink it names. Trust `data-wid`, never geometry, for ownership.
 
 ## Testing
 
-271 assertions run in Chromium against real pages (275 with `?markers=<url>`) — **1** (opening spread, 8 lines,
-decorative rosettes), **42** (rubʿ rosette, 2:255), **48** (2:282, fifteen fragments),
+321 assertions run in Chromium against real pages (326 with `?markers=<url>`) — **1** (opening spread, 8 lines,
+doubled ornaments), **42** (rubʿ rosette, 2:255), **48** (2:282, fifteen fragments),
 **176** (sajdah), **582** (juz 30 opens, banner + basmalah), **604** (last page, three
 banners) — plus the interactive checks: a genuine mouse drag across a line break,
 Ctrl+C, hover, a click in a 6.96 px gap, and a window resize. Zero console errors, no

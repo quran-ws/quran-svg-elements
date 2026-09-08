@@ -1,6 +1,9 @@
 # Format specification — Quran page SVGs, Hafs / KFGQPC Madani
 
-Edition id `hafs-kfgqpc` · 604 pages · 77,432 words · 6,236 ayahs · 114 surahs.
+Edition id `hafs-kfgqpc` · 604 pages · 77,433 words · 6,236 ayahs · 114 surahs.
+(77,433, not the usual 77,432: the print writes 37:130 as two words, `إِلْ` and
+`يَاسِينَ` — `docs/MAQTU-MAWSUL.md`. Older counts of 77,432 in this document
+are that one word short.)
 Artwork: the **KFGQPC Madani mushaf, V2 1441H print**.
 
 This document ships with the files. Everything in it was verified against the
@@ -8,13 +11,22 @@ real build; every count is a measurement over all 604 emitted pages, not an
 estimate. Where the files are inconsistent, this document says so (§10) rather
 than describing an ideal that does not exist.
 
-> **Status.** Build of **2026-08-30**. Two profiles now exist (§2); every
+> **Status.** Build of **2026-09-04**. Two profiles exist (§2); every
 > statement below says which one it applies to when they differ.
 >
-> Changes since the 2026-08-29 revision, all consumer-visible:
-> `data-search` added; ayah fragments and medallions linked by `id` /
-> `data-marker`; medallion labels rebound by position (they were wrong on 598
-> pages); 58 misfiled words returned to their printed line; the four missing
+> Changes since the 2026-08-30 revision (see `FORMAT-CHANGES.md`): every page
+> now uses `viewBox="0 0 345 550"` (§5.1); no `<path>` carries a `transform`
+> (§5.2); every `<path>` carries `data-kind` (§6.5); the opening spread's
+> doubled ornaments are inside their ayah's marker with correct ids (§9.2);
+> absolute movetos are written to three decimals; every word group carries
+> `data-w`, the global word id of the word-by-word source (§6.1); and **the
+> production profile carries `data-wid`, `data-w` and `data-uthmani` only** on
+> a word group — the other four text forms ship once, in
+> `index/by-page/NNN.json` (§6.1).
+>
+> Changes in the 2026-08-30 revision: `data-search` added; ayah fragments and
+> medallions linked by `id` / `data-marker`; medallion labels rebound by
+> position; 58 misfiled words returned to their printed line; the four missing
 > surah banners restored; the production profile introduced.
 
 ---
@@ -24,7 +36,7 @@ than describing an ideal that does not exist.
 Each file is one printed page of the mushaf, as **vector outlines**, with the
 ink semantically decomposed:
 
-- every **word** is exactly one `<g class="word">` — 77,432 groups, 77,432
+- every **word** is exactly one `<g class="word">` — 77,433 groups, 77,433
   distinct `data-wid`, **no duplicates anywhere in the corpus**;
 - every **letter shape** is a `<path data-kind="body">`;
 - every **diacritic and sign** is a `<path data-kind="mark" data-mark="…">`
@@ -58,6 +70,7 @@ are, so **tell them apart by whether `<g class="ligature">` is present**.
 | marks as their own `<path data-mark>` | yes | yes |
 | `<g class="ligature">` inside a word | **yes** — 156,707 groups | **dropped** |
 | `<path class="ayahPolygon">` | **yes** — 6,236 | **dropped** |
+| `data-rasm`, `data-imlaei`, `data-search`, `data-qpc` on a word | **yes** | **dropped** — read them from `index/by-page/NNN.json` (§6.1) |
 | `data-eid`, `data-sig`, `data-mark-family` | yes | yes |
 | everything else in this document | identical | identical |
 
@@ -78,8 +91,14 @@ const isDev = doc.querySelector('g.ligature') !== null;
 **The ligature layer.** It is a dev instrument: an empty `<g class="ligature">`
 is how a stolen letter is detected. It is *not* a spelling of the word (§10.3),
 so a consumer that treats it as one gets 156 words wrong. The word's text of
-record is `data-uthmani` / `data-rasm` on the `<g class="word">`, and that is
-present in both profiles.
+record is `data-uthmani` on the `<g class="word">`, present in both profiles.
+
+**The four derived text forms.** `data-rasm`, `data-imlaei`, `data-search` and
+`data-qpc` are a text index, not geometry: they never vary per instance, and
+repeating them on all 77,432 word groups cost about 3% of every page. In
+production they ship once, in `index/by-page/NNN.json` (every word, all five
+forms, line and box) and `index/words.json` (the search key). The dev profile
+keeps them inline because it is the review instrument.
 
 **The invisible ayah polygons.** These were how ayah highlighting and
 click-detection worked before there were word elements. Word level supersedes
@@ -209,11 +228,11 @@ A real fragment of `pages/003.svg`, `d=` values trimmed, dev profile:
 | group | count (corpus) | meaning |
 |---|---:|---|
 | `<g id="ayah_markers">` | 604 | **all** ayah medallions of the page, in one layer, outside `#content`. |
-| `<g class="ayah-marker" id="mk-s-a">` | 6,248 | one medallion: an ornament ring path + a numeral path. 6,236 carry `id` + `data-aid`; the other 12 are decorative rosettes on pages 1–2 with no ayah (§9.2). |
+| `<g class="ayah-marker" id="mk-s-a">` | 6,236 | one medallion: an ornament ring path + a numeral path, one per ayah, every one with `id` + `data-aid`. On pages 1–2 the artwork draws the ring twice; the copy is inside the same group as `data-duplicate="1"` (§9.2). |
 | `<g id="content">` | 604 | all page text. |
 | `<g class="line" data-line="N">` | 9,046 | one printed line. `N` is 1..15 (1..8 on pages 1–2). Its single child `<g transform="translate(…)">` carries the line's frame. **8,820 hold words; the other 226 are the header lines** (114 surah-name + 112 basmalah). |
 | `<g class="ayah" data-aid="s:a">` | 13,489 | **one line's run of one ayah.** An ayah on three lines has three of these. Never treat one as "the ayah" — §7. |
-| `<g class="word" data-wid="s:a:w">` | 77,432 | **one word. Globally unique. This is the anchor of the format.** |
+| `<g class="word" data-wid="s:a:w">` | 77,433 | **one word. Globally unique. This is the anchor of the format.** |
 | `<g class="ligature" data-text="…">` | 156,707 | a joined run of letters, as a rendering unit. **Dev profile only.** See §10.3 for its limits. |
 | `<g class="surah-name" data-sid="N">` | 114 | the surah-name banner. One per surah, all 114 present. |
 | `<g class="basmalah" data-sid="N">` | 112 | the basmalah banner. Absent only for **surah 1** (its basmalah IS ayah 1:1) and **surah 9** (which has none). |
@@ -255,9 +274,15 @@ svg
 
 | | pages 3–604 | pages 1–2 |
 |---|---|---|
-| `viewBox` | `0 0 345 550` (602 pages) | `-53.3109 -198.4777 345 550` |
-| page frame | `matrix(1.3333 0 0 -1.3333 -55 640)` on odd pages (301), `… -115 640)` on even (301) | `matrix(1.3333 0 0 -1.3333 -136 482)` |
+| `viewBox` | `0 0 345 550` | `0 0 345 550` |
+| page frame | `matrix(1.3333 0 0 -1.3333 -55 640)` on odd pages (301), `… -115 640)` on even (301) | `matrix(1.3333 0 0 -1.3333 -82.6891 680.4777)` |
 | `<g class="line">` | 15 | 8 |
+
+**Every page uses the same viewBox** since 2026-09-04. The artwork draws the
+opening spread under `-53.3109 -198.4777 345 550`; the emitter folds that offset
+into the page frame's translation (and into `ayah:x` / `ayah:y`), which renders
+pixel-identically and leaves raw path coordinates untouched. Word boxes in
+`index/by-page/001.json` and `002.json` are in the normalised frame.
 
 **The y scale is negative.** Inside the page frame, y increases *upward*.
 Screen y = `640 − 1.3333 · y` on a normal page. A consumer computing positions
@@ -279,10 +304,17 @@ distinct translates respectively). Always compose
 ```
 
 `tools/bundle_geom.py` (exact Bezier extents) and `tools/bundle_extract.py`
-are the reference implementation — note they honour a path's own `transform`,
-which 72 ink paths on p17 and p144 carry. In a browser,
-`getBBox()` on a `g.word` already returns coordinates in that word's own line
-frame; `getCTM()` composes the rest.
+are the reference implementation. **No `<path>` carries a `transform`**: the 72
+ink paths on p17 and p144 that used to (ink regrouped from another source
+path's frame) now have the translation baked into their absolute movetos,
+which a raster diff proves pixel-identical. In a browser, `getBBox()` on a
+`g.word` already returns coordinates in that word's own line frame;
+`getCTM()` composes the rest.
+
+Absolute movetos are written to at most three decimals: the artwork's relative
+segments have three, so a contour's start is a three-decimal number plus float
+noise (at most 7.3e-12 over all 1.86 M contour starts), and the noise is not
+written.
 
 ### 5.3 The `ayahPolygon` layer is in a different frame (dev profile only)
 
@@ -339,21 +371,33 @@ They use a second, legacy attribute vocabulary from the upstream artwork:
 
 Counts are over all 604 pages of the current build, both profiles unless noted.
 
-### 6.1 On `<g class="word">` — always present, all six
+### 6.1 On `<g class="word">` — the key and the text of record; four more forms in the sidecar
 
 ```xml
-<g class="word" data-wid="2:6:2" data-uthmani="ٱلَّذِينَ" data-rasm="ٱلذين"
+<!-- production -->
+<g class="word" data-wid="2:6:2" data-w="67" data-uthmani="ٱلَّذِينَ">
+<!-- dev -->
+<g class="word" data-wid="2:6:2" data-w="67" data-uthmani="ٱلَّذِينَ" data-rasm="ٱلذين"
    data-imlaei="الَّذِينَ" data-search="الذين" data-qpc="ٱلَّذِينَ">
 ```
 
-| attribute | count | what it is | example (2:6:2) |
-|---|---:|---|---|
-| `data-wid` | 77,432 | `surah:ayah:word`, 1-based. **The key.** Globally unique. | `2:6:2` |
-| `data-uthmani` | 77,432 | **the print's own text**, full diacritics | `ٱلَّذِينَ` |
-| `data-rasm` | 77,432 | skeleton of `data-uthmani` — the **ink** | `ٱلذين` |
-| `data-imlaei` | 77,432 | modern spelling, **with** marks | `الَّذِينَ` |
-| `data-search` | 77,432 | skeleton of `data-imlaei` — **the search key** | `الذين` |
-| `data-qpc` | 77,432 | the same text in KFGQPC codepoints | `ٱلَّذِينَ` |
+| form | on the word group | in `index/by-page/NNN.json` | what it is | example (2:6:2) |
+|---|---|---|---|---|
+| `wid` | `data-wid`, both profiles | `wid` | `surah:ayah:word`, 1-based. **The key.** Globally unique. | `2:6:2` |
+| `w` | `data-w`, both profiles | `w` | the **global word id** of the word-by-word source (KFGQPC UthmanicHafs v3.0 release): the same integer for this word in every mushaf that has it. 77,432 ids; the two pieces of 15:7 `لَّوْ مَا` share one (`docs/HAFS-JSON-SOURCE.md`) | `67` |
+| `uthmani` | `data-uthmani`, both profiles | `uthmani` | **the print's own text**, full diacritics | `ٱلَّذِينَ` |
+| `rasm` | `data-rasm`, dev only | `rasm` | skeleton of `uthmani` — the **ink** | `ٱلذين` |
+| `imlaei` | `data-imlaei`, dev only | `imlaei` | modern spelling, **with** marks | `الَّذِينَ` |
+| `search` | `data-search`, dev only | `search` | skeleton of `imlaei` — **the search key** | `الذين` |
+| `qpc` | `data-qpc`, dev only | `qpc` | the same text in KFGQPC codepoints | `ٱلَّذِينَ` |
+
+All 77,432 words have all five forms; in production the last four come from
+the sidecar, keyed by `wid`, built from the same source and the same
+derivations as the dev attributes (`tools/bundle_extract.text_forms`). The
+bundle checker proves the sidecar's `uthmani` equals every page's
+`data-uthmani`. `index/words.json` carries `search` for the whole corpus in one
+file. The shipping library reads inline first and the sidecar second
+(`page.attachWords`, `createLoader({words: true})`).
 
 **Which one to use, and this is the part people get wrong:**
 
@@ -438,8 +482,8 @@ doc.querySelector('g.ayah[data-juz-start="30"]')?.dataset.aid;   // "78:1" on p5
 | `id` | 6,236 | `mk-<surah>-<ayah>`. **Globally unique** — no ayah spans two pages (§11). |
 | `data-aid` | 6,236 | `surah:ayah` |
 
-12 markers on pages 1–2 have neither: they are the decorative rosettes of the
-opening frame (§9.2).
+Every marker group has both. On pages 1–2 the group holds a second ornament
+path tagged `data-duplicate="1"` (§9.2).
 
 ### 6.4 On `<g class="line">`
 
@@ -451,7 +495,7 @@ opening frame (§9.2).
 
 | attribute | count | values | notes |
 |---|---:|---|---|
-| `data-kind` | 616,561 | `mark` 436,629 · `body` 161,778 · `ayah-marker-ornament` 6,248 · `ayah-number` 6,236 · `header-ink` 5,670 | Present on **every** path except the 6,236 `ayahPolygon` and 4 paths on p17 that lie **entirely outside the viewBox** and are therefore invisible (measured: y 583.7..588.2 on a 550-tall page, and y -62.2..-7.1). Ink the viewBox clips is kept out of classification but still re-emitted, so that no ink is ever silently dropped — §10.5. `body` = letter ink. |
+| `data-kind` | every ink path | `mark` · `body` · `ayah-marker-ornament` (6,248: 6,236 rings + 12 `data-duplicate` copies on p1–2) · `ayah-number` 6,236 · `header-ink` · `ornament` · `page-number` 2 · `running-head` 2 | Present on **every** path except the dev-only `ayahPolygon`. The four `page-number` / `running-head` paths are p17's page furniture, drawn by the artwork **entirely outside the viewBox** (y 583.7..588.2 on a 550-tall page, and y -62.2..-7.1), kept so no ink is ever silently dropped — §10.5. `body` = letter ink. |
 | `data-mark` | 436,843 | 35 names, §8 | Attribute occurrences. The **logical** mark count is 436,627 — a mark drawn as more than one path is one mark. On every `data-kind="mark"` path but **one**, which is unnamed (p1 `e34`). |
 | `data-mark-family` | 393,970 | **token list** — `diacritic` 280,333 · `dots` 105,270 · `tanween` 8,554 · `waqf` 4,272 · `sifr` 4,054 · `sajdah` 30 · `reading-sign` 11 | **Space-separated, like `class` — match with `~=`, not `=`.** See below. Only on marks that have a family. **Derivable from `mark-taxonomy.v2.json`** — prefer the registry, which also covers `small-noon` (§10.5). |
 | `data-eid` | 598,407 | `e1`, `e2`, … | **Not stable across builds. Never key on it.** Unique within a page. Only on word/standalone ink — never on marker, header or polygon paths. |
@@ -822,16 +866,19 @@ At 52:37 `data-uthmani` writes U+06E3 (seen below) but `data-qpc` writes U+06DC
 
 ### 9.2 Pages 1 and 2 are the opening spread
 
-Different `viewBox`, different page matrix, **8 lines instead of 15**, per-line
-translates, and the medallion scale is `0.0075` instead of `0.011`. They also
-carry **12 `<g class="ayah-marker">` groups with no `id`, no `data-aid` and no
-numeral** — the decorative rosettes of the frame (7 on p1, 5 on p2). So
-`querySelectorAll('.ayah-marker')` returns 14 on a 7-ayah page.
-
-```js
-// only the real medallions
-doc.querySelectorAll('g.ayah-marker[data-aid]');
-```
+A different page matrix (the artwork's offset viewBox, folded in — §5.1),
+**8 lines instead of 15**, per-line translates, and the medallion scale is
+`0.0075` instead of `0.011`. The artwork also **draws every ayah ornament
+twice**, byte-identical and in place (7 pairs on p1, 5 on p2, nowhere else).
+Earlier revisions of this document called the copies "decorative rosettes with
+no ayah"; they are duplicates, and they used to shift the marker ids by one.
+Each copy now sits inside its ayah's marker group as
+`<path data-kind="ayah-marker-ornament" data-duplicate="1">`, so
+`querySelectorAll('.ayah-marker')` returns 7 on the 7-ayah page and every
+group has its `id`. The copy is **not** removed: two identical fills are not
+the same ink at the edge — anti-aliased coverage composites twice and the rim
+darkens by up to 57/255, so dropping it would change the render (measured:
+3,264 px on p1). Drop `[data-duplicate]` yourself if you prefer a lighter rim.
 
 ### 9.3 Muʿānaqah — one sign, three dots, in pairs
 
@@ -1149,15 +1196,15 @@ About 9 word-level segmentation disagreements with MushafDatabase remain
 (p11, p262 `لَّوۡمَا`, p451). Word boundaries otherwise agree on **77,417 of
 77,422** words, and line placement on **99.994%**.
 
-### 10.9 The companion index predates `data-search`
+### 10.9 The SVG is authoritative; the index is derived — with one exception
 
-`tools/build_bundle.py` builds `words.json` with
-`fields: ["wid","page","rasm","imlaei"]` — it has no `data-search` column yet,
-and `index.json` still carries the pre-2026-08-30 `basmalah_groups: 113`. **The
-SVGs are authoritative**; always read the index's own `fields` array rather than
-assuming a column order, and prefer `data-search` from the SVG for search. The
-edition manifest `.cache/schema/edition-hafs-kfgqpc.json` is current
-(`surah_name_groups_emitted: 114`, `basmalah_groups: 112`).
+Every value in `index/` is read back out of the shipped pages, so the two
+cannot drift unnoticed. The one exception, by design since 2026-09-04: the four
+derived text forms (`rasm`, `imlaei`, `search`, `qpc`) are not on a production
+word group at all (§6.1) and come from the verified word cache, through the
+same derivations the dev profile uses inline. The checker proves the cache and
+every page agree on `uthmani`. Always read `words.json`'s own `fields` array
+rather than assuming a column order.
 
 ---
 

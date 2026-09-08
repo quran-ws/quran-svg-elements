@@ -346,7 +346,7 @@ footer p{max-width:74ch}
       alongside a database that says what is on them. Here that information is on the elements
       themselves — the surah's number, its name in Arabic, Latin and English, where it was revealed and
       how many ayahs it has; the ayah key <code>2:255</code> and which parts of it fall on this page;
-      the word key <code>2:255:4</code> with its text in five forms; juz, hizb, rubʿ and nisf and where
+      the word key <code>2:255:4</code> with its uthmani text, and its other four forms in the page's sidecar; juz, hizb, rubʿ and nisf and where
       each begins; the page and line number; and every mark named, sajdah signs and iqlab meems
       included. So <i>"ayah 2:255 is on page 42, line 3"</i> is a CSS selector rather than a query — and
       because the geometry is in the same file, you also get the one thing a database cannot give you:
@@ -603,23 +603,25 @@ footer p{max-width:74ch}
 <section id="search" data-toc-group="Reading and meaning" data-toc-note="Find a word anywhere and land on the printed ink.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">data-search — and why not data-rasm</p>
+      <p class="sel">the search form — and why not rasm</p>
       <h2>5 · Search, and land on the ink</h2>
       <p>There are no <code>&lt;text&gt;</code> nodes here — all ink is paths, so browser find-in-page
-        cannot work. Search goes through <code>data-search</code> on the word groups. Edit the query in
-        the snippet, or swap <code>data-search</code> for <code>data-rasm</code> and watch the hits
-        vanish.</p>
+        cannot work. Search goes through the <code>search</code> form, which ships once per page in
+        <code>index/by-page/NNN.json</code> (dev-profile pages also carry it inline as
+        <code>data-search</code>). Edit the query in the snippet, or swap <code>search</code> for
+        <code>rasm</code> and watch the hits vanish.</p>
     </div>
     <div class="lab" id="lab-search"></div>
 
     <div class="callout">
-      <h3>The trap — use data-search, never data-rasm</h3>
-      <p><code>data-rasm</code> is the skeleton of the <b>uthmani</b> spelling, which is what the page
-        draws. The uthmani spelling writes several long vowels as <i>combining marks</i>, and stripping
+      <h3>The trap — use <code>search</code>, never <code>rasm</code></h3>
+      <p>In production both are fields of the page's sidecar, <code>index/by-page/NNN.json</code>;
+        only the dev profile carries them inline as attributes. <code>rasm</code> is the skeleton of
+        the <b>uthmani</b> spelling, which is what the page draws. The uthmani spelling writes several long vowels as <i>combining marks</i>, and stripping
         the marks deletes them outright. Nobody types the result. Measured over all 77,432 words:</p>
       <div class="scroll">
         <table>
-          <thead><tr><th>query</th><th>matches in <code>data-rasm</code></th><th>matches in <code>data-search</code></th></tr></thead>
+          <thead><tr><th>query</th><th>matches in <code>rasm</code></th><th>matches in <code>search</code></th></tr></thead>
           <tbody>
             <tr><td class="mono ar">الله</td><td class="no">2</td><td class="yes">2,555</td></tr>
             <tr><td class="mono ar">الذين</td><td class="no">0</td><td class="yes">999</td></tr>
@@ -628,12 +630,12 @@ footer p{max-width:74ch}
         </table>
       </div>
       <p class="note"><span class="ar" style="font-size:1em">ٱللَّهُ</span> has an <b>alef wasla</b>
-        (U+0671) where a keyboard produces a plain alef, so <code>data-rasm</code> is
+        (U+0671) where a keyboard produces a plain alef, so <code>rasm</code> is
         <span class="ar" style="font-size:1em">ٱلله</span> and never matches.
         <span class="ar" style="font-size:1em">دَرَجَٰتࣲ</span> carries a <b>dagger alef</b> (U+0670),
         which is a mark, so the rasm is <span class="ar" style="font-size:1em">درجت</span> with no alef
-        at all. <code>data-search</code> is the skeleton of the modern (<code>data-imlaei</code>)
-        spelling and has neither problem. Use <code>data-rasm</code> for what it is for: matching text
+        at all. <code>search</code> is the skeleton of the modern (<code>imlaei</code>)
+        spelling and has neither problem. Use <code>rasm</code> for what it is for: matching text
         against the shapes actually drawn on the page.</p>
       <p class="note"><b>Nothing is folded for you</b>, deliberately.
         <span class="ar" style="font-size:1em">ا أ إ آ</span> stay distinct, so do
@@ -658,7 +660,7 @@ footer p{max-width:74ch}
       </div>
       <div class="paper tight empty" id="s-all-stage">no page fetched yet</div>
     </div>
-    <p class="note"><b>Two cautions when you tokenise.</b> 367 <code>data-search</code> values contain a
+    <p class="note"><b>Two cautions when you tokenise.</b> 367 <code>search</code> values contain a
       space — the vocative convention writes <span class="ar" style="font-size:1em">يَٰٓأَيُّهَا</span> as
       <span class="ar" style="font-size:1em">يا أيها</span> — and one printed word,
       <code>37:130:3</code>, has a space in its own text. <code>data-wid</code> is the only word key;
@@ -669,9 +671,10 @@ footer p{max-width:74ch}
 <section id="word" data-toc-group="Reading and meaning" data-toc-note="Read a word’s five text forms and every mark on it.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">w.dataset.uthmani · rasm · imlaei · search · qpc</p>
+      <p class="sel">data-uthmani on the page · rasm imlaei search qpc in the sidecar</p>
       <h2>6 · Read a word</h2>
-      <p>Every word group carries its text in five forms and its key; every path says what kind of ink
+      <p>Every word group carries its key and its uthmani text; the other four forms come from the
+        page's sidecar, <code>index/by-page/NNN.json</code>. Every path says what kind of ink
         it is and, if it is a mark, which mark. The snippet installs the listener — hover the page
         beside it, then change what the readout reports.</p>
     </div>
@@ -1204,7 +1207,7 @@ svg.inert, svg.inert * { pointer-events: none }
           <tr><td class="mono">&nbsp;&nbsp;— one page</td><td>average across the corpus</td><td>762 KiB</td><td>186 KiB</td><td>118 KiB</td></tr>
           <tr><td class="mono">FORMAT.md</td><td>the format specification — every attribute, every special case, every known limit</td><td>57 KB</td><td>—</td><td>—</td></tr>
           <tr><td class="mono">index/index.json</td><td>page → surahs, first/last ayah, word count; juz/hizb/rubʿ starts; the 114 surah records</td><td>99 KiB</td><td>—</td><td>10 KiB</td></tr>
-          <tr><td class="mono">index/words.json</td><td>every word's text keyed by <code>data-wid</code>, with its page — build a search index from it, or from <code>data-search</code> in the pages themselves as this demo does</td><td>3.4 MiB</td><td>—</td><td>478 KiB</td></tr>
+          <tr><td class="mono">index/words.json</td><td>every word's text keyed by <code>data-wid</code>, with its page — build a search index from it, or from <code>data-search</code> in the dev-profile pages, which is how this demo's own index was built</td><td>3.4 MiB</td><td>—</td><td>478 KiB</td></tr>
           <tr><td class="mono">index/wordboxes.json</td><td>77,432 word bounding boxes, so you can hit-test without rendering</td><td>3.0 MiB</td><td>—</td><td>896 KiB</td></tr>
           <tr><td class="mono">index/mark-taxonomy.json</td><td>the mark names, their category and family</td><td>4 KiB</td><td>—</td><td>—</td></tr>
           <tr><td class="mono">VERSION.json · CHECKSUMS.txt</td><td>what you pinned to, and proof of what you got</td><td>~50 KiB</td><td>—</td><td>—</td></tr>
@@ -1226,7 +1229,8 @@ svg.inert, svg.inert * { pointer-events: none }
         </figure>
         <p class="note">The ligature layer is a <b>rendering run, not a spelling</b>. It is not a
           reliable letter segmentation — 156 words spell fewer letters in it than they actually have —
-          so use <code>data-uthmani</code> / <code>data-rasm</code> on the word as the text of record.
+          so use <code>data-uthmani</code> on the word, or the <code>rasm</code> form in the page's
+          sidecar, as the text of record.
           The page at the top of this document is shown in the production profile.</p>
 
         <h3 style="font-size:19px;margin:26px 0 10px">Two levels of decomposition</h3>
@@ -1263,7 +1267,8 @@ svg.inert, svg.inert * { pointer-events: none }
           <ul class="plain-list" style="margin-top:0">
             <li><b>No <code>&lt;text&gt;</code> elements, ever.</b> All ink is paths, so browser
               find-in-page, native text selection and copy of the Quranic text do not work. Search goes
-              through <code>data-search</code> or an index built from it. This is inherent to a
+              through the <code>search</code> form in <code>index/by-page/NNN.json</code> or an index built
+              from it. This is inherent to a
               paths-only rendering of real calligraphy.</li>
             <li><b>No accessibility metadata in the shipped files yet.</b> No <code>&lt;title&gt;</code>,
               no <code>role</code>, no <code>lang</code>. The ingredients are all there — the snippet in
@@ -1386,6 +1391,10 @@ const LOCAL = location.protocol === 'file:' ||
 /* Where every page is fetched from — the hero included, since nothing is
    inlined any more. In the published bundle this is SITE_BASE + 'pages/'. */
 const PAGES = LOCAL ? '../../.cache/words-svg/hafs-kfqc/' : SITE_BASE + 'pages/';
+/* Where each page's sidecar lives. A production page carries only data-wid
+   and data-uthmani inline; rasm, imlaei, search and qpc ship once per page
+   as index/by-page/NNN.json. */
+const INDEX = LOCAL ? '../../dist/quran-svg-hafs-kfgqpc/index/by-page/' : SITE_BASE + 'index/by-page/';
 const SVGNS = 'http://www.w3.org/2000/svg';
 const $  = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -1452,6 +1461,7 @@ let PRISTINE = null;
 let cloneSeq = 0;
 function clonePage(src = PRISTINE) {
   const svg = src.cloneNode(true);
+  svg.__words = src.__words;   // expando: cloneNode does not copy it
   const tag = 'c' + (++cloneSeq) + '-';
   svg.removeAttribute('id');
   svg.querySelectorAll('[id]').forEach(el => { el.id = tag + el.id; });
@@ -1463,9 +1473,14 @@ function clonePage(src = PRISTINE) {
 
 /* ---------- fetch a page, parse it, hand back an <svg> ---------- */
 const pageCache = new Map();
+/* `__words` is an expando on the cached <svg>: the page's sidecar as a Map
+   wid → record, or null when it could not be fetched. cloneNode does not
+   copy expandos, so every clone handed out is given it explicitly. */
+const withWords = src => { const c = src.cloneNode(true); c.__words = src.__words; return c; };
+let sidecarWarned = false;
 async function getPage(n) {
   const key = pad3(n);
-  if (pageCache.has(key)) return pageCache.get(key).cloneNode(true);
+  if (pageCache.has(key)) return withWords(pageCache.get(key));
   const res = await fetch(PAGES + key + '.svg');
   if (!res.ok) throw new Error('HTTP ' + res.status + ' for page ' + key);
   const doc = new DOMParser().parseFromString(await res.text(), 'image/svg+xml');
@@ -1474,8 +1489,23 @@ async function getPage(n) {
   /* dev-profile pages carry a legacy invisible polygon layer: different frame,
      last in document order, and it swallows pointer events. */
   svg.querySelectorAll('path.ayahPolygon').forEach(p => p.remove());
+  /* The sidecar beside it. A local checkout without a built bundle has none,
+     and the dev-profile pages it serves carry all five forms inline anyway. */
+  let words = null;
+  try {
+    const r = await fetch(INDEX + key + '.json');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const json = await r.json();
+    words = new Map(json.words.map(w => [w.wid, w]));
+  } catch (e) {
+    if (!sidecarWarned) {
+      sidecarWarned = true;
+      console.warn('no sidecar at ' + INDEX + key + '.json — text forms come from inline attributes only', e);
+    }
+  }
+  svg.__words = words;
   pageCache.set(key, svg);
-  return svg.cloneNode(true);
+  return withWords(svg);
 }
 
 const heroReady = getPage(HERO_PAGE).then(svg => {
@@ -1484,7 +1514,15 @@ const heroReady = getPage(HERO_PAGE).then(svg => {
      of it, and it is what `build.py` used to do on the way in. Every selector
      the reader sees on the hero is one that ships. */
   svg.querySelectorAll('g.ligature').forEach(g => g.replaceWith(...g.childNodes));
+  /* And the four sidecar forms: a production page carries only data-wid and
+     data-uthmani inline. When the sidecar could not be fetched (a local
+     checkout without a built bundle) the attributes stay, so the labs still
+     have text to read. */
+  if (svg.__words) svg.querySelectorAll('g.word').forEach(w => {
+    for (const k of ['rasm', 'imlaei', 'search', 'qpc']) delete w.dataset[k];
+  });
   PRISTINE = svg.cloneNode(true);
+  PRISTINE.__words = svg.__words;
   svg.id = 'hero';
   hero = svg;
   const paper = $('#hero-paper');
@@ -1846,7 +1884,25 @@ function refit(svg, pad = 4) {
    live; this is the fallback. Source: quran.com, reciter 9. */
 const FALLBACK_TIMINGS = {"2:253":["Minshawi/Murattal/mp3/002253.mp3",[[600,1240],[1250,2210],[2220,3750],[3760,4950],[4960,5700],[5710,7260],[7270,8770],[8780,9660],[9670,10690],[10700,11770],[11780,12740],[12750,14050],[14060,16350],[17550,19180],[19190,19920],[19930,20420],[20430,21340],[21350,23030],[23040,25090],[25100,26030],[26040,27550],[28550,29190],[29200,31070],[31080,32060],[32070,32250],[32260,33260],[33270,34510],[34520,35630],[35640,36570],[36580,38460],[38470,39290],[39300,39710],[39720,42380],[42390,44200],[44210,45490],[45500,47750],[51360,52890],[52900,53700],[53710,54680],[54690,55890],[55900,57630],[57640,59450],[60000,60630],[60640,62670],[62680,63810],[63820,64000],[64010,65400],[65410,67240],[67250,68250],[68260,69420],[69430,69860],[69870,70890]]],"2:254":["Minshawi/Murattal/mp3/002254.mp3",[[850,3300],[3310,4440],[4450,6760],[6770,8450],[8460,9860],[9870,12210],[12220,13010],[13020,13870],[13880,14680],[14690,15770],[15780,16620],[16630,17290],[17300,18690],[18700,19520],[19530,20230],[20240,22020],[22030,22730],[22740,25250],[26250,28230],[28240,29000],[29010,30610]]],"2:255":["Minshawi/Murattal/mp3/002255.mp3",[[600,1760],[1770,3730],[3740,4440],[4450,5400],[5410,5930],[5940,6980],[6990,9550],[10050,10520],[10530,12000],[12010,13550],[13560,14320],[14330,16050],[16350,17070],[17080,17550],[17560,17790],[17800,19710],[19720,20520],[20530,20830],[20840,22450],[22850,24020],[24030,24200],[24210,25330],[25340,26400],[26410,29440],[29450,30510],[30520,32450],[33000,33680],[33690,34450],[34460,35230],[35240,36800],[36810,37530],[37540,39650],[40000,40680],[40690,42200],[42210,43330],[43340,44510],[44520,46770],[46780,47720],[47730,48420],[48430,51900],[52050,52760],[52770,54280],[54290,56210],[56220,58210],[58220,59010],[59020,60610],[60620,63070],[63080,63920],[63930,65210],[65220,66520]]],"2:256":["Minshawi/Murattal/mp3/002256.mp3",[[1450,2180],[2190,4530],[4540,4730],[4740,6800],[7000,7090],[7100,8620],[8630,9770],[9780,10290],[10300,12020],[12030,13380],[13390,14380],[14390,16200],[16210,18110],[18120,19380],[19390,20080],[20090,21490],[21500,23100],[23110,24450],[24460,24720],[24730,26570],[26580,28500],[28650,29770],[29780,31080],[31090,32060]]]};
 
+/* A word's five text forms wherever they live. The inline attribute wins
+   when present (the dev profile carries all five; every profile carries
+   data-uthmani), the page's sidecar fills the rest, a missing form is
+   undefined. */
+const SIDECAR_FORMS = ['rasm', 'imlaei', 'search', 'qpc'];
+function forms(w) {
+  const side = w.ownerSVGElement?.__words?.get(w.dataset.wid) || {};
+  const out = { uthmani: w.dataset.uthmani };
+  for (const k of SIDECAR_FORMS) out[k] = k in w.dataset ? w.dataset[k] : side[k];
+  return out;
+}
+/* The page's sidecar in its shipped shape, {words: [...]}, rebuilt from the
+   attached Map — or null — so a lib snippet can page.attachWords() it. */
+function sidecar(svg) {
+  return svg && svg.__words ? { words: [...svg.__words.values()] } : null;
+}
+
 const H = { band, clearBands, fold, crop, refit, getPage, toRoot, clonePage, SVGNS,
+            forms, sidecar,
             hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_TIMINGS,
             /* Where the pages live. A snippet must never hardcode the dev
                checkout path: the same page is served from the bundle, from a
@@ -2808,9 +2864,10 @@ const QUERY = 'الله';          // try درجات, الرسل, البينات
 // nothing is folded for you — fold on your side, keep the data as written
 const fold = s => s.replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
 
-// swap data-search for data-rasm and watch these hits disappear
+// the search form ships in index/by-page/NNN.json (inline as data-search on dev pages)
+// swap .search for .rasm and watch these hits disappear
 const hits = [...svg.querySelectorAll('g.word')]
-  .filter(w => fold(w.dataset.search).includes(fold(QUERY)));
+  .filter(w => fold(H.forms(w).search).includes(fold(QUERY)));
 
 hits.forEach(w => w.classList.add('q-word'));   // red on the page
 
@@ -2818,14 +2875,15 @@ log(hits.length, 'match(es) on this page for', QUERY);
 log('');
 hits.slice(0, 10).forEach(w =>
   log(w.dataset.wid.padEnd(10), w.dataset.uthmani,
-      '  rasm:', w.dataset.rasm, '  search:', w.dataset.search));
+      '  rasm:', H.forms(w).rasm, '  search:', H.forms(w).search));
 `,
   lib: { code: `
 const QUERY = 'الله';          // try درجات, الرسل, البينات, الرحمان
 
 // Folds both sides, and widens to a loose pass ONLY if the strict one found
-// nothing. Try الرحمان: its dagger alef is not in data-search at all.
+// nothing. Try الرحمان: its dagger alef is not in the search form at all.
 const page = new M.MushafPage(svg);
+page.attachWords(H.sidecar(svg));   // the four text forms ship in index/by-page/NNN.json
 const hits = page.search(QUERY);
 
 hits.forEach(m => m.word.el.classList.add('q-word'));   // red on the page
@@ -2847,14 +2905,15 @@ svg.addEventListener('pointermove', e => {
   const word = e.target.closest('g.word');
   const path = e.target.closest('path');
   if (!word) return;
+  const t = H.forms(word);   // rasm, imlaei, search, qpc come from index/by-page/NNN.json
 
   out(
     '<b>' + word.dataset.wid + '</b>\\n' +
     'uthmani  ' + word.dataset.uthmani + '\\n' +
-    'rasm     ' + word.dataset.rasm    + '\\n' +
-    'imlaei   ' + word.dataset.imlaei  + '\\n' +
-    'search   ' + word.dataset.search  + '\\n' +
-    'qpc      ' + word.dataset.qpc     + '\\n' +
+    'rasm     ' + t.rasm    + '\\n' +
+    'imlaei   ' + t.imlaei  + '\\n' +
+    'search   ' + t.search  + '\\n' +
+    'qpc      ' + t.qpc     + '\\n' +
     'ayah     ' + word.closest('g.ayah').dataset.aid +
         '   line ' + word.closest('g.line').dataset.line + '\\n' +
     'path     ' + (path ? [path.dataset.kind, path.dataset.mark,
@@ -2866,6 +2925,7 @@ out('hover the page →');
 `,
   lib: { code: `
 const page = new M.MushafPage(svg);
+page.attachWords(H.sidecar(svg));   // the four text forms ship in index/by-page/NNN.json
 
 svg.style.cursor = 'crosshair';
 svg.addEventListener('pointermove', e => {
@@ -2947,7 +3007,7 @@ function payload(which) {
   let text = '', prevLine = null, aid = null, first = null, last = null;
   for (const s of picked) {
     const w = wordOf(s);
-    const v = w && w.dataset[which];
+    const v = w && H.forms(w)[which];
     if (!v) continue;
     const a = w.closest('g.ayah').dataset.aid;
     if (aid && a !== aid) { text += stamp(aid, first, last); aid = null; }
@@ -2996,6 +3056,7 @@ report();
 const WHICH = 'uthmani';   // what the spans carry AND what Ctrl+C copies
 
 const page = new M.MushafPage(svg);
+page.attachWords(H.sidecar(svg));   // the four text forms ship in index/by-page/NNN.json
 
 const sel = M.attachSelection(page, {
   mount: stage,
@@ -4290,11 +4351,12 @@ mod('attrs', () => {
   /* keyed 'scope|attr', or 'attr' for a note that holds on every scope */
   const NOTE = {
     'g.word|data-wid': ['<code>surah:ayah:word</code>, 1-based. Globally unique. <b>The key.</b>', 1],
+    'g.word|data-w': ['the <b>global word id</b> of the word-by-word source (KFGQPC UthmanicHafs v3.0 release): the same integer for this word in every mushaf that has it. 77,432 ids; the two pieces of 15:7 <span class="ar">لَّوْ مَا</span> share one', 1],
     'g.word|data-uthmani': ["the print's own text, full diacritics — the text of record", 1],
-    'g.word|data-rasm': ['skeleton of the uthmani spelling — <b>the shapes drawn</b>', 1],
-    'g.word|data-imlaei': ['modern spelling, with marks', 1],
-    'g.word|data-search': ['skeleton of the modern spelling — <b>the search key</b>', 1],
-    'g.word|data-qpc': ['the same text in KFGQPC codepoints', 1],
+    'g.word|data-rasm': ['skeleton of the uthmani spelling — <b>the shapes drawn</b> — dev profile only; production ships it in index/by-page', 1],
+    'g.word|data-imlaei': ['modern spelling, with marks — dev profile only; production ships it in index/by-page', 1],
+    'g.word|data-search': ['skeleton of the modern spelling — <b>the search key</b> — dev profile only; production ships it in index/by-page', 1],
+    'g.word|data-qpc': ['the same text in KFGQPC codepoints — dev profile only; production ships it in index/by-page', 1],
     'g.ayah|data-aid': ['<code>surah:ayah</code> — one fragment per printed line', 1],
     'g.ayah|data-marker': ["the <code>id</code> of this ayah's medallion, on the same page", 1],
     'g.ayah|data-part': ['which fragment this is, in reading order', 1],
@@ -4304,7 +4366,8 @@ mod('attrs', () => {
     'g.ayah|data-nisf-start': ['opens that half-hizb', 1],
     'g.ayah|data-rub-start': ['opens that rubʿ — all 240 boundaries, including the 41 with no rosette', 1],
     'g.ayah-marker|id': ['<code>mk-&lt;surah&gt;-&lt;ayah&gt;</code>, globally unique', 1],
-    'g.ayah-marker|data-aid': ['the ayah this medallion closes. <b>12 of the 6,248 marker groups have neither</b> — the decorative rosettes framing pages 1–2, which close no ayah. Select <code>g.ayah-marker[data-aid]</code> when you mean the real ones.', 1],
+    'g.ayah-marker|data-aid': ['the ayah this medallion closes — on every one of the 6,236 marker groups. On pages 1–2 the artwork draws the ring twice; the copy sits inside the same group as <code>data-duplicate="1"</code>.', 1],
+    'path|data-duplicate': ['the second, byte-identical ring the artwork draws on pages 1–2 (12 paths). Kept because dropping it would lighten the anti-aliased rim; drop <code>[data-duplicate]</code> yourself if you prefer', 1],
     'g.line|data-line': ['the printed line number, 1–15 (1–8 on pages 1–2)', 1],
     'data-sid': ["surah number. <b>Only on a surah's first page</b>, which is why this is 114 and 112 rather than 604.", 1],
     'data-surah-name-ar': ['e.g. <bdi class="ar" style="font-size:1em">البقرة</bdi>', 1],
@@ -4312,7 +4375,7 @@ mod('attrs', () => {
     'data-surah-name-en': ['e.g. <code>The Cow</code>', 1],
     'data-revelation-place': ['<code>makkah</code> / <code>madinah</code>', 1],
     'data-ayah-count': ['ayahs in the surah', 1],
-    'path|data-kind': ['<code>body</code> (letter ink) · <code>mark</code> · <code>header-ink</code> · <code>ayah-marker-ornament</code> · <code>ayah-number</code>', 1],
+    'path|data-kind': ['<code>body</code> (letter ink) · <code>mark</code> · <code>header-ink</code> · <code>ornament</code> · <code>ayah-marker-ornament</code> · <code>ayah-number</code> · <code>page-number</code> and <code>running-head</code> (four invisible paths of page furniture on p17, outside the viewBox)', 1],
     'path|data-mark': ['which sign it is — a closed vocabulary of 34 names', 1],
     'path|data-mark-family': ['groups the marks by meaning. <b>A space-separated token list</b>, like <code>class</code>: the tanween carry <code>"diacritic tanween"</code>. Match with <code>~=</code>, never <code>=</code>.', 1],
     'path|data-form': ['<code>staggered</code> / <code>stacked</code> — how a tanween pair is drawn', 1],
