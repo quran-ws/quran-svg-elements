@@ -169,9 +169,16 @@ What is left, in order:
    re-fits curves and clips hole corners. An exact Bézier splitter removes them all.
 2. **More drawn pairs.** بم has nothing, ته has two. The page is built by
    `tools/build_letters_label_page.py --rank --pairs …`.
-3. **Then re-measure the model.** Five checkpoints were rejected before the cutter was
-   fixed, on a gate that was reading the cutter's limits rather than the labels'. Those
-   four measures should be run again now.
+3. **The five rejected checkpoints were re-measured against the fixed cutter
+   (2026-09-08), and none is re-adopted.** The gate had indeed been reading the
+   cutter's fragility: the spread across six checkpoints was 45 points before
+   (129–174 hard failures on pages 1–60) and is 11 after (97–108). But `model_ft5`
+   still leads on the gate (97), on joint error within 1u (76.9%) and on agreement
+   with the drawings (0.901); the two with better held-out pixel accuracy, ft7 and the
+   base-trained model, are behind on all three. Note they were all trained on labels
+   built before the alignment fixes and this repair, so a short fine-tune on today's
+   labels is a different experiment from the ones that failed — worth doing once بم
+   and ته are drawn.
 
 ## Where things live
 

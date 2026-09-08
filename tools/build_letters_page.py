@@ -63,6 +63,28 @@ def word_svg(word, letters_word=None, cuts=None, pad=2.0):
     return "".join(parts)
 
 
+def collect_repaired(seed, limit, floor=0.06):
+    """A blind sample of the runs where a letter came close to having no ink at all —
+    the ones `repair_starved` took back from a neighbour. These are the split's weakest
+    cases by construction, so judging them by eye says whether the repair puts the
+    letter in the right place, not merely that it gives it one."""
+    rnd = random.Random(seed)
+    rows = []
+    for path in sorted(glob.glob(os.path.join(L.CUTS_DIR, "*.json"))):
+        rec = json.load(open(path, encoding="utf-8"))
+        for wid, wrec in rec["words"].items():
+            if wrec.get("flags"):
+                continue
+            for ri, run in enumerate(wrec["runs"]):
+                if len(run["letters"]) < 2 or run.get("flags"):
+                    continue
+                sh = run.get("model", {}).get("share") or []
+                if sh and min(sh) < floor:
+                    rows.append((rec["page"], wid, ri, ["smallest letter %.0f%% of the run" % (100 * min(sh))]))
+    rnd.shuffle(rows)
+    return [], rows[:limit]
+
+
 def collect(sample, seed, limit, pairs=None, per=60):
     """Flagged runs and a blind sample of accepted ones; with `pairs`, instead a sample
     of accepted runs containing each listed letter pair (the pairs the hand cuts never
@@ -98,6 +120,40 @@ def collect(sample, seed, limit, pairs=None, per=60):
     return flagged[:limit], accepted[:limit]
 
 
+def letter_strip(letters_word, page, wid):
+    """Every letter of the word on its own, in reading order, each in the colour it has
+    in the word above and with its own character under it. Clicking one marks that
+    letter wrong, so a verdict names the letter rather than the word."""
+    if not letters_word:
+        return ""
+    import re
+    cells = []
+    for k, m in enumerate(re.finditer(r'<g class="letter"([^>]*)>(.*?)</g>', letters_word["inner"], re.S)):
+        at = L.parse_attrs(m.group(1))
+        if at.get("data-unsplit") == "1":
+            continue
+        idx = int(at.get("data-index", k))
+        col = COLS[idx % len(COLS)]
+        polys, parts = [], []
+        for pm in re.finditer(r'<path ([^>]*?)/>', m.group(2)):
+            pa = L.parse_attrs(pm.group(1))
+            if pa.get("data-kind") == "body" and pa.get("d"):
+                polys += L.flatten(pa["d"])
+                parts.append('<path d="%s" fill="%s" fill-rule="evenodd"/>' % (pa["d"], col))
+        if not polys:
+            continue
+        x0, y0, x1, y1 = L.bbox(polys)
+        pad = 1.0
+        w, h = x1 - x0 + 2 * pad, y1 - y0 + 2 * pad
+        svg = ('<svg viewBox="%.2f %.2f %.2f %.2f" width="%d" height="%d"><g transform="scale(1 -1)">%s</g></svg>'
+               % (x0 - pad, -(y1 + pad), w, h, int(w * 7), int(h * 7), "".join(parts)))
+        cells.append('<div class="lt" data-index="%d" data-ch="%s" onclick="markLetter(this)">%s'
+                     '<div class="lch" style="color:%s">%s</div></div>'
+                     % (idx, html.escape(at.get("data-text", "")), svg, col,
+                        html.escape(at.get("data-text", ""))))
+    return '<div class="strip">%s</div>' % "".join(cells)
+
+
 def render(items, title, note):
     cards = []
     cache = {}
@@ -119,14 +175,16 @@ def render(items, title, note):
         cuts = [c for r in runs for c in r.get("cuts", [])]
         run_text = runs[ri]["text"] if ri is not None and ri < len(runs) else ""
         cards.append(
-            '<div class="card" data-wid="%s" data-run="%s"><div class="art">%s</div>'
+            '<div class="card" data-page="%d" data-wid="%s" data-run="%s"><div class="art">%s</div>'
             '<div class="meta"><b>p%d %s</b> <span class="ar">%s</span> <span class="run ar">%s</span>'
-            '<div class="flags">%s</div>'
-            '<select class="verdict"><option value="">—</option><option value="ok">cut is right</option>'
+            '<div class="flags">%s</div></div>%s'
+            '<div class="meta"><select class="verdict"><option value="">—</option>'
+            '<option value="ok">cut is right</option>'
             '<option value="wrong">cut is wrong</option><option value="unsure">unsure</option></select> '
             '<input class="note" placeholder="note"></div></div>'
-            % (wid, "" if ri is None else ri, word_svg(word, lw.get(wid), cuts), page, wid,
-               html.escape(word["uthmani"]), html.escape(run_text), html.escape(", ".join(flags))))
+            % (page, wid, "" if ri is None else ri, word_svg(word, lw.get(wid), cuts), page, wid,
+               html.escape(word["uthmani"]), html.escape(run_text), html.escape(", ".join(flags)),
+               letter_strip(lw.get(wid), page, wid)))
     return '<h2>%s <small>%d</small></h2><p>%s</p><div class="grid">%s</div>' % (title, len(cards), note, "".join(cards))
 
 
@@ -137,12 +195,22 @@ def main():
     ap.add_argument("--limit", type=int, default=400)
     ap.add_argument("--pairs", help="comma-separated letter pairs to sample instead (e.g. لك,عل)")
     ap.add_argument("--per", type=int, default=60)
+    ap.add_argument("--repaired", action="store_true",
+                    help="blind sample of runs where a letter was nearly starved (the repair's cases)")
     ap.add_argument("--out", default=OUT)
     a = ap.parse_args()
     pairs = a.pairs.split(",") if a.pairs else None
-    flagged, accepted = collect(a.sample, a.seed, a.limit, pairs, a.per)
+    if a.repaired:
+        flagged, accepted = collect_repaired(a.seed, a.limit)
+    else:
+        flagged, accepted = collect(a.sample, a.seed, a.limit, pairs, a.per)
     body = render(flagged, "Flagged runs", "Runs the builder could not cut, or cut with a doubt. These are unsplit in the output.")
-    if pairs:
+    if a.repaired:
+        body = render(accepted, "Runs where a letter was nearly starved",
+                      "A blind sample of the runs where the model gave one letter almost none of the ink and "
+                      "the repair took its share back from the neighbour holding it. Judge whether each letter "
+                      "now holds the right ink.")
+    elif pairs:
         body = render(accepted, "Uncovered letter pairs, cut by the model",
                       "Pairs the hand cuts never cover (%s), %d runs each. Judge the cut between those two letters." % (", ".join(pairs), a.per))
     else:
@@ -154,11 +222,21 @@ def main():
             ".card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:8px}"
             ".art svg{max-width:100%;height:auto}.ar{font-size:22px;direction:rtl}.run{color:#36c}"
             ".flags{color:#b00;font-size:12px;margin:4px 0}.note{width:60%}"
+            ".strip{display:flex;direction:rtl;gap:6px;align-items:flex-end;overflow-x:auto;"
+            "border-top:1px dashed #ddd;border-bottom:1px dashed #ddd;padding:6px 0;margin:6px 0}"
+            ".lt{text-align:center;cursor:pointer;padding:2px;border:2px solid transparent;border-radius:4px}"
+            ".lt:hover{background:#f2f2f2}.lt.bad{border-color:#b00;background:#fff0f0}"
+            ".lt svg{display:block}.lch{font-size:20px;direction:rtl}"
             "button{position:fixed;top:10px;right:10px;padding:8px 14px}</style>"
             "<button onclick='copyAll()'>Copy decisions</button><h1>Letter cuts</h1>" + body +
-            "<script>function copyAll(){const out=[];document.querySelectorAll('.card').forEach(c=>{"
+            "<script>function markLetter(el){el.classList.toggle('bad');const c=el.closest('.card');"
+            "if(c.querySelectorAll('.lt.bad').length&&!c.querySelector('.verdict').value)"
+            "c.querySelector('.verdict').value='wrong';}"
+            "function copyAll(){const out=[];document.querySelectorAll('.card').forEach(c=>{"
             "const v=c.querySelector('.verdict').value,n=c.querySelector('.note').value;"
-            "if(v||n)out.push({wid:c.dataset.wid,run:c.dataset.run,verdict:v,note:n})});"
+            "const bad=[...c.querySelectorAll('.lt.bad')].map(e=>({index:+e.dataset.index,letter:e.dataset.ch}));"
+            "if(v||n||bad.length)out.push({page:+c.dataset.page,wid:c.dataset.wid,run:c.dataset.run,"
+            "verdict:v||(bad.length?'wrong':''),wrong:bad,note:n})});"
             "navigator.clipboard.writeText(out.map(o=>JSON.stringify(o)).join('\\n'));alert(out.length+' decisions copied')}</script>")
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
