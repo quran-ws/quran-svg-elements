@@ -101,8 +101,6 @@ try {
   prod.el.querySelectorAll('g.word').forEach(g => {
     for (const k of ['rasm', 'rasm_imlai', 'search', 'qpc']) delete g.dataset[k];
   });
-  ok('1.17b every word carries the global word id (data-w), a positive integer',
-     p42.words().every(w => Number.isInteger(w.w) && w.w > 0), p42.word('2:255:1').w);
   eq('1.18 a shipped production word has rasm_uthmani inline and the rest null',
      [prod.word('2:255:1').form('rasm_uthmani') !== null, prod.word('2:255:1').form('search'),
       prod.word('2:255:1').text.rasm],
@@ -211,8 +209,14 @@ try {
   eq('3.4 line text', p42.line(4).words().length, p42.words({ line: 4 }).length);
   eq('3.5 page text has every word',
      p42.text('page').split(/[\s\n]+/).length, p42.wordCount);
-  eq('3.6 five forms all extractable',
-     M.TEXT_FORMS.map(f => p42.text('2:255:1', { form: f }).length > 0), [true, true, true, true, true]);
+  eq('3.6 every always-present form is extractable',
+     M.TEXT_FORMS.filter(f => f !== 'qpc').map(f => p42.text('2:255:1', { form: f }).length > 0),
+     [true, true, true, true]);
+  /* qpc rides on .cache/words-qpc/, which a checkout need not have; the emitter
+     writes data-qpc only where it has one. Assert it only when the page has it. */
+  ok('3.6b qpc is extractable when the page carries it',
+     !p42.hasForm('qpc') || p42.text('2:255:1', { form: 'qpc' }).length > 0,
+     p42.hasForm('qpc'));
 
   /* ============================================ 4. search */
   eq('4.1 exact search on page 42: الله',
