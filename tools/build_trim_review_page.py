@@ -132,11 +132,11 @@ def main():
             "border-radius:6px;padding:8px 12px;font-size:13px}</style>"
             "<button onclick='copyAll()'>Copy confirmations</button><div id=t>0 of %d</div>"
             "<h1>Confirm the trims</h1>"
-            "<p>Each of these is a trim whose stored side makes the letter hold most of its word, "
-            "which no single letter does &mdash; so the side may have flipped. Here is what each one "
-            "gives, rendered from the ink: the letter as the split already has it, the ink inside "
-            "your loop, and the ink outside it. <b>Click whichever is the letter</b> &mdash; the "
-            "first card means the split was right and the trim is dropped.</p>"
+            "<p>Of the 87 trims, 82 mean <b>the letter is the ink inside the loop</b> &mdash; including "
+            "all thirteen you confirmed by eye. These few resolved the other way, so they are worth "
+            "one look. Each is rendered from the ink three ways: the letter as the split already has "
+            "it, the ink inside your loop, and the ink outside it. <b>Click whichever is the "
+            "letter</b> &mdash; the first card means the split was right and the trim is dropped.</p>"
             % len(cards)
             + "".join(cards) +
             "<script>"

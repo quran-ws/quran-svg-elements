@@ -34,9 +34,17 @@ The model is `.cache/letters/model_ft5.pt`. Build with
 Shape verdicts are **complete for the common pass**: all 738 shapes covering 90% of every
 letter drawn in the mushaf are reviewed (`docs/defects/letter_shape_verdicts.jsonl`), 648
 right and **90 corrected by hand** with a drawn loop. The corrections cluster where the
-letters are: ل 20, ي 9, ا 8, م 8, ن 7, and ك و ه 6 each. Sixteen of the ninety re-derive to
-a letter holding 70-92% of its word's ink, which no single letter does, so they are marked
-`needs_confirm` and shown both ways in `letter_trims_review.html`.
+letters are: ل 20, ي 9, ا 8, م 8, ن 7, and ك و ه 6 each. Three of the ninety were withdrawn on review (the split was already
+right), leaving **87**.
+
+**The loop is the letter.** Of the 87, **82 mean the ink INSIDE the drawn loop**, including
+all thirteen Abdullah confirmed by eye after they resolved the other way. The reason the
+side was ever in doubt is measured: the click that names the side lands ON the drawn line
+in 83 of 87 cases (median 0.4% of the loop's span away from it), so a rasterised
+containment probe is deciding a knife edge, and it fell the wrong way 13 times. The page
+now resolves the side by exact ray casting on the drawn points, and records the answer in
+the trim as `select`, so nothing downstream re-derives it. The five that still resolve
+`out` are marked `needs_confirm` in `letter_trims_review.html`.
 
 Abdullah has drawn **166 words** by hand (`docs/defects/letters_hand_cuts.jsonl`), all
 of them accepted into the training labels. They cover the letter pairs the tajweed
