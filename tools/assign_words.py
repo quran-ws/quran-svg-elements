@@ -53,6 +53,23 @@ import quran_meta                       # surah / juz / hizb metadata + rasm
 ROOT = (os.environ.get("QSVG_ROOT")
         or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+_WBW = {}
+
+
+def _wbw_map():
+    """{wid: global word id} from .cache/wbw/wid_to_w.json, loaded once.
+
+    Built by tools/build_wbw_map.py from the word-by-word source
+    (.cache/wbw/hafs.json) and the word cache — never edited by hand. Missing
+    file = the map was never built; that is an error for every word, so the
+    caller raises with the command to run."""
+    if "m" not in _WBW:
+        p = os.path.join(ROOT, ".cache", "wbw", "wid_to_w.json")
+        _WBW["m"] = (json.load(open(p, encoding="utf-8"))
+                     if os.path.exists(p) else {})
+    return _WBW["m"]
+
+
 def _ovr_file():
     """Where the human geometry overrides live.
 
@@ -2743,15 +2760,24 @@ def rewrite(page, assignment):
                              _e4.get("line")), file=sys.stderr)
 
     def _reframe(src_pi, tgt_pi):
-        """transform attribute that repositions contours written in path
-        src_pi's local frame so they render identically under path tgt_pi's
-        wrappers: inv(M_tgt) . M_src. The p17 قلى pair proved regrouping is
-        pixel-free ONLY within one frame — every cross-path emission must
-        carry this compensation."""
+        """(transform attribute, shift) that repositions contours written in
+        path src_pi's local frame so they render identically under path
+        tgt_pi's wrappers: inv(M_tgt) . M_src. The p17 قلى pair proved
+        regrouping is pixel-free ONLY within one frame — every cross-path
+        emission must carry this compensation.
+
+        When the composed matrix is a pure translation — every one of the 72
+        cross-frame paths in the mushaf, on p17 and p144 (measured 2026-09-04)
+        — it is returned as a (dx, dy) SHIFT for build_d to bake into the
+        contours' absolute movetos, and no attribute is written: a `transform`
+        on a `<path>` is a manual-nudge smell that other tooling silently
+        misses (docs/defects/upstream_svg_issues.md §4). The attribute form
+        remains for a frame that differs by rotation or scale, which no page
+        currently has."""
         ms = page.paths[src_pi]["M"]
         mt = page.paths[tgt_pi]["M"]
         if ms == mt:
-            return ""
+            return "", None
         a, b, c, d, e_, f_ = mt
         det = a * d - b * c
         inv = (d / det, -b / det, -c / det, a / det,
@@ -2762,8 +2788,10 @@ def rewrite(page, assignment):
                 a1 * c2 + c1 * d2, b1 * c2 + d1 * d2,
                 a1 * e2 + c1 * f2 + e1, b1 * e2 + d1 * f2 + f1)
         if all(abs(v - w) < 1e-9 for v, w in zip(comp, (1, 0, 0, 1, 0, 0))):
-            return ""
-        return 'transform="matrix(%g %g %g %g %g %g)" ' % comp
+            return "", None
+        if all(abs(v - w) < 1e-9 for v, w in zip(comp[:4], (1, 0, 0, 1))):
+            return "", (comp[4], comp[5])
+        return 'transform="matrix(%g %g %g %g %g %g)" ' % comp, None
 
     svg = page.svg
     eid = [0]
@@ -2965,8 +2993,10 @@ def rewrite(page, assignment):
             if e.get("standalone"):
                 extra += ('data-standalone="1" data-aid="%d:%d" '
                           % e["standalone"])
+            _shift = None
             if e["path"] != pi:
-                extra += _reframe(e["path"], pi)
+                _rf, _shift = _reframe(e["path"], pi)
+                extra += _rf
             # ONE MARK, ONE PATH (Abdullah 2026-08-30). Where the artwork draws
             # a mark across several source paths — p146 6:141:14 splits the ش
             # three-dot cluster into a 2-contour path and a 1-contour path — the
@@ -2984,7 +3014,7 @@ def rewrite(page, assignment):
             for _mem in (e.get("mkmembers") or []):
                 if _mem.get("path") == e.get("path"):
                     _cons.extend(_mem.get("contours") or [])
-            out.append(head.replace("<path ", extra, 1) + build_d(_cons) + tail)
+            out.append(head.replace("<path ", extra, 1) + build_d(_cons, _shift) + tail)
 
         open_word = open_lig = None
         open_ayah = None
@@ -3156,16 +3186,43 @@ def rewrite(page, assignment):
                     # so this is the letter skeleton of THIS spelling, not a
                     # normalised form. data-imlaei is the second search form
                     # and is unchanged.
-                    out.append('<g class="word" data-wid="%d:%d:%d" '
-                               'data-uthmani="%s" data-rasm="%s" '
-                               'data-imlaei="%s" data-search="%s"%s>'
-                               % (word["surah"], word["ayah"], word["pos"],
-                                  esc(word["uthmani"]),
-                                  esc(quran_meta.rasm(word["uthmani"])),
-                                  esc(word["imlaei"]),
-                                  esc(quran_meta.rasm(word["imlaei"])),
-                                  (' data-qpc="%s"' % esc(word["qpc"]))
-                                  if word.get("qpc") else ""))
+                    # data-w: the GLOBAL word id of the word-by-word source
+                    # (.cache/wbw/hafs.json, KFGQPC UthmanicHafs v3.0), the
+                    # same id in every mushaf that has the word. Derived by
+                    # tools/build_wbw_map.py; a word the map does not know
+                    # is a build error, never a silent omission.
+                    _wkey = "%d:%d:%d" % (word["surah"], word["ayah"], word["pos"])
+                    _w = _wbw_map().get(_wkey)
+                    if _w is None:
+                        raise RuntimeError(
+                            "%s has no global word id: rebuild the map with "
+                            "tools/build_wbw_map.py" % _wkey)
+                    if _PROD:
+                        # PRODUCTION PROFILE: the keys and the text of record
+                        # only. The four derived forms (rasm, imlaei, search,
+                        # qpc) are a text index, not geometry, and repeating
+                        # them on all 77,433 word groups cost ~3% of every
+                        # page for data that never varies per instance. They
+                        # ship once, in index/by-page/NNN.json and
+                        # index/words.json, from the same cache and the same
+                        # derivations (bundle_extract.text_forms). The dev
+                        # profile keeps them inline: it is the review
+                        # instrument, and the review server reads them.
+                        # Abdullah 2026-09-04, consumer report §6.
+                        out.append('<g class="word" data-wid="%s" data-w="%d" '
+                                   'data-uthmani="%s">'
+                                   % (_wkey, _w, esc(word["uthmani"])))
+                    else:
+                        out.append('<g class="word" data-wid="%s" data-w="%d" '
+                                   'data-uthmani="%s" data-rasm="%s" '
+                                   'data-imlaei="%s" data-search="%s"%s>'
+                                   % (_wkey, _w,
+                                      esc(word["uthmani"]),
+                                      esc(quran_meta.rasm(word["uthmani"])),
+                                      esc(word["imlaei"]),
+                                      esc(quran_meta.rasm(word["imlaei"])),
+                                      (' data-qpc="%s"' % esc(word["qpc"]))
+                                      if word.get("qpc") else ""))
                     open_word = wkey
             if word and lig_key != open_lig and not _PROD:
                 # PRODUCTION PROFILE (QSVG_PROFILE=production): one group per
@@ -3898,17 +3955,37 @@ def tag_ayah_markers(svg, polys_json, anchors=None):
             seen.append(key)
     seen.sort()
 
-    kids = list(re.finditer(r"<g\b[^>]*>(?:(?!</?g\b).)*</g>", block, re.S))
+    _KID = r"<g\b[^>]*>(?:(?!</?g\b).)*</g>"
+    kids = list(re.finditer(_KID, block, re.S))
+    # The opening spread's artwork draws every ornament TWICE: p1 has 14
+    # ornament groups, 7 distinct, every one an exact pair (same translate,
+    # same d, back to back); p2 has 10/5; no other page does (measured over
+    # all 604, 2026-09-04). Left to the pairing below, the first copy became
+    # a marker of its own and took the ayah's id, and the position binding
+    # then handed the numeral's group the NEXT ayah's id — FORMAT.md once
+    # described the result as "12 decorative rosettes with no ayah". They are
+    # copies, and they ride INSIDE their ayah's marker group here, the second
+    # tagged data-duplicate="1". They are NOT dropped: two identical fills
+    # are not the same ink at the edge — anti-aliased coverage composites
+    # twice and the rim darkens by up to 57/255 (measured: collapsing them
+    # moved 3,264 px on p1, 2,336 on p2) — so removing the copy would break
+    # pixel identity. A consumer that wants one ornament drops [data-duplicate].
+    _dup = {i2 for i2, kd in enumerate(kids)
+            if i2 and "scale(" in kd.group(0)
+            and kd.group(0) == kids[i2 - 1].group(0)}
     pairs = []
     k = 0
     while k < len(kids):
-        if "scale(" in kids[k].group(0) and k + 1 < len(kids) \
-                and "ayah:x" in kids[k + 1].group(0):
-            pairs.append((kids[k], kids[k + 1]))
-            k += 2
+        n = k + 1
+        while n in _dup:
+            n += 1
+        if "scale(" in kids[k].group(0) and n < len(kids) \
+                and "ayah:x" in kids[n].group(0):
+            pairs.append((kids[k], kids[n]))
+            k = n + 1
         else:
             pairs.append((kids[k], None))
-            k += 1
+            k = n
 
     # Position binding. Each marker takes its nearest ayah end; a marker whose
     # nearest end is already taken by a closer marker falls through to its next
@@ -3954,7 +4031,11 @@ def tag_ayah_markers(svg, polys_json, anchors=None):
         piece = orn.group(0).replace(
             "<path ", '<path data-kind="ayah-marker-ornament" ', 1)
         if dig is not None:
-            piece += block[orn.end():dig.start()]
+            # between ornament and numeral sits the artwork's second copy of
+            # the ornament on p1/p2 (see _dup above), and nothing elsewhere
+            piece += block[orn.end():dig.start()].replace(
+                "<path ", '<path data-kind="ayah-marker-ornament" '
+                          'data-duplicate="1" ')
             piece += dig.group(0).replace(
                 "<path ", '<path data-kind="ayah-number" ', 1)
             pos = dig.end()
@@ -3963,6 +4044,87 @@ def tag_ayah_markers(svg, polys_json, anchors=None):
         out.append('<g class="ayah-marker"%s>%s</g>' % (ident, piece))
     out.append(block[pos:])
     return svg[:i] + "".join(out) + svg[j:]
+
+
+def _num(v):
+    """Four decimals, trailing zeros dropped: the precision of the artwork's
+    own viewBox and frame numbers, so a folded offset stays exact."""
+    s = "%.4f" % v
+    s = s.rstrip("0").rstrip(".")
+    return "0" if s in ("-0", "") else s
+
+
+def tag_page_furniture(svg, page):
+    """Name the ink the artwork keeps OUTSIDE #content and #ayah_markers.
+
+    One page in the mushaf, p17, carries four top-level groups before its
+    marker layer: the page number ١٧ (two paths, bottom centre, 36 units
+    BELOW the page's bottom edge) and two running heads — الجزء الأول and
+    سورة البقرة — 45 units above its top edge. All four are clipped by the
+    viewBox and never seen. They are page furniture from the print, not part
+    of any word, and they were the only four `<path>` elements in 604 pages
+    without a data-kind (consumer report 2026-09-04). Nothing moves and
+    nothing is dropped: the group gets a class, the paths a kind, and a
+    consumer that only wants words filters on either. Below the page →
+    page-number, above it → running-head, decided from the group's own
+    translate under the page frame (the print puts them there)."""
+    i = svg.find('<g transform="matrix(')
+    if i < 0:
+        return svg
+    i = svg.find(">", i) + 1
+    j = svg.find('<g id="ayah_markers"', i)
+    if j < 0 or "<path" not in svg[i:j]:
+        return svg
+    a, b, c, d, e_, f_ = page._root_ctm(i)
+    vb = page.viewbox or [0, 0, 345, 550]
+
+    def _one(mo):
+        x, y = [float(v) for v in mo.group(1).replace(",", " ").split()]
+        vy = b * x + d * y + f_
+        kind = "page-number" if vy > vb[1] + vb[3] / 2 else "running-head"
+        body = mo.group(2).replace("<path ", '<path data-kind="%s" ' % kind)
+        return '<g class="%s" transform="translate(%s)">%s</g>' % (
+            kind, mo.group(1), body)
+    region = re.sub(r'<g transform="translate\(([^)]*)\)">((?:(?!</?g\b).)*)</g>',
+                    _one, svg[i:j], flags=re.S)
+    return svg[:i] + region + svg[j:]
+
+
+def normalize_frame(svg, page):
+    """Emit every page under viewBox="0 0 W H".
+
+    The artwork draws the opening spread under an offset viewBox (p1, p2:
+    "-53.3109 -198.4777 345 550") and every other page under "0 0 345 550".
+    The offset is folded into the page frame's translation, so the page
+    renders pixel-identically and raw path coordinates do not change — only
+    the numbers that live in viewBox space move with it: the root matrix, the
+    marker centres (`ayah:x`/`ayah:y`), and, in the dev profile, the ayah
+    polygons, which are siblings of the page frame in plain viewBox units and
+    are wrapped in one translate. The pipeline's own inputs (lines table,
+    polygons, overrides) stay in the artwork's frame; this is an output
+    convention and page.frame_offset is the single number behind it."""
+    dx, dy = page.frame_offset
+    if not (dx or dy):
+        return svg
+    vb = page.viewbox
+    svg = re.sub(r'viewBox="[^"]*"',
+                 'viewBox="0 0 %s %s"' % (_num(vb[2]), _num(vb[3])), svg, count=1)
+
+    def _root(mo):
+        a, b, c, d, e_, f_ = [float(v) for v in mo.group(1).replace(",", " ").split()]
+        return '<g transform="matrix(%s)">' % " ".join(
+            _num(v) for v in (a, b, c, d, e_ + dx, f_ + dy))
+    svg = re.sub(r'<g transform="matrix\(([^)]*)\)">', _root, svg, count=1)
+    svg = re.sub(r'ayah:x="([-\d.]+)"(\s+)ayah:y="([-\d.]+)"',
+                 lambda mo: 'ayah:x="%s"%sayah:y="%s"' % (
+                     _num(float(mo.group(1)) + dx), mo.group(2),
+                     _num(float(mo.group(3)) + dy)), svg)
+    i = svg.find('<path class="ayahPolygon"')
+    if i >= 0:
+        j = svg.find("/>", svg.rfind('<path class="ayahPolygon"')) + 2
+        svg = (svg[:i] + '<g transform="translate(%s %s)">' % (_num(dx), _num(dy))
+               + svg[i:j] + "</g>" + svg[j:])
+    return svg
 
 
 # Which mushaf a page belongs to, stamped on the root <svg> so that a file
@@ -12744,6 +12906,8 @@ def assign_page(edition, page_no, cache_dir):
         # which is why the production profile is gated on the RASTER half of
         # audit_pixels and not on contour conservation.
         out_svg = re.sub(r'<path class="ayahPolygon"[^>]*/>', '', out_svg)
+    out_svg = tag_page_furniture(out_svg, page)
+    out_svg = normalize_frame(out_svg, page)
     out_svg = _stamp_identity(out_svg, edition, page_no)
     # COVERAGE IS MEASURED ON THE OUTPUT, not mid-pipeline (2026-08-29).
     # `apply_shape_labels` runs long before the ORNAMENT demotion and the

@@ -5,15 +5,54 @@ The SVG is authoritative (FORMAT.md §10.9): every index value here is read out
 of the shipped page, never out of a pipeline-internal cache. That is what makes
 the checker's cross-reference test meaningful — if the two disagreed, the index
 would be wrong and nothing would notice.
+
+One exception, by design (2026-09-04): a production page carries `data-wid`
+and `data-uthmani` only. The four derived text forms — rasm, imlaei, search,
+qpc — are a text index, not geometry, and ship once, here, from the same word
+cache and the same derivations the emitter uses (`text_forms`). The SVG still
+rules where the two meet: the cache's uthmani must equal the page's
+`data-uthmani` for every word, or the build stops.
 """
 import os
+import sys
 import xml.etree.ElementTree as ET
 
 from bundle_geom import IDENTITY, mat_mul, parse_transform, path_extremes, union
 
+ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__)))
 SVGNS = "{http://www.w3.org/2000/svg}"
 
 TEXT_FIELDS = ("uthmani", "rasm", "imlaei", "search", "qpc")
+
+
+def text_forms(page, cache_dir=None):
+    """{wid: {uthmani, rasm, imlaei, search, qpc}} for one page, from the
+    verified word cache, derived exactly as the dev profile writes them
+    inline: rasm = quran_meta.rasm(uthmani), search = quran_meta.rasm(imlaei)
+    (FORMAT.md §6.1)."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import assign_words
+    import quran_meta
+    cache_dir = cache_dir or os.path.join(ROOT, ".cache", "words")
+    out = {}
+    # The word source (quran.com's page layout) disagrees with the print about
+    # which words sit on 25 pages (CLAUDE.md "Juz 30"); the pipeline repairs
+    # page membership from the artwork's own markers, so an emitted page can
+    # hold a word the cache files under its neighbour (p120 holds 5:77:1,
+    # cached on p121). Never by more than one page: read the neighbours too.
+    for pg in (page - 1, page, page + 1):
+        if not 1 <= pg <= 604:
+            continue
+        for words in assign_words.page_words(pg, cache_dir).values():
+            for w in words:
+                wid = "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"])
+                out[wid] = {"uthmani": w["uthmani"],
+                            "rasm": quran_meta.rasm(w["uthmani"]),
+                            "imlaei": w["imlaei"],
+                            "search": quran_meta.rasm(w["imlaei"]),
+                            "qpc": w.get("qpc") or None}
+    return out
 
 
 def _tag(e):
@@ -78,7 +117,10 @@ def read_page(path, page):
             if cls == "word":
                 wid = child.get("data-wid")
                 rec = {"wid": wid, "line": cur_line[0],
-                       "aid": wid.rsplit(":", 1)[0]}
+                       "aid": wid.rsplit(":", 1)[0],
+                       # the global word id (FORMAT §6.1); None if a page
+                       # predates it, and the checker then fails the bundle
+                       "w": int(child.get("data-w")) if child.get("data-w") else None}
                 for f in TEXT_FIELDS:
                     rec[f] = child.get("data-" + f)
                 rec["box"] = _box_of(child, N)
@@ -110,6 +152,22 @@ def read_page(path, page):
 
     cur_line = [None]
     walk(root, IDENTITY)
+
+    # production pages: fill the four forms the page does not carry, and
+    # prove the cache and the page agree on the one they share
+    if any(w[f] is None for w in words for f in TEXT_FIELDS):
+        forms = text_forms(page)
+        for w in words:
+            rec = forms.get(w["wid"])
+            if rec is None:
+                raise RuntimeError("page %d: %s is on the page but not in the "
+                                   "word cache" % (page, w["wid"]))
+            if w["uthmani"] != rec["uthmani"]:
+                raise RuntimeError("page %d: %s data-uthmani %r != cache %r"
+                                   % (page, w["wid"], w["uthmani"], rec["uthmani"]))
+            for f in TEXT_FIELDS:
+                if w[f] is None:
+                    w[f] = rec[f]
 
     # every surah with ink on the page, not only those whose banner is here
     page_surahs = sorted({int(a.split(":")[0]) for a in seen_aid})
