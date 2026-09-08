@@ -20,9 +20,9 @@
      "key": "3:108:6",
      "text": "بِٱلۡحَقِّۗ",
      "tier": "certain",
-     "evidence": "mark pause: 41u outside its line band",
+     "evidence": "mark waqf: 41u outside its line band",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it",
+     "note": "stole صلى waqf from the word above it",
      "sig": "ab70bf3f"
     },
     {
@@ -30,9 +30,9 @@
      "key": "3:115:6",
      "text": "يُكۡفَرُوهُۗ",
      "tier": "certain",
-     "evidence": "mark pause: 37u outside its line band",
+     "evidence": "mark waqf: 37u outside its line band",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it",
+     "note": "stole صلى waqf from the word above it",
      "sig": "ab70bf3f"
     },
     {
@@ -40,7 +40,7 @@
      "key": "3:161:6",
      "text": "وَمَن",
      "tier": "certain",
-     "evidence": "mark fatha: 18u outside its line band",
+     "evidence": "mark fathah: 18u outside its line band",
      "status": "confirmed",
      "note": "extra fataha or kasrah at top stolen from the word above",
      "sig": "ab70bf3f"
@@ -50,9 +50,9 @@
      "key": "6:17:12",
      "text": "بِخَيۡرٖ",
      "tier": "certain",
-     "evidence": "meem-iqlab 26u + kasratan 32u outside band",
+     "evidence": "small_meem 26u + tanwin_al_kasr 32u outside band",
      "status": "confirmed",
-     "note": "extra fatha after it (or kasra from word above) + stole haa letter and a kasra below it from the word below",
+     "note": "extra fathah after it (or kasrah from word above) + stole haa letter and a kasrah below it from the word below",
      "sig": "d7e8d417"
     },
     {
@@ -80,9 +80,9 @@
      "key": "11:12:15",
      "text": "كَنزٌ",
      "tier": "certain",
-     "evidence": "mark hamza: 27u outside its line band",
+     "evidence": "mark hamzah: 27u outside its line band",
      "status": "confirmed",
-     "note": "stole hamza from the word below",
+     "note": "stole hamzah from the word below",
      "sig": "ab70bf3f"
     },
     {
@@ -90,7 +90,7 @@
      "key": "11:88:13",
      "text": "حَسَنٗاۚ",
      "tier": "certain",
-     "evidence": "mark meem-iqlab: 22u outside its line band",
+     "evidence": "mark small_meem: 22u outside its line band",
      "status": "confirmed",
      "note": "stole meem from a word above it",
      "sig": "ab70bf3f"
@@ -100,9 +100,9 @@
      "key": "11:116:25",
      "text": "وَكَانُواْ",
      "tier": "certain",
-     "evidence": "mark fatha: 34u outside its line band",
+     "evidence": "mark fathah: 34u outside its line band",
      "status": "confirmed",
-     "note": "stole kasra from the word below it",
+     "note": "stole kasrah from the word below it",
      "sig": "ab70bf3f"
     },
     {
@@ -110,9 +110,9 @@
      "key": "14:39:5",
      "text": "لِي",
      "tier": "certain",
-     "evidence": "mark hamza: 19u outside its line band",
+     "evidence": "mark hamzah: 19u outside its line band",
      "status": "confirmed",
-     "note": "stole hamza+kasrateen from the word above",
+     "note": "stole hamzah+kasrateen from the word above",
      "sig": "ab70bf3f"
     },
     {
@@ -120,9 +120,9 @@
      "key": "16:2:11",
      "text": "أَنۡ",
      "tier": "certain",
-     "evidence": "mark fatha: 35u outside its line band",
+     "evidence": "mark fathah: 35u outside its line band",
      "status": "confirmed",
-     "note": "stole kasra from the word below it",
+     "note": "stole kasrah from the word below it",
      "sig": "43857b79"
     },
     {
@@ -130,7 +130,7 @@
      "key": "22:73:25",
      "text": "مِنۡهُۚ",
      "tier": "certain",
-     "evidence": "mark small-waw: 18u outside its line band",
+     "evidence": "mark small_waw: 18u outside its line band",
      "status": "confirmed",
      "note": "stole waw or small waw from the word above",
      "sig": "ab70bf3f"
@@ -150,9 +150,9 @@
      "key": "24:3:9",
      "text": "لَا",
      "tier": "certain",
-     "evidence": "rtl-order; fatha stray 300u",
+     "evidence": "rtl-order; fathah stray 300u",
      "status": "confirmed",
-     "note": "stole a far away fatha",
+     "note": "stole a far away fathah",
      "sig": "4e98cf3d"
     },
     {
@@ -170,7 +170,7 @@
      "key": "26:97:4",
      "text": "لَفِي",
      "tier": "certain",
-     "evidence": "kasra strays 303u + 286u",
+     "evidence": "kasrah strays 303u + 286u",
      "status": "confirmed",
      "note": "stole a ksra far far away",
      "sig": "ab70bf3f"
@@ -210,9 +210,9 @@
      "key": "13:37:7",
      "text": "أَهۡوَآءَهُم",
      "tier": "high",
-     "evidence": "dots 1/0; fatha 5/3; sukun 2/1",
+     "evidence": "dots 1/0; fathah 5/3; sukun 2/1",
      "status": "confirmed",
-     "note": "i dont see any dot, I see 3 fathas, one sokoon !!",
+     "note": "i dont see any dot, I see 3 fathahs, one sokoon !!",
      "sig": "ab70bf3f"
     }
    ]
@@ -256,7 +256,7 @@
      "key": "56:44:2",
      "text": "بَارِدٖ",
      "tier": "high",
-     "evidence": "shadda 1/0",
+     "evidence": "shaddah 1/0",
      "status": "confirmed",
      "note": "stole the word before it with its diacritics لا",
      "sig": "c643b1f1"
@@ -283,9 +283,9 @@
      "key": "3:108:6",
      "text": "بِٱلۡحَقِّۗ",
      "tier": "certain",
-     "evidence": "mark pause: 41u outside its line band",
+     "evidence": "mark waqf: 41u outside its line band",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it",
+     "note": "stole صلى waqf from the word above it",
      "sig": "ab70bf3f"
     },
     {
@@ -293,9 +293,9 @@
      "key": "3:115:6",
      "text": "يُكۡفَرُوهُۗ",
      "tier": "certain",
-     "evidence": "mark pause: 37u outside its line band",
+     "evidence": "mark waqf: 37u outside its line band",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it",
+     "note": "stole صلى waqf from the word above it",
      "sig": "ab70bf3f"
     },
     {
@@ -303,7 +303,7 @@
      "key": "3:161:6",
      "text": "وَمَن",
      "tier": "certain",
-     "evidence": "mark fatha: 18u outside its line band",
+     "evidence": "mark fathah: 18u outside its line band",
      "status": "confirmed",
      "note": "extra fataha or kasrah at top stolen from the word above",
      "sig": "ab70bf3f"
@@ -313,9 +313,9 @@
      "key": "6:17:12",
      "text": "بِخَيۡرٖ",
      "tier": "certain",
-     "evidence": "meem-iqlab 26u + kasratan 32u outside band",
+     "evidence": "small_meem 26u + tanwin_al_kasr 32u outside band",
      "status": "confirmed",
-     "note": "extra fatha after it (or kasra from word above) + stole haa letter and a kasra below it from the word below",
+     "note": "extra fathah after it (or kasrah from word above) + stole haa letter and a kasrah below it from the word below",
      "sig": "d7e8d417"
     },
     {
@@ -323,9 +323,9 @@
      "key": "11:12:15",
      "text": "كَنزٌ",
      "tier": "certain",
-     "evidence": "mark hamza: 27u outside band",
+     "evidence": "mark hamzah: 27u outside band",
      "status": "confirmed",
-     "note": "stole hamza from the word below",
+     "note": "stole hamzah from the word below",
      "sig": "ab70bf3f"
     },
     {
@@ -333,7 +333,7 @@
      "key": "11:88:13",
      "text": "حَسَنٗاۚ",
      "tier": "certain",
-     "evidence": "mark meem-iqlab: 22u outside band",
+     "evidence": "mark small_meem: 22u outside band",
      "status": "confirmed",
      "note": "stole meem from a word above it",
      "sig": "ab70bf3f"
@@ -343,9 +343,9 @@
      "key": "11:116:25",
      "text": "وَكَانُواْ",
      "tier": "certain",
-     "evidence": "mark fatha: 34u outside band",
+     "evidence": "mark fathah: 34u outside band",
      "status": "confirmed",
-     "note": "stole kasra from the word below it",
+     "note": "stole kasrah from the word below it",
      "sig": "ab70bf3f"
     },
     {
@@ -363,9 +363,9 @@
      "key": "14:39:5",
      "text": "لِي",
      "tier": "certain",
-     "evidence": "mark hamza: 19u outside band",
+     "evidence": "mark hamzah: 19u outside band",
      "status": "confirmed",
-     "note": "stole hamza+kasrateen from the word above",
+     "note": "stole hamzah+kasrateen from the word above",
      "sig": "ab70bf3f"
     },
     {
@@ -373,9 +373,9 @@
      "key": "16:2:11",
      "text": "أَنۡ",
      "tier": "certain",
-     "evidence": "mark fatha: 35u outside band",
+     "evidence": "mark fathah: 35u outside band",
      "status": "confirmed",
-     "note": "stole kasra from the word below it",
+     "note": "stole kasrah from the word below it",
      "sig": "43857b79"
     },
     {
@@ -383,7 +383,7 @@
      "key": "22:73:25",
      "text": "مِنۡهُۚ",
      "tier": "certain",
-     "evidence": "mark small-waw: 18u outside band",
+     "evidence": "mark small_waw: 18u outside band",
      "status": "confirmed",
      "note": "stole waw or small waw from the word above",
      "sig": "ab70bf3f"
@@ -393,9 +393,9 @@
      "key": "24:3:9",
      "text": "لَا",
      "tier": "certain",
-     "evidence": "rtl-order; fatha stray 300u",
+     "evidence": "rtl-order; fathah stray 300u",
      "status": "confirmed",
-     "note": "stole a far away fatha",
+     "note": "stole a far away fathah",
      "sig": "4e98cf3d"
     },
     {
@@ -403,7 +403,7 @@
      "key": "26:97:4",
      "text": "لَفِي",
      "tier": "certain",
-     "evidence": "kasra strays 303u+286u",
+     "evidence": "kasrah strays 303u+286u",
      "status": "confirmed",
      "note": "stole a ksra far far away",
      "sig": "ab70bf3f"
@@ -413,7 +413,7 @@
      "key": "33:3:4",
      "text": "وَكَفَىٰ",
      "tier": "certain",
-     "evidence": "fatha strays 290u+281u",
+     "evidence": "fathah strays 290u+281u",
      "status": "confirmed",
      "note": "",
      "sig": "0ed184c4"
@@ -423,7 +423,7 @@
      "key": "47:4:4",
      "text": "كَفَرُواْ",
      "tier": "certain",
-     "evidence": "mark fatha: 20u outside band",
+     "evidence": "mark fathah: 20u outside band",
      "status": "confirmed",
      "note": "",
      "sig": "e08dadc9"
@@ -433,7 +433,7 @@
      "key": "56:33:3",
      "text": "وَلَا",
      "tier": "certain",
-     "evidence": "fatha strays 299u+302u",
+     "evidence": "fathah strays 299u+302u",
      "status": "confirmed",
      "note": "",
      "sig": "4e98cf3d"
@@ -443,7 +443,7 @@
      "key": "98:6:2",
      "text": "ٱلَّذِينَ",
      "tier": "certain",
-     "evidence": "mark kasra: 16u outside band",
+     "evidence": "mark kasrah: 16u outside band",
      "status": "confirmed",
      "note": "",
      "sig": "08815c9d"
@@ -453,7 +453,7 @@
      "key": "56:35:2",
      "text": "أَنشَأۡنَٰهُنَّ",
      "tier": "high",
-     "evidence": "width 0.50x; fatha 5/4",
+     "evidence": "width 0.50x; fathah 5/4",
      "status": "confirmed",
      "note": "stole kasrah from the word above it",
      "sig": "774fcf08"
@@ -463,7 +463,7 @@
      "key": "79:16:1",
      "text": "إِذۡ",
      "tier": "high",
-     "evidence": "width 0.26x; kasra 2/1; hamza 0/1",
+     "evidence": "width 0.26x; kasrah 2/1; hamzah 0/1",
      "status": "no-issue",
      "note": "",
      "sig": "6ae7463c"
@@ -473,9 +473,9 @@
      "key": "22:73:18",
      "text": "لَهُۥۖ",
      "tier": "high",
-     "evidence": "ref-line; damma 0/1; small-waw 0/1; pause 0/1; width 0.55x",
+     "evidence": "ref-line; dammah 0/1; small_waw 0/1; waqf 0/1; width 0.55x",
      "status": "confirmed",
-     "note": "the word before it stole له with the pause and diacritics, and here it shows the waw and its fatha from the following word",
+     "note": "the word before it stole له with the waqf and diacritics, and here it shows the waw and its fathah from the following word",
      "sig": "4e98cf3d"
     },
     {
@@ -485,7 +485,7 @@
      "tier": "high",
      "evidence": "width 2.69x",
      "status": "confirmed",
-     "note": "missing its 2 fathas, stolen (two) from prev word",
+     "note": "missing its 2 fathahs, stolen (two) from prev word",
      "sig": "e1fa9595"
     },
     {
@@ -493,7 +493,7 @@
      "key": "16:48:10",
      "text": "ظِلَٰلُهُۥ",
      "tier": "high",
-     "evidence": "fatha 2/1; width 1.81x",
+     "evidence": "fathah 2/1; width 1.81x",
      "status": "confirmed",
      "note": "has below it a line that is a sajdah line above the word below it",
      "sig": "ab70bf3f"
@@ -503,7 +503,7 @@
      "key": "13:37:20",
      "text": "وَاقٖ",
      "tier": "high",
-     "evidence": "width 0.47x; meem-iqlab",
+     "evidence": "width 0.47x; small_meem",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -513,7 +513,7 @@
      "key": "13:37:10",
      "text": "جَآءَكَ",
      "tier": "high",
-     "evidence": "width 0.47x; fatha 2/3",
+     "evidence": "width 0.47x; fathah 2/3",
      "status": "confirmed",
      "note": "missing حا shape (the dot is not missing)",
      "sig": "ab70bf3f"
@@ -533,7 +533,7 @@
      "key": "33:3:6",
      "text": "وَكِيلٗا",
      "tier": "high",
-     "evidence": "width 0.29x; kasra 0/1",
+     "evidence": "width 0.29x; kasrah 0/1",
      "status": "no-issue",
      "note": "",
      "sig": "02ecaf8a"
@@ -543,9 +543,9 @@
      "key": "98:6:13",
      "text": "أُوْلَٰٓئِكَ",
      "tier": "high",
-     "evidence": "width 3.62x; fatha 1/2",
+     "evidence": "width 3.62x; fathah 1/2",
      "status": "confirmed",
-     "note": "missing fatha at the end",
+     "note": "missing fathah at the end",
      "sig": "d8a48020"
     },
     {
@@ -553,9 +553,9 @@
      "key": "45:8:10",
      "text": "لَّمۡ",
      "tier": "high",
-     "evidence": "fatha 2/1; width 1.86x",
+     "evidence": "fathah 2/1; width 1.86x",
      "status": "confirmed",
-     "note": "extra fatha at the end",
+     "note": "extra fathah at the end",
      "sig": "aa262fef"
     },
     {
@@ -675,7 +675,7 @@
      "tier": "high",
      "evidence": "width 2.88x",
      "status": "confirmed",
-     "note": "stole kasra from next word",
+     "note": "stole kasrah from next word",
      "sig": "7d5e2fd3"
     },
     {
@@ -695,7 +695,7 @@
      "tier": "high",
      "evidence": "width 2.87x",
      "status": "confirmed",
-     "note": "stole kasra from prev word",
+     "note": "stole kasrah from prev word",
      "sig": "a6079a4d"
     },
     {
@@ -715,7 +715,7 @@
      "tier": "high",
      "evidence": "width 2.20x",
      "status": "confirmed",
-     "note": "stole fatha from prev word",
+     "note": "stole fathah from prev word",
      "sig": "58d52cb7"
     },
     {
@@ -1193,7 +1193,7 @@
      "key": "56:44:2",
      "text": "بَارِدٖ",
      "tier": "high",
-     "evidence": "shadda 1/0",
+     "evidence": "shaddah 1/0",
      "status": "confirmed",
      "note": "stole the word before it with its diacritics لا",
      "sig": "c643b1f1"
@@ -1222,7 +1222,7 @@
      "tier": "high",
      "evidence": "multi-family surplus",
      "status": "confirmed",
-     "note": "swallowed له with its صلى pause and damma",
+     "note": "swallowed له with its صلى waqf and dammah",
      "sig": "ab70bf3f"
     },
     {
@@ -1250,7 +1250,7 @@
      "key": "22:73:25",
      "text": "مِنْهُۚ",
      "tier": "certain",
-     "evidence": "small-waw 18u outside band",
+     "evidence": "small_waw 18u outside band",
      "status": "confirmed",
      "note": "stole the small waw ۥ from له",
      "sig": "ab70bf3f"
@@ -1278,8 +1278,8 @@
      "text": "بِٱلۡحَقِّۗ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark pause: 41u outside its line band",
-     "note": "stole صلى pause from the word above it",
+     "evidence": "mark waqf: 41u outside its line band",
+     "note": "stole صلى waqf from the word above it",
      "sig": "ab70bf3f"
     },
     {
@@ -1288,8 +1288,8 @@
      "text": "يُكۡفَرُوهُۗ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark pause: 37u outside its line band",
-     "note": "stole صلى pause from the word above it",
+     "evidence": "mark waqf: 37u outside its line band",
+     "note": "stole صلى waqf from the word above it",
      "sig": "ab70bf3f"
     },
     {
@@ -1298,7 +1298,7 @@
      "text": "وَمَن",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: 18u outside its line band",
+     "evidence": "mark fathah: 18u outside its line band",
      "note": "extra fataha or kasrah at top stolen from the word above",
      "sig": "ab70bf3f"
     },
@@ -1308,8 +1308,8 @@
      "text": "بِخَيۡرٖ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark meem-iqlab: 26u outside its line band; mark kasratan: 32u outside its line band",
-     "note": "extra fatat after it ( or kasra from the word above ) + stole haa letter and a kasra below it from the word below",
+     "evidence": "mark small_meem: 26u outside its line band; mark tanwin_al_kasr: 32u outside its line band",
+     "note": "extra fatat after it ( or kasrah from the word above ) + stole haa letter and a kasrah below it from the word below",
      "sig": "d7e8d417"
     },
     {
@@ -1318,8 +1318,8 @@
      "text": "كَنزٌ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark hamza: 27u outside its line band",
-     "note": "stole hamza from the word below",
+     "evidence": "mark hamzah: 27u outside its line band",
+     "note": "stole hamzah from the word below",
      "sig": "ab70bf3f"
     },
     {
@@ -1328,7 +1328,7 @@
      "text": "حَسَنٗاۚ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark meem-iqlab: 22u outside its line band",
+     "evidence": "mark small_meem: 22u outside its line band",
      "note": "stole meem from a word above it",
      "sig": "ab70bf3f"
     },
@@ -1338,8 +1338,8 @@
      "text": "وَكَانُواْ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: 34u outside its line band",
-     "note": "stole kasra from the word below it",
+     "evidence": "mark fathah: 34u outside its line band",
+     "note": "stole kasrah from the word below it",
      "sig": "ab70bf3f"
     },
     {
@@ -1358,8 +1358,8 @@
      "text": "لِي",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark hamza: 19u outside its line band",
-     "note": "stole hamza+kasrateen from the word above",
+     "evidence": "mark hamzah: 19u outside its line band",
+     "note": "stole hamzah+kasrateen from the word above",
      "sig": "ab70bf3f"
     },
     {
@@ -1368,8 +1368,8 @@
      "text": "أَنۡ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: 35u outside its line band",
-     "note": "stole kasra from the word below it",
+     "evidence": "mark fathah: 35u outside its line band",
+     "note": "stole kasrah from the word below it",
      "sig": "43857b79"
     },
     {
@@ -1378,7 +1378,7 @@
      "text": "مِنۡهُۚ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark small-waw: 18u outside its line band",
+     "evidence": "mark small_waw: 18u outside its line band",
      "note": "stole waw or small waw from the word above",
      "sig": "ab70bf3f"
     },
@@ -1388,8 +1388,8 @@
      "text": "لَا",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "rtl-order; mark fatha: stray 300u from its word",
-     "note": "stole a far away fatha",
+     "evidence": "rtl-order; mark fathah: stray 300u from its word",
+     "note": "stole a far away fathah",
      "sig": "4e98cf3d"
     },
     {
@@ -1398,7 +1398,7 @@
      "text": "لَفِي",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark kasra: stray 303u from its word; mark kasra: stray 286u from its word",
+     "evidence": "mark kasrah: stray 303u from its word; mark kasrah: stray 286u from its word",
      "note": "stole a ksra far far away",
      "sig": "ab70bf3f"
     },
@@ -1408,7 +1408,7 @@
      "text": "خَلۡقٖ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark meem-iqlab: 17u outside its line band",
+     "evidence": "mark small_meem: 17u outside its line band",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1418,7 +1418,7 @@
      "text": "وَكَفَىٰ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: stray 290u from its word; mark fatha: stray 281u from its word",
+     "evidence": "mark fathah: stray 290u from its word; mark fathah: stray 281u from its word",
      "note": "",
      "sig": "0ed184c4"
     },
@@ -1428,7 +1428,7 @@
      "text": "ٱلۡمُلۡكُۚ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark pause: 38u outside its line band",
+     "evidence": "mark waqf: 38u outside its line band",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1458,7 +1458,7 @@
      "text": "وَٱلۡأَرۡضِ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: 17u outside its line band",
+     "evidence": "mark fathah: 17u outside its line band",
      "note": "",
      "sig": "b564033a"
     },
@@ -1468,7 +1468,7 @@
      "text": "كَفَرُواْ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: 20u outside its line band",
+     "evidence": "mark fathah: 20u outside its line band",
      "note": "",
      "sig": "e08dadc9"
     },
@@ -1478,7 +1478,7 @@
      "text": "سَبِيلِ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark damma: 23u outside its line band",
+     "evidence": "mark dammah: 23u outside its line band",
      "note": "",
      "sig": "988e4ffd"
     },
@@ -1488,7 +1488,7 @@
      "text": "فَتَعۡسٗا",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark damma: 17u outside its line band",
+     "evidence": "mark dammah: 17u outside its line band",
      "note": "",
      "sig": "272bbd2f"
     },
@@ -1498,7 +1498,7 @@
      "text": "وَلَا",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: stray 299u from its word; mark fatha: stray 302u from its word",
+     "evidence": "mark fathah: stray 299u from its word; mark fathah: stray 302u from its word",
      "note": "",
      "sig": "4e98cf3d"
     },
@@ -1518,7 +1518,7 @@
      "text": "وَٱلۡمُؤۡتَفِكَٰتُ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark kasra: 16u outside its line band",
+     "evidence": "mark kasrah: 16u outside its line band",
      "note": "",
      "sig": "0c100fa8"
     },
@@ -1528,7 +1528,7 @@
      "text": "وَلَا",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: 34u outside its line band",
+     "evidence": "mark fathah: 34u outside its line band",
      "note": "",
      "sig": "a53a997d"
     },
@@ -1538,7 +1538,7 @@
      "text": "إِلَّا",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: 36u outside its line band",
+     "evidence": "mark fathah: 36u outside its line band",
      "note": "",
      "sig": "6fe4d669"
     },
@@ -1558,7 +1558,7 @@
      "text": "إِلَّآ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark fatha: 26u outside its line band",
+     "evidence": "mark fathah: 26u outside its line band",
      "note": "",
      "sig": "a5f28b75"
     },
@@ -1568,7 +1568,7 @@
      "text": "ٱلَّذِينَ",
      "tier": "certain",
      "status": "confirmed",
-     "evidence": "mark kasra: 16u outside its line band",
+     "evidence": "mark kasrah: 16u outside its line band",
      "note": "",
      "sig": "08815c9d"
     },
@@ -1578,7 +1578,7 @@
      "text": "أَنشَأۡنَٰهُنَّ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "width 0.50x 0.85; fatha 5/4 0.55",
+     "evidence": "width 0.50x 0.85; fathah 5/4 0.55",
      "note": "stole kasrah from the word above it",
      "sig": "774fcf08"
     },
@@ -1588,7 +1588,7 @@
      "text": "ٱجۡتَمَعُواْ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 3/2; damma 2/1; pause 1/0",
+     "evidence": "fathah 3/2; dammah 2/1; waqf 1/0",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1598,7 +1598,7 @@
      "text": "سَيِّئَةٞ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 4/2",
+     "evidence": "fathah 4/2",
      "note": "",
      "sig": "7861346e"
     },
@@ -1608,8 +1608,8 @@
      "text": "لَهُۥۖ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "ref-line; damma 0/1; small-waw 0/1; pause 0/1; width 0.55x",
-     "note": "the word before it stole له with the pause and diacrtics, and here it shows the waw and its fatha from the following word",
+     "evidence": "ref-line; dammah 0/1; small_waw 0/1; waqf 0/1; width 0.55x",
+     "note": "the word before it stole له with the waqf and diacrtics, and here it shows the waw and its fathah from the following word",
      "sig": "4e98cf3d"
     },
     {
@@ -1618,7 +1618,7 @@
      "text": "إِنَّهُۥ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "shadda 2/1; pause 1/0",
+     "evidence": "shaddah 2/1; waqf 1/0",
      "note": "",
      "sig": "488635b2"
     },
@@ -1629,7 +1629,7 @@
      "tier": "high",
      "status": "confirmed",
      "evidence": "width 2.69x",
-     "note": "missing its 2 fathas stonlen two form prev word",
+     "note": "missing its 2 fathahs stonlen two form prev word",
      "sig": "e1fa9595"
     },
     {
@@ -1638,7 +1638,7 @@
      "text": "وَءَابَآءَهُمۡ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 5/4",
+     "evidence": "fathah 5/4",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1648,7 +1648,7 @@
      "text": "يَعۡلَمُ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 3/2",
+     "evidence": "fathah 3/2",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1658,7 +1658,7 @@
      "text": "ظِلَٰلُهُۥ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 2/1; width 1.81x",
+     "evidence": "fathah 2/1; width 1.81x",
      "note": "has below it a lign that is a sajdah line above the word below it",
      "sig": "ab70bf3f"
     },
@@ -1668,7 +1668,7 @@
      "text": "يَحۡسَبُهُ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 3/2",
+     "evidence": "fathah 3/2",
      "note": "",
      "sig": "2fe5d0e6"
     },
@@ -1678,7 +1678,7 @@
      "text": "وَاقٖ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "width 0.47x; meem-iqlab",
+     "evidence": "width 0.47x; small_meem",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1688,7 +1688,7 @@
      "text": "جَآءَكَ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "width 0.47x; fatha 2/3",
+     "evidence": "width 0.47x; fathah 2/3",
      "note": "missing حا shape ( the dot is not missing )",
      "sig": "ab70bf3f"
     },
@@ -1698,7 +1698,7 @@
      "text": "كَيۡدَهُنَّۚ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "kasra 1/0; shadda 0/1; pause 0/1",
+     "evidence": "kasrah 1/0; shaddah 0/1; waqf 0/1",
      "note": "",
      "sig": "c9aca354"
     },
@@ -1718,7 +1718,7 @@
      "text": "وَٱلۡأَرۡضَ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 4/3",
+     "evidence": "fathah 4/3",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1728,8 +1728,8 @@
      "text": "أُوْلَٰٓئِكَ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "width 3.62x; fatha 1/2",
-     "note": "missing fatha at the end",
+     "evidence": "width 3.62x; fathah 1/2",
+     "note": "missing fathah at the end",
      "sig": "d8a48020"
     },
     {
@@ -1738,7 +1738,7 @@
      "text": "سَكَنَ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 4/3",
+     "evidence": "fathah 4/3",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1748,7 +1748,7 @@
      "text": "عَنۡهُمۡ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 2/1",
+     "evidence": "fathah 2/1",
      "note": "",
      "sig": "6bc41d0c"
     },
@@ -1758,7 +1758,7 @@
      "text": "يُؤَدِّهِۦٓ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 2/1; kasra 1/2",
+     "evidence": "fathah 2/1; kasrah 1/2",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1768,8 +1768,8 @@
      "text": "لَّمۡ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 2/1; width 1.86x",
-     "note": "extra fatha at the end",
+     "evidence": "fathah 2/1; width 1.86x",
+     "note": "extra fathah at the end",
      "sig": "aa262fef"
     },
     {
@@ -1778,7 +1778,7 @@
      "text": "أَسۡـَٔلُكُمۡ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 3/2",
+     "evidence": "fathah 3/2",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1788,7 +1788,7 @@
      "text": "أَلَمۡ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 3/2",
+     "evidence": "fathah 3/2",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1798,7 +1798,7 @@
      "text": "مَتَٰعُ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 3/2",
+     "evidence": "fathah 3/2",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1808,7 +1808,7 @@
      "text": "لِيَغۡفِرَ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 3/2",
+     "evidence": "fathah 3/2",
      "note": "",
      "sig": "2fe5d0e6"
     },
@@ -1818,7 +1818,7 @@
      "text": "وَرَبِّكُمۚ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 3/2",
+     "evidence": "fathah 3/2",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1828,7 +1828,7 @@
      "text": "بَيۡنَهُمۡ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 3/2",
+     "evidence": "fathah 3/2",
      "note": "",
      "sig": "2fe5d0e6"
     },
@@ -1838,7 +1838,7 @@
      "text": "مُسۡتَمِعُهُم",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "pause 1/0",
+     "evidence": "waqf 1/0",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1858,7 +1858,7 @@
      "text": "كَرِيمٍ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 2/1",
+     "evidence": "fathah 2/1",
      "note": "",
      "sig": "68af18bf"
     },
@@ -1868,7 +1868,7 @@
      "text": "ٱلسَّمَٰوَٰتِ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "kasra 2/1",
+     "evidence": "kasrah 2/1",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1878,7 +1878,7 @@
      "text": "ذَكَرَهُۥ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "damma 2/1",
+     "evidence": "dammah 2/1",
      "note": "",
      "sig": "59463192"
     },
@@ -1888,7 +1888,7 @@
      "text": "لَّهُمۡ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "fatha 2/1",
+     "evidence": "fathah 2/1",
      "note": "",
      "sig": "ab70bf3f"
     },
@@ -1898,7 +1898,7 @@
      "text": "بَارِدٖ",
      "tier": "high",
      "status": "confirmed",
-     "evidence": "shadda 1/0",
+     "evidence": "shaddah 1/0",
      "note": "stole the word before it with its diarctics لا",
      "sig": "c643b1f1"
     },
@@ -1909,7 +1909,7 @@
      "tier": "review",
      "status": "confirmed",
      "evidence": "width 2.88x",
-     "note": "stole kasra from next word",
+     "note": "stole kasrah from next word",
      "sig": "7d5e2fd3"
     },
     {
@@ -1919,7 +1919,7 @@
      "tier": "review",
      "status": "confirmed",
      "evidence": "width 2.87x",
-     "note": "stole kasra from prev word",
+     "note": "stole kasrah from prev word",
      "sig": "a6079a4d"
     },
     {
@@ -1929,7 +1929,7 @@
      "tier": "review",
      "status": "confirmed",
      "evidence": "width 2.20x",
-     "note": "stole fatha from prev word",
+     "note": "stole fathah from prev word",
      "sig": "58d52cb7"
     },
     {
@@ -1984,7 +1984,7 @@
      "key": "6:34:3",
      "text": "رُسُلٞ",
      "tier": "high",
-     "evidence": "ref-line; damma 3/2; dammatan 0/1",
+     "evidence": "ref-line; dammah 3/2; tanwin_al_damm 0/1",
      "status": "no-issue",
      "note": "overturns the old reference-confirmed line error",
      "sig": "9986982b"
@@ -2054,7 +2054,7 @@
      "key": "11:56:8",
      "text": "مِن",
      "tier": "high",
-     "evidence": "ref-line; kasra 0/1",
+     "evidence": "ref-line; kasrah 0/1",
      "status": "confirmed",
      "note": "",
      "sig": "4e98cf3d"
@@ -2064,7 +2064,7 @@
      "key": "24:4:2",
      "text": "يَرۡمُونَ",
      "tier": "high",
-     "evidence": "ref-line; fatha 1/2",
+     "evidence": "ref-line; fathah 1/2",
      "status": "confirmed",
      "note": "",
      "sig": "4e98cf3d"
@@ -2074,7 +2074,7 @@
      "key": "56:44:1",
      "text": "لَّا",
      "tier": "high",
-     "evidence": "ref-line; shadda 0/1",
+     "evidence": "ref-line; shaddah 0/1",
      "status": "confirmed",
      "note": "",
      "sig": "4e98cf3d"
@@ -2084,7 +2084,7 @@
      "key": "58:7:39",
      "text": "بِمَا",
      "tier": "high",
-     "evidence": "ref-line; kasra 0/1",
+     "evidence": "ref-line; kasrah 0/1",
      "status": "confirmed",
      "note": "one of the four reference-confirmed line errors — re-confirmed",
      "sig": "4e98cf3d"
@@ -2094,7 +2094,7 @@
      "key": "58:7:1",
      "text": "أَلَمۡ",
      "tier": "high",
-     "evidence": "fatha 3/2",
+     "evidence": "fathah 3/2",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -2114,16 +2114,16 @@
   {
    "date": "2026-08-26",
    "reviewer": "Abdullah",
-   "scope": "round 7: the pause family — signs drawn but not marked, or marked but not drawn",
+   "scope": "round 7: the waqf family — signs drawn but not marked, or marked but not drawn",
    "verdicts": [
     {
      "page": 114,
      "key": "5:41:16",
      "text": "قُلُوبُهُمْۛ",
      "tier": "high",
-     "evidence": "pause 2/1",
+     "evidence": "waqf 2/1",
      "status": "confirmed",
-     "note": "pause exist visual but not marked",
+     "note": "waqf exist visual but not marked",
      "sig": "ab70bf3f"
     },
     {
@@ -2131,7 +2131,7 @@
      "key": "5:25:12",
      "text": "ٱلْقَوْمِ",
      "tier": "high",
-     "evidence": "pause 1/0",
+     "evidence": "waqf 1/0",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -2141,7 +2141,7 @@
      "key": "2:255:32",
      "text": "خَلْفَهُمْۖ",
      "tier": "high",
-     "evidence": "pause 0/1",
+     "evidence": "waqf 0/1",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -2151,9 +2151,9 @@
      "key": "2:285:23",
      "text": "وَأَطَعْنَاۖ",
      "tier": "high",
-     "evidence": "pause 0/1",
+     "evidence": "waqf 0/1",
      "status": "confirmed",
-     "note": "pause exist visual but not marked",
+     "note": "waqf exist visual but not marked",
      "sig": "ab70bf3f"
     },
     {
@@ -2161,7 +2161,7 @@
      "key": "4:81:12",
      "text": "تَقُولُۖ",
      "tier": "high",
-     "evidence": "pause 0/1",
+     "evidence": "waqf 0/1",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -2171,7 +2171,7 @@
      "key": "5:26:6",
      "text": "سَنَةًۛ",
      "tier": "high",
-     "evidence": "pause 0/1",
+     "evidence": "waqf 0/1",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -2181,7 +2181,7 @@
      "key": "7:160:32",
      "text": "وَٱلسَّلْوَىٰۖ",
      "tier": "high",
-     "evidence": "pause 0/1",
+     "evidence": "waqf 0/1",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -2191,7 +2191,7 @@
      "key": "29:26:3",
      "text": "لُوطٌۘ",
      "tier": "high",
-     "evidence": "pause 0/1",
+     "evidence": "waqf 0/1",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -2201,7 +2201,7 @@
      "key": "46:8:22",
      "text": "وَبَيْنَكُمْۖ",
      "tier": "high",
-     "evidence": "pause 0/1",
+     "evidence": "waqf 0/1",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -2211,7 +2211,7 @@
      "key": "46:19:4",
      "text": "عَمِلُوا۟ۖ",
      "tier": "high",
-     "evidence": "pause 0/1",
+     "evidence": "waqf 0/1",
      "status": "confirmed",
      "note": "",
      "sig": "ab70bf3f"
@@ -2221,7 +2221,7 @@
      "key": "52:37:7",
      "text": "ٱلْمُصَۜيْطِرُونَ",
      "tier": "high",
-     "evidence": "pause 0/1",
+     "evidence": "waqf 0/1",
      "status": "confirmed",
      "note": "missing small seen below it",
      "sig": "ab70bf3f"
@@ -2270,7 +2270,7 @@
      "key": "14:39:5",
      "text": "لِي",
      "status": "reopened",
-     "note": "still steals the hamza from the word above",
+     "note": "still steals the hamzah from the word above",
      "sig": "ab70bf3f"
     },
     {
@@ -2286,7 +2286,7 @@
      "key": "42:23:12",
      "text": "أَسْـَٔلُكُمْ",
      "status": "reopened",
-     "note": "stole a fatha from the word below it",
+     "note": "stole a fathah from the word below it",
      "sig": "ab70bf3f"
     }
    ]
@@ -2538,7 +2538,7 @@
      "page": 267,
      "key": "16:2:11",
      "status": "confirmed",
-     "note": "stole kasra from the word below it and missing its fataha",
+     "note": "stole kasrah from the word below it and missing its fataha",
      "sig": "43857b79"
     },
     {
@@ -2573,7 +2573,7 @@
      "page": 531,
      "key": "54:51:6",
      "status": "confirmed",
-     "note": "stole fatha from the word above, and missing its fatha above the د shadda",
+     "note": "stole fathah from the word above, and missing its fathah above the د shaddah",
      "sig": "34e078aa"
     },
     {
@@ -2629,7 +2629,7 @@
      "page": 418,
      "key": "33:3:2",
      "status": "confirmed",
-     "note": "missing its 2 fathas stolen from prev word",
+     "note": "missing its 2 fathahs stolen from prev word",
      "sig": "e1fa9595"
     },
     {
@@ -2650,7 +2650,7 @@
      "page": 499,
      "key": "45:8:10",
      "status": "confirmed",
-     "note": "extra fatha at the end",
+     "note": "extra fathah at the end",
      "sig": "aa262fef"
     },
     {
@@ -2664,7 +2664,7 @@
      "page": 129,
      "key": "6:17:12",
      "status": "confirmed",
-     "note": "extra fatha (or kasra from word above) + stole haa letter and kasra below it from the word below",
+     "note": "extra fathah (or kasrah from word above) + stole haa letter and kasrah below it from the word below",
      "sig": "d7e8d417"
     },
     {
@@ -2699,7 +2699,7 @@
      "page": 44,
      "key": "2:262:15",
      "status": "reopened",
-     "note": "not fixed, has extra fatha at the end",
+     "note": "not fixed, has extra fathah at the end",
      "sig": "ab70bf3f"
     },
     {
@@ -2727,21 +2727,21 @@
      "page": 260,
      "key": "14:39:5",
      "status": "reopened",
-     "note": "still steals hamza+kasratan from the word above",
+     "note": "still steals hamzah+tanwin_al_kasr from the word above",
      "sig": "ab70bf3f"
     },
     {
      "page": 341,
      "key": "22:73:18",
      "status": "confirmed",
-     "note": "word before stole له with pause and diacritics; shows waw+fatha from following word",
+     "note": "word before stole له with waqf and diacritics; shows waw+fathah from following word",
      "sig": "4e98cf3d"
     },
     {
      "page": 350,
      "key": "24:3:9",
      "status": "confirmed",
-     "note": "stole a far away fatha",
+     "note": "stole a far away fathah",
      "sig": "4e98cf3d"
     },
     {
@@ -2790,21 +2790,21 @@
      "page": 122,
      "key": "5:89:21",
      "status": "confirmed",
-     "note": "stole kasra from next word",
+     "note": "stole kasrah from next word",
      "sig": "7d5e2fd3"
     },
     {
      "page": 123,
      "key": "5:95:27",
      "status": "confirmed",
-     "note": "stole kasra from prev word",
+     "note": "stole kasrah from prev word",
      "sig": "a6079a4d"
     },
     {
      "page": 133,
      "key": "6:47:8",
      "status": "confirmed",
-     "note": "stole fatha from prev word",
+     "note": "stole fathah from prev word",
      "sig": "58d52cb7"
     },
     {
@@ -2846,7 +2846,7 @@
      "page": 599,
      "key": "98:6:13",
      "status": "confirmed",
-     "note": "missing fatha at the end",
+     "note": "missing fathah at the end",
      "sig": "d8a48020"
     },
     {
@@ -2867,7 +2867,7 @@
      "page": 49,
      "key": "2:285:23",
      "status": "confirmed",
-     "note": "pause exists visually but not marked",
+     "note": "waqf exists visually but not marked",
      "sig": "ab70bf3f"
     },
     {
@@ -2888,21 +2888,21 @@
      "page": 63,
      "key": "3:108:6",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it",
+     "note": "stole صلى waqf from the word above it",
      "sig": "ab70bf3f"
     },
     {
      "page": 64,
      "key": "3:115:6",
      "status": "confirmed",
-     "note": "stole صلى pause from the word above it",
+     "note": "stole صلى waqf from the word above it",
      "sig": "ab70bf3f"
     },
     {
      "page": 71,
      "key": "3:161:6",
      "status": "confirmed",
-     "note": "extra fatha or kasrah at top stolen from the word above",
+     "note": "extra fathah or kasrah at top stolen from the word above",
      "sig": "ab70bf3f"
     },
     {
@@ -2930,7 +2930,7 @@
      "page": 114,
      "key": "5:41:16",
      "status": "confirmed",
-     "note": "pause exists visually but not marked",
+     "note": "waqf exists visually but not marked",
      "sig": "ab70bf3f"
     },
     {
@@ -2944,7 +2944,7 @@
      "page": 222,
      "key": "11:12:15",
      "status": "confirmed",
-     "note": "stole hamza from the word below",
+     "note": "stole hamzah from the word below",
      "sig": "ab70bf3f"
     },
     {
@@ -2965,14 +2965,14 @@
      "page": 234,
      "key": "11:116:25",
      "status": "confirmed",
-     "note": "stole kasra from the word below it",
+     "note": "stole kasrah from the word below it",
      "sig": "ab70bf3f"
     },
     {
      "page": 254,
      "key": "13:37:7",
      "status": "confirmed",
-     "note": "no dot seen; 3 fathas + one sukun",
+     "note": "no dot seen; 3 fathahs + one sukun",
      "sig": "ab70bf3f"
     },
     {
@@ -3014,14 +3014,14 @@
      "page": 350,
      "key": "24:3:10",
      "status": "confirmed",
-     "note": "extra fatha stolen from the prev word",
+     "note": "extra fathah stolen from the prev word",
      "sig": "ab70bf3f"
     },
     {
      "page": 371,
      "key": "26:97:4",
      "status": "confirmed",
-     "note": "stole a kasra far far away",
+     "note": "stole a kasrah far far away",
      "sig": "ab70bf3f"
     },
     {
@@ -3147,7 +3147,7 @@
      "page": 267,
      "key": "16:2:11",
      "status": "confirmed",
-     "note": "stole kasra from the word below it and missing its fataha",
+     "note": "stole kasrah from the word below it and missing its fataha",
      "sig": "43857b79"
     },
     {
@@ -3161,7 +3161,7 @@
      "page": 531,
      "key": "54:51:6",
      "status": "confirmed",
-     "note": "stole fatha from the word above, and missing it fatha above the د shadda",
+     "note": "stole fathah from the word above, and missing it fathah above the د shaddah",
      "sig": "34e078aa"
     },
     {
@@ -3210,7 +3210,7 @@
      "page": 129,
      "key": "6:17:12",
      "status": "confirmed",
-     "note": "extra fatha after it (or kasra from word above) + stole haa letter and kasra below it from word below",
+     "note": "extra fathah after it (or kasrah from word above) + stole haa letter and kasrah below it from word below",
      "sig": "d7e8d417"
     },
     {
@@ -3224,7 +3224,7 @@
      "page": 418,
      "key": "33:3:2",
      "status": "confirmed",
-     "note": "missing its 2 fathas stolen from prev word",
+     "note": "missing its 2 fathahs stolen from prev word",
      "sig": "8a1b2ec7"
     },
     {
@@ -3252,7 +3252,7 @@
      "page": 44,
      "key": "2:262:15",
      "status": "reopened",
-     "note": "not fixed has extra fatha at the end",
+     "note": "not fixed has extra fathah at the end",
      "sig": "ab70bf3f"
     },
     {
@@ -3280,21 +3280,21 @@
      "page": 260,
      "key": "14:39:5",
      "status": "reopened",
-     "note": "stole hamza+kasratan from the word above",
+     "note": "stole hamzah+tanwin_al_kasr from the word above",
      "sig": "ab70bf3f"
     },
     {
      "page": 341,
      "key": "22:73:18",
      "status": "confirmed",
-     "note": "the word before it stole له with the pause and diacritics; shows waw+fatha from following word",
+     "note": "the word before it stole له with the waqf and diacritics; shows waw+fathah from following word",
      "sig": "4e98cf3d"
     },
     {
      "page": 350,
      "key": "24:3:9",
      "status": "confirmed",
-     "note": "stole a far away fatha",
+     "note": "stole a far away fathah",
      "sig": "4e98cf3d"
     },
     {
@@ -3364,7 +3364,7 @@
      "page": 122,
      "key": "5:89:21",
      "status": "confirmed",
-     "note": "stole kasra from next word",
+     "note": "stole kasrah from next word",
      "sig": "ab70bf3f"
     },
     {
@@ -3378,7 +3378,7 @@
      "page": 123,
      "key": "5:95:27",
      "status": "confirmed",
-     "note": "stole kasra from prev word",
+     "note": "stole kasrah from prev word",
      "sig": "ab70bf3f"
     },
     {
@@ -3441,7 +3441,7 @@
      "page": 499,
      "key": "45:8:10",
      "status": "confirmed",
-     "note": "extra fatha at the end",
+     "note": "extra fathah at the end",
      "sig": "ab70bf3f"
     },
     {
@@ -3532,14 +3532,14 @@
      "page": 599,
      "key": "98:6:13",
      "status": "confirmed",
-     "note": "missing fatha at the end",
+     "note": "missing fathah at the end",
      "sig": "ab70bf3f"
     },
     {
      "page": 133,
      "key": "6:47:8",
      "status": "confirmed",
-     "note": "stole fatha from prev word",
+     "note": "stole fathah from prev word",
      "sig": "58d52cb7"
     },
     {

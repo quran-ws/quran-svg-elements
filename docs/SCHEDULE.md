@@ -21,12 +21,12 @@ Two things that are wrong in the product and change DATA, not shape.
 - Must establish whether the DigitalKhatt layout DB is wrong or our reading of
   it is, with evidence.
 
-## 2. Ayah-marker linking — **SCHEMA CHANGE**
+## 2. Ayah-mark linking — **SCHEMA CHANGE**
 Decided with Abdullah: an ayah is emitted once per LINE, so it is not a
 subtree and nesting cannot express the relation. Link instead:
-- stable `id` on each `<g class="ayah-marker">` (e.g. `mk-2-6`)
-- `data-marker="mk-2-6"` on every `<g class="ayah">` fragment
-- `data-ayah-parts="N"` / `data-part="i"` so a consumer knows an ayah is split
+- stable `id` on each `<g class="ayah-mark">` (e.g. `mk-2-6`)
+- `data-mark="mk-2-6"` on every `<g class="ayah-fragment">` fragment
+- `data-ayah-fragments="N"` / `data-part="i"` so a consumer knows an ayah is split
 - the same relation as a record in the phase-1 annotation graph
 **Zero ink moves**, so the numeral cannot drift and pixel identity is untouched
 — which also dissolves the earlier question about re-centring the medallion.
@@ -43,7 +43,7 @@ measured on real pages.
 **Also decided (Abdullah 2026-08-30 00:07): DROP `class="ayahPolygon"` from the
 production profile, keep it in dev.** They were how ayah highlighting and
 click-detection worked before there were word elements. Word level supersedes
-both: a click lands on a word path and walks up to `<g class="ayah" data-aid>`
+both: a click lands on a word path and walks up to `<g class="ayah-fragment" data-aid>`
 — which also says WHICH WORD, something the polygon never could — and
 `[data-aid="2:6"]` selects every fragment for styling.
 Measured cost if kept: 6,236 paths, 1.23 MiB, **0.27% of the corpus** — so this
@@ -91,7 +91,7 @@ ayah-crop proof of concept already computes that union without polygons.
 
 ## 4. Refresh `docs/shipping/FORMAT.md`
 Already 930 lines and already stale — it has no `data-search` (added 23:40).
-After steps 2 and 3 it also needs: the marker-link attributes, BOTH profiles
+After steps 2 and 3 it also needs: the mark-link attributes, BOTH profiles
 described, and the corrected header counts from step 1.
 
 ## 5. Build the demo site

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Full-mushaf element snapshot and diff, keyed by CONTENT, never by data-eid.
+"""Full-mushaf element snapshot and diff, keyed by CONTENT, never by data-element-id.
 
 The handoff's rule 5: "Full-mushaf element diff by (word key, kind, mark,
-d-string) — never by data-eid, which is NOT stable across builds."
+d-string) — never by data-element-id, which is NOT stable across builds."
 
 snapshot: writes one JSON per page holding, for every <path> in the emitted
 SVG, the tuple (owner group key, class of the enclosing group, data-kind,
@@ -12,7 +12,7 @@ diff: compares two snapshots and reports, separately,
   * elements present on one side only (multiset difference) — a REAL change,
   * elements whose group changed,
   * groups whose element ORDER changed (expected: the RTL re-order),
-  * group-attribute changes (expected: the wid/aid/sid collapse).
+  * group-attribute changes (expected: the word_key/aid/sid collapse).
 """
 import json
 import os
@@ -44,10 +44,10 @@ def page_records(pg):
             cls = a.get("class", "")
             # identity of the group, independent of the attribute renaming
             if cls == "word":
-                key = "word:" + (a.get("data-wid") or "%s:%s:%s" % (
+                key = "word:" + (a.get("data-word-key") or "%s:%s:%s" % (
                     a.get("data-surah"), a.get("data-ayah"), a.get("data-word")))
             elif cls == "ayah":
-                key = "ayah:" + (a.get("data-aid") or "%s:%s" % (
+                key = "ayah:" + (a.get("data-ayah-key") or "%s:%s" % (
                     a.get("data-surah"), a.get("data-ayah")))
             elif cls == "ligature":
                 key = "lig:" + a.get("data-text", "")
@@ -56,10 +56,10 @@ def page_records(pg):
             elif cls in ("surah-name", "basmalah"):
                 key = cls + ":" + (a.get("data-sid") or a.get("data-surah") or "")
             elif cls.endswith("-mark"):
-                key = cls + ":" + (a.get("data-aid") or "%s:%s" % (
+                key = cls + ":" + (a.get("data-ayah-key") or "%s:%s" % (
                     a.get("data-surah"), a.get("data-ayah")))
-            elif cls == "ayah-marker":
-                key = "marker:" + (a.get("data-aid") or "%s:%s" % (
+            elif cls == "ayah-mark":
+                key = "marker:" + (a.get("data-ayah-key") or "%s:%s" % (
                     a.get("data-surah"), a.get("data-ayah")))
             else:
                 key = cls

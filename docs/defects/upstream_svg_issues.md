@@ -8,7 +8,7 @@ by the finding and the resolution. The gate for the fixed items is
 
 ## 1. Pages 001 and 002: ayah markers duplicated and mis-attributed — FIXED
 
-**Report.** Every marker position carries two `ayah-marker` groups, ids are
+**Report.** Every marker position carries two `ayah-mark` groups, ids are
 shifted by one, later groups have no `id` / `data-aid`.
 
 **Finding.** The artwork itself draws every ornament of the opening spread
@@ -18,9 +18,9 @@ pairing took the first copy as a marker on its own; the position binding then
 gave the numeral's group the NEXT ayah's id. `FORMAT.md` had described the
 result as "12 decorative rosettes with no ayah". They are duplicates.
 
-**Resolution.** One `<g class="ayah-marker" id="mk-S-A" data-aid="S:A">` per
+**Resolution.** One `<g class="ayah-mark" id="mk-S-A" data-aid="S:A">` per
 ayah, ornament + numeral, ids correct. The second copy rides inside the same
-group as `<path data-kind="ayah-marker-ornament" data-duplicate="1">`. It is
+group as `<path data-kind="ayah_mark_ornament" data-duplicate="1">`. It is
 **not** dropped: two identical fills darken the anti-aliased rim by up to
 57/255 (measured: collapsing them moves 3,264 px on p1, 2,336 on p2), and
 pixel identity with the artwork is a gated invariant here. A consumer wanting
@@ -39,8 +39,8 @@ Raster diff against the artwork: identical. Word boxes in
 All four on p17, the only page whose artwork keeps page furniture outside
 `#content`: the page number ١٧ (two paths, 36 units below the bottom edge) and
 two running heads, الجزء الأول and سورة البقرة (45 units above the top edge).
-None of them renders. They are now `<g class="page-number">` /
-`<g class="running-head">` with `data-kind` of the same name on the paths, and
+None of them renders. They are now `<g class="page_number">` /
+`<g class="running_head">` with `data-kind` of the same name on the paths, and
 both kinds are in the taxonomy.
 
 ## 4. 72 `<path>` elements carry an inline `transform` — FIXED
@@ -63,12 +63,12 @@ never noisy; the saving is about 3% per page (25.7 KB of 900 KB on p36).
 
 ## 6. Per-word text forms repeated on every word group — FIXED
 
-The production profile now carries `data-wid` and `data-uthmani` only. `rasm`,
-`imlaei`, `search` and `qpc` ship once, in `index/by-page/NNN.json` (all five
+The production profile now carries `data-word-key` and `data-rasm-uthmani` only. `rasm`,
+`rasm_imlai`, `search` and `qpc` ship once, in `index/by-page/NNN.json` (all five
 forms, line, box) and `index/words.json` (the search key), built from the same
 cache and the same derivations as the dev profile's inline attributes; the
-bundle checker proves the sidecar's `uthmani` equals every page's
-`data-uthmani`. The dev profile keeps them inline (it is the review
+bundle checker proves the sidecar's `rasm_uthmani` equals every page's
+`data-rasm-uthmani`. The dev profile keeps them inline (it is the review
 instrument). The shipping library reads inline first, sidecar second
 (`createLoader({words: true})`, `page.attachWords()`).
 

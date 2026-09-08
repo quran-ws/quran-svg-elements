@@ -1,10 +1,10 @@
-/* markers.mjs — swappable, recolourable ayah end-markers.
+/* markers.mjs — swappable, recolourable ayah end-marks.
  *
  * The medallion at the end of an ayah is
  *
- *   <g class="ayah-marker" data-aid="2:256">
+ *   <g class="ayah-mark" data-ayah-key="2:256">
  *     <g transform="translate(…) scale(0.011 -0.011)">
- *       <path data-kind="ayah-marker-ornament" d="…"/>   the RING
+ *       <path data-kind="ayah_mark_ornament" d="…"/>   the RING
  *     </g>
  *     … the numeral group …
  *   </g>
@@ -16,11 +16,11 @@
  *
  * ─── nothing is redistributed ───────────────────────────────────────────────
  *
- * No marker outline ships with this library. `loadMarkerSet()` takes a base URL
+ * No marker outline ships with this library. `loadMarkSet()` takes a base URL
  * and fetches `collection.json` and each marker SVG at runtime. The reference
  * set is
  *
- *   https://github.com/quranpedia/ayah-markers
+ *   https://github.com/quranpedia/ayah-marks
  *
  * whose outlines are traced from twenty type families and carry THOSE families'
  * licences, which differ from one another. Read `collection.json` — every
@@ -48,17 +48,17 @@
  *
  * so setting `--fill-base`, `--fill-1`, `--fill-2`, `--fill-3`, `--ink-base`,
  * `--ink-1` or `--ink-2` on ANY ancestor recolours the drawing with no
- * JavaScript at all. `colourAyahMarkers()` is a convenience over
+ * JavaScript at all. `colourAyahMarks()` is a convenience over
  * `element.style.setProperty`, nothing more. Each design uses only some of the
  * parts; `outline.parts` lists the ones it actually draws.
  */
 
-import { measured } from './core.mjs';
+import { whileRendered } from './core.mjs';
 
 const NS = 'http://www.w3.org/2000/svg';   /* core.mjs exports SVGNS; the flat
    global build puts every module in one scope, so the name must be local */
 
-/* one MarkerSet per base URL, so two consumers share the fetches */
+/* one MarkSet per base URL, so two consumers share the fetches */
 const SETS = new Map();
 
 /* the original ring of every marker group we have touched */
@@ -70,7 +70,7 @@ const ORIGINALS = new WeakMap();
  * Load a marker set's index. Fetches `collection.json` once; the outlines
  * themselves are fetched lazily, on first use of each.
  *
- *   const set = await loadMarkerSet('https://example.org/ayah-markers/');
+ *   const set = await loadMarkSet('https://example.org/ayah-marks/');
  *   set.list()                       // [{id, family, weight, sources, …}, …]
  *   await set.outline('017-regular') // {viewBox, box, parts, number, …}
  *
@@ -81,7 +81,7 @@ const ORIGINALS = new WeakMap();
  * @param fetch    an override, for tests or for a caller with its own client
  * @param cache    false to bypass the per-URL cache (a retry after a failure)
  */
-export function loadMarkerSet(baseUrl, { fetch: f = null, cache = true } = {}) {
+export function loadMarkSet(baseUrl, { fetch: f = null, cache = true } = {}) {
   const base = String(baseUrl || '').replace(/\/?$/, '/');
   if (cache && SETS.has(base)) return SETS.get(base);
 
@@ -115,7 +115,7 @@ export function loadMarkerSet(baseUrl, { fetch: f = null, cache = true } = {}) {
           license: s.license }))
       };
     });
-    return new MarkerSet(base, records, fetcher);
+    return new MarkSet(base, records, fetcher);
   })();
 
   if (cache) {
@@ -125,7 +125,7 @@ export function loadMarkerSet(baseUrl, { fetch: f = null, cache = true } = {}) {
   return p;
 }
 
-class MarkerSet {
+class MarkSet {
   constructor(base, records, fetcher) {
     this.baseUrl = base;
     this.name = null;
@@ -193,7 +193,7 @@ export function readOutline(svgText, rec = {}) {
      getBBox() is meaningless on a detached, unrendered tree. */
   const probe = document.createElementNS(NS, 'svg');
   for (const g of groups) probe.appendChild(document.importNode(g, true));
-  const box = measured(probe, () => {
+  const box = whileRendered(probe, () => {
     const b = probe.getBBox();
     return { x: b.x, y: b.y, w: b.width, h: b.height };
   });
@@ -249,7 +249,7 @@ export function numberCentre(outline) {
  * transform is written in.
  */
 function numeralCentreIn(group, host) {
-  const num = group.querySelector('[data-kind="ayah-number"]');
+  const num = group.querySelector('[data-kind="ayah_number"]');
   if (!num || !host || !num.getScreenCTM || !host.getScreenCTM) return null;
   const b = num.getBBox();
   if (!(b.width > 0 && b.height > 0)) return null;
@@ -271,7 +271,7 @@ function numeralCentreIn(group, host) {
  * design's OWN number-centre lands on the printed numeral, and scaled from the
  * box the ring occupied.
  *
- * Only `g.ayah-marker[data-aid]` groups are touched. Since 2026-09-04 that is
+ * Only `g.ayah-mark[data-ayah-key]` groups are touched. Since 2026-09-04 that is
  * every marker; page files built before it carried 12 id-less groups on pages
  * 1-2 ("decorative rosettes" — in fact the artwork's doubled rings), and
  * `decorative: true` includes those. On current pages the doubled ring sits
@@ -284,14 +284,14 @@ function numeralCentreIn(group, host) {
  * @param colours  {part: colour} — sets upstream's --<part> variables on the page
  * @returns {count, remove()} — remove() restores the printed rings exactly
  */
-export function setAyahMarker(page, outline, {
+export function setAyahMark(page, outline, {
   target = 'page', size = 1, colours = null,
   decorative = false, anchorOnNumber = true
 } = {}) {
   if (!outline || !Array.isArray(outline.groups))
-    throw new TypeError('setAyahMarker needs an outline from set.outline(id)');
+    throw new TypeError('setAyahMark needs an outline from set.outline(id)');
 
-  const groups = markerGroups(page, target, decorative);
+  const groups = markGroups(page, target, decorative);
   const undo = [];
   let swapped = 0;
 
@@ -299,7 +299,7 @@ export function setAyahMarker(page, outline, {
     const ring = currentRing(g);
     if (!ring) continue;
 
-    const box = measured(page.el, () => bboxOf(ring));
+    const box = whileRendered(page.el, () => bboxOf(ring));
     if (!(box.w > 0 && box.h > 0)) continue;
     if (!ORIGINALS.has(g)) ORIGINALS.set(g, { ring, parent: ring.parentNode, next: ring.nextSibling });
 
@@ -315,7 +315,7 @@ export function setAyahMarker(page, outline, {
     // box centre on the join, and box-centring would hang the disc above the
     // number instead of around it.
     const anchor = anchorOnNumber
-      ? measured(page.el, () => numeralCentreIn(g, ring.parentNode))
+      ? whileRendered(page.el, () => numeralCentreIn(g, ring.parentNode))
       : null;
 
     const swap = buildSwap(outline, box, size, anchor);
@@ -328,14 +328,14 @@ export function setAyahMarker(page, outline, {
     // The presentation attribute, not el.style: once Chrome's inline-style
     // object has been touched, removing the attribute still serialises an
     // empty style="", and remove() must give the group back byte for byte.
-    for (const c of g.querySelectorAll('[data-kind="ayah-marker-ornament"][data-duplicate]')) {
+    for (const c of g.querySelectorAll('[data-kind="ayah_mark_ornament"][data-duplicate]')) {
       const prev = c.getAttribute('display');
       c.setAttribute('display', 'none');
       undo.push(() => prev == null ? c.removeAttribute('display') : c.setAttribute('display', prev));
     }
   }
 
-  const paint = colours ? colourAyahMarkers(page, colours) : null;
+  const paint = colours ? colourAyahMarks(page, colours) : null;
 
   return {
     count: swapped,
@@ -349,12 +349,12 @@ export function setAyahMarker(page, outline, {
 }
 
 /** Put every printed ring back, exactly as it was drawn. */
-export function resetAyahMarkers(page, { decorative = true } = {}) {
+export function resetAyahMarks(page, { decorative = true } = {}) {
   let n = 0;
-  for (const g of markerGroups(page, 'page', decorative)) {
+  for (const g of markGroups(page, 'page', decorative)) {
     const rec = ORIGINALS.get(g);
     if (!rec) continue;
-    const swap = g.querySelector('g.ayah-marker-swap');
+    const swap = g.querySelector('g.ayah-mark-swap');
     if (!swap) continue;
     swap.replaceWith(rec.ring);
     n++;
@@ -363,8 +363,8 @@ export function resetAyahMarkers(page, { decorative = true } = {}) {
 }
 
 /** Is this page showing a swapped marker? */
-export function hasSwappedMarkers(page) {
-  return !!page.el.querySelector('g.ayah-marker-swap');
+export function hasSwappedMarks(page) {
+  return !!page.el.querySelector('g.ayah-mark-swap');
 }
 
 /**
@@ -375,7 +375,7 @@ export function hasSwappedMarkers(page) {
  * they reach every medallion at once. A stylesheet setting them on any ancestor
  * does exactly the same thing with no JavaScript.
  */
-export function colourAyahMarkers(page, colours = {}) {
+export function colourAyahMarks(page, colours = {}) {
   const el = page.el, prev = [];
   for (const part in colours) {
     const name = '--' + part;
@@ -388,19 +388,19 @@ export function colourAyahMarkers(page, colours = {}) {
 
 /* ------------------------------------------------------------- internals */
 
-function markerGroups(page, target, decorative) {
-  const sel = decorative ? 'g.ayah-marker' : 'g.ayah-marker[data-aid]';
+function markGroups(page, target, decorative) {
+  const sel = decorative ? 'g.ayah-mark' : 'g.ayah-mark[data-ayah-key]';
   if (target == null || target === 'page' || target === '*')
     return [...page.el.querySelectorAll(sel)];
   const keys = new Set((Array.isArray(target) ? target : [target]).map(
-    t => typeof t === 'string' ? t : (t && t.aid) || null).filter(Boolean));
-  return [...page.el.querySelectorAll(sel)].filter(g => keys.has(g.dataset.aid));
+    t => typeof t === 'string' ? t : (t && t.ayahKey) || null).filter(Boolean));
+  return [...page.el.querySelectorAll(sel)].filter(g => keys.has(g.dataset.ayahKey));
 }
 
 /* The ring, or the group that stands in its place. */
 function currentRing(g) {
-  return g.querySelector('[data-kind="ayah-marker-ornament"]:not([data-duplicate])') ||
-         g.querySelector('g.ayah-marker-swap');
+  return g.querySelector('[data-kind="ayah_mark_ornament"]:not([data-duplicate])') ||
+         g.querySelector('g.ayah-mark-swap');
 }
 
 function bboxOf(el) {
@@ -425,9 +425,9 @@ const round4 = (v, d = 4) => Number(v.toFixed(d));
 
 function buildSwap(outline, box, size, anchor = null) {
   const g = document.createElementNS(NS, 'g');
-  g.setAttribute('class', 'ayah-marker-swap');
-  g.setAttribute('data-marker', outline.id || '');
-  g.setAttribute('data-kind', 'ayah-marker-ornament');
+  g.setAttribute('class', 'ayah-mark-swap');
+  g.setAttribute('data-mark', outline.id || '');
+  g.setAttribute('data-kind', 'ayah_mark_ornament');
 
   // Scale comes from the ring's box either way — the replacement should read
   // at the size the printed medallion did. Only the POSITION differs: with an

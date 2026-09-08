@@ -15,8 +15,8 @@ The checks, in order, each one a hard failure:
  5. index/pages.json covers pages 1..604 exactly once;
  6. the corpus word count matches VERSION.json and the sum over the sidecars;
  7. every .svg.br / .svg.gz decompresses to exactly its raw sibling;
- 8. CROSS-REFERENCE: every data-wid in the index resolves to a <g class="word">
-    with that wid in the page the index names, and the page has no word the
+ 8. CROSS-REFERENCE: every data-word-key in the index resolves to a <g class="word">
+    with that word_key in the page the index names, and the page has no word the
     index lacks. Sampled by default, --full for all 604 pages;
  9. the SVG's own word text matches the index's, on the sampled pages.
 
@@ -36,8 +36,9 @@ except ImportError:
     brotli = None
 
 EXPECT_PAGES = 604
-EXPECT_WORDS = 77433      # 77,432 + the 37:130 split the print makes (docs/MAQTU-MAWSUL.md, 2026-08-31)
-EXPECT_GLOBAL_WORDS = 77432   # ids in the word-by-word source (docs/HAFS-JSON-SOURCE.md)
+EXPECT_WORDS = 77432      # the word-by-word-translation-translation release's own count: the 37:130
+                          # split the print makes, and 15:7 fused to match the
+                          # release (docs/MAQTU-MAWSUL.md, 2026-09-08)
 EXPECT_SURAHS = 114
 
 _FAIL = []
@@ -179,31 +180,34 @@ def check_indexes(bundle):
     words = load(bundle, "index/words.json")
     check("words.json has %d rows" % EXPECT_WORDS,
           len(words["rows"]) == EXPECT_WORDS, "%d" % len(words["rows"]))
-    check("words.json wids are unique",
+    check("words.json word ids are unique",
           len({r[0] for r in words["rows"]}) == len(words["rows"]))
     check("words.json declares its fields",
-          words.get("fields") == ["wid", "w", "page", "line", "uthmani", "search"],
+          words.get("fields") == ["word_key", "page", "line", "rasm_uthmani", "search"],
           str(words.get("fields")))
 
     total = 0
     boxes = 0
-    gw = []
+    keys = []
     for p in range(1, EXPECT_PAGES + 1):
         d = load(bundle, "index/by-page/%03d.json" % p)
         total += len(d["words"])
         boxes += sum(1 for w in d["words"] if w["box"])
-        gw += [w.get("w") for w in d["words"]]
+        keys += [w.get("word_key") for w in d["words"]]
     check("sidecars hold %d words in total" % EXPECT_WORDS,
           total == EXPECT_WORDS, "%d" % total)
     check("every word has a bounding box", boxes == total,
           "%d of %d" % (boxes, total))
-    check("every word has an integer global word id (w)",
-          all(isinstance(x, int) and x > 0 for x in gw),
-          "%d without" % sum(1 for x in gw if not isinstance(x, int)))
-    # 77,432 ids in the word-by-word source; our 77,433 groups map onto all
-    # of them, the two pieces of 15:7 لَّوْ مَا sharing one (build_wbw_map.py)
-    check("global word ids cover the source's %d ids" % EXPECT_GLOBAL_WORDS,
-          len(set(gw)) == EXPECT_GLOBAL_WORDS, "%d distinct" % len(set(gw)))
+    # surah:ayah:word is the only word key, so it must be well formed and
+    # unique across the corpus — nothing else identifies a word now
+    check("every word has a surah:ayah:word key",
+          all(isinstance(x, str) and re.match(r"^\d+:\d+:\d+$", x)
+              for x in keys),
+          "%d malformed" % sum(1 for x in keys
+                               if not (isinstance(x, str)
+                                       and re.match(r"^\d+:\d+:\d+$", x))))
+    check("word keys are unique across the corpus",
+          len(set(keys)) == EXPECT_WORDS, "%d distinct" % len(set(keys)))
     check("pages.json word counts sum to the corpus",
           sum(p["words"] for p in pages["pages"]) == EXPECT_WORDS)
 
@@ -215,15 +219,15 @@ def check_indexes(bundle):
           json.dumps(v["counts"]))
 
     div = load(bundle, "index/divisions.json")
-    got = tuple(len(div[k]) for k in ("juz", "hizb", "nisf", "rub"))
+    got = tuple(len(div[k]) for k in ("juz", "hizb", "nisf", "rubu_al_hizb"))
     check("divisions: 30 juz, 60 hizb, 60 nisf, 240 rubʿ",
           got == (30, 60, 60, 240), "%d/%d/%d/%d" % got)
     check("division series are numbered 1..N with no gaps",
           all([r[k] for r in div[k]] == list(range(1, len(div[k]) + 1))
-              for k in ("juz", "hizb", "nisf", "rub")))
+              for k in ("juz", "hizb", "nisf", "rubu_al_hizb")))
     pages_of = {p["page"] for p in pages["pages"]}
     check("every division points at a real page",
-          all(r["page"] in pages_of for k in ("juz", "hizb", "nisf", "rub")
+          all(r["page"] in pages_of for k in ("juz", "hizb", "nisf", "rubu_al_hizb")
               for r in div[k]))
 
 
@@ -268,31 +272,31 @@ def check_crossrefs(bundle, sample):
         attrs = {}
         for m in _WORDG.finditer(svg):
             a = dict(re.findall(r'([\w-]+)="([^"]*)"', m.group(1)))
-            in_svg.append(a["data-wid"])
-            attrs[a["data-wid"]] = a
+            in_svg.append(a["data-word-key"])
+            attrs[a["data-word-key"]] = a
         idx_rows = by_page.get(p, [])
-        idx_wids = [r[col["wid"]] for r in idx_rows]
-        if set(idx_wids) - set(in_svg):
-            bad_missing.append((p, sorted(set(idx_wids) - set(in_svg))[:3]))
-        if set(in_svg) - set(idx_wids):
-            bad_extra.append((p, sorted(set(in_svg) - set(idx_wids))[:3]))
-        if idx_wids != in_svg:
+        idx_word_keys = [r[col["word_key"]] for r in idx_rows]
+        if set(idx_word_keys) - set(in_svg):
+            bad_missing.append((p, sorted(set(idx_word_keys) - set(in_svg))[:3]))
+        if set(in_svg) - set(idx_word_keys):
+            bad_extra.append((p, sorted(set(in_svg) - set(idx_word_keys))[:3]))
+        if idx_word_keys != in_svg:
             bad_order.append(p)
         side = load(bundle, "index/by-page/%03d.json" % p)
         for w in side["words"]:
-            a = attrs.get(w["wid"])
+            a = attrs.get(w["word_key"])
             if not a:
                 continue
-            # the SVG carries data-uthmani on every profile and the other four
+            # the SVG carries data-rasm-uthmani on every profile and the other four
             # forms on the dev profile only; compare whatever it carries
-            for f in ("uthmani", "rasm", "imlaei", "search", "qpc"):
+            for f in ("rasm_uthmani", "rasm", "rasm_imlai", "search", "qpc"):
                 if "data-" + f in a and a["data-" + f] != w[f]:
-                    bad_text.append((p, w["wid"], f))
-            for f in ("uthmani", "rasm", "imlaei", "search", "qpc"):
+                    bad_text.append((p, w["word_key"], f))
+            for f in ("rasm_uthmani", "rasm", "rasm_imlai", "search", "qpc"):
                 if not w.get(f):
-                    bad_forms.append((p, w["wid"], f))
+                    bad_forms.append((p, w["word_key"], f))
 
-    check("every index wid exists in its page", not bad_missing,
+    check("every index word_key exists in its page", not bad_missing,
           str(bad_missing[:2] or "none"))
     check("every page word is in the index", not bad_extra,
           str(bad_extra[:2] or "none"))
@@ -313,10 +317,10 @@ def check_boxes(bundle, sample):
         for w in d["words"]:
             b = w["box"]
             if not b or b[2] <= b[0] or b[3] <= b[1]:
-                bad.append((p, w["wid"], "degenerate"))
+                bad.append((p, w["word_key"], "degenerate"))
             elif not (vx - 1 <= b[0] and b[2] <= vx + vw + 1
                       and vy - 1 <= b[1] and b[3] <= vy + vh + 1):
-                bad.append((p, w["wid"], "outside viewBox"))
+                bad.append((p, w["word_key"], "outside viewBox"))
     check("word boxes are inside the page and non-degenerate", not bad,
           "%d pages; bad %s" % (len(sample), bad[:3] or "none"))
 
@@ -357,8 +361,8 @@ def check_boxes_rendered(bundle, sample, per_page=6, scale=8):
             vx, vy, vw, vh = [float(x) for x in side["view_box"].split()]
             for w in rng.sample(side["words"],
                                 min(per_page, len(side["words"]))):
-                css = ('<style>path{display:none} g.word[data-wid="%s"] '
-                       'path{display:inline}</style>' % w["wid"])
+                css = ('<style>path{display:none} g.word[data-word-key="%s"] '
+                       'path{display:inline}</style>' % w["word_key"])
                 with open(svg_out, "w", encoding="utf-8") as fh:
                     fh.write(svg.replace('<g transform="matrix',
                                          css + '<g transform="matrix', 1))
@@ -368,7 +372,7 @@ def check_boxes_rendered(bundle, sample, per_page=6, scale=8):
                 im = Image.open(png_out).convert("L")
                 bb = im.point(lambda p: 255 if p < 200 else 0).getbbox()
                 if not bb:
-                    bad.append((pg, w["wid"], "no ink rendered"))
+                    bad.append((pg, w["word_key"], "no ink rendered"))
                     continue
                 r = [bb[0] / scale + vx, bb[1] / scale + vy,
                      bb[2] / scale + vx, bb[3] / scale + vy]
@@ -376,7 +380,7 @@ def check_boxes_rendered(bundle, sample, per_page=6, scale=8):
                 n += 1
                 worst = max(worst, dev)
                 if dev > 0.35:
-                    bad.append((pg, w["wid"], round(dev, 3)))
+                    bad.append((pg, w["word_key"], round(dev, 3)))
     check("word boxes vs a real render", not bad,
           "%d words; worst deviation %.3f units; bad %s"
           % (n, worst, bad[:3] or "none"))
@@ -399,10 +403,10 @@ def check_profile(bundle, sample):
     check("production profile: no ayahPolygon paths", not poly, str(poly[:5]))
     # since 2026-09-04 the four derived text forms ship in the sidecar only
     forms = [p for p in sample
-             if re.search(r'<g class="word"[^>]*data-(rasm|imlaei|search|qpc)=',
+             if re.search(r'<g class="word"[^>]*data-(rasm|rasm_imlai|search|qpc)=',
                           open(os.path.join(bundle, "pages/%03d.svg" % p),
                                encoding="utf-8").read())]
-    check("production profile: word groups carry data-wid + data-uthmani only",
+    check("production profile: word groups carry data-word-key + data-rasm-uthmani only",
           not forms, str(forms[:5]))
     xf = [p for p in sample
           if re.search(r'<path\b[^>]*\btransform=',

@@ -200,7 +200,7 @@ def ours(pg, paths=False):
     def keyof(g):
         if g.get("class") != "word":
             return None
-        return g.get("data-wid") or ""
+        return g.get("data-word-key") or ""
 
     out = []
     root = ET.fromstring(svg)
@@ -229,7 +229,7 @@ def their_positions(root):
         if w.get("data-type") != "text":
             continue
         try:
-            sa = (int(w.get("data-surah")), int(w.get("data-aya")))
+            sa = (int(w.get("data-surah")), int(w.get("data-ayah")))
             idx = int(w.get("data-word-index-in-ayah"))
         except (TypeError, ValueError):
             continue

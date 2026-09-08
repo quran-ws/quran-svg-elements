@@ -17,7 +17,7 @@ cd ~/Dev/github.com/AbdullahObaid/quran-svg-work
 export QSVG_ROOT=$PWD
 python3 docs/demo/build_search_index.py     # ~20 s, 604 files in parallel
 python3 docs/demo/build_attrs.py            # ~1 s, the attribute measurement
-python3 docs/demo/build_timings.py          # word timings for the hero page
+python3 docs/demo/build_ayah_timings.py          # word timings for the hero page
 python3 docs/demo/build.py                  # fills in the cached timings
 python3 -m http.server 8778 --bind 127.0.0.1
 # http://127.0.0.1:8778/docs/demo/index.html
@@ -37,12 +37,12 @@ Port **8778**, not 8777 — `tools/review_server.py` owns 8777.
 | `build.py` | writes the gloss and inlines the cached timings → `index.html`. **Inlines no page.** |
 | `build_search_index.py` | mushaf-wide search index from the pages' own `data-search`. |
 | `build_attrs.py` | **every attribute in the corpus**, with counts and sample values. Feeds the reference table, which is no longer hand-maintained. |
-| `build_timings.py` | caches the hero page's word timings from quran.com. |
+| `build_ayah_timings.py` | caches the hero page's word timings from quran.com. |
 | `data/*.json` | search index (2.0 MiB), gloss (5 KB), timings (2 KB). |
 
 ### The hero page is 42
 
-Ayat al-Kursi across six printed lines, a juz/hizb/rubʿ boundary and a drawn
+Ayahs al-Kursi across six printed lines, a juz/hizb/rubʿ boundary and a drawn
 rosette. The hero button lights **the first ayah on the page**, read from the
 file (`2:253`, six fragments), never a hardcoded id.
 
@@ -74,7 +74,7 @@ combinations.
 into the browser: `getPage` already drops `path.ayahPolygon` for every page,
 and `heroReady` dissolves `g.ligature` on the hero only — the fetched pages
 keep theirs, because §"Two profiles" teaches detecting the dev profile by
-looking for that layer. And `data-eid`/`data-sig` are **no longer stripped**;
+looking for that layer. And `data-element-id`/`data-sig` are **no longer stripped**;
 that was a size saving for an inlined page and there is no inlined page. The
 demo is now closer to a file you would actually download, and the parenthetical
 in the reference tail that explained the stripping is gone.
@@ -139,7 +139,7 @@ per-word hit layer   the ONLY layer that takes the pointer
 ```
 
 `H.hitLayer(svg, stage, opts)` builds one absolutely-positioned span per word,
-carrying its real Unicode and `data-wid`, on that word's own box. It is HTML
+carrying its real Unicode and `data-word-key`, on that word's own box. It is HTML
 because native selection needs real text nodes, and that one construction then
 also serves hover, tap and click. §3, §7, §10 and §11 all use it.
 
@@ -222,7 +222,7 @@ Verified on p42/2:253: before, 6 `<rect>` children and visible seams; after, 1
 
 ## Bidi: isolate every Arabic run inside LTR UI
 
-Abdullah, on the ayah-number `<select>`: the ornate brackets faced outward.
+Abdullah, on the ayah_number `<select>`: the ornate brackets faced outward.
 
 **The characters were correct; the context was wrong.** U+FD3E / U+FD3F are
 direction-NEUTRAL, so inside an LTR control the bidi algorithm resolves them to
@@ -239,7 +239,7 @@ Applied at: the `<select>` options (character-level isolation, because CSS and
 `dir` are unreliable inside `<option>`), every lab readout (`out()` and `log()`
 wrap Arabic runs automatically — `log()` escapes first, so this is safe), the
 word tooltips in §10 and §11, the hero's text readout, the attribute table's
-sample values including `data-riwaya-name-ar`, and the mushaf-wide search's
+sample values including `data-riwayah-name-ar`, and the mushaf-wide search's
 no-match message.
 
 One deliberate exception: **the copy payload gets no isolates.** It is data
@@ -253,7 +253,7 @@ paragraph lay out left to right — which reverses the word order.
 ## The attribute table is generated, not maintained
 
 The old table listed **22 of 36** attributes and four (`data-hizb`, `data-juz`,
-`data-rub-in-hizb`, `data-mark-part`) appeared nowhere on the site. A section
+`data-rubu-al-hizb-in-hizb`, `data-mark-part`) appeared nowhere on the site. A section
 promising "every" and delivering 61% is worse than one that promises nothing.
 
 `build_attrs.py` scans all 604 pages (0.9 s wall, 32 workers) and writes
@@ -262,18 +262,18 @@ promising "every" and delivering 61% is worse than one that promises nothing.
 hand-written part, and an attribute with no note still gets a row saying so, so
 nothing can go missing by being forgotten. There is a scope filter, and a
 "production profile only" filter that hides `g.ligature`, `path.ayahPolygon`,
-`data-eid` and `data-sig`.
+`data-element-id` and `data-sig`.
 
 The nine new root `<svg>` identity attributes are all there, with a callout on
-the two subtle ones: the directory name is the **riwaya**, not the qiraa (Hafs
+the two subtle ones: the directory name is the **riwayah**, not the qiraah (Hafs
 and Shuʿbah both transmit ʿĀṣim), and **6,236 is a Hafs fact, not a Quran
-fact** — the Kufan count; Nāfiʿ's Madani count is 6,214.
+fact** — the Kufi count; Nāfiʿ's Madani count is 6,214.
 
-**`data-mark-family` is a space-separated token list.** `fathatan`/`kasratan`/
-`dammatan` carry `"diacritic tanween"`. All 14 exact-match selectors on the page
+**`data-mark-family` is a space-separated token list.** `tanwin_al_fath`/`tanwin_al_kasr`/
+`tanwin_al_damm` carry `"diacritic tanwin"`. All 14 exact-match selectors on the page
 were rewritten to `~=`, and §12 now teaches why: `=` looks like it works,
 because it still matches the six single-family marks, and drops the three
-tanween without an error.
+tanwin without an error.
 
 ## Two versions of every example, and a library section
 
@@ -373,7 +373,7 @@ makes `g.word` selectors *empty*, not *wrong*.
 Abdullah's call: keep the mechanism, frame it as an example. So §10 is now
 **"ربط أي بيانات تملكها بكل كلمة"** — joining any per-word data you already have —
 and the second paragraph leads with **«وما يظهر هنا مثال، لا ميزة»**: the gloss is
-word-by-word English from quran.com, chosen because it is open data anyone can
+word-by-word-translation-translation English from quran.com, chosen because it is open data anyone can
 check, and *the point is the join, not the language*. The SVGs ship no
 translations, and the page says so in both editions.
 
@@ -391,7 +391,7 @@ of the KFGQPC portal's own Arabic sentence; only the class name is a leftover fr
 the English edition. Nothing to translate; flagging it because the name misleads.
 
 **Two genuinely untranslated strings were found and fixed** while in there, both
-in §9's Arabic snippet: `'جارٍ الجلب ' + aid + ' from the CDN'` and a
+in §9's Arabic snippet: `'جارٍ الجلب ' + ayahKey + ' from the CDN'` and a
 `'Everything else on this page still works.'` inside an Arabic error message.
 
 ---

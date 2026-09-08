@@ -31,27 +31,35 @@ def span(els):
     return max(e["x2"] for e in els) - min(e["x1"] for e in els)
 
 CASES = {
-    # a bare word-final seated ء is the LETTER, not a hamza mark — the r11
-    # table label "hamza" must not survive the final ء reconciliation
-    (582, (78, 29, 2)): ("shay'in: no hamza MARK, ā seated as letter",
-        lambda e: not any(x.get("mark") == "hamza" for x in e)),
-    (591, (86, 11, 1)): ("wassamaa'i: no hamza MARK",
-        lambda e: not any(x.get("mark") == "hamza" for x in e)),
+    # a bare word-final seated ء is the LETTER, not a hamzah mark — the r11
+    # table label "hamzah" must not survive the final ء reconciliation
+    (582, (78, 29, 2)): ("shay'in: no hamzah MARK, ā seated as letter",
+        lambda e: not any(x.get("mark") == "hamzah" for x in e)),
+    (591, (86, 11, 1)): ("wassamaa'i: no hamzah MARK",
+        lambda e: not any(x.get("mark") == "hamzah" for x in e)),
+    # 15:7 لَّوْمَا is ONE word — the word-by-word-translation-translation release's boundary, taken
+    # 2026-09-08 (QSVG_WBWSEG, docs/MAQTU-MAWSUL.md). One group holding both
+    # halves' ink: two bodies (لو / ما, the joining rules unchanged) and all
+    # four marks of the pair.
+    (262, (15, 7, 1)): ("lawma is one word: 2 bodies, 4 marks",
+        lambda e: nbody(e) == 2 and sorted(
+            x.get("mark") for x in e if x["kind"] == "mark"
+            and not x.get("mkpart")) == ["fathah", "fathah", "shaddah", "sukun"]),
     (453, (38, 1, 3)): ("dhi has 2 bodies", lambda e: nbody(e) == 2),
-    (453, (38, 6, 12)): ("yuraad 3 bodies + 2 damma-family",
+    (453, (38, 6, 12)): ("yuraad 3 bodies + 2 dammah-family",
         lambda e: nbody(e) == 3 and sum(1 for x in e if x.get("mark") in
-                                        ("damma", "dammatan") and not x.get("mkpart")) == 2),
-    (454, (38, 23, 4)): ("lahu fatha+damma+small-waw",
-        lambda e: {"fatha", "damma", "small-waw"} <= {x.get("mark") for x in e}),
-    (133, (6, 47, 8)): ("aw 2 bodies with fatha",
-        lambda e: nbody(e) == 2 and any(x.get("mark") == "fatha" for x in e)),
+                                        ("dammah", "tanwin_al_damm") and not x.get("mkpart")) == 2),
+    (454, (38, 23, 4)): ("lahu fathah+dammah+small_waw",
+        lambda e: {"fathah", "dammah", "small_waw"} <= {x.get("mark") for x in e}),
+    (133, (6, 47, 8)): ("aw 2 bodies with fathah",
+        lambda e: nbody(e) == 2 and any(x.get("mark") == "fathah" for x in e)),
     (133, (6, 48, 10)): ("falaa 2 bodies", lambda e: nbody(e) == 2),
     (7, (2, 13, 8)): ("qaaluu 3 bodies", lambda e: nbody(e) == 3),
-    (7, (2, 13, 9)): ("a-nu'minu keeps hamza-alef", lambda e: nbody(e) >= 3),
-    (2, (2, 4, 7)): ("unzila p2 has its damma",
-        lambda e: any(x.get("mark") == "damma" for x in e)),
-    (3, (2, 12, 3)): ("hum p3 two dammas",
-        lambda e: sum(1 for x in e if x.get("mark") == "damma") == 2),
+    (7, (2, 13, 9)): ("a-nu'minu keeps hamzah-alef", lambda e: nbody(e) >= 3),
+    (2, (2, 4, 7)): ("unzila p2 has its dammah",
+        lambda e: any(x.get("mark") == "dammah" for x in e)),
+    (3, (2, 12, 3)): ("hum p3 two dammahs",
+        lambda e: sum(1 for x in e if x.get("mark") == "dammah") == 2),
     (3, (2, 13, 8)): ("qaaluu p3 span>=25", lambda e: span(e) >= 25),
     (3, (2, 14, 5)): ("qaaluu 2:14:5 span<=33", lambda e: span(e) <= 33),
     (3, (2, 14, 4)): ("aamanuu span>=25", lambda e: span(e) >= 25),
@@ -61,54 +69,54 @@ CASES = {
     # the letter meem must stay letter ink, not the iqlab sign (p307 cascade)
     (307, (19, 33, 5)): ("wa-yawma 3 bodies", lambda e: nbody(e) == 3),
     (307, (19, 34, 3)): ("ibna 2 bodies", lambda e: nbody(e) == 2),
-    # iqlab is ONE haraka + small م in this print (docs/defects/iqlab_notation.md):
+    # iqlab is ONE harakah + small م in this print (docs/defects/iqlab_notation.md):
     # the م must be a MARK, not a fourth letter piece
     (143, (6, 124, 26)): ("shadid iqlab: 2 bodies + meem mark",
         lambda e: nbody(e) == 2
-        and any(x.get("mark") == "meem-iqlab" for x in e)),
+        and any(x.get("mark") == "small_meem" for x in e)),
     # 4 raw bodies is CORRECT here: the restored ك stroke is letter ink riding
     # over the wider ك, so the audit's effective piece count is 3
     (222, (11, 12, 2)): ("tarik iqlab: 4 bodies + meem mark",
         lambda e: nbody(e) == 4
-        and any(x.get("mark") == "meem-iqlab" for x in e)),
-    # the word-anchored signs stay seated: wasla rides ITS word's alef and the
+        and any(x.get("mark") == "small_meem" for x in e)),
+    # the word-anchored signs stay seated: hamzat_al_wasl rides ITS word's alef and the
     # suffix ۥ trails ITS word's ha, even in a tight-kerned ٱلْX ٱلْY pair or a
-    # ـهُۥ chain (QSVG_RESEAT; the 27+26 frozen wasla/small-waw flags)
-    (273, (16, 60, 11)): ("aziz keeps exactly 1 wasla",
-        lambda e: sum(1 for x in e if x.get("mark") == "wasla"
+    # ـهُۥ chain (QSVG_RESEAT; the 27+26 frozen hamzat_al_wasl/small_waw flags)
+    (273, (16, 60, 11)): ("aziz keeps exactly 1 hamzat_al_wasl",
+        lambda e: sum(1 for x in e if x.get("mark") == "hamzat_al_wasl"
                       and not x.get("mkpart")) == 1),
-    (273, (16, 60, 12)): ("hakim has its wasla",
-        lambda e: any(x.get("mark") == "wasla" for x in e)),
-    (205, (9, 114, 13)): ("lahu 9:114 has its small-waw",
-        lambda e: any(x.get("mark") == "small-waw" for x in e)),
-    (205, (9, 114, 15)): ("aduww holds no small-waw",
-        lambda e: not any(x.get("mark") == "small-waw" for x in e)),
+    (273, (16, 60, 12)): ("hakim has its hamzat_al_wasl",
+        lambda e: any(x.get("mark") == "hamzat_al_wasl" for x in e)),
+    (205, (9, 114, 13)): ("lahu 9:114 has its small_waw",
+        lambda e: any(x.get("mark") == "small_waw" for x in e)),
+    (205, (9, 114, 15)): ("aduww holds no small_waw",
+        lambda e: not any(x.get("mark") == "small_waw" for x in e)),
     # header ink is inviolable: the word above سورة البروج must hold nothing
     # from the title line below it (reported.json item 33)
     (590, (84, 25, 5)): ("salihat holds no title-line ink",
         lambda e: all(x.get("line") == 1 for x in e)),
     # the p586 slash exchange (item 32): each word ends with exactly its own
     # marks after the mutual theft resolves
-    (586, (81, 25, 2)): ("huwa: damma + one fatha, no kasra",
+    (586, (81, 25, 2)): ("huwa: dammah + one fathah, no kasrah",
         lambda e: sorted(x["mark"] for x in e if x.get("mark")
-                         and not x.get("mkpart")) == ["damma", "fatha"]),
-    # shape identity outranks position (item 38): the below-alef hamza of إِذْ
-    # keeps its human-confirmed name, never renamed kasra
-    (583, (79, 16, 1)): ("idh: 1 hamza + 1 kasra",
-        lambda e: sorted(x["mark"] for x in e if x.get("mark")
-                         and not x.get("mkpart")
-                         and x["mark"] in ("hamza", "kasra", "fatha"))
-        == ["hamza", "kasra"]),
-    # item 37: the كُلࣱّ stack yields its third curl back as the damma
-    (249, (13, 2, 15)): ("kullun: damma + dammatan both named",
+                         and not x.get("mkpart")) == ["dammah", "fathah"]),
+    # shape identity outranks position (item 38): the below-alef hamzah of إِذْ
+    # keeps its human-confirmed name, never renamed kasrah
+    (583, (79, 16, 1)): ("idh: 1 hamzah + 1 kasrah",
         lambda e: sorted(x["mark"] for x in e if x.get("mark")
                          and not x.get("mkpart")
-                         and x["mark"] in ("damma", "dammatan"))
-        == ["damma", "dammatan"]),
-    # item 34: the kasratan drawn INSIDE بروج's ج bowl belongs to بروج and
+                         and x["mark"] in ("hamzah", "kasrah", "fathah"))
+        == ["hamzah", "kasrah"]),
+    # item 37: the كُلࣱّ stack yields its third curl back as the dammah
+    (249, (13, 2, 15)): ("kullun: dammah + tanwin_al_damm both named",
+        lambda e: sorted(x["mark"] for x in e if x.get("mark")
+                         and not x.get("mkpart")
+                         and x["mark"] in ("dammah", "tanwin_al_damm"))
+        == ["dammah", "tanwin_al_damm"]),
+    # item 34: the tanwin_al_kasr drawn INSIDE بروج's ج bowl belongs to بروج and
     # keeps its budget name (arrival naming, not position)
-    (90, (4, 78, 8)): ("buruj holds its kasratan",
-        lambda e: sum(1 for x in e if x.get("mark") == "kasratan"
+    (90, (4, 78, 8)): ("buruj holds its tanwin_al_kasr",
+        lambda e: sum(1 for x in e if x.get("mark") == "tanwin_al_kasr"
                       and not x.get("mkpart")) == 1),
     # LREDEAL: the به piece returns to لربه (p600 L1, the width diagnosis's
     # proven boundary pair)
@@ -116,36 +124,40 @@ CASES = {
         lambda e: nbody(e) == 2),
     (600, (100, 6, 4)): ("lakanud holds exactly its 2 pieces",
         lambda e: nbody(e) == 2),
-    (586, (81, 25, 3)): ("biqawli: 2 kasras + 1 fatha",
+    (586, (81, 25, 3)): ("biqawli: 2 kasrahs + 1 fathah",
         lambda e: sorted(x["mark"] for x in e if x.get("mark")
                          and not x.get("mkpart")
-                         and x["mark"] in ("fatha", "kasra", "fathatan",
-                                           "kasratan"))
-        == ["fatha", "kasra", "kasra"]),
+                         and x["mark"] in ("fathah", "kasrah", "tanwin_al_fath",
+                                           "tanwin_al_kasr"))
+        == ["fathah", "kasrah", "kasrah"]),
 }
 
 def budget_mismatches(words):
     bad = 0
     for w, at in words:
         els = [e for a in at for e in a["els"]]
-        c = w["uthmani"].count
+        c = w["rasm_uthmani"].count
         hv = sum(1 for e in els if e.get("mark") in
-                 ("fatha", "kasra", "fathatan", "kasratan") and not e.get("mkpart"))
+                 ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr") and not e.get("mkpart"))
         wv = (c("َ") + c("ِ") + c("ً") + c("ٍ")
               + c("ࣰ") + c("ࣲ"))
         if hv != wv:
             bad += 1
             continue
-        hv = sum(1 for e in els if e.get("mark") in ("damma", "dammatan")
+        hv = sum(1 for e in els if e.get("mark") in ("dammah", "tanwin_al_damm")
                  and not e.get("mkpart"))
         wv = c("ُ") + c("ٌ") + c("ࣱ")
         if hv != wv:
             bad += 1
     return bad
 
-q = json.load(open(ROOT + "/.cache/qcf_widths.json"))
+# the pipeline's own keying of the advance table, not the raw file: the raw
+# one is keyed pre-segmentation, so any ayah the boundary plan splits or fuses
+# would pair a word with its neighbour's advance and manufacture width flags
+# (6 of them on p262 once 15:7 was fused).
+q = aw.qcf_widths()
 case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
-for pg in (1, 2, 3, 7, 17, 90, 133, 143, 200, 202, 205, 222, 249, 273, 307, 453, 454, 582, 583, 586, 590, 591, 600):
+for pg in (1, 2, 3, 7, 17, 90, 133, 143, 200, 202, 205, 222, 249, 262, 273, 307, 453, 454, 582, 583, 586, 590, 591, 600):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")
     except Exception as e:

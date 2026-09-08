@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Measure the slash-exchange family (reported.json item 32, p586 هو/بقول).
 
-A fatha/kasra stroke drawn over a NEIGHBOUR word's letter ink while its own
+A fathah/kasrah stroke drawn over a NEIGHBOUR word's letter ink while its own
 word's letters lie elsewhere — in both directions at once — is a mutual,
 budget-neutral theft no counting audit can see. This scan only MEASURES:
 for every adjacent word pair on a line, each non-part slash mark's horizontal
@@ -15,7 +15,7 @@ import json, os, sys
 ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT + "/tools")
 
-SLASH = {"fatha", "kasra", "fathatan", "kasratan"}
+SLASH = {"fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr"}
 
 
 def overlap(a1, a2, b1, b2):

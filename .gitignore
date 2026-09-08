@@ -46,3 +46,6 @@ dist/
 .cache/mdb_runs.json
 # derived: the per-page annotation graph, rebuilt by tools/build_annotations.py
 .cache/annotations/
+
+# local state of the maestro plugin, not part of the project
+.maestro/

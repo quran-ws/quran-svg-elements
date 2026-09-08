@@ -12,7 +12,7 @@
  * Mutates the page you hand it. Handle restores the previous transforms and
  * viewBox exactly.
  */
-export function setLineGap(page, gap, { pad = 6, carryMarkers = true } = {}) {
+export function setLineGap(page, gap, { pad = 6, carryMarks = true } = {}) {
   const svg = page.el;
   const lines = [...svg.querySelectorAll('g.line')];
   if (lines.length < 2) return { gap: 0, viewBox: svg.getAttribute('viewBox'), remove() {} };
@@ -33,9 +33,9 @@ export function setLineGap(page, gap, { pad = 6, carryMarkers = true } = {}) {
     line.setAttribute('transform', `translate(0 ${dy.toFixed(3)})`);
   });
 
-  if (carryMarkers) {
-    for (const m of page.markers()) {
-      const parts = svg.querySelectorAll(`g.ayah[data-aid="${m.aid}"]`);
+  if (carryMarks) {
+    for (const m of page.ayahMarks()) {
+      const parts = svg.querySelectorAll(`g.ayah-fragment[data-ayah-key="${m.ayahKey}"]`);
       const last = parts[parts.length - 1];
       if (!last) continue;
       const dy = shift.get(last.closest('g.line').dataset.line) || 0;
@@ -93,7 +93,7 @@ export function wastedFraction({ pageW, pageH, viewW, viewH }) {
  * listeners.
  */
 export function fitToViewport(page, {
-  width, height, element = null, maxGap = Infinity, pad = 6, carryMarkers = true, observe = false
+  width, height, element = null, maxGap = Infinity, pad = 6, carryMarks = true, observe = false
 } = {}) {
   let applied = null, ro = null;
 
@@ -112,7 +112,7 @@ export function fitToViewport(page, {
     const gap = gapToFill({ pageW: vb.w, pageH: vb.h, lines, viewW: v.w, viewH: v.h, max: maxGap });
     const waste = wastedFraction({ pageW: vb.w, pageH: vb.h, viewW: v.w, viewH: v.h });
     if (gap <= 0) return { gap: 0, lines, viewport: v, wasted: waste, viewBox: page.el.getAttribute('viewBox') };
-    applied = setLineGap(page, gap, { pad, carryMarkers });
+    applied = setLineGap(page, gap, { pad, carryMarks });
     return { gap, lines, viewport: v, wasted: waste, viewBox: applied.viewBox };
   };
 

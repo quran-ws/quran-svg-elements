@@ -33,7 +33,7 @@ long-standing flag in our own audit, where one word held two words' ink.)
 
 ## Why we think the three are an inconsistency, not a convention
 
-The obvious defence is that word-by-word tokenisation follows ordinary modern
+The obvious defence is that word-by-word-translation-translation tokenisation follows ordinary modern
 orthography rather than the rasm. That does not survive the data. In the very
 same construction, every source **welds** `ما`+`لـ` where the rasm welds it:
 
@@ -56,12 +56,12 @@ transmitted site by site, which is exactly what المقطوع والموصول 
 
 1. **Is the split at 15:7 / 27:20 / 36:22 deliberate or inherited?** Every
    word-marking source we checked has it, including the print's own V4 layout.
-   If it is a considered word-by-word decision, we would like to understand the
+   If it is a considered word-by-word-translation-translation decision, we would like to understand the
    reasoning — particularly how it sits with the welding at 4:78 / 18:49 / 25:7.
 
 2. **What is the agreed definition of a "word" for this mushaf?** Three answers
    are defensible and they disagree: the rasm's written token, the grammatical
-   word (`و` is a حرف عطف, so `وَمَآ` would be two), and the word-by-word gloss
+   word (`و` is a حرف عطف, so `وَمَآ` would be two), and the word-by-word-translation-translation gloss
    token. Consumers key translations, tajwid data and audio timings to word
    positions, so it matters that the definition is stated rather than assumed.
 
@@ -97,7 +97,7 @@ which lets each source stay correct about what it is competent to state:
 
 4. **Carry the rasm form alongside the tokens, without changing ids.** A pair
    that the rasm welds can expose the joined spelling as an attribute, so search
-   for `مالي` works while `data-wid` stays stable. This is additive, breaks no
+   for `مالي` works while `data-word-key` stays stable. This is additive, breaks no
    consumer, and is what we would adopt first.
 
 5. **Correct the boundary only with an agreed migration**, because of question 3.

@@ -4,37 +4,37 @@ UI clicks are in .cache/review/decisions.jsonl (283 entries); this file is
 the pasted export with his notes, kept verbatim for the fix queues.
 
 Key actions extracted:
-- SLASHX cases (stole fatha/kasra from neighbour/above/below): p267 16:2:11,
+- SLASHX cases (stole fathah/kasrah from neighbour/above/below): p267 16:2:11,
   p418 33:3:2+4, p531 54:51:6, p535 56:35:2 + 56:44:2, p100 4:137:16,
   p129 6:17:12, p499 45:8:10, p122/123/133 أَوۡ trio, p260 14:39:5 (REOPENED),
-  p44 2:262:15 (REOPENED extra fatha), p129 6:13:3 (REOPENED extra kasrah),
+  p44 2:262:15 (REOPENED extra fathah), p129 6:13:3 (REOPENED extra kasrah),
   p599 98:6:11+13, p350 24:3:9.
-- Pause drawn but unmarked: p49 2:285:23, p114 5:41:16. New small family.
+- Waqf drawn but unmarked: p49 2:285:23, p114 5:41:16. New small family.
 - p596 92:14:1/2: body-part theft (juz-30 width cluster phase).
 - p525 52:37:7: note "missing small seen below it" despite fixed-state — verify.
-- p254 13:37:7 أهواءهم: no dot seen; 3 fathas + sukun — closes P3.
+- p254 13:37:7 أهواءهم: no dot seen; 3 fathahs + sukun — closes P3.
 - p51 3:14:18 متاع REOPENED (not fixed).
 
 --- verbatim paste follows ---
-p267 16:2:11 أَنۡ [CONFIRMED certain] stole kasra from the word below it and missing its fataha
-p418 33:3:4 وَكَفَىٰ [CONFIRMED certain] stray fathas ↔ deficit of 33:3:1
+p267 16:2:11 أَنۡ [CONFIRMED certain] stole kasrah from the word below it and missing its fataha
+p418 33:3:4 وَكَفَىٰ [CONFIRMED certain] stray fathahs ↔ deficit of 33:3:1
 p507 47:4:4 / 47:4:34 / 47:8:3 [CONFIRMED certain] marks outside line band
-p531 54:51:6 مُّدَّكِرٖ [CONFIRMED certain] stole fatha from word above; missing its fatha above the د shadda
+p531 54:51:6 مُّدَّكِرٖ [CONFIRMED certain] stole fathah from word above; missing its fathah above the د shaddah
 p567 69:9:5 / p576 74:31:22+51 / p577 74:56:3 [CONFIRMED certain] marks outside band
-p90 4:78:20 / p535 56:35:2 (stole kasrah from word above) / p239 12:34:6+7 (shadda+pause pair)
-p418 33:3:2 عَلَى missing its 2 fathas stolen from prev word
-p355 24:39:6 / p222 11:8:16 / p499 45:8:10 (extra fatha at end) / p100 4:137:16
-p129 6:17:12 بِخَيۡرٖ extra fatha (or kasra from word above) + stole haa letter and kasra from word below
+p90 4:78:20 / p535 56:35:2 (stole kasrah from word above) / p239 12:34:6+7 (shaddah+waqf pair)
+p418 33:3:2 عَلَى missing its 2 fathahs stolen from prev word
+p355 24:39:6 / p222 11:8:16 / p499 45:8:10 (extra fathah at end) / p100 4:137:16
+p129 6:17:12 بِخَيۡرٖ extra fathah (or kasrah from word above) + stole haa letter and kasrah from word below
 p319 20:103:2 / p585 80:12:3 / p535 56:44:2 (stole لا with diacritics from word before)
-REOPENED: p44 2:262:15 (extra fatha), p51 3:14:18, p129 6:13:3 (extra kasrah),
-p260 14:39:5 (still steals hamza+kasratan from word above)
-ref-line confirmed: p228 11:56:8, p341 22:73:18 (chain note), p350 24:3:9 (far fatha),
+REOPENED: p44 2:262:15 (extra fathah), p51 3:14:18, p129 6:13:3 (extra kasrah),
+p260 14:39:5 (still steals hamzah+tanwin_al_kasr from word above)
+ref-line confirmed: p228 11:56:8, p341 22:73:18 (chain note), p350 24:3:9 (far fathah),
 p350 24:4:2, p526 53:26:6, p535 56:33:3 + 56:44:1, p543 58:7:39
-width: p122 5:89:21, p123 5:95:27, p133 6:47:8 (أَوۡ kasra/fatha thefts),
+width: p122 5:89:21, p123 5:95:27, p133 6:47:8 (أَوۡ kasrah/fathah thefts),
 p145 6:131:4, p596 92:14:1 (missing large part of تكم) + 92:14:2 (took it),
-p599 98:6:2 + 98:6:11 (stole kasrah from above) + 98:6:13 (missing fatha at end),
+p599 98:6:2 + 98:6:11 (stole kasrah from above) + 98:6:13 (missing fathah at end),
 p535 56:44:4
-FIXED verified (36 words) incl. p42, p49 (pause unmarked note), p59 x2, p63, p64,
-p71, p91, p112 x2, p114 (pause unmarked note), p171, p222 x2, p228, p231, p234,
+FIXED verified (36 words) incl. p42, p49 (waqf unmarked note), p59 x2, p63, p64,
+p71, p91, p112 x2, p114 (waqf unmarked note), p171, p222 x2, p228, p231, p234,
 p254 x3, p272, p341 x2, p350, p371, p399, p415, p436, p437, p439, p503, p504,
 p525 x2 (small-seen note), p526, p535, p543, p549, p576, p577

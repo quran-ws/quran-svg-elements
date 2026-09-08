@@ -8,7 +8,7 @@ and english; each hizb mark should also hold its rubua, nisf, juz number; also
 juz starts; also the words should have a clean one for search; also we should
 use better tag ids so for word instead of surah/ayah/word attributes maybe one
 surah:ayah:word attribute is enough … the order of elements should match the
-order in arabic RTL, so if a word has three dammas the tags for them should
+order in arabic RTL, so if a word has three dammahs the tags for them should
 start right to left."*
 
 All of it is in. Everything below is measured, not asserted.
@@ -21,26 +21,26 @@ All of it is in. Everything below is measured, not asserted.
 
 ```
 before  <g class="word" data-surah="2" data-ayah="6" data-word="3"
-                        data-uthmani="سَوَآءٌ" data-imlaei="سواء" data-qpc="سَوَآءٌ">
+                        data-rasm-uthmani="سَوَآءٌ" data-rasm-imlai="سواء" data-qpc="سَوَآءٌ">
 
-after   <g class="word" data-wid="2:6:3"
-                        data-uthmani="سَوَآءٌ" data-rasm="سواء"
-                        data-imlaei="سواء" data-qpc="سَوَآءٌ">
+after   <g class="word" data-word-key="2:6:3"
+                        data-rasm-uthmani="سَوَآءٌ" data-rasm="سواء"
+                        data-rasm-imlai="سواء" data-qpc="سَوَآءٌ">
 ```
 
-`data-surah` / `data-ayah` / `data-word` are **gone**, replaced by `data-wid`.
+`data-surah` / `data-ayah` / `data-word` are **gone**, replaced by `data-word-key`.
 This is the breaking option, chosen knowingly; §4 lists every consumer migrated
 in the same change and the proof each still works.
 
-### `<g class="ayah">` — `data-aid`, plus the division it opens
+### `<g class="ayah-fragment">` — `data-aid`, plus the division it opens
 
 ```
-before  <g class="ayah" data-surah="2" data-ayah="142">
-after   <g class="ayah" data-aid="2:142" data-juz-start="2" data-hizb-start="3"
-                        data-rub-start="9">
+before  <g class="ayah-fragment" data-surah="2" data-ayah="142">
+after   <g class="ayah-fragment" data-aid="2:142" data-juz-start="2" data-hizb-start="3"
+                        data-rubu-al-hizb-start="9">
 ```
 
-`data-juz-start` / `-hizb-start` / `-nisf-start` / `-rub-start` appear **only on
+`data-juz-start` / `-hizb-start` / `-nisf-start` / `-rubu-al-hizb-start` appear **only on
 the ayah that begins that division**, so "where does juz 15 start" is answerable
 from the pages alone. Counts across the mushaf: 30 juz starts, 60 hizb starts,
 60 nisf starts, 240 rubʿ starts.
@@ -61,19 +61,19 @@ Carried on both banner kinds (108 surah-name groups + 113 basmalah groups), so a
 surah opening always has its card even on the six pages whose surah-name line the
 DK layout DB carries on the previous page.
 
-### `<g class="hizb-mark">` — which division the rosette opens
+### `<g class="division-mark">` — which division the rosette opens
 
 ```
-before  <g class="hizb-mark" data-mark="hizb" data-surah="2" data-ayah="142">
-after   <g class="hizb-mark" data-mark="hizb" data-aid="2:142" data-rub="9"
-             data-rub-in-hizb="1" data-nisf="1" data-hizb="3" data-juz="2">
+before  <g class="division-mark" data-mark="hizb" data-surah="2" data-ayah="142">
+after   <g class="division-mark" data-mark="hizb" data-aid="2:142" data-rubu-al-hizb="9"
+             data-rubu-al-hizb-in-hizb="1" data-nisf="1" data-hizb="3" data-juz="2">
 ```
 
-### `<g class="ayah-marker">`, `<g class="sajdah-mark">`, standalone `<path>`
+### `<g class="ayah-mark">`, `<g class="sajdah-mark">`, standalone `<path>`
 
 ```
-before  <g class="ayah-marker" data-surah="2" data-ayah="6">
-after   <g class="ayah-marker" data-aid="2:6">
+before  <g class="ayah-mark" data-surah="2" data-ayah="6">
+after   <g class="ayah-mark" data-aid="2:6">
 
 before  <g class="sajdah-mark" data-mark="sajdah" data-surah="16" data-ayah="50">
 after   <g class="sajdah-mark" data-mark="sajdah" data-aid="16:50">
@@ -84,35 +84,35 @@ after   <path data-standalone="1" data-aid="16:50" …>
 
 Unchanged: `data-eid`, `data-kind`, `data-mark`, `data-mark-part`,
 `data-mark-family`, `data-sig`, `data-form`, `data-pair`, `data-iqlab`,
-`data-fused`, `data-line`, `data-text`, `data-uthmani`, `data-imlaei`,
+`data-fused`, `data-line`, `data-text`, `data-rasm-uthmani`, `data-rasm-imlai`,
 `data-qpc`.
 
 ### The search key
 
-`data-rasm` is the uthmani spelling with every combining mark removed:
+`data-rasm` is the rasm_uthmani spelling with every combining mark removed:
 
 | kept | dropped |
 |---|---|
-| Unicode category **Lo** — 47 code points, the Arabic letters | **Mn** (24 code points: every haraka, tanween, sukun, shadda, superscript alef, every small high/low sign) |
+| Unicode category **Lo** — 47 code points, the Arabic letters | **Mn** (24 code points: every harakah, tanwin, sukun, shaddah, superscript alef, every small high/low sign) |
 | | **Lm** — U+0640 tatweel ×6,736, U+06E5 small waw ×1,257, U+06E6 small yeh ×957 |
-| | **So** — U+06DE rub sign ×199, U+06E9 sajdah ×15 |
+| | **So** — U+06DE rubu_al_hizb sign ×199, U+06E9 sajdah ×15 |
 | | **Cf** — U+200F RLM ×1 |
 
-Measured over all 77,429 words of the cached uthmani text: exactly 72 distinct
+Measured over all 77,429 words of the cached rasm_uthmani text: exactly 72 distinct
 code points occur, and the two groups are disjoint by Unicode category — so the
 rule is a category test, not a hand-written list that can drift.
 
 **Nothing is folded.** ا/أ/إ/آ/ٱ stay distinct, ى stays distinct from ي, ة from
 ه — per Abdullah's explicit ruling. So `ٱلرَّحْمَٰنِ` → `ٱلرحمن`, keeping the alef
-wasla. **One thing to flag:** his own example wrote the result as `الرحمن` with a
+hamzat_al_wasl. **One thing to flag:** his own example wrote the result as `الرحمن` with a
 plain alef, which would mean folding ٱ→ا. The explicit "do not normalise
 ا/أ/إ/آ/ٱ" won, and this is a one-line change in `quran_meta.rasm` if he meant
 the example instead.
 
-The second search attribute is `data-imlaei`, unchanged. **Honest note:** 77,409
-of the 77,429 imlaei strings still carry diacritics, so `data-rasm` is the only
-attribute that is actually "clean" today. Stripping imlaei too is one line and
-was not done because the brief said the imlaei form is "the one we already
+The second search attribute is `data-rasm-imlai`, unchanged. **Honest note:** 77,409
+of the 77,429 rasm_imlai strings still carry diacritics, so `data-rasm` is the only
+attribute that is actually "clean" today. Stripping rasm_imlai too is one line and
+was not done because the brief said the rasm_imlai form is "the one we already
 hold".
 
 ---
@@ -123,16 +123,16 @@ Nothing is hand-typed. `tools/quran_meta.py` is the single reader.
 
 | field | source |
 |---|---|
-| surah number, `name_arabic`, `name_simple`, `name_complex`, English translated name, `revelation_place`, `revelation_order`, `verses_count`, `bismillah_pre`, page range | quran.com `GET /api/v4/chapters?language=en`, fetched once and cached verbatim at **`.cache/meta/chapters.json`** — the same API and the same cache-on-first-use pattern `page_words()` uses for `/verses/by_page` |
+| surah number, `name_arabic`, `name_simple`, `name_complex`, English translated name, `revelation_place`, `revelation_order`, `ayahs_count`, `basmalah_pre`, page range | quran.com `GET /api/v4/chapters?language=en`, fetched once and cached verbatim at **`.cache/meta/chapters.json`** — the same API and the same cache-on-first-use pattern `page_words()` uses for `/verses/by_page` |
 | juz number, hizb number, rubʿ number of every ayah | **`.cache/words/page-*.json`** — the per-page word cache the pipeline already reads. Every verse record carries `juz_number`, `hizb_number`, `rub_el_hizb_number` |
-| the 240 rubʿ START positions | derived from the same records (first verse per `rub_el_hizb_number`), memoised at `.cache/meta/rub_starts.json` |
+| the 240 rubʿ START positions | derived from the same records (first verse per `rub_el_hizb_number`), memoised at `.cache/meta/rubu_al_hizb_starts.json` |
 | nisf (half-hizb) | arithmetic: quarters 1-2 of a hizb are nisf 1, quarters 3-4 are nisf 2 |
 | pages, lines per page, layout name, font | **`.cache/digitalkhatt/digital-khatt-15-lines.db`**, `info` table |
 | rare-sign sites | `.cache/marks/rare_places.json` |
-| sifr word counts, muanaqah pairs, sajdah sites | measured mushaf-wide, already gated by `tools/audit_taxonomy.py` |
+| sifr word counts, waqf_al_muanaqah pairs, sajdah sites | measured mushaf-wide, already gated by `tools/audit_taxonomy.py` |
 
 **The juz/hizb/rubʿ numbers are self-consistent.** Over all 6,236 verses,
-`juz = ceil(rub/8)` and `hizb = ceil(rub/4)` hold with **zero exceptions**, so
+`juz = ceil(rubu_al_hizb/8)` and `hizb = ceil(rubu_al_hizb/4)` hold with **zero exceptions**, so
 the global rubʿ index 1-240 is the only key stored and everything else derives
 from it.
 
@@ -151,7 +151,7 @@ read the rosette's division straight off the ayah under it.
 **The rule.** Inside a word, its ligature groups come out right to left; inside
 each ligature group, its elements come out right to left, by `x2` descending
 (tie-break `x1` descending, then original order). Letter bodies and marks alike
-— one rule, no exception. So a word with three dammas emits them rightmost
+— one rule, no exception. So a word with three dammahs emits them rightmost
 first.
 
 **What is NOT reordered**, deliberately:
@@ -166,7 +166,7 @@ first.
   emitted after their own ayah on purpose; those entries are stepped over
   untouched.
 * **word blocks and ayah runs** — document order of words is unchanged, so the
-  `<g class="ayah">` grouping cannot move.
+  `<g class="ayah-fragment">` grouping cannot move.
 
 **Why it is pixel-safe:** every path in this artwork is `fill="#231f20"`, so
 same-colour coverage composites order-independently — the identical property
@@ -194,7 +194,7 @@ element, which is the reading order.
 The most consumer-visible bug in the product: anything using a medallion to
 locate its ayah got the wrong ayah on 598 of 604 pages.
 
-**The cause.** `tag_ayah_markers()` paired the Nth marker in DOCUMENT ORDER with
+**The cause.** `tag_ayah_marks()` paired the Nth marker in DOCUMENT ORDER with
 the Nth ayah of the page's sorted ayah list, on its docstring's claim that
 "markers appear in ayah order". The artwork's marker layer is usually ordered
 **bottom-to-top**, so the claim is false: on p3 the first marker in the file
@@ -206,7 +206,7 @@ WORD it follows. The anchor is that word's leftmost body ink at its vertical
 centre, taken from the final assignment; the marker centre is the `ayah:x` /
 `ayah:y` the artwork already carries. Both are page coordinates.
 
-**Measured, all 604 pages, 6,236 markers** (`scratchpad/marker_match.py`,
+**Measured, all 604 pages, 6,236 markers** (`scratchpad/mark_match.py`,
 Manhattan distance):
 
 ```
@@ -233,7 +233,7 @@ reversal is not the fix — the layer order is not uniform:
 
 | pages | layer order | was it already right? |
 |---|---|---|
-| p1, p2, p84, p162, p175 (+1 single-marker page) | FORWARD | yes — these 6 do not change |
+| p1, p2, p84, p162, p175 (+1 single-mark page) | FORWARD | yes — these 6 do not change |
 | 596 pages | bottom-to-top | no |
 | p313, p507, p577 | MIXED — p313 draws 20:13's marker first, then 20:37 down to 20:14 | no |
 
@@ -244,15 +244,15 @@ build immediately before this fix:
 
 ```
 d-strings ADDED 0 · REMOVED 0
-non-marker element multisets differing: 0 pages
-<g class="ayah-marker"> data-aid changed: 5,881 markers on 598 pages
+non-mark element multisets differing: 0 pages
+<g class="ayah-mark"> data-aid changed: 5,881 markers on 598 pages
 ```
 
 Exactly the number the measurement predicted, and nothing else moved. Ring
 position and scale are untouched — this writes an attribute.
 
 The graph carries it too: each page's annotation record now holds an
-`ayah-marker` relation per medallion, and `validate_annotations` checks the set
+`ayah-mark` relation per medallion, and `validate_annotations` checks the set
 matches the SVG page for page and totals 6,236 mushaf-wide.
 
 ---
@@ -264,19 +264,19 @@ Found with `grep -rln 'data-surah|data-ayah|data-word'` over `tools/`,
 
 | consumer | change | verified by |
 |---|---|---|
-| `tools/review-platform/index.html` (2 sites: the audit-grid key, and `wid(w)`) | `g.dataset.wid` | **live**: served `?page=350&step=audit&user=abdullah&word=24:1:5` in a real browser — 138 word cards built, the deep-linked card focused, only console error is `favicon.ico` 404 |
-| `tools/review_server.py` (3 sites) | `el.get("data-wid")`, `data-wid="([^"]*)"` | server started, page + `/svg/350.svg` served, platform above driven through it |
-| `tools/audit_taxonomy.py` | word key = `data-wid`; rare-site ref = first two fields of it | `audit_taxonomy 1 604` **OK** (§5) |
-| `tools/audit_inkidentity.py` | `keyof` returns `data-wid` | `ours(350)` → 1,707 rows, 1,509 keyed `24:1:1`… |
-| `tools/eid_lookup.py` | `data-wid="…" data-uthmani="…"` | `eid_lookup 350 e10 e20` resolves both to `24:1:2 أَنزَلْنَٰهَا` |
-| `tools/build_mismatch_page.py` | `<g class="word" data-wid="s:a:w"` | `mismatches.html` rebuilt, 106 cards |
+| `tools/review-platform/index.html` (2 sites: the audit-grid key, and `word_key(w)`) | `g.dataset.word_key` | **live**: served `?page=350&step=audit&user=abdullah&word=24:1:5` in a real browser — 138 word cards built, the deep-linked card focused, only console error is `favicon.ico` 404 |
+| `tools/review_server.py` (3 sites) | `el.get("data-word-key")`, `data-word-key="([^"]*)"` | server started, page + `/svg/350.svg` served, platform above driven through it |
+| `tools/audit_taxonomy.py` | word key = `data-word-key`; rare-site ref = first two fields of it | `audit_taxonomy 1 604` **OK** (§5) |
+| `tools/audit_inkidentity.py` | `keyof` returns `data-word-key` | `ours(350)` → 1,707 rows, 1,509 keyed `24:1:1`… |
+| `tools/eid_lookup.py` | `data-word-key="…" data-rasm-uthmani="…"` | `eid_lookup 350 e10 e20` resolves both to `24:1:2 أَنزَلْنَٰهَا` |
+| `tools/build_mismatch_page.py` | `<g class="word" data-word-key="s:a:w"` | `mismatches.html` rebuilt, 106 cards |
 | `tools/build_ligcuts_page.py` | same, plus `data-rasm` added to the attribute stripper | `ligature_cuts.html` rebuilt, 5.8 MB, 7,449 ink paths |
-| `tools/build_proposals_page.py`, `tools/score_confidence.py` | JS selector → `g.word[data-wid="…"]` | selector strings; both are one-line template selectors |
-| `docs/demo/build_embed.py` (3 sites) | word/marker regexes read `data-wid`/`data-aid`; a **demo-local** `data-ayah` is written back onto each word because CSS has no substring match on `data-wid` | `003-embed.svg` rebuilt: 153 views, 306 isolation rules, 127 words, 33 markers |
-| `tools/build_eye_batch.py`, `tools/build_remaining.py`, `tools/build_variants_page.py` | none needed (they key on `data-uthmani` / `data-sig` / eids) | `eye_batch.html` 112 words, `remaining.html` 0 mark flags / 0 open intervals, `variants.html` 2,396 shapes — all rebuilt clean |
+| `tools/build_proposals_page.py`, `tools/score_confidence.py` | JS selector → `g.word[data-word-key="…"]` | selector strings; both are one-line template selectors |
+| `docs/demo/build_embed.py` (3 sites) | word/marker regexes read `data-word-key`/`data-aid`; a **demo-local** `data-ayah` is written back onto each word because CSS has no substring match on `data-word-key` | `003-embed.svg` rebuilt: 153 views, 306 isolation rules, 127 words, 33 markers |
+| `tools/build_eye_batch.py`, `tools/build_remaining.py`, `tools/build_variants_page.py` | none needed (they key on `data-rasm-uthmani` / `data-sig` / eids) | `eye_batch.html` 112 words, `remaining.html` 0 mark flags / 0 open intervals, `variants.html` 2,396 shapes — all rebuilt clean |
 
 **Deliberately NOT migrated** — these read the *MushafDatabase* reference SVGs,
-whose schema is `data-surah` / `data-aya` / `data-word-index-in-ayah` and is not
+whose schema is `data-surah` / `data-ayah` / `data-word-index-in-ayah` and is not
 ours: `tools/refdb.py`, `tools/audit_ligcuts.py` (lines 186-187),
 `tools/build_ligcuts_page.py` (line 143), `scratchpad/ligcmp/proto.py`.
 
@@ -290,7 +290,7 @@ design.
 | gate | result |
 |---|---|
 | `tools/audit_pixels.py 1 604` | **FAILURES: 0** — every page pixel-identical (tol 24/255, seam allowance 10 px, at 1400 px) |
-| `tools/audit_taxonomy.py 1 604` | **OK** — 35 mark names, 3 muanaqah pairs, sifr words 3970/66, all 8 rare sites |
+| `tools/audit_taxonomy.py 1 604` | **OK** — 35 mark names, 3 waqf_al_muanaqah pairs, sifr words 3970/66, all 8 rare sites |
 | fresh sweep (`.cache/sweeps/schema3`, stale caches removed first) | **marks 0, intervals 1** (p350 only, the one examined by eye) |
 | `scratchpad/bench.py` | **SCORE 337, FAILURES `coverage-p1`, `coverage-p2`** — see the box below; NOT caused by this change |
 | `tools/validate_annotations.py 1 604` | **OK** — 77,432 words, 436,706 logical marks in 34 names, 199 hizb rosettes, **6,236 ayah markers**, 30 juz starts, 114 surahs |
@@ -339,15 +339,15 @@ Group attribute-set changes, all of them intended:
 
 | before | after | count |
 |---|---|---|
-| `data-surah,data-ayah,data-word,data-uthmani,data-imlaei,data-qpc` | `data-wid,data-uthmani,data-rasm,data-imlaei,data-qpc` | 77,367 |
+| `data-surah,data-ayah,data-word,data-rasm-uthmani,data-rasm-imlai,data-qpc` | `data-word-key,data-rasm-uthmani,data-rasm,data-rasm-imlai,data-qpc` | 77,367 |
 | `data-surah,data-ayah` | `data-aid` | 19,044 |
 | `data-text` | `data-text` (same attribute, different ligature — the RTL reorder pairing) | 1,148 |
-| `data-surah,data-ayah` | `data-aid,data-rub-start` | 362 |
+| `data-surah,data-ayah` | `data-aid,data-rubu-al-hizb-start` | 362 |
 | `data-surah` | `data-sid` + the five surah-card fields | 220 |
-| `data-surah,data-ayah,data-mark` | `data-aid,data-mark,data-rub,data-rub-in-hizb,data-nisf,data-hizb,data-juz` | 199 |
-| `data-surah,data-ayah` | `data-aid,data-nisf-start,data-rub-start` | 168 |
-| `data-surah,data-ayah` | `data-aid,data-juz-start,data-hizb-start,data-rub-start` | 72 |
-| `data-surah,data-ayah` | `data-aid,data-hizb-start,data-rub-start` | 68 |
+| `data-surah,data-ayah,data-mark` | `data-aid,data-mark,data-rubu-al-hizb,data-rubu-al-hizb-in-hizb,data-nisf,data-hizb,data-juz` | 199 |
+| `data-surah,data-ayah` | `data-aid,data-nisf-start,data-rubu-al-hizb-start` | 168 |
+| `data-surah,data-ayah` | `data-aid,data-juz-start,data-hizb-start,data-rubu-al-hizb-start` | 72 |
+| `data-surah,data-ayah` | `data-aid,data-hizb-start,data-rubu-al-hizb-start` | 68 |
 | `data-surah,data-ayah,data-mark` | `data-aid,data-mark` (sajdah) | 17 |
 
 The 1,148 `data-text → data-text` rows are the diff tool pairing ligature groups
@@ -365,18 +365,18 @@ with this change disabled.
 
 | file | what it is |
 |---|---|
-| `tools/quran_meta.py` | the single reader for surah / juz / hizb / rubʿ metadata and the rasm rule. Fetches and caches `chapters.json`; derives and memoises `rub_starts.json` |
+| `tools/quran_meta.py` | the single reader for surah / juz / hizb / rubʿ metadata and the rasm rule. Fetches and caches `chapters.json`; derives and memoises `rubu_al_hizb_starts.json` |
 | `tools/build_schema_registry.py` | writes the two schema files below; `--check` fails if either is stale |
-| `.cache/schema/mark-taxonomy.v2.json` | the closed mark vocabulary as DATA: 35 active names + 1 reserved (`waqf-mamnu`, inactive per §4.3), each with category, family and legal features; the emitted `data-kind` values; the feature value sets; the retired aliases |
-| `.cache/schema/edition-hafs-kfgqpc.json` | the edition manifest: 604 pages / 15 lines (DK `info`), the 114-surah table, the 240 rubʿ starts with juz/hizb/nisf, the rare sites, and the measured expectations (113 basmalah, 3,970/66 sifr words, 3 muanaqah pairs, 15 sajdah sites, 199 hizb rosettes) |
+| `.cache/schema/mark-taxonomy.v2.json` | the closed mark vocabulary as DATA: 35 active names + 1 reserved (`waqf_mamnu`, inactive per §4.3), each with category, family and legal features; the emitted `data-kind` values; the feature value sets; the retired aliases |
+| `.cache/schema/edition-hafs-kfgqpc.json` | the edition manifest: 604 pages / 15 lines (DK `info`), the 114-surah table, the 240 rubʿ starts with juz/hizb/nisf, the rare sites, and the measured expectations (113 basmalah, 3,970/66 sifr words, 3 waqf_al_muanaqah pairs, 15 sajdah sites, 199 hizb rosettes) |
 | `tools/build_annotations.py` | per-page annotation graph → `.cache/annotations/NNN.json` (77 MB, derived, gitignored). Built from the pipeline's own internal element records via a spy on `rewrite()`, plus the eid map, so the graph can name the paths each record is drawn as |
 | `tools/validate_annotations.py` | proves the graph and the SVG agree |
 
 An annotation page record holds: the surahs on the page with their full card,
 the divisions starting on it, every ayah with its juz/hizb/rubʿ/nisf, every word
-with `wid` + uthmani + rasm + imlaei + qpc + its ligature texts, every **logical
+with `word_key` + rasm_uthmani + rasm + rasm_imlai + qpc + its ligature texts, every **logical
 mark** (one record however many paths draw it, with the eids it is drawn as),
-and the relations — muanaqah, iqlab, sajdah, hizb (with its division numbers)
+and the relations — waqf_al_muanaqah, iqlab, sajdah, hizb (with its division numbers)
 and ayah → marker.
 
 ### What the validator proves, mushaf-wide
@@ -385,11 +385,11 @@ and ayah → marker.
    family, on every page. 436,706 records, 34 names, exact.
 2. **references** — every eid a record names exists on its page; no eid claimed
    twice.
-3. **words** — same `wid` set as the SVG, and matching uthmani / rasm / imlaei.
+3. **words** — same `word_key` set as the SVG, and matching rasm_uthmani / rasm / rasm_imlai.
 4. **metadata** — the surah card, the four division-start flags and the hizb
    rosette's rubʿ/nisf/hizb/juz read the same in the graph and in the SVG.
-5. **relations** — muanaqah exactly 2 members; every iqlab relation names a
-   `meem-iqlab`; sajdah signs 15 and overlines 15 mushaf-wide.
+5. **relations** — waqf_al_muanaqah exactly 2 members; every iqlab relation names a
+   `small_meem`; sajdah signs 15 and overlines 15 mushaf-wide.
 6. **vocabulary** — every emitted name is in the registry and active.
 7. **markers** — the graph's medallion set equals the SVG's, page for page, no
    ayah closed twice on a page, 6,236 mushaf-wide.
@@ -400,7 +400,7 @@ and ayah → marker.
 * **Six pages emit a whole banner line as marks.** p377, p418, p446, p507 and two
   others draw a surah-name line the DK header mapping did not claim, so its
   glyphs are classified as ordinary marks (19 of them on p377) rather than
-  `header-ink`. Related to the 108-vs-114 surah-name group count. Not touched
+  `header_ink`. Related to the 108-vs-114 surah-name group count. Not touched
   here; recorded so the graph and the SVG agree.
 * **p379 and p480 split the sajdah compound.** The overline and the ۩ fall in
   different ayah polygons (27:24 vs 27:26; 41:37 vs 41:38), so the emitter
@@ -408,7 +408,7 @@ and ayah → marker.
   the cardinality check moved to mushaf-wide totals (15 + 15) rather than
   pretend the per-site pairing holds.
 * **Not every named element reaches the page as a mark.** Ink on a banner line
-  emits as undecomposed `header-ink`, and HDRGUARD evicts a word's stolen title
+  emits as undecomposed `header_ink`, and HDRGUARD evicts a word's stolen title
   ink into the same group. Those elements never pass through `emit()` and so have
   no eid; the graph drops them, because a mark that is not drawn is not a mark.
 
@@ -416,7 +416,7 @@ and ayah → marker.
 
 ## 8. What is not done
 
-* **`data-imlaei` is still diacritic-bearing** (77,409 of 77,429 words). One line
+* **`data-rasm-imlai` is still diacritic-bearing** (77,409 of 77,429 words). One line
   in the emitter if Abdullah wants both search attributes clean.
 * **The rasm keeps ٱ, أ, إ, آ, ى, ة distinct** per his explicit ruling, which
   disagrees with the example in his own message. Flagged in §1; one line to

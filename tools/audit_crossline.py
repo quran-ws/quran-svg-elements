@@ -67,20 +67,20 @@ def scan(pg):
     # above its own word by design, so it lands nearer the line above and
     # looks stolen when it is not; the same goes for any mark the word really
     # owns. Only ink the holder has no room for is evidence of theft.
-    TXT = {"pause": "\u06d6\u06d7\u06d8\u06d9\u06da\u06db",
+    TXT = {"waqf": "\u06d6\u06d7\u06d8\u06d9\u06da\u06db",
            # taxonomy phase 1: \u06dc marks are named by job now; same char, so a
            # site's own sign is still never read as surplus
-           "saktah": "\u06dc", "seen-reading": "\u06dc",
-           "fatha": "\u064e", "kasra": "\u0650", "damma": "\u064f",
-           "sukun": "\u0652\u06e1", "shadda": "\u0651",
-           "maddah": "\u0653\u06e4", "small-alef": "\u0670",
-           "wasla": "\u0671", "fathatan": "\u064b\u08f0",
-           "kasratan": "\u064d\u08f2", "dammatan": "\u064c\u08f1"}
+           "saktah": "\u06dc", "seen_al_qiraah": "\u06dc",
+           "fathah": "\u064e", "kasrah": "\u0650", "dammah": "\u064f",
+           "sukun": "\u0652\u06e1", "shaddah": "\u0651",
+           "maddah": "\u0653\u06e4", "omitted_alif": "\u0670",
+           "hamzat_al_wasl": "\u0671", "tanwin_al_fath": "\u064b\u08f0",
+           "tanwin_al_kasr": "\u064d\u08f2", "tanwin_al_damm": "\u064c\u08f1"}
 
     def surplus(r, fam):
         if fam not in TXT:
             return True             # dots and letter ink: no character to count
-        txt = r["w"]["uthmani"]
+        txt = r["w"]["rasm_uthmani"]
         have = sum(1 for e in r["els"] if e.get("mark") == fam
                    and not e.get("mkpart"))
         return have > sum(txt.count(c) for c in TXT[fam])
@@ -124,11 +124,11 @@ def scan(pg):
             # clearly nearer the other line's word, and far from its own
             if d + 3.0 < own and own > 6.0:
                 out.append({"page": pg, "line": r["ln"],
-                            "holder": r["w"]["uthmani"],
+                            "holder": r["w"]["rasm_uthmani"],
                             "key": "%d:%d:%d" % (r["w"]["surah"], r["w"]["ayah"],
                                                  r["w"]["pos"]),
                             "kind": e["kind"], "mark": e.get("mark"),
-                            "other_line": v["ln"], "other": v["w"]["uthmani"],
+                            "other_line": v["ln"], "other": v["w"]["rasm_uthmani"],
                             "gap_own": round(own, 1), "gap_other": round(d, 1),
                             "x_gap": round(xd, 1)})
     return pg, out

@@ -16,7 +16,16 @@
   const XHTMLNS = 'http://www.w3.org/1999/xhtml';
 
   /** The five text forms carried on every <g class="word">. FORMAT §6.1. */
-  const TEXT_FORMS = ['uthmani', 'imlaei', 'qpc', 'rasm', 'search'];
+  const TEXT_FORMS = ['rasm_uthmani', 'rasm_imlai', 'qpc', 'rasm', 'search'];
+
+  /** The `dataset` key for a `data-*` attribute name: `rasm_uthmani` and
+   *  `rasm-uthmani` both read `data-rasm-uthmani`, whose key is `rasmUthmani`.
+   *  Attribute names are hyphenated; the text forms and division names are
+   *  snake_case, so the two have to be bridged in one place. */
+  function datasetKey(name) {
+    return String(name).replace(/[_-]([a-z])/g, (_, c) => c.toUpperCase());
+  }
+
 
   /* ---------------------------------------------------------------- taxonomy */
 
@@ -25,54 +34,54 @@
    *
    * We resolve families through THIS table and select on data-mark, never on the
    * data-mark-family attribute. The emitted attribute and the registry disagree
-   * in the current build: the files write "diacritic" for harakat AND tanween,
-   * and never write "tanween" or "reading-sign" at all. Selecting by name works
+   * in the current build: the files write "diacritic" for harakahs AND tanwin,
+   * and never write "tanwin" or "reading_sign" at all. Selecting by name works
    * under either vocabulary. See DESIGN.md §6. */
   const MARK_REGISTRY = Object.freeze({
-    fatha:          { category: 'haraka',       family: null },
-    kasra:          { category: 'haraka',       family: null },
-    damma:          { category: 'haraka',       family: null },
-    sukun:          { category: 'haraka',       family: null },
-    shadda:         { category: 'haraka',       family: null },
-    fathatan:       { category: 'tanween',      family: 'tanween' },
-    kasratan:       { category: 'tanween',      family: 'tanween' },
-    dammatan:       { category: 'tanween',      family: 'tanween' },
-    dot:            { category: 'letter-dot',   family: 'dots' },
-    'two-dots':     { category: 'letter-dot',   family: 'dots' },
-    'three-dots':   { category: 'letter-dot',   family: 'dots' },
-    hamza:          { category: 'orthographic', family: null },
-    wasla:          { category: 'orthographic', family: null },
-    'small-alef':   { category: 'orthographic', family: null },
+    fathah:          { category: 'harakah',       family: null },
+    kasrah:          { category: 'harakah',       family: null },
+    dammah:          { category: 'harakah',       family: null },
+    sukun:          { category: 'harakah',       family: null },
+    shaddah:         { category: 'harakah',       family: null },
+    tanwin_al_fath:       { category: 'tanwin',      family: 'tanwin' },
+    tanwin_al_kasr:       { category: 'tanwin',      family: 'tanwin' },
+    tanwin_al_damm:       { category: 'tanwin',      family: 'tanwin' },
+    dot:            { category: 'letter_dot',   family: 'dots' },
+    'two_dots':     { category: 'letter_dot',   family: 'dots' },
+    'three_dots':   { category: 'letter_dot',   family: 'dots' },
+    hamzah:          { category: 'orthographic', family: null },
+    hamzat_al_wasl:          { category: 'orthographic', family: null },
+    'omitted_alif':   { category: 'orthographic', family: null },
     maddah:         { category: 'orthographic', family: null },
-    'small-waw':    { category: 'orthographic', family: null },
-    'small-ya':     { category: 'orthographic', family: null },
-    'small-noon':   { category: 'orthographic', family: null },
-    'sifr-mustadir':{ category: 'dabt',         family: 'sifr' },
-    'sifr-mustatil':{ category: 'dabt',         family: 'sifr' },
-    'meem-iqlab':   { category: 'dabt',         family: null },
-    'waqf-jaiz':    { category: 'waqf',         family: 'waqf' },
-    'wasl-awla':    { category: 'waqf',         family: 'waqf' },
-    'waqf-awla':    { category: 'waqf',         family: 'waqf' },
-    'waqf-lazim':   { category: 'waqf',         family: 'waqf' },
-    muanaqah:       { category: 'waqf',         family: 'waqf' },
-    pause:          { category: 'waqf',         family: 'waqf' },
-    saktah:         { category: 'reading-sign', family: 'reading-sign' },
-    'seen-reading': { category: 'reading-sign', family: 'reading-sign' },
-    imalah:         { category: 'reading-sign', family: 'reading-sign' },
-    ishmam:         { category: 'reading-sign', family: 'reading-sign' },
-    tashil:         { category: 'reading-sign', family: 'reading-sign' },
-    'sajdah-sign':  { category: 'standalone',   family: 'sajdah' },
-    'sajdah-line':  { category: 'standalone',   family: 'sajdah' },
+    'small_waw':    { category: 'orthographic', family: null },
+    'small_yaa':     { category: 'orthographic', family: null },
+    'small_noon':   { category: 'orthographic', family: null },
+    'rounded_zero':{ category: 'dabt',         family: 'sifr' },
+    'rectangular_zero':{ category: 'dabt',         family: 'sifr' },
+    'small_meem':   { category: 'dabt',         family: null },
+    'waqf_jaiz_mustawi_al_tarafayn':    { category: 'waqf',         family: 'waqf' },
+    'waqf_jaiz_wasl_awla':    { category: 'waqf',         family: 'waqf' },
+    'waqf_jaiz_waqf_awla':    { category: 'waqf',         family: 'waqf' },
+    'waqf_lazim':   { category: 'waqf',         family: 'waqf' },
+    waqf_al_muanaqah:       { category: 'waqf',         family: 'waqf' },
+    waqf:          { category: 'waqf',         family: 'waqf' },
+    saktah:         { category: 'reading_sign', family: 'reading_sign' },
+    'seen_al_qiraah': { category: 'reading_sign', family: 'reading_sign' },
+    imalah:         { category: 'reading_sign', family: 'reading_sign' },
+    ishmam:         { category: 'reading_sign', family: 'reading_sign' },
+    tashil:         { category: 'reading_sign', family: 'reading_sign' },
+    'sajdah_mark':  { category: 'standalone',   family: 'sajdah' },
+    'sajdah_line':  { category: 'standalone',   family: 'sajdah' },
     hizb:           { category: 'standalone',   family: null }
   });
 
-  /* The name the FILES use for harakat + tanween. Not in the registry, not in
+  /* The name the FILES use for harakahs + tanwin. Not in the registry, not in
    * FORMAT.md, but it is what is emitted — so we accept it as a family alias. */
   const FAMILY_ALIASES = {
-    diacritic: ['fatha', 'kasra', 'damma', 'sukun', 'shadda',
-                'fathatan', 'kasratan', 'dammatan', 'maddah'],
-    haraka:    ['fatha', 'kasra', 'damma', 'sukun', 'shadda'],
-    vowels:    ['fatha', 'kasra', 'damma', 'fathatan', 'kasratan', 'dammatan']
+    diacritic: ['fathah', 'kasrah', 'dammah', 'sukun', 'shaddah',
+                'tanwin_al_fath', 'tanwin_al_kasr', 'tanwin_al_damm', 'maddah'],
+    harakah:    ['fathah', 'kasrah', 'dammah', 'sukun', 'shaddah'],
+    vowels:    ['fathah', 'kasrah', 'dammah', 'tanwin_al_fath', 'tanwin_al_kasr', 'tanwin_al_damm']
   };
 
   /** Every data-mark name in a registry family or category. */
@@ -91,16 +100,16 @@
 
   /* ------------------------------------------------------- Arabic text tools */
 
-  /* Harakat, tanween (incl. the open forms U+08F0-08F2 this print uses), the
+  /* Harakahs, tanwin (incl. the open forms U+08F0-08F2 this print uses), the
    * dagger alef, the waqf/dabt block U+06D6-06ED, the Quranic annotation block,
-   * and tatweel. FORMAT §9.8: the open tanween is orthography, not mojibake. */
+   * and tatweel. FORMAT §9.8: the open tanwin is orthography, not mojibake. */
   const MARK_RE = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u08F0-\u08F3\u0640]/g;
   /* The rubʿ sign lives in the word text but never in its ink. FORMAT §9.6. */
-  const RUB_RE = /\u06DE/g;
+  const RUBU_AL_HIZB_RE = /\u06DE/g;
 
   /** Strip every diacritic, sign and tatweel. Leaves the letters. */
   function stripArabicMarks(s) {
-    return String(s ?? '').replace(RUB_RE, '').replace(MARK_RE, '');
+    return String(s ?? '').replace(RUBU_AL_HIZB_RE, '').replace(MARK_RE, '');
   }
 
   /** Fold the letter distinctions typists do not make. Nothing is folded in the
@@ -120,10 +129,10 @@
   }
 
   /** A deliberately blunter key used only as a SECOND pass when the strict pass
-   *  finds nothing: it also drops bare alef and hamza, so a typed الرحمان finds
+   *  finds nothing: it also drops bare alef and hamzah, so a typed الرحمان finds
    *  the printed الرحمن, whose alef is a dagger alef and is absent from
    *  data-search entirely. Never widens a query that already matched. */
-  function looseKey(s) {
+  function loosenQuery(s) {
     return normalizeQuery(s).replace(/[\u0627\u0621]/g, '');
   }
 
@@ -149,7 +158,7 @@
   }
 
   /** Run fn with `el` guaranteed to be rendered, restoring it afterwards. */
-  function measured(el, fn) {
+  function whileRendered(el, fn) {
     if (el.isConnected) return fn();
     const parent = el.parentNode, next = el.nextSibling;
     host().appendChild(el);
@@ -173,18 +182,15 @@
 
   class Word {
     constructor(el, page) { this.el = el; this._page = page; }
-    get wid()   { return this.el.dataset.wid; }
-    /** The GLOBAL word id (`data-w`, FORMAT §6.1): the same number for this word
-     *  in every mushaf that has it — the key a word-by-word app joins on. Two
-     *  pieces of one word (15:7 لَّوْ مَا) share it; `wid` stays unique. */
-    get w()     { const v = this.el.dataset.w; return v == null ? null : Number(v); }
-    get parts() { return this.wid.split(':').map(Number); }
-    get surah() { return this.parts[0]; }
-    get ayah()  { return this.parts[1]; }
-    get index() { return this.parts[2]; }
-    get aid()   { return this.surah + ':' + this.ayah; }
+    get wordKey()   { return this.el.dataset.wordKey; }
+    get _keyParts() { return this.wordKey.split(':').map(Number); }
+    get surah() { return this._keyParts[0]; }
+    get ayah()  { return this._keyParts[1]; }
+    /** Which word of its ayah this is — the third number of the word key. */
+    get number() { return this._keyParts[2]; }
+    get ayahKey()   { return this.surah + ':' + this.ayah; }
     get line()  { const l = this.el.closest('g.line'); return l ? Number(l.dataset.line) : null; }
-    /** All five forms. FORMAT §6.1. A production page carries only `uthmani`
+    /** All five forms. FORMAT §6.1. A production page carries only `rasm_uthmani`
      *  inline; the other four come from the page's sidecar once it is attached
      *  (`page.attachWords`), and are `null` until then. */
     get text() {
@@ -193,39 +199,39 @@
       return out;
     }
     /** One text form: the inline attribute when the page carries it (dev
-     *  profile, or `uthmani` on every profile), else the attached sidecar,
+     *  profile, or `rasm_uthmani` on every profile), else the attached sidecar,
      *  else `null`. */
-    form(which = 'uthmani') {
-      const v = this.el.dataset[which];
+    form(which = 'rasm_uthmani') {
+      const v = this.el.dataset[datasetKey(which)];
       if (v != null) return v;
-      const rec = this._page && this._page._forms ? this._page._forms.get(this.wid) : null;
+      const rec = this._page && this._page._forms ? this._page._forms.get(this.wordKey) : null;
       return rec && rec[which] != null ? rec[which] : null;
     }
     /** Bounding box in the page's own viewBox units. */
     box() { return boxInView(this._page.el, this.el); }
     paths() { return [...this.el.querySelectorAll('path')]; }
-    toString() { return this.wid; }
+    toString() { return this.wordKey; }
   }
 
   class Ayah {
-    constructor(aid, fragments, page) { this.aid = aid; this.fragments = fragments; this._page = page; }
-    get surah() { return Number(this.aid.split(':')[0]); }
-    get number() { return Number(this.aid.split(':')[1]); }
+    constructor(ayahKey, fragments, page) { this.ayahKey = ayahKey; this.fragments = fragments; this._page = page; }
+    get surah() { return Number(this.ayahKey.split(':')[0]); }
+    get number() { return Number(this.ayahKey.split(':')[1]); }
     /** How many fragments the file says this ayah has on this page (FORMAT §7). */
-    get parts() { return Number(this.fragments[0]?.dataset.ayahParts || this.fragments.length); }
-    get complete() { return this.parts === this.fragments.length; }
-    get markerId() { return this.fragments[0]?.dataset.marker || null; }
-    get marker() { const id = this.markerId; return id ? this._page.el.querySelector('#' + CSS.escape(id)) : null; }
+    get fragmentCount() { return Number(this.fragments[0]?.dataset.ayahFragments || this.fragments.length); }
+    get isComplete() { return this.fragmentCount === this.fragments.length; }
+    get markId() { return this.fragments[0]?.dataset.ayahMark || null; }
+    get mark() { const id = this.markId; return id ? this._page.el.querySelector('#' + CSS.escape(id)) : null; }
     get lines() { return [...new Set(this.fragments.map(f => Number(f.closest('g.line').dataset.line)))]; }
     words() { return this.fragments.flatMap(f => [...f.querySelectorAll('g.word')]).map(e => new Word(e, this._page)); }
-    text(form = 'uthmani') { return this.words().map(w => w.form(form)).join(' '); }
+    text(form = 'rasm_uthmani') { return this.words().map(w => w.form(form)).join(' '); }
   }
 
   class Line {
     constructor(el, page) { this.el = el; this._page = page; }
     get number() { return Number(this.el.dataset.line); }
     words() { return [...this.el.querySelectorAll('g.word')].map(e => new Word(e, this._page)); }
-    text(form = 'uthmani') { return this.words().map(w => w.form(form)).join(' '); }
+    text(form = 'rasm_uthmani') { return this.words().map(w => w.form(form)).join(' '); }
     /** true for the 226 header lines that hold a banner and no words. */
     get isHeader() { return !this.el.querySelector('g.word'); }
     box() { return boxInView(this._page.el, this.el); }
@@ -237,7 +243,7 @@
    *  Every g.line has its own frame (FORMAT §5.2) and the page frame flips y,
    *  so a raw getBBox() is meaningless across lines — compose the CTM. */
   function boxInView(svg, el) {
-    return measured(svg, () => {
+    return whileRendered(svg, () => {
       const b = el.getBBox();
       let m = null;
       /* getCTM() maps to the nearest VIEWPORT — that is CSS pixels, AFTER the
@@ -283,16 +289,16 @@
       this.el = el;
       this.number = number;
       this._forms = null;
-      if (stripPolygons) this.dropPolygons();
+      if (stripPolygons) this.stripPolygons();
     }
 
     /**
      * Attach the page's text sidecar, `index/by-page/NNN.json`. A production
-     * page carries `data-uthmani` only (FORMAT §6.1); `rasm`, `imlaei`,
+     * page carries `data-rasm-uthmani` only (FORMAT §6.1); `rasm`, `rasm_imlai`,
      * `search` and `qpc` live in the sidecar, and `word.form()`, `word.text`,
      * `page.text()` and `page.search()` read them from here once attached.
      * Accepts the sidecar object (`{words: [...]}`), an array of its word
-     * records, or an object / Map keyed by wid. Returns the record count.
+     * records, or an object / Map keyed by wordKey. Returns the record count.
      * Carried by `clone()`. `createLoader({words: true})` does this for you.
      */
     attachWords(data) {
@@ -303,16 +309,16 @@
       else if (data instanceof Map) recs = [...data.values()];
       else recs = Object.values(data);
       const m = new Map();
-      for (const r of recs) if (r && r.wid) m.set(r.wid, r);
+      for (const r of recs) if (r && r.wordKey) m.set(r.wordKey, r);
       this._forms = m;
       return m.size;
     }
 
     /** Is `form` readable for this page's words — inline, or attached? */
     hasForm(form = 'search') {
-      if (form === 'uthmani') return true;
+      if (form === 'rasm_uthmani') return true;
       const w = this.el.querySelector('g.word');
-      if (w && w.dataset[form] != null) return true;
+      if (w && w.dataset[datasetKey(form)] != null) return true;
       return !!(this._forms && this._forms.size);
     }
 
@@ -341,7 +347,7 @@
 
     /** The dev-only invisible ayahPolygon layer: different frame, last in
      *  document order, swallows pointer events. Removed by default on load. */
-    dropPolygons() {
+    stripPolygons() {
       const n = this.el.querySelectorAll('path.ayahPolygon');
       n.forEach(p => p.remove());
       return n.length;
@@ -353,7 +359,7 @@
       const tag = nextId('m') + '-';
       svg.removeAttribute('id');
       svg.querySelectorAll('[id]').forEach(e => { e.id = tag + e.id; });
-      svg.querySelectorAll('g.ayah[data-marker]').forEach(g => { g.dataset.marker = tag + g.dataset.marker; });
+      svg.querySelectorAll('g.ayah-fragment[data-ayah-mark]').forEach(g => { g.dataset.ayahMark = tag + g.dataset.ayahMark; });
       const c = new MushafPage(svg, { number: this.number });
       c._forms = this._forms;           // the sidecar is data about the page, not about this element
       return c;
@@ -372,30 +378,30 @@
     words(sel = {}) {
       let list = [...this.el.querySelectorAll('g.word')];
       if (sel.line != null) list = list.filter(w => w.closest('g.line')?.dataset.line === String(sel.line));
-      if (sel.ayah) list = list.filter(w => w.closest('g.ayah')?.dataset.aid === sel.ayah);
-      if (sel.surah != null) list = list.filter(w => w.dataset.wid.startsWith(sel.surah + ':'));
-      if (sel.wids) { const s = new Set(sel.wids); list = list.filter(w => s.has(w.dataset.wid)); }
+      if (sel.ayah) list = list.filter(w => w.closest('g.ayah-fragment')?.dataset.ayahKey === sel.ayah);
+      if (sel.surah != null) list = list.filter(w => w.dataset.wordKey.startsWith(sel.surah + ':'));
+      if (sel.wordKeys) { const s = new Set(sel.wordKeys); list = list.filter(w => s.has(w.dataset.wordKey)); }
       return list.map(e => new Word(e, this));
     }
-    word(wid) {
-      const e = this.el.querySelector(`g.word[data-wid="${cssq(wid)}"]`);
+    word(wordKey) {
+      const e = this.el.querySelector(`g.word[data-word-key="${cssq(wordKey)}"]`);
       return e ? new Word(e, this) : null;
     }
 
     /** Ayah keys on this page, in reading order, deduplicated. */
     ayahKeys() {
       const seen = new Set(), out = [];
-      for (const g of this.el.querySelectorAll('g.ayah')) {
-        const a = g.dataset.aid;
+      for (const g of this.el.querySelectorAll('g.ayah-fragment')) {
+        const a = g.dataset.ayahKey;
         if (a && !seen.has(a)) { seen.add(a); out.push(a); }
       }
       return out;
     }
     ayahs() { return this.ayahKeys().map(a => this.ayah(a)); }
     /** The WHOLE ayah — all its fragments. Never fragment 1 of N. FORMAT §7. */
-    ayah(aid) {
-      const frags = [...this.el.querySelectorAll(`g.ayah[data-aid="${cssq(aid)}"]`)];
-      return frags.length ? new Ayah(aid, frags, this) : null;
+    ayah(ayahKey) {
+      const frags = [...this.el.querySelectorAll(`g.ayah-fragment[data-ayah-key="${cssq(ayahKey)}"]`)];
+      return frags.length ? new Ayah(ayahKey, frags, this) : null;
     }
 
     /* ---- metadata: the "no database" story ---- */
@@ -415,7 +421,7 @@
         out.set(n, rec);
       }
       for (const w of this.el.querySelectorAll('g.word')) {
-        const n = Number(w.dataset.wid.split(':')[0]);
+        const n = Number(w.dataset.wordKey.split(':')[0]);
         if (!out.has(n)) out.set(n, { number: n, hasBanner: false, hasBasmalah: false });
       }
       return [...out.values()].sort((a, b) => a.number - b.number);
@@ -424,16 +430,16 @@
     /** Divisions that START on this page. All 240 rubʿ boundaries are tagged
      *  even where no rosette is drawn (FORMAT §9.6). */
     divisions() {
-      const out = { juz: [], hizb: [], nisf: [], rub: [] };
-      const keys = { juz: 'juzStart', hizb: 'hizbStart', nisf: 'nisfStart', rub: 'rubStart' };
+      const out = { juz: [], hizb: [], nisf: [], rubu_al_hizb: [] };
+      const keys = { juz: 'juzStart', hizb: 'hizbStart', nisf: 'nisfStart', rubu_al_hizb: 'rubuAlHizbStart' };
       for (const k in keys) {
         const seen = new Set();
-        for (const g of this.el.querySelectorAll(`g.ayah[data-${k}-start]`)) {
-          const n = Number(g.dataset[keys[k]]), aid = g.dataset.aid;
-          const id = n + '@' + aid;
+        for (const g of this.el.querySelectorAll(`g.ayah-fragment[data-${k.replace(/_/g, '-')}-start]`)) {
+          const n = Number(g.dataset[keys[k]]), ayahKey = g.dataset.ayahKey;
+          const id = n + '@' + ayahKey;
           if (seen.has(id)) continue;      // repeated on every fragment
           seen.add(id);
-          out[k].push({ n, aid, line: Number(g.closest('g.line').dataset.line) });
+          out[k].push({ n, ayahKey, line: Number(g.closest('g.line').dataset.line) });
         }
         out[k].sort((a, b) => a.n - b.n);
       }
@@ -441,42 +447,42 @@
     }
 
     /** The DRAWN hizb/rubʿ rosettes (199 corpus-wide for 240 boundaries). */
-    rosettes() {
-      return [...this.el.querySelectorAll('g.hizb-mark')].map(g => ({
-        el: g, aid: g.dataset.aid,
-        rub: Number(g.dataset.rub), rubInHizb: Number(g.dataset.rubInHizb),
+    divisionMarks() {
+      return [...this.el.querySelectorAll('g.division-mark')].map(g => ({
+        el: g, ayahKey: g.dataset.ayahKey,
+        rubu_al_hizb: Number(g.dataset.rubuAlHizb), rubuAlHizbInHizb: Number(g.dataset.rubuAlHizbInHizb),
         nisf: Number(g.dataset.nisf), hizb: Number(g.dataset.hizb), juz: Number(g.dataset.juz)
       }));
     }
 
     /** Sajdah sites, counted by the SIGN not the group: two sites in the corpus
-     *  are split into two groups with unreliable data-aid (FORMAT §10.6). */
+     *  are split into two groups with unreliable data-ayah-key (FORMAT §10.6). */
     sajdahs() {
-      return [...this.el.querySelectorAll('path[data-mark="sajdah-sign"]')].map(p => {
+      return [...this.el.querySelectorAll('path[data-mark="sajdah_mark"]')].map(p => {
         const g = p.closest('g.sajdah-mark');
-        return { el: g || p, sign: p, aid: (g && g.dataset.aid) || p.dataset.aid || null,
+        return { el: g || p, sign: p, ayahKey: (g && g.dataset.ayahKey) || p.dataset.ayahKey || null,
                  line: g ? Number(g.closest('g.line')?.dataset.line) || null : null };
       });
     }
 
-    /** One record per ayah marker, `g.ayah-marker[data-aid]`. Since 2026-09-04
-     *  every marker group carries data-aid; the filter still excludes the 12
+    /** One record per ayah marker, `g.ayah-mark[data-ayah-key]`. Since 2026-09-04
+     *  every marker group carries data-ayah-key; the filter still excludes the 12
      *  id-less "decorative" groups of page files built before that. On pages
      *  1-2 the artwork draws each ring twice and the copy sits inside the same
      *  group as [data-duplicate] (FORMAT §9.2): `ring` is the first, `ringCopies`
      *  the rest, so a replacement ring can hide them too. */
-    markers() {
-      return [...this.el.querySelectorAll('g.ayah-marker[data-aid]')].map(g => ({
-        el: g, aid: g.dataset.aid, id: g.id,
-        ring: g.querySelector('[data-kind="ayah-marker-ornament"]:not([data-duplicate])'),
-        ringCopies: [...g.querySelectorAll('[data-kind="ayah-marker-ornament"][data-duplicate]')],
-        numeral: g.querySelector('[data-kind="ayah-number"]')
+    ayahMarks() {
+      return [...this.el.querySelectorAll('g.ayah-mark[data-ayah-key]')].map(g => ({
+        el: g, ayahKey: g.dataset.ayahKey, id: g.id,
+        ring: g.querySelector('[data-kind="ayah_mark_ornament"]:not([data-duplicate])'),
+        ringCopies: [...g.querySelectorAll('[data-kind="ayah_mark_ornament"][data-duplicate]')],
+        numeral: g.querySelector('[data-kind="ayah_number"]')
       }));
     }
-    /** Every .ayah-marker group, the id-less groups of older page files included. */
-    allMarkerGroups() { return [...this.el.querySelectorAll('g.ayah-marker')]; }
+    /** Every .ayah-mark group, the id-less groups of older page files included. */
+    ayahMarkGroups() { return [...this.el.querySelectorAll('g.ayah-mark')]; }
 
-    info() {
+    summary() {
       const vb = this.viewBox, lines = this.lines();
       return {
         page: this.number, profile: this.profile,
@@ -484,9 +490,9 @@
         textLines: lines.filter(l => !l.isHeader).length,
         words: this.wordCount, ayahs: this.ayahKeys().length,
         surahs: this.surahs().map(s => s.number),
-        markers: this.markers().length,
-        decorativeRosettes: this.allMarkerGroups().length - this.markers().length,
-        sajdahs: this.sajdahs().length, rosettes: this.rosettes().length,
+        ayahMarks: this.ayahMarks().length,
+        decorativeAyahMarks: this.ayahMarkGroups().length - this.ayahMarks().length,
+        sajdahs: this.sajdahs().length, divisionMarks: this.divisionMarks().length,
         divisions: this.divisions()
       };
     }
@@ -498,7 +504,7 @@
      *   'page' | '*'            every word
      *   '2:255'                 an ayah (all its fragments, all its lines)
      *   '2:255:3'               one word
-     *   {line: 7} {ayah}{wids}{surah}   a selector
+     *   {line: 7} {ayah}{wordKeys}{surah}   a selector
      *   Word | Word[] | Element | Element[]
      */
     resolve(target) {
@@ -525,9 +531,9 @@
 
     /**
      * Text of any target, in any form. Line breaks are the mushaf's own.
-     * FORMAT §9.4: never tokenise on whitespace — data-wid is the word key.
+     * FORMAT §9.4: never tokenise on whitespace — data-word-key is the word key.
      */
-    text(target = 'page', { form = 'uthmani', wordSep = ' ', lineSep = '\n' } = {}) {
+    text(target = 'page', { form = 'rasm_uthmani', wordSep = ' ', lineSep = '\n' } = {}) {
       const words = this.resolve(target);
       let out = '', prevLine = null;
       for (const w of words) {
@@ -556,7 +562,7 @@
       if (!q0.trim()) return [];
       if (!this.hasForm(form)) {
         throw new Error(`text form '${form}' is not on this page: a production page carries ` +
-          `data-uthmani only. Attach the sidecar first — page.attachWords(await (await ` +
+          `data-rasm-uthmani only. Attach the sidecar first — page.attachWords(await (await ` +
           `fetch('index/by-page/NNN.json')).json()) — or load with createLoader({words: true}).`);
       }
       const words = this.words();
@@ -575,7 +581,7 @@
           else if (mode === 'exact') { hit = hay === needle; index = hit ? 0 : -1; }
           else if (mode === 'prefix') { hit = hay.startsWith(needle); index = hit ? 0 : -1; }
           else { index = hay.indexOf(needle); hit = index >= 0; }
-          if (hit) { out.push({ word: w, wid: w.wid, value: raw, index }); if (out.length >= limit) break; }
+          if (hit) { out.push({ word: w, wordKey: w.wordKey, value: raw, index }); if (out.length >= limit) break; }
         }
         return out;
       };
@@ -583,7 +589,7 @@
       let hits = run(mode === 'regex' ? q0 : key(q0), key);
       /* second pass only when the strict pass found nothing, so a query that
        * already worked is never silently widened */
-      if (!hits.length && loose && mode !== 'regex' && normalize) hits = run(looseKey(q0), looseKey);
+      if (!hits.length && loose && mode !== 'regex' && normalize) hits = run(loosenQuery(q0), loosenQuery);
       return hits;
     }
 
@@ -723,9 +729,9 @@
     }
 
     /** Band + ink highlight, the common case. */
-    highlightAyah(aid, opts = {}) {
-      const band = this.band(aid, opts.band || opts);
-      const ink = opts.ink === false ? null : this.highlight(aid, opts.ink || { fill: null, className: 'mushaf-ayah-hl' });
+    highlightAyah(ayahKey, opts = {}) {
+      const band = this.band(ayahKey, opts.band || opts);
+      const ink = opts.ink === false ? null : this.highlight(ayahKey, opts.ink || { fill: null, className: 'mushaf-ayah-hl' });
       return { band, ink, bands: band.bands, remove() { band.remove(); ink && ink.remove(); } };
     }
 
@@ -764,7 +770,7 @@
      * The point is resolved to a printed line first (by vertical band), then to
      * a word on that line. A point in the GAP between two words is awarded with
      * a bias toward the PRECEDING word, because in this print a word's trailing
-     * ink — the tanween of a final ة, the small waw of a pronominal suffix —
+     * ink — the tanwin of a final ة, the small waw of a pronominal suffix —
      * is drawn into the following gap (FORMAT §9.9, §9.10). Naive nearest gets
      * those gaps wrong systematically, always in the same direction.
      *
@@ -780,8 +786,8 @@
       const cache = this._hitCache || (this._hitCache = new Map());
       const boxes = [];
       for (const w of this.words()) {
-        let b = cache.get(w.wid);
-        if (!b) { b = w.box(); cache.set(w.wid, b); }
+        let b = cache.get(w.wordKey);
+        if (!b) { b = w.box(); cache.set(w.wordKey, b); }
         boxes.push({ w, b });
       }
       if (!boxes.length) return null;
@@ -842,7 +848,7 @@
       }
 
       function hit(w, distance, exact) {
-        return { word: w, wid: w.wid, aid: w.aid, line: w.line, distance, exact };
+        return { word: w, wordKey: w.wordKey, ayahKey: w.ayahKey, line: w.line, distance, exact };
       }
     }
 
@@ -866,17 +872,17 @@
       const host = root || this.el.parentElement || this.el;
       const fn = ev => {
         const direct = ev.target.closest ? ev.target.closest('g.word') : null;
-        const wid = direct ? direct.dataset.wid
-          : (ev.target.closest && ev.target.closest('[data-wid]')?.dataset.wid) || null;
+        const wordKey = direct ? direct.dataset.wordKey
+          : (ev.target.closest && ev.target.closest('[data-word-key]')?.dataset.wordKey) || null;
         let res;
-        if (wid && self.word(wid)) {
-          const w = self.word(wid);
-          res = { word: w, wid: w.wid, aid: w.aid, line: w.line, distance: 0, exact: true };
+        if (wordKey && self.word(wordKey)) {
+          const w = self.word(wordKey);
+          res = { word: w, wordKey: w.wordKey, ayahKey: w.ayahKey, line: w.line, distance: 0, exact: true };
         } else {
           res = self.hitTest(ev.clientX, ev.clientY, { maxDistance, gapBias });
         }
         if (!res) return;
-        if (level === 'ayah') handler({ ...res, ayah: self.ayah(res.aid) }, ev);
+        if (level === 'ayah') handler({ ...res, ayah: self.ayah(res.ayahKey) }, ev);
         else handler(res, ev);
       };
       host.addEventListener(event, fn);
@@ -894,8 +900,8 @@
       const names = (sel.name || sel.family || sel.category) ? markNames(sel) : null;
       let list = [...this.el.querySelectorAll('path[data-kind="mark"]')];
       if (names) { const s = new Set(names); list = list.filter(p => s.has(p.dataset.mark)); }
-      if (sel.wid) list = list.filter(p => p.closest('g.word')?.dataset.wid === sel.wid);
-      if (sel.ayah) list = list.filter(p => p.closest('g.ayah')?.dataset.aid === sel.ayah);
+      if (sel.wordKey) list = list.filter(p => p.closest('g.word')?.dataset.wordKey === sel.wordKey);
+      if (sel.ayah) list = list.filter(p => p.closest('g.ayah-fragment')?.dataset.ayahKey === sel.ayah);
       if (sel.line != null) list = list.filter(p => p.closest('g.line')?.dataset.line === String(sel.line));
       return list;
     }
@@ -933,8 +939,8 @@
       if (dots) s.push(names(p, markNames({ family: 'dots' }), dots));
       if (waqf) s.push(names(p, markNames({ family: 'waqf' }), waqf));
       if (sifr) s.push(names(p, markNames({ family: 'sifr' }), sifr));
-      if (marker) s.push(`${p}[data-kind="ayah-marker-ornament"]{fill:${marker}}`);
-      if (numeral) s.push(`${p}[data-kind="ayah-number"]{fill:${numeral}}`);
+      if (marker) s.push(`${p}[data-kind="ayah_mark_ornament"]{fill:${marker}}`);
+      if (numeral) s.push(`${p}[data-kind="ayah_number"]{fill:${numeral}}`);
       if (byName) for (const n in byName) s.push(`${p}path[data-mark="${n}"]{fill:${byName[n]}}`);
 
       const style = svgEl('style', {});
@@ -955,18 +961,18 @@
       function names(prefix, list, fill) { return `${prefix}:is(${nameSel(list)}){fill:${fill}}`; }
     }
 
-    /* ---- ayah end-markers ---- */
+    /* ---- ayah end-marks ---- */
 
     /**
      * Restyle the ring and the numeral independently, scale the medallion,
      * replace the ring with a shape of your own while keeping the printed
      * numeral, or hide markers entirely.
-     * Only real markers (g.ayah-marker[data-aid]) are touched — pages 1-2 carry
+     * Only real markers (g.ayah-mark[data-ayah-key]) are touched — pages 1-2 carry
      * 12 decorative rosettes with no ayah.
      */
-    styleMarkers({ ring, numeral, scale, hide = false, replaceRing = null } = {}) {
+    styleAyahMarks({ ring, numeral, scale, hide = false, replaceRing = null } = {}) {
       const undo = [];
-      for (const m of this.markers()) {
+      for (const m of this.ayahMarks()) {
         const g = m.el, prevStyle = g.getAttribute('style');
         undo.push(() => prevStyle == null ? g.removeAttribute('style') : g.setAttribute('style', prevStyle));
         if (hide) { g.style.display = 'none'; continue; }
@@ -1013,7 +1019,7 @@
           }
         }
       }
-      return { count: this.markers().length, remove() { undo.reverse().forEach(f => f()); } };
+      return { count: this.ayahMarks().length, remove() { undo.reverse().forEach(f => f()); } };
 
       function circleRing(b, colour) {
         return svgEl('circle', {
@@ -1024,14 +1030,14 @@
       }
     }
 
-    hideMarkers() { return this.styleMarkers({ hide: true }); }
+    hideAyahMarks() { return this.styleAyahMarks({ hide: true }); }
 
     /* ---- viewBox ---- */
 
     /** Refit the viewBox around whatever the page now contains. */
     refit(pad = 4) {
       const svg = this.el;
-      const vb = measured(svg, () => {
+      const vb = whileRendered(svg, () => {
         const b = svg.getBBox(), r = v => Math.round(v * 1000) / 1000;
         return [r(b.x - pad), r(b.y - pad), r(b.width + 2 * pad), r(b.height + 2 * pad)].join(' ');
       });
@@ -1047,22 +1053,22 @@
      * A medallion is kept only when the WHOLE ayah survived — otherwise a
      * one-word crop frames itself around a marker at the far end of the ayah.
      */
-    crop(target, { pad = 4, keepMarkers = true, background = null } = {}) {
-      const keep = new Set(this.resolve(target).map(w => w.wid));
+    crop(target, { pad = 4, keepMarks = true, background = null } = {}) {
+      const keep = new Set(this.resolve(target).map(w => w.wordKey));
       if (!keep.size) return null;
       const copy = this.clone();
       const svg = copy.el;
-      svg.querySelectorAll('g.word').forEach(w => { if (!keep.has(w.dataset.wid)) w.remove(); });
-      svg.querySelectorAll('g.ayah, g.line').forEach(g => { if (!g.querySelector('g.word')) g.remove(); });
-      svg.querySelectorAll('g.ayah-marker').forEach(m => {
-        const aid = m.dataset.aid;
-        if (!keepMarkers || !aid) { m.remove(); return; }
-        const sel = `g.ayah[data-aid="${cssq(aid)}"] g.word`;
+      svg.querySelectorAll('g.word').forEach(w => { if (!keep.has(w.dataset.wordKey)) w.remove(); });
+      svg.querySelectorAll('g.ayah-fragment, g.line').forEach(g => { if (!g.querySelector('g.word')) g.remove(); });
+      svg.querySelectorAll('g.ayah-mark').forEach(m => {
+        const ayahKey = m.dataset.ayahKey;
+        if (!keepMarks || !ayahKey) { m.remove(); return; }
+        const sel = `g.ayah-fragment[data-ayah-key="${cssq(ayahKey)}"] g.word`;
         if (svg.querySelectorAll(sel).length !== this.el.querySelectorAll(sel).length) m.remove();
       });
-      svg.querySelectorAll('g.surah-name, g.basmalah, g.hizb-mark, g.sajdah-mark')
+      svg.querySelectorAll('g.surah-name, g.basmalah, g.division-mark, g.sajdah-mark')
          .forEach(g => { if (!g.querySelector('g.word')) g.remove(); });
-      const layer = svg.querySelector('[id$="ayah_markers"]');
+      const layer = svg.querySelector('[id$="ayah_marks"]');
       if (layer && !layer.children.length) layer.remove();
 
       const viewBox = copy.refit(pad);
@@ -1072,7 +1078,7 @@
       }
       return {
         el: svg, page: copy, viewBox,
-        words: [...svg.querySelectorAll('g.word')].map(e => e.dataset.wid),
+        words: [...svg.querySelectorAll('g.word')].map(e => e.dataset.wordKey),
         toString() { return new XMLSerializer().serializeToString(svg); },
         toDataUrl() {
           return 'data:image/svg+xml;charset=utf-8,' +
@@ -1148,7 +1154,7 @@
    * Mutates the page you hand it. Handle restores the previous transforms and
    * viewBox exactly.
    */
-  function setLineGap(page, gap, { pad = 6, carryMarkers = true } = {}) {
+  function setLineGap(page, gap, { pad = 6, carryMarks = true } = {}) {
     const svg = page.el;
     const lines = [...svg.querySelectorAll('g.line')];
     if (lines.length < 2) return { gap: 0, viewBox: svg.getAttribute('viewBox'), remove() {} };
@@ -1169,9 +1175,9 @@
       line.setAttribute('transform', `translate(0 ${dy.toFixed(3)})`);
     });
 
-    if (carryMarkers) {
-      for (const m of page.markers()) {
-        const parts = svg.querySelectorAll(`g.ayah[data-aid="${m.aid}"]`);
+    if (carryMarks) {
+      for (const m of page.ayahMarks()) {
+        const parts = svg.querySelectorAll(`g.ayah-fragment[data-ayah-key="${m.ayahKey}"]`);
         const last = parts[parts.length - 1];
         if (!last) continue;
         const dy = shift.get(last.closest('g.line').dataset.line) || 0;
@@ -1229,7 +1235,7 @@
    * listeners.
    */
   function fitToViewport(page, {
-    width, height, element = null, maxGap = Infinity, pad = 6, carryMarkers = true, observe = false
+    width, height, element = null, maxGap = Infinity, pad = 6, carryMarks = true, observe = false
   } = {}) {
     let applied = null, ro = null;
 
@@ -1248,7 +1254,7 @@
       const gap = gapToFill({ pageW: vb.w, pageH: vb.h, lines, viewW: v.w, viewH: v.h, max: maxGap });
       const waste = wastedFraction({ pageW: vb.w, pageH: vb.h, viewW: v.w, viewH: v.h });
       if (gap <= 0) return { gap: 0, lines, viewport: v, wasted: waste, viewBox: page.el.getAttribute('viewBox') };
-      applied = setLineGap(page, gap, { pad, carryMarkers });
+      applied = setLineGap(page, gap, { pad, carryMarks });
       return { gap, lines, viewport: v, wasted: waste, viewBox: applied.viewBox };
     };
 
@@ -1282,7 +1288,7 @@
    *   the per-word hit layer   a sibling div over the svg      THE ONLY TAKER
    *
    * One <span> per word, absolutely positioned on that word's rendered box,
-   * carrying its data-wid and its real Unicode. That is simultaneously what
+   * carrying its data-word-key and its real Unicode. That is simultaneously what
    * native text selection needs, what hover needs, and what a gap-aware tap
    * needs, so it is measured once and shared.
    *
@@ -1329,7 +1335,7 @@
    * @param form   which text form the spans carry (what a drag copies)
    * @param pad    extra px around each word's box, for fat fingers
    */
-  function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 } = {}) {
+  function acquireHitLayer(page, { mount = null, form = 'rasm_uthmani', pad = 0 } = {}) {
     const svg = page.el;
     let rec = LAYERS.get(svg);
 
@@ -1351,7 +1357,7 @@
 
       rec = {
         page, svg, doc, stage, layer, prevPos, refs: 0, form, pad,
-        byWid: new Map(), ro: null, listeners: new Set()
+        byWordKey: new Map(), ro: null, listeners: new Set()
       };
       LAYERS.set(svg, rec);
 
@@ -1387,11 +1393,11 @@
          * selection — the user resizes the window and loses what they had
          * highlighted. Remember which WORDS were selected and put the selection
          * back on the new spans afterwards. */
-        const keep = selectedWidsIn(rec);
+        const keep = selectedWordKeysIn(rec);
 
         const origin = layer.getBoundingClientRect();
         layer.textContent = '';
-        rec.byWid.clear();
+        rec.byWordKey.clear();
 
         /* pass 1: measure the ink, grouped by printed line */
         const rows = new Map();
@@ -1400,7 +1406,7 @@
           if (!r.width || !r.height) continue;
           const line = g.closest('g.line')?.dataset.line || '';
           const rec1 = {
-            g, line, wid: g.dataset.wid, aid: g.closest('g.ayah')?.dataset.aid || '',
+            g, line, wordKey: g.dataset.wordKey, ayahKey: g.closest('g.ayah-fragment')?.dataset.ayahKey || '',
             ink: { left: r.left, top: r.top, right: r.right, bottom: r.bottom,
                    width: r.width, height: r.height }
           };
@@ -1450,10 +1456,10 @@
 
           for (const w of ws) {
             const s = doc.createElement('span');
-            s.textContent = (w.g.dataset[rec.form] || w.g.dataset.uthmani || '') + ' ';
-            s.dataset.wid = w.wid;
+            s.textContent = (w.g.dataset[datasetKey(rec.form)] || w.g.dataset.rasmUthmani || '') + ' ';
+            s.dataset.wordKey = w.wordKey;
             s.dataset.line = w.line;
-            s.dataset.aid = w.aid;
+            s.dataset.ayahKey = w.ayahKey;
             /* the ink box travels with the span so a consumer drawing a band
                never has to re-measure — and never uses the hit box by mistake */
             s.dataset.ink = [w.ink.left - origin.left, w.ink.top - origin.top,
@@ -1464,12 +1470,12 @@
             s.style.height = (w.hit.bottom - w.hit.top + 2 * rec.pad) + 'px';
             s.style.fontSize = s.style.lineHeight = w.ink.height + 'px';
             layer.appendChild(s);
-            rec.byWid.set(w.wid, s);
+            rec.byWordKey.set(w.wordKey, s);
           }
         }
         if (keep.length) restoreSelection(rec, keep);
         for (const fn of rec.listeners) fn(rec);
-        return rec.byWid.size;
+        return rec.byWordKey.size;
       };
       rec.build();
 
@@ -1488,16 +1494,16 @@
     return {
       get layer() { return rec.layer; },
       get stage() { return rec.stage; },
-      get count() { return rec.byWid.size; },
+      get count() { return rec.byWordKey.size; },
       get refs() { return rec.refs; },
       get form() { return rec.form; },
       /** Change the text the spans carry (what a drag copies). Rebuilds once. */
       setForm(f) { rec.form = f; rec.build(); },
       spans() { return [...rec.layer.querySelectorAll('span')]; },
-      spanOf(wid) { return rec.byWid.get(wid) || null; },
-      widOf(node) {
+      spanOf(wordKey) { return rec.byWordKey.get(wordKey) || null; },
+      wordKeyOf(node) {
         const el = node && (node.nodeType === 1 ? node : node.parentElement);
-        return el?.closest('.mushaf-hitlayer span')?.dataset.wid || null;
+        return el?.closest('.mushaf-hitlayer span')?.dataset.wordKey || null;
       },
       rebuild() { return rec.build(); },
       /** Called after every rebuild, so a consumer can re-apply its own state. */
@@ -1509,10 +1515,10 @@
        */
       wordAt(clientX, clientY, opts = {}) {
         const hit = rec.doc.elementFromPoint(clientX, clientY);
-        const wid = this.widOf(hit);
-        if (wid) {
-          const w = page.word(wid);
-          return w && { word: w, wid, aid: w.aid, line: w.line, distance: 0, exact: true };
+        const wordKey = this.wordKeyOf(hit);
+        if (wordKey) {
+          const w = page.word(wordKey);
+          return w && { word: w, wordKey, ayahKey: w.ayahKey, line: w.line, distance: 0, exact: true };
         }
         return page.hitTest(clientX, clientY, opts);
       },
@@ -1534,17 +1540,17 @@
   function hasHitLayer(page) { return LAYERS.has(page.el); }
 
   /* Which words does the current selection cover, if it is inside this layer? */
-  function selectedWidsIn(rec) {
+  function selectedWordKeysIn(rec) {
     const sel = rec.doc.defaultView.getSelection();
     if (!sel || !sel.rangeCount || sel.isCollapsed) return [];
     const r = sel.getRangeAt(0);
     const out = [];
-    for (const s of rec.layer.querySelectorAll('span')) if (r.intersectsNode(s)) out.push(s.dataset.wid);
+    for (const s of rec.layer.querySelectorAll('span')) if (r.intersectsNode(s)) out.push(s.dataset.wordKey);
     return out;
   }
 
-  function restoreSelection(rec, wids) {
-    const a = rec.byWid.get(wids[0]), b = rec.byWid.get(wids[wids.length - 1]);
+  function restoreSelection(rec, wordKeys) {
+    const a = rec.byWordKey.get(wordKeys[0]), b = rec.byWordKey.get(wordKeys[wordKeys.length - 1]);
     if (!a || !b) return;
     const r = rec.doc.createRange();
     r.setStartBefore(a);
@@ -1560,19 +1566,19 @@
     event, level, layerOpts, maxDistance, gapBias, leaveHandler = null
   } = {}) {
     const hl = acquireHitLayer(page, layerOpts);
-    let lastWid = null;
+    let lastWordKey = null;
 
     const fn = ev => {
       const res = hl.wordAt(ev.clientX, ev.clientY, { maxDistance, gapBias });
       if (!res) {
-        if (leaveHandler && lastWid) { lastWid = null; leaveHandler(ev); }
+        if (leaveHandler && lastWordKey) { lastWordKey = null; leaveHandler(ev); }
         return;
       }
       if (event === 'pointermove') {
-        if (res.wid === lastWid) return;
-        lastWid = res.wid;
+        if (res.wordKey === lastWordKey) return;
+        lastWordKey = res.wordKey;
       }
-      handler(level === 'ayah' ? { ...res, ayah: page.ayah(res.aid) } : res, ev);
+      handler(level === 'ayah' ? { ...res, ayah: page.ayah(res.ayahKey) } : res, ev);
     };
 
     /* listen on the STAGE, so both the spans and the gaps between them are
@@ -1692,11 +1698,11 @@
 
   /**
    * @param form      which text form Ctrl+C copies
-   * @param citation  true -> "…text… (2:255)"; or fn(words, text, aids) -> string
-   * @param onSelect  {text, words, aids} on every selection change
+   * @param citation  true -> "…text… (2:255)"; or fn(words, text, ayahKeys) -> string
+   * @param onSelect  {text, words, ayahKeys} on every selection change
    */
   function attachSelection(page, {
-    mount = null, form = 'uthmani', citation = false, onSelect = null, copy = true,
+    mount = null, form = 'rasm_uthmani', citation = false, onSelect = null, copy = true,
     paintBand = true, bandFill = '#2d6fd6', bandOpacity = 0.25, bandPadX = 0.6
   } = {}) {
     const hl = acquireHitLayer(page, { mount, form });
@@ -1727,14 +1733,14 @@
       return hl.spans().filter(s => r.intersectsNode(s));
     }
     function selectedWords() {
-      return selectedSpans().map(s => page.word(s.dataset.wid)).filter(Boolean);
+      return selectedSpans().map(s => page.word(s.dataset.wordKey)).filter(Boolean);
     }
 
-    /** The payload, built from data-wid — the mushaf's own line breaks kept. */
+    /** The payload, built from data-word-key — the mushaf's own line breaks kept. */
     function text(which = copyForm) {
       let out = '', prevLine = null;
       for (const s of selectedSpans()) {
-        const w = page.word(s.dataset.wid);
+        const w = page.word(s.dataset.wordKey);
         const v = w && w.form(which);
         if (!v) continue;
         out += (prevLine !== null && s.dataset.line !== prevLine ? '\n' : (out ? ' ' : '')) + v;
@@ -1749,10 +1755,10 @@
       const body = text(which);
       if (!body || !citation) return body;
       const words = selectedWords();
-      const aids = [...new Set(words.map(w => w.aid))];
-      if (typeof citation === 'function') return citation(words, body, aids);
-      const ref = aids.length === 1 ? aids[0]
-        : aids[0] + '–' + aids[aids.length - 1].split(':')[1];
+      const ayahKeys = [...new Set(words.map(w => w.ayahKey))];
+      if (typeof citation === 'function') return citation(words, body, ayahKeys);
+      const ref = ayahKeys.length === 1 ? ayahKeys[0]
+        : ayahKeys[0] + '–' + ayahKeys[ayahKeys.length - 1].split(':')[1];
       return `${body} (${ref})`;
     }
 
@@ -1788,7 +1794,7 @@
         if (paintBand) repaint();
         if (onSelect) {
           const words = selectedWords();
-          onSelect({ text: text(), words, aids: [...new Set(words.map(w => w.aid))] });
+          onSelect({ text: text(), words, ayahKeys: [...new Set(words.map(w => w.ayahKey))] });
         }
       } finally { painting = false; }
     };
@@ -1819,8 +1825,8 @@
       rebuild: () => hl.rebuild(),
       spans: () => hl.spans(),
       words: selectedWords, text, payload,
-      selectWords(wids) {
-        const list = wids.map(w => hl.spanOf(w)).filter(Boolean);
+      selectWords(wordKeys) {
+        const list = wordKeys.map(w => hl.spanOf(w)).filter(Boolean);
         if (!list.length) return false;
         const r = doc.createRange();
         r.setStartBefore(list[0]);
@@ -1858,17 +1864,17 @@
    */
 
   /**
-   * @param target  anything MushafPage#resolve accepts: '2:255', {line: 7}, wids…
+   * @param target  anything MushafPage#resolve accepts: '2:255', {line: 7}, wordKeys…
    * @param mode    'hide' | 'block' | 'blur'
-   * @param order   'reading' (data-wid order) | 'reverse'
+   * @param order   'reading' (data-word-key order) | 'reverse'
    */
   function mask(page, target = 'page', {
     mode = 'hide', color = '#d8d3c6', blur = 2.2, rx = 1.2, padX = 0.6, padY = 0.8, order = 'reading'
   } = {}) {
-    const words = page.resolve(target).slice().sort(byWid);
+    const words = page.resolve(target).slice().sort(byWordKey);
     if (order === 'reverse') words.reverse();
 
-    const hidden = new Set(words.map(w => w.wid));
+    const hidden = new Set(words.map(w => w.wordKey));
     const undo = [];
     let filter = null, cover = null;
 
@@ -1901,7 +1907,7 @@
       }
       /* block */
       if (on) {
-        if (rects.has(w.wid)) { rects.get(w.wid).style.display = ''; return; }
+        if (rects.has(w.wordKey)) { rects.get(w.wordKey).style.display = ''; return; }
         const b = w.box();
         const r = document.createElementNS(SVGNS, 'rect');
         r.setAttribute('x', (b.x0 - padX).toFixed(3));
@@ -1911,9 +1917,9 @@
         r.setAttribute('rx', String(rx));
         r.setAttribute('fill', color);
         cover.appendChild(r);
-        rects.set(w.wid, r);
+        rects.set(w.wordKey, r);
       } else {
-        const r = rects.get(w.wid);
+        const r = rects.get(w.wordKey);
         if (r) r.style.display = 'none';
       }
     }
@@ -1930,8 +1936,8 @@
         let done = 0;
         for (const w of words) {
           if (done >= n) break;
-          if (!hidden.has(w.wid)) continue;
-          hidden.delete(w.wid); paint(w, false); done++;
+          if (!hidden.has(w.wordKey)) continue;
+          hidden.delete(w.wordKey); paint(w, false); done++;
         }
         return api.revealedCount;
       },
@@ -1941,18 +1947,18 @@
         let done = 0;
         for (let i = words.length - 1; i >= 0 && done < n; i--) {
           const w = words[i];
-          if (hidden.has(w.wid)) continue;
-          hidden.add(w.wid); paint(w, true); done++;
+          if (hidden.has(w.wordKey)) continue;
+          hidden.add(w.wordKey); paint(w, true); done++;
         }
         return api.revealedCount;
       },
-      revealWord(wid) {
-        const w = words.find(x => x.wid === wid);
-        if (w && hidden.has(wid)) { hidden.delete(wid); paint(w, false); }
+      revealWord(wordKey) {
+        const w = words.find(x => x.wordKey === wordKey);
+        if (w && hidden.has(wordKey)) { hidden.delete(wordKey); paint(w, false); }
         return api.revealedCount;
       },
-      revealAll() { for (const w of words) if (hidden.has(w.wid)) { hidden.delete(w.wid); paint(w, false); } return words.length; },
-      hideAll() { for (const w of words) if (!hidden.has(w.wid)) { hidden.add(w.wid); paint(w, true); } return 0; },
+      revealAll() { for (const w of words) if (hidden.has(w.wordKey)) { hidden.delete(w.wordKey); paint(w, false); } return words.length; },
+      hideAll() { for (const w of words) if (!hidden.has(w.wordKey)) { hidden.add(w.wordKey); paint(w, true); } return 0; },
       remove() {
         for (const w of undo) { w.el.style.visibility = ''; w.el.style.filter = ''; }
         filter && filter.remove();
@@ -1964,9 +1970,9 @@
   }
 
   /** Mask everything from a word onward — the usual "cover the rest" drill. */
-  function maskFrom(page, wid, opts = {}) {
-    const all = page.words().sort(byWid);
-    const i = all.findIndex(w => w.wid === wid);
+  function maskFrom(page, wordKey, opts = {}) {
+    const all = page.words().sort(byWordKey);
+    const i = all.findIndex(w => w.wordKey === wordKey);
     return mask(page, i < 0 ? [] : all.slice(i), opts);
   }
 
@@ -1991,14 +1997,14 @@
     lit = 1, byAyah = false, grey = '#c9c4b8', ink = '#231f20', markers = true, at = 0
   } = {}) {
     const theme = page.theme({ ink: grey });
-    const steps = byAyah ? page.ayahKeys() : page.words().map(w => w.wid);
+    const steps = byAyah ? page.ayahKeys() : page.words().map(w => w.wordKey);
 
     const closes = new Map();
     if (markers) {
-      for (const mk of page.markers()) {
-        const ayah = page.ayah(mk.aid);
+      for (const mk of page.ayahMarks()) {
+        const ayah = page.ayah(mk.ayahKey);
         const last = ayah && ayah.words().pop();
-        if (last) closes.set(mk.aid, steps.indexOf(byAyah ? mk.aid : last.wid));
+        if (last) closes.set(mk.ayahKey, steps.indexOf(byAyah ? mk.ayahKey : last.wordKey));
       }
     }
 
@@ -2010,8 +2016,8 @@
       if (i < 0) return;
       const keys = steps.slice(Math.max(0, i - lit + 1), i + 1);
       if (keys.length) held.push(page.highlight(keys, { fill: ink }));
-      for (const [aid, k] of closes)
-        if (k >= 0 && i >= k) held.push(inkPaths(page.ayah(aid).marker, ink));
+      for (const [ayahKey, k] of closes)
+        if (k >= 0 && i >= k) held.push(inkPaths(page.ayah(ayahKey).mark, ink));
     }
     paint(Math.min(steps.length - 1, Math.max(0, at)));
 
@@ -2038,9 +2044,8 @@
     };
   }
 
-  function byWid(a, b) {
-    const x = a.parts, y = b.parts;
-    return (x[0] - y[0]) || (x[1] - y[1]) || (x[2] - y[2]);
+  function byWordKey(a, b) {
+    return (a.surah - b.surah) || (a.ayah - b.ayah) || (a.number - b.number);
   }
 
   /* ===== a11y.mjs ===== */
@@ -2061,7 +2066,7 @@
    * @param label  the <svg>'s own accessible name
    */
   function annotate(page, {
-    form = 'uthmani', level = 'both', label = null, lang = 'ar', deferToTextLayer = false
+    form = 'rasm_uthmani', level = 'both', label = null, lang = 'ar', deferToTextLayer = false
   } = {}) {
     const svg = page.el;
     const undo = [];
@@ -2087,7 +2092,7 @@
     const auto = label || (
       'Quran page' + (page.number ? ' ' + page.number : '') +
       (named ? ', surah ' + named.latin : '') +
-      ', ayat ' + (page.ayahKeys()[0] || '?') + ' to ' + (page.ayahKeys().slice(-1)[0] || '?')
+      ', ayahs ' + (page.ayahKeys()[0] || '?') + ' to ' + (page.ayahKeys().slice(-1)[0] || '?')
     );
     set(svg, 'role', 'group');
     set(svg, 'aria-label', auto);
@@ -2109,7 +2114,7 @@
         a.fragments.forEach((f, i) => {
           set(f, 'role', 'group');
           set(f, 'aria-label',
-            `Ayah ${a.aid}` + (a.fragments.length > 1 ? `, part ${i + 1} of ${a.fragments.length}` : ''));
+            `Ayah ${a.ayahKey}` + (a.fragments.length > 1 ? `, part ${i + 1} of ${a.fragments.length}` : ''));
         });
         ayahs++;
       }
@@ -2120,7 +2125,7 @@
       set(g, 'role', 'img');
       set(g, 'aria-label', g.classList.contains('surah-name')
         ? `Surah ${d.sid} ${d.surahNameAr || ''} (${d.surahNameLatin || ''})`.trim()
-        : 'Bismillah ar-Rahman ar-Rahim');
+        : 'Basmalah Rahman ar-Rahim');
     }
 
     return { words, ayahs, label: auto, remove() { undo.reverse().forEach(f => f()); } };
@@ -2270,7 +2275,7 @@
    * first ayah of each page is enough to answer pageOf() by binary search.
    */
 
-  const num = aid => { const [s, a] = String(aid).split(':').map(Number); return s * 1000 + a; };
+  const num = ayahKey => { const [s, a] = String(ayahKey).split(':').map(Number); return s * 1000 + a; };
 
   class MushafAtlas {
     constructor(data) {
@@ -2284,8 +2289,8 @@
     get edition() { return this.data.edition; }
 
     /** Which page draws this ayah? */
-    pageOf(aid) {
-      const k = num(aid);
+    pageOf(ayahKey) {
+      const k = num(ayahKey);
       const f = this._first;
       if (k < f[0]) return null;
       let lo = 0, hi = f.length - 1;
@@ -2293,7 +2298,7 @@
       return lo + 1;
     }
     /** Which page is a whole word key on? */
-    pageOfWord(wid) { const p = String(wid).split(':'); return this.pageOf(p[0] + ':' + p[1]); }
+    pageOfWord(wordKey) { const p = String(wordKey).split(':'); return this.pageOf(p[0] + ':' + p[1]); }
 
     /** The first and last ayah drawn on a page. */
     pageRange(n) {
@@ -2320,7 +2325,7 @@
     division(kind, n) { return (this.data[kind] || []).find(d => d.n === Number(n)) || null; }
     juz(n) { return this.division('juz', n); }
     hizb(n) { return this.division('hizb', n); }
-    rub(n) { return this.division('rub', n); }
+    rubu_al_hizb(n) { return this.division('rubu_al_hizb', n); }
     nisf(n) { return this.division('nisf', n); }
 
     /** [firstPage, lastPage] of a juz. */
@@ -2331,15 +2336,15 @@
     }
 
     /** Which juz / hizb / rubʿ is this ayah in? */
-    divisionAt(kind, aid) {
-      const k = num(aid), list = this.data[kind] || [];
+    divisionAt(kind, ayahKey) {
+      const k = num(ayahKey), list = this.data[kind] || [];
       let out = null;
-      for (const d of list) { if (num(d.aid) <= k) out = d; else break; }
+      for (const d of list) { if (num(d.ayahKey) <= k) out = d; else break; }
       return out;
     }
-    juzAt(aid) { return this.divisionAt('juz', aid); }
-    hizbAt(aid) { return this.divisionAt('hizb', aid); }
-    rubAt(aid) { return this.divisionAt('rub', aid); }
+    juzAt(ayahKey) { return this.divisionAt('juz', ayahKey); }
+    hizbAt(ayahKey) { return this.divisionAt('hizb', ayahKey); }
+    rubuAlHizbAt(ayahKey) { return this.divisionAt('rubu_al_hizb', ayahKey); }
   }
 
   async function loadAtlas(url = 'atlas.json', { fetch: f = null } = {}) {
@@ -2351,13 +2356,13 @@
   function atlasFrom(data) { return new MushafAtlas(data); }
 
   /* ===== markers.mjs ===== */
-  /* markers.mjs — swappable, recolourable ayah end-markers.
+  /* markers.mjs — swappable, recolourable ayah end-marks.
    *
    * The medallion at the end of an ayah is
    *
-   *   <g class="ayah-marker" data-aid="2:256">
+   *   <g class="ayah-mark" data-ayah-key="2:256">
    *     <g transform="translate(…) scale(0.011 -0.011)">
-   *       <path data-kind="ayah-marker-ornament" d="…"/>   the RING
+   *       <path data-kind="ayah_mark_ornament" d="…"/>   the RING
    *     </g>
    *     … the numeral group …
    *   </g>
@@ -2369,11 +2374,11 @@
    *
    * ─── nothing is redistributed ───────────────────────────────────────────────
    *
-   * No marker outline ships with this library. `loadMarkerSet()` takes a base URL
+   * No marker outline ships with this library. `loadMarkSet()` takes a base URL
    * and fetches `collection.json` and each marker SVG at runtime. The reference
    * set is
    *
-   *   https://github.com/quranpedia/ayah-markers
+   *   https://github.com/quranpedia/ayah-marks
    *
    * whose outlines are traced from twenty type families and carry THOSE families'
    * licences, which differ from one another. Read `collection.json` — every
@@ -2401,7 +2406,7 @@
    *
    * so setting `--fill-base`, `--fill-1`, `--fill-2`, `--fill-3`, `--ink-base`,
    * `--ink-1` or `--ink-2` on ANY ancestor recolours the drawing with no
-   * JavaScript at all. `colourAyahMarkers()` is a convenience over
+   * JavaScript at all. `colourAyahMarks()` is a convenience over
    * `element.style.setProperty`, nothing more. Each design uses only some of the
    * parts; `outline.parts` lists the ones it actually draws.
    */
@@ -2409,7 +2414,7 @@
   const NS = 'http://www.w3.org/2000/svg';   /* core.mjs exports SVGNS; the flat
      global build puts every module in one scope, so the name must be local */
 
-  /* one MarkerSet per base URL, so two consumers share the fetches */
+  /* one MarkSet per base URL, so two consumers share the fetches */
   const SETS = new Map();
 
   /* the original ring of every marker group we have touched */
@@ -2421,7 +2426,7 @@
    * Load a marker set's index. Fetches `collection.json` once; the outlines
    * themselves are fetched lazily, on first use of each.
    *
-   *   const set = await loadMarkerSet('https://example.org/ayah-markers/');
+   *   const set = await loadMarkSet('https://example.org/ayah-marks/');
    *   set.list()                       // [{id, family, weight, sources, …}, …]
    *   await set.outline('017-regular') // {viewBox, box, parts, number, …}
    *
@@ -2432,7 +2437,7 @@
    * @param fetch    an override, for tests or for a caller with its own client
    * @param cache    false to bypass the per-URL cache (a retry after a failure)
    */
-  function loadMarkerSet(baseUrl, { fetch: f = null, cache = true } = {}) {
+  function loadMarkSet(baseUrl, { fetch: f = null, cache = true } = {}) {
     const base = String(baseUrl || '').replace(/\/?$/, '/');
     if (cache && SETS.has(base)) return SETS.get(base);
 
@@ -2466,7 +2471,7 @@
             license: s.license }))
         };
       });
-      return new MarkerSet(base, records, fetcher);
+      return new MarkSet(base, records, fetcher);
     })();
 
     if (cache) {
@@ -2476,7 +2481,7 @@
     return p;
   }
 
-  class MarkerSet {
+  class MarkSet {
     constructor(base, records, fetcher) {
       this.baseUrl = base;
       this.name = null;
@@ -2544,7 +2549,7 @@
        getBBox() is meaningless on a detached, unrendered tree. */
     const probe = document.createElementNS(NS, 'svg');
     for (const g of groups) probe.appendChild(document.importNode(g, true));
-    const box = measured(probe, () => {
+    const box = whileRendered(probe, () => {
       const b = probe.getBBox();
       return { x: b.x, y: b.y, w: b.width, h: b.height };
     });
@@ -2600,7 +2605,7 @@
    * transform is written in.
    */
   function numeralCentreIn(group, host) {
-    const num = group.querySelector('[data-kind="ayah-number"]');
+    const num = group.querySelector('[data-kind="ayah_number"]');
     if (!num || !host || !num.getScreenCTM || !host.getScreenCTM) return null;
     const b = num.getBBox();
     if (!(b.width > 0 && b.height > 0)) return null;
@@ -2622,7 +2627,7 @@
    * design's OWN number-centre lands on the printed numeral, and scaled from the
    * box the ring occupied.
    *
-   * Only `g.ayah-marker[data-aid]` groups are touched. Since 2026-09-04 that is
+   * Only `g.ayah-mark[data-ayah-key]` groups are touched. Since 2026-09-04 that is
    * every marker; page files built before it carried 12 id-less groups on pages
    * 1-2 ("decorative rosettes" — in fact the artwork's doubled rings), and
    * `decorative: true` includes those. On current pages the doubled ring sits
@@ -2635,14 +2640,14 @@
    * @param colours  {part: colour} — sets upstream's --<part> variables on the page
    * @returns {count, remove()} — remove() restores the printed rings exactly
    */
-  function setAyahMarker(page, outline, {
+  function setAyahMark(page, outline, {
     target = 'page', size = 1, colours = null,
     decorative = false, anchorOnNumber = true
   } = {}) {
     if (!outline || !Array.isArray(outline.groups))
-      throw new TypeError('setAyahMarker needs an outline from set.outline(id)');
+      throw new TypeError('setAyahMark needs an outline from set.outline(id)');
 
-    const groups = markerGroups(page, target, decorative);
+    const groups = markGroups(page, target, decorative);
     const undo = [];
     let swapped = 0;
 
@@ -2650,7 +2655,7 @@
       const ring = currentRing(g);
       if (!ring) continue;
 
-      const box = measured(page.el, () => bboxOf(ring));
+      const box = whileRendered(page.el, () => bboxOf(ring));
       if (!(box.w > 0 && box.h > 0)) continue;
       if (!ORIGINALS.has(g)) ORIGINALS.set(g, { ring, parent: ring.parentNode, next: ring.nextSibling });
 
@@ -2666,7 +2671,7 @@
       // box centre on the join, and box-centring would hang the disc above the
       // number instead of around it.
       const anchor = anchorOnNumber
-        ? measured(page.el, () => numeralCentreIn(g, ring.parentNode))
+        ? whileRendered(page.el, () => numeralCentreIn(g, ring.parentNode))
         : null;
 
       const swap = buildSwap(outline, box, size, anchor);
@@ -2679,14 +2684,14 @@
       // The presentation attribute, not el.style: once Chrome's inline-style
       // object has been touched, removing the attribute still serialises an
       // empty style="", and remove() must give the group back byte for byte.
-      for (const c of g.querySelectorAll('[data-kind="ayah-marker-ornament"][data-duplicate]')) {
+      for (const c of g.querySelectorAll('[data-kind="ayah_mark_ornament"][data-duplicate]')) {
         const prev = c.getAttribute('display');
         c.setAttribute('display', 'none');
         undo.push(() => prev == null ? c.removeAttribute('display') : c.setAttribute('display', prev));
       }
     }
 
-    const paint = colours ? colourAyahMarkers(page, colours) : null;
+    const paint = colours ? colourAyahMarks(page, colours) : null;
 
     return {
       count: swapped,
@@ -2700,12 +2705,12 @@
   }
 
   /** Put every printed ring back, exactly as it was drawn. */
-  function resetAyahMarkers(page, { decorative = true } = {}) {
+  function resetAyahMarks(page, { decorative = true } = {}) {
     let n = 0;
-    for (const g of markerGroups(page, 'page', decorative)) {
+    for (const g of markGroups(page, 'page', decorative)) {
       const rec = ORIGINALS.get(g);
       if (!rec) continue;
-      const swap = g.querySelector('g.ayah-marker-swap');
+      const swap = g.querySelector('g.ayah-mark-swap');
       if (!swap) continue;
       swap.replaceWith(rec.ring);
       n++;
@@ -2714,8 +2719,8 @@
   }
 
   /** Is this page showing a swapped marker? */
-  function hasSwappedMarkers(page) {
-    return !!page.el.querySelector('g.ayah-marker-swap');
+  function hasSwappedMarks(page) {
+    return !!page.el.querySelector('g.ayah-mark-swap');
   }
 
   /**
@@ -2726,7 +2731,7 @@
    * they reach every medallion at once. A stylesheet setting them on any ancestor
    * does exactly the same thing with no JavaScript.
    */
-  function colourAyahMarkers(page, colours = {}) {
+  function colourAyahMarks(page, colours = {}) {
     const el = page.el, prev = [];
     for (const part in colours) {
       const name = '--' + part;
@@ -2739,19 +2744,19 @@
 
   /* ------------------------------------------------------------- internals */
 
-  function markerGroups(page, target, decorative) {
-    const sel = decorative ? 'g.ayah-marker' : 'g.ayah-marker[data-aid]';
+  function markGroups(page, target, decorative) {
+    const sel = decorative ? 'g.ayah-mark' : 'g.ayah-mark[data-ayah-key]';
     if (target == null || target === 'page' || target === '*')
       return [...page.el.querySelectorAll(sel)];
     const keys = new Set((Array.isArray(target) ? target : [target]).map(
-      t => typeof t === 'string' ? t : (t && t.aid) || null).filter(Boolean));
-    return [...page.el.querySelectorAll(sel)].filter(g => keys.has(g.dataset.aid));
+      t => typeof t === 'string' ? t : (t && t.ayahKey) || null).filter(Boolean));
+    return [...page.el.querySelectorAll(sel)].filter(g => keys.has(g.dataset.ayahKey));
   }
 
   /* The ring, or the group that stands in its place. */
   function currentRing(g) {
-    return g.querySelector('[data-kind="ayah-marker-ornament"]:not([data-duplicate])') ||
-           g.querySelector('g.ayah-marker-swap');
+    return g.querySelector('[data-kind="ayah_mark_ornament"]:not([data-duplicate])') ||
+           g.querySelector('g.ayah-mark-swap');
   }
 
   function bboxOf(el) {
@@ -2776,9 +2781,9 @@
 
   function buildSwap(outline, box, size, anchor = null) {
     const g = document.createElementNS(NS, 'g');
-    g.setAttribute('class', 'ayah-marker-swap');
-    g.setAttribute('data-marker', outline.id || '');
-    g.setAttribute('data-kind', 'ayah-marker-ornament');
+    g.setAttribute('class', 'ayah-mark-swap');
+    g.setAttribute('data-mark', outline.id || '');
+    g.setAttribute('data-kind', 'ayah_mark_ornament');
 
     // Scale comes from the ring's box either way — the replacement should read
     // at the size the printed medallion did. Only the POSITION differs: with an
@@ -2826,8 +2831,8 @@
 
   /**
    * @param reciter   quran.com recitation id (9 = Minshawi, murattal)
-   * @param timings   skip the network entirely: {aid: [url, [[startMs, endMs]…]]}
-   * @param onWord    ({aid, index, count, file, files, whole}) on every change
+   * @param timings   skip the network entirely: {ayahKey: [url, [[startMs, endMs]…]]}
+   * @param onWord    ({ayahKey, index, count, file, files, whole}) on every change
    * @param onEnd     the last ayah finished
    * @param onError   the audio element failed; the handle is dead after this
    * @param paint     false leaves the ink alone and reports position only
@@ -2854,13 +2859,13 @@
     }
 
     const ayahs = [], mismatches = [];
-    for (const aid of page.ayahKeys()) {
-      if (!raw[aid]) continue;
-      const ayah = page.ayah(aid);
-      const times = raw[aid][1];
+    for (const ayahKey of page.ayahKeys()) {
+      if (!raw[ayahKey]) continue;
+      const ayah = page.ayah(ayahKey);
+      const times = raw[ayahKey][1];
       const perWord = ayah.words().length === times.length;
-      if (!perWord) mismatches.push({ aid, ours: ayah.words().length, theirs: times.length });
-      ayahs.push({ aid, ayah, url: raw[aid][0], times, perWord });
+      if (!perWord) mismatches.push({ ayahKey, ours: ayah.words().length, theirs: times.length });
+      ayahs.push({ ayahKey, ayah, url: raw[ayahKey][0], times, perWord });
     }
     if (!ayahs.length) throw new Error('no timings cover page ' + n);
 
@@ -2894,7 +2899,7 @@
       if (i === word) return;
       word = i;
       show(a, i);
-      if (onWord) onWord({ aid: a.aid, index: i, count: a.times.length,
+      if (onWord) onWord({ ayahKey: a.ayahKey, index: i, count: a.times.length,
                            file, files: ayahs.length, whole: !a.perWord });
     }
 
@@ -2930,7 +2935,7 @@
   }
 
 
-  var api = { SVGNS: SVGNS, XHTMLNS: XHTMLNS, TEXT_FORMS: TEXT_FORMS, MARK_REGISTRY: MARK_REGISTRY, markNames: markNames, familyOf: familyOf, categoryOf: categoryOf, stripArabicMarks: stripArabicMarks, foldArabic: foldArabic, normalizeQuery: normalizeQuery, looseKey: looseKey, measured: measured, Word: Word, Ayah: Ayah, Line: Line, boxInView: boxInView, MushafPage: MushafPage, createLoader: createLoader, version: version, setLineGap: setLineGap, gapToFill: gapToFill, wastedFraction: wastedFraction, fitToViewport: fitToViewport, acquireHitLayer: acquireHitLayer, hasHitLayer: hasHitLayer, onWordHover: onWordHover, onWordClick: onWordClick, wordTooltip: wordTooltip, wordAt: wordAt, attachSelection: attachSelection, mask: mask, maskFrom: maskFrom, reveal: reveal, annotate: annotate, scrollIntoView: scrollIntoView, toCanvas: toCanvas, toPngDataUrl: toPngDataUrl, toPngBlob: toPngBlob, toSvgDataUrl: toSvgDataUrl, MushafAtlas: MushafAtlas, loadAtlas: loadAtlas, atlasFrom: atlasFrom, loadMarkerSet: loadMarkerSet, readOutline: readOutline, numberCentre: numberCentre, setAyahMarker: setAyahMarker, resetAyahMarkers: resetAyahMarkers, hasSwappedMarkers: hasSwappedMarkers, colourAyahMarkers: colourAyahMarkers, fitTransform: fitTransform, followRecitation: followRecitation };
+  var api = { SVGNS: SVGNS, XHTMLNS: XHTMLNS, TEXT_FORMS: TEXT_FORMS, datasetKey: datasetKey, MARK_REGISTRY: MARK_REGISTRY, markNames: markNames, familyOf: familyOf, categoryOf: categoryOf, stripArabicMarks: stripArabicMarks, foldArabic: foldArabic, normalizeQuery: normalizeQuery, loosenQuery: loosenQuery, whileRendered: whileRendered, Word: Word, Ayah: Ayah, Line: Line, boxInView: boxInView, MushafPage: MushafPage, createLoader: createLoader, version: version, setLineGap: setLineGap, gapToFill: gapToFill, wastedFraction: wastedFraction, fitToViewport: fitToViewport, acquireHitLayer: acquireHitLayer, hasHitLayer: hasHitLayer, onWordHover: onWordHover, onWordClick: onWordClick, wordTooltip: wordTooltip, wordAt: wordAt, attachSelection: attachSelection, mask: mask, maskFrom: maskFrom, reveal: reveal, annotate: annotate, scrollIntoView: scrollIntoView, toCanvas: toCanvas, toPngDataUrl: toPngDataUrl, toPngBlob: toPngBlob, toSvgDataUrl: toSvgDataUrl, MushafAtlas: MushafAtlas, loadAtlas: loadAtlas, atlasFrom: atlasFrom, loadMarkSet: loadMarkSet, readOutline: readOutline, numberCentre: numberCentre, setAyahMark: setAyahMark, resetAyahMarks: resetAyahMarks, hasSwappedMarks: hasSwappedMarks, colourAyahMarks: colourAyahMarks, fitTransform: fitTransform, followRecitation: followRecitation };
   if (typeof module === 'object' && module.exports) module.exports = api;
   root.Mushaf = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

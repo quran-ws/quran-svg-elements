@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Cluster every floating mark in an edition by outline shape, and name the clusters.
 
-Shapes, not guesses: the art reuses the same outline for every fatha, every waqf sign,
+Shapes, not guesses: the art reuses the same outline for every fathah, every waqf sign,
 every sajdah mark, so normalising each mark's outer contour and hashing it groups the
 whole mushaf's marks into a few dozen shape classes. Each class then takes ONE label —
 seeded automatically by majority vote from the prediction pipeline (assign_words labels
@@ -63,7 +63,7 @@ def collect(edition, names):
             ws = words.get(ln, [])
             clusters, _ = cluster_line(l_els, ws)
             for w, cl in zip(ws, clusters):
-                segs = segment_word(w["uthmani"])
+                segs = segment_word(w["rasm_uthmani"])
                 groups, _ = align_segs_atoms(cl, segs)
                 for g_atoms, g_segs in groups:
                     if g_atoms:
@@ -89,7 +89,7 @@ def collect(edition, names):
                                     for x, y in polys[pi][c["sp"]["index"]]]
                                    for c in e["contours"]])
 
-        # Surah-title and bismillah lines are known: they receive no words and
+        # Surah-title and basmalah lines are known: they receive no words and
         # their ink is narrow. Their ornamental fragments are not Quranic marks.
         lw = {}
         for ln2 in {e["line"] for e in els if e["line"]}:
@@ -169,7 +169,7 @@ def main(argv=None):
         if len(c["samples"]) < 5:
             c["samples"].append(mk)
 
-    # Agglomerative pass: a slightly stretched two-dots or sukun hashes to its own
+    # Agglomerative pass: a slightly stretched two_dots or sukun hashes to its own
     # tiny cluster; absorb it into the nearest big cluster of the same structure
     # (parts, holes, similar size, close outline) so singletons label themselves.
     order = sorted(clusters.values(), key=lambda c: -c["count"])
@@ -181,7 +181,7 @@ def main(argv=None):
             if m["nparts"] != c["nparts"] or m["nholes"] != c["nholes"]:
                 continue
             if abs(m["hf"] - c["hf"]) > 0.15:
-                continue                  # counter size is identity: ring vs damma head
+                continue                  # counter size is identity: ring vs dammah head
             mmed = sorted(m["sizes"])[len(m["sizes"]) // 2]
             if not (0.77 <= med / (mmed or 1) <= 1.3):
                 continue
@@ -211,9 +211,9 @@ def main(argv=None):
         # conflicting carried labels (a merge joined differently-labeled keys):
         # fall back to the prediction votes and let the sheet re-confirm
         votes = c["votes"].most_common(1)
-        RARE = {"small-circle", "sifr-mustadir", "sifr-mustatil", "meem-iqlab",
-                "small-ya", "small-waw", "pause", "saktah", "seen-reading",
-                "sajdah", "sajdah-line", "sajdah-sign", "hizb"}
+        RARE = {"small_circle", "rounded_zero", "rectangular_zero", "small_meem",
+                "small_yaa", "small_waw", "waqf", "saktah", "seen_al_qiraah",
+                "sajdah", "sajdah_line", "sajdah_mark", "hizb"}
         c["auto"] = (votes[0][0] if votes and (votes[0][1] >= 3 or
                      (votes[0][1] >= 2 and votes[0][0] in RARE)) else None)
         c["label"] = human or c["auto"]
@@ -266,7 +266,7 @@ def main(argv=None):
     json.dump(out_json, open(os.path.join(args.out, "clusters.json"), "w"),
               ensure_ascii=False, indent=1)
 
-    KNOWN = ["fatha", "kasra", "damma", "fathatan", "kasratan", "dammatan", "shadda", "sukun", "maddah", "hamza", "wasla", "small-alef", "small-ya", "small-waw", "small-circle", "sifr-mustadir", "sifr-mustatil", "meem-iqlab", "dot", "two-dots", "three-dots", "pause", "saktah", "seen-reading", "small-noon", "sajdah", "sajdah-line", "sajdah-sign", "hizb", "word", "letter-hamza", "letter-part", "ignore", "fatha+kasra", "fatha+damma", "fatha+hamza", "fatha+dot", "fatha+two-dots", "fatha+three-dots", "fatha+shadda", "fatha+sukun", "fatha+maddah", "fatha+pause", "fatha+small-alef", "kasra+fatha", "kasra+damma", "kasra+hamza", "kasra+dot", "kasra+two-dots", "kasra+three-dots", "kasra+shadda", "kasra+sukun", "kasra+maddah", "kasra+pause", "kasra+small-alef", "damma+fatha", "damma+kasra", "damma+hamza", "damma+dot", "damma+two-dots", "damma+three-dots", "damma+shadda", "damma+sukun", "damma+maddah", "damma+pause", "damma+small-alef", "hamza+fatha", "hamza+kasra", "hamza+damma", "hamza+dot", "hamza+two-dots", "hamza+three-dots", "hamza+shadda", "hamza+sukun", "hamza+maddah", "hamza+pause", "hamza+small-alef", "dot+fatha", "dot+kasra", "dot+damma", "dot+hamza", "dot+two-dots", "dot+three-dots", "dot+shadda", "dot+sukun", "dot+maddah", "dot+pause", "dot+small-alef", "two-dots+fatha", "two-dots+kasra", "two-dots+damma", "two-dots+hamza", "two-dots+dot", "two-dots+three-dots", "two-dots+shadda", "two-dots+sukun", "two-dots+maddah", "two-dots+pause", "two-dots+small-alef", "three-dots+fatha", "three-dots+kasra", "three-dots+damma", "three-dots+hamza", "three-dots+dot", "three-dots+two-dots", "three-dots+shadda", "three-dots+sukun", "three-dots+maddah", "three-dots+pause", "three-dots+small-alef", "shadda+fatha", "shadda+kasra", "shadda+damma", "shadda+hamza", "shadda+dot", "shadda+two-dots", "shadda+three-dots", "shadda+sukun", "shadda+maddah", "shadda+pause", "shadda+small-alef", "sukun+fatha", "sukun+kasra", "sukun+damma", "sukun+hamza", "sukun+dot", "sukun+two-dots", "sukun+three-dots", "sukun+shadda", "sukun+maddah", "sukun+pause", "sukun+small-alef", "maddah+fatha", "maddah+kasra", "maddah+damma", "maddah+hamza", "maddah+dot", "maddah+two-dots", "maddah+three-dots", "maddah+shadda", "maddah+sukun", "maddah+pause", "maddah+small-alef", "pause+fatha", "pause+kasra", "pause+damma", "pause+hamza", "pause+dot", "pause+two-dots", "pause+three-dots", "pause+shadda", "pause+sukun", "pause+maddah", "pause+small-alef", "small-alef+fatha", "small-alef+kasra", "small-alef+damma", "small-alef+hamza", "small-alef+dot", "small-alef+two-dots", "small-alef+three-dots", "small-alef+shadda", "small-alef+sukun", "small-alef+maddah", "small-alef+pause"]
+    KNOWN = ["fathah", "kasrah", "dammah", "tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm", "shaddah", "sukun", "maddah", "hamzah", "hamzat_al_wasl", "omitted_alif", "small_yaa", "small_waw", "small_circle", "rounded_zero", "rectangular_zero", "small_meem", "dot", "two_dots", "three_dots", "waqf", "saktah", "seen_al_qiraah", "small_noon", "sajdah", "sajdah_line", "sajdah_mark", "hizb", "word", "letter_hamzah", "letter_part", "ignore", "fathah+kasrah", "fathah+dammah", "fathah+hamzah", "fathah+dot", "fathah+two_dots", "fathah+three_dots", "fathah+shaddah", "fathah+sukun", "fathah+maddah", "fathah+waqf", "fathah+omitted_alif", "kasrah+fathah", "kasrah+dammah", "kasrah+hamzah", "kasrah+dot", "kasrah+two_dots", "kasrah+three_dots", "kasrah+shaddah", "kasrah+sukun", "kasrah+maddah", "kasrah+waqf", "kasrah+omitted_alif", "dammah+fathah", "dammah+kasrah", "dammah+hamzah", "dammah+dot", "dammah+two_dots", "dammah+three_dots", "dammah+shaddah", "dammah+sukun", "dammah+maddah", "dammah+waqf", "dammah+omitted_alif", "hamzah+fathah", "hamzah+kasrah", "hamzah+dammah", "hamzah+dot", "hamzah+two_dots", "hamzah+three_dots", "hamzah+shaddah", "hamzah+sukun", "hamzah+maddah", "hamzah+waqf", "hamzah+omitted_alif", "dot+fathah", "dot+kasrah", "dot+dammah", "dot+hamzah", "dot+two_dots", "dot+three_dots", "dot+shaddah", "dot+sukun", "dot+maddah", "dot+waqf", "dot+omitted_alif", "two_dots+fathah", "two_dots+kasrah", "two_dots+dammah", "two_dots+hamzah", "two_dots+dot", "two_dots+three_dots", "two_dots+shaddah", "two_dots+sukun", "two_dots+maddah", "two_dots+waqf", "two_dots+omitted_alif", "three_dots+fathah", "three_dots+kasrah", "three_dots+dammah", "three_dots+hamzah", "three_dots+dot", "three_dots+two_dots", "three_dots+shaddah", "three_dots+sukun", "three_dots+maddah", "three_dots+waqf", "three_dots+omitted_alif", "shaddah+fathah", "shaddah+kasrah", "shaddah+dammah", "shaddah+hamzah", "shaddah+dot", "shaddah+two_dots", "shaddah+three_dots", "shaddah+sukun", "shaddah+maddah", "shaddah+waqf", "shaddah+omitted_alif", "sukun+fathah", "sukun+kasrah", "sukun+dammah", "sukun+hamzah", "sukun+dot", "sukun+two_dots", "sukun+three_dots", "sukun+shaddah", "sukun+maddah", "sukun+waqf", "sukun+omitted_alif", "maddah+fathah", "maddah+kasrah", "maddah+dammah", "maddah+hamzah", "maddah+dot", "maddah+two_dots", "maddah+three_dots", "maddah+shaddah", "maddah+sukun", "maddah+waqf", "maddah+omitted_alif", "waqf+fathah", "waqf+kasrah", "waqf+dammah", "waqf+hamzah", "waqf+dot", "waqf+two_dots", "waqf+three_dots", "waqf+shaddah", "waqf+sukun", "waqf+maddah", "waqf+omitted_alif", "omitted_alif+fathah", "omitted_alif+kasrah", "omitted_alif+dammah", "omitted_alif+hamzah", "omitted_alif+dot", "omitted_alif+two_dots", "omitted_alif+three_dots", "omitted_alif+shaddah", "omitted_alif+sukun", "omitted_alif+maddah", "omitted_alif+waqf"]
     open(os.path.join(args.out, "label_marks.html"), "w", encoding="utf-8").write("""<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>Mark labeling</title><style>
 body{font:14px system-ui;margin:1.5em;max-width:1100px}

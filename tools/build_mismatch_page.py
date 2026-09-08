@@ -29,7 +29,7 @@ def word_snippet(page, key):
         return None
     svg = open(f, encoding="utf-8").read()
     s, a, w = key.split(":")
-    m = re.search(r'<g class="word" data-wid="%s:%s:%s"[^>]*>' % (s, a, w), svg)
+    m = re.search(r'<g class="word" data-word-key="%s:%s:%s"[^>]*>' % (s, a, w), svg)
     if not m:
         return None
     g0 = m.start()
@@ -70,7 +70,7 @@ body{font-family:system-ui;margin:20px auto;max-width:980px;background:#fafafa}
 margin:8px 0;display:flex;gap:16px;align-items:center}
 .ink{width:190px;height:90px;flex:none;border:1px solid #eee;border-radius:6px;background:#fff}
 .ink svg{width:100%;height:100%}
-.w{font-size:26px;font-family:'KFGQPC Uthmanic Script HAFS',serif}
+.w{font-size:26px;font-family:'KFGQPC RasmUthmani Script HAFS',serif}
 .bad{color:#b0453a;font-size:14px}
 .k{color:#888;font-size:12px}
 a.go{background:#2563eb;color:#fff;padding:6px 12px;border-radius:6px;

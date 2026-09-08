@@ -190,7 +190,7 @@ def word_audit_state(page, payload):
     # The sweep directory is NOT fixed: each measurement run makes a new one
     # (tax1, tax2, r12 ... r27). Hardcoding two old names meant this queue
     # reported flags from a months-old build — on 2026-08-29 it still showed
-    # p208 10:2:26 as "damma held 2, expected 1" hours after the word was
+    # p208 10:2:26 as "dammah held 2, expected 1" hours after the word was
     # fixed and the live audit called the page clean. Take the NEWEST sweep
     # that has this page, so the queue can never age behind the pipeline.
     import glob
@@ -224,7 +224,7 @@ def extract_context(page, payload):
         root = tree.getroot()
         parents = {c: p for p in root.iter() for c in p}
 
-        eid = payload.get("eid")
+        eid = payload.get("element_id")
         wanted_words = set()
         for key in ("from", "to", "word"):
             v = payload.get(key)
@@ -236,10 +236,10 @@ def extract_context(page, payload):
 
         targets = []
         for el in root.iter():
-            if eid and el.get("data-eid") == eid:
+            if eid and el.get("data-element-id") == eid:
                 targets.append(el)
             elif el.get("class") == "word" and wanted_words:
-                saw = el.get("data-wid") or ""
+                saw = el.get("data-word-key") or ""
                 if saw in wanted_words:
                     targets.append(el)
         if not targets:
@@ -373,7 +373,7 @@ class Handler(BaseHTTPRequestHandler):
                             v = json.loads(line)
                         except Exception:
                             continue
-                        e = v.get("eid") or ""
+                        e = v.get("element_id") or ""
                         if e.startswith("eye:"):
                             rows[e[4:]] = {"correct": v.get("correct"),
                                            "note": v.get("note"),
@@ -415,7 +415,7 @@ class Handler(BaseHTTPRequestHandler):
                         at = dict(re.findall(r'data-([a-z-]+)="([^"]*)"', tag))
                         # derive the family EXACTLY like the variants builder
                         fam = at.get("mark") or at.get("mark-part") or "body"
-                        if fam == "pause" and at.get("waqf"):
+                        if fam == "waqf" and at.get("waqf"):
                             fam = at["waqf"]
                         if at.get("form"):
                             fam += " (%s)" % at["form"]
@@ -426,7 +426,7 @@ class Handler(BaseHTTPRequestHandler):
                         if at.get("standalone"):
                             fam += " [standalone]"
                         occ.append((int(os.path.basename(f)[:3]), fam,
-                                    at.get("eid"), f))
+                                    at.get("element_id"), f))
                 if groups_only:
                     return self.send_json(
                         {"sig": sig,
@@ -436,7 +436,7 @@ class Handler(BaseHTTPRequestHandler):
                 out = []
                 for pg, mk, eid, f in sel[off:off + n]:
                     svg = open(f, encoding="utf-8").read()
-                    m = re.search('<path data-eid="%s"' % eid, svg) if eid else None
+                    m = re.search('<path data-element-id="%s"' % eid, svg) if eid else None
                     if not m:
                         continue
                     w0 = svg.rfind('<g class="word"', 0, m.start())
@@ -451,13 +451,13 @@ class Handler(BaseHTTPRequestHandler):
                             break
                     if not grp:
                         continue
-                    grp = grp.replace('data-eid="%s" ' % eid,
-                                      'data-eid="%s" style="fill:#c22" ' % eid)
-                    wt = re.search(r'data-uthmani="([^"]*)"', grp)
-                    km = re.search(r'data-wid="([^"]*)"', grp)
+                    grp = grp.replace('data-element-id="%s" ' % eid,
+                                      'data-element-id="%s" style="fill:#c22" ' % eid)
+                    wt = re.search(r'data-rasm-uthmani="([^"]*)"', grp)
+                    km = re.search(r'data-word-key="([^"]*)"', grp)
                     root = re.search(r'<g transform="matrix[^"]*">', svg)
                     vb = re.search(r'viewBox="[^"]*"', svg)
-                    out.append({"page": pg, "mark": mk, "eid": eid,
+                    out.append({"page": pg, "mark": mk, "element_id": eid,
                                 "key": km.group(1) if km else "",
                                 "word": wt.group(1) if wt else "",
                                 "svg": '<svg xmlns="http://www.w3.org/2000/svg" %s>%s%s</g></svg>'
@@ -517,9 +517,9 @@ class Handler(BaseHTTPRequestHandler):
                 # through the measured path.
                 import time as _t
                 if not (isinstance(body, dict) and body.get("page")
-                        and body.get("eid") and body.get("correct")):
+                        and body.get("element_id") and body.get("correct")):
                     return self.send_json({"error": "need page, eid, correct"}, 400)
-                rec = {k: body.get(k) for k in ("page", "eid", "key", "word",
+                rec = {k: body.get(k) for k in ("page", "element_id", "key", "word",
                                                 "sig", "current", "correct",
                                                 "note", "picked",
                                                 "claimed")}

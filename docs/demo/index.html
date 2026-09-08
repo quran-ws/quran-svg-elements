@@ -217,7 +217,7 @@ g.q-hl path{fill:var(--hl)}
 .lab-extra label{display:flex;gap:6px;align-items:center;
   font:500 12px/1 "IBM Plex Mono",monospace;color:var(--muted)}
 
-/* word-by-word reveal. Every ink path ships fill="#231f20" as a presentation
+/* word-by-word-translation-translation reveal. Every ink path ships fill="#231f20" as a presentation
    attribute; a CSS rule beats one, so `fill: inherit` hands the path back to
    its group and the whole word recolours by setting ONE property. */
 /* ONE selector over the page's ink, not a list of element types that would
@@ -225,7 +225,7 @@ g.q-hl path{fill:var(--hl)}
    presentation attribute and a rule beats one, so `fill: inherit` hands each
    path back to whatever group is colouring it. */
 .q-reveal path{fill:inherit;transition:fill var(--fade,220ms) linear}
-.q-reveal g.word,.q-reveal g.ayah-marker,.q-reveal g.hizb-mark,
+.q-reveal g.word,.q-reveal g.ayah-mark,.q-reveal g.division-mark,
 .q-reveal g.sajdah-mark,.q-reveal g.surah-name,.q-reveal g.basmalah{
   transition:fill var(--fade,220ms) linear}
 @media (prefers-reduced-motion:reduce){
@@ -346,7 +346,7 @@ footer p{max-width:74ch}
       alongside a database that says what is on them. Here that information is on the elements
       themselves — the surah's number, its name in Arabic, Latin and English, where it was revealed and
       how many ayahs it has; the ayah key <code>2:255</code> and which parts of it fall on this page;
-      the word key <code>2:255:4</code> with its uthmani text, and its other four forms in the page's sidecar; juz, hizb, rubʿ and nisf and where
+      the word key <code>2:255:4</code> with its rasm_uthmani text, and its other four forms in the page's sidecar; juz, hizb, rubʿ and nisf and where
       each begins; the page and line number; and every mark named, sajdah signs and iqlab meems
       included. So <i>"ayah 2:255 is on page 42, line 3"</i> is a CSS selector rather than a query — and
       because the geometry is in the same file, you also get the one thing a database cannot give you:
@@ -437,7 +437,7 @@ footer p{max-width:74ch}
             measured over 100.</li>
         </ul>
         <p class="note" style="margin-top:12px">This is a statement about the <b>ink</b>: what is drawn,
-          and where. How the ink is named — which stroke is a kasra, which word owns which mark — is a
+          and where. How the ink is named — which stroke is a kasrah, which word owns which mark — is a
           separate matter resting on separate evidence, and is not covered by this guarantee.</p>
       </div>
     </div>
@@ -520,19 +520,19 @@ footer p{max-width:74ch}
 <section id="ayah" data-toc-group="Selecting and pointing" data-toc-note="Select a whole ayah without missing five sixths of it.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">svg.querySelectorAll('g.ayah[data-aid="2:255"]')</p>
+      <p class="sel">svg.querySelectorAll('g.ayah-fragment[data-ayah-key="2:255"]')</p>
       <h2>2 · Highlight an ayah — and the one thing everybody gets wrong</h2>
       <p>An ayah is emitted <b>once per printed line</b>, so it is several sibling nodes and there is no
         single node that "is" the ayah. 6,236 ayahs are emitted as 13,489 fragments; 4,455 of them have
         more than one. Change <code>querySelectorAll</code> to <code>querySelector</code> in the editor
-        and watch five sixths of Ayat al-Kursi stop being highlighted, without anything throwing.</p>
+        and watch five sixths of Ayahs al-Kursi stop being highlighted, without anything throwing.</p>
     </div>
     <div class="lab" id="lab-ayah"></div>
-    <p class="note">Each fragment carries <code>data-part</code> and <code>data-ayah-parts</code>, and
-      all 13,489 of them carry <code>data-marker</code> pointing at the <code>id</code> of their own
+    <p class="note">Each fragment carries <code>data-part</code> and <code>data-ayah-fragments</code>, and
+      all 13,489 of them carry <code>data-mark</code> pointing at the <code>id</code> of their own
       medallion on the same page. No ayah spans two pages, so if you loaded the right page you will
       always find all N. <b>Never</b> use <code>firstElementChild</code> of one fragment to find the
-      ayah's first word — use <code>data-wid</code> order across all fragments. Deep links work on the
+      ayah's first word — use <code>data-word-key</code> order across all fragments. Deep links work on the
       page at the top of this document: <a href="#2:254">#2:254</a>, <a href="#2:255">#2:255</a>.</p>
   </div>
 </section>
@@ -617,7 +617,7 @@ footer p{max-width:74ch}
       <h3>The trap — use <code>search</code>, never <code>rasm</code></h3>
       <p>In production both are fields of the page's sidecar, <code>index/by-page/NNN.json</code>;
         only the dev profile carries them inline as attributes. <code>rasm</code> is the skeleton of
-        the <b>uthmani</b> spelling, which is what the page draws. The uthmani spelling writes several long vowels as <i>combining marks</i>, and stripping
+        the <b>rasm_uthmani</b> spelling, which is what the page draws. The rasm_uthmani spelling writes several long vowels as <i>combining marks</i>, and stripping
         the marks deletes them outright. Nobody types the result. Measured over all 77,432 words:</p>
       <div class="scroll">
         <table>
@@ -629,12 +629,12 @@ footer p{max-width:74ch}
           </tbody>
         </table>
       </div>
-      <p class="note"><span class="ar" style="font-size:1em">ٱللَّهُ</span> has an <b>alef wasla</b>
+      <p class="note"><span class="ar" style="font-size:1em">ٱللَّهُ</span> has an <b>alef hamzat_al_wasl</b>
         (U+0671) where a keyboard produces a plain alef, so <code>rasm</code> is
         <span class="ar" style="font-size:1em">ٱلله</span> and never matches.
         <span class="ar" style="font-size:1em">دَرَجَٰتࣲ</span> carries a <b>dagger alef</b> (U+0670),
         which is a mark, so the rasm is <span class="ar" style="font-size:1em">درجت</span> with no alef
-        at all. <code>search</code> is the skeleton of the modern (<code>imlaei</code>)
+        at all. <code>search</code> is the skeleton of the modern (<code>rasm_imlai</code>)
         spelling and has neither problem. Use <code>rasm</code> for what it is for: matching text
         against the shapes actually drawn on the page.</p>
       <p class="note"><b>Nothing is folded for you</b>, deliberately.
@@ -650,7 +650,7 @@ footer p{max-width:74ch}
         <h3>The same thing across all 604 pages</h3>
         <p class="note" style="margin-top:0">An index built from the same attribute: 77,432 rows, 2.0 MiB
           raw and 473 KiB gzipped, fetched on your first search rather than on page load. A hit gives a
-          <code>data-wid</code> and a page number; the demo then fetches that one page and marks it.</p>
+          <code>data-word-key</code> and a page number; the demo then fetches that one page and marks it.</p>
         <div class="row" style="margin-top:12px">
           <input type="text" id="s-all" placeholder="الرحمن" style="flex:1;min-width:140px" aria-label="search the whole mushaf">
           <button id="s-all-go">search</button>
@@ -663,7 +663,7 @@ footer p{max-width:74ch}
     <p class="note"><b>Two cautions when you tokenise.</b> 367 <code>search</code> values contain a
       space — the vocative convention writes <span class="ar" style="font-size:1em">يَٰٓأَيُّهَا</span> as
       <span class="ar" style="font-size:1em">يا أيها</span> — and one printed word,
-      <code>37:130:3</code>, has a space in its own text. <code>data-wid</code> is the only word key;
+      <code>37:130:3</code>, has a space in its own text. <code>data-word-key</code> is the only word key;
       never split a page on whitespace.</p>
   </div>
 </section>
@@ -671,19 +671,19 @@ footer p{max-width:74ch}
 <section id="word" data-toc-group="Reading and meaning" data-toc-note="Read a word’s five text forms and every mark on it.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">data-uthmani on the page · rasm imlaei search qpc in the sidecar</p>
+      <p class="sel">data-rasm-uthmani on the page · rasm rasm_imlai search qpc in the sidecar</p>
       <h2>6 · Read a word</h2>
-      <p>Every word group carries its key and its uthmani text; the other four forms come from the
+      <p>Every word group carries its key and its rasm_uthmani text; the other four forms come from the
         page's sidecar, <code>index/by-page/NNN.json</code>. Every path says what kind of ink
         it is and, if it is a mark, which mark. The snippet installs the listener — hover the page
         beside it, then change what the readout reports.</p>
     </div>
     <div class="lab" id="lab-word"></div>
     <p class="note">Two things a drawing cannot tell you, and the attributes settle both.
-      <b>fatha and kasra are the same stroke</b>, named by where it sits; you cannot recover the name
-      from the outline. And a <b>hamza</b> that is a diacritic and a hamza that is a letter of the word
+      <b>fathah and kasrah are the same stroke</b>, named by where it sits; you cannot recover the name
+      from the outline. And a <b>hamzah</b> that is a diacritic and a hamzah that is a letter of the word
       are identical ink — <code>data-kind</code> is what separates them. A mark can also be drawn
-      <b>outside</b> its own word: the tanween of a word-final
+      <b>outside</b> its own word: the tanwin of a word-final
       <span class="ar" style="font-size:1em">ة</span> floats into the gap toward the next word. Never
       assign a mark to a word by nearest ink or by bounding box; the enclosing group is the answer.</p>
   </div>
@@ -738,7 +738,7 @@ footer p{max-width:74ch}
       <div>
         <div class="callout">
           <h3>Why building the payload yourself is the good part</h3>
-          <p>Because the text is looked up from <code>data-wid</code> rather than serialised out of
+          <p>Because the text is looked up from <code>data-word-key</code> rather than serialised out of
             the layer, <b>the same drag can yield different text</b>. Quote it as the print sets it,
             take the modern spelling, or take the bare form to paste into a search box. Change the
             <code>WHICH</code> line in the editor, or use the selector in the toolbar.</p>
@@ -813,7 +813,7 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
           source.</p>
         <p class="note" style="margin:0"><b>Nothing here is synced to a recitation.</b> These files
           carry no audio and no word timings, and the animation you are watching is a metronome. The
-          reason it is worth showing anyway is that <code>data-wid</code> is
+          reason it is worth showing anyway is that <code>data-word-key</code> is
           <code>surah:ayah:word</code> — the same key word-level timing datasets are published under —
           so the join needs no mapping table.</p>
       </div>
@@ -828,12 +828,12 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
 <section id="audio" data-toc-group="Reading and meaning" data-toc-note="Follow a recitation, one word at a time.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">word_number → the third part of data-wid</p>
+      <p class="sel">word_number → the third part of data-word-key</p>
       <h2>9 · Follow a recitation, word by word</h2>
       <p>The same grey-to-ink mechanism as §8, with the tempo replaced by real per-word timings.
         Press play: the highlight follows the recitation because <b>quran.com publishes word
         timings under the same key this page uses</b> — <code>word_number</code> is 1-based within
-        the ayah, which is exactly the third component of <code>data-wid</code>. No mapping table,
+        the ayah, which is exactly the third component of <code>data-word-key</code>. No mapping table,
         no alignment step.</p>
     </div>
     <div class="lab" id="lab-audio"></div>
@@ -855,7 +855,7 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
       <div class="callout">
         <h3>What this section is, and is not</h3>
         <p>This streams audio and timings from <b>quran.com</b> for <b>one page</b>, to demonstrate
-          the join between <code>word_number</code> and <code>data-wid</code>. Recitation:
+          the join between <code>word_number</code> and <code>data-word-key</code>. Recitation:
           <b>Mohamed Siddiq al-Minshawi</b>, Murattal.</p>
         <p><b>The SVGs carry no audio and no word timings, and none is planned.</b> Nothing about
           recitation is in the bundle, the format specification or the attribute tables. The audio
@@ -878,21 +878,21 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
 <section id="translate" data-toc-group="Reading and meaning" data-toc-note="Hover a word and show what it means.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">data-wid === quran.com's word key</p>
+      <p class="sel">data-word-key === quran.com's word key</p>
       <h2>10 · Hover a word, see what it means</h2>
       <p>Move the pointer over any word on the page and its meaning appears. Tap works on touch,
         and the words are focusable so <kbd>Tab</kbd> and the arrow keys do too.
-        <code>data-wid</code> is <code>surah:ayah:word</code>, 1-based — the same key the quran.com
-        API, word-by-word translation sets, morphology data and recitation timings already use, so a
+        <code>data-word-key</code> is <code>surah:ayah:word</code>, 1-based — the same key the quran.com
+        API, word-by-word-translation-translation translation sets, morphology data and recitation timings already use, so a
         5 KB file of glosses joins to this ink with no mapping table.</p>
       <p style="margin-top:10px"><b>What you see here is an example, not a feature.</b> The gloss is
-        word-by-word English from quran.com, used because it is open data anyone can check; the point
+        word-by-word-translation-translation English from quran.com, used because it is open data anyone can check; the point
         is the join, not the language. Put a tafsir, a grammar tag, a vocabulary card or
         <b>any per-word data you already have</b> in its place and the same three lines still run —
         and none of it is possible on a page image. <b>These files ship no translations.</b></p>
     </div>
     <div class="lab" id="lab-translate"></div>
-    <p class="note">Word-by-word English and transliteration here come from <b>quran.com</b>. They are
+    <p class="note">Word-by-word-translation English and transliteration here come from <b>quran.com</b>. They are
       third-party data, shipped separately from the SVGs and attributed to their source. They are not
       part of this corpus, and neither are translations, tafsir or audio — but they all join on the same
       key. <b>Two implementation notes.</b> The hit areas are transparent
@@ -919,7 +919,7 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
       <p>Three layers, and only one of them takes the pointer. The <b>highlight bands</b> sit behind
         the ink and the <b>ink itself</b> is <code>pointer-events: none</code>; the <b>per-word hit
         layer</b> on top is the only thing hit-testing ever reaches. Because that layer is one
-        element per word carrying its <code>data-wid</code>, selection, hover, tap and click all read
+        element per word carrying its <code>data-word-key</code>, selection, hover, tap and click all read
         from the same source instead of stacking competing overlays.</p>
       <figure class="code" style="margin-top:6px">
         <button class="copy">copy</button>
@@ -967,26 +967,26 @@ svg.inert, svg.inert * { pointer-events: none }
 
     <div class="callout" style="margin-top:0">
       <h3>Hide the vowels. Never hide the dots.</h3>
-      <p>Every diacritic, every letter dot and every pause sign is a <code>data-kind="mark"</code> path,
+      <p>Every diacritic, every letter dot and every waqf sign is a <code>data-kind="mark"</code> path,
         so <code>path[data-kind="mark"]{display:none}</code> takes all three away at once — the third
         specimen above. That is not undiacritised text. The dots <b>are</b> the letters:
         <span class="ar" style="font-size:1em">ب ت ث</span> differ by nothing else, and hiding them
-        destroys letter identity. The waqf signs are recitation information, not vocalisation.</p>
-      <p>The nine vowel marks carry <code>diacritic</code> in <code>data-mark-family</code> — fatha,
-        kasra, damma, sukun, shadda, maddah and the three tanween — so hiding exactly those is one
+        destroys letter identity. The waqf signs are recitation information, not tashkil.</p>
+      <p>The nine vowel marks carry <code>diacritic</code> in <code>data-mark-family</code> — fathah,
+        kasrah, dammah, sukun, shaddah, maddah and the three tanwin — so hiding exactly those is one
         selector, and everything else stays where it belongs. That is the second specimen, and it is
-        what a reader mode or a memorisation aid wants.</p>
+        what a reader mode or a memorisation ayahKey wants.</p>
       <p><b><code>data-mark-family</code> is a space-separated token list, like <code>class</code>.</b>
-        A mark can belong to more than one family: the three tanween are vowel marks <i>and</i> they
-        are the tanween, so they carry <code>data-mark-family="diacritic tanween"</code> and must
+        A mark can belong to more than one family: the three tanwin are vowel marks <i>and</i> they
+        are the tanwin, so they carry <code>data-mark-family="diacritic tanwin"</code> and must
         answer to both names. Match it with <code>~=</code>, never <code>=</code>:</p>
       <figure class="code" style="margin-top:6px">
         <button class="copy">copy</button>
 <pre><code>[data-mark-family~=<span class="tok-s">"diacritic"</span>] { display: none }   <span class="tok-c">/* right */</span>
-[data-mark-family=<span class="tok-s">"diacritic"</span>]  { display: none }   <span class="tok-c">/* silently misses the tanween */</span></code></pre>
+[data-mark-family=<span class="tok-s">"diacritic"</span>]  { display: none }   <span class="tok-c">/* silently misses the tanwin */</span></code></pre>
       </figure>
       <p class="note">An exact-match selector is not merely stricter here, it is wrong: it looks like
-        it works, because it still matches the six single-family marks, and it drops the three tanween
+        it works, because it still matches the six single-family marks, and it drops the three tanwin
         without an error. Every selector on this page uses <code>~=</code>.</p>
     </div>
 
@@ -1015,20 +1015,20 @@ svg.inert, svg.inert * { pointer-events: none }
 <section id="markers" data-toc-group="Presentation" data-toc-note="Restyle or swap the ayah medallions.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">g.ayah-marker > path[data-kind="ayah-marker-ornament" | "ayah-number"]</p>
-      <h2>14 · Swap or restyle the ayah end-marker</h2>
-      <p>The medallion at the end of an ayah is <code>&lt;g class="ayah-marker" id="mk-2-255"&gt;</code>
+      <p class="sel">g.ayah-mark > path[data-kind="ayah_mark_ornament" | "ayah_number"]</p>
+      <h2>14 · Swap or restyle the ayah end-mark</h2>
+      <p>The medallion at the end of an ayah is <code>&lt;g class="ayah-mark" id="mk-2-255"&gt;</code>
         holding two paths: the ornament ring, and the printed numeral. <b>They are separate elements</b>
         — which is the whole reason you can restyle the furniture without touching the number. Recolour
         the ring on its own, hide it and keep the numeral, scale the whole medallion, replace the ring
         with a shape of your own, or drop the markers entirely for a plain reading view.</p>
     </div>
-    <div class="lab" id="lab-markers"></div>
-    <p class="note"><b>The outlines are not part of this page.</b> The designs in the picker are fetched at runtime from <a href="https://github.com/quranpedia/ayah-markers">quranpedia/ayah-markers</a>, which traces them from twenty type families — fifteen from Google Fonts, five from fonts.quran.ws. They carry <b>those families' licences</b>, which differ from one another; every marker names its own <code>sources</code> in that repository's <code>collection.json</code>. Read it before you redistribute anything. Neither this page nor the library ships a single outline, and neither states any licence terms. If the fetch fails the section says so and the printed rings stay.</p>
+    <div class="lab" id="lab-marks"></div>
+    <p class="note"><b>The outlines are not part of this page.</b> The designs in the picker are fetched at runtime from <a href="https://github.com/quranpedia/ayah-marks">quranpedia/ayah-marks</a>, which traces them from twenty type families — fifteen from Google Fonts, five from fonts.quran.ws. They carry <b>those families' licences</b>, which differ from one another; every marker names its own <code>sources</code> in that repository's <code>collection.json</code>. Read it before you redistribute anything. Neither this page nor the library ships a single outline, and neither states any licence terms. If the fetch fails the section says so and the printed rings stay.</p>
     <p class="note">The numeral is the print's own drawing of the number, not a font rendering of it, so
       it stays exactly as printed however you dress the ring around it. On pages 1 and 2 there are also
       <b>12 decorative rosettes with no ayah at all</b> — the frame of the opening spread — so select
-      <code>g.ayah-marker[data-aid]</code> when you mean the real ones.</p>
+      <code>g.ayah-mark[data-ayah-key]</code> when you mean the real ones.</p>
   </div>
 </section>
 
@@ -1078,7 +1078,7 @@ svg.inert, svg.inert * { pointer-events: none }
       <p>One word for a vocabulary card, a run of words for a quotation, one ayah for a citation, one
         line for a header. Same twelve-line function, different filter. The result is a standalone SVG
         you can drop into a slide, a video or a print layout at any size. Drag <b>from</b> and <b>to</b>
-        to pick a run out of Ayat al-Kursi, or edit the filter for anything else.</p>
+        to pick a run out of Ayahs al-Kursi, or edit the filter for anything else.</p>
     </div>
     <div class="lab" id="lab-crop"></div>
     <p class="note">Read the <code>viewBox</code> off the file rather than hardcoding
@@ -1090,7 +1090,7 @@ svg.inert, svg.inert * { pointer-events: none }
 <section id="meta" data-toc-group="The data itself" data-toc-note="Read surah, juz, hizb and rubʿ straight off the page.">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">data-sid · data-juz-start · data-hizb-start · data-rub-start</p>
+      <p class="sel">data-sid · data-juz-start · data-hizb-start · data-rubu-al-hizb-start</p>
       <h2>17 · Metadata without a database, and a reader in thirty lines</h2>
       <p>You do not need to bundle a Quran metadata package to build a reader chrome. Open the page and
         read it off. The snippet runs on whichever page the reader is showing — turn pages with the
@@ -1207,7 +1207,7 @@ svg.inert, svg.inert * { pointer-events: none }
           <tr><td class="mono">&nbsp;&nbsp;— one page</td><td>average across the corpus</td><td>762 KiB</td><td>186 KiB</td><td>118 KiB</td></tr>
           <tr><td class="mono">FORMAT.md</td><td>the format specification — every attribute, every special case, every known limit</td><td>57 KB</td><td>—</td><td>—</td></tr>
           <tr><td class="mono">index/index.json</td><td>page → surahs, first/last ayah, word count; juz/hizb/rubʿ starts; the 114 surah records</td><td>99 KiB</td><td>—</td><td>10 KiB</td></tr>
-          <tr><td class="mono">index/words.json</td><td>every word's text keyed by <code>data-wid</code>, with its page — build a search index from it, or from <code>data-search</code> in the dev-profile pages, which is how this demo's own index was built</td><td>3.4 MiB</td><td>—</td><td>478 KiB</td></tr>
+          <tr><td class="mono">index/words.json</td><td>every word's text keyed by <code>data-word-key</code>, with its page — build a search index from it, or from <code>data-search</code> in the dev-profile pages, which is how this demo's own index was built</td><td>3.4 MiB</td><td>—</td><td>478 KiB</td></tr>
           <tr><td class="mono">index/wordboxes.json</td><td>77,432 word bounding boxes, so you can hit-test without rendering</td><td>3.0 MiB</td><td>—</td><td>896 KiB</td></tr>
           <tr><td class="mono">index/mark-taxonomy.json</td><td>the mark names, their category and family</td><td>4 KiB</td><td>—</td><td>—</td></tr>
           <tr><td class="mono">VERSION.json · CHECKSUMS.txt</td><td>what you pinned to, and proof of what you got</td><td>~50 KiB</td><td>—</td><td>—</td></tr>
@@ -1229,7 +1229,7 @@ svg.inert, svg.inert * { pointer-events: none }
         </figure>
         <p class="note">The ligature layer is a <b>rendering run, not a spelling</b>. It is not a
           reliable letter segmentation — 156 words spell fewer letters in it than they actually have —
-          so use <code>data-uthmani</code> on the word, or the <code>rasm</code> form in the page's
+          so use <code>data-rasm-uthmani</code> on the word, or the <code>rasm</code> form in the page's
           sidecar, as the text of record.
           The page at the top of this document is shown in the production profile.</p>
 
@@ -1237,8 +1237,8 @@ svg.inert, svg.inert * { pointer-events: none }
         <p class="note" style="margin-top:0">Every page's root <code>&lt;svg&gt;</code> carries
           <code>data-decomposition</code>, and it has two values.
           <code>word</code> means what this whole page has been showing: words, ligatures and named
-          marks are addressable. <code>ayah</code> means page ink with ayah polygons and end-markers
-          and <b>nothing below the ayah</b> — no <code>g.word</code>, no <code>data-wid</code>, no
+          marks are addressable. <code>ayah</code> means page ink with ayah polygons and end-marks
+          and <b>nothing below the ayah</b> — no <code>g.word</code>, no <code>data-word-key</code>, no
           named marks.</p>
         <p class="note"><b>Hafs — the corpus described here — is <code>word</code>. Warsh, Qālūn,
           al-Dūrī and Shuʿba are <code>ayah</code> today.</b> Read the attribute before writing a
@@ -1287,7 +1287,7 @@ svg.inert, svg.inert * { pointer-events: none }
               the mushaf's own — surah, ayah, word, line, page, the juz/hizb/rubʿ/nisf divisions, and
               every named mark. Translation, tafsir, audio and word timings, transliteration, and the
               ruku and manzil divisions are a consumer's own data, and they join straight on:
-              <code>data-wid</code> and <code>data-aid</code> are the keys those datasets already
+              <code>data-word-key</code> and <code>data-ayah-key</code> are the keys those datasets already
               use.</li>
           </ul>
         </div>
@@ -1333,18 +1333,18 @@ svg.inert, svg.inert * { pointer-events: none }
       <h3>The page announces which mushaf it is</h3>
       <p>Nine attributes sit on every page's root <code>&lt;svg&gt;</code>, so a file that arrives on
         its own still says what it is. Two of them are easy to get wrong.</p>
-      <p><b>The directory name is the <i>riwaya</i>, not the qiraa.</b> <code>data-qiraa="asim"</code>
-        names the reading of ʿĀṣim; <code>data-riwaya="hafs"</code> names Hafs's transmission of it.
-        Hafs and Shuʿbah are both transmissions of the same qiraa, so "hafs" alone does not identify a
-        reading — it identifies a transmitter.</p>
+      <p><b>The directory name is the <i>riwayah</i>, not the qiraah.</b> <code>data-qiraah="asim"</code>
+        names the reading of ʿĀṣim; <code>data-riwayah="hafs"</code> names Hafs's transmission of it.
+        Hafs and Shuʿbah are both transmissions of the same qiraah, so "hafs" alone does not identify a
+        reading — it identifies a rawi.</p>
       <p><b><code>data-ayah-total="6236"</code> is a Hafs fact, not a Quran fact.</b> It follows the
-        Kufan counting system, which is what this print sets. Other counting systems divide the same
+        Kufi counting system, which is what this print sets. Other counting systems divide the same
         revealed text differently: Nāfiʿ's Madani count gives 6,214. A total is a property of a
         counting tradition, so read it off the page rather than hardcoding it.</p>
     </div>
 
-    <p class="note"><code>data-eid</code> and <code>data-sig</code> also appear on paths, in
-      <b>both</b> profiles. They are review instruments: <code>data-eid</code> is <b>not stable across
+    <p class="note"><code>data-element-id</code> and <code>data-sig</code> also appear on paths, in
+      <b>both</b> profiles. They are review instruments: <code>data-element-id</code> is <b>not stable across
       builds</b> and <code>data-sig</code> is a shape signature, not an identity — 98 signatures serve
       more than one mark name. <b>Never key on either.</b></p>
   </div>
@@ -1358,7 +1358,7 @@ svg.inert, svg.inert * { pointer-events: none }
       Complex — <span class="ar" style="font-size:1em">مجمع الملك فهد لطباعة المصحف الشريف</span> —
       <a href="https://dm.qurancomplex.gov.sa" rel="noopener">dm.qurancomplex.gov.sa</a>. The Complex did
       not produce, review or approve this decomposition, and nothing here implies endorsement or
-      affiliation. Word-by-word English and transliteration used in §10 are from quran.com and are not
+      affiliation. Word-by-word-translation English and transliteration used in §10 are from quran.com and are not
       part of this corpus. Licence and redistribution terms are not settled and are not stated on this
       page.</p>
   </div>
@@ -1391,8 +1391,8 @@ const LOCAL = location.protocol === 'file:' ||
 /* Where every page is fetched from — the hero included, since nothing is
    inlined any more. In the published bundle this is SITE_BASE + 'pages/'. */
 const PAGES = LOCAL ? '../../.cache/words-svg/hafs-kfqc/' : SITE_BASE + 'pages/';
-/* Where each page's sidecar lives. A production page carries only data-wid
-   and data-uthmani inline; rasm, imlaei, search and qpc ship once per page
+/* Where each page's sidecar lives. A production page carries only data-word-key
+   and data-rasm-uthmani inline; rasm, rasm_imlai, search and qpc ship once per page
    as index/by-page/NNN.json. */
 const INDEX = LOCAL ? '../../dist/quran-svg-hafs-kfgqpc/index/by-page/' : SITE_BASE + 'index/by-page/';
 const SVGNS = 'http://www.w3.org/2000/svg';
@@ -1465,8 +1465,8 @@ function clonePage(src = PRISTINE) {
   const tag = 'c' + (++cloneSeq) + '-';
   svg.removeAttribute('id');
   svg.querySelectorAll('[id]').forEach(el => { el.id = tag + el.id; });
-  svg.querySelectorAll('g.ayah[data-marker]').forEach(g => {
-    g.dataset.marker = tag + g.dataset.marker;
+  svg.querySelectorAll('g.ayah-fragment[data-mark]').forEach(g => {
+    g.dataset.ayahMark = tag + g.dataset.ayahMark;
   });
   return svg;
 }
@@ -1474,7 +1474,7 @@ function clonePage(src = PRISTINE) {
 /* ---------- fetch a page, parse it, hand back an <svg> ---------- */
 const pageCache = new Map();
 /* `__words` is an expando on the cached <svg>: the page's sidecar as a Map
-   wid → record, or null when it could not be fetched. cloneNode does not
+   wordKey → record, or null when it could not be fetched. cloneNode does not
    copy expandos, so every clone handed out is given it explicitly. */
 const withWords = src => { const c = src.cloneNode(true); c.__words = src.__words; return c; };
 let sidecarWarned = false;
@@ -1496,7 +1496,7 @@ async function getPage(n) {
     const r = await fetch(INDEX + key + '.json');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const json = await r.json();
-    words = new Map(json.words.map(w => [w.wid, w]));
+    words = new Map(json.words.map(w => [w.wordKey, w]));
   } catch (e) {
     if (!sidecarWarned) {
       sidecarWarned = true;
@@ -1514,12 +1514,12 @@ const heroReady = getPage(HERO_PAGE).then(svg => {
      of it, and it is what `build.py` used to do on the way in. Every selector
      the reader sees on the hero is one that ships. */
   svg.querySelectorAll('g.ligature').forEach(g => g.replaceWith(...g.childNodes));
-  /* And the four sidecar forms: a production page carries only data-wid and
-     data-uthmani inline. When the sidecar could not be fetched (a local
+  /* And the four sidecar forms: a production page carries only data-word-key and
+     data-rasm-uthmani inline. When the sidecar could not be fetched (a local
      checkout without a built bundle) the attributes stay, so the labs still
      have text to read. */
   if (svg.__words) svg.querySelectorAll('g.word').forEach(w => {
-    for (const k of ['rasm', 'imlaei', 'search', 'qpc']) delete w.dataset[k];
+    for (const k of ['rasm', 'rasm_imlai', 'search', 'qpc']) delete w.dataset[k];
   });
   PRISTINE = svg.cloneNode(true);
   PRISTINE.__words = svg.__words;
@@ -1624,7 +1624,7 @@ function band(svg, frags, padX = 1.2, padY = 1.6) {
    pointer.
 
    One absolutely-positioned <span> per g.word, carrying the word's real
-   Unicode and its data-wid, sized onto that word's own rendered box. It is
+   Unicode and its data-word-key, sized onto that word's own rendered box. It is
    HTML, not SVG, because native selection needs real text nodes — and that
    one construction then also serves hover, tap and click. The ink and the
    highlight bands are put out of the way with pointer-events: none, so there
@@ -1714,8 +1714,8 @@ function hitLayer(svg, stage, opts = {}) {
       const b = box.get(g);
       if (!b) continue;
       const s = document.createElement('span');
-      s.textContent  = g.dataset.uthmani + ' ';
-      s.dataset.wid  = g.dataset.wid;
+      s.textContent  = g.dataset.rasm_uthmani + ' ';
+      s.dataset.wordKey  = g.dataset.wordKey;
       s.dataset.line = b.line;
       s.style.left   = (b.x0 - origin.left) + 'px';
       s.style.top    = (b.y0 - origin.top)  + 'px';
@@ -1774,7 +1774,7 @@ function hitLayer(svg, stage, opts = {}) {
 }
 
 /* The words a selection FULLY contains — the single source of truth for the
-   painted band, the copied text and the ayah-number boundaries. A word is in
+   painted band, the copied text and the ayah_number boundaries. A word is in
    or out; there is no partial state, so those three can never disagree. */
 function selectedWords(layer) {
   const sel = getSelection();
@@ -1846,18 +1846,18 @@ function crop(page, keep, pad = 4) {
   const svg = clonePage(page);
   svg.querySelectorAll('g.word').forEach(w => { if (!keep(w)) w.remove(); });
   if (!svg.querySelector('g.word')) return null;
-  svg.querySelectorAll('g.ayah, g.line').forEach(g => {
+  svg.querySelectorAll('g.ayah-fragment, g.line').forEach(g => {
     if (!g.querySelector('g.word')) g.remove();
   });
   /* a medallion closes an ayah, so keep it only when the whole ayah survived —
      otherwise a one-word crop is framed around a marker at the far end of it */
-  svg.querySelectorAll('g.ayah-marker').forEach(m => {
-    const aid = m.dataset.aid;
-    const sel = 'g.ayah[data-aid="' + aid + '"] g.word';
-    if (!aid || svg.querySelectorAll(sel).length !== page.querySelectorAll(sel).length) m.remove();
+  svg.querySelectorAll('g.ayah-mark').forEach(m => {
+    const ayahKey = m.dataset.ayahKey;
+    const sel = 'g.ayah-fragment[data-ayah-key="' + ayahKey + '"] g.word';
+    if (!ayahKey || svg.querySelectorAll(sel).length !== page.querySelectorAll(sel).length) m.remove();
   });
-  svg.querySelectorAll('g.surah-name, g.basmalah, g.hizb-mark, g.sajdah-mark').forEach(g => g.remove());
-  const layer = svg.querySelector('[id$="ayah_markers"]');
+  svg.querySelectorAll('g.surah-name, g.basmalah, g.division-mark, g.sajdah-mark').forEach(g => g.remove());
+  const layer = svg.querySelector('[id$="ayah_marks"]');
   if (layer && !layer.children.length) layer.remove();
   offstage.append(svg);
   const b = svg.getBBox(), r2 = v => Math.round(v * 100) / 100;
@@ -1882,16 +1882,16 @@ function refit(svg, pad = 4) {
 /* Word timings for the hero page only, cached at build time (~2 KB) so §9
    still renders and explains itself with no network. The section fetches
    live; this is the fallback. Source: quran.com, reciter 9. */
-const FALLBACK_TIMINGS = {"2:253":["Minshawi/Murattal/mp3/002253.mp3",[[600,1240],[1250,2210],[2220,3750],[3760,4950],[4960,5700],[5710,7260],[7270,8770],[8780,9660],[9670,10690],[10700,11770],[11780,12740],[12750,14050],[14060,16350],[17550,19180],[19190,19920],[19930,20420],[20430,21340],[21350,23030],[23040,25090],[25100,26030],[26040,27550],[28550,29190],[29200,31070],[31080,32060],[32070,32250],[32260,33260],[33270,34510],[34520,35630],[35640,36570],[36580,38460],[38470,39290],[39300,39710],[39720,42380],[42390,44200],[44210,45490],[45500,47750],[51360,52890],[52900,53700],[53710,54680],[54690,55890],[55900,57630],[57640,59450],[60000,60630],[60640,62670],[62680,63810],[63820,64000],[64010,65400],[65410,67240],[67250,68250],[68260,69420],[69430,69860],[69870,70890]]],"2:254":["Minshawi/Murattal/mp3/002254.mp3",[[850,3300],[3310,4440],[4450,6760],[6770,8450],[8460,9860],[9870,12210],[12220,13010],[13020,13870],[13880,14680],[14690,15770],[15780,16620],[16630,17290],[17300,18690],[18700,19520],[19530,20230],[20240,22020],[22030,22730],[22740,25250],[26250,28230],[28240,29000],[29010,30610]]],"2:255":["Minshawi/Murattal/mp3/002255.mp3",[[600,1760],[1770,3730],[3740,4440],[4450,5400],[5410,5930],[5940,6980],[6990,9550],[10050,10520],[10530,12000],[12010,13550],[13560,14320],[14330,16050],[16350,17070],[17080,17550],[17560,17790],[17800,19710],[19720,20520],[20530,20830],[20840,22450],[22850,24020],[24030,24200],[24210,25330],[25340,26400],[26410,29440],[29450,30510],[30520,32450],[33000,33680],[33690,34450],[34460,35230],[35240,36800],[36810,37530],[37540,39650],[40000,40680],[40690,42200],[42210,43330],[43340,44510],[44520,46770],[46780,47720],[47730,48420],[48430,51900],[52050,52760],[52770,54280],[54290,56210],[56220,58210],[58220,59010],[59020,60610],[60620,63070],[63080,63920],[63930,65210],[65220,66520]]],"2:256":["Minshawi/Murattal/mp3/002256.mp3",[[1450,2180],[2190,4530],[4540,4730],[4740,6800],[7000,7090],[7100,8620],[8630,9770],[9780,10290],[10300,12020],[12030,13380],[13390,14380],[14390,16200],[16210,18110],[18120,19380],[19390,20080],[20090,21490],[21500,23100],[23110,24450],[24460,24720],[24730,26570],[26580,28500],[28650,29770],[29780,31080],[31090,32060]]]};
+const FALLBACK_AYAH_TIMINGS = {"2:253":["Minshawi/Murattal/mp3/002253.mp3",[[600,1240],[1250,2210],[2220,3750],[3760,4950],[4960,5700],[5710,7260],[7270,8770],[8780,9660],[9670,10690],[10700,11770],[11780,12740],[12750,14050],[14060,16350],[17550,19180],[19190,19920],[19930,20420],[20430,21340],[21350,23030],[23040,25090],[25100,26030],[26040,27550],[28550,29190],[29200,31070],[31080,32060],[32070,32250],[32260,33260],[33270,34510],[34520,35630],[35640,36570],[36580,38460],[38470,39290],[39300,39710],[39720,42380],[42390,44200],[44210,45490],[45500,47750],[51360,52890],[52900,53700],[53710,54680],[54690,55890],[55900,57630],[57640,59450],[60000,60630],[60640,62670],[62680,63810],[63820,64000],[64010,65400],[65410,67240],[67250,68250],[68260,69420],[69430,69860],[69870,70890]]],"2:254":["Minshawi/Murattal/mp3/002254.mp3",[[850,3300],[3310,4440],[4450,6760],[6770,8450],[8460,9860],[9870,12210],[12220,13010],[13020,13870],[13880,14680],[14690,15770],[15780,16620],[16630,17290],[17300,18690],[18700,19520],[19530,20230],[20240,22020],[22030,22730],[22740,25250],[26250,28230],[28240,29000],[29010,30610]]],"2:255":["Minshawi/Murattal/mp3/002255.mp3",[[600,1760],[1770,3730],[3740,4440],[4450,5400],[5410,5930],[5940,6980],[6990,9550],[10050,10520],[10530,12000],[12010,13550],[13560,14320],[14330,16050],[16350,17070],[17080,17550],[17560,17790],[17800,19710],[19720,20520],[20530,20830],[20840,22450],[22850,24020],[24030,24200],[24210,25330],[25340,26400],[26410,29440],[29450,30510],[30520,32450],[33000,33680],[33690,34450],[34460,35230],[35240,36800],[36810,37530],[37540,39650],[40000,40680],[40690,42200],[42210,43330],[43340,44510],[44520,46770],[46780,47720],[47730,48420],[48430,51900],[52050,52760],[52770,54280],[54290,56210],[56220,58210],[58220,59010],[59020,60610],[60620,63070],[63080,63920],[63930,65210],[65220,66520]]],"2:256":["Minshawi/Murattal/mp3/002256.mp3",[[1450,2180],[2190,4530],[4540,4730],[4740,6800],[7000,7090],[7100,8620],[8630,9770],[9780,10290],[10300,12020],[12030,13380],[13390,14380],[14390,16200],[16210,18110],[18120,19380],[19390,20080],[20090,21490],[21500,23100],[23110,24450],[24460,24720],[24730,26570],[26580,28500],[28650,29770],[29780,31080],[31090,32060]]]};
 
 /* A word's five text forms wherever they live. The inline attribute wins
    when present (the dev profile carries all five; every profile carries
-   data-uthmani), the page's sidecar fills the rest, a missing form is
+   data-rasm-uthmani), the page's sidecar fills the rest, a missing form is
    undefined. */
-const SIDECAR_FORMS = ['rasm', 'imlaei', 'search', 'qpc'];
+const SIDECAR_FORMS = ['rasm', 'rasm_imlai', 'search', 'qpc'];
 function forms(w) {
-  const side = w.ownerSVGElement?.__words?.get(w.dataset.wid) || {};
-  const out = { uthmani: w.dataset.uthmani };
+  const side = w.ownerSVGElement?.__words?.get(w.dataset.wordKey) || {};
+  const out = { rasm_uthmani: w.dataset.rasm_uthmani };
   for (const k of SIDECAR_FORMS) out[k] = k in w.dataset ? w.dataset[k] : side[k];
   return out;
 }
@@ -1903,7 +1903,7 @@ function sidecar(svg) {
 
 const H = { band, clearBands, fold, crop, refit, getPage, toRoot, clonePage, SVGNS,
             forms, sidecar,
-            hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_TIMINGS,
+            hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_AYAH_TIMINGS,
             /* Where the pages live. A snippet must never hardcode the dev
                checkout path: the same page is served from the bundle, from a
                folder on the network, and from file:// on a copy, and only
@@ -2332,7 +2332,7 @@ function bindPartColours(ctx, o) {
    part, painting fill:var(--<part>, <its own default>) — so this reads the file
    and nothing else. A control offering a part the design does not draw would be
    a lie about the drawing. */
-function markerParts(svgText) {
+function markParts(svgText) {
   const doc = new DOMParser().parseFromString(svgText, 'image/svg+xml');
   return [...doc.querySelectorAll('g[data-part]')].map(g => {
     const m = /var\(\s*--[a-z0-9-]+\s*,\s*([^)]+)\)/i.exec(g.getAttribute('style') || '');
@@ -2370,13 +2370,13 @@ const FORMAT_LINKS = {
   select:    ['#94-word-tokens-containing-a-space',
               '§9.4 — the word tokens that contain a space, before you tokenise'],
   reveal:    ['#54-reading-order', '§5.4 reading order — why document order is enough'],
-  audio:     ['#61-on-g-classword-always-present-all-six', '§6.1 — data-wid, the key everything joins on'],
-  translate: ['#61-on-g-classword-always-present-all-six', '§6.1 — data-wid, the key everything joins on'],
+  audio:     ['#61-on-g-classword-always-present-all-six', '§6.1 — data-word-key, the key everything joins on'],
+  translate: ['#61-on-g-classword-always-present-all-six', '§6.1 — data-word-key, the key everything joins on'],
   compose:   ['#4-document-structure', '§4 the document structure, and what nests inside what'],
   style:     ['#8-the-mark-taxonomy-35-emitted-names',
               '§8 — the mark taxonomy, all 35 names with their families'],
   theme:     ['#65-on-path', '§6.5 — every attribute on a path'],
-  markers:   ['#63-on-g-classayah-marker', '§6.3 the medallions, and §9.2 the decorative rosettes'],
+  markers:   ['#63-on-g-classayah-mark', '§6.3 the medallions, and §9.2 the decorative rosettes'],
   spacing:   ['#52-the-line-frame', '§5.2 the line frame, and §9.2 the eight-line opening spread'],
   crop:      ['#51-the-page-frame', '§5.1 the page frame, and §9.2 the two pages with their own'],
   meta:      ['#66-page-identity-nine-attributes-on-the-root-svg',
@@ -2487,8 +2487,8 @@ mod('copy', () => {
 heroReady.then(() => mod('hero', () => {
   $('#hero-words').textContent = $$('g.word', hero).length + ' words';
   $('#hero-frags').textContent =
-    $$('g.ayah', hero).length + ' fragments for ' +
-    new Set($$('g.ayah', hero).map(g => g.dataset.aid)).size + ' ayahs';
+    $$('g.ayah-fragment', hero).length + ' fragments for ' +
+    new Set($$('g.ayah-fragment', hero).map(g => g.dataset.ayahKey)).size + ' ayahs';
   $('#hero-marks-n').textContent = $$('path[data-kind="mark"]', hero).length;
 
   const out = $('#hero-out'), cap = $('#hero-caption');
@@ -2497,7 +2497,7 @@ heroReady.then(() => mod('hero', () => {
   const CAPTION = 'Page 42 of the mushaf, fetched into this document.';
 
   /* whichever ayah opens the page — read it, never assume it */
-  let aid = hero.querySelector('g.ayah').dataset.aid;
+  let ayahKey = hero.querySelector('g.ayah-fragment').dataset.ayahKey;
   const HOME_VB = hero.getAttribute('viewBox');
 
   /* ── Five independent effects over ONE page, so they compose.
@@ -2509,15 +2509,15 @@ heroReady.then(() => mod('hero', () => {
                 crop: $('#hero-crop'), spread: $('#hero-spread') };
 
   const GAP = 5;                                   /* page units of extra leading */
-  const frags = () => $$('g.ayah[data-aid="' + aid + '"]', hero);
-  const wordsOf = () => $$('g.ayah[data-aid="' + aid + '"] g.word', hero);
+  const frags = () => $$('g.ayah-fragment[data-ayah-key="' + ayahKey + '"]', hero);
+  const wordsOf = () => $$('g.ayah-fragment[data-ayah-key="' + ayahKey + '"] g.word', hero);
 
   function reset() {
     clearBands(hero);
     hero.setAttribute('viewBox', HOME_VB);
     $$('[data-mark-family~="diacritic"]', hero).forEach(p => { p.style.display = ''; });
-    $$('g.line, g.ayah-marker', hero).forEach(g => g.removeAttribute('transform'));
-    $$('g.word, g.ayah-marker, g.hizb-mark, g.sajdah-mark, g.surah-name, g.basmalah', hero)
+    $$('g.line, g.ayah-mark', hero).forEach(g => g.removeAttribute('transform'));
+    $$('g.word, g.ayah-mark, g.division-mark, g.sajdah-mark, g.surah-name, g.basmalah', hero)
       .forEach(g => { g.style.display = ''; });
   }
 
@@ -2554,8 +2554,8 @@ heroReady.then(() => mod('hero', () => {
         shift.set(line.dataset.line, dy);
         line.setAttribute('transform', 'translate(0 ' + dy.toFixed(2) + ')');
       });
-      $$('g.ayah-marker[data-aid]', hero).forEach(m => {
-        const parts = $$('g.ayah[data-aid="' + m.dataset.aid + '"]', hero);
+      $$('g.ayah-mark[data-ayah-key]', hero).forEach(m => {
+        const parts = $$('g.ayah-fragment[data-ayah-key="' + m.dataset.ayahKey + '"]', hero);
         const last = parts[parts.length - 1];
         if (last) m.setAttribute('transform',
           'translate(0 ' + (shift.get(last.closest('g.line').dataset.line) || 0).toFixed(2) + ')');
@@ -2567,9 +2567,9 @@ heroReady.then(() => mod('hero', () => {
 
     if (state.crop) {
       const keep = new Set(wordsOf());
-      const marker = hero.querySelector('g.ayah-marker[data-aid="' + aid + '"]');
+      const marker = hero.querySelector('g.ayah-mark[data-ayah-key="' + ayahKey + '"]');
       $$('g.word', hero).forEach(w => { if (!keep.has(w)) w.style.display = 'none'; });
-      $$('g.ayah-marker, g.hizb-mark, g.sajdah-mark, g.surah-name, g.basmalah', hero)
+      $$('g.ayah-mark, g.division-mark, g.sajdah-mark, g.surah-name, g.basmalah', hero)
         .forEach(g => { if (g !== marker) g.style.display = 'none'; });
       const b = boxOf([...keep, ...(marker ? [marker] : [])]);
       if (b) {
@@ -2577,7 +2577,7 @@ heroReady.then(() => mod('hero', () => {
         hero.setAttribute('viewBox', [r2(b.x0 - p), r2(b.y0 - p),
           r2(b.x1 - b.x0 + 2 * p), r2(b.y1 - b.y0 + 2 * p)].join(' '));
       }
-      said.push('the page is now <b>ayah ' + aid + '</b> alone, framed on its own ink — ' +
+      said.push('the page is now <b>ayah ' + ayahKey + '</b> alone, framed on its own ink — ' +
         'a standalone SVG you could drop into a slide at any size');
     }
 
@@ -2585,14 +2585,14 @@ heroReady.then(() => mod('hero', () => {
       /* bandWords, not band: the band is laid out on the LINE PITCH, so
          consecutive lines meet flush instead of leaving the leading unpainted */
       const f = frags(), n = bandWords(hero, wordsOf());
-      said.push('Ayah <b>' + aid + '</b> · ' + wordsOf().length + ' words · ' + f.length +
-        ' nodes matched, and <code>data-ayah-parts</code> says ' + f[0].dataset.ayahParts +
+      said.push('Ayah <b>' + ayahKey + '</b> · ' + wordsOf().length + ' words · ' + f.length +
+        ' nodes matched, and <code>data-ayah-fragments</code> says ' + f[0].dataset.ayahFragments +
         ' — one <b>polygon</b> over ' + n + ' printed lines, not ' + n + ' stripes');
     }
 
     if (state.text) {
       const ws = wordsOf();
-      const t = ws.map(w => w.dataset.uthmani).join(' ');
+      const t = ws.map(w => w.dataset.rasm_uthmani).join(' ');
       /* an Arabic run inside LTR UI must be isolated, or the bidi algorithm
          reorders it against the Latin around it */
       said.push('<b>' + ws.length + ' words</b> of real Unicode, read straight off the ' +
@@ -2602,8 +2602,8 @@ heroReady.then(() => mod('hero', () => {
 
     out.innerHTML = said.length ? said.join('<br><br>') : REST;
     cap.innerHTML = state.lit
-      ? 'Ayah <b>' + aid + '</b> runs across ' + frags().length + ' printed lines, so the file ' +
-        'holds that many sibling <code>&lt;g class="ayah"&gt;</code> nodes for it. A single ' +
+      ? 'Ayah <b>' + ayahKey + '</b> runs across ' + frags().length + ' printed lines, so the file ' +
+        'holds that many sibling <code>&lt;g class="ayah-fragment"&gt;</code> nodes for it. A single ' +
         '<code>querySelector</code> would have found one of them.'
       : CAPTION;
     for (const k in btn) btn[k].setAttribute('aria-pressed', String(state[k]));
@@ -2612,15 +2612,15 @@ heroReady.then(() => mod('hero', () => {
   for (const k in btn) btn[k].addEventListener('click', () => { state[k] = !state[k]; render(); });
   $('#hero-reset').addEventListener('click', () => {
     for (const k in state) state[k] = false;
-    aid = hero.querySelector('g.ayah').dataset.aid;
+    ayahKey = hero.querySelector('g.ayah-fragment').dataset.ayahKey;
     render();
   });
 
   function fromHash() {
     const h = decodeURIComponent(location.hash.slice(1));
     if (!/^\d+:\d+$/.test(h)) return;
-    if (!$$('g.ayah[data-aid="' + h + '"]', hero).length) return;
-    aid = h;                       /* every effect now aims at the linked ayah */
+    if (!$$('g.ayah-fragment[data-ayah-key="' + h + '"]', hero).length) return;
+    ayahKey = h;                       /* every effect now aims at the linked ayah */
     state.lit = true;
     render();
     hero.scrollIntoView({ block: 'center' });
@@ -2658,15 +2658,15 @@ const doc = new DOMParser()
   .parseFromString(await res.text(), 'image/svg+xml');
 
 log('words          ', doc.querySelectorAll('g.word').length);
-log('ayah fragments ', doc.querySelectorAll('g.ayah').length);
+log('ayah fragments ', doc.querySelectorAll('g.ayah-fragment').length);
 log('named marks    ', doc.querySelectorAll('path[data-kind="mark"]').length);
 log('viewBox        ', doc.documentElement.getAttribute('viewBox'));
 
 // the text of ayah 2:6, in reading order
 log('');
 log([...doc.querySelectorAll('g.word')]
-  .filter(w => w.dataset.wid.startsWith('2:6:'))
-  .map(w => w.dataset.uthmani).join(' '));
+  .filter(w => w.dataset.wordKey.startsWith('2:6:'))
+  .map(w => w.dataset.rasm_uthmani).join(' '));
 
 // and draw it
 stage.className = 'paper tight';
@@ -2694,16 +2694,16 @@ mod('lab-ayah', () => makeLab({
   code: `
 // An ayah is emitted once per printed LINE, so it is several nodes.
 // Change querySelectorAll to querySelector and run it again.
-const frags = svg.querySelectorAll('g.ayah[data-aid="2:255"]');
+const frags = svg.querySelectorAll('g.ayah-fragment[data-ayah-key="2:255"]');
 
 H.band(svg, frags);          // one stripe per line, behind the ink
 
 log('fragments matched ', frags.length);
-log('data-ayah-parts   ', frags[0].dataset.ayahParts);
+log('data-ayah-fragments   ', frags[0].dataset.ayahFragments);
 log('words highlighted ',
     [...frags].reduce((n, f) => n + f.querySelectorAll('g.word').length, 0),
-    'of', svg.querySelectorAll('g.ayah[data-aid="2:255"] g.word').length);
-log('its medallion     ', frags[0].dataset.marker);
+    'of', svg.querySelectorAll('g.ayah-fragment[data-ayah-key="2:255"] g.word').length);
+log('its medallion     ', frags[0].dataset.ayahMark);
 `,
   lib: { code: `
 // page.ayah() returns ALL the fragments: no single node "is" the ayah.
@@ -2713,7 +2713,7 @@ const ayah = page.ayah('2:255');
 page.band(ayah, { fill: '#d6a326' });   // ONE path over all six lines
 
 log(ayah.fragments.length, 'fragments ·', ayah.words().length, 'words ·',
-    'printed lines', ayah.lines.join(', '), '· medallion', ayah.markerId);
+    'printed lines', ayah.lines.join(', '), '· medallion', ayah.markId);
 ` }
 }));
 
@@ -2748,9 +2748,9 @@ stage.addEventListener('click', e => {
   }
   hit++;
   span.classList.add('lit');
-  const word = svg.querySelector('g.word[data-wid="' + span.dataset.wid + '"]');
-  out('<b>' + word.dataset.wid + '</b> ' + word.dataset.uthmani +
-      ' → ayah <b>' + word.closest('g.ayah').dataset.aid + '</b>' +
+  const word = svg.querySelector('g.word[data-word-key="' + span.dataset.wordKey + '"]');
+  out('<b>' + word.dataset.wordKey + '</b> ' + word.dataset.rasm_uthmani +
+      ' → ayah <b>' + word.closest('g.ayah-fragment').dataset.ayahKey + '</b>' +
       ', line ' + word.closest('g.line').dataset.line +
       '   ' + hit + ' hits, ' + miss + ' misses');
 });
@@ -2773,8 +2773,8 @@ const tap = page.onTap(r => {
     return;
   }
   hit++;
-  out('<b>' + r.wid + '</b> ' + r.word.text.uthmani +
-      ' → ayah <b>' + r.aid + '</b>, line ' + r.line +
+  out('<b>' + r.wordKey + '</b> ' + r.word.text.rasm_uthmani +
+      ' → ayah <b>' + r.ayahKey + '</b>, line ' + r.line +
       '   ' + hit + ' hits, ' + miss + ' misses');
 }, { root: stage });
 signal.addEventListener('abort', () => tap.remove());
@@ -2796,7 +2796,7 @@ const PAD_X = PAD, PAD_Y = PAD + 0.4;
 const NS = 'http://www.w3.org/2000/svg';
 
 const byLine = new Map();
-for (const frag of svg.querySelectorAll('g.ayah[data-aid="' + AID + '"]'))
+for (const frag of svg.querySelectorAll('g.ayah-fragment[data-ayah-key="' + AID + '"]'))
   for (const w of frag.querySelectorAll('g.word')) {
     const ln = w.closest('g.line').dataset.line;
     const b = H.toRoot(svg, w), c = byLine.get(ln);   // into viewBox units
@@ -2874,7 +2874,7 @@ hits.forEach(w => w.classList.add('q-word'));   // red on the page
 log(hits.length, 'match(es) on this page for', QUERY);
 log('');
 hits.slice(0, 10).forEach(w =>
-  log(w.dataset.wid.padEnd(10), w.dataset.uthmani,
+  log(w.dataset.wordKey.padEnd(10), w.dataset.rasm_uthmani,
       '  rasm:', H.forms(w).rasm, '  search:', H.forms(w).search));
 `,
   lib: { code: `
@@ -2905,16 +2905,16 @@ svg.addEventListener('pointermove', e => {
   const word = e.target.closest('g.word');
   const path = e.target.closest('path');
   if (!word) return;
-  const t = H.forms(word);   // rasm, imlaei, search, qpc come from index/by-page/NNN.json
+  const t = H.forms(word);   // rasm, rasm_imlai, search, qpc come from index/by-page/NNN.json
 
   out(
-    '<b>' + word.dataset.wid + '</b>\\n' +
-    'uthmani  ' + word.dataset.uthmani + '\\n' +
+    '<b>' + word.dataset.wordKey + '</b>\\n' +
+    'rasm_uthmani  ' + word.dataset.rasm_uthmani + '\\n' +
     'rasm     ' + t.rasm    + '\\n' +
-    'imlaei   ' + t.imlaei  + '\\n' +
+    'rasm_imlai   ' + t.rasm_imlai  + '\\n' +
     'search   ' + t.search  + '\\n' +
     'qpc      ' + t.qpc     + '\\n' +
-    'ayah     ' + word.closest('g.ayah').dataset.aid +
+    'ayah     ' + word.closest('g.ayah-fragment').dataset.ayahKey +
         '   line ' + word.closest('g.line').dataset.line + '\\n' +
     'path     ' + (path ? [path.dataset.kind, path.dataset.mark,
                            path.dataset.markFamily].filter(Boolean).join(' · ') : '—')
@@ -2931,18 +2931,18 @@ svg.style.cursor = 'crosshair';
 svg.addEventListener('pointermove', e => {
   const el = e.target.closest('g.word');
   if (!el) return;
-  const w = page.word(el.dataset.wid);
+  const w = page.word(el.dataset.wordKey);
   const path = e.target.closest('path');
   const b = w.box();
 
   out(
-    '<b>' + w.wid + '</b>\\n' +
-    'uthmani  ' + w.text.uthmani + '\\n' +
+    '<b>' + w.wordKey + '</b>\\n' +
+    'rasm_uthmani  ' + w.text.rasm_uthmani + '\\n' +
     'rasm     ' + w.text.rasm    + '\\n' +
-    'imlaei   ' + w.text.imlaei  + '\\n' +
+    'rasm_imlai   ' + w.text.rasm_imlai  + '\\n' +
     'search   ' + w.text.search  + '\\n' +
     'qpc      ' + w.text.qpc     + '\\n' +
-    'ayah     ' + w.aid + '   line ' + w.line + '   word ' + w.index + '\\n' +
+    'ayah     ' + w.ayahKey + '   line ' + w.line + '   word ' + w.number + '\\n' +
     'box      ' + b.x.toFixed(1) + ' ' + b.y.toFixed(1) +
         '  ' + b.w.toFixed(1) + '×' + b.h.toFixed(1) + '  (viewBox units)\\n' +
     'path     ' + (path ? [path.dataset.kind, path.dataset.mark,
@@ -2972,29 +2972,29 @@ mod('lab-select', () => {
 // drag begun on words that are already selected starts a native
 // text DRAG-AND-DROP instead, and the selection freezes for the whole
 // gesture — the failure that looks like broken geometry and is not.
-const WHICH = 'uthmani';   // what Ctrl+C puts on the clipboard
+const WHICH = 'rasm_uthmani';   // what Ctrl+C puts on the clipboard
 const MARK  = 'arabic';    // ayah numbers: 'arabic' ﴿٢٥٣﴾ | 'latin' (2:253) | 'none'
 const PARTIAL = false;     // label an INCOMPLETE ayah as (2:253:4-9)
 
 const layer = H.hitLayer(svg, stage, { gapfill: true, signal });
-const wordOf = s => svg.querySelector('g.word[data-wid="' + s.dataset.wid + '"]');
+const wordOf = s => svg.querySelector('g.word[data-word-key="' + s.dataset.wordKey + '"]');
 const AR = n => String(n).replace(/[0-9]/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
 
 // Stamp an ayah number ONLY where the selection holds that ayah whole.
 // A number asserts "this is ayah 253"; putting one after a fragment is
 // a false citation of Quranic text, not a formatting preference.
-function stamp(aid, first, last) {
+function stamp(ayahKey, first, last) {
   if (MARK === 'none') return '';
-  const all = [...svg.querySelectorAll('g.ayah[data-aid="' + aid + '"] g.word')];
+  const all = [...svg.querySelectorAll('g.ayah-fragment[data-ayah-key="' + ayahKey + '"] g.word')];
   const whole = all.length &&
-                all[0].dataset.wid === first.dataset.wid &&
-                all[all.length - 1].dataset.wid === last.dataset.wid;
+                all[0].dataset.wordKey === first.dataset.wordKey &&
+                all[all.length - 1].dataset.wordKey === last.dataset.wordKey;
   if (!whole) {
     if (!PARTIAL) return '';                  // silence beats a false citation
-    const a = first.dataset.wid.split(':')[2], b = last.dataset.wid.split(':')[2];
-    return ' (' + aid + ':' + a + (a === b ? '' : '-' + b) + ')';
+    const a = first.dataset.wordKey.split(':')[2], b = last.dataset.wordKey.split(':')[2];
+    return ' (' + ayahKey + ':' + a + (a === b ? '' : '-' + b) + ')';
   }
-  return MARK === 'arabic' ? ' ﴿' + AR(aid.split(':')[1]) + '﴾' : ' (' + aid + ')';
+  return MARK === 'arabic' ? ' ﴿' + AR(ayahKey.split(':')[1]) + '﴾' : ' (' + ayahKey + ')';
 }
 
 // ONE source of truth: the fully-selected words. The band, the copied
@@ -3004,20 +3004,20 @@ function words() { return H.selectedWords(layer).map(wordOf); }
 
 function payload(which) {
   const picked = H.selectedWords(layer);
-  let text = '', prevLine = null, aid = null, first = null, last = null;
+  let text = '', prevLine = null, ayahKey = null, first = null, last = null;
   for (const s of picked) {
     const w = wordOf(s);
     const v = w && H.forms(w)[which];
     if (!v) continue;
-    const a = w.closest('g.ayah').dataset.aid;
-    if (aid && a !== aid) { text += stamp(aid, first, last); aid = null; }
-    if (!aid) { aid = a; first = w; }
+    const a = w.closest('g.ayah-fragment').dataset.ayahKey;
+    if (ayahKey && a !== ayahKey) { text += stamp(ayahKey, first, last); ayahKey = null; }
+    if (!ayahKey) { ayahKey = a; first = w; }
     last = w;
     text += (prevLine !== null && s.dataset.line !== prevLine ? '\\n'
                                                               : (text ? ' ' : '')) + v;
     prevLine = s.dataset.line;   // the mushaf's own line break, preserved
   }
-  if (aid) text += stamp(aid, first, last);
+  if (ayahKey) text += stamp(ayahKey, first, last);
   return text;
 }
 
@@ -3027,11 +3027,11 @@ function report() {
   H.snapToWords(layer);
   const ws = words();
   const lines = H.bandWords(svg, ws);
-  const u = payload('uthmani');
+  const u = payload('rasm_uthmani');
   if (!u) { out('drag across the page →'); return; }
   out('<b>' + ws.length + ' words</b> · ' + lines + ' line band(s)\\n\\n' +
-      '<b>uthmani</b>  ' + u + '\\n\\n' +
-      '<b>imlaei</b>   ' + payload('imlaei') + '\\n\\n' +
+      '<b>rasm_uthmani</b>  ' + u + '\\n\\n' +
+      '<b>rasm_imlai</b>   ' + payload('rasm_imlai') + '\\n\\n' +
       '<b>search</b>   ' + payload('search') + '\\n\\n' +
       'Ctrl/⌘+C copies the <b>' + WHICH + '</b> form.');
 }
@@ -3053,7 +3053,7 @@ report();
     lib: { code: `
 // ONE call: the shared hit layer, whole-word snapping, the copy handler, the
 // band through page.band (one path, not a stripe per line), and a citation.
-const WHICH = 'uthmani';   // what the spans carry AND what Ctrl+C copies
+const WHICH = 'rasm_uthmani';   // what the spans carry AND what Ctrl+C copies
 
 const page = new M.MushafPage(svg);
 page.attachWords(H.sidecar(svg));   // the four text forms ship in index/by-page/NNN.json
@@ -3064,9 +3064,9 @@ const sel = M.attachSelection(page, {
   citation: true,          // "…text… (2:253)"; or pass your own fn
   onSelect: s => {
     if (!s.words.length) { out('drag across the page →'); return; }
-    out('<b>' + s.words.length + ' words</b> · ayahs ' + s.aids.join(', ') + '\\n\\n' +
-        '<b>uthmani</b>  ' + sel.text('uthmani') + '\\n\\n' +
-        '<b>imlaei</b>   ' + sel.text('imlaei')  + '\\n\\n' +
+    out('<b>' + s.words.length + ' words</b> · ayahs ' + s.ayahKeys.join(', ') + '\\n\\n' +
+        '<b>rasm_uthmani</b>  ' + sel.text('rasm_uthmani') + '\\n\\n' +
+        '<b>rasm_imlai</b>   ' + sel.text('rasm_imlai')  + '\\n\\n' +
         '<b>search</b>   ' + sel.text('search')  + '\\n\\n' +
         'Ctrl/⌘+C copies the <b>' + WHICH + '</b> form, with its citation:\\n' +
         sel.payload());
@@ -3097,13 +3097,13 @@ out('drag across the page →');
     ctx.extra.append(l, s);
   };
   sel('WHICH', 'copy as',
-      [['uthmani', 'uthmani — as the print sets it'],
-       ['imlaei',  'imlaei — modern spelling'],
+      [['rasm_uthmani', 'rasm_uthmani — as the print sets it'],
+       ['rasm_imlai',  'rasm_imlai — modern spelling'],
        ['search',  'search — bare, for a search box'],
        ['qpc',     'qpc — KFGQPC codepoints'],
        ['rasm',    'rasm — the shapes drawn']],
       /(const WHICH = )'[a-z]+'/);
-  /* independent of WHICH: Arabic-Indic digits suit uthmani, Latin suits the
+  /* independent of WHICH: Arabic-Indic digits suit rasm_uthmani, Latin suits the
      search form, and a reader may want to mix them */
   /* Inside an <option>, CSS and dir= are unreliable across browsers, so the
      ornate brackets are isolated at CHARACTER level instead — U+2067 … U+2069
@@ -3136,37 +3136,37 @@ svg.style.setProperty('--fade', FADE + 'ms');
 
 // Document order IS reading order. No geometry, no sorting.
 const words = [...svg.querySelectorAll('g.word')];
-const keyOf = w => BY_AYAH ? w.closest('g.ayah').dataset.aid : w.dataset.wid;
+const keyOf = w => BY_AYAH ? w.closest('g.ayah-fragment').dataset.ayahKey : w.dataset.wordKey;
 const steps = [...new Set(words.map(keyOf))];
 
 // A medallion belongs to the ayah it CLOSES, so it lights when that
 // ayah's last word is reached — which also gives the animation a beat
 // at every ayah end. Page furniture that has no reading moment stays
 // grey by design, not by omission:
-//   · hizb / rub rosettes and sajdah signs light with the ayah they
-//     stand at, because data-aid says which one that is;
+//   · hizb / rubu_al_hizb rosettes and sajdah signs light with the ayah they
+//     stand at, because data-ayah-key says which one that is;
 //   · the surah banner lights with the FIRST word on the page, since
 //     that is when the reader arrives at it;
-//   · the 12 decorative rosettes on pages 1-2 carry no data-aid and no
+//   · the 12 decorative rosettes on pages 1-2 carry no data-ayah-key and no
 //     ayah to complete, so they stay grey throughout — lighting them
 //     would imply an ayah boundary that does not exist.
 const lastWordOf = new Map();
-for (const w of words) lastWordOf.set(w.closest('g.ayah').dataset.aid, keyOf(w));
+for (const w of words) lastWordOf.set(w.closest('g.ayah-fragment').dataset.ayahKey, keyOf(w));
 
 const furniture = [];
-for (const g of svg.querySelectorAll('g.ayah-marker[data-aid], g.hizb-mark[data-aid], g.sajdah-mark[data-aid]')) {
-  const at = lastWordOf.get(g.dataset.aid);
+for (const g of svg.querySelectorAll('g.ayah-mark[data-ayah-key], g.division-mark[data-ayah-key], g.sajdah-mark[data-ayah-key]')) {
+  const at = lastWordOf.get(g.dataset.ayahKey);
   if (at) furniture.push([g, steps.indexOf(at)]);
   else g.style.fill = GREY;            // no ayah on this page: stays grey
 }
-for (const g of svg.querySelectorAll('g.ayah-marker:not([data-aid])'))
+for (const g of svg.querySelectorAll('g.ayah-mark:not([data-ayah-key])'))
   g.style.fill = GREY;                 // decorative rosettes, pages 1-2
 for (const g of svg.querySelectorAll('g.surah-name, g.basmalah'))
   furniture.push([g, 0]);
 
 // nothing on the page is at full strength before it has been reached
 const everything = [...words, ...svg.querySelectorAll(
-  'g.ayah-marker, g.hizb-mark, g.sajdah-mark, g.surah-name, g.basmalah')];
+  'g.ayah-mark, g.division-mark, g.sajdah-mark, g.surah-name, g.basmalah')];
 
 function paint(at) {
   const lit = new Set(steps.slice(Math.max(0, at - LIT + 1), at + 1));
@@ -3341,7 +3341,7 @@ function dead(msg) {                    // never leave a button that does nothin
 // And bound the request. An un-timed-out fetch does not fail on a bad
 // network, it HANGS — the await never settles and the section sits
 // blank forever, which is the worst of the three outcomes.
-let raw = H.FALLBACK_TIMINGS, from = 'cached copy';
+let raw = H.FALLBACK_AYAH_TIMINGS, from = 'cached copy';
 try {
   const res = await fetch(API, { signal: AbortSignal.timeout(6000) });
   if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -3360,19 +3360,19 @@ try {
 log('timings  ', from);
 
 // THE GUARD. word_number is 1-based within the ayah, which is the
-// third part of data-wid — a direct join. But two decompositions can
+// third part of data-word-key — a direct join. But two decompositions can
 // count words differently (p254 13:37: 19 theirs, 20 ours), and
 // trusting it blindly drifts the highlight to the end of the ayah.
 const ayahs = [];
-for (const frag of svg.querySelectorAll('g.ayah')) {
-  const aid = frag.dataset.aid;
-  if (ayahs.some(a => a.aid === aid) || !raw[aid]) continue;
-  const words = [...svg.querySelectorAll('g.ayah[data-aid="' + aid + '"] g.word')];
-  const times = raw[aid][1];
+for (const frag of svg.querySelectorAll('g.ayah-fragment')) {
+  const ayahKey = frag.dataset.ayahKey;
+  if (ayahs.some(a => a.ayahKey === ayahKey) || !raw[ayahKey]) continue;
+  const words = [...svg.querySelectorAll('g.ayah-fragment[data-ayah-key="' + ayahKey + '"] g.word')];
+  const times = raw[ayahKey][1];
   const perWord = words.length === times.length;
-  if (!perWord) log('MISMATCH', aid, '— ours', words.length,
+  if (!perWord) log('MISMATCH', ayahKey, '— ours', words.length,
                     'theirs', times.length, '· highlighting it whole');
-  ayahs.push({ aid, url: raw[aid][0], times, words, perWord });
+  ayahs.push({ ayahKey, url: raw[ayahKey][0], times, words, perWord });
 }
 if (!ayahs.length) { dead('No timings for this page, so there is nothing to follow.'); return; }
 log('ayahs    ', ayahs.length, '·',
@@ -3419,7 +3419,7 @@ function frame() {
   let i = -1;
   for (let k = 0; k < a.times.length; k++) if (ms >= a.times[k][0]) i = k;
   paint(a, i);
-  state.innerHTML = 'ayah <b>' + a.aid + '</b> · word ' + (i + 1) + '/' + a.times.length +
+  state.innerHTML = 'ayah <b>' + a.ayahKey + '</b> · word ' + (i + 1) + '/' + a.times.length +
                     ' · file ' + (at + 1) + '/' + ayahs.length;
 }
 
@@ -3434,7 +3434,7 @@ play.addEventListener('click', () => {
   // the audio is fetched from a CDN, so say so rather than looking broken
   play.disabled = true;
   play.textContent = '…  Loading';
-  state.textContent = 'fetching ' + ayahs[at].aid + ' from the CDN';
+  state.textContent = 'fetching ' + ayahs[at].ayahKey + ' from the CDN';
   audio.play().then(() => {
     play.disabled = false;
     play.textContent = '❚❚  Pause';
@@ -3483,7 +3483,7 @@ function dead(msg) {
 
 const opts = {
   reciter: RECITER,
-  onWord: w => state.innerHTML = 'ayah <b>' + w.aid + '</b> · word ' + (w.index + 1) +
+  onWord: w => state.innerHTML = 'ayah <b>' + w.ayahKey + '</b> · word ' + (w.number + 1) +
                                  '/' + w.count + ' · file ' + (w.file + 1) + '/' + w.files,
   onEnd: () => { play.textContent = '▶  Play the recitation'; state.textContent = 'finished'; },
   onError: e => dead(e.message + '. Everything else on this page still works.')
@@ -3494,20 +3494,20 @@ try {
   follow = await M.followRecitation(page, opts);
 } catch (e) {
   log('api.quran.com unreachable — using the cached copy of this page.');
-  follow = await M.followRecitation(page, { ...opts, timings: H.FALLBACK_TIMINGS });
+  follow = await M.followRecitation(page, { ...opts, timings: H.FALLBACK_AYAH_TIMINGS });
 }
 if (signal.aborted) { follow.remove(); return; }
 signal.addEventListener('abort', () => follow.remove());
 
 for (const m of follow.mismatches)
-  log('MISMATCH', m.aid, '— ours', m.ours, 'theirs', m.theirs, '· highlighting it whole');
+  log('MISMATCH', m.ayahKey, '— ours', m.ours, 'theirs', m.theirs, '· highlighting it whole');
 log(follow.ayahs.length, 'ayahs ·', follow.segments, 'word segments');
 
 play.addEventListener('click', () => {
   if (follow.playing) { follow.pause(); play.textContent = '▶  Play the recitation'; return; }
   play.disabled = true;
   play.textContent = '…  Loading';
-  state.textContent = 'fetching ' + follow.ayahs[follow.file].aid + ' from the CDN';
+  state.textContent = 'fetching ' + follow.ayahs[follow.file].ayahKey + ' from the CDN';
   follow.play().then(() => {
     play.disabled = false;
     play.textContent = '❚❚  Pause';
@@ -3529,8 +3529,8 @@ mod('lab-translate', () => {
     stageNote: 'Hover a word. On touch, tap it — tap the paper to dismiss. ' +
                'Or Tab into the page and move with Tab / Shift+Tab.',
     code: `
-// 5 KB for the whole page: {wid: [english, transliteration]}.
-// data-wid is quran.com's word key, so this joins with no mapping
+// 5 KB for the whole page: {wordKey: [english, transliteration]}.
+// data-word-key is quran.com's word key, so this joins with no mapping
 // table. Any per-word data of your own works the same way.
 const gloss = await (await fetch('data/gloss-042.json')).json();
 const PIN_TITLES = false;   // also hang a native <title> on every word
@@ -3549,10 +3549,10 @@ signal.addEventListener('abort', () => tip.remove());
 
 let joined = 0;
 for (const s of layer.children) {
-  const g = gloss[s.dataset.wid];
+  const g = gloss[s.dataset.wordKey];
   if (g) joined++;
-  const w = svg.querySelector('g.word[data-wid="' + s.dataset.wid + '"]');
-  s.setAttribute('aria-label', w.dataset.uthmani + (g ? ', ' + g[0] : ''));
+  const w = svg.querySelector('g.word[data-word-key="' + s.dataset.wordKey + '"]');
+  s.setAttribute('aria-label', w.dataset.rasm_uthmani + (g ? ', ' + g[0] : ''));
   if (PIN_TITLES && g) {                 // the persistent variant
     const el = document.createElementNS(H.SVGNS, 'title');
     el.textContent = g[0] + '  ·  ' + g[1];
@@ -3561,13 +3561,13 @@ for (const s of layer.children) {
 }
 
 function show(span) {
-  const g = gloss[span.dataset.wid];
-  const w = svg.querySelector('g.word[data-wid="' + span.dataset.wid + '"]');
+  const g = gloss[span.dataset.wordKey];
+  const w = svg.querySelector('g.word[data-word-key="' + span.dataset.wordKey + '"]');
   layer.querySelectorAll('.lit').forEach(x => x.classList.remove('lit'));
   span.classList.add('lit');
   tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
                   (g ? '<i>' + g[1] + '</i>' : '') +
-                  '<u>' + span.dataset.wid + '  ·  <bdi>' + w.dataset.uthmani + '</bdi></u>';
+                  '<u>' + span.dataset.wordKey + '  ·  <bdi>' + w.dataset.rasm_uthmani + '</bdi></u>';
   tip.classList.add('on');
 
   // clear of the word it describes, flipped near the edges, and never
@@ -3600,7 +3600,7 @@ stage.addEventListener('click', e => {
 });
 
 log(joined, 'of', layer.children.length,
-    'words joined on data-wid. Hover, tap, or Tab into the page.');
+    'words joined on data-word-key. Hover, tap, or Tab into the page.');
 `,
     lib: { code: `
 const gloss = await (await fetch('data/gloss-042.json')).json();
@@ -3611,9 +3611,9 @@ const page = new M.MushafPage(svg);
 // ONE call. It fires once per word ENTERED — not per pointermove and not per
 // path — and owns the placement. Every pixel of the look is q-tip's.
 const tip = M.wordTooltip(page, word => {
-  const g = gloss[word.wid];
+  const g = gloss[word.wordKey];
   return '<b>' + (g ? g[0] : '(no gloss)') + '</b>' + (g ? '<i>' + g[1] + '</i>' : '') +
-         '<u>' + word.wid + '  ·  <bdi>' + word.text.uthmani + '</bdi></u>';
+         '<u>' + word.wordKey + '  ·  <bdi>' + word.text.rasm_uthmani + '</bdi></u>';
 }, { className: 'q-tip' });
 
 // EVERY handle must be released, or the shared hit layer never goes away
@@ -3625,8 +3625,8 @@ if (PIN_TITLES) {
   signal.addEventListener('abort', () => a11y.remove());
 }
 
-const joined = page.words().filter(w => gloss[w.wid]).length;
-log(joined, 'of', page.wordCount, 'words joined on data-wid. Hover the page.');
+const joined = page.words().filter(w => gloss[w.wordKey]).length;
+log(joined, 'of', page.wordCount, 'words joined on data-word-key. Hover the page.');
 ` }
   });
   bindToggle(ctx, { label: 'pin <title> too', name: 'PIN_TITLES', value: false });
@@ -3651,14 +3651,14 @@ tip.className = 'q-tip';
 stage.append(tip);
 signal.addEventListener('abort', () => tip.remove());
 
-const wordOf = s => svg.querySelector('g.word[data-wid="' + s.dataset.wid + '"]');
+const wordOf = s => svg.querySelector('g.word[data-word-key="' + s.dataset.wordKey + '"]');
 
 // --- 1. hover: the meaning -------------------------------------------
 layer.addEventListener('pointerover', e => {
   const s = e.target.closest('span'); if (!s) return;
-  const g = gloss[s.dataset.wid];
+  const g = gloss[s.dataset.wordKey];
   tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
-                  '<u>' + s.dataset.wid + '  ·  <bdi>' + wordOf(s).dataset.uthmani + '</bdi></u>';
+                  '<u>' + s.dataset.wordKey + '  ·  <bdi>' + wordOf(s).dataset.rasm_uthmani + '</bdi></u>';
   tip.classList.add('on');
   const host = stage.getBoundingClientRect(), box = s.getBoundingClientRect();
   const above = box.top - host.top - tip.offsetHeight - 8;
@@ -3675,10 +3675,10 @@ let lit = null;
 stage.addEventListener('click', e => {
   const s = e.target.closest('.q-hits span');
   if (!s) return;
-  const aid = wordOf(s).closest('g.ayah').dataset.aid;
-  if (aid === lit) { H.clearBands(svg); lit = null; return; }
-  lit = aid;
-  H.band(svg, svg.querySelectorAll('g.ayah[data-aid="' + aid + '"]'));
+  const ayahKey = wordOf(s).closest('g.ayah-fragment').dataset.ayahKey;
+  if (ayahKey === lit) { H.clearBands(svg); lit = null; return; }
+  lit = ayahKey;
+  H.band(svg, svg.querySelectorAll('g.ayah-fragment[data-ayah-key="' + ayahKey + '"]'));
 });
 
 // --- 3. drag + Ctrl/⌘+C: real text out of the same layer --------------
@@ -3690,7 +3690,7 @@ document.addEventListener('copy', e => {
   for (const s of layer.children) {
     if (!r.intersectsNode(s)) continue;
     text += (prev !== null && s.dataset.line !== prev ? '\\n' : (text ? ' ' : '')) +
-            wordOf(s).dataset.uthmani;
+            wordOf(s).dataset.rasm_uthmani;
     prev = s.dataset.line;
   }
   if (!text) return;
@@ -3709,18 +3709,18 @@ const page = new M.MushafPage(svg);
 
 // --- 1. hover: the meaning -------------------------------------------
 const tip = M.wordTooltip(page, word => {
-  const g = gloss[word.wid];
+  const g = gloss[word.wordKey];
   return '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
-         '<u>' + word.wid + '  ·  <bdi>' + word.text.uthmani + '</bdi></u>';
+         '<u>' + word.wordKey + '  ·  <bdi>' + word.text.rasm_uthmani + '</bdi></u>';
 }, { className: 'q-tip', mount: stage });
 
 // --- 2. click: band the ayah that word belongs to ---------------------
 let lit = null, litAid = null;
-const click = M.onWordClick(page, ({ aid }) => {
+const click = M.onWordClick(page, ({ ayahKey }) => {
   if (lit) { lit.remove(); lit = null; }
-  if (aid === litAid) { litAid = null; return; }
-  litAid = aid;
-  lit = page.band(aid);
+  if (ayahKey === litAid) { litAid = null; return; }
+  litAid = ayahKey;
+  lit = page.band(ayahKey);
 }, { mount: stage });
 
 // --- 3. drag + Ctrl/⌘+C: real text out of the same layer --------------
@@ -3755,28 +3755,28 @@ mod('lab-style', () => makeLab({
 
 /* the nine vowel marks have their own family, so this is one selector.
    It does NOT touch the letter dots — ب ت ث differ by nothing else —
-   nor the waqf signs, which are recitation, not vocalisation. */
+   nor the waqf signs, which are recitation, not tashkil. */
 [data-mark-family~="diacritic"] { fill: #b8892b }
 
 /* the letters themselves */
 [data-kind="body"] { fill: #231f20 }
 
-/* letter dots, pause signs, silent-letter zeros */
+/* letter dots, waqf signs, silent-letter zeros */
 [data-mark-family~="dots"] { fill: #b03030 }
 [data-mark-family~="waqf"] { fill: #2d55a0 }
 [data-mark-family~="sifr"] { fill: #999999 }
 
 /* by name — a closed vocabulary of 34 */
-[data-mark="meem-iqlab"] { fill: #0a8f6a }   /* iqlab, 609 sites */
-[data-mark="shadda"]     { fill: #c1662a }   /* 22,678 */
+[data-mark="small_meem"] { fill: #0a8f6a }   /* iqlab, 609 sites */
+[data-mark="shaddah"]     { fill: #c1662a }   /* 22,678 */
 [data-mark="maddah"]     { fill: #3b6fc4 }   /* madd, 5,376 */
 
-/* reader mode: hide the vocalisation, keep everything that carries
+/* reader mode: hide the tashkil, keep everything that carries
    letter identity or recitation. Uncomment it. */
 /* [data-mark-family~="diacritic"] { display: none } */
 
 /* memorisation: mask a word, keep the printed page */
-/* g.word[data-wid^="2:255:"] { visibility: hidden } */
+/* g.word[data-word-key^="2:255:"] { visibility: hidden } */
 `,
   lib: { code: `
 // The library never selects on data-mark-family: it resolves a family to
@@ -3789,11 +3789,11 @@ page.styleMarks({ family: 'waqf' }, { fill: '#2d55a0' });
 page.styleMarks({ family: 'sifr' }, { fill: '#999999' });
 
 // by name — a closed vocabulary of 34
-page.styleMarks({ name: 'meem-iqlab' }, { fill: '#0a8f6a' });
-page.styleMarks({ name: 'shadda' },     { fill: '#c1662a' });
+page.styleMarks({ name: 'small_meem' }, { fill: '#0a8f6a' });
+page.styleMarks({ name: 'shaddah' },     { fill: '#c1662a' });
 page.styleMarks({ name: 'maddah' },     { fill: '#3b6fc4' });
 
-// reader mode: hide the vocalisation, keep everything that carries
+// reader mode: hide the tashkil, keep everything that carries
 // letter identity or recitation. Uncomment it.
 // page.hideMarks({ family: 'diacritic' });
 
@@ -3801,7 +3801,7 @@ page.styleMarks({ name: 'maddah' },     { fill: '#3b6fc4' });
 // M.mask(page, '2:255', { mode: 'hide' });
 
 log(page.marks({ family: 'diacritic' }).length, 'vowel marks, of which',
-    page.marks({ family: 'tanween' }).length, 'tanween — they are BOTH,',
+    page.marks({ family: 'tanwin' }).length, 'tanwin — they are BOTH,',
     'which is why data-mark-family is a token list.');
 ` }
 }));
@@ -3866,23 +3866,23 @@ log(page.el.querySelectorAll('path').length,
 });
 
 /* 10 · ayah markers */
-mod('lab-markers', () => {
+mod('lab-marks', () => {
   let picker = null, colours = null, index = null;
   const ctx = makeLab({
-  mount: 'lab-markers',
-  label: 'swap the ayah end-marker',
+  mount: 'lab-marks',
+  label: 'swap the ayah end-mark',
   /* The set is fetched once, here, so the picker can be built from what
      the URL really holds rather than a list baked into this page. If it
      cannot be reached the section says so and keeps the printed rings. */
   setup: async ctx2 => {
-    const BASE = 'https://quranpedia.github.io/ayah-markers/';
+    const BASE = 'https://quranpedia.github.io/ayah-marks/';
     try {
       const coll = await fetch(BASE + 'collection.json').then(r => r.json());
       index = { base: BASE, coll, files: new Map() };
       picker.options = [{ value: '', label: '— the printed ring —' }].concat(
         coll.markers.map(m => ({ value: m.id,
           label: m.id + '  ·  ' + (m.sources[0] ? m.sources[0].family : '') })));
-      onMarker(picker.value);
+      onMark(picker.value);
     } catch (e) {
       picker.options = [{ value: '', label: 'the marker set could not be reached; the printed rings stay' }];
       picker.el.disabled = true;
@@ -3893,20 +3893,20 @@ mod('lab-markers', () => {
 // ONLY THE RING IS REPLACED. The number is the print's own drawing of
 // itself and is never swapped for a font's digits.
 //
-// The outlines are FETCHED AT RUNTIME from quranpedia/ayah-markers. None
+// The outlines are FETCHED AT RUNTIME from quranpedia/ayah-marks. None
 // of them ships with this page, and each carries the licence of the type
 // family it was traced from — read collection.json before redistributing.
-const SET     = 'https://quranpedia.github.io/ayah-markers/';
+const SET     = 'https://quranpedia.github.io/ayah-marks/';
 const MARKER  = '017-regular';   // '' keeps the printed ring
 const COLOURS = {};
 const SIZE    = 1;
 const HIDE_ALL = false;
 
-const markers = svg.querySelectorAll('g.ayah-marker[data-aid]');
+const markers = svg.querySelectorAll('g.ayah-mark[data-ayah-key]');
 if (HIDE_ALL) { markers.forEach(m => m.style.display = 'none'); log('markers hidden — a plain reading view'); }
 else if (!MARKER) {
   markers.forEach(m => {
-    const ring = m.querySelector('[data-kind="ayah-marker-ornament"]');
+    const ring = m.querySelector('[data-kind="ayah_mark_ornament"]');
     if (ring) ring.setAttribute('fill', COLOURS['ink-base'] || '#b08d2e');
   });
   log('the printed ring, recoloured. Pick a design to swap it.');
@@ -3941,12 +3941,12 @@ if (!HIDE_ALL && MARKER) try {
   probe.remove();
 
   markers.forEach(m => {
-    const ring = m.querySelector('[data-kind="ayah-marker-ornament"]');
+    const ring = m.querySelector('[data-kind="ayah_mark_ornament"]');
     if (!ring) return;
     const b = ring.getBBox();
     const s = Math.min(b.width / box.width, b.height / box.height) * SIZE;
     const g = document.createElementNS(H.SVGNS, 'g');
-    g.setAttribute('data-kind', 'ayah-marker-ornament');
+    g.setAttribute('data-kind', 'ayah_mark_ornament');
     // MOVE THE MARKER, NEVER THE NUMBER.
     // The numeral is the print's own ink and stays where the King Fahd Complex
     // put it. Each design publishes one centre, cx/cy, where IT expects the
@@ -3958,7 +3958,7 @@ if (!HIDE_ALL && MARKER) try {
     // in thousands and num.getBBox() in tens, and comparing them directly puts
     // the marker a long way from the number. Go through the screen CTMs, which
     // compose every transform above each element, including the flip.
-    const num = m.querySelector('[data-kind="ayah-number"]');
+    const num = m.querySelector('[data-kind="ayah_number"]');
     const nb  = rec.number;
     let tx = b.x + b.width/2  - s*(box.x + box.width/2);
     let ty = b.y + b.height/2 - s*(box.y + box.height/2);
@@ -3990,9 +3990,9 @@ if (!HIDE_ALL && MARKER) try {
 }
 `,
     lib: { code: `
-// Outlines are fetched at runtime from quranpedia/ayah-markers — nothing here
+// Outlines are fetched at runtime from quranpedia/ayah-marks — nothing here
 // ships them, and each keeps the licence of the family it was traced from.
-const SET     = 'https://quranpedia.github.io/ayah-markers/';
+const SET     = 'https://quranpedia.github.io/ayah-marks/';
 const MARKER  = '017-regular';   // '' keeps the printed ring
 const COLOURS = {};
 const SIZE    = 1;
@@ -4000,15 +4000,15 @@ const HIDE_ALL = false;
 
 const page = new M.MushafPage(svg);
 
-if (HIDE_ALL)     page.styleMarkers({ hide: true });
-else if (!MARKER) page.styleMarkers({ ring: COLOURS['ink-base'] || '#b08d2e' });
+if (HIDE_ALL)     page.styleMarks({ hide: true });
+else if (!MARKER) page.styleMarks({ ring: COLOURS['ink-base'] || '#b08d2e' });
 else try {
-  const set = await M.loadMarkerSet(SET);   // fetched once per URL
+  const set = await M.loadMarkSet(SET);   // fetched once per URL
   const outline = await set.outline(MARKER);
   if (signal.aborted) return;               // a newer run replaced this stage
 
-  // Swaps the ring on g.ayah-marker[data-aid] only; the numeral is untouched.
-  const h = M.setAyahMarker(page, outline, { size: SIZE, colours: COLOURS });
+  // Swaps the ring on g.ayah-mark[data-ayah-key] only; the numeral is untouched.
+  const h = M.setAyahMark(page, outline, { size: SIZE, colours: COLOURS });
   log(h.count, 'medallions redrawn with', MARKER);
 } catch (e) {
   log('could not fetch', SET, '—', e.message, '· the printed rings are untouched');
@@ -4017,20 +4017,20 @@ else try {
   });
   /* The swatches start on the design's OWN colours, read out of its file, so
      the first thing the reader sees is the marker as its designer coloured it. */
-  async function onMarker(id) {
+  async function onMark(id) {
     if (!colours) return;
     if (!id || !index) { colours.hide(); return; }
     const rec = index.coll.markers.find(m => m.id === id);
     if (!rec) { colours.hide(); return; }
     if (!index.files.has(id))
       index.files.set(id, await fetch(index.base + rec.file).then(r => r.text()));
-    const parts = markerParts(index.files.get(id));
+    const parts = markParts(index.files.get(id));
     const baked = {};
     for (const p of parts) baked[p.part] = p.colour;
     colours.show(parts.map(p => p.part), baked);
   }
   picker = bindChoice(ctx, { label: 'design', name: 'MARKER',
-                            value: '017-regular', onChange: onMarker });
+                            value: '017-regular', onChange: onMark });
   colours = bindPartColours(ctx, { name: 'COLOURS', value: { 'ink-base': '#b08d2e' } });
   bindSlider(ctx, { label: 'size', name: 'SIZE', min: 0.4, max: 1.8,
                     step: 0.05, value: 1, digits: 2 });
@@ -4072,8 +4072,8 @@ lines.forEach((line, i) => {
 // the medallions live in their own layer, outside the lines, so they
 // have to be carried along. Each closes an ayah, so it belongs with
 // that ayah's LAST fragment on this page.
-svg.querySelectorAll('g.ayah-marker[data-aid]').forEach(m => {
-  const parts = svg.querySelectorAll('g.ayah[data-aid="' + m.dataset.aid + '"]');
+svg.querySelectorAll('g.ayah-mark[data-ayah-key]').forEach(m => {
+  const parts = svg.querySelectorAll('g.ayah-fragment[data-ayah-key="' + m.dataset.ayahKey + '"]');
   const last  = parts[parts.length - 1];
   if (!last) return;
   const dy = shift.get(last.closest('g.line').dataset.line) || 0;
@@ -4083,7 +4083,7 @@ svg.querySelectorAll('g.ayah-marker[data-aid]').forEach(m => {
 // grow the viewBox so nothing is cropped
 log('viewBox ', H.refit(svg, 6));
 log('lines   ', lines.length, 'moved apart by', GAP, 'units each');
-log('markers ', svg.querySelectorAll('g.ayah-marker[data-aid]').length, 'carried with their line');
+log('markers ', svg.querySelectorAll('g.ayah-mark[data-ayah-key]').length, 'carried with their line');
 log('glyphs  ', svg.querySelectorAll('path').length, 'untouched');
 `,
     lib: { code: `
@@ -4151,14 +4151,14 @@ const FROM = 1;                // word numbers within that ayah
 const TO = 50;
 
 const keep = w => {
-  const [s, a, n] = w.dataset.wid.split(':').map(Number);
+  const [s, a, n] = w.dataset.wordKey.split(':').map(Number);
   return s + ':' + a === AID && n >= FROM && n <= TO;
 };
 
 // other filters, same function:
-// const keep = w => w.dataset.wid === '2:255:1';                // one word
+// const keep = w => w.dataset.wordKey === '2:255:1';                // one word
 // const keep = w => w.closest('g.line').dataset.line === '4';   // one line
-// const keep = w => w.closest('g.ayah').dataset.aid === '2:255';// one ayah
+// const keep = w => w.closest('g.ayah-fragment').dataset.ayahKey === '2:255';// one ayah
 
 const PAD = 4;                 // page units around the crop
 const cropped = H.crop(svg, keep, PAD);
@@ -4169,7 +4169,7 @@ log('words   ', words.length, '(' + AID + ':' + FROM + '..' + TO + ')');
 log('paths   ', cropped.querySelectorAll('path').length);
 log('viewBox ', cropped.getAttribute('viewBox'));
 log('');
-log(words.map(w => w.dataset.uthmani).join(' '));
+log(words.map(w => w.dataset.rasm_uthmani).join(' '));
 `,
     lib: { code: `
 // A RUN of words. Drag FROM and TO in the toolbar, or edit them here.
@@ -4180,13 +4180,13 @@ const PAD = 4;                 // page units around the crop
 
 const page = new M.MushafPage(svg);
 
-const wids = page.words({ ayah: AID })
-  .filter(w => w.index >= FROM && w.index <= TO)
-  .map(w => w.wid);
+const wordKeys = page.words({ ayah: AID })
+  .filter(w => w.number >= FROM && w.number <= TO)
+  .map(w => w.wordKey);
 
 // crop() CLONES: the page beside it is untouched. A medallion is kept only
 // when the WHOLE ayah survived.
-const c = page.crop({ wids }, { pad: PAD });
+const c = page.crop({ wordKeys }, { pad: PAD });
 stage.replaceChildren(c.el);
 
 log(c.words.length, 'words ·', c.viewBox);
@@ -4218,26 +4218,26 @@ if (banner) {
 } else {
   // a banner only appears on a surah's FIRST page
   log('no banner here — surah',
-      svg.querySelector('g.word').dataset.wid.split(':')[0],
-      '(read out of data-wid)');
+      svg.querySelector('g.word').dataset.wordKey.split(':')[0],
+      '(read out of data-word-key)');
 }
 
-const aids = [...svg.querySelectorAll('g.ayah')].map(g => g.dataset.aid);
-log('on page  ', aids[0], '→', aids[aids.length - 1],
+const ayahKeys = [...svg.querySelectorAll('g.ayah-fragment')].map(g => g.dataset.ayahKey);
+log('on page  ', ayahKeys[0], '→', ayahKeys[ayahKeys.length - 1],
     '(' + svg.querySelectorAll('g.word').length + ' words)');
 
 // divisions are tagged on the ayah that OPENS them — all 30 juz,
-// 60 hizb and 240 rub, including the 41 with no drawn rosette
-const j = svg.querySelector('g.ayah[data-juz-start]');
-if (j) log('juz      ', j.dataset.juzStart, 'opens at', j.dataset.aid);
-const h = svg.querySelector('g.ayah[data-hizb-start]');
-if (h) log('hizb     ', h.dataset.hizbStart, 'opens at', h.dataset.aid);
-[...svg.querySelectorAll('g.ayah[data-rub-start]')].forEach(g =>
-  log('rub      ', g.dataset.rubStart, 'opens at', g.dataset.aid));
-log('rosettes ', svg.querySelectorAll('g.hizb-mark').length, 'drawn on the page');
+// 60 hizb and 240 rubu_al_hizb, including the 41 with no drawn rosette
+const j = svg.querySelector('g.ayah-fragment[data-juz-start]');
+if (j) log('juz      ', j.dataset.juzStart, 'opens at', j.dataset.ayahKey);
+const h = svg.querySelector('g.ayah-fragment[data-hizb-start]');
+if (h) log('hizb     ', h.dataset.hizbStart, 'opens at', h.dataset.ayahKey);
+[...svg.querySelectorAll('g.ayah-fragment[data-rubu-al-hizb-start]')].forEach(g =>
+  log('rubu_al_hizb      ', g.dataset.rubuAlHizbStart, 'opens at', g.dataset.ayahKey));
+log('rosettes ', svg.querySelectorAll('g.division-mark').length, 'drawn on the page');
 
 // sajdah sites — 15 in the mushaf, standalone, never inside a word
-const sj = [...svg.querySelectorAll('g.sajdah-mark')].map(g => g.dataset.aid);
+const sj = [...svg.querySelectorAll('g.sajdah-mark')].map(g => g.dataset.ayahKey);
 log('sajdah   ', sj.length ? sj.join(', ') : 'none');
 `,
     lib: { code: `
@@ -4245,7 +4245,7 @@ log('sajdah   ', sj.length ? sj.join(', ') : 'none');
 const page = new M.MushafPage(svg);
 
 // A surah merely PRESENT on the page comes back with hasBanner false and
-// only its number, read out of data-wid — so the list is complete either way.
+// only its number, read out of data-word-key — so the list is complete either way.
 for (const s of page.surahs()) {
   if (s.hasBanner) {
     log('surah    ', s.number, s.arabic, '·', s.latin, '·', s.english);
@@ -4260,15 +4260,15 @@ log('on page  ', keys[0], '→', keys[keys.length - 1],
     '(' + page.wordCount + ' words, ' + page.lines().length + ' printed lines)');
 
 // divisions() gives every boundary that STARTS here, including the 41 rubʿ
-// with no rosette drawn; rosettes() gives the drawn ones. Different questions.
+// with no rosette drawn; divisionMarks() gives the drawn ones. Different questions.
 const d = page.divisions();
-for (const k of ['juz', 'hizb', 'nisf', 'rub'])
-  for (const x of d[k]) log(k.padEnd(9), x.n, 'opens at', x.aid, '· line', x.line);
-log('rosettes ', page.rosettes().length, 'drawn on the page');
+for (const k of ['juz', 'hizb', 'nisf', 'rubu_al_hizb'])
+  for (const x of d[k]) log(k.padEnd(9), x.n, 'opens at', x.ayahKey, '· line', x.line);
+log('rosettes ', page.divisionMarks().length, 'drawn on the page');
 
-// counted by data-mark, NOT by group: two sites split with unreliable data-aid
+// counted by data-mark, NOT by group: two sites split with unreliable data-ayah-key
 const sj = page.sajdahs();
-log('sajdah   ', sj.length ? sj.map(s => s.aid).join(', ') : 'none');
+log('sajdah   ', sj.length ? sj.map(s => s.ayahKey).join(', ') : 'none');
 ` }
   });
   if (!ctx) return;
@@ -4350,66 +4350,66 @@ mod('attrs', () => {
 
   /* keyed 'scope|attr', or 'attr' for a note that holds on every scope */
   const NOTE = {
-    'g.word|data-wid': ['<code>surah:ayah:word</code>, 1-based. Globally unique. <b>The key.</b>', 1],
-    'g.word|data-w': ['the <b>global word id</b> of the word-by-word source (KFGQPC UthmanicHafs v3.0 release): the same integer for this word in every mushaf that has it. 77,432 ids; the two pieces of 15:7 <span class="ar">لَّوْ مَا</span> share one', 1],
-    'g.word|data-uthmani': ["the print's own text, full diacritics — the text of record", 1],
-    'g.word|data-rasm': ['skeleton of the uthmani spelling — <b>the shapes drawn</b> — dev profile only; production ships it in index/by-page', 1],
-    'g.word|data-imlaei': ['modern spelling, with marks — dev profile only; production ships it in index/by-page', 1],
+    'g.word|data-word-key': ['<code>surah:ayah:word</code>, 1-based. Globally unique. <b>The key.</b>', 1],
+    'g.word|data-w': ['the <b>global word id</b> of the word-by-word-translation-translation source (KFGQPC UthmanicHafs v3.0 release): the same integer for this word in every mushaf that has it. 77,432 ids; the two pieces of 15:7 <span class="ar">لَّوْ مَا</span> share one', 1],
+    'g.word|data-rasm-uthmani': ["the print's own text, full diacritics — the text of record", 1],
+    'g.word|data-rasm': ['skeleton of the rasm_uthmani spelling — <b>the shapes drawn</b> — dev profile only; production ships it in index/by-page', 1],
+    'g.word|data-rasm-imlai': ['modern spelling, with marks — dev profile only; production ships it in index/by-page', 1],
     'g.word|data-search': ['skeleton of the modern spelling — <b>the search key</b> — dev profile only; production ships it in index/by-page', 1],
     'g.word|data-qpc': ['the same text in KFGQPC codepoints — dev profile only; production ships it in index/by-page', 1],
-    'g.ayah|data-aid': ['<code>surah:ayah</code> — one fragment per printed line', 1],
-    'g.ayah|data-marker': ["the <code>id</code> of this ayah's medallion, on the same page", 1],
-    'g.ayah|data-part': ['which fragment this is, in reading order', 1],
-    'g.ayah|data-ayah-parts': ['how many fragments the ayah has — your completeness check', 1],
-    'g.ayah|data-juz-start': ['this ayah opens that juz. Tagged on every fragment of it, hence more than 30', 1],
-    'g.ayah|data-hizb-start': ['opens that hizb', 1],
-    'g.ayah|data-nisf-start': ['opens that half-hizb', 1],
-    'g.ayah|data-rub-start': ['opens that rubʿ — all 240 boundaries, including the 41 with no rosette', 1],
-    'g.ayah-marker|id': ['<code>mk-&lt;surah&gt;-&lt;ayah&gt;</code>, globally unique', 1],
-    'g.ayah-marker|data-aid': ['the ayah this medallion closes — on every one of the 6,236 marker groups. On pages 1–2 the artwork draws the ring twice; the copy sits inside the same group as <code>data-duplicate="1"</code>.', 1],
+    'g.ayah-fragment|data-ayah-key': ['<code>surah:ayah</code> — one fragment per printed line', 1],
+    'g.ayah-fragment|data-mark': ["the <code>id</code> of this ayah's medallion, on the same page", 1],
+    'g.ayah-fragment|data-part': ['which fragment this is, in reading order', 1],
+    'g.ayah-fragment|data-ayah-fragments': ['how many fragments the ayah has — your completeness check', 1],
+    'g.ayah-fragment|data-juz-start': ['this ayah opens that juz. Tagged on every fragment of it, hence more than 30', 1],
+    'g.ayah-fragment|data-hizb-start': ['opens that hizb', 1],
+    'g.ayah-fragment|data-nisf-start': ['opens that half-hizb', 1],
+    'g.ayah-fragment|data-rubu-al-hizb-start': ['opens that rubʿ — all 240 boundaries, including the 41 with no rosette', 1],
+    'g.ayah-mark|id': ['<code>mk-&lt;surah&gt;-&lt;ayah&gt;</code>, globally unique', 1],
+    'g.ayah-mark|data-ayah-key': ['the ayah this medallion closes — on every one of the 6,236 marker groups. On pages 1–2 the artwork draws the ring twice; the copy sits inside the same group as <code>data-duplicate="1"</code>.', 1],
     'path|data-duplicate': ['the second, byte-identical ring the artwork draws on pages 1–2 (12 paths). Kept because dropping it would lighten the anti-aliased rim; drop <code>[data-duplicate]</code> yourself if you prefer', 1],
     'g.line|data-line': ['the printed line number, 1–15 (1–8 on pages 1–2)', 1],
     'data-sid': ["surah number. <b>Only on a surah's first page</b>, which is why this is 114 and 112 rather than 604.", 1],
     'data-surah-name-ar': ['e.g. <bdi class="ar" style="font-size:1em">البقرة</bdi>', 1],
-    'data-surah-name-latin': ['e.g. <code>Al-Baqarah</code>', 1],
+    'data-surah-name-latin': ['e.g. <code>Baqarah</code>', 1],
     'data-surah-name-en': ['e.g. <code>The Cow</code>', 1],
     'data-revelation-place': ['<code>makkah</code> / <code>madinah</code>', 1],
     'data-ayah-count': ['ayahs in the surah', 1],
-    'path|data-kind': ['<code>body</code> (letter ink) · <code>mark</code> · <code>header-ink</code> · <code>ornament</code> · <code>ayah-marker-ornament</code> · <code>ayah-number</code> · <code>page-number</code> and <code>running-head</code> (four invisible paths of page furniture on p17, outside the viewBox)', 1],
+    'path|data-kind': ['<code>body</code> (letter ink) · <code>mark</code> · <code>header_ink</code> · <code>ornament</code> · <code>ayah_mark_ornament</code> · <code>ayah_number</code> · <code>page_number</code> and <code>running_head</code> (four invisible paths of page furniture on p17, outside the viewBox)', 1],
     'path|data-mark': ['which sign it is — a closed vocabulary of 34 names', 1],
-    'path|data-mark-family': ['groups the marks by meaning. <b>A space-separated token list</b>, like <code>class</code>: the tanween carry <code>"diacritic tanween"</code>. Match with <code>~=</code>, never <code>=</code>.', 1],
-    'path|data-form': ['<code>staggered</code> / <code>stacked</code> — how a tanween pair is drawn', 1],
-    'path|data-iqlab': ['links a haraka to its small meem at an iqlab site', 1],
+    'path|data-mark-family': ['groups the marks by meaning. <b>A space-separated token list</b>, like <code>class</code>: the tanwin carry <code>"diacritic tanwin"</code>. Match with <code>~=</code>, never <code>=</code>.', 1],
+    'path|data-form': ['<code>staggered</code> / <code>stacked</code> — how a tanwin pair is drawn', 1],
+    'path|data-iqlab': ['links a harakah to its small meem at an iqlab site', 1],
     'path|data-pair': ['links the two halves of a muʿānaqah — exactly 3 pairs, so 6 paths', 1],
     'path|data-standalone': ['a mark belonging to no word: 199 hizb rosettes + 30 sajdah signs', 1],
-    'path|data-aid': ['on a standalone mark, the ayah it stands at', 1],
-    'path|data-eid': ['a per-build element number. <b>Not stable across builds — never key on it.</b>', 2],
+    'path|data-ayah-key': ['on a standalone mark, the ayah it stands at', 1],
+    'path|data-element-id': ['a per-build element number. <b>Not stable across builds — never key on it.</b>', 2],
     'path|data-sig': ['a shape signature, not an identity: 98 signatures serve more than one mark name. <b>Never key on it.</b>', 2],
-    'g.hizb-mark|data-aid': ['the ayah the drawn rubʿ rosette stands at', 1],
-    'g.hizb-mark|data-mark': ['always <code>rub-sign</code> — the rosette itself', 1],
-    'g.hizb-mark|data-rub': ['which of the 240 rubʿ this is', 1],
-    'g.hizb-mark|data-rub-in-hizb': ['its place within its hizb: 1, 2, 3 or 4', 1],
-    'g.hizb-mark|data-nisf': ['which half of the hizb it falls in', 1],
-    'g.hizb-mark|data-hizb': ['which of the 60 hizb', 1],
-    'g.hizb-mark|data-juz': ['which of the 30 juz', 1],
-    'g.sajdah-mark|data-aid': ['the ayah of prostration', 1],
-    'g.sajdah-mark|data-mark': ['the prostration sign — 15 sites, 17 groups', 1],
+    'g.division-mark|data-ayah-key': ['the ayah the drawn rubʿ rosette stands at', 1],
+    'g.division-mark|data-mark': ['always <code>rubu-al-hizb-sign</code> — the rosette itself', 1],
+    'g.division-mark|data-rubu-al-hizb': ['which of the 240 rubʿ this is', 1],
+    'g.division-mark|data-rubu-al-hizb-in-hizb': ['its place within its hizb: 1, 2, 3 or 4', 1],
+    'g.division-mark|data-nisf': ['which half of the hizb it falls in', 1],
+    'g.division-mark|data-hizb': ['which of the 60 hizb', 1],
+    'g.division-mark|data-juz': ['which of the 30 juz', 1],
+    'g.sajdah-mark|data-ayah-key': ['the ayah of sajdah', 1],
+    'g.sajdah-mark|data-mark': ['the sajdah sign — 15 sites, 17 groups', 1],
     'g.ligature|data-text': ['the letters of one rendering run. <b>Dev profile only</b>, and <b>not a reliable letter segmentation</b> — 156 words spell fewer letters in it than they have.', 3],
     'path.ayahPolygon|id': ['a legacy invisible hit polygon. <b>Dev profile only</b>, superseded by §3 and §4.', 3],
     'svg|data-mushaf': ['which mushaf this file belongs to', 1],
-    'svg|data-qiraa': ['the reading — <code>asim</code>. <b>Not the same as the riwaya.</b>', 1],
-    'svg|data-riwaya': ['the transmission — <code>hafs</code>. Hafs and Shuʿbah both transmit ʿĀṣim.', 1],
+    'svg|data-qiraah': ['the reading — <code>asim</code>. <b>Not the same as the riwayah.</b>', 1],
+    'svg|data-riwayah': ['the transmission — <code>hafs</code>. Hafs and Shuʿbah both transmit ʿĀṣim.', 1],
     'svg|data-edition': ['which printed edition the artwork is', 1],
-    'svg|data-riwaya-name-ar': ['the riwaya named in Arabic, as the file carries it: حفص عن عاصم', 1],
-    'svg|data-riwaya-name-en': ['the same name in Latin script', 1],
+    'svg|data-riwayah-name-ar': ['the riwayah named in Arabic, as the file carries it: حفص عن عاصم', 1],
+    'svg|data-riwayah-name-en': ['the same name in Latin script', 1],
     'svg|data-ayah-numbering': ['the counting system — <code>kufi</code>', 1],
     'svg|data-ayah-total': ['ayahs in the whole mushaf <b>under that counting system</b>. A Hafs fact, not a Quran fact.', 1],
     'svg|data-page': ['the page number, 1–604', 1],
-    'svg|data-decomposition': ['<b>how far down this edition is broken up.</b> <code>word</code> — words, ligatures and named marks are all addressable, which is what every section on this page relies on. <code>ayah</code> — page ink with ayah polygons and end-markers, and nothing below the ayah. Read it before writing a word-level selector.', 1],
+    'svg|data-decomposition': ['<b>how far down this edition is broken up.</b> <code>word</code> — words, ligatures and named marks are all addressable, which is what every section on this page relies on. <code>ayah</code> — page ink with ayah polygons and end-marks, and nothing below the ayah. Read it before writing a word-level selector.', 1],
     'class': ['what the element is. Every selector on this page is built on it.', 1],
     'g|id': ['the wrapper holding the page content', 1],
-    'g.ayah_markers|id': ['the layer the medallions live in, outside the lines', 1],
-    'g.ayah_markers|class': ['the medallion layer', 1]
+    'g.ayah_marks|id': ['the layer the medallions live in, outside the lines', 1],
+    'g.ayah_marks|class': ['the medallion layer', 1]
   };
   const KINDS = { 1: 'both profiles', 2: 'both profiles · review only', 3: 'dev profile only' };
 
@@ -4511,7 +4511,7 @@ mod('search-all', () => {
       aStage.replaceChildren(svg);
       const onPage = hits.filter(h => h[1] === first[1]);
       onPage.forEach(h => {
-        const w = svg.querySelector('g.word[data-wid="' + h[0] + '"]');
+        const w = svg.querySelector('g.word[data-word-key="' + h[0] + '"]');
         if (w) w.classList.add('q-word');
       });
       aOut.innerHTML = '<b>' + hits.length.toLocaleString() + '</b> words in the mushaf, on <b>' +

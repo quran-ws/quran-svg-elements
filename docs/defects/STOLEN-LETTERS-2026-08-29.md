@@ -33,7 +33,7 @@ defects. Two spot-checks, read group by group:
 
 - **p188 9:11:3 وَأَقَامُوا۟** — its final group is the silent alef of واو
   الجماعة and is empty. The alif-shaped stroke my filter blamed the neighbour
-  for is ٱلصَّلَوٰةَ's OWN wasla alif at 245.0-247.9, correctly owned. The
+  for is ٱلصَّلَوٰةَ's OWN hamzat_al_wasl alif at 245.0-247.9, correctly owned. The
   silent alef simply is not drawn as separate ink; it is fused into the
   preceding "مو" run. A CUT question, not a theft.
 - **p231 11:85:2 أَوْفُوا۟** — identical shape; the stroke is

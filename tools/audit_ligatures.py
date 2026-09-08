@@ -5,8 +5,8 @@
 piece becomes one `<g class="ligature" data-text="...">` in the output. Every audit here
 so far has checked the WORD — its marks, its width, how many runs of ink it draws — and
 none has checked that cut. Abdullah asked for this after reading p591's output, where
-`<g class="ligature" data-text="ء">` contains a single fatha and no letter ink at all,
-while the hamza it names sits in the group before it.
+`<g class="ligature" data-text="ء">` contains a single fathah and no letter ink at all,
+while the hamzah it names sits in the group before it.
 
 Four things a ligature group can get wrong, in falling order of how provable they are:
 
@@ -60,7 +60,7 @@ def page(pg):
     for w, atoms in CAP["a"]:
         if not w:
             continue
-        segs = AW.segment_word(w["uthmani"]) or []
+        segs = AW.segment_word(w["rasm_uthmani"]) or []
         key = "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"])
         stats["words"] += 1
 
@@ -112,7 +112,7 @@ def page(pg):
             kind = "empty" if named else "marks-only"
             stats[kind] += 1
             if kind == "empty":
-                rows.append({"page": pg, "key": key, "word": w["uthmani"],
+                rows.append({"page": pg, "key": key, "word": w["rasm_uthmani"],
                              "kind": "empty", "group": i, "names": named,
                              "holds": [m for m in g["marks"] if m]})
 
@@ -126,7 +126,7 @@ def page(pg):
         # rule violation.
         if len(groups) > max(1, len(segs)):
             stats["count"] += 1
-            rows.append({"page": pg, "key": key, "word": w["uthmani"], "kind": "count",
+            rows.append({"page": pg, "key": key, "word": w["rasm_uthmani"], "kind": "count",
                          "group": len(groups), "names": "|".join(s["text"] for s in segs),
                          "holds": []})
         elif len(groups) < max(1, len(segs)):
@@ -160,7 +160,7 @@ def page(pg):
                 if best is None:
                     continue
                 stats["misplaced"] += 1
-                rows.append({"page": pg, "key": key, "word": w["uthmani"],
+                rows.append({"page": pg, "key": key, "word": w["rasm_uthmani"],
                              "kind": "misplaced", "group": i,
                              "names": "%s sits on group %d's letters"
                                       % (e.get("mark") or "?", best),
@@ -179,7 +179,7 @@ def page(pg):
             _blow = max(e["y2"] for e in b["body"])
             if b["x2"] > a["x2"] + 4.0 and abs(_alow - _blow) < 6.0:
                 stats["order"] += 1
-                rows.append({"page": pg, "key": key, "word": w["uthmani"], "kind": "order",
+                rows.append({"page": pg, "key": key, "word": w["rasm_uthmani"], "kind": "order",
                              "group": withink.index(b),
                              "names": "%.1f..%.1f then %.1f..%.1f"
                                       % (a["x1"], a["x2"], b["x1"], b["x2"]),

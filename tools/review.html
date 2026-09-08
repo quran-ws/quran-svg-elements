@@ -16,7 +16,7 @@
   .row { display: flex; gap: 6px; margin-bottom: 8px; align-items: center; }
   input[type=number] { width: 70px; }
   button { cursor: pointer; }
-  #wordinfo { direction: rtl; font-family: "KFGQPC Uthmanic Script HAFS", "Amiri Quran",
+  #wordinfo { direction: rtl; font-family: "KFGQPC RasmUthmani Script HAFS", "Amiri Quran",
               "Scheherazade New", serif; font-size: 30px; min-height: 52px;
               border: 1px solid #eee; border-radius: 6px; padding: 4px 10px; margin: 8px 0; }
   #wordmeta { color: #555; font-size: 12px; margin-bottom: 8px; }
@@ -95,7 +95,7 @@ function wire() {
       selEl = null;
     });
   });
-  svg.querySelectorAll("path[data-eid]").forEach(p => {
+  svg.querySelectorAll("path[data-element-id]").forEach(p => {
     p.addEventListener("click", ev => {
       ev.stopPropagation();
       if (selEl) selEl.classList.remove("selel");
@@ -115,8 +115,8 @@ function moveEl(p, w, record) {
   p.classList.add("moved");
   if (record) {
     const c = store();
-    c.moves = c.moves.filter(m => m.eid !== p.dataset.eid);
-    c.moves.push({ eid: p.dataset.eid, to: wordKey(w) });
+    c.moves = c.moves.filter(m => m.eid !== p.dataset.elementId);
+    c.moves.push({ eid: p.dataset.elementId, to: wordKey(w) });
     save(c);
   }
 }
@@ -124,24 +124,24 @@ function moveEl(p, w, record) {
 function applyStoredMoves() {
   const svg = $("#stage svg");
   for (const m of store().moves) {
-    const p = svg.querySelector(`path[data-eid="${m.eid}"]`);
+    const p = svg.querySelector(`path[data-element-id="${m.eid}"]`);
     const w = [...svg.querySelectorAll("g.word")].find(g => wordKey(g) === m.to);
     if (p && w) moveEl(p, w, false);
   }
 }
 
 function showWord(w) {
-  $("#wordinfo").textContent = w.dataset.uthmani || "";
+  $("#wordinfo").textContent = w.dataset.rasm_uthmani || "";
   const ligs = [...w.querySelectorAll("g.ligature")]
     .map(g => g.dataset.text || "?").join(" · ");
   $("#wordmeta").textContent =
     `surah ${w.dataset.surah} · ayah ${w.dataset.ayah} · word ${w.dataset.word}` +
-    (w.dataset.imlaei ? ` · imlaei: ${w.dataset.imlaei}` : "") +
+    (w.dataset.rasm_imlai ? ` · rasm_imlai: ${w.dataset.rasm_imlai}` : "") +
     (ligs ? ` · ligatures: ${ligs}` : "");
 }
 function showEl(p) {
   const w = p.closest("g.word"), lig = p.closest("g.ligature");
-  $("#wordmeta").textContent = `element ${p.dataset.eid} (${p.dataset.kind}` +
+  $("#wordmeta").textContent = `element ${p.dataset.elementId} (${p.dataset.kind}` +
     (p.dataset.mark ? `: ${p.dataset.mark}` : "") + ")" +
     (lig && lig.dataset.text ? ` in ligature "${lig.dataset.text}"` : "") +
     (w ? ` of ${wordKey(w)} — now click the correct word` : "");

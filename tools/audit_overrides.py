@@ -5,7 +5,7 @@ Every entry in .cache/review/overrides.json seats one piece of ink on one
 word, optionally naming it. Two things can be checked without any eye:
 
   CONTRADICTS  the override names a mark the target word's spelling does
-               not contain at all (p589: a small-waw pinned to كَانَ, which
+               not contain at all (p589: a small_waw pinned to كَانَ, which
                has no ۥ — it was إِنَّهُۥ's suffix, read by distance instead
                of direction).
   MISSING      the geometry key matches no element on the page any more, so
@@ -24,15 +24,15 @@ ROOT = (os.environ.get("QSVG_ROOT")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import assign_words as aw  # noqa: E402
 
-# the letter/sign each mark name is written with in the uthmani text
+# the letter/sign each mark name is written with in the rasm_uthmani text
 CHARS = {
-    "fatha": "َ", "kasra": "ِ", "damma": "ُ",
-    "fathatan": "ًࣰ", "kasratan": "ٍࣲ",
-    "dammatan": "ٌࣱ", "shadda": "ّ",
+    "fathah": "َ", "kasrah": "ِ", "dammah": "ُ",
+    "tanwin_al_fath": "ًࣰ", "tanwin_al_kasr": "ٍࣲ",
+    "tanwin_al_damm": "ٌࣱ", "shaddah": "ّ",
     "sukun": "ْۡ", "maddah": "ٓ",
-    "small-alef": "ٰ", "small-waw": "ۥ", "small-ya": "ۦ",
-    "hamza": "ءٕٔ", "wasla": "ٱٖ",
-    "meem-iqlab": "ۭۢ",
+    "omitted_alif": "ٰ", "small_waw": "ۥ", "small_yaa": "ۦ",
+    "hamzah": "ءٕٔ", "hamzat_al_wasl": "ٱٖ",
+    "small_meem": "ۭۢ",
 }
 
 
@@ -68,8 +68,8 @@ def main():
             if key not in boxes:
                 dead.append((pg, key, val))
             if name and w and name in CHARS:
-                if not any(c in w["uthmani"] for c in CHARS[name]):
-                    bad.append((pg, key, val, w["uthmani"]))
+                if not any(c in w["rasm_uthmani"] for c in CHARS[name]):
+                    bad.append((pg, key, val, w["rasm_uthmani"]))
     print("overrides %d | CONTRADICTS %d | key no longer present %d"
           % (total, len(bad), len(dead)))
     for pg, key, val, txt in bad:

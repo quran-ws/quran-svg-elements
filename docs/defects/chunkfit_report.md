@@ -63,7 +63,7 @@ runs of the adjacent word.
 Two artefact families had to be handled inside the metric before the numbers
 meant anything:
 
-- **Dual hamza model.** `segment_word` expects a standalone ء as its own tiny
+- **Dual hamzah model.** `segment_word` expects a standalone ء as its own tiny
   body, but the print draws many of them as a diacritic. Scoring only the
   body model put the whole ٱلسَّمَآءِ family at wres 2.4-2.5 (a solid false
   band) and made رَءَا infeasible. The audit scores both models and keeps the
@@ -102,7 +102,7 @@ conviction category (`rotation-suspect`) instead requires three signals:
 | juz 30 pages | 1,563 | 3 (0.19%) | mildly elevated vs 0.19% overall — no region tuning needed; only 3 of 107 final flags are juz-30 |
 | pen-lift splits (nch<nseg) | 1,539 | 4 | many-chunks↔one-segment groups are legal in the aligner |
 | surplus chunks (nch>nseg) | 1,069 | 1 | absorbed by merge groups |
-| standalone-ء drawn as mark | — | was ~40 words incl. every ٱلسَّمَآءِ | reversed by the dual hamza model |
+| standalone-ء drawn as mark | — | was ~40 words incl. every ٱلسَّمَآءِ | reversed by the dual hamzah model |
 | إنّ ٱللَّه final-ن stretch | — | 74 of clean top-100 | reversed 220 → 16 rotation flags by the pair-damage gate |
 | ٱللَّه 'لله' width model (donor misfit 0.60-0.65, far side) | — | ~10 fake pairs | reversed 16 → 2 by the facing-side condition |
 
@@ -114,7 +114,7 @@ conviction category (`rotation-suspect`) instead requires three signals:
 | width-anomaly (non-convention) | 20 | a chunk the wrong size for its letters; no exchange evidence |
 | width-anomaly `final-nun-stretch` | 81 | the identified convention, recorded for completeness |
 | unexplained | 4 | whole-word alignment cost ≥ 0.8, no single guilty chunk |
-| infeasible | 0 | joining rules cannot express the held chunks (0 on this build after the dual hamza model) |
+| infeasible | 0 | joining rules cannot express the held chunks (0 on this build after the dual hamzah model) |
 
 103 of the 107 flags appear in no existing internal or reference list — this
 audit sees a different axis than the count/interval/width audits.

@@ -40,7 +40,7 @@ def page(pg):
         if not b: continue
         W.append((w, els, b))
     boxes = [(min(e["x1"] for e in b), max(e["x2"] for e in b), b[0].get("line"),
-              "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), w["uthmani"]) for w, _, b in W]
+              "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), w["rasm_uthmani"]) for w, _, b in W]
     for w, els, b in W:
         for e in els:
             if e["kind"] == "body" or e.get("mkpart"): continue
@@ -50,7 +50,7 @@ def page(pg):
             ln = b[0].get("line")
             over = [t for x1, x2, l, k, t in boxes if l == ln and x1 - 1 <= cx <= x2 + 1]
             out.append((round(gap, 1), e.get("mark") or e["kind"],
-                        "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), w["uthmani"],
+                        "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), w["rasm_uthmani"],
                         bool(over)))
     return pg, out, None
 

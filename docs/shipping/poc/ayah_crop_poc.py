@@ -6,7 +6,7 @@ standalone, self-contained SVG cropped to the ink.
 
 Why this is not a one-liner:
 
-  * an ayah is emitted as SEVERAL <g class="ayah"> nodes -- one per printed
+  * an ayah is emitted as SEVERAL <g class="ayah-fragment"> nodes -- one per printed
     line it occupies -- so the crop is the UNION of their boxes, never a
     single node's box;
   * the root frame is `matrix(1.3333 0 0 -1.3333 E 640)`, a NEGATIVE y scale,
@@ -176,7 +176,7 @@ def page_of(key):
     sa = ":".join(key.split(":")[:2])
     for f in sorted(glob.glob(SRC + "/*.svg")):
         s = open(f).read()
-        if ('data-aid="%s"' % sa) in s:
+        if ('data-ayah-key="%s"' % sa) in s:
             yield int(os.path.basename(f)[:3])
 
 
@@ -196,10 +196,10 @@ def crop(page, key, pad=4.0, marker=True, width=None, ink=None, bg=None):
     # Which nodes are we keeping?
     if want_word:
         sel = [e for e in body.iter(NS + "g")
-               if e.get("class") == "word" and e.get("data-wid") == key]
+               if e.get("class") == "word" and e.get("data-word-key") == key]
     else:
         sel = [e for e in body.iter(NS + "g")
-               if e.get("class") == "ayah" and e.get("data-aid") == key]
+               if e.get("class") == "ayah" and e.get("data-ayah-key") == key]
     if not sel:
         return None, None
     keep = set(id(e) for e in sel)
@@ -216,10 +216,10 @@ def crop(page, key, pad=4.0, marker=True, width=None, ink=None, bg=None):
             keep.add(id(cur))
     keep.add(id(body))
 
-    # the ayah end-marker for this ayah, if asked and present
+    # the ayah end-mark for this ayah, if asked and present
     if marker and not want_word:
         for e in body.iter(NS + "g"):
-            if e.get("class") == "ayah-marker" and e.get("data-aid") == key:
+            if e.get("class") == "ayah-mark" and e.get("data-ayah-key") == key:
                 keep.add(id(e))
                 cur = e
                 while id(cur) in parent:
@@ -231,7 +231,7 @@ def crop(page, key, pad=4.0, marker=True, width=None, ink=None, bg=None):
     roots = list(sel)
     if marker and not want_word:
         roots += [e for e in body.iter(NS + "g")
-                  if e.get("class") == "ayah-marker" and e.get("data-aid") == key]
+                  if e.get("class") == "ayah-mark" and e.get("data-ayah-key") == key]
     for e in roots:
         for d in e.iter():
             subtree.add(id(d))
@@ -260,7 +260,7 @@ def crop(page, key, pad=4.0, marker=True, width=None, ink=None, bg=None):
         svg.set("width", str(width))
         svg.set("height", "%.2f" % (width * (y1 - y0) / (x1 - x0)))
     svg.set("data-src-page", str(page))
-    svg.set("data-aid" if not want_word else "data-wid", key)
+    svg.set("data-ayah-key" if not want_word else "data-word-key", key)
     if bg:
         ET.SubElement(svg, NS + "rect", {
             "x": "%.3f" % x0, "y": "%.3f" % y0,
@@ -283,14 +283,14 @@ def crop(page, key, pad=4.0, marker=True, width=None, ink=None, bg=None):
 def survey():
     """How fragmented are ayahs, and across how many pages?"""
     import collections
-    per_page = collections.Counter()      # (aid) -> node count
+    per_page = collections.Counter()      # (ayahKey) -> node count
     pages_of = collections.defaultdict(set)
     for f in sorted(glob.glob(SRC + "/*.svg")):
         p = int(os.path.basename(f)[:3])
         s = open(f).read()
-        for aid in re.findall(r'<g class="ayah" data-aid="([^"]+)"', s):
-            per_page[aid] += 1
-            pages_of[aid].add(p)
+        for ayahKey in re.findall(r'<g class="ayah-fragment" data-ayah-key="([^"]+)"', s):
+            per_page[ayahKey] += 1
+            pages_of[ayahKey].add(p)
     n = len(per_page)
     frag = collections.Counter(per_page.values())
     multi = sum(v for k, v in frag.items() if k > 1)
@@ -314,11 +314,11 @@ def estimate(k=400):
     for f in sample:
         p = int(os.path.basename(f)[:3])
         s = open(f).read()
-        aids = sorted(set(re.findall(r'<g class="ayah" data-aid="([^"]+)"', s)))
-        for aid in aids:
+        ayahKeys = sorted(set(re.findall(r'<g class="ayah-fragment" data-ayah-key="([^"]+)"', s)))
+        for ayahKey in ayahKeys:
             if cnt >= k:
                 break
-            out, meta = crop(p, aid)
+            out, meta = crop(p, ayahKey)
             if out is None:
                 continue
             tot += len(out); cnt += 1

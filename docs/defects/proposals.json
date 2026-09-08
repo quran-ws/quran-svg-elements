@@ -8,16 +8,16 @@
    "focus_x": 14.9,
    "focus_y": 197.8,
    "title": "p350: extra stroke over وَٱلزَّانِيَة (shown in red)",
-   "evidence": "A fatha-sized stroke (6.9x3.6u) sits over وَٱلزَّانِيَةُ's ة beside its two-dots, at the same height. Every word's slash budget on lines 6-7 is satisfied without it; it currently sits (wrongly) in لَا's count, 300u away.",
+   "evidence": "A fathah-sized stroke (6.9x3.6u) sits over وَٱلزَّانِيَةُ's ة beside its two_dots, at the same height. Every word's slash budget on lines 6-7 is satisfied without it; it currently sits (wrongly) in لَا's count, 300u away.",
    "proposal": "You name it: whose is it, or is it part of a letter?",
    "alternatives": [
     "it IS a mark of وَٱلزَّانِيَةُ (which one?)",
-    "it belongs to مُشْرِكَةًۭ's tanween pair",
+    "it belongs to مُشْرِكَةًۭ's tanwin pair",
     "leave with لَا (surely wrong)"
    ],
    "state": "done",
-   "state_note": "resolved by Abdullah's eye: the red stroke IS يَ's fatha; the mid stroke was نِ's kasra misnamed. Overrides applied; the الزانية line is fully clean.",
-   "found": "A slash stroke sits above the ة, next to its two dots. It is counted as لَا's fatha — but لَا is 300u away.",
+   "state_note": "resolved by Abdullah's eye: the red stroke IS يَ's fathah; the mid stroke was نِ's kasrah misnamed. Overrides applied; the الزانية line is fully clean.",
+   "found": "A slash stroke sits above the ة, next to its two dots. It is counted as لَا's fathah — but لَا is 300u away.",
    "expected": "No word on these two lines needs an extra slash. Every count is already full."
   },
   {
@@ -28,7 +28,7 @@
    "focus_y": 336.3,
    "title": "Two م-shaped glyphs at the جُدَدٌۢ/بِيضٌۭ boundary",
    "evidence": "Two small م glyphs sit side by side: x304-309 (claimed by جُدَدٌۢ as its iqlab meem) and x301-305 (left in بِيضٌۭ as a surplus letter piece). بِيضٌۭ's iqlab is the low ۭ form, which usually draws no separate glyph.",
-   "proposal": "The x301-305 glyph is بِيضٌۭ's own iqlab م drawn high (the ۭ DOES leave a glyph here): convert it to بِيضٌۭ's meem-iqlab mark.",
+   "proposal": "The x301-305 glyph is بِيضٌۭ's own iqlab م drawn high (the ۭ DOES leave a glyph here): convert it to بِيضٌۭ's small_meem mark.",
    "alternatives": [
     "it is جُدَدٌۢ's م and جُدَدٌۢ claimed the wrong one",
     "it is letter ink of بِيضٌۭ's ب"
@@ -43,15 +43,15 @@
    "focus_x": null,
    "focus_y": null,
    "title": "p254: أَهْوَآءَهُم — one mark has the wrong name",
-   "evidence": "After the بَعْدَ مَا line is repaired, this word's own marks need re-naming: the audit counted 5 fathas + 2 sukuns + 1 dot; your eye counted 3 fathas + 1 sukun and no dot. The extras are بعد's marks; what remains may still carry wrong names.",
-   "proposal": "Look at the card: is the red-flagged stroke really a damma?",
+   "evidence": "After the بَعْدَ مَا line is repaired, this word's own marks need re-naming: the audit counted 5 fathahs + 2 sukuns + 1 dot; your eye counted 3 fathahs + 1 sukun and no dot. The extras are بعد's marks; what remains may still carry wrong names.",
+   "proposal": "Look at the card: is the red-flagged stroke really a dammah?",
    "alternatives": [
     "adjudicate now from the preview"
    ],
    "state": "pending",
    "state_note": "still open: أهواءهم is missing its هم ink — being traced",
-   "found": "After the line repair, one stroke in this word is named damma.",
-   "expected": "Text wants: 3 fathas, 1 sukun, 1 damma — your eye counted the same."
+   "found": "After the line repair, one stroke in this word is named dammah.",
+   "expected": "Text wants: 3 fathahs, 1 sukun, 1 dammah — your eye counted the same."
   },
   {
    "id": "P4",
@@ -59,9 +59,9 @@
    "key": "98:6:13",
    "focus_x": null,
    "focus_y": null,
-   "title": "أُوْلَـٰٓئِكَ 'missing fatha at the end' — print fact or pipeline loss?",
-   "evidence": "Your note says the final fatha is missing. If the INK truly lacks it, that is a fact about the 1441H print (like إِلْ يَاسِينَ's extra piece) and becomes a recorded exception; if the stroke exists nearby, some word stole it.",
-   "proposal": "You look at the printed page: is there a fatha drawn at the word's end anywhere? If absent → record as print-fact exception. If present → tell me which word holds it.",
+   "title": "أُوْلَـٰٓئِكَ 'missing fathah at the end' — print fact or pipeline loss?",
+   "evidence": "Your note says the final fathah is missing. If the INK truly lacks it, that is a fact about the 1441H print (like إِلْ يَاسِينَ's extra piece) and becomes a recorded exception; if the stroke exists nearby, some word stole it.",
+   "proposal": "You look at the printed page: is there a fathah drawn at the word's end anywhere? If absent → record as print-fact exception. If present → tell me which word holds it.",
    "alternatives": [],
    "state": "done",
    "state_note": "approved — solver fix stands"
@@ -74,7 +74,7 @@
    "focus_y": null,
    "title": "Sajdah-line policy (also p589 يَسْجُدُونَ ۩)",
    "evidence": "Your shape-note: the sajdah overline should group with the word below it. Currently it is classified ad hoc; p272 ظِلَـٰلُهُۥ has the sajdah line beneath it interfering with its ink.",
-   "proposal": "Adopt the policy: the sajdah overline is a STANDALONE sign attached to the sajdah word's group (like hizb/rub signs), never counted as a mark or letter of any word. Applied mushaf-wide (15 sajdah sites).",
+   "proposal": "Adopt the policy: the sajdah overline is a STANDALONE sign attached to the sajdah word's group (like hizb/rubu_al_hizb signs), never counted as a mark or letter of any word. Applied mushaf-wide (15 sajdah sites).",
    "alternatives": [
     "attach as a non-counting mark of the word below",
     "leave per-site"
@@ -117,7 +117,7 @@
    "focus_x": null,
    "focus_y": null,
    "title": "Body steal: بَارِدٍۢ swallowed لَّا with its diacritics",
-   "evidence": "Your verdict: بَارِدٍۢ holds the previous word لَّا entirely (its shadda surplus is لَّا's). لَّا (56:44:1) shows shadda 0/1.",
+   "evidence": "Your verdict: بَارِدٍۢ holds the previous word لَّا entirely (its shaddah surplus is لَّا's). لَّا (56:44:1) shows shaddah 0/1.",
    "proposal": "Same mechanism as P6: return لَّا's body + its marks together, guarded by both words' budgets.",
    "alternatives": [],
    "state": "done",
@@ -130,8 +130,8 @@
    "focus_x": null,
    "focus_y": null,
    "title": "PRE-APPROVED: the p341 chain (اجتمعوا ← له ← وإن, + منه's ۥ)",
-   "evidence": "Abdullah's screenshots: اجتمعوا holds [اجتمعوا + له + ۖ + damma]; له holds only the و of وإن; وإن lacks its و; منه (22:73:25) holds له's small waw. One chained repair returns each piece one step right.",
-   "proposal": "Execute the chain: له's body+pause+damma back from اجتمعوا; the و back from له to وإن; the ۥ back from منه to له. Guarded by each word's piece and mark budgets.",
+   "evidence": "Abdullah's screenshots: اجتمعوا holds [اجتمعوا + له + ۖ + dammah]; له holds only the و of وإن; وإن lacks its و; منه (22:73:25) holds له's small waw. One chained repair returns each piece one step right.",
+   "proposal": "Execute the chain: له's body+waqf+dammah back from اجتمعوا; the و back from له to وإن; the ۥ back from منه to له. Guarded by each word's piece and mark budgets.",
    "alternatives": [],
    "state": "done",
    "state_note": "chain executed; before/after in bodyfix_evidence/"
@@ -142,15 +142,15 @@
    "key": "57:22:12",
    "focus_x": 34.5,
    "focus_y": 396.4,
-   "title": "p540: كِتَـٰبٍۢ — kasratan is missing its twin stroke",
-   "evidence": "kasratan single at (34.5,396.4); a 'dot' at (35.8,393.3) beside it. Either the twin stroke misnamed, or بٍ's letter dot.",
-   "proposal": "The 'dot' is the second stroke → weld them as one kasratan.",
+   "title": "p540: كِتَـٰبٍۢ — tanwin_al_kasr is missing its twin stroke",
+   "evidence": "tanwin_al_kasr single at (34.5,396.4); a 'dot' at (35.8,393.3) beside it. Either the twin stroke misnamed, or بٍ's letter dot.",
+   "proposal": "The 'dot' is the second stroke → weld them as one tanwin_al_kasr.",
    "alternatives": [
     "it is بِ's letter dot — twin genuinely lost"
    ],
    "state": "done",
-   "found": "One kasratan stroke + a small 'dot' right next to it.",
-   "expected": "This print draws kasratan as TWO strokes.",
+   "found": "One tanwin_al_kasr stroke + a small 'dot' right next to it.",
+   "expected": "This print draws tanwin_al_kasr as TWO strokes.",
    "state_note": "twin returned from لِّكَيْلَا and welded — p540 clean"
   },
   {
@@ -159,14 +159,14 @@
    "key": "70:4:6",
    "focus_x": 319.8,
    "focus_y": 461.3,
-   "title": "p568: يَوْمٍۢ — kasratan twin missing completely",
-   "evidence": "kasratan single; no twin anywhere in the word. Neighbour or print-fact.",
+   "title": "p568: يَوْمٍۢ — tanwin_al_kasr twin missing completely",
+   "evidence": "tanwin_al_kasr single; no twin anywhere in the word. Neighbour or print-fact.",
    "proposal": "Look: is the second stroke drawn nearby (in another word), or does the print draw only one here?",
    "alternatives": [
     "print draws a single stroke here (record as convention)"
    ],
    "state": "done",
-   "found": "Only one kasratan stroke in the word.",
+   "found": "Only one tanwin_al_kasr stroke in the word.",
    "expected": "Two strokes.",
    "state_note": "twin returned from كَانَ and welded — p568 back to its one old flag"
   },
@@ -176,16 +176,16 @@
    "key": "78:26:1",
    "focus_x": 139.1,
    "focus_y": 448.5,
-   "title": "p582: جَزَآءًۭ — split fathatan pair",
-   "evidence": "fathatan at (139.1,448.5) + a 'fatha' at (146.0,448.6), 7u apart.",
+   "title": "p582: جَزَآءًۭ — split tanwin_al_fath pair",
+   "evidence": "tanwin_al_fath at (139.1,448.5) + a 'fathah' at (146.0,448.6), 7u apart.",
    "proposal": "Weld the two strokes as the pair.",
    "alternatives": [
-    "the fatha belongs to the ء"
+    "the fathah belongs to the ء"
    ],
    "state": "done",
-   "found": "A fathatan stroke + a separate 'fatha' 7u away at the same height.",
-   "expected": "One fathatan PAIR.",
-   "state_note": "no weld — e842 confirmed as زَ's own fatha; nothing changed"
+   "found": "A tanwin_al_fath stroke + a separate 'fathah' 7u away at the same height.",
+   "expected": "One tanwin_al_fath PAIR.",
+   "state_note": "no weld — e842 confirmed as زَ's own fathah; nothing changed"
   },
   {
    "id": "P13",
@@ -193,13 +193,13 @@
    "key": "47:15:10",
    "focus_x": 146.9,
    "focus_y": null,
-   "title": "p508: غَيْرِ — a kasra ABOVE the word",
-   "evidence": "a 'kasra' above the word: swapped name or stolen from above?",
-   "proposal": "You look: whose stroke is it (this word / word above / a fatha)?",
+   "title": "p508: غَيْرِ — a kasrah ABOVE the word",
+   "evidence": "a 'kasrah' above the word: swapped name or stolen from above?",
+   "proposal": "You look: whose stroke is it (this word / word above / a fathah)?",
    "alternatives": [],
    "state": "done",
-   "found": "A stroke named kasra sits above the top of the word.",
-   "expected": "Kasra sits below its letter.",
+   "found": "A stroke named kasrah sits above the top of the word.",
+   "expected": "Kasrah sits below its letter.",
    "state_note": "both strokes swapped to their owners — p508 fully clean"
   },
   {
@@ -208,12 +208,12 @@
    "key": "24:3:14",
    "focus_x": null,
    "focus_y": null,
-   "title": "p350: مُشْرِكٌۭ — its 'م sign' is really a tanween stroke",
-   "evidence": "R7 says its 'meem-iqlab' is the tanween's second stroke (8.8u from its twin). The word audits clean otherwise.",
-   "proposal": "Rename it as the tanween's second stroke.",
+   "title": "p350: مُشْرِكٌۭ — its 'م sign' is really a tanwin stroke",
+   "evidence": "R7 says its 'small_meem' is the tanwin's second stroke (8.8u from its twin). The word audits clean otherwise.",
+   "proposal": "Rename it as the tanwin's second stroke.",
    "alternatives": [],
    "state": "done",
-   "found": "A mark named meem-iqlab, 8.8u from the tanween stroke.",
+   "found": "A mark named small_meem, 8.8u from the tanwin stroke.",
    "expected": "This print draws NO small م at this kind of position (only at true iqlab).",
    "state_note": "e536 restored to letter ink of ك"
   },
@@ -238,8 +238,8 @@
    "key": "0:0:0",
    "focus_x": null,
    "focus_y": null,
-   "title": "R7 mushaf-wide: rename 926 false meem-iqlab marks to tanween strokes",
-   "evidence": "quran.com writes tanween+ۢ at idgham/ikhfa where the print has NO م (QPC open-tanween encoding is the drawing convention). Trial pass QSVG_MTYPE is count-neutral, bench-identical, 97→10 on sample pages.",
+   "title": "R7 mushaf-wide: rename 926 false small_meem marks to tanwin strokes",
+   "evidence": "quran.com writes tanwin+ۢ at idgham/ikhfa where the print has NO م (QPC open-tanwin encoding is the drawing convention). Trial pass QSVG_MTYPE is count-neutral, bench-identical, 97→10 on sample pages.",
    "proposal": "Adopt QSVG_MTYPE after the full-mushaf gate passes (pre-approve to proceed overnight).",
    "alternatives": [
     "hold for morning review"
@@ -292,15 +292,15 @@
    "page": 223,
    "key": "11:13:3",
    "word": "ٱفْتَرَىٰهُ ۖ",
-   "found": "quran.com's uthmani for this word carries the imlaei spelling (no wasla, no dagger alef), so the audit convicts correct ink.",
-   "expected": "ٱفْتَرَىٰهُ with wasla + dagger alef, as drawn.",
+   "found": "quran.com's rasm_uthmani for this word carries the rasm_imlai spelling (no hamzat_al_wasl, no dagger alef), so the audit convicts correct ink.",
+   "expected": "ٱفْتَرَىٰهُ with hamzat_al_wasl + dagger alef, as drawn.",
    "proposal": "Patch the cached word from QPC/DigitalKhatt (data fix).",
    "id": "P20",
    "title": "p223: ٱفْتَرَىٰهُ — quran.com's text for this one word is wrong",
    "alternatives": [
     "make the budget a range like the waqf rule"
    ],
-   "evidence": "quran.com's uthmani for this word carries the imlaei spelling (no wasla, no dagger alef), so the audit convicts correct ink."
+   "evidence": "quran.com's rasm_uthmani for this word carries the rasm_imlai spelling (no hamzat_al_wasl, no dagger alef), so the audit convicts correct ink."
   }
  ],
  "decisions": {
@@ -308,8 +308,8 @@
   "by": "Abdullah",
   "items": {
    "P1": {
-    "decision": "belongs to مُشْرِكَةًۭ's tanween pair",
-    "note": "one belongs to مُشْرِكَةًۭ's tanween at top, the other is kasrah under مشركة ر",
+    "decision": "belongs to مُشْرِكَةًۭ's tanwin pair",
+    "note": "one belongs to مُشْرِكَةًۭ's tanwin at top, the other is kasrah under مشركة ر",
     "resolution": "SCOPE EXPANDED by Abdullah's color-coded rendering of p350 line 6: the mark ownership is rotated across the whole tail (إلا زانيةً أو مشركةً والزانية) — marks of each word sitting over the neighbour's letters. Not a two-stroke override: this is the LINE-SET repair (re-own all marks of a line against all budgets simultaneously, minimum total displacement), same mechanism the xband agent recommended for the refused chains (p267, p371, p535, p599 chain from P4). p350 line 6 is the canonical test case."
    },
    "P2": {
@@ -320,7 +320,7 @@
     "decision": "approved — defer until line fix"
    },
    "P4": {
-    "decision": "chain: أولئك's fatha stolen by شر; شر's fatha stolen by البرية (p599)"
+    "decision": "chain: أولئك's fathah stolen by شر; شر's fathah stolen by البرية (p599)"
    },
    "P5": {
     "decision": "approved — sajdah sign is standalone, groups with the sajdah word on the line BELOW"
