@@ -1,0 +1,68 @@
+# The one gate that needs nothing but this repository.
+#
+# bench, the audits and the library suite all need the page artwork — 487 MB
+# from quranpedia/quran-svg, pinned at b91d39e1 — so they stay local commands
+# (CLAUDE.md, "Run these before believing anything"). The terminology audit
+# reads only the working set, so it can run on every push, and it is the gate
+# most easily broken by an ordinary edit: one new `verse` or `fatha` in a
+# variable name and the standard is no longer adopted.
+name: terminology
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  standard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch the standard
+        run: |
+          git clone --depth 1 https://github.com/quran-ws/guidelines.git /tmp/guidelines
+          echo "SKILL=/tmp/guidelines/skills/quranic-terminology" >> "$GITHUB_ENV"
+
+      - name: Is the snapshot we audit against still the published one?
+        continue-on-error: true          # offline or moved is not a build failure
+        run: python3 "$SKILL/scripts/update_check.py"
+
+      - name: One concept, one canonical name
+        run: python3 "$SKILL/scripts/audit_terminology.py" --strict
+
+      - name: Every Python file still parses
+        run: |
+          python3 - <<'PY'
+          import ast, os, sys
+          bad = []
+          for base in ("tools", "scratchpad", "docs"):
+              for dp, dn, fn in os.walk(base):
+                  dn[:] = [d for d in dn if d != "__pycache__"]
+                  for f in fn:
+                      if f.endswith(".py"):
+                          p = os.path.join(dp, f)
+                          try:
+                              ast.parse(open(p, encoding="utf-8").read())
+                          except SyntaxError as e:
+                              bad.append("%s:%s %s" % (p, e.lineno, e.msg))
+          print("\n".join(bad) or "all files parse")
+          sys.exit(1 if bad else 0)
+          PY
+
+      - name: The confirmed caches are still valid JSON
+        run: |
+          python3 - <<'PY'
+          import glob, json, sys
+          bad = []
+          for p in glob.glob(".cache/**/*.json", recursive=True) + glob.glob("docs/**/*.json", recursive=True):
+              try:
+                  json.load(open(p, encoding="utf-8"))
+              except Exception as e:
+                  bad.append("%s: %s" % (p, e))
+          print("\n".join(bad) or "all JSON parses")
+          sys.exit(1 if bad else 0)
+          PY
