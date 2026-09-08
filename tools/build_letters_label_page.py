@@ -301,7 +301,8 @@ function preview(card) {
     card._assign = null;
     return;
   }
-  const r = splitRun(g, cuts);
+  let r = splitRun(g, cuts);
+  r = subdivideByModel(g, r);
   card._r = r; card._g = g;
   const sig = JSON.stringify(cuts);
   if (!card._assign || card._sig !== sig || card._assign.length !== r.k) {
@@ -309,6 +310,54 @@ function preview(card) {
     card._sig = sig;
   }
   render(card);
+}
+// A drawn line is a correction, not the whole answer. Abdullah drew one line across
+// أسه, whose three letters the build already separates, and the card threw the build's
+// split away and reported "no ink for ا". His lines are authoritative BOUNDARIES: a
+// piece may not cross one. Inside a piece, though, the build's own split still knows
+// where the letters are, so a piece holding more than one of them is subdivided by it.
+// Where he disagrees with the build his line still wins, because the subdivision happens
+// strictly inside the region his lines made.
+function modelOwner(g, W, H) {
+  const ds = g.model || [];
+  const owner = new Int32Array(W * H).fill(-1);
+  for (let i = 0; i < ds.length; i++) {
+    if (!ds[i] || !ds[i].length) continue;
+    const ctx = newCtx(g, W, H);
+    ctx.fillStyle = '#000';
+    for (const d of ds[i]) ctx.fill(new Path2D(d), 'evenodd');
+    const m = maskOf(ctx, W, H);
+    for (let j = 0; j < owner.length; j++) if (m[j] && owner[j] < 0) owner[j] = i;
+  }
+  return owner;
+}
+function subdivideByModel(g, r) {
+  if (!g.model || r.k >= r.n) return r;
+  const owner = modelOwner(g, r.W, r.H);
+  const lab = Int32Array.from(r.lab);
+  let next = r.k;
+  for (let k = 0; k < r.k; k++) {
+    const cnt = new Int32Array(r.n);
+    let tot = 0;
+    for (let j = 0; j < lab.length; j++)
+      if (lab[j] === k && owner[j] >= 0) { cnt[owner[j]]++; tot++; }
+    if (!tot) continue;
+    const here = [];
+    for (let i = 0; i < r.n; i++) if (cnt[i] >= 0.12 * tot) here.push(i);
+    if (here.length < 2) continue;                 // one letter in this piece: leave it
+    here.sort((a, b) => a - b);
+    const idOf = {};
+    idOf[here[0]] = k;                             // the first keeps the piece's own id
+    for (let t = 1; t < here.length; t++) idOf[here[t]] = next++;
+    for (let j = 0; j < lab.length; j++) {
+      if (lab[j] !== k || owner[j] < 0) continue;
+      let best = here[0], bd = Infinity;
+      for (const i of here) { const d = Math.abs(i - owner[j]); if (d < bd) { bd = d; best = i; } }
+      lab[j] = idOf[best];
+    }
+  }
+  if (next === r.k) return r;
+  return Object.assign({}, r, {lab: lab, k: next});
 }
 function seedAssign(g, r) {
   // each piece starts on the letter whose model ink it covers most; a piece the model

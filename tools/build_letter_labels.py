@@ -135,9 +135,11 @@ def load_confirmations():
     return out
 
 
-def confirmed_mask(page, wid, lig_text, idx, frame, ink, n):
-    """The letters build's own split of this run, as a single-bit mask per pixel."""
+def build_letter_masks(page, wid, idx, frame, ink):
+    """One boolean mask per letter of the run, from the letters build's own split."""
     import re as _re
+    if page is None:
+        return None
     path = os.path.join(L.LETTERS_SVG, "%03d.svg" % page)
     if not os.path.exists(path):
         return None
@@ -145,8 +147,7 @@ def confirmed_mask(page, wid, lig_text, idx, frame, ink, n):
     w = next((x for x in words if x["wid"] == wid), None)
     if w is None:
         return None
-    mask = np.zeros((H, W), dtype=np.uint16)
-    seen = 0
+    out = [None] * len(idx)
     for m in _re.finditer(r'<g class="letter"([^>]*)>(.*?)</g>', w["inner"], _re.S):
         at = L.parse_attrs(m.group(1))
         if at.get("data-unsplit") == "1":
@@ -166,12 +167,19 @@ def confirmed_mask(page, wid, lig_text, idx, frame, ink, n):
         if not polys:
             continue
         mk = raster_on_canvas(polys, frame) & ink
-        if not mk.any():
-            continue
-        mask[mk] = np.uint16(1 << k)
-        seen += 1
-    if seen != n:
+        if mk.any():
+            out[k] = mk if out[k] is None else (out[k] | mk)
+    return out
+
+
+def confirmed_mask(page, wid, lig_text, idx, frame, ink, n):
+    """The letters build's own split of this run, as a single-bit mask per pixel."""
+    masks = build_letter_masks(page, wid, idx, frame, ink)
+    if masks is None or sum(1 for m in masks if m is not None) != n:
         return None                      # the build does not hold every letter: not exact
+    mask = np.zeros((H, W), dtype=np.uint16)
+    for k, mk in enumerate(masks):
+        mask[mk] = np.uint16(1 << k)
     if (mask[ink] == 0).any():
         rest = ink & (mask == 0)
         mask[rest] = np.uint16((1 << n) - 1)    # a stray pixel keeps every option
@@ -290,7 +298,8 @@ def order_pieces(pieces, lab, cuts, frame, ink):
     return [c for ch in out for c in ch]
 
 
-def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None):
+def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None,
+                     model_masks=None):
     """Exact labels from drawn cut lines: paint the lines (extended 1u past their ends
     over the canvas), take the ink components, and number them right→left. Returns the
     mask or None when the lines do not give exactly n pieces."""
@@ -330,10 +339,40 @@ def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None):
         for c in extras[:min(allowed, n - len(pieces))]:
             pieces.append(c)
         extras = [c for c in extras if c not in pieces]
+    if len(pieces) < n and model_masks:
+        # A drawn line is a correction, not the whole answer: he draws where the cut is
+        # wrong and leaves the rest. His lines are authoritative BOUNDARIES -- a piece may
+        # not cross one -- but inside a piece the build's own split still knows where the
+        # letters are, so a piece holding more than one of them is divided by it. Without
+        # this, one line across a three-letter run threw the build's split away and the
+        # run was dropped for "not giving 3 pieces" (9 of his 198 drawings).
+        nxt = int(lab.max()) + 1
+        for c in list(pieces):
+            here = []
+            cm = lab == c
+            tot = int(cm.sum())
+            for k, mk in enumerate(model_masks):
+                if mk is not None and int((cm & mk).sum()) >= 0.12 * tot:
+                    here.append(k)
+            if len(here) < 2:
+                continue
+            first = True
+            for k in here:
+                part = cm & model_masks[k]
+                if not part.any():
+                    continue
+                if first:
+                    first = False
+                    continue                     # the first keeps the piece's own id
+                lab[part] = nxt
+                pieces.append(nxt)
+                nxt += 1
+        sizes = np.bincount(lab.ravel())
     if assign:
-        if len(assign) != len(pieces):
-            return None
-        # each piece takes the letter of the nearest named centre
+        # Each piece takes the letter of the nearest named centre, so the list of clicks
+        # need not be as long as the list of pieces -- it was checked for equal length,
+        # and subdividing a piece by the build (above) then made every clicked run fail.
+        # What must hold is that every letter ends up with ink, and that is checked below.
         letter_of, seen = {}, set()
         for c in pieces:
             ys, xs = np.nonzero(lab == c)
@@ -388,7 +427,9 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None, trims=Non
     ink = raster_on_canvas(polys, frame)
     if drawn:
         letters = [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]
-        mask = drawn_cut_labels(polys, drawn[0], n, frame, ink, letters, drawn[1])
+        mm = build_letter_masks(page, word["wid"], idx, frame, ink)
+        mask = drawn_cut_labels(polys, drawn[0], n, frame, ink, letters, drawn[1],
+                                model_masks=mm)
         if mask is not None:
             if trims:
                 apply_trims(mask, ink, frame, trims, idx, n)
