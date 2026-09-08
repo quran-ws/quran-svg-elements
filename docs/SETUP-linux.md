@@ -15,11 +15,11 @@ Dev/github.com/AbdullahObaid/
 ```
 
 `quran-svg-work` is a **sparse git worktree** of `quranpedia/quran-svg` pinned at
-`f8ea2002`, checking out only `mushafs/hafs` (491 MB of 6.7 GB), with the
+`b91d39e1`, checking out only `mushafs/hafs` (491 MB of 6.7 GB), with the
 working set symlinked in:
 
 ```bash
-git -C ../../quranpedia/quran-svg worktree add --no-checkout --detach ../../AbdullahObaid/quran-svg-work f8ea2002
+git -C ../../quranpedia/quran-svg worktree add --no-checkout --detach ../../AbdullahObaid/quran-svg-work b91d39e1
 git -C ../quran-svg-work sparse-checkout init --cone
 git -C ../quran-svg-work sparse-checkout set mushafs/hafs
 git -C ../quran-svg-work checkout
@@ -40,8 +40,12 @@ Why a worktree and not a copy:
   (Nothing in the tree uses `os.path.realpath`; if something starts to, this
   breaks.)
 
-Artwork at `f8ea2002` and at today's `main` (`0a80a3cd`) is byte-identical —
-`git diff f8ea2002 0a80a3cd -- mushafs/` is empty — so the pin costs nothing.
+The pin was `f8ea2002` until 2026-09-08 and is now `b91d39e1`, today's `main`.
+The move matters: it restores the surah name on the opening spread at the full
+page size (page 1 was drawn at `0 0 235 235` with 7 lines), and it re-centres
+every ayah medallion's ring on its numeral across 423 of the 604 pages. Bench
+is unchanged at SCORE 136 — medallion ink is not word ink — and every page is
+still pixel-identical.
 
 ## Blocker 1 — sixteen absolute macOS paths
 
