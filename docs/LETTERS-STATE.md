@@ -231,6 +231,49 @@ that contain a boundary **the joining rules forbid** (خرة, لصلوة, لحي
 ligature cut has put two letters that cannot join into one run. That is a defect of the
 run cut, not of the labeller, and is not addressed here.
 
+## The cut happens on the curves now, not on a pixel staircase
+
+`tools/path_split.py` cuts an outline where a chord crosses it: the crossing parameters
+are solved against the line or cubic, the outline is divided there with de Casteljau, and
+each side closes along the chord. Every boundary of a piece is the run's own curve, bit
+for bit, or a straight run on a chord — nothing is refitted, and there is no staircase to
+shear a sliver off a thin stroke. `QSVG_EXACT_CUT=0` reverts to the raster cut.
+
+It took four measured attempts, and the three failures are the useful part:
+
+| what was tried | off-norm letters over 120 pages |
+|---|---|
+| raster cut (before) | 791 |
+| everything on one side of the chord's infinite LINE | 7,171 |
+| the line, but only cutting contours it meets | 8,533 |
+| the chord SEGMENT, cutting only where it crosses | **659** |
+
+A chord is local and a line is not: extended, it reaches the far end of the run and hands
+a detached stroke to whichever letter shares its side. Only crossings inside the chord's
+own segment (plus 0.75u of reach, since a chord stops at the ink) may cut. Fragments are
+then owned by the letter whose mask covers most of them — the same rule the raster path
+uses, on exact geometry. It refuses, and falls back, on a chord SET (the medial kaf), on
+a chord that does not cross exactly twice, on a chord through a counter, and where the
+straight closure would leave the ink; 47% of runs take the exact path today.
+
+Measured over pages 1-120, raster → exact:
+
+| | before | after |
+|---|---|---|
+| proof failures | 3 | 3 |
+| ink failures | 1 | **0** |
+| pixel failures | 2 | 3 |
+| shape flags | 207 | **147** |
+| letters off their piece norm | 791 | **659** |
+| letters carrying a sliver under 6 px | 1,342 | **785** |
+| runs left uncut | 111 | **108** |
+
+The one cost is p74: a single pixel of ADDED ink at a concave junction, 223/255, where a
+straight closure clips a corner the outline turns away from. Sampling the closure for
+containment at 40 points did not catch it and the cause is not yet pinned. It is one pixel
+of one page, the trade is an ink failure removed for a pixel failure gained, and the
+switch reverts it.
+
 ## Choosing what to draw next
 
 `tools/pairs_worklist.py` ranks every letter pair in the mushaf by joints still guessed —

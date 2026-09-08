@@ -313,3 +313,49 @@ class ContourOwnership(unittest.TestCase):
         out = self._run(lab, ink, 2)
         self.assertEqual(int((out[5:8, 30:50] == 0).sum()), 3 * 20,
                          "a whole second contour the letter owns must survive")
+
+
+class ExactSplit(unittest.TestCase):
+    """tools/path_split: cutting an outline on its own curves."""
+
+    def setUp(self):
+        from tools import path_split as P
+        self.P = P
+        k = 0.5522847498307936 * 10
+        self.circle = ("M10 0C10 %g %g 10 0 10C%g 10 -10 %g -10 0"
+                       "C-10 %g %g -10 0 -10C%g -10 10 %g 10 0Z"
+                       % (k, k, -k, k, -k, -k, k, -k))
+        self.hole = ("M5 0C5 %g %g 5 0 5C%g 5 -5 %g -5 0C-5 %g %g -5 0 -5C%g -5 5 %g 5 0Z"
+                     % (k / 2, k / 2, -k / 2, k / 2, -k / 2, -k / 2, k / 2, -k / 2))
+        self.u = "M0 0L3 0L3 10L5 10L5 0L8 0L8 12L0 12Z"
+
+    def _split(self, d, a, b):
+        subs = L.parse_d(d)
+        pos, neg = self.P.split_path_by_line(subs, a, b)
+        return self.P.path_area(subs), self.P.path_area(pos) + self.P.path_area(neg), pos, neg
+
+    def test_area_is_conserved_exactly(self):
+        for name, d, a, b in (
+                ("circle through the centre", self.circle, (-20., 0.), (20., 0.)),
+                ("circle off centre", self.circle, (-20., 6.), (20., 6.)),
+                ("four crossings", self.u, (-1., 5.), (20., 5.)),
+                ("hole cut too", self.circle + self.hole, (-20., 0.), (20., 0.)),
+                ("hole missed", self.circle + self.hole, (-20., 7.), (20., 7.))):
+            tot, got, _, _ = self._split(d, a, b)
+            self.assertLess(abs(got - tot), 1e-9 * max(tot, 1.0), name)
+
+    def test_four_crossings_give_two_pieces_on_one_side(self):
+        """Closing each arc to its own start would enclose the gap between the arms."""
+        _, _, pos, neg = self._split(self.u, (-1., 5.), (20., 5.))
+        self.assertEqual((len(pos), len(neg)), (2, 1))
+
+    def test_a_line_that_misses_leaves_the_outline_whole(self):
+        tot, got, pos, neg = self._split(self.circle, (-20., 50.), (20., 50.))
+        self.assertEqual((len(pos), len(neg)), (1, 0))
+        self.assertLess(abs(got - tot), 1e-9 * tot)
+
+    def test_curves_are_not_refitted(self):
+        """Every piece is made of the run's own segment kinds plus straight closures."""
+        _, _, pos, neg = self._split(self.circle, (-20., 3.), (20., 3.))
+        kinds = {k for sub in pos + neg for k, _ in sub}
+        self.assertTrue(kinds <= {"M", "L", "C"}, kinds)

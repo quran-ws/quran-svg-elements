@@ -884,8 +884,120 @@ def transform_polys(polys, s, tx, ty):
     return [[(x * s + tx, y * s + ty) for x, y in poly] for poly in polys]
 
 
-def cut_run_masks(d, masks, chords, frame, tol=0.005):
+def cut_run_masks_exact(d, masks, chords, frame, anchors=None, tol=1e-4):
+    """Split the run on its own curves, with no raster in the geometry.
+
+    Same contract as `cut_run_masks`. Each joint carries a chord -- a short segment drawn
+    across the stroke -- and the run's outline is divided exactly where that SEGMENT
+    crosses it, by solving the segment against the line or cubic it meets and dividing
+    there with de Casteljau. Each side closes along the chord. Every boundary of a piece
+    is then the run's own curve, bit for bit, or a straight run on a chord: nothing is
+    refitted, and there is no pixel staircase to shear a sliver off a thin stroke.
+
+    Two ways of doing this were measured and rejected first, both because a chord is
+    LOCAL and a line is not. Taking everything on one side of the extended line hands a
+    detached stroke at the far end of the run to whichever letter shares its side; and
+    even cutting only the contour the line meets still divides it wherever the line
+    reaches. Over 120 pages each raised letters emitted with the wrong number of pieces
+    from 791 to 7,171 and 8,533. Only the crossings inside the chord's own segment count.
+
+    Holes travel with the piece that contains them. Fragments are given to the letter
+    whose mask covers most of them -- the same ownership rule the raster path uses.
+
+    Refuses (CutError) when a joint has no chord or a chord SET (the medial kaf), when a
+    chord does not cross its outline exactly twice, when a letter is left without ink, or
+    when the areas do not add up.
+    """
+    from tools import path_split as PS
+    n = len(masks)
+    x0, y0, z = frame
+    if n < 2:
+        raise CutError("nothing to split")
+    lines = []
+    for j in range(n - 1):
+        pls = chords[j] if j < len(chords) else []
+        if len(pls) != 1 or len(pls[0]) < 2:
+            raise CutError("exact split needs one chord per joint", piece=j)
+        lines.append((tuple(pls[0][0]), tuple(pls[0][-1])))
+
+    subs = parse_d(d)
+    polys = [PS.sample_contour(sub) for sub in subs]
+    depth = [sum(1 for k, other in enumerate(polys) if k != i and PS.point_in(other, polys[i][0]))
+             for i in range(len(subs))]
+    regions = []            # each: [outer, hole, hole, …]
+    for i, sub in enumerate(subs):
+        if depth[i] % 2 == 0:
+            regions.append([sub])
+    for i, sub in enumerate(subs):
+        if depth[i] % 2 == 0:
+            continue
+        for reg in regions:                       # the innermost outer contour holding it
+            if PS.point_in(PS.sample_contour(reg[0]), polys[i][0]):
+                reg.append(sub)
+                break
+
+    for (A, B) in lines:
+        cut_at = None
+        for ri, reg in enumerate(regions):
+            got = PS.split_contour_by_chord(reg[0], A, B)
+            if got:
+                cut_at = (ri, got)
+                break
+        if cut_at is None:
+            raise CutError("chord does not cross its outline twice")
+        ri, (p1, p2) = cut_at
+        holes = regions[ri][1:]
+        # A chord through a counter has to cut the counter too; giving the hole whole to
+        # one side leaves a hole in one piece and fills it in the other, which moves ink
+        # and shows up as a pixel failure (three new ones over 120 pages). Refuse and let
+        # the raster path have it.
+        for h in holes:
+            if PS.chord_hits(h, A, B):
+                raise CutError("chord passes through a counter")
+        r1, r2 = [p1], [p2]
+        s1 = PS.sample_contour(p1)
+        for h in holes:
+            (r1 if PS.point_in(s1, PS.sample_contour(h)[0]) else r2).append(h)
+        regions[ri:ri + 1] = [r1, r2]
+
+    H_, W_ = masks[0].shape
+    owned = [[] for _ in range(n)]
+    for reg in regions:
+        m = raster(flatten(PS.to_d(reg)), x0, y0, W_ / z, H_ / z, z)
+        rr = np.zeros((H_, W_), dtype=bool)
+        h2, w2 = min(H_, m.shape[0]), min(W_, m.shape[1])
+        rr[:h2, :w2] = m[:h2, :w2]
+        share = [int((mk & rr).sum()) for mk in masks]
+        if max(share) == 0:
+            raise CutError("fragment belongs to no letter")
+        owned[int(np.argmax(share))] += reg
+
+    total = PS.path_area(subs)
+    got = 0.0
+    out = []
+    for k in range(n):
+        if not owned[k]:
+            raise CutError("letter without ink", piece=k)
+        ar = PS.path_area(owned[k])
+        if ar < 0.05:
+            raise CutError("empty piece", piece=k)
+        got += ar
+        out.append(PS.to_d(owned[k]))
+    if abs(got - total) > max(tol * total, 1e-6):
+        raise CutError("area not conserved", total=total, pieces=got)
+    return out
+
+
+EXACT_CUT = os.environ.get("QSVG_EXACT_CUT", "1") != "0"
+
+
+def cut_run_masks(d, masks, chords, frame, tol=0.005, anchors=None):
     """Split the run `d` by a trusted per-pixel ownership.
+
+    Tries the exact split on the curves first (`cut_run_masks_exact`) and falls back to
+    the raster method below when it refuses -- a joint with no chord or a chord set, or
+    a chord whose infinite line does not separate the letters it is meant to. Set
+    QSVG_EXACT_CUT=0 to take the raster path always, for an A/B.
 
     `masks[k]` is letter k's pixel mask in the raster `frame` = (x0, y0, z); `chords[j]`
     is a list of polylines (may be empty) straightening the boundary between letters
@@ -895,6 +1007,11 @@ def cut_run_masks(d, masks, chords, frame, tol=0.005):
     half-plane on the letter's side. Where no chord exists the boundary is the pixel
     staircase itself. Checks: no empty piece, areas conserve, pieces reproduce the run."""
     from scipy import ndimage
+    if EXACT_CUT:
+        try:
+            return cut_run_masks_exact(d, masks, chords, frame, anchors=anchors)
+        except CutError:
+            pass
     x0, y0, z = frame
     run = to_path(d)
     run.simplify()

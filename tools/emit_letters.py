@@ -148,7 +148,10 @@ def _model_pieces(main, bodies, idx, cuts, on_main, letters=None):
     main_mask = np.zeros(meta["shape"], dtype=bool)
     main_mask[:mm.shape[0], :mm.shape[1]] = mm[:meta["shape"][0], :meta["shape"][1]]
     masks = [meta["masks"][k] & main_mask for k in on_main]
-    return L.cut_run_masks(main["d"], masks, [c.get("polys", []) for c in cuts], (x0, y0, z))
+    from tools import dk_lib as D
+    anch = D.anchors(labels, meta, n=len(idx))
+    return L.cut_run_masks(main["d"], masks, [c.get("polys", []) for c in cuts], (x0, y0, z),
+                           anchors=[anch[k] for k in on_main])
 
 
 def emit_word(word, wrec):
