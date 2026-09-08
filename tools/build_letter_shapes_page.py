@@ -11,6 +11,14 @@ ordered by how many words each shape stands for, buys most of the corpus.
 Each card is one shape, drawn from a middling instance of its cluster, under the letter
 and the position it takes in its run. Every card starts RIGHT, because most of them are:
 the reviewer's work is to click the wrong ones, not to confirm hundreds of good ones.
+
+A shape is often not simply right or wrong: the curve is the letter's own, but it carries
+a sliver of its neighbour. So a card can also be TRIMMED — press ✂ and drag a line across
+the shape to say where the letter really ends, and which side belongs to the neighbour.
+The trim is recorded as a fraction of the shape's width, which is the quantity that
+transfers: every instance of the shape is the same drawing at a different size, so the
+same fraction cuts every one of them in the same place.
+
 Copy emits one line per shape with its id and verdict, so a verdict can be applied to
 every word that draws it — the same way `labels.json` carries one decision per mark
 signature across the whole mushaf.
@@ -51,10 +59,12 @@ def card(c, scale=9):
     parts.append("</g></svg>")
     ex = c["example"]
     return ('<div data-id="%s" data-ch="%s" data-form="%s" data-n="%d" '
-            'data-page="%d" data-wid="%s" data-index="%d" onclick="mark(this)" class="sh good" '
-            'title="p%d %s letter %d">%s<div class="cnt">%s</div></div>'
+            'data-page="%d" data-wid="%s" data-index="%d" data-w="%.3f" '
+            'onclick="mark(event,this)" class="sh good" title="p%d %s letter %d">'
+            '<div class="cut" onclick="openTrim(event,this.parentNode)">\u2702</div>'
+            '%s<div class="cnt">%s</div></div>'
             % (shape_id(ex), html.escape(c["ch"]), c["form"], c["n"], ex["page"], ex["wid"],
-               ex["index"], ex["page"], ex["wid"], ex["index"], "".join(parts),
+               ex["index"], x1 - x0, ex["page"], ex["wid"], ex["index"], "".join(parts),
                "{:,}".format(c["n"])))
 
 
@@ -106,26 +116,76 @@ def main():
             ".sh.bad{border-color:#b00;background:#fff2f2}"
             ".sh svg{display:block;max-height:70px;width:auto}"
             ".cnt{font-size:11px;color:#666}"
+            ".sh{position:relative}.cut{position:absolute;top:1px;left:2px;font-size:11px;opacity:.25}"
+            ".cut:hover{opacity:1}.sh.trim{border-color:#c80;background:#fffaf0}"
+            "#ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20;"
+            "align-items:center;justify-content:center}"
+            "#ov .box{background:#fff;padding:14px;border-radius:8px;text-align:center;max-width:92vw}"
+            "#ov svg{cursor:crosshair;background:#fff}#ov .btns{margin-top:8px}"
+            "#ov button{position:static;margin:0 4px;padding:6px 12px}"
             "button{position:fixed;top:10px;right:10px;padding:8px 14px;z-index:9}"
             "#tally{position:fixed;top:10px;right:150px;padding:8px 12px;background:#fff;"
             "border:1px solid #ccc;border-radius:6px;font-size:13px;z-index:9}</style>"
             "<button onclick='copyAll()'>Copy verdicts</button><div id=tally>0 wrong</div>"
+            "<div id=ov onclick='if(event.target.id==\"ov\")closeTrim()'><div class=box>"
+            "<div id=ovsvg></div><div class=btns><b id=ovmsg>click across the shape where the letter ends</b><br>"
+            "<button onclick='flipTrim()'>swap which side is the neighbour</button>"
+            "<button onclick='clearTrim()'>no trim</button>"
+            "<button onclick='closeTrim()'>done</button></div></div></div>"
             "<h1>Letter shapes</h1>"
             "<p>Every shape the split produced, one card per shape, with the number of words that "
             "draw it. <b>Everything starts marked right — click a shape to mark it wrong, click again "
-            "to put it back.</b> "
+            "to put it back. Press \u2702 on a shape whose curve is right but which carries a sliver of "
+            "its neighbour, then click across it where the letter really ends.</b> "
             "The shapes are ordered by how much of the mushaf they carry, so the first few cards of "
             "each letter are worth far more than the last. Then press Copy and paste the lines back.</p>"
             + "".join(body) +
             "<script>"
-            "function mark(el){const s=el.classList;"
-            "if(s.contains('good')){s.remove('good');s.add('bad')}else{s.remove('bad');s.add('good')}tally();}"
+            "let cur=null;"
+            "function mark(ev,el){if(ev.target.classList.contains('cut'))return;const s=el.classList;"
+            "if(s.contains('good')){s.remove('good');s.add('bad')}else{s.remove('bad');s.remove('trim');s.add('good')}"
+            "delete el.dataset.trim;tally();}"
+            "function openTrim(ev,el){ev.stopPropagation();cur=el;const svg=el.querySelector('svg').cloneNode(true);"
+            "const vb=svg.viewBox.baseVal;svg.setAttribute('width',Math.min(760,vb.width*26));"
+            "svg.setAttribute('height',vb.height*26);svg.id='tsvg';"
+            "document.getElementById('ovsvg').innerHTML='';document.getElementById('ovsvg').appendChild(svg);"
+            "svg.addEventListener('click',e=>{const r=svg.getBoundingClientRect();"
+            "const x=vb.x+(e.clientX-r.left)/r.width*vb.width;placeTrim(x);});"
+            "document.getElementById('ov').style.display='flex';"
+            "if(el.dataset.trim){const t=JSON.parse(el.dataset.trim);placeTrim(vb.x+t.frac*vb.width,t.give)}}"
+            "function placeTrim(x,give){const svg=document.getElementById('tsvg');const vb=svg.viewBox.baseVal;"
+            "[...svg.querySelectorAll('.tl,.tsh')].forEach(e=>e.remove());"
+            "const frac=(x-vb.x)/vb.width;give=give||(frac<0.5?'right':'left');"
+            "const sh=document.createElementNS('http://www.w3.org/2000/svg','rect');"
+            "sh.setAttribute('x',give==='right'?vb.x:x);sh.setAttribute('y',vb.y);"
+            "sh.setAttribute('width',give==='right'?(x-vb.x):(vb.x+vb.width-x));"
+            "sh.setAttribute('height',vb.height);sh.setAttribute('fill','rgba(200,0,0,.18)');"
+            "sh.setAttribute('class','tsh');svg.appendChild(sh);"
+            "const ln=document.createElementNS('http://www.w3.org/2000/svg','line');"
+            "ln.setAttribute('x1',x);ln.setAttribute('x2',x);ln.setAttribute('y1',vb.y);"
+            "ln.setAttribute('y2',vb.y+vb.height);ln.setAttribute('stroke','#b00');"
+            "ln.setAttribute('stroke-width',vb.width/120);ln.setAttribute('class','tl');svg.appendChild(ln);"
+            "cur.dataset.trim=JSON.stringify({frac:+frac.toFixed(3),give:give});"
+            "cur.classList.remove('bad');cur.classList.add('trim');cur.classList.remove('good');"
+            "document.getElementById('ovmsg').textContent="
+            "'the shaded '+(give==='right'?'right':'left')+' side goes to the neighbour ('+"
+            "Math.round((give==='right'?frac:1-frac)*100)+'% of the shape)';tally();}"
+            "function flipTrim(){if(!cur||!cur.dataset.trim)return;const t=JSON.parse(cur.dataset.trim);"
+            "const svg=document.getElementById('tsvg');const vb=svg.viewBox.baseVal;"
+            "placeTrim(vb.x+t.frac*vb.width,t.give==='right'?'left':'right');}"
+            "function clearTrim(){if(!cur)return;delete cur.dataset.trim;cur.classList.remove('trim');"
+            "cur.classList.add('good');closeTrim();tally();}"
+            "function closeTrim(){document.getElementById('ov').style.display='none';cur=null;}"
             "function tally(){const b=document.querySelectorAll('.sh.bad').length;"
+            "const m=document.querySelectorAll('.sh.trim').length;"
             "const t=document.querySelectorAll('.sh').length;"
-            "document.getElementById('tally').textContent=b+' wrong of '+t;}"
+            "document.getElementById('tally').textContent=b+' wrong, '+m+' trimmed, of '+t;}"
             "function copyAll(){const out=[];document.querySelectorAll('.sh').forEach(e=>{"
-            "const v=e.classList.contains('bad')?'bad':'good';out.push({id:e.dataset.id,letter:e.dataset.ch,form:e.dataset.form,"
-            "n:+e.dataset.n,page:+e.dataset.page,wid:e.dataset.wid,index:+e.dataset.index,verdict:v})});"
+            "const v=e.classList.contains('bad')?'bad':e.dataset.trim?'trim':'good';"
+            "const o={id:e.dataset.id,letter:e.dataset.ch,form:e.dataset.form,n:+e.dataset.n,"
+            "page:+e.dataset.page,wid:e.dataset.wid,index:+e.dataset.index,verdict:v};"
+            "if(e.dataset.trim){const t=JSON.parse(e.dataset.trim);o.trim=t;"
+            "o.trim.units=+(t.frac*(+e.dataset.w)).toFixed(2)}out.push(o)});"
             "navigator.clipboard.writeText(out.map(o=>JSON.stringify(o)).join('\\n'));"
             "alert(out.length+' verdicts copied');}"
             "</script>")
