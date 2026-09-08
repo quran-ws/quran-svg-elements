@@ -5,7 +5,7 @@ converter measured on 2026-09-04 (docs/defects/upstream_svg_issues.md).
 Each check is one line of the consumer's list, stated as a property that
 must hold on EVERY page of the production profile:
 
-    markers   one <g class="ayah-marker"> per ayah, each with id + data-aid,
+    markers   one <g class="ayah-mark"> per ayah, each with id + data-ayah-key,
               one ornament and one numeral inside, and no two markers drawing
               the same ornament at the same spot. The artwork on p1/p2 draws
               every ornament twice; the copy rides inside the same marker as
@@ -19,10 +19,10 @@ must hold on EVERY page of the production profile:
     noise     every absolute moveto the emitter writes has at most three
               decimals (the source relative segments have three; the emitter's
               accumulated float sum is written back as the designer's number)
-    textattrs a word group carries data-wid, data-w and data-uthmani only; the
+    textattrs a word group carries data-word-key and data-rasm-uthmani only; the
               other text forms live in the bundle's index/by-page/NNN.json
-    wbw       every word group carries data-w, the global word id of the
-              word-by-word source (tools/build_wbw_map.py)
+    word_key  every word group carries data-word-key, surah:ayah:word — the
+              only word key there is (docs/HAFS-JSON-SOURCE.md)
 
     python3 tools/audit_export.py [first [last]] [--jobs N]
 
@@ -42,21 +42,21 @@ ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 BODY_VIEWBOX = "0 0 345 550"
 NUM = r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?"
-TEXT_FORMS = ("data-imlaei", "data-qpc", "data-rasm", "data-search")
+TEXT_FORMS = ("data-rasm-imlai", "data-qpc", "data-rasm", "data-search")
 
 
 def check_svg(svg):
     """{check: count of violations} for one emitted page."""
     bad = Counter()
     # -- markers
-    groups = re.findall(r'<g class="ayah-marker"[^>]*>(.*?)</g>\s*</g>', svg, re.S)
+    groups = re.findall(r'<g class="ayah-mark"[^>]*>(.*?)</g>\s*</g>', svg, re.S)
     seen = Counter()
-    for gi, body in zip(re.findall(r'<g class="ayah-marker"[^>]*>', svg), groups):
-        if 'data-aid="' not in gi or ' id="mk-' not in gi:
+    for gi, body in zip(re.findall(r'<g class="ayah-mark"[^>]*>', svg), groups):
+        if 'data-ayah-key="' not in gi or ' id="mk-' not in gi:
             bad["markers"] += 1
         orn = [p for p in re.findall(r"<path\b[^>]*>", body)
-               if 'data-kind="ayah-marker-ornament"' in p and "data-duplicate=" not in p]
-        num = re.findall(r'data-kind="ayah-number"', body)
+               if 'data-kind="ayah_mark_ornament"' in p and "data-duplicate=" not in p]
+        num = re.findall(r'data-kind="ayah_number"', body)
         if len(orn) != 1 or len(num) != 1:
             bad["markers"] += 1
         m = re.search(r'<g transform="([^"]*)"><path [^>]*\bd="([^"]*)"', body)
@@ -84,8 +84,8 @@ def check_svg(svg):
     # -- textattrs
     for g in re.findall(r'<g class="word"[^>]*>', svg):
         bad["textattrs"] += sum(1 for a in TEXT_FORMS if a + '="' in g)
-        if not re.search(r' data-w="\d+"', g):
-            bad["wbw"] += 1
+        if not re.search(r' data-word-key="\d+:\d+:\d+"', g):
+            bad["word_key"] += 1
     return dict(bad)
 
 
@@ -117,7 +117,7 @@ def main():
         json.dump(res, open(a.json, "w"), indent=1)
     print("TOTAL pages=%d %s" % (len(pages), " ".join(
         "%s=%d" % (k, tot.get(k, 0)) for k in
-        ("markers", "viewbox", "kinds", "xforms", "noise", "textattrs", "wbw"))))
+        ("markers", "viewbox", "kinds", "xforms", "noise", "textattrs", "word_key"))))
     return 1 if sum(tot.values()) else 0
 
 

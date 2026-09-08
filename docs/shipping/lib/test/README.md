@@ -23,8 +23,8 @@ const r = await page.evaluate(() => window.__RESULTS__);
 ```
 
 Add `&markers=<url>` — for example
-`https://quranpedia.github.io/ayah-markers/` — to additionally check a real marker
-set for conformance (§21.50-54). Without it the end-marker tests still run in full
+`https://quranpedia.github.io/ayah-marks/` — to additionally check a real marker
+set for conformance (§21.50-54). Without it the end-mark tests still run in full
 against a synthetic set served by a stub `fetch`, because no marker outline may ship
 in this repository.
 

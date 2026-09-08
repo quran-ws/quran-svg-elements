@@ -12,13 +12,16 @@ per page answers "which page is 2:255 on" by binary search.
 """
 import json, os, re, sys
 
-AYAH = re.compile(r'<g class="ayah" data-aid="(\d+:\d+)"')
+AYAH = re.compile(r'<g class="ayah-fragment" data-ayah-key="(\d+:\d+)"')
 BANNER = re.compile(r'<g class="surah-name"([^>]*)>')
 ATTR = re.compile(r'data-([a-z-]+)="([^"]*)"')
-START = {k: re.compile(r'data-aid="(\d+:\d+)"[^>]*data-%s-start="(\d+)"' % k)
-         for k in ('juz', 'hizb', 'nisf', 'rub')}
-START_ALT = {k: re.compile(r'data-%s-start="(\d+)"[^>]*data-aid="(\d+:\d+)"' % k)
-             for k in ('juz', 'hizb', 'nisf', 'rub')}
+DIVISIONS = ('juz', 'hizb', 'nisf', 'rubu_al_hizb')
+# attribute names are hyphenated; the division names are snake_case
+_ATTR = {k: k.replace('_', '-') for k in DIVISIONS}
+START = {k: re.compile(r'data-ayah-key="(\d+:\d+)"[^>]*data-%s-start="(\d+)"' % _ATTR[k])
+         for k in DIVISIONS}
+START_ALT = {k: re.compile(r'data-%s-start="(\d+)"[^>]*data-ayah-key="(\d+:\d+)"' % _ATTR[k])
+             for k in DIVISIONS}
 
 
 def main(pages_dir, out_path):
@@ -28,11 +31,11 @@ def main(pages_dir, out_path):
 
     for i, name in enumerate(files, 1):
         src = open(os.path.join(pages_dir, name), encoding='utf-8').read()
-        aids = AYAH.findall(src)
-        if not aids:
+        ayahKeys = AYAH.findall(src)
+        if not ayahKeys:
             raise SystemExit('%s: no ayah groups' % name)
-        first.append(aids[0])
-        last.append(aids[-1])
+        first.append(ayahKeys[0])
+        last.append(ayahKeys[-1])
 
         for attrs in BANNER.findall(src):
             d = dict(ATTR.findall(attrs))
@@ -44,9 +47,9 @@ def main(pages_dir, out_path):
 
         for k in START:
             for a, b in START[k].findall(src):
-                div[k].setdefault(int(b), {'n': int(b), 'aid': a, 'page': i})
+                div[k].setdefault(int(b), {'n': int(b), 'ayahKey': a, 'page': i})
             for b, a in START_ALT[k].findall(src):
-                div[k].setdefault(int(b), {'n': int(b), 'aid': a, 'page': i})
+                div[k].setdefault(int(b), {'n': int(b), 'ayahKey': a, 'page': i})
 
     data = {
         'schema': 'mushaf-atlas', 'version': 1, 'edition': 'hafs-kfgqpc',
@@ -55,14 +58,14 @@ def main(pages_dir, out_path):
         'pageFirstAyah': first, 'pageLastAyah': last,
         'surahs': [surahs[n] for n in sorted(surahs)],
     }
-    for k in ('juz', 'hizb', 'nisf', 'rub'):
+    for k in ('juz', 'hizb', 'nisf', 'rubu_al_hizb'):
         data[k] = [div[k][n] for n in sorted(div[k])]
 
     with open(out_path, 'w', encoding='utf-8') as fh:
         json.dump(data, fh, ensure_ascii=False, separators=(',', ':'))
-    print('%s: %d pages, %d surahs, juz %d, hizb %d, nisf %d, rub %d, %.1f KB' % (
+    print('%s: %d pages, %d surahs, juz %d, hizb %d, nisf %d, rubu_al_hizb %d, %.1f KB' % (
         out_path, data['pages'], len(data['surahs']), len(data['juz']),
-        len(data['hizb']), len(data['nisf']), len(data['rub']),
+        len(data['hizb']), len(data['nisf']), len(data['rubu_al_hizb']),
         os.path.getsize(out_path) / 1024))
 
 

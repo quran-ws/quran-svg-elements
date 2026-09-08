@@ -10,13 +10,13 @@ What a page record holds
   and, per ayah, which juz/hizb/rubʿ it belongs to. Same facts, same values, as
   the attributes the emitter now writes, so the SVG and the graph agree by
   construction — both call `tools/quran_meta.py`.
-* **words** — `wid` "surah:ayah:word", the uthmani text, the rasm search key,
-  the imlaei form, the QPC text, and the ligature texts in reading order.
+* **words** — `word_key` "surah:ayah:word", the rasm_uthmani text, the rasm search key,
+  the rasm_imlai form, the QPC text, and the ligature texts in reading order.
 * **logical marks** — ONE record per mark, however many `<path>`s the artwork
   needed for it (v2 §7: count records, never paths). A record lists the eids of
   the paths that draw it, so a fused pair is one record on one path and a split
   sign is one record on several.
-* **relations** — muanaqah pairs, iqlab (tanween + small meem), the sajdah
+* **relations** — waqf_al_muanaqah pairs, iqlab (tanwin + small meem), the sajdah
   compound, the standalone hizb rosette, and ayah → marker.
 
 Where the records come from
@@ -101,7 +101,7 @@ def build_page(pg):
     for row in eidmap:
         key = (row["x1"], row["y1"], row["x2"], row["y2"], row["kind"],
                row["mark"], row["part"])
-        index.setdefault(key, []).append(row["eid"])
+        index.setdefault(key, []).append(row["element_id"])
 
     def eid_of(e):
         key = (round(e["x1"], 1), round(e["y1"], 1), round(e["x2"], 1),
@@ -114,12 +114,12 @@ def build_page(pg):
     words, marks, relations = [], [], []
     mid = [0]
     pair_of = {}
-    ayat = {}
+    ayahs = {}
 
-    def add_mark(e, wid, page_no=pg):
+    def add_mark(e, word_key, page_no=pg):
         """One logical-mark record for one master element.
 
-        The NAME is resolved exactly as `emit()` resolves it: a `pause` whose
+        The NAME is resolved exactly as `emit()` resolves it: a `waqf` whose
         outline the waqf-signature table recognises, or whose place the
         waqf-place table names, is that subtype. Doing it anywhere else would
         make the graph and the SVG disagree on 4,275 waqf marks.
@@ -132,11 +132,11 @@ def build_page(pg):
                     "%.1f,%.1f,%.1f,%.1f"
                     % (e["x1"], e["y1"], e["x2"], e["y2"]))
                 wq = rec0.get("waqf") if isinstance(rec0, dict) else rec0
-            if nm == "pause" and wq and wq != "muanaqah":
+            if nm == "waqf" and wq and wq != "waqf_al_muanaqah":
                 nm = wq
         # Was it actually emitted as a mark? Not everything named in the
         # internal records reaches the page as one: ink on a surah-name or
-        # basmalah line comes out as undecomposed `header-ink` (the one-item
+        # basmalah line comes out as undecomposed `header_ink` (the one-item
         # header law), and HDRGUARD evicts a word's stolen title ink into the
         # same group. Those elements never pass through emit(), so they have no
         # eid — and a mark that is not drawn is not a mark.
@@ -149,7 +149,7 @@ def build_page(pg):
         for m in e.get("mkmembers", []) or []:
             paths.append(eid_of(m))
         info = reg.get(nm, {})
-        rec = {"id": rid, "wid": wid, "mark": nm,
+        rec = {"id": rid, "word_key": word_key, "mark": nm,
                "category": info.get("category"),
                "family": info.get("family"),
                "paths": [x for x in paths if x],
@@ -161,7 +161,7 @@ def build_page(pg):
             rec["arrangement"] = e["tanform"]
         marks.append(rec)
         if e.get("mnqpair"):
-            pair_of.setdefault(("muanaqah", e["mnqpair"]), []).append(rid)
+            pair_of.setdefault(("waqf_al_muanaqah", e["mnqpair"]), []).append(rid)
         if e.get("iqpair"):
             pair_of.setdefault(("iqlab", e["iqpair"]), []).append(rid)
         return rid
@@ -178,7 +178,7 @@ def build_page(pg):
                     # It still emits as a named master path — six pages carry a
                     # whole banner line this way, where the DK header mapping
                     # did not claim the line and its glyphs were classified as
-                    # marks — so the graph records it with wid=None or the
+                    # marks — so the graph records it with word_key=None or the
                     # counts cannot match the SVG.
                     for e in atom["els"]:
                         if e.get("mark") and not e.get("mkpart"):
@@ -191,53 +191,53 @@ def build_page(pg):
                         r0 = add_mark(e, None)
                         if r0:
                             ids.append(r0)
-                rel = {"type": sa[0], "aid": aid, "members": ids}
+                rel = {"type": sa[0], "ayah_key": aid, "members": ids}
                 if sa[0] == "hizb" and sa[1]:
                     st = qm.starts_at(sa[1], sa[2])
-                    if st.get("rub"):
-                        rel.update(qm.rub_position(st["rub"]))
+                    if st.get("rubu_al_hizb"):
+                        rel.update(qm.rubu_al_hizb_position(st["rubu_al_hizb"]))
                 relations.append(rel)
             continue
-        wid = "%d:%d:%d" % (word["surah"], word["ayah"], word["pos"])
+        word_key = "%d:%d:%d" % (word["surah"], word["ayah"], word["pos"])
         aid = "%d:%d" % (word["surah"], word["ayah"])
-        ayat.setdefault(aid, 0)
-        ayat[aid] += 1
+        ayahs.setdefault(aid, 0)
+        ayahs[aid] += 1
         ligs = []
         for atom in atoms:
             seg = atom.get("seg")
             if seg and (not ligs or ligs[-1] != seg["text"]):
                 ligs.append(seg["text"])
         words.append({
-            "wid": wid, "aid": aid,
-            "uthmani": word["uthmani"],
-            "rasm": qm.rasm(word["uthmani"]),
-            "imlaei": word["imlaei"],
+            "word_key": word_key, "ayah_key": aid,
+            "rasm_uthmani": word["rasm_uthmani"],
+            "rasm": qm.rasm(word["rasm_uthmani"]),
+            "rasm_imlai": word["rasm_imlai"],
             "qpc": word.get("qpc"),
             "ligatures": ligs,
         })
         for atom in atoms:
             for e in atom["els"]:
                 if e.get("mark") and not e.get("mkpart"):
-                    add_mark(e, wid)
+                    add_mark(e, word_key)
 
     for (kind, key), members in sorted(pair_of.items()):
         relations.append({"type": kind, "key": key, "members": members})
 
     # ayah -> marker. The medallions are tagged after rewrite() (they live in
     # their own artwork layer), so they are read back off the emitted SVG. Each
-    # one is bound to the ayah it CLOSES, by position — see tag_ayah_markers.
+    # one is bound to the ayah it CLOSES, by position — see tag_ayah_marks.
     # Attribute-order independent: the marker group gained an `id` between the
     # class and the aid (the ayah->marker link), and a pattern that assumed
     # they were adjacent silently matched nothing on all 604 pages.
-    for aid in re.findall(r'<g class="ayah-marker"[^>]*?\bdata-aid="([^"]*)"',
+    for aid in re.findall(r'<g class="ayah-mark"[^>]*?\bdata-ayah-key="([^"]*)"',
                           svg):
-        relations.append({"type": "ayah-marker", "aid": aid})
+        relations.append({"type": "ayah-mark", "ayah_key": aid})
 
     # ---- metadata --------------------------------------------------------
     surahs, seen = [], set()
     ayah_recs = []
     divisions = []
-    for aid in sorted(ayat, key=lambda k: tuple(int(x) for x in k.split(":"))):
+    for aid in sorted(ayahs, key=lambda k: tuple(int(x) for x in k.split(":"))):
         su, ay = (int(x) for x in aid.split(":"))
         if su not in seen:
             seen.add(su)
@@ -245,12 +245,12 @@ def build_page(pg):
             if c:
                 surahs.append(c)
         p = qm.position(su, ay)
-        ayah_recs.append({"aid": aid, "words": ayat[aid], "juz": p["juz"],
-                          "hizb": p["hizb"], "rub": p["rub"],
-                          "rub_in_hizb": p["rub_in_hizb"], "nisf": p["nisf"]})
+        ayah_recs.append({"ayah_key": aid, "words": ayahs[aid], "juz": p["juz"],
+                          "hizb": p["hizb"], "rubu_al_hizb": p["rubu_al_hizb"],
+                          "rubu_al_hizb_in_hizb": p["rubu_al_hizb_in_hizb"], "nisf": p["nisf"]})
         st = qm.starts_at(su, ay)
         if st:
-            d = {"aid": aid}
+            d = {"ayah_key": aid}
             d.update(st)
             divisions.append(d)
 
@@ -259,7 +259,7 @@ def build_page(pg):
         "edition": "hafs-kfgqpc", "page": pg,
         "surahs": surahs,
         "divisions_starting_here": divisions,
-        "ayat": ayah_recs,
+        "ayahs": ayah_recs,
         "words": words,
         "marks": marks,
         "relations": relations,

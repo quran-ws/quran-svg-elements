@@ -6,12 +6,12 @@ of the shipped page, never out of a pipeline-internal cache. That is what makes
 the checker's cross-reference test meaningful — if the two disagreed, the index
 would be wrong and nothing would notice.
 
-One exception, by design (2026-09-04): a production page carries `data-wid`
-and `data-uthmani` only. The four derived text forms — rasm, imlaei, search,
+One exception, by design (2026-09-04): a production page carries `data-word-key`
+and `data-rasm-uthmani` only. The four derived text forms — rasm, rasm_imlai, search,
 qpc — are a text index, not geometry, and ship once, here, from the same word
 cache and the same derivations the emitter uses (`text_forms`). The SVG still
-rules where the two meet: the cache's uthmani must equal the page's
-`data-uthmani` for every word, or the build stops.
+rules where the two meet: the cache's rasm_uthmani must equal the page's
+`data-rasm-uthmani` for every word, or the build stops.
 """
 import os
 import sys
@@ -23,13 +23,13 @@ ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))
 SVGNS = "{http://www.w3.org/2000/svg}"
 
-TEXT_FIELDS = ("uthmani", "rasm", "imlaei", "search", "qpc")
+TEXT_FIELDS = ("rasm_uthmani", "rasm", "rasm_imlai", "search", "qpc")
 
 
 def text_forms(page, cache_dir=None):
-    """{wid: {uthmani, rasm, imlaei, search, qpc}} for one page, from the
+    """{word_key: {rasm_uthmani, rasm, rasm_imlai, search, qpc}} for one page, from the
     verified word cache, derived exactly as the dev profile writes them
-    inline: rasm = quran_meta.rasm(uthmani), search = quran_meta.rasm(imlaei)
+    inline: rasm = quran_meta.rasm(rasm_uthmani), search = quran_meta.rasm(rasm_imlai)
     (FORMAT.md §6.1)."""
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import assign_words
@@ -46,11 +46,11 @@ def text_forms(page, cache_dir=None):
             continue
         for words in assign_words.page_words(pg, cache_dir).values():
             for w in words:
-                wid = "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"])
-                out[wid] = {"uthmani": w["uthmani"],
-                            "rasm": quran_meta.rasm(w["uthmani"]),
-                            "imlaei": w["imlaei"],
-                            "search": quran_meta.rasm(w["imlaei"]),
+                word_key = "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"])
+                out[word_key] = {"rasm_uthmani": w["rasm_uthmani"],
+                            "rasm": quran_meta.rasm(w["rasm_uthmani"]),
+                            "rasm_imlai": w["rasm_imlai"],
+                            "search": quran_meta.rasm(w["rasm_imlai"]),
                             "qpc": w.get("qpc") or None}
     return out
 
@@ -99,9 +99,9 @@ def read_page(path, page):
     lines_seen = []
     marks = 0
     surahs = []
-    ayat = []           # aid, in document order, first appearance
+    ayahs = []           # aid, in document order, first appearance
     seen_aid = set()
-    divisions = {}      # aid -> {juz|hizb|nisf|rub: n} for divisions starting here
+    divisions = {}      # aid -> {juz|hizb|nisf|rubu_al_hizb: n} for divisions starting here
 
     def walk(el, M):
         nonlocal marks
@@ -115,12 +115,9 @@ def read_page(path, page):
             if tr:
                 N = mat_mul(parse_transform(tr), M)
             if cls == "word":
-                wid = child.get("data-wid")
-                rec = {"wid": wid, "line": cur_line[0],
-                       "aid": wid.rsplit(":", 1)[0],
-                       # the global word id (FORMAT §6.1); None if a page
-                       # predates it, and the checker then fails the bundle
-                       "w": int(child.get("data-w")) if child.get("data-w") else None}
+                word_key = child.get("data-word-key")
+                rec = {"word_key": word_key, "line": cur_line[0],
+                       "ayah_key": word_key.rsplit(":", 1)[0]}
                 for f in TEXT_FIELDS:
                     rec[f] = child.get("data-" + f)
                 rec["box"] = _box_of(child, N)
@@ -129,9 +126,9 @@ def read_page(path, page):
                             and not node.get("data-mark-part"):
                         marks += 1
                 words.append(rec)
-                if rec["aid"] not in seen_aid:
-                    seen_aid.add(rec["aid"])
-                    ayat.append(rec["aid"])
+                if rec["ayah_key"] not in seen_aid:
+                    seen_aid.add(rec["ayah_key"])
+                    ayahs.append(rec["ayah_key"])
                 continue
             if cls == "line":
                 cur_line[0] = int(child.get("data-line"))
@@ -140,10 +137,10 @@ def read_page(path, page):
                 # the four division attributes repeat on every fragment of the
                 # ayah (FORMAT §6.2), so first writer wins and the rest agree
                 got = {k: int(child.get("data-%s-start" % k))
-                       for k in ("juz", "hizb", "nisf", "rub")
+                       for k in ("juz", "hizb", "nisf", "rubu_al_hizb")
                        if child.get("data-%s-start" % k) is not None}
                 if got:
-                    divisions.setdefault(child.get("data-aid"), got)
+                    divisions.setdefault(child.get("data-ayah-key"), got)
             if cls in ("surah-name", "basmalah"):
                 sid = child.get("data-sid")
                 if cls == "surah-name" and sid:
@@ -158,13 +155,13 @@ def read_page(path, page):
     if any(w[f] is None for w in words for f in TEXT_FIELDS):
         forms = text_forms(page)
         for w in words:
-            rec = forms.get(w["wid"])
+            rec = forms.get(w["word_key"])
             if rec is None:
                 raise RuntimeError("page %d: %s is on the page but not in the "
-                                   "word cache" % (page, w["wid"]))
-            if w["uthmani"] != rec["uthmani"]:
-                raise RuntimeError("page %d: %s data-uthmani %r != cache %r"
-                                   % (page, w["wid"], w["uthmani"], rec["uthmani"]))
+                                   "word cache" % (page, w["word_key"]))
+            if w["rasm_uthmani"] != rec["rasm_uthmani"]:
+                raise RuntimeError("page %d: %s data-rasm-uthmani %r != cache %r"
+                                   % (page, w["word_key"], w["rasm_uthmani"], rec["rasm_uthmani"]))
             for f in TEXT_FIELDS:
                 if w[f] is None:
                     w[f] = rec[f]
@@ -178,7 +175,7 @@ def read_page(path, page):
         "lines": sorted(set(lines_seen)),
         "words": words,
         "marks": marks,
-        "ayat": ayat,
+        "ayahs": ayahs,
         "surahs": page_surahs,
         "banners": sorted(set(surahs)),
         "divisions": divisions,

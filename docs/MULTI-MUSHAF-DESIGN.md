@@ -3,7 +3,7 @@
 Internal design note, 2026-08-30. **Not for the demo or the public docs.**
 
 Hafs is first, but four more editions already exist upstream at 604 pages each:
-`douri`, `qalon`, `shubah`, `warsh`. Everything below is what has to change so
+`duri`, `qalun`, `shubah`, `warsh`. Everything below is what has to change so
 the second edition is a configuration rather than a rewrite — and, more
 importantly, so the **files we ship for Hafs today are still correct** once they
 sit beside four siblings.
@@ -14,24 +14,24 @@ The cheapest moment to fix an identity model is before anything depends on it.
 
 ## 1. The identity is a triple, and we currently record none of it
 
-A page belongs to **(qiraa, riwaya, edition)**. Upstream's `tools/qiraat_map.py`
+A page belongs to **(qiraah, riwayah, edition)**. Upstream's `tools/qiraahs_map.py`
 already states the mapping for the five:
 
-| directory | qiraa | rawi |
+| directory | qiraah | rawi |
 |---|---|---|
 | `hafs` | `asim` | `hafs` |
-| `shubah` | `asim` | `shuba` |
+| `shubah` | `asim` | `shubah` |
 | `warsh` | `nafi` | `warsh` |
-| `qalon` | `nafi` | `qalun` |
-| `douri` | `abu-amr` | `duri` |
+| `qalun` | `nafi` | `qalun` |
+| `duri` | `abu-amr` | `duri` |
 
-**The directory name is the riwaya, not the qiraa.** Hafs and Shuʿba are two
+**The directory name is the riwayah, not the qiraah.** Hafs and Shuʿba are two
 transmissions of the same reading (ʿĀṣim); Warsh and Qālūn likewise (Nāfiʿ). A
 schema that records only "hafs" cannot answer "show me both transmissions of
-ʿĀṣim", and one that calls it a *qiraa* is simply wrong.
+ʿĀṣim", and one that calls it a *qiraah* is simply wrong.
 
 The third element is the **edition** — here the King Fahd Complex printing. The
-same riwaya printed by another publisher is a different artefact with different
+same riwayah printed by another publisher is a different artefact with different
 page breaks, so `hafs` alone never identifies a page.
 
 **Today a page file says nothing at all about which mushaf it is.** Download
@@ -39,16 +39,16 @@ page breaks, so `hafs` alone never identifies a page.
 
 ### Proposed: the root `<svg>` carries the identity
 
-Every value below comes from the vendored `quranpedia/qiraat-ayah-map` dataset
-(`tools/data/qiraat-ayah-map/`), which gives Arabic and English names for all
-ten qiraat, their rawis, and the counting systems. **Nothing here is invented.**
+Every value below comes from the vendored `quranpedia/qiraahs-ayah-map` dataset
+(`tools/data/qiraahs-ayah-map/`), which gives Arabic and English names for all
+ten qiraahs, their rawis, and the counting systems. **Nothing here is invented.**
 
     data-mushaf="hafs-kfqc"              the directory/bundle key
-    data-qiraa="asim"
-    data-riwaya="hafs"
+    data-qiraah="asim"
+    data-riwayah="hafs"
     data-edition="kfgqpc-1441"
-    data-riwaya-name-ar="حفص عن عاصم"    the conventional name: rawi عن qiraa
-    data-riwaya-name-en="Hafs 'an Asim"
+    data-riwayah-name-ar="حفص عن عاصم"    the conventional name: rawi عن qiraah
+    data-riwayah-name-en="Hafs 'an Asim"
     data-ayah-numbering="kufi"           see §2 — must be explicit
     data-ayah-total="6236"               a PROPERTY of the counting system
     data-decomposition="word"            how far this edition is decomposed
@@ -62,7 +62,7 @@ on its own can say what it is, in both languages, without fetching anything.
 descriptions, the transmission notes or the counting-system prose on 604 pages.
 The page carries stable machine ids plus the one display string a consumer
 actually renders; the catalogue carries the rest — `name_ar`/`name_en` for the
-qiraa, the rawi and the counting system, the totals, the descriptions, and the
+qiraah, the rawi and the counting system, the totals, the descriptions, and the
 provenance of the numbering choice (§2).
 
 ### Editions ship at different DEPTHS, and the file must say which
@@ -117,31 +117,31 @@ broken.
 
 ---
 
-## 2. The ayah numbering system is a property of the EDITION, not the qiraa
+## 2. The ayah numbering system is a property of the EDITION, not the qiraah
 
 This is the subtle one, and upstream has already been bitten by it.
 
-The ten qiraat do not agree where every ayah ends, so `data-aid="37:5"` denotes
+The ten qiraahs do not agree where every ayah ends, so `data-aid="37:5"` denotes
 **different ink in different mushafs**. A consumer joining our data to an
 external ayah database gets silently wrong results unless the counting madhhab
 (نظام العد) is known.
 
-The tempting model is to derive it: qiraa → counting system, which is what
-`qiraat.json` does (`nafi` → `madani-last`, `abu-amr` → `basri`, and so on).
+The tempting model is to derive it: qiraah → counting system, which is what
+`qiraahs.json` does (`nafi` → `madani-last`, `abu-amr` → `basri`, and so on).
 **That model is wrong, and the al-Dūrī edition proves it.** From upstream's own
 note:
 
-> This King Fahd Al-Duri edition says otherwise in its own colophon ("huwa
+> This King Fahd Duri edition says otherwise in its own colophon ("huwa
 > al-maʿruf bi-l-ʿadad al-awwal li-ahl al-Madinah"), and the pages agree:
-> against First Madinan they match in **110 of 114** surahs, against Basran in
+> against First Madani they match in **110 of 114** surahs, against Basri in
 > **72**.
 
-So the printed edition declares its own count, and it is not the one its qiraa
+So the printed edition declares its own count, and it is not the one its qiraah
 would imply. Deriving would have mislabelled 604 pages.
 
 **Therefore `data-ayah-numbering` must be an explicit, per-edition field**,
 recorded from the edition's colophon and verified against its pages — never
-computed from the qiraa. Store the evidence alongside it.
+computed from the qiraah. Store the evidence alongside it.
 
 Note also that four surahs (37, 67, 80, 81) remain genuinely unsettled in ʿilm
 al-fawāṣil. Those are reported, not hidden. Our schema should be able to say
@@ -149,9 +149,9 @@ al-fawāṣil. Those are reported, not hidden. Our schema should be able to say
 
 ---
 
-## 3. `data-wid` is not portable across mushafs
+## 3. `data-word-key` is not portable across mushafs
 
-The riwayat differ in orthography, in word segmentation, and — via §2 — in ayah
+The riwayahs differ in orthography, in word segmentation, and — via §2 — in ayah
 boundaries. So word counts differ, and `2:255:4` in Warsh is not necessarily
 `2:255:4` in Hafs.
 
@@ -160,7 +160,7 @@ Consequences:
 - **A word id is only meaningful within one mushaf.** Any cross-mushaf reference
   needs the mushaf key: `hafs-kfqc/2:255:4`. Decide this now, because the moment
   a second edition ships someone will try to join them.
-- **Do not add a "same word across riwayat" link yet.** It is a real research
+- **Do not add a "same word across riwayahs" link yet.** It is a real research
   problem (the alignment is not one-to-one), and inventing a half-correct
   mapping is worse than offering none. If it is wanted later it belongs in a
   separate alignment dataset, not in the page files.
@@ -220,7 +220,7 @@ declaration of which subset that edition actually uses. Two rules follow:
 Established earlier and still true: the pipeline ports, but three inputs do not.
 
 - **The word/text source.** Budgets come from the DigitalKhatt DB, keyed to this
-  Hafs text. Each riwaya needs its own verified source, and the ground rule
+  Hafs text. Each riwayah needs its own verified source, and the ground rule
   stands: never hand-type Quranic text.
 - **The mark label table** (`.cache/marks/labels.json`) maps shape signatures to
   labels. Signatures are per-artwork; Warsh needs its own table, and applying
@@ -255,7 +255,7 @@ Cheap now, expensive later:
    and false for Nāfiʿ (6,214), so the validator would fail a correct Warsh
    build. Cheap to fix now, confusing to debug later.
 
-Deliberately NOT now: cross-riwaya word alignment (§3), and any attempt to model
+Deliberately NOT now: cross-riwayah word alignment (§3), and any attempt to model
 the disputed fawāṣil beyond recording "disputed".
 
 ---

@@ -58,7 +58,7 @@ def samples(edition, names):
             l_els = [e for e in els if e["line"] == ln]
             clusters, _ = cluster_line(l_els, ws)
             for w, cl in zip(ws, clusters):
-                segs = segment_word(w["uthmani"])
+                segs = segment_word(w["rasm_uthmani"])
                 groups, cost = align_segs_atoms(cl, segs)
                 if cost == float("inf") or cost > 0.5:
                     continue                    # calibrate only on confident alignments

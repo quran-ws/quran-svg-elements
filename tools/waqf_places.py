@@ -5,8 +5,8 @@
 قلى and م — 4,265 of the 4,272 waqf paths in the mushaf, every signature 100% pure.
 
 The muʿānaqah `ۛ` does not fit that scheme. It is three dots in a triangle, and this
-pipeline sees three dots: the cluster comes apart into a `two-dots` element and a `dot`,
-neither of which is a pause shape, so no signature of ours corresponds to the sign. It
+pipeline sees three dots: the cluster comes apart into a `two_dots` element and a `dot`,
+neither of which is a waqf shape, so no signature of ours corresponds to the sign. It
 is also the rarest sign in the mushaf — six occurrences, in three pairs, and a pair is
 the whole point of it: the reader stops at one of the two places, never at both.
 
@@ -57,9 +57,9 @@ OUT = os.path.join(ROOT, ".cache", "marks", "waqf_places.json")
 # REFERENCE'S vocabulary (it is matched against MushafDatabase's data-waqf
 # attributes); the table is WRITTEN in ours (taxonomy phase 1, decision 8).
 BY_PLACE = ("waqf taanuq",)
-_CANON = {"waqf lazim": "waqf-lazim", "waqf qila": "waqf-awla",
-          "waqf sali": "wasl-awla", "waqf jaiz": "waqf-jaiz",
-          "waqf taanuq": "muanaqah"}
+_CANON = {"waqf madd_lazim": "waqf_lazim", "waqf qila": "waqf_jaiz_waqf_awla",
+          "waqf sali": "waqf_jaiz_wasl_awla", "waqf jaiz": "waqf_jaiz_mustawi_al_tarafayn",
+          "waqf taanuq": "waqf_al_muanaqah"}
 
 
 def our_page(pg):
@@ -75,7 +75,7 @@ def our_page(pg):
             continue
         words[(w["surah"], w["ayah"], w["pos"])] = {
             "x1": min(e["x1"] for e in body), "x2": max(e["x2"] for e in body),
-            "y2": max(e["y2"] for e in body), "text": w["uthmani"]}
+            "y2": max(e["y2"] for e in body), "text": w["rasm_uthmani"]}
         els += ee
     return words, els
 

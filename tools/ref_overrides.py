@@ -64,37 +64,37 @@ OUT = os.path.join(ROOT, ".cache", "review", "overrides.json")
 # it the ink is genuinely shared between two words' outlines and no override is written.
 COVER = 0.60
 
-# A fatha and a kasra are the SAME stroke, named afterwards from where it sits and what
+# A fathah and a kasrah are the SAME stroke, named afterwards from where it sits and what
 # the word's budget allows. Carrying one across a word boundary re-opens that decision
 # for both words, and the renaming can come back differently — the neighbour transfer
 # and the cross-line repair both refuse to move these for exactly that reason, and
-# ignoring it here put fatha +14 and kasra +16 on an otherwise clean round. The body
+# ignoring it here put fathah +14 and kasrah +16 on an otherwise clean round. The body
 # ink these strokes sit over still moves; only the naming-unstable strokes stay put.
-_UNSTABLE = ("fatha", "kasra", "fathatan", "kasratan")
+_UNSTABLE = ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr")
 
 # What a word's spelling says it can own, per mark family. The reference places a mark
 # where the ink sits; the text says whether that word can own it at all. Both have to
 # agree before a mark moves — on p552 the reference put a dot on `كُلِّهِۦ`, which has no
 # dotted letter in it, because the `ن` of `ٱلدِّينِ` is drawn over its territory.
 _WANT = {
-    "fatha": ("َ",), "kasra": ("ِ",), "damma": ("ُ",),
-    "fathatan": ("ً", "ࣰ"), "kasratan": ("ٍ", "ࣲ"), "dammatan": ("ٌ", "ࣱ"),
-    "sukun": ("ْ", "ۡ"), "shadda": ("ّ",), "maddah": ("ٓ", "ۤ"),
-    "small-alef": ("ٰ",), "wasla": ("ٱ",), "small-waw": ("ۥ",),
-    "small-ya": ("ۦ", "ۧ"),
+    "fathah": ("َ",), "kasrah": ("ِ",), "dammah": ("ُ",),
+    "tanwin_al_fath": ("ً", "ࣰ"), "tanwin_al_kasr": ("ٍ", "ࣲ"), "tanwin_al_damm": ("ٌ", "ࣱ"),
+    "sukun": ("ْ", "ۡ"), "shaddah": ("ّ",), "maddah": ("ٓ", "ۤ"),
+    "omitted_alif": ("ٰ",), "hamzat_al_wasl": ("ٱ",), "small_waw": ("ۥ",),
+    "small_yaa": ("ۦ", "ۧ"),
     # taxonomy phase 1: the zeros split (the pipeline emits the new names;
-    # a mark still named small-circle simply finds no budget here, as before)
-    "sifr-mustadir": ("۟",), "sifr-mustatil": ("۠",),
-    "hamza": ("أ", "إ", "ؤ", "ئ", "ٔ", "ٕ"),
-    "small-noon": ("ۨ",),
+    # a mark still named small_circle simply finds no budget here, as before)
+    "rounded_zero": ("۟",), "rectangular_zero": ("۠",),
+    "hamzah": ("أ", "إ", "ؤ", "ئ", "ٔ", "ٕ"),
+    "small_noon": ("ۨ",),
 }
-_DOTU = {"dot": 1, "two-dots": 2, "three-dots": 3}
+_DOTU = {"dot": 1, "two_dots": 2, "three_dots": 3}
 
 
 def _dot_budget(txt):
     """Dot units the word's letters own, by the same rule audit_marks.py uses."""
     raw = aw._LETTER.findall(txt)
-    sk = [(aw.HAMZA_MAP[c][0] if c in aw.HAMZA_MAP else c, c in aw.HAMZA_MAP) for c in raw]
+    sk = [(aw.HAMZAH_MAP[c][0] if c in aw.HAMZAH_MAP else c, c in aw.HAMZAH_MAP) for c in raw]
     n = 0
     for i, (ch, seat) in enumerate(sk):
         if seat or ch not in aw.DOTS:
@@ -128,7 +128,7 @@ def our_page(pg):
         lns = [e.get("line") for e in body if e.get("line")]
         words[k] = {"line": max(set(lns), key=lns.count) if lns else 0,
                     "x1": min(e["x1"] for e in body), "x2": max(e["x2"] for e in body),
-                    "y2": max(e["y2"] for e in body), "text": w["uthmani"]}
+                    "y2": max(e["y2"] for e in body), "text": w["rasm_uthmani"]}
         for e in ee:
             if not e.get("mkpart"):        # a welded twin travels with its master
                 els.append((k, e))

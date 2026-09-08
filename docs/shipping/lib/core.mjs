@@ -12,7 +12,16 @@ export const SVGNS = 'http://www.w3.org/2000/svg';
 export const XHTMLNS = 'http://www.w3.org/1999/xhtml';
 
 /** The five text forms carried on every <g class="word">. FORMAT §6.1. */
-export const TEXT_FORMS = ['uthmani', 'imlaei', 'qpc', 'rasm', 'search'];
+export const TEXT_FORMS = ['rasm_uthmani', 'rasm_imlai', 'qpc', 'rasm', 'search'];
+
+/** The `dataset` key for a `data-*` attribute name: `rasm_uthmani` and
+ *  `rasm-uthmani` both read `data-rasm-uthmani`, whose key is `rasmUthmani`.
+ *  Attribute names are hyphenated; the text forms and division names are
+ *  snake_case, so the two have to be bridged in one place. */
+export function datasetKey(name) {
+  return String(name).replace(/[_-]([a-z])/g, (_, c) => c.toUpperCase());
+}
+
 
 /* ---------------------------------------------------------------- taxonomy */
 
@@ -21,54 +30,54 @@ export const TEXT_FORMS = ['uthmani', 'imlaei', 'qpc', 'rasm', 'search'];
  *
  * We resolve families through THIS table and select on data-mark, never on the
  * data-mark-family attribute. The emitted attribute and the registry disagree
- * in the current build: the files write "diacritic" for harakat AND tanween,
- * and never write "tanween" or "reading-sign" at all. Selecting by name works
+ * in the current build: the files write "diacritic" for harakahs AND tanwin,
+ * and never write "tanwin" or "reading_sign" at all. Selecting by name works
  * under either vocabulary. See DESIGN.md §6. */
 export const MARK_REGISTRY = Object.freeze({
-  fatha:          { category: 'haraka',       family: null },
-  kasra:          { category: 'haraka',       family: null },
-  damma:          { category: 'haraka',       family: null },
-  sukun:          { category: 'haraka',       family: null },
-  shadda:         { category: 'haraka',       family: null },
-  fathatan:       { category: 'tanween',      family: 'tanween' },
-  kasratan:       { category: 'tanween',      family: 'tanween' },
-  dammatan:       { category: 'tanween',      family: 'tanween' },
-  dot:            { category: 'letter-dot',   family: 'dots' },
-  'two-dots':     { category: 'letter-dot',   family: 'dots' },
-  'three-dots':   { category: 'letter-dot',   family: 'dots' },
-  hamza:          { category: 'orthographic', family: null },
-  wasla:          { category: 'orthographic', family: null },
-  'small-alef':   { category: 'orthographic', family: null },
+  fathah:          { category: 'harakah',       family: null },
+  kasrah:          { category: 'harakah',       family: null },
+  dammah:          { category: 'harakah',       family: null },
+  sukun:          { category: 'harakah',       family: null },
+  shaddah:         { category: 'harakah',       family: null },
+  tanwin_al_fath:       { category: 'tanwin',      family: 'tanwin' },
+  tanwin_al_kasr:       { category: 'tanwin',      family: 'tanwin' },
+  tanwin_al_damm:       { category: 'tanwin',      family: 'tanwin' },
+  dot:            { category: 'letter_dot',   family: 'dots' },
+  'two_dots':     { category: 'letter_dot',   family: 'dots' },
+  'three_dots':   { category: 'letter_dot',   family: 'dots' },
+  hamzah:          { category: 'orthographic', family: null },
+  hamzat_al_wasl:          { category: 'orthographic', family: null },
+  'omitted_alif':   { category: 'orthographic', family: null },
   maddah:         { category: 'orthographic', family: null },
-  'small-waw':    { category: 'orthographic', family: null },
-  'small-ya':     { category: 'orthographic', family: null },
-  'small-noon':   { category: 'orthographic', family: null },
-  'sifr-mustadir':{ category: 'dabt',         family: 'sifr' },
-  'sifr-mustatil':{ category: 'dabt',         family: 'sifr' },
-  'meem-iqlab':   { category: 'dabt',         family: null },
-  'waqf-jaiz':    { category: 'waqf',         family: 'waqf' },
-  'wasl-awla':    { category: 'waqf',         family: 'waqf' },
-  'waqf-awla':    { category: 'waqf',         family: 'waqf' },
-  'waqf-lazim':   { category: 'waqf',         family: 'waqf' },
-  muanaqah:       { category: 'waqf',         family: 'waqf' },
-  pause:          { category: 'waqf',         family: 'waqf' },
-  saktah:         { category: 'reading-sign', family: 'reading-sign' },
-  'seen-reading': { category: 'reading-sign', family: 'reading-sign' },
-  imalah:         { category: 'reading-sign', family: 'reading-sign' },
-  ishmam:         { category: 'reading-sign', family: 'reading-sign' },
-  tashil:         { category: 'reading-sign', family: 'reading-sign' },
-  'sajdah-sign':  { category: 'standalone',   family: 'sajdah' },
-  'sajdah-line':  { category: 'standalone',   family: 'sajdah' },
+  'small_waw':    { category: 'orthographic', family: null },
+  'small_yaa':     { category: 'orthographic', family: null },
+  'small_noon':   { category: 'orthographic', family: null },
+  'rounded_zero':{ category: 'dabt',         family: 'sifr' },
+  'rectangular_zero':{ category: 'dabt',         family: 'sifr' },
+  'small_meem':   { category: 'dabt',         family: null },
+  'waqf_jaiz_mustawi_al_tarafayn':    { category: 'waqf',         family: 'waqf' },
+  'waqf_jaiz_wasl_awla':    { category: 'waqf',         family: 'waqf' },
+  'waqf_jaiz_waqf_awla':    { category: 'waqf',         family: 'waqf' },
+  'waqf_lazim':   { category: 'waqf',         family: 'waqf' },
+  waqf_al_muanaqah:       { category: 'waqf',         family: 'waqf' },
+  waqf:          { category: 'waqf',         family: 'waqf' },
+  saktah:         { category: 'reading_sign', family: 'reading_sign' },
+  'seen_al_qiraah': { category: 'reading_sign', family: 'reading_sign' },
+  imalah:         { category: 'reading_sign', family: 'reading_sign' },
+  ishmam:         { category: 'reading_sign', family: 'reading_sign' },
+  tashil:         { category: 'reading_sign', family: 'reading_sign' },
+  'sajdah_mark':  { category: 'standalone',   family: 'sajdah' },
+  'sajdah_line':  { category: 'standalone',   family: 'sajdah' },
   hizb:           { category: 'standalone',   family: null }
 });
 
-/* The name the FILES use for harakat + tanween. Not in the registry, not in
+/* The name the FILES use for harakahs + tanwin. Not in the registry, not in
  * FORMAT.md, but it is what is emitted — so we accept it as a family alias. */
 const FAMILY_ALIASES = {
-  diacritic: ['fatha', 'kasra', 'damma', 'sukun', 'shadda',
-              'fathatan', 'kasratan', 'dammatan', 'maddah'],
-  haraka:    ['fatha', 'kasra', 'damma', 'sukun', 'shadda'],
-  vowels:    ['fatha', 'kasra', 'damma', 'fathatan', 'kasratan', 'dammatan']
+  diacritic: ['fathah', 'kasrah', 'dammah', 'sukun', 'shaddah',
+              'tanwin_al_fath', 'tanwin_al_kasr', 'tanwin_al_damm', 'maddah'],
+  harakah:    ['fathah', 'kasrah', 'dammah', 'sukun', 'shaddah'],
+  vowels:    ['fathah', 'kasrah', 'dammah', 'tanwin_al_fath', 'tanwin_al_kasr', 'tanwin_al_damm']
 };
 
 /** Every data-mark name in a registry family or category. */
@@ -87,16 +96,16 @@ export function categoryOf(name) { return MARK_REGISTRY[name]?.category ?? null;
 
 /* ------------------------------------------------------- Arabic text tools */
 
-/* Harakat, tanween (incl. the open forms U+08F0-08F2 this print uses), the
+/* Harakahs, tanwin (incl. the open forms U+08F0-08F2 this print uses), the
  * dagger alef, the waqf/dabt block U+06D6-06ED, the Quranic annotation block,
- * and tatweel. FORMAT §9.8: the open tanween is orthography, not mojibake. */
+ * and tatweel. FORMAT §9.8: the open tanwin is orthography, not mojibake. */
 const MARK_RE = /[\u0610-\u061A\u064B-\u065F\u0670\u06D6-\u06ED\u08F0-\u08F3\u0640]/g;
 /* The rubʿ sign lives in the word text but never in its ink. FORMAT §9.6. */
-const RUB_RE = /\u06DE/g;
+const RUBU_AL_HIZB_RE = /\u06DE/g;
 
 /** Strip every diacritic, sign and tatweel. Leaves the letters. */
 export function stripArabicMarks(s) {
-  return String(s ?? '').replace(RUB_RE, '').replace(MARK_RE, '');
+  return String(s ?? '').replace(RUBU_AL_HIZB_RE, '').replace(MARK_RE, '');
 }
 
 /** Fold the letter distinctions typists do not make. Nothing is folded in the
@@ -116,10 +125,10 @@ export function normalizeQuery(s) {
 }
 
 /** A deliberately blunter key used only as a SECOND pass when the strict pass
- *  finds nothing: it also drops bare alef and hamza, so a typed الرحمان finds
+ *  finds nothing: it also drops bare alef and hamzah, so a typed الرحمان finds
  *  the printed الرحمن, whose alef is a dagger alef and is absent from
  *  data-search entirely. Never widens a query that already matched. */
-export function looseKey(s) {
+export function loosenQuery(s) {
   return normalizeQuery(s).replace(/[\u0627\u0621]/g, '');
 }
 
@@ -145,7 +154,7 @@ function host() {
 }
 
 /** Run fn with `el` guaranteed to be rendered, restoring it afterwards. */
-export function measured(el, fn) {
+export function whileRendered(el, fn) {
   if (el.isConnected) return fn();
   const parent = el.parentNode, next = el.nextSibling;
   host().appendChild(el);
@@ -169,18 +178,15 @@ const nextId = p => p + '-' + (++uid).toString(36) + Date.now().toString(36).sli
 
 export class Word {
   constructor(el, page) { this.el = el; this._page = page; }
-  get wid()   { return this.el.dataset.wid; }
-  /** The GLOBAL word id (`data-w`, FORMAT §6.1): the same number for this word
-   *  in every mushaf that has it — the key a word-by-word app joins on. Two
-   *  pieces of one word (15:7 لَّوْ مَا) share it; `wid` stays unique. */
-  get w()     { const v = this.el.dataset.w; return v == null ? null : Number(v); }
-  get parts() { return this.wid.split(':').map(Number); }
-  get surah() { return this.parts[0]; }
-  get ayah()  { return this.parts[1]; }
-  get index() { return this.parts[2]; }
-  get aid()   { return this.surah + ':' + this.ayah; }
+  get wordKey()   { return this.el.dataset.wordKey; }
+  get _keyParts() { return this.wordKey.split(':').map(Number); }
+  get surah() { return this._keyParts[0]; }
+  get ayah()  { return this._keyParts[1]; }
+  /** Which word of its ayah this is — the third number of the word key. */
+  get number() { return this._keyParts[2]; }
+  get ayahKey()   { return this.surah + ':' + this.ayah; }
   get line()  { const l = this.el.closest('g.line'); return l ? Number(l.dataset.line) : null; }
-  /** All five forms. FORMAT §6.1. A production page carries only `uthmani`
+  /** All five forms. FORMAT §6.1. A production page carries only `rasm_uthmani`
    *  inline; the other four come from the page's sidecar once it is attached
    *  (`page.attachWords`), and are `null` until then. */
   get text() {
@@ -189,39 +195,39 @@ export class Word {
     return out;
   }
   /** One text form: the inline attribute when the page carries it (dev
-   *  profile, or `uthmani` on every profile), else the attached sidecar,
+   *  profile, or `rasm_uthmani` on every profile), else the attached sidecar,
    *  else `null`. */
-  form(which = 'uthmani') {
-    const v = this.el.dataset[which];
+  form(which = 'rasm_uthmani') {
+    const v = this.el.dataset[datasetKey(which)];
     if (v != null) return v;
-    const rec = this._page && this._page._forms ? this._page._forms.get(this.wid) : null;
+    const rec = this._page && this._page._forms ? this._page._forms.get(this.wordKey) : null;
     return rec && rec[which] != null ? rec[which] : null;
   }
   /** Bounding box in the page's own viewBox units. */
   box() { return boxInView(this._page.el, this.el); }
   paths() { return [...this.el.querySelectorAll('path')]; }
-  toString() { return this.wid; }
+  toString() { return this.wordKey; }
 }
 
 export class Ayah {
-  constructor(aid, fragments, page) { this.aid = aid; this.fragments = fragments; this._page = page; }
-  get surah() { return Number(this.aid.split(':')[0]); }
-  get number() { return Number(this.aid.split(':')[1]); }
+  constructor(ayahKey, fragments, page) { this.ayahKey = ayahKey; this.fragments = fragments; this._page = page; }
+  get surah() { return Number(this.ayahKey.split(':')[0]); }
+  get number() { return Number(this.ayahKey.split(':')[1]); }
   /** How many fragments the file says this ayah has on this page (FORMAT §7). */
-  get parts() { return Number(this.fragments[0]?.dataset.ayahParts || this.fragments.length); }
-  get complete() { return this.parts === this.fragments.length; }
-  get markerId() { return this.fragments[0]?.dataset.marker || null; }
-  get marker() { const id = this.markerId; return id ? this._page.el.querySelector('#' + CSS.escape(id)) : null; }
+  get fragmentCount() { return Number(this.fragments[0]?.dataset.ayahFragments || this.fragments.length); }
+  get isComplete() { return this.fragmentCount === this.fragments.length; }
+  get markId() { return this.fragments[0]?.dataset.ayahMark || null; }
+  get mark() { const id = this.markId; return id ? this._page.el.querySelector('#' + CSS.escape(id)) : null; }
   get lines() { return [...new Set(this.fragments.map(f => Number(f.closest('g.line').dataset.line)))]; }
   words() { return this.fragments.flatMap(f => [...f.querySelectorAll('g.word')]).map(e => new Word(e, this._page)); }
-  text(form = 'uthmani') { return this.words().map(w => w.form(form)).join(' '); }
+  text(form = 'rasm_uthmani') { return this.words().map(w => w.form(form)).join(' '); }
 }
 
 export class Line {
   constructor(el, page) { this.el = el; this._page = page; }
   get number() { return Number(this.el.dataset.line); }
   words() { return [...this.el.querySelectorAll('g.word')].map(e => new Word(e, this._page)); }
-  text(form = 'uthmani') { return this.words().map(w => w.form(form)).join(' '); }
+  text(form = 'rasm_uthmani') { return this.words().map(w => w.form(form)).join(' '); }
   /** true for the 226 header lines that hold a banner and no words. */
   get isHeader() { return !this.el.querySelector('g.word'); }
   box() { return boxInView(this._page.el, this.el); }
@@ -233,7 +239,7 @@ export class Line {
  *  Every g.line has its own frame (FORMAT §5.2) and the page frame flips y,
  *  so a raw getBBox() is meaningless across lines — compose the CTM. */
 export function boxInView(svg, el) {
-  return measured(svg, () => {
+  return whileRendered(svg, () => {
     const b = el.getBBox();
     let m = null;
     /* getCTM() maps to the nearest VIEWPORT — that is CSS pixels, AFTER the
@@ -279,16 +285,16 @@ export class MushafPage {
     this.el = el;
     this.number = number;
     this._forms = null;
-    if (stripPolygons) this.dropPolygons();
+    if (stripPolygons) this.stripPolygons();
   }
 
   /**
    * Attach the page's text sidecar, `index/by-page/NNN.json`. A production
-   * page carries `data-uthmani` only (FORMAT §6.1); `rasm`, `imlaei`,
+   * page carries `data-rasm-uthmani` only (FORMAT §6.1); `rasm`, `rasm_imlai`,
    * `search` and `qpc` live in the sidecar, and `word.form()`, `word.text`,
    * `page.text()` and `page.search()` read them from here once attached.
    * Accepts the sidecar object (`{words: [...]}`), an array of its word
-   * records, or an object / Map keyed by wid. Returns the record count.
+   * records, or an object / Map keyed by wordKey. Returns the record count.
    * Carried by `clone()`. `createLoader({words: true})` does this for you.
    */
   attachWords(data) {
@@ -299,16 +305,16 @@ export class MushafPage {
     else if (data instanceof Map) recs = [...data.values()];
     else recs = Object.values(data);
     const m = new Map();
-    for (const r of recs) if (r && r.wid) m.set(r.wid, r);
+    for (const r of recs) if (r && r.wordKey) m.set(r.wordKey, r);
     this._forms = m;
     return m.size;
   }
 
   /** Is `form` readable for this page's words — inline, or attached? */
   hasForm(form = 'search') {
-    if (form === 'uthmani') return true;
+    if (form === 'rasm_uthmani') return true;
     const w = this.el.querySelector('g.word');
-    if (w && w.dataset[form] != null) return true;
+    if (w && w.dataset[datasetKey(form)] != null) return true;
     return !!(this._forms && this._forms.size);
   }
 
@@ -337,7 +343,7 @@ export class MushafPage {
 
   /** The dev-only invisible ayahPolygon layer: different frame, last in
    *  document order, swallows pointer events. Removed by default on load. */
-  dropPolygons() {
+  stripPolygons() {
     const n = this.el.querySelectorAll('path.ayahPolygon');
     n.forEach(p => p.remove());
     return n.length;
@@ -349,7 +355,7 @@ export class MushafPage {
     const tag = nextId('m') + '-';
     svg.removeAttribute('id');
     svg.querySelectorAll('[id]').forEach(e => { e.id = tag + e.id; });
-    svg.querySelectorAll('g.ayah[data-marker]').forEach(g => { g.dataset.marker = tag + g.dataset.marker; });
+    svg.querySelectorAll('g.ayah-fragment[data-ayah-mark]').forEach(g => { g.dataset.ayahMark = tag + g.dataset.ayahMark; });
     const c = new MushafPage(svg, { number: this.number });
     c._forms = this._forms;           // the sidecar is data about the page, not about this element
     return c;
@@ -368,30 +374,30 @@ export class MushafPage {
   words(sel = {}) {
     let list = [...this.el.querySelectorAll('g.word')];
     if (sel.line != null) list = list.filter(w => w.closest('g.line')?.dataset.line === String(sel.line));
-    if (sel.ayah) list = list.filter(w => w.closest('g.ayah')?.dataset.aid === sel.ayah);
-    if (sel.surah != null) list = list.filter(w => w.dataset.wid.startsWith(sel.surah + ':'));
-    if (sel.wids) { const s = new Set(sel.wids); list = list.filter(w => s.has(w.dataset.wid)); }
+    if (sel.ayah) list = list.filter(w => w.closest('g.ayah-fragment')?.dataset.ayahKey === sel.ayah);
+    if (sel.surah != null) list = list.filter(w => w.dataset.wordKey.startsWith(sel.surah + ':'));
+    if (sel.wordKeys) { const s = new Set(sel.wordKeys); list = list.filter(w => s.has(w.dataset.wordKey)); }
     return list.map(e => new Word(e, this));
   }
-  word(wid) {
-    const e = this.el.querySelector(`g.word[data-wid="${cssq(wid)}"]`);
+  word(wordKey) {
+    const e = this.el.querySelector(`g.word[data-word-key="${cssq(wordKey)}"]`);
     return e ? new Word(e, this) : null;
   }
 
   /** Ayah keys on this page, in reading order, deduplicated. */
   ayahKeys() {
     const seen = new Set(), out = [];
-    for (const g of this.el.querySelectorAll('g.ayah')) {
-      const a = g.dataset.aid;
+    for (const g of this.el.querySelectorAll('g.ayah-fragment')) {
+      const a = g.dataset.ayahKey;
       if (a && !seen.has(a)) { seen.add(a); out.push(a); }
     }
     return out;
   }
   ayahs() { return this.ayahKeys().map(a => this.ayah(a)); }
   /** The WHOLE ayah — all its fragments. Never fragment 1 of N. FORMAT §7. */
-  ayah(aid) {
-    const frags = [...this.el.querySelectorAll(`g.ayah[data-aid="${cssq(aid)}"]`)];
-    return frags.length ? new Ayah(aid, frags, this) : null;
+  ayah(ayahKey) {
+    const frags = [...this.el.querySelectorAll(`g.ayah-fragment[data-ayah-key="${cssq(ayahKey)}"]`)];
+    return frags.length ? new Ayah(ayahKey, frags, this) : null;
   }
 
   /* ---- metadata: the "no database" story ---- */
@@ -411,7 +417,7 @@ export class MushafPage {
       out.set(n, rec);
     }
     for (const w of this.el.querySelectorAll('g.word')) {
-      const n = Number(w.dataset.wid.split(':')[0]);
+      const n = Number(w.dataset.wordKey.split(':')[0]);
       if (!out.has(n)) out.set(n, { number: n, hasBanner: false, hasBasmalah: false });
     }
     return [...out.values()].sort((a, b) => a.number - b.number);
@@ -420,16 +426,16 @@ export class MushafPage {
   /** Divisions that START on this page. All 240 rubʿ boundaries are tagged
    *  even where no rosette is drawn (FORMAT §9.6). */
   divisions() {
-    const out = { juz: [], hizb: [], nisf: [], rub: [] };
-    const keys = { juz: 'juzStart', hizb: 'hizbStart', nisf: 'nisfStart', rub: 'rubStart' };
+    const out = { juz: [], hizb: [], nisf: [], rubu_al_hizb: [] };
+    const keys = { juz: 'juzStart', hizb: 'hizbStart', nisf: 'nisfStart', rubu_al_hizb: 'rubuAlHizbStart' };
     for (const k in keys) {
       const seen = new Set();
-      for (const g of this.el.querySelectorAll(`g.ayah[data-${k}-start]`)) {
-        const n = Number(g.dataset[keys[k]]), aid = g.dataset.aid;
-        const id = n + '@' + aid;
+      for (const g of this.el.querySelectorAll(`g.ayah-fragment[data-${k.replace(/_/g, '-')}-start]`)) {
+        const n = Number(g.dataset[keys[k]]), ayahKey = g.dataset.ayahKey;
+        const id = n + '@' + ayahKey;
         if (seen.has(id)) continue;      // repeated on every fragment
         seen.add(id);
-        out[k].push({ n, aid, line: Number(g.closest('g.line').dataset.line) });
+        out[k].push({ n, ayahKey, line: Number(g.closest('g.line').dataset.line) });
       }
       out[k].sort((a, b) => a.n - b.n);
     }
@@ -437,42 +443,42 @@ export class MushafPage {
   }
 
   /** The DRAWN hizb/rubʿ rosettes (199 corpus-wide for 240 boundaries). */
-  rosettes() {
-    return [...this.el.querySelectorAll('g.hizb-mark')].map(g => ({
-      el: g, aid: g.dataset.aid,
-      rub: Number(g.dataset.rub), rubInHizb: Number(g.dataset.rubInHizb),
+  divisionMarks() {
+    return [...this.el.querySelectorAll('g.division-mark')].map(g => ({
+      el: g, ayahKey: g.dataset.ayahKey,
+      rubu_al_hizb: Number(g.dataset.rubuAlHizb), rubuAlHizbInHizb: Number(g.dataset.rubuAlHizbInHizb),
       nisf: Number(g.dataset.nisf), hizb: Number(g.dataset.hizb), juz: Number(g.dataset.juz)
     }));
   }
 
   /** Sajdah sites, counted by the SIGN not the group: two sites in the corpus
-   *  are split into two groups with unreliable data-aid (FORMAT §10.6). */
+   *  are split into two groups with unreliable data-ayah-key (FORMAT §10.6). */
   sajdahs() {
-    return [...this.el.querySelectorAll('path[data-mark="sajdah-sign"]')].map(p => {
+    return [...this.el.querySelectorAll('path[data-mark="sajdah_mark"]')].map(p => {
       const g = p.closest('g.sajdah-mark');
-      return { el: g || p, sign: p, aid: (g && g.dataset.aid) || p.dataset.aid || null,
+      return { el: g || p, sign: p, ayahKey: (g && g.dataset.ayahKey) || p.dataset.ayahKey || null,
                line: g ? Number(g.closest('g.line')?.dataset.line) || null : null };
     });
   }
 
-  /** One record per ayah marker, `g.ayah-marker[data-aid]`. Since 2026-09-04
-   *  every marker group carries data-aid; the filter still excludes the 12
+  /** One record per ayah marker, `g.ayah-mark[data-ayah-key]`. Since 2026-09-04
+   *  every marker group carries data-ayah-key; the filter still excludes the 12
    *  id-less "decorative" groups of page files built before that. On pages
    *  1-2 the artwork draws each ring twice and the copy sits inside the same
    *  group as [data-duplicate] (FORMAT §9.2): `ring` is the first, `ringCopies`
    *  the rest, so a replacement ring can hide them too. */
-  markers() {
-    return [...this.el.querySelectorAll('g.ayah-marker[data-aid]')].map(g => ({
-      el: g, aid: g.dataset.aid, id: g.id,
-      ring: g.querySelector('[data-kind="ayah-marker-ornament"]:not([data-duplicate])'),
-      ringCopies: [...g.querySelectorAll('[data-kind="ayah-marker-ornament"][data-duplicate]')],
-      numeral: g.querySelector('[data-kind="ayah-number"]')
+  ayahMarks() {
+    return [...this.el.querySelectorAll('g.ayah-mark[data-ayah-key]')].map(g => ({
+      el: g, ayahKey: g.dataset.ayahKey, id: g.id,
+      ring: g.querySelector('[data-kind="ayah_mark_ornament"]:not([data-duplicate])'),
+      ringCopies: [...g.querySelectorAll('[data-kind="ayah_mark_ornament"][data-duplicate]')],
+      numeral: g.querySelector('[data-kind="ayah_number"]')
     }));
   }
-  /** Every .ayah-marker group, the id-less groups of older page files included. */
-  allMarkerGroups() { return [...this.el.querySelectorAll('g.ayah-marker')]; }
+  /** Every .ayah-mark group, the id-less groups of older page files included. */
+  ayahMarkGroups() { return [...this.el.querySelectorAll('g.ayah-mark')]; }
 
-  info() {
+  summary() {
     const vb = this.viewBox, lines = this.lines();
     return {
       page: this.number, profile: this.profile,
@@ -480,9 +486,9 @@ export class MushafPage {
       textLines: lines.filter(l => !l.isHeader).length,
       words: this.wordCount, ayahs: this.ayahKeys().length,
       surahs: this.surahs().map(s => s.number),
-      markers: this.markers().length,
-      decorativeRosettes: this.allMarkerGroups().length - this.markers().length,
-      sajdahs: this.sajdahs().length, rosettes: this.rosettes().length,
+      ayahMarks: this.ayahMarks().length,
+      decorativeAyahMarks: this.ayahMarkGroups().length - this.ayahMarks().length,
+      sajdahs: this.sajdahs().length, divisionMarks: this.divisionMarks().length,
       divisions: this.divisions()
     };
   }
@@ -494,7 +500,7 @@ export class MushafPage {
    *   'page' | '*'            every word
    *   '2:255'                 an ayah (all its fragments, all its lines)
    *   '2:255:3'               one word
-   *   {line: 7} {ayah}{wids}{surah}   a selector
+   *   {line: 7} {ayah}{wordKeys}{surah}   a selector
    *   Word | Word[] | Element | Element[]
    */
   resolve(target) {
@@ -521,9 +527,9 @@ export class MushafPage {
 
   /**
    * Text of any target, in any form. Line breaks are the mushaf's own.
-   * FORMAT §9.4: never tokenise on whitespace — data-wid is the word key.
+   * FORMAT §9.4: never tokenise on whitespace — data-word-key is the word key.
    */
-  text(target = 'page', { form = 'uthmani', wordSep = ' ', lineSep = '\n' } = {}) {
+  text(target = 'page', { form = 'rasm_uthmani', wordSep = ' ', lineSep = '\n' } = {}) {
     const words = this.resolve(target);
     let out = '', prevLine = null;
     for (const w of words) {
@@ -552,7 +558,7 @@ export class MushafPage {
     if (!q0.trim()) return [];
     if (!this.hasForm(form)) {
       throw new Error(`text form '${form}' is not on this page: a production page carries ` +
-        `data-uthmani only. Attach the sidecar first — page.attachWords(await (await ` +
+        `data-rasm-uthmani only. Attach the sidecar first — page.attachWords(await (await ` +
         `fetch('index/by-page/NNN.json')).json()) — or load with createLoader({words: true}).`);
     }
     const words = this.words();
@@ -571,7 +577,7 @@ export class MushafPage {
         else if (mode === 'exact') { hit = hay === needle; index = hit ? 0 : -1; }
         else if (mode === 'prefix') { hit = hay.startsWith(needle); index = hit ? 0 : -1; }
         else { index = hay.indexOf(needle); hit = index >= 0; }
-        if (hit) { out.push({ word: w, wid: w.wid, value: raw, index }); if (out.length >= limit) break; }
+        if (hit) { out.push({ word: w, wordKey: w.wordKey, value: raw, index }); if (out.length >= limit) break; }
       }
       return out;
     };
@@ -579,7 +585,7 @@ export class MushafPage {
     let hits = run(mode === 'regex' ? q0 : key(q0), key);
     /* second pass only when the strict pass found nothing, so a query that
      * already worked is never silently widened */
-    if (!hits.length && loose && mode !== 'regex' && normalize) hits = run(looseKey(q0), looseKey);
+    if (!hits.length && loose && mode !== 'regex' && normalize) hits = run(loosenQuery(q0), loosenQuery);
     return hits;
   }
 
@@ -719,9 +725,9 @@ export class MushafPage {
   }
 
   /** Band + ink highlight, the common case. */
-  highlightAyah(aid, opts = {}) {
-    const band = this.band(aid, opts.band || opts);
-    const ink = opts.ink === false ? null : this.highlight(aid, opts.ink || { fill: null, className: 'mushaf-ayah-hl' });
+  highlightAyah(ayahKey, opts = {}) {
+    const band = this.band(ayahKey, opts.band || opts);
+    const ink = opts.ink === false ? null : this.highlight(ayahKey, opts.ink || { fill: null, className: 'mushaf-ayah-hl' });
     return { band, ink, bands: band.bands, remove() { band.remove(); ink && ink.remove(); } };
   }
 
@@ -760,7 +766,7 @@ export class MushafPage {
    * The point is resolved to a printed line first (by vertical band), then to
    * a word on that line. A point in the GAP between two words is awarded with
    * a bias toward the PRECEDING word, because in this print a word's trailing
-   * ink — the tanween of a final ة, the small waw of a pronominal suffix —
+   * ink — the tanwin of a final ة, the small waw of a pronominal suffix —
    * is drawn into the following gap (FORMAT §9.9, §9.10). Naive nearest gets
    * those gaps wrong systematically, always in the same direction.
    *
@@ -776,8 +782,8 @@ export class MushafPage {
     const cache = this._hitCache || (this._hitCache = new Map());
     const boxes = [];
     for (const w of this.words()) {
-      let b = cache.get(w.wid);
-      if (!b) { b = w.box(); cache.set(w.wid, b); }
+      let b = cache.get(w.wordKey);
+      if (!b) { b = w.box(); cache.set(w.wordKey, b); }
       boxes.push({ w, b });
     }
     if (!boxes.length) return null;
@@ -838,7 +844,7 @@ export class MushafPage {
     }
 
     function hit(w, distance, exact) {
-      return { word: w, wid: w.wid, aid: w.aid, line: w.line, distance, exact };
+      return { word: w, wordKey: w.wordKey, ayahKey: w.ayahKey, line: w.line, distance, exact };
     }
   }
 
@@ -862,17 +868,17 @@ export class MushafPage {
     const host = root || this.el.parentElement || this.el;
     const fn = ev => {
       const direct = ev.target.closest ? ev.target.closest('g.word') : null;
-      const wid = direct ? direct.dataset.wid
-        : (ev.target.closest && ev.target.closest('[data-wid]')?.dataset.wid) || null;
+      const wordKey = direct ? direct.dataset.wordKey
+        : (ev.target.closest && ev.target.closest('[data-word-key]')?.dataset.wordKey) || null;
       let res;
-      if (wid && self.word(wid)) {
-        const w = self.word(wid);
-        res = { word: w, wid: w.wid, aid: w.aid, line: w.line, distance: 0, exact: true };
+      if (wordKey && self.word(wordKey)) {
+        const w = self.word(wordKey);
+        res = { word: w, wordKey: w.wordKey, ayahKey: w.ayahKey, line: w.line, distance: 0, exact: true };
       } else {
         res = self.hitTest(ev.clientX, ev.clientY, { maxDistance, gapBias });
       }
       if (!res) return;
-      if (level === 'ayah') handler({ ...res, ayah: self.ayah(res.aid) }, ev);
+      if (level === 'ayah') handler({ ...res, ayah: self.ayah(res.ayahKey) }, ev);
       else handler(res, ev);
     };
     host.addEventListener(event, fn);
@@ -890,8 +896,8 @@ export class MushafPage {
     const names = (sel.name || sel.family || sel.category) ? markNames(sel) : null;
     let list = [...this.el.querySelectorAll('path[data-kind="mark"]')];
     if (names) { const s = new Set(names); list = list.filter(p => s.has(p.dataset.mark)); }
-    if (sel.wid) list = list.filter(p => p.closest('g.word')?.dataset.wid === sel.wid);
-    if (sel.ayah) list = list.filter(p => p.closest('g.ayah')?.dataset.aid === sel.ayah);
+    if (sel.wordKey) list = list.filter(p => p.closest('g.word')?.dataset.wordKey === sel.wordKey);
+    if (sel.ayah) list = list.filter(p => p.closest('g.ayah-fragment')?.dataset.ayahKey === sel.ayah);
     if (sel.line != null) list = list.filter(p => p.closest('g.line')?.dataset.line === String(sel.line));
     return list;
   }
@@ -929,8 +935,8 @@ export class MushafPage {
     if (dots) s.push(names(p, markNames({ family: 'dots' }), dots));
     if (waqf) s.push(names(p, markNames({ family: 'waqf' }), waqf));
     if (sifr) s.push(names(p, markNames({ family: 'sifr' }), sifr));
-    if (marker) s.push(`${p}[data-kind="ayah-marker-ornament"]{fill:${marker}}`);
-    if (numeral) s.push(`${p}[data-kind="ayah-number"]{fill:${numeral}}`);
+    if (marker) s.push(`${p}[data-kind="ayah_mark_ornament"]{fill:${marker}}`);
+    if (numeral) s.push(`${p}[data-kind="ayah_number"]{fill:${numeral}}`);
     if (byName) for (const n in byName) s.push(`${p}path[data-mark="${n}"]{fill:${byName[n]}}`);
 
     const style = svgEl('style', {});
@@ -951,18 +957,18 @@ export class MushafPage {
     function names(prefix, list, fill) { return `${prefix}:is(${nameSel(list)}){fill:${fill}}`; }
   }
 
-  /* ---- ayah end-markers ---- */
+  /* ---- ayah end-marks ---- */
 
   /**
    * Restyle the ring and the numeral independently, scale the medallion,
    * replace the ring with a shape of your own while keeping the printed
    * numeral, or hide markers entirely.
-   * Only real markers (g.ayah-marker[data-aid]) are touched — pages 1-2 carry
+   * Only real markers (g.ayah-mark[data-ayah-key]) are touched — pages 1-2 carry
    * 12 decorative rosettes with no ayah.
    */
-  styleMarkers({ ring, numeral, scale, hide = false, replaceRing = null } = {}) {
+  styleAyahMarks({ ring, numeral, scale, hide = false, replaceRing = null } = {}) {
     const undo = [];
-    for (const m of this.markers()) {
+    for (const m of this.ayahMarks()) {
       const g = m.el, prevStyle = g.getAttribute('style');
       undo.push(() => prevStyle == null ? g.removeAttribute('style') : g.setAttribute('style', prevStyle));
       if (hide) { g.style.display = 'none'; continue; }
@@ -1009,7 +1015,7 @@ export class MushafPage {
         }
       }
     }
-    return { count: this.markers().length, remove() { undo.reverse().forEach(f => f()); } };
+    return { count: this.ayahMarks().length, remove() { undo.reverse().forEach(f => f()); } };
 
     function circleRing(b, colour) {
       return svgEl('circle', {
@@ -1020,14 +1026,14 @@ export class MushafPage {
     }
   }
 
-  hideMarkers() { return this.styleMarkers({ hide: true }); }
+  hideAyahMarks() { return this.styleAyahMarks({ hide: true }); }
 
   /* ---- viewBox ---- */
 
   /** Refit the viewBox around whatever the page now contains. */
   refit(pad = 4) {
     const svg = this.el;
-    const vb = measured(svg, () => {
+    const vb = whileRendered(svg, () => {
       const b = svg.getBBox(), r = v => Math.round(v * 1000) / 1000;
       return [r(b.x - pad), r(b.y - pad), r(b.width + 2 * pad), r(b.height + 2 * pad)].join(' ');
     });
@@ -1043,22 +1049,22 @@ export class MushafPage {
    * A medallion is kept only when the WHOLE ayah survived — otherwise a
    * one-word crop frames itself around a marker at the far end of the ayah.
    */
-  crop(target, { pad = 4, keepMarkers = true, background = null } = {}) {
-    const keep = new Set(this.resolve(target).map(w => w.wid));
+  crop(target, { pad = 4, keepMarks = true, background = null } = {}) {
+    const keep = new Set(this.resolve(target).map(w => w.wordKey));
     if (!keep.size) return null;
     const copy = this.clone();
     const svg = copy.el;
-    svg.querySelectorAll('g.word').forEach(w => { if (!keep.has(w.dataset.wid)) w.remove(); });
-    svg.querySelectorAll('g.ayah, g.line').forEach(g => { if (!g.querySelector('g.word')) g.remove(); });
-    svg.querySelectorAll('g.ayah-marker').forEach(m => {
-      const aid = m.dataset.aid;
-      if (!keepMarkers || !aid) { m.remove(); return; }
-      const sel = `g.ayah[data-aid="${cssq(aid)}"] g.word`;
+    svg.querySelectorAll('g.word').forEach(w => { if (!keep.has(w.dataset.wordKey)) w.remove(); });
+    svg.querySelectorAll('g.ayah-fragment, g.line').forEach(g => { if (!g.querySelector('g.word')) g.remove(); });
+    svg.querySelectorAll('g.ayah-mark').forEach(m => {
+      const ayahKey = m.dataset.ayahKey;
+      if (!keepMarks || !ayahKey) { m.remove(); return; }
+      const sel = `g.ayah-fragment[data-ayah-key="${cssq(ayahKey)}"] g.word`;
       if (svg.querySelectorAll(sel).length !== this.el.querySelectorAll(sel).length) m.remove();
     });
-    svg.querySelectorAll('g.surah-name, g.basmalah, g.hizb-mark, g.sajdah-mark')
+    svg.querySelectorAll('g.surah-name, g.basmalah, g.division-mark, g.sajdah-mark')
        .forEach(g => { if (!g.querySelector('g.word')) g.remove(); });
-    const layer = svg.querySelector('[id$="ayah_markers"]');
+    const layer = svg.querySelector('[id$="ayah_marks"]');
     if (layer && !layer.children.length) layer.remove();
 
     const viewBox = copy.refit(pad);
@@ -1068,7 +1074,7 @@ export class MushafPage {
     }
     return {
       el: svg, page: copy, viewBox,
-      words: [...svg.querySelectorAll('g.word')].map(e => e.dataset.wid),
+      words: [...svg.querySelectorAll('g.word')].map(e => e.dataset.wordKey),
       toString() { return new XMLSerializer().serializeToString(svg); },
       toDataUrl() {
         return 'data:image/svg+xml;charset=utf-8,' +

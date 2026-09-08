@@ -12,7 +12,7 @@
  *   the per-word hit layer   a sibling div over the svg      THE ONLY TAKER
  *
  * One <span> per word, absolutely positioned on that word's rendered box,
- * carrying its data-wid and its real Unicode. That is simultaneously what
+ * carrying its data-word-key and its real Unicode. That is simultaneously what
  * native text selection needs, what hover needs, and what a gap-aware tap
  * needs, so it is measured once and shared.
  *
@@ -24,6 +24,8 @@
  * A caller who wants none of this can ignore the module entirely and use
  * page.hitTest(), which is pure geometry and touches no DOM.
  */
+
+import { datasetKey } from './core.mjs';
 
 const CSS_ID = 'mushaf-overlay-css';
 const OVERLAY_CSS = `
@@ -59,7 +61,7 @@ function ensureCss(doc) {
  * @param form   which text form the spans carry (what a drag copies)
  * @param pad    extra px around each word's box, for fat fingers
  */
-export function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 } = {}) {
+export function acquireHitLayer(page, { mount = null, form = 'rasm_uthmani', pad = 0 } = {}) {
   const svg = page.el;
   let rec = LAYERS.get(svg);
 
@@ -81,7 +83,7 @@ export function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 
 
     rec = {
       page, svg, doc, stage, layer, prevPos, refs: 0, form, pad,
-      byWid: new Map(), ro: null, listeners: new Set()
+      byWordKey: new Map(), ro: null, listeners: new Set()
     };
     LAYERS.set(svg, rec);
 
@@ -117,11 +119,11 @@ export function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 
        * selection — the user resizes the window and loses what they had
        * highlighted. Remember which WORDS were selected and put the selection
        * back on the new spans afterwards. */
-      const keep = selectedWidsIn(rec);
+      const keep = selectedWordKeysIn(rec);
 
       const origin = layer.getBoundingClientRect();
       layer.textContent = '';
-      rec.byWid.clear();
+      rec.byWordKey.clear();
 
       /* pass 1: measure the ink, grouped by printed line */
       const rows = new Map();
@@ -130,7 +132,7 @@ export function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 
         if (!r.width || !r.height) continue;
         const line = g.closest('g.line')?.dataset.line || '';
         const rec1 = {
-          g, line, wid: g.dataset.wid, aid: g.closest('g.ayah')?.dataset.aid || '',
+          g, line, wordKey: g.dataset.wordKey, ayahKey: g.closest('g.ayah-fragment')?.dataset.ayahKey || '',
           ink: { left: r.left, top: r.top, right: r.right, bottom: r.bottom,
                  width: r.width, height: r.height }
         };
@@ -180,10 +182,10 @@ export function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 
 
         for (const w of ws) {
           const s = doc.createElement('span');
-          s.textContent = (w.g.dataset[rec.form] || w.g.dataset.uthmani || '') + ' ';
-          s.dataset.wid = w.wid;
+          s.textContent = (w.g.dataset[datasetKey(rec.form)] || w.g.dataset.rasmUthmani || '') + ' ';
+          s.dataset.wordKey = w.wordKey;
           s.dataset.line = w.line;
-          s.dataset.aid = w.aid;
+          s.dataset.ayahKey = w.ayahKey;
           /* the ink box travels with the span so a consumer drawing a band
              never has to re-measure — and never uses the hit box by mistake */
           s.dataset.ink = [w.ink.left - origin.left, w.ink.top - origin.top,
@@ -194,12 +196,12 @@ export function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 
           s.style.height = (w.hit.bottom - w.hit.top + 2 * rec.pad) + 'px';
           s.style.fontSize = s.style.lineHeight = w.ink.height + 'px';
           layer.appendChild(s);
-          rec.byWid.set(w.wid, s);
+          rec.byWordKey.set(w.wordKey, s);
         }
       }
       if (keep.length) restoreSelection(rec, keep);
       for (const fn of rec.listeners) fn(rec);
-      return rec.byWid.size;
+      return rec.byWordKey.size;
     };
     rec.build();
 
@@ -218,16 +220,16 @@ export function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 
   return {
     get layer() { return rec.layer; },
     get stage() { return rec.stage; },
-    get count() { return rec.byWid.size; },
+    get count() { return rec.byWordKey.size; },
     get refs() { return rec.refs; },
     get form() { return rec.form; },
     /** Change the text the spans carry (what a drag copies). Rebuilds once. */
     setForm(f) { rec.form = f; rec.build(); },
     spans() { return [...rec.layer.querySelectorAll('span')]; },
-    spanOf(wid) { return rec.byWid.get(wid) || null; },
-    widOf(node) {
+    spanOf(wordKey) { return rec.byWordKey.get(wordKey) || null; },
+    wordKeyOf(node) {
       const el = node && (node.nodeType === 1 ? node : node.parentElement);
-      return el?.closest('.mushaf-hitlayer span')?.dataset.wid || null;
+      return el?.closest('.mushaf-hitlayer span')?.dataset.wordKey || null;
     },
     rebuild() { return rec.build(); },
     /** Called after every rebuild, so a consumer can re-apply its own state. */
@@ -239,10 +241,10 @@ export function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 
      */
     wordAt(clientX, clientY, opts = {}) {
       const hit = rec.doc.elementFromPoint(clientX, clientY);
-      const wid = this.widOf(hit);
-      if (wid) {
-        const w = page.word(wid);
-        return w && { word: w, wid, aid: w.aid, line: w.line, distance: 0, exact: true };
+      const wordKey = this.wordKeyOf(hit);
+      if (wordKey) {
+        const w = page.word(wordKey);
+        return w && { word: w, wordKey, ayahKey: w.ayahKey, line: w.line, distance: 0, exact: true };
       }
       return page.hitTest(clientX, clientY, opts);
     },
@@ -264,17 +266,17 @@ export function acquireHitLayer(page, { mount = null, form = 'uthmani', pad = 0 
 export function hasHitLayer(page) { return LAYERS.has(page.el); }
 
 /* Which words does the current selection cover, if it is inside this layer? */
-function selectedWidsIn(rec) {
+function selectedWordKeysIn(rec) {
   const sel = rec.doc.defaultView.getSelection();
   if (!sel || !sel.rangeCount || sel.isCollapsed) return [];
   const r = sel.getRangeAt(0);
   const out = [];
-  for (const s of rec.layer.querySelectorAll('span')) if (r.intersectsNode(s)) out.push(s.dataset.wid);
+  for (const s of rec.layer.querySelectorAll('span')) if (r.intersectsNode(s)) out.push(s.dataset.wordKey);
   return out;
 }
 
-function restoreSelection(rec, wids) {
-  const a = rec.byWid.get(wids[0]), b = rec.byWid.get(wids[wids.length - 1]);
+function restoreSelection(rec, wordKeys) {
+  const a = rec.byWordKey.get(wordKeys[0]), b = rec.byWordKey.get(wordKeys[wordKeys.length - 1]);
   if (!a || !b) return;
   const r = rec.doc.createRange();
   r.setStartBefore(a);
@@ -290,19 +292,19 @@ function pointerBinding(page, handler, {
   event, level, layerOpts, maxDistance, gapBias, leaveHandler = null
 } = {}) {
   const hl = acquireHitLayer(page, layerOpts);
-  let lastWid = null;
+  let lastWordKey = null;
 
   const fn = ev => {
     const res = hl.wordAt(ev.clientX, ev.clientY, { maxDistance, gapBias });
     if (!res) {
-      if (leaveHandler && lastWid) { lastWid = null; leaveHandler(ev); }
+      if (leaveHandler && lastWordKey) { lastWordKey = null; leaveHandler(ev); }
       return;
     }
     if (event === 'pointermove') {
-      if (res.wid === lastWid) return;
-      lastWid = res.wid;
+      if (res.wordKey === lastWordKey) return;
+      lastWordKey = res.wordKey;
     }
-    handler(level === 'ayah' ? { ...res, ayah: page.ayah(res.aid) } : res, ev);
+    handler(level === 'ayah' ? { ...res, ayah: page.ayah(res.ayahKey) } : res, ev);
   };
 
   /* listen on the STAGE, so both the spans and the gaps between them are

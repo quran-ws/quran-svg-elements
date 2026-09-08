@@ -124,13 +124,13 @@ _ATTR = re.compile(r'([\w:-]+)="([^"]*)"')
 
 
 def scan_page(svg):
-    """[(line_no, wid, screen_bbox)] in document order, plus the line order."""
+    """[(line_no, word_key, screen_bbox)] in document order, plus the line order."""
     stack = []          # (tagname, class, attrs, ctm)
     ctm = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
     ctms = [ctm]
     line_no = None
     line_seq = []
-    cur = None          # (line_no, wid, box)
+    cur = None          # (line_no, word_key, box)
     words = []
     for m in _TAG.finditer(svg):
         close, tag, attrs = m.group(1), m.group(2), m.group(3)
@@ -173,15 +173,15 @@ def scan_page(svg):
             line_seq.append(line_no)
             stack.append("line")
         elif cls == "word":
-            cur = [line_no, a.get("data-wid"), None]
+            cur = [line_no, a.get("data-word-key"), None]
             stack.append("word")
         else:
             stack.append("g")
     return words, line_seq
 
 
-def _ordinal(wid):
-    s, a, p = (int(v) for v in wid.split(":"))
+def _ordinal(word_key):
+    s, a, p = (int(v) for v in word_key.split(":"))
     return (s, a, p)
 
 
@@ -193,7 +193,7 @@ def _bands(words):
     """Each line's band from the MEDIAN of its words' tops and bottoms, so one
     misfiled word cannot drag the band it is being tested against."""
     by_line = {}
-    for ln, wid, b in words:
+    for ln, word_key, b in words:
         by_line.setdefault(ln, []).append(b)
     out = {}
     for ln, bs in by_line.items():
@@ -204,17 +204,17 @@ def _bands(words):
 
 
 def _order_breaks(words, moves):
-    """Reading-order breaks on the page once `moves` (wid -> line) is applied.
+    """Reading-order breaks on the page once `moves` (word_key -> line) is applied.
 
     Lines keep their printed order; inside a line the words are put in mushaf
     order, which the product already gets right on every line it draws."""
     seen = []
-    for ln, wid, _ in words:
+    for ln, word_key, _ in words:
         if ln not in seen:
             seen.append(ln)
     seq = []
     for line in seen:
-        ws = [wid for ln, wid, _ in words if moves.get(wid, ln) == line]
+        ws = [word_key for ln, word_key, _ in words if moves.get(word_key, ln) == line]
         ws.sort(key=_ordinal)
         seq.extend(ws)
     return sum(1 for i in range(1, len(seq))
@@ -234,7 +234,7 @@ def audit_page(pg, svg, words=None):
         return []
     bands = _bands(words)
     rows, moves = [], {}
-    for ln, wid, b in words:
+    for ln, word_key, b in words:
         own = _overlap(b, bands[ln])
         best, bestln = own, ln
         for l2, band in bands.items():
@@ -244,8 +244,8 @@ def audit_page(pg, svg, words=None):
             if o > best:
                 best, bestln = o, l2
         if bestln != ln:
-            moves[wid] = bestln
-            rows.append({"page": pg, "wid": wid, "line": ln,
+            moves[word_key] = bestln
+            rows.append({"page": pg, "word_key": word_key, "line": ln,
                          "target": bestln,
                          "own_overlap": round(own, 2),
                          "target_overlap": round(best, 2)})
@@ -297,8 +297,8 @@ def main(argv):
         words, lines = scan_page(svg)
         nlines += len(set(lines))
         by_line = {}
-        for ln, wid, b in words:
-            by_line.setdefault(ln, []).append(wid)
+        for ln, word_key, b in words:
+            by_line.setdefault(ln, []).append(word_key)
         for ln, ws in by_line.items():
             within += 1
             if all(_ordinal(ws[k]) < _ordinal(ws[k + 1])
@@ -315,7 +315,7 @@ def main(argv):
             # distribution of (own band overlap - best rival overlap) for
             # EVERY word, which is what the geometric test thresholds at 0
             bands = _bands(words)
-            for ln, wid, b in words:
+            for ln, word_key, b in words:
                 own = _overlap(b, bands[ln])
                 riv = max([_overlap(b, bd) for l2, bd in bands.items()
                            if l2 != ln] or [0.0])
@@ -346,7 +346,7 @@ def main(argv):
         print("wrote %s" % out_json)
     for r in rows:
         print("  p%-3d %-12s line %s -> %s (own %.1f, target %.1f) %s"
-              % (r["page"], r["wid"], r["line"], r["target"],
+              % (r["page"], r["word_key"], r["line"], r["target"],
                  r["own_overlap"], r["target_overlap"], r["verdict"]))
     return 0
 

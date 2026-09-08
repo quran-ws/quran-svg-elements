@@ -3,7 +3,7 @@
 
 The art reuses one outline per mark glyph, so a translation/scale-normalised,
 arc-length-resampled contour quantised to a coarse grid is a stable identity: every
-fatha in the mushaf hashes to the same key. Used by cluster_marks.py to group marks
+fathah in the mushaf hashes to the same key. Used by cluster_marks.py to group marks
 and by assign_words.py to label marks from a confirmed shape->label table.
 """
 
@@ -60,7 +60,7 @@ def sig_key(sig):
 def element_points(polys):
     """Canonical point set for one element: outer contour plus its counters.
 
-    Holes are part of a shape's identity — the sukun ring and the damma head have
+    Holes are part of a shape's identity — the sukun ring and the dammah head have
     near-identical outer ovals and are told apart only by their counters.
     """
     def span(p):
