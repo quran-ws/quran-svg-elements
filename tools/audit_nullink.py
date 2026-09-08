@@ -86,7 +86,7 @@ def scan_page(pg):
                 if not bad:
                     continue
                 flags.append({
-                    "page": pg, "key": key, "word": word["uthmani"],
+                    "page": pg, "key": key, "word": word["rasm_uthmani"],
                     "lig": at.get("lig"), "seg": seg.get("text"),
                     "kind": el["kind"], "mark": el.get("mark"),
                     "area": round(min(bad), 6),

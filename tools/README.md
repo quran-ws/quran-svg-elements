@@ -14,16 +14,16 @@ page must be a fifteen-line grid). Treat a clean BREAK tier as "self-consistent"
 
 | | |
 |---|---|
-| `qiraat_map.py` | which counting madhhab each mushaf follows, and each system's per-surah ayah counts |
+| `qiraahs_map.py` | which counting madhhab each mushaf follows, and each system's per-surah ayah counts |
 | `draw_missing_rosettes.py` | draws the ۝ ornament on ayah ends that print only a bare numeral |
 | `polygon_lib.py` | the shared geometry: markers, line grid, the generator, the scoring |
 | `audit_ayah_polygons.py` | reports violations in four tiers |
 | `build_ayah_polygons.py` | regenerates `svg/`, `json/` and `svg-br/` in place |
-| `data/qiraat-ayah-map/` | vendored from [quranpedia/qiraat-ayah-map](https://github.com/quranpedia/qiraat-ayah-map) (MIT) — see `SOURCE.md` |
+| `data/qiraahs-ayah-map/` | vendored from [quranpedia/qiraahs-ayah-map](https://github.com/quranpedia/qiraahs-ayah-map) (MIT) — see `SOURCE.md` |
 
 ## Ground truth
 
-The ۝ end-of-ayah markers drawn in each page's `<g id="ayah_markers">` give, with no
+The ۝ ayah-mark markers drawn in each page's `<g id="ayah_markers">` give, with no
 inference, the line and the x where every ayah finishes. The page's rendered ink gives the
 line grid and the whitespace around each medallion. Word-assignment output is not used
 anywhere.
@@ -48,7 +48,7 @@ identities against; it is not an input to the build.
 ## Running
 
 ```sh
-python3 tools/qiraat_map.py                              # counting systems, self-checked
+python3 tools/qiraahs_map.py                              # counting systems, self-checked
 python3 tools/audit_ayah_polygons.py                     # all five mushafs, pages 3-604
 python3 tools/audit_ayah_polygons.py --mushaf hafs --pages 294,545 --tier geometry
 python3 tools/build_ayah_polygons.py --dry-run           # report, write nothing
@@ -57,7 +57,7 @@ python3 tools/draw_missing_rosettes.py --dry-run         # ayah ends with no ۝ 
 ```
 
 `build_ayah_polygons.py` is idempotent: running it twice produces the same files, because it
-sets aside a continuation polygon written by an earlier run before pairing ayat to markers.
+sets aside a continuation polygon written by an earlier run before pairing ayahs to markers.
 
 Needs `rsvg-convert` on PATH, plus `numpy`, `Pillow` and `brotli`.
 
@@ -68,12 +68,12 @@ per ayah instead of a stack of rectangles, and was corrected by hand.
 
 * Qālūn and Warsh pages use `viewBox="-6 0 345 550"`. Any measurement taken from a raster has
   to be mapped through the viewBox origin or it lands 6 units off.
-* An `id="verse-13"` attribute contains the substring `d="`, so a non-greedy scan for the
+* An `id="ayah-13"` attribute contains the substring `d="`, so a non-greedy scan for the
   polygon's `d` attribute must require whitespace before it.
 * Medallions frequently touch the neighbouring letters, so a scan looking for the whitespace
   beside a medallion must never cross ink.
 * Arabic-Indic numerals have gaps between their digits, so measuring one by walking a run of
   ink stops at the first stroke and reports a numeral 1 unit wide.
-* Hafs, Douri and Shuʿbah state `markers.json` and `ayah:x`/`ayah:y` in page space. Qālūn and
+* Hafs, Duri and Shuʿbah state `markers.json` and `ayah:x`/`ayah:y` in page space. Qālūn and
   Warsh state theirs in a different frame, offset by a translation that varies page to page —
   fit it, never assume it.

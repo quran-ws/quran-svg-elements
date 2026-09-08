@@ -30,10 +30,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import brotli
 
 from polygon_lib import (build_polygons, ink_mask, line_grid, markers, merge_rects,
-                         path_d, read_page, recover_markers)
+                         path_d, read_page, recover_marks)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MUSHAFS = ("douri", "hafs", "qalon", "shubah", "warsh")
+MUSHAFS = ("duri", "hafs", "qalun", "shubah", "warsh")
 FIRST_PAGE, LAST_PAGE = 3, 604
 BROTLI_QUALITY = 11        # what the shipped .svg.br files were produced with
 
@@ -55,20 +55,20 @@ def variants(mushaf, page):
                   if re.fullmatch(r"%03d-surah\d+\.svg" % page, f))
 
 
-_MARKERS_JSON = {}
+_MARKS_JSON = {}
 
 
-def markers_json(mushaf):
+def marks_json(mushaf):
     """markers.json grouped by page, loaded once."""
-    if mushaf not in _MARKERS_JSON:
+    if mushaf not in _MARKS_JSON:
         path = os.path.join(ROOT, "mushafs", mushaf, "kfqc", "json", "markers.json")
         by_page = collections.defaultdict(list)
         if os.path.exists(path):
             with open(path, encoding="utf-8") as fh:
                 for entry in json.load(fh):
                     by_page[entry["page"]].append(entry)
-        _MARKERS_JSON[mushaf] = by_page
-    return _MARKERS_JSON[mushaf]
+        _MARKS_JSON[mushaf] = by_page
+    return _MARKS_JSON[mushaf]
 
 
 def regenerate(mushaf, page):
@@ -96,7 +96,7 @@ def regenerate(mushaf, page):
     mk = markers(text)
     recovered = []
     if len(mk) < len(polys):
-        mk, recovered = recover_markers(mk, markers_json(mushaf).get(page, []))
+        mk, recovered = recover_marks(mk, marks_json(mushaf).get(page, []))
     if len(mk) != len(polys):
         return None, None, ("%d polygons but %d marker rosettes, and markers.json does not "
                             "resolve the rest" % (len(polys), len(mk) - len(recovered)))
@@ -107,14 +107,14 @@ def regenerate(mushaf, page):
 
     built, _, _, notes, has_tail = build_polygons(bands, mk, keys, box, tail_key)
 
-    # marker coordinates, paired with the ayat in reading order
+    # marker coordinates, paired with the ayahs in reading order
     def band_of(y):
         for i, b in enumerate(bands):
             if b["top"] <= y < b["bot"]:
                 return i
         return min(range(len(bands)), key=lambda i: abs((bands[i]["top"] + bands[i]["bot"]) / 2 - y))
     ordered = sorted(mk, key=lambda m: (band_of(m[1]), -m[0]))
-    marker_of = {"%d:%d" % k: m for k, m in zip(keys, ordered)}
+    mark_of = {"%d:%d" % k: m for k, m in zip(keys, ordered)}
 
     geometry = {k: path_d(merge_rects(v)) for k, v in built.items()}
     new_text = rewrite_polygons(text, polys, geometry, tail_key if has_tail else None,
@@ -122,7 +122,7 @@ def regenerate(mushaf, page):
 
     entries = []
     for p in polys:
-        m = marker_of["%d:%d" % (p["surah"], p["ayah"])]
+        m = mark_of["%d:%d" % (p["surah"], p["ayah"])]
         entries.append(collections.OrderedDict(
             surahNumber=p["surah"], ayahNumber=p["ayah"],
             x=round(m[0], 2), y=round(m[1], 2),
@@ -149,7 +149,7 @@ def rewrite_polygons(text, polys, geometry, tail_key=None, tail_attrs=None, exis
         start, end = p["span"]
         element = text[start:end]
         element = element.replace('d="%s"' % p["d"], 'd="%s"' % geometry[p["key"]])
-        if not (p["id"] and re.fullmatch(r"verse-\d+", p["id"])):
+        if not (p["id"] and re.fullmatch(r"ayah-\d+", p["id"])):
             fixed = _repair_id(polys, i)
             if fixed:
                 element = re.sub(r'id="[^"]*"', 'id="%s"' % fixed, element, count=1)
@@ -173,13 +173,13 @@ def rewrite_polygons(text, polys, geometry, tail_key=None, tail_attrs=None, exis
 
 
 def _repair_id(polys, index):
-    """A malformed verse id, recovered from its neighbours' running numbers."""
+    """A malformed ayah id, recovered from its neighbours' running numbers."""
     for step in (1, -1):
         j = index + step
         while 0 <= j < len(polys):
             other = polys[j]["id"]
-            if other and re.fullmatch(r"verse-\d+", other):
-                return "verse-%d" % (int(other.split("-")[1]) - step * abs(j - index))
+            if other and re.fullmatch(r"ayah-\d+", other):
+                return "ayah-%d" % (int(other.split("-")[1]) - step * abs(j - index))
             j += step
     return None
 

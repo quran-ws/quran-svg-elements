@@ -10,8 +10,8 @@ belongs.
 
 Two families found this way:
 
-  * the `ه` of a pronominal suffix. `يَدَهُۥ` (p164) reads it as a `damma`, `بَعْدِهِۦ`
-    (p71) as a `pause`. The `ۥ` is recovered correctly in both — it is the `ه` in front
+  * the `ه` of a pronominal suffix. `يَدَهُۥ` (p164) reads it as a `dammah`, `بَعْدِهِۦ`
+    (p71) as a `waqf`. The `ۥ` is recovered correctly in both — it is the `ه` in front
     of it that is lost. Only 8 of 2,160 suffix words are affected, so this is a tail,
     not a rule: writing a general rule to catch 8 would put the other 2,152 at risk.
   * `ذَٰلِكَ`, whose `ذ` reads as an iqlab meem. That one *did* generalise — text says no
@@ -66,36 +66,36 @@ REFDIR = None
 # Our element and a reference piece are the same ink at this IoU. NOT "how much of our
 # box the reference's letters cover" — that was the first attempt and it is the same
 # trap that made the label evidence useless: a diacritic lies wholly inside its letter's
-# bounding box, so coverage scores it a perfect 1.0 and every shadda, sukun and kasra
+# bounding box, so coverage scores it a perfect 1.0 and every shaddah, sukun and kasrah
 # came out a letter. IoU charges for the letter's unused area, so only ink that actually
 # occupies the same space matches.
 IOU = 0.35
 
 # What each mark family is spelled with. A mark the word's own text still calls for is
 # never promoted to a letter, however much the reference's letter ink overlaps it: on
-# p222 `مَّعْدُودَةٍۢ` had its kasratan promoted and was left with none, which also broke
+# p222 `مَّعْدُودَةٍۢ` had its tanwin_al_kasr promoted and was left with none, which also broke
 # the reading order of the word beside it — two new flags from one entry, the only page
 # in the run to worsen by more than one.
 _WANT = {
-    "fatha": ("َ",), "kasra": ("ِ",), "damma": ("ُ",),
-    "fathatan": ("ً", "ࣰ"), "kasratan": ("ٍ", "ࣲ"), "dammatan": ("ٌ", "ࣱ"),
-    "sukun": ("ْ", "ۡ"), "shadda": ("ّ",), "maddah": ("ٓ", "ۤ"),
-    "small-alef": ("ٰ",), "wasla": ("ٱ",), "small-waw": ("ۥ",),
-    "small-ya": ("ۦ", "ۧ"),
+    "fathah": ("َ",), "kasrah": ("ِ",), "dammah": ("ُ",),
+    "tanwin_al_fath": ("ً", "ࣰ"), "tanwin_al_kasr": ("ٍ", "ࣲ"), "tanwin_al_damm": ("ٌ", "ࣱ"),
+    "sukun": ("ْ", "ۡ"), "shaddah": ("ّ",), "maddah": ("ٓ", "ۤ"),
+    "omitted_alif": ("ٰ",), "hamzat_al_wasl": ("ٱ",), "small_waw": ("ۥ",),
+    "small_yaa": ("ۦ", "ۧ"),
     # taxonomy phase 1: the zeros split (the pipeline emits the new names;
-    # a mark still named small-circle simply finds no budget here, as before)
-    "sifr-mustadir": ("۟",), "sifr-mustatil": ("۠",),
-    "hamza": ("أ", "إ", "ؤ", "ئ", "ٔ", "ٕ"),
-    "small-noon": ("ۨ",),
+    # a mark still named small_circle simply finds no budget here, as before)
+    "rounded_zero": ("۟",), "rectangular_zero": ("۠",),
+    "hamzah": ("أ", "إ", "ؤ", "ئ", "ٔ", "ٕ"),
+    "small_noon": ("ۨ",),
 }
-# `meem-iqlab` is deliberately absent. This art fuses the iqlab meem into the tanween
+# `small_meem` is deliberately absent. This art fuses the iqlab meem into the tanwin
 # glyph — a measured finding of this project, which is why audit_marks.py's budget has
 # no such family and never demands one. Listing it here made the guard reason that a
-# word spelling `ۢ` still needs its `meem-iqlab` element, and so refused to correct the
+# word spelling `ۢ` still needs its `small_meem` element, and so refused to correct the
 # very defect this tool exists for: in `قَوْمٍۭ` (p93) the reference has `text م` at
-# 253.34..261.58 — the meem of قوم, a letter — where we have a `meem-iqlab` mark at
+# 253.34..261.58 — the meem of قوم, a letter — where we have a `small_meem` mark at
 # 253.33..261.56, the same ink to a hundredth of a unit. Same in `شَىْءٍۢ`, where it is
-# the `ء`. The tanween itself is present either way; what was lost was the letter.
+# the `ء`. The tanwin itself is present either way; what was lost was the letter.
 
 
 def our_page(pg):
@@ -111,9 +111,9 @@ def our_page(pg):
             continue
         out[(w["surah"], w["ayah"], w["pos"])] = {
             "x1": min(e["x1"] for e in body), "x2": max(e["x2"] for e in body),
-            "y2": max(e["y2"] for e in body), "text": w["uthmani"],
+            "y2": max(e["y2"] for e in body), "text": w["rasm_uthmani"],
             "els": els, "body": body,
-            "nseg": max(1, len(aw.segment_word(w["uthmani"]))),
+            "nseg": max(1, len(aw.segment_word(w["rasm_uthmani"]))),
         }
     return out
 

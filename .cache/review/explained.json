@@ -1,22 +1,22 @@
 {
- "350|24:2:12|MARK-STEAL|dammatan": {
+ "350|24:2:12|MARK-STEAL|tanwin_al_damm": {
   "date": "2026-08-29",
   "by": "Abdullah (eye)",
-  "what": "رَأْفَةࣱ's dammatan floats in the gap between it and فِى — 5.1u from its own word's ink, 3.9u from فِى's, so it fails both the y-clearance and the proximity guard.",
-  "verdict": "NOT A DEFECT. The print draws it there. رَأْفَةࣱ's spelling has the dammatan (ࣱ) and فِى's does not, and both words' counts are exact, so no ink is misplaced — only the audit's territory model is too crude for a mark that sits between two words at a word-final ة.",
+  "what": "رَأْفَةࣱ's tanwin_al_damm floats in the gap between it and فِى — 5.1u from its own word's ink, 3.9u from فِى's, so it fails both the y-clearance and the proximity guard.",
+  "verdict": "NOT A DEFECT. The print draws it there. رَأْفَةࣱ's spelling has the tanwin_al_damm (ࣱ) and فِى's does not, and both words' counts are exact, so no ink is misplaced — only the audit's territory model is too crude for a mark that sits between two words at a word-final ة.",
   "action": "none — the record stands as EXAMINED, not suppressed. If a future change moves this ink, the record's geometry changes and it returns to the open list."
  },
- "216|10:68:18|crossline|meem-iqlab": {
+ "216|10:68:18|crossline|small_meem": {
   "date": "2026-08-29",
   "by": "Abdullah (eye)",
-  "what": "crossline: سُلْطَٰنِۭ's meem-iqlab drawn 5.1u from ٱلَّذِينَ on line 13 vs 8.7u from its own word.",
+  "what": "crossline: سُلْطَٰنِۭ's small_meem drawn 5.1u from ٱلَّذِينَ on line 13 vs 8.7u from its own word.",
   "verdict": "NOT A DEFECT — 'dont have any issues now'. The low iqlab meem of a word at a line edge genuinely hangs into the band below; the sign belongs to سُلْطَٰنِۭ by spelling.",
   "action": "none — record kept as EXAMINED so it returns if the ink moves."
  },
- "343|23:18:11|crossline|meem-iqlab": {
+ "343|23:18:11|crossline|small_meem": {
   "date": "2026-08-29",
   "by": "Abdullah (eye)",
-  "what": "crossline: ذَهَابِۭ's meem-iqlab drawn 7.0u from وَأَعْنَٰبࣲ on line 3 vs 12.1u from its own word.",
+  "what": "crossline: ذَهَابِۭ's small_meem drawn 7.0u from وَأَعْنَٰبࣲ on line 3 vs 12.1u from its own word.",
   "verdict": "NOT A DEFECT — same shape as p216, confirmed by eye.",
   "action": "none — record kept as EXAMINED."
  },

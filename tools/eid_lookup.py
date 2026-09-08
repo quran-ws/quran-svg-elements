@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Resolve a data-eid to its pipeline element, DRIFT-PROOF.
+"""Resolve a data-element-id to its pipeline element, DRIFT-PROOF.
 
 eids are assigned at emit time, so they renumber whenever the build changes
 — an eid a human read five minutes ago can point at different ink now (p413,
@@ -28,7 +28,7 @@ def main():
                             "%03d.svg" % pg), encoding="utf-8").read()
     want = {}
     for eid in eids:
-        m = re.search(r'data-eid="%s"[^>]*?\sd="([^"]*)"' % re.escape(eid),
+        m = re.search(r'data-element-id="%s"[^>]*?\sd="([^"]*)"' % re.escape(eid),
                       svg)
         if not m:
             print("%s: not in the cached svg" % eid)
@@ -36,8 +36,8 @@ def main():
         want[m.group(1)] = eid
         i = svg.rfind('<g class="word"', 0, m.start())
         j = svg.rfind('<g class=', 0, m.start())
-        h = re.search(r'data-wid="([^"]*)" '
-                      r'data-uthmani="([^"]*)"',
+        h = re.search(r'data-word-key="([^"]*)" '
+                      r'data-rasm-uthmani="([^"]*)"',
                       svg[i:i + 300])
         print("%s: shown inside %s" % (
             eid, ":".join(h.groups()) if h and j <= i
@@ -61,7 +61,7 @@ def main():
                               want[d], e["x1"], e["y1"], e["x2"], e["y2"],
                               e.get("kind"), e.get("mark"),
                               ("%d:%d:%d %s" % (w["surah"], w["ayah"],
-                                                w["pos"], w["uthmani"]))
+                                                w["pos"], w["rasm_uthmani"]))
                               if w else "(wordless)"))
 
 

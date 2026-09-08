@@ -2,8 +2,8 @@
 """Compare our emitted word text against the King Fahd Complex's own data.
 
 The reference is `UthmanicHafs_v2-0` (`hafsData_v2-0.json`), the Complex's
-published Uthmani text for the 1441H Hafs mushaf — 6,236 ayah records, each one
-`aya_text` plus `aya_text_emlaey`. This is the same body of text the artwork was
+published RasmUthmani text for the 1441H Hafs mushaf — 6,236 ayah records, each one
+`ayah_text` plus `aya_text_emlaey`. This is the same body of text the artwork was
 set from, which is what makes it worth checking against.
 
 WHAT THIS FILE CAN AND CANNOT SETTLE
@@ -12,9 +12,9 @@ WHAT THIS FILE CAN AND CANNOT SETTLE
 It is an **ayah-level** text. There are no word records in it at all. So:
 
   · It IS authoritative for spelling — every letter and mark of a word.
-  · It is NOT a word list. Its whitespace encodes the Uthmani rasm, including
+  · It is NOT a word list. Its whitespace encodes the RasmUthmani rasm, including
     the المقطوع والموصول convention that writes مَالِيَ joined and إِلۡ يَاسِينَ
-    separated. Splitting `aya_text` on spaces measures that convention, NOT our
+    separated. Splitting `ayah_text` on spaces measures that convention, NOT our
     segmentation, and reports every mawṣūl pair in the Quran as a false defect.
 
 `--segmentation` therefore prints its results as *candidates to adjudicate*
@@ -40,9 +40,9 @@ SVG = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
 OFFICIAL = os.path.join(REPO, ".cache", "official", "hafsData_v2-0.json")
 
 # The ayah number is drawn as a marker, not written as a word: the Complex's
-# text ends each ayah with one PUA glyph from the ayah-number range, preceded by
+# text ends each ayah with one PUA glyph from the ayah_number range, preceded by
 # U+00A0. We hold the number as a medallion, so it never enters a word.
-_AYA_MARK = re.compile(r"[ﯓ-﷿ﹰ-﻿۝]| ")
+_AYAH_MARK = re.compile(r"[ﯓ-﷿ﹰ-﻿۝]| ")
 # Standalone furniture that is ink of its own in our decomposition, never part
 # of a word: the rubʿ rosette and the ayah-end circle.
 _FURNITURE = re.compile(r"^[۞۝\s]+$")
@@ -65,17 +65,17 @@ _FURNITURE = re.compile(r"^[۞۝\s]+$")
 _FOLD = {
     0x06E1: "ْ",   # 36,641  small high dotless head  -> sukun
     0x0652: "۟",   #  3,973  sukun -> small high rounded zero (silent)
-    0x0657: "ࣰ",   #  2,901  inverted damma -> open fathatan
-    0x0656: "ࣲ",   #  1,931  subscript alef -> open kasratan
-    0x065E: "ࣱ",   #  1,799  fatha with two dots -> open dammatan
+    0x0657: "ࣰ",   #  2,901  inverted dammah -> open tanwin_al_fath
+    0x0656: "ࣲ",   #  1,931  subscript alef -> open tanwin_al_kasr
+    0x065E: "ࣱ",   #  1,799  fathah with two dots -> open tanwin_al_damm
 }
-# Multi-character, same direction: hamza seats. The Complex writes the seat
-# decomposed; we write it precomposed, and carries the hamza of the maddah form
+# Multi-character, same direction: hamzah seats. The Complex writes the seat
+# decomposed; we write it precomposed, and carries the hamzah of the maddah form
 # on a tatweel (which is load-bearing ink — see the _clean_word commit).
 _FOLD_SEQ = [("يٕ", "ئ"),
              ("أٓ", "ـَٔا")]
 # BOTH sides: ya and alef maksura are drawn identically at word-final and
-# pre-hamza positions and the two texts choose differently there. Collapsing on
+# pre-hamzah positions and the two texts choose differently there. Collapsing on
 # both sides removes the distinction rather than folding one into the other,
 # because a blanket directional fold would also rewrite every medial ya.
 _FOLD_BOTH = {0x0649: "ي"}
@@ -97,16 +97,16 @@ def official_words(path):
         data = json.load(fh)
     out = {}
     for a in data:
-        text = _AYA_MARK.sub(" ", a["aya_text"])
+        text = _AYAH_MARK.sub(" ", a["ayah_text"])
         toks = [t for t in text.split() if t and not _FURNITURE.match(t)]
-        out["%d:%d" % (a["sura_no"], a["aya_no"])] = toks
+        out["%d:%d" % (a["surah_no"], a["ayah_no"])] = toks
     return out
 
 
 def our_words():
-    """{"surah:ayah": {position: uthmani}} from the emitted pages."""
+    """{"surah:ayah": {position: rasm_uthmani}} from the emitted pages."""
     out = {}
-    pat = re.compile(r'data-wid="(\d+):(\d+):(\d+)"[^>]*?data-uthmani="([^"]*)"')
+    pat = re.compile(r'data-word-key="(\d+):(\d+):(\d+)"[^>]*?data-rasm-uthmani="([^"]*)"')
     for p in sorted(glob.glob(os.path.join(SVG, "*.svg"))):
         with open(p, encoding="utf-8") as fh:
             for m in pat.finditer(fh.read()):
@@ -140,7 +140,7 @@ def main():
         mine = [u[p] for p in sorted(u)]
         if len(o) != len(mine):
             segs.append((key, len(o), len(mine), o, mine))
-            continue          # counts differ: word-by-word comparison is moot
+            continue          # counts differ: word-by-word-translation-translation comparison is moot
         for a, b in zip(o, mine):
             total += 1
             if a == b:

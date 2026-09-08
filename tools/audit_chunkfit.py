@@ -47,7 +47,7 @@ the inter-half gap never enters a group span); line-end words n=6,381, 5
 pen-lift splits nch<nseg n=1,539, 4 (many-atoms-to-one-segment groups are
 legal); surplus nch>nseg n=1,069, 1. Two artefact families were found by this
 calibration and are handled IN the metric: the standalone-ء the print draws as
-a diacritic (dual hamza model below — before it, the ٱلسَّمَآءِ/رَءَا family
+a diacritic (dual hamzah model below — before it, the ٱلسَّمَآءِ/رَءَا family
 sat at wres 2.4-2.5 and رَءَا was infeasible outright), and the إنّ final-ن
 stretch (tagged fam=final-nun-stretch in the output, never convicted).
 
@@ -105,9 +105,9 @@ def analyze(assignment, pg):
             continue
         chunks.sort(key=lambda c: -(c["x1"] + c["x2"]))     # RTL reading order
         lns = [c["ln"] for c in chunks if c["ln"]]
-        segs = aw.segment_word(w["uthmani"])
+        segs = aw.segment_word(w["rasm_uthmani"])
         W.append({"k": "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]),
-                  "t": w["uthmani"], "ch": chunks, "segs": segs,
+                  "t": w["rasm_uthmani"], "ch": chunks, "segs": segs,
                   "ln": max(set(lns), key=lns.count) if lns else 0,
                   "lens": [aw.letter_width(s["text"]) for s in segs]})
 
@@ -131,7 +131,7 @@ def analyze(assignment, pg):
         al = alpha.get(x["ln"])
         if not al or al <= 0:
             continue
-        # Two hamza models. segment_word expects a standalone ء as its own tiny
+        # Two hamzah models. segment_word expects a standalone ء as its own tiny
         # body, but the print draws many of them as a DIACRITIC above the join
         # (the whole ٱلسَّمَآءِ / رَءَا family) — scoring only the body model
         # put every such word in the residual tail (wres ~2.4, a solid band of

@@ -15,7 +15,7 @@
  * @param label  the <svg>'s own accessible name
  */
 export function annotate(page, {
-  form = 'uthmani', level = 'both', label = null, lang = 'ar', deferToTextLayer = false
+  form = 'rasm_uthmani', level = 'both', label = null, lang = 'ar', deferToTextLayer = false
 } = {}) {
   const svg = page.el;
   const undo = [];
@@ -41,7 +41,7 @@ export function annotate(page, {
   const auto = label || (
     'Quran page' + (page.number ? ' ' + page.number : '') +
     (named ? ', surah ' + named.latin : '') +
-    ', ayat ' + (page.ayahKeys()[0] || '?') + ' to ' + (page.ayahKeys().slice(-1)[0] || '?')
+    ', ayahs ' + (page.ayahKeys()[0] || '?') + ' to ' + (page.ayahKeys().slice(-1)[0] || '?')
   );
   set(svg, 'role', 'group');
   set(svg, 'aria-label', auto);
@@ -63,7 +63,7 @@ export function annotate(page, {
       a.fragments.forEach((f, i) => {
         set(f, 'role', 'group');
         set(f, 'aria-label',
-          `Ayah ${a.aid}` + (a.fragments.length > 1 ? `, part ${i + 1} of ${a.fragments.length}` : ''));
+          `Ayah ${a.ayahKey}` + (a.fragments.length > 1 ? `, part ${i + 1} of ${a.fragments.length}` : ''));
       });
       ayahs++;
     }
@@ -74,7 +74,7 @@ export function annotate(page, {
     set(g, 'role', 'img');
     set(g, 'aria-label', g.classList.contains('surah-name')
       ? `Surah ${d.sid} ${d.surahNameAr || ''} (${d.surahNameLatin || ''})`.trim()
-      : 'Bismillah ar-Rahman ar-Rahim');
+      : 'Basmalah Rahman ar-Rahim');
   }
 
   return { words, ayahs, label: auto, remove() { undo.reverse().forEach(f => f()); } };

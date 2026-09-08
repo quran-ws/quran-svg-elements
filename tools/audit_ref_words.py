@@ -67,7 +67,7 @@ TOL = 2.0
 # changes neither word's body extent and the EDGE test cannot see it — but it is still
 # ink in the wrong word. Seven such words on the first sixty pages were the whole of our
 # remaining dot gap against the reference.
-_DOTU = {"dot": 1, "two-dots": 2, "three-dots": 3, "two dots": 2, "three dots": 3}
+_DOTU = {"dot": 1, "two_dots": 2, "three_dots": 3, "two dots": 2, "three dots": 3}
 
 
 def our_medallions(pg):
@@ -105,7 +105,7 @@ def ours(pg):
                         for e in els if not e.get("mkpart")),
             "nbody": len(body),
             "nmark": len([e for e in els if e["kind"] != "body"]),
-            "text": w["uthmani"],
+            "text": w["rasm_uthmani"],
         }
     return out
 

@@ -1,6 +1,6 @@
 # Word numbering: المقطوع والموصول, and how we defend each decision
 
-Word ids (`data-wid="surah:ayah:position"`) are the pipeline's primary key —
+Word ids (`data-word-key="surah:ayah:word"`) are the pipeline's primary key —
 audits, overrides, the line table and every consumer are keyed on them. So the
 question "is this one word or two?" is not cosmetic, and each answer has to be
 defensible from a source, not from a reading of the drawing.
@@ -12,7 +12,7 @@ four sites where it bites.
 
 ## What a word IS here
 
-**A word is the mushaf's word-by-word token — the unit the print's own V4 layout
+**A word is the mushaf's word-by-word-translation-translation token — the unit the print's own V4 layout
 marks.** Not the rasm's written token, and not the grammatical word.
 
 This has to be said explicitly, because Arabic gives three different answers and
@@ -23,20 +23,20 @@ the project ran for a long time without naming which one it meant. Taking
 |---|---:|---:|---|
 | **rasm** — how it is written | 1 | 2 | no |
 | **إعراب** — grammar: `و` + `مَا` + `لِـ` + `يَ` | 3–4 | 2 | no |
-| **word-by-word / layout token** | **2** | **2** | **yes** |
+| **word-by-word-translation-translation / layout token** | **2** | **2** | **yes** |
 
 - The **rasm** joins whatever is written without a space, so it keeps
   `مَالِيَ` as one. It cannot be our rule: we split it.
 - The **إعراب** separates every particle, so it splits the prefixed `و` — a
   حرف عطف, a word in its own right. It cannot be our rule either: we never
   split a prefixed `و`/`ف`/`ب`/`لـ`.
-- The **word-by-word token** keeps prefixed particles attached and separates
+- The **word-by-word-translation-translation token** keeps prefixed particles attached and separates
   `مَا` from `لِيَ`, because each takes its own gloss. That is what we do, at
   every one of the 6,236 ayahs.
 
 It is a **convention**, not a derivation — but an external, published one, shared
-by the V4 layout, DigitalKhatt, MushafDatabase, quran.com and every word-by-word
-translation keyed to this mushaf. Consumers of `data-wid` expect exactly it.
+by the V4 layout, DigitalKhatt, MushafDatabase, quran.com and every word-by-word-translation-translation
+translation keyed to this mushaf. Consumers of `data-word-key` expect exactly it.
 
 Two guards against re-opening this from the wrong end:
 
@@ -48,11 +48,30 @@ Two guards against re-opening this from the wrong end:
 > because the rasm never splits anything written attached. That is circular, and
 > it does not survive `مَالِيَ`.
 
-The other two layers are still real and worth carrying, just not as `data-wid`:
+The other two layers are still real and worth carrying, just not as `data-word-key`:
 the rasm form is what someone searching `مالي` types, and it can be exposed as an
 attribute on the pair without touching segmentation.
 
 ---
+
+## Superseded, 2026-09-08: one source, and it is the release
+
+**Word boundaries now come from ONE source — the word-by-word-translation-translation release
+`.cache/word_by_word_translation/hafs.json`, the source the word-by-word-translation-translation product is keyed on — and from nothing
+else.** Abdullah asked for that (docs/HAFS-JSON-SOURCE.md); the plan is derived
+by `tools/build_word_by_word_translation_seg.py` and enforced by `tools/audit_segmentation.py`.
+
+That does not make the rest of this file obsolete, and it is why nothing was
+lost in the move: the four splits the precedence rule below argued for
+(`بَعْدَ مَا` ×3, `إِلۡ يَاسِينَ`) come out of the release at exactly the same
+positions, so what used to be four arguments is now one lookup that agrees with
+all of them. The one site where the release differs is 15:7, and the section on
+it says plainly that the evidence still points the other way and the decision is
+Abdullah's.
+
+Read the rule below as what the project would use to JUDGE a new source, and
+what to weigh if the single-source decision is ever revisited — not as
+something the code consults any more.
 
 ## The precedence rule
 
@@ -91,7 +110,7 @@ quran.com's single fused word could not represent (`reported.json` item 20).
 
 ## The rule the spelling is expressing
 
-In the Uthmani rasm some word pairs are written **joined** (موصول) where ordinary
+In the RasmUthmani rasm some word pairs are written **joined** (موصول) where ordinary
 spelling separates them, and a few **separated** (مقطوع) where spelling joins
 them. It is fixed by transmission rather than derived from grammar, so it must be
 carried as data — no rule generates it.
@@ -119,16 +138,44 @@ whitespace split of the Complex's text — measured over all 6,236 ayahs,
 
 | ayah | Complex's **text** (spelling) | **V4 layout** (words) | DigitalKhatt (1421H) | quran.com | ours | verdict |
 |---|---|---|---|---|---|---|
-| 15:7 | `لَّوۡمَا` joined | **two** | two | two | two | ✅ correct |
+| 15:7 | `لَّوۡمَا` joined | **two** | two | two | ~~two~~ → **one** | 📌 the release's boundary, taken deliberately (below) |
 | 27:20 | `مَالِيَ` joined | **two** | two | two | two | ✅ correct |
 | 36:22 | `وَمَالِيَ` joined | **two** | two | two | two | ✅ correct |
 | 37:130 | `إِلۡ` `يَاسِينَ` separated | **two** | one | one | ~~one~~ → **two** | 🔧 fixed |
 
+### 15:7 follows the word-by-word-translation-translation release, by decision
+
+Abdullah asked (2026-09-08) for the pipeline's word boundaries to be those of
+the word-by-word-translation-translation release his product is keyed on — quran-ws/quran-text,
+`data/mushaf/hafs.json`, the KFGQPC UthmanicHafs v3.0 text, already the source
+of the word list. Over all 6,236 ayahs that release and this pipeline disagreed at
+exactly one word: it writes `لَّوۡمَا` joined, we set `لَّوْ` / `مَا` as two.
+
+By the precedence rule above the pipeline's answer was the defensible one: the
+release is a TEXT, competent on spelling, and the rasm writes this pair joined,
+while every source that marks words — the print's own V4 layout included — gives
+two positions. Nothing about that evidence changed. What changed is that the
+consumer's word ids are the release's, and a word group that is not the
+release's word cannot carry its id honestly.
+
+So it is taken as a decision, not as a finding, and expressed the way this
+project expresses decisions — as derived data (`tools/build_word_by_word_translation_seg.py` →
+`.cache/word_by_word_translation/seg_plan.json`), applied under a switch (`QSVG_WBWSEG`, default
+on), reversible in one environment variable. `docs/HAFS-JSON-SOURCE.md` holds
+the measurements. The precedence rule itself is unchanged: it is what says this
+is a decision rather than evidence, and what the next such case is judged by.
+
+The fuse is only representable because the halves are drawn on ONE line (p262
+line 8); `build_word_by_word_translation_seg.py` refuses a fuse whose halves straddle a line break —
+the same geometric test that made `بَعْدَ مَا` two words on p254.
+
 ### The three mawṣūl pairs are not defects
 
-`مَالِيَ` is **one word by rasm and two positioned units on the page**, and both
-statements are true at once. Every source that marks words — including the
-print's own V4 layout — sets them as two, and we already match. The apparent
+`مَالِيَ` (27:20, 36:22) is **one word by rasm and two positioned units on the
+page**, and both statements are true at once. Every source that marks words —
+including the print's own V4 layout — sets them as two, and so does the v3.0
+text, which writes `مَا` `لِيَ` with a space; we already match. Only 15:7 was
+ever a real disagreement with the release. The apparent
 disagreement was an artefact of the comparison method, not a finding.
 
 ### 37:130 `إِلۡ يَاسِينَ` was a real error
@@ -142,7 +189,8 @@ DigitalKhatt fuses them, and `assign_words.py` had recorded DK as its reason:
 
 DK models the **1421H V2** print, not this one (`EDITION-1441-FINDING.md`), so it
 was never evidence about this artwork. With the edition question settled the
-reason is void, and the fix is one entry in `_DKSEG_SPLITS`.
+reason is void, and the fix was one entry in the split table — which the
+word-by-word-translation-translation release now derives on its own (see the note at the top).
 
 **It also closes the p451 open item.** `إِلْ يَاسِينَ` had been flagged for years
 as drawing *"one run more than the joining rules allow"* — which is exactly what
@@ -158,8 +206,9 @@ ligature groups, the same ink, now correctly distributed across two words.
 ## Consequences of a split, and why nothing else had to be patched
 
 Splitting a word shifts every later position in its ayah, so the change reaches
-more than the emitter. `_DKSEG_SPLITS` is the single place that expresses it, and
-everything else derives:
+more than the emitter. the boundary plan is the single place that
+expresses it (`.cache/word_by_word_translation/seg_plan.json`, derived — until 2026-09-08 this was
+the hand-written `_DKSEG_SPLITS`), and everything else derives:
 
 - **word text** — `_dkseg_split_data` splits the fused quran.com record
 - **QPC text** — `_dkseg_qpc` maps our positions back through the fused cache

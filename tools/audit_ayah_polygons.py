@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Audit the ayah polygons of every mushaf against the page's own markers, ink and qiraa.
+"""Audit the ayah polygons of every mushaf against the page's own markers, ink and qiraah.
 
-Ground truth is the ۝ end-of-ayah markers drawn in each page SVG, the page's rendered ink,
-and — for the ayah identities — the counting madhhab the mushaf's qiraa follows, taken from
-the vendored `qiraat-ayah-map` dataset.  Nothing here trusts the polygons it is checking.
+Ground truth is the ۝ ayah-mark markers drawn in each page SVG, the page's rendered ink,
+and — for the ayah identities — the counting madhhab the mushaf's qiraah follows, taken from
+the vendored `qiraahs-ayah-map` dataset.  Nothing here trusts the polygons it is checking.
 
 Violations are reported in four tiers:
 
-  IDENTITY   the ayat a mushaf claims, against its own counting system
+  IDENTITY   the ayahs a mushaf claims, against its own counting system
   MARKER     every polygon must end at its own ayah's marker
   GEOMETRY   reading order, no overlaps, no unowned ink on a text line
   FILES      json/, svg-br/ and the surah variants must agree with the page SVG
@@ -30,21 +30,21 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import numpy as np
 
-import qiraat_map
+import qiraahs_map
 from polygon_lib import (EPS, INKCOL, Z, band_spans, build_polygons, ink_mask,
-                         line_grid, markers, read_page, recover_markers, score, text_margins,
+                         line_grid, markers, read_page, recover_marks, score, text_margins,
                          translation_fit)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-MUSHAFS = ("douri", "hafs", "qalon", "shubah", "warsh")
+MUSHAFS = ("duri", "hafs", "qalun", "shubah", "warsh")
 FIRST_PAGE, LAST_PAGE = 3, 604          # 1-2 are the ornate opening spread, hand-made
 
 IDENTITY_SIGS = ("COUNT", "GAP", "DUP", "SURAHJSON", "IDSEQ")
-MARKER_SIGS = ("MARKERCOUNT", "MARKER", "STRAY", "NOROSETTE", "MARKERMETA")
+MARK_SIGS = ("MARKERCOUNT", "MARKER", "STRAY", "NOROSETTE", "MARKERMETA")
 GEOMETRY_SIGS = ("ORDER", "BREAK", "OVERLAP", "UNCOVERED", "BADID", "NONRECT",
                  "DEGENERATE", "LINES")
 FILE_SIGS = ("JSONDIFF", "BRDIFF", "VARIANT")
-TIERS = {"identity": IDENTITY_SIGS, "marker": MARKER_SIGS,
+TIERS = {"identity": IDENTITY_SIGS, "marker": MARK_SIGS,
          "geometry": GEOMETRY_SIGS, "files": FILE_SIGS}
 
 
@@ -53,23 +53,23 @@ META_TOL = 8.0           # ayah:x/ayah:y drift: worst measured 7.35; a line band
 
 _AYAH_ATTRS = re.compile(r'ayah:x="([-\d.]+)" ayah:y="([-\d.]+)"')
 
-_MARKERS_JSON = {}
+_MARKS_JSON = {}
 
 
-def markers_json(mushaf):
+def marks_json(mushaf):
     """markers.json grouped by page, loaded once."""
-    if mushaf not in _MARKERS_JSON:
+    if mushaf not in _MARKS_JSON:
         path = os.path.join(ROOT, "mushafs", mushaf, "kfqc", "json", "markers.json")
         by_page = collections.defaultdict(list)
         if os.path.exists(path):
             with open(path, encoding="utf-8") as fh:
                 for entry in json.load(fh):
                     by_page[entry["page"]].append(entry)
-        _MARKERS_JSON[mushaf] = by_page
-    return _MARKERS_JSON[mushaf]
+        _MARKS_JSON[mushaf] = by_page
+    return _MARKS_JSON[mushaf]
 
 
-def marker_metadata(text):
+def mark_metadata(text):
     """The ``ayah:x``/``ayah:y`` the SVG states for each marker, in the mushaf's own frame.
 
     This is the one piece of evidence the generator never touches, so comparing it against
@@ -98,7 +98,7 @@ def page_path(mushaf, page, kind="svg", ext="svg"):
 # --------------------------------------------------------------------------- per page
 
 def audit_page(args):
-    """[(signature, message)] for one page, plus the ayat whose marker is on it."""
+    """[(signature, message)] for one page, plus the ayahs whose marker is on it."""
     mushaf, page, want_files = args
     svg = page_path(mushaf, page)
     found = []
@@ -107,7 +107,7 @@ def audit_page(args):
 
     for p in polys:
         if not (p["id"] and re.fullmatch(r"verse-\d+", p["id"])):
-            found.append(("BADID", "%s: id is %r, not verse-N" % (p["key"], p["id"])))
+            found.append(("BADID", "%s: id is %r, not ayah-N" % (p["key"], p["id"])))
         if p["subpaths"] != len(p["rects"]):
             found.append(("NONRECT", "%s: %d subpaths parsed as %d rectangles"
                           % (p["key"], p["subpaths"], len(p["rects"]))))
@@ -126,7 +126,7 @@ def audit_page(args):
             next_first = next_polys[0]["key"]
     mk = markers(text)
     if len(mk) < len(polys):
-        mk, rescued = recover_markers(mk, markers_json(mushaf).get(page, []))
+        mk, rescued = recover_marks(mk, marks_json(mushaf).get(page, []))
         for x, y, _ in rescued:
             found.append(("NOROSETTE", "an ayah ends at (%.2f, %.2f) with a bare numeral and no "
                           "۝ rosette in the svg; markers.json supplied the position" % (x, y)))
@@ -138,7 +138,7 @@ def audit_page(args):
                       % (len(polys) + (1 if continuation else 0), len(mk))))
 
     # the marker layer, checked against the SVG's own metadata rather than against itself
-    meta = marker_metadata(text)
+    meta = mark_metadata(text)
     if meta and mk:
         if len(meta) != len(mk):
             found.append(("MARKERMETA", "%d markers derived from the transforms but %d "
@@ -199,9 +199,9 @@ def audit_page(args):
                     shown += 1
                     found.append(("OVERLAP", "%s and %s both claim %.1f x %.2f at x%.1f y%.1f"
                                   % (ka, kb, ox, oy, max(ra[0], rb[0]), max(ra[1], rb[1]))))
-    if sc["stray_markers"]:
+    if sc["stray_marks"]:
         found.append(("STRAY", "%d ayah(s) whose polygon does not contain their own marker"
-                      % sc["stray_markers"]))
+                      % sc["stray_marks"]))
     if sc["uncovered_ink"] > 200:
         found.append(("UNCOVERED", "%d ink pixels on text lines belong to no ayah"
                       % sc["uncovered_ink"]))
@@ -344,9 +344,9 @@ def audit_files(mushaf, page, text, polys):
 # --------------------------------------------------------------------------- per mushaf
 
 def audit_identity(mushaf, per_page, kufi):
-    """The ayat a mushaf claims, against the counting system its qiraa follows."""
-    system = qiraat_map.counting_system(mushaf)
-    expected = qiraat_map.ayah_counts(system, kufi)
+    """The ayahs a mushaf claims, against the counting system its qiraah follows."""
+    system = qiraahs_map.counting_system(mushaf)
+    expected = qiraahs_map.ayah_counts(system, kufi)
     seen = collections.defaultdict(list)
     for page, keys in per_page.items():
         for surah, ayah in keys:
@@ -383,14 +383,14 @@ def audit_surah_json(mushaf, system, expected):
         surahs = json.load(fh)
     found = []
     total = sum(int(s["ayahCount"]) for s in surahs)
-    want_total = qiraat_map.expected_total(system)
+    want_total = qiraahs_map.expected_total(system)
     if total != want_total:
-        found.append(("SURAHJSON", "surah.json totals %d ayat; the %s system counts %d"
+        found.append(("SURAHJSON", "surah.json totals %d ayahs; the %s system counts %d"
                       % (total, system, want_total)))
     wrong = [(int(s["number"]), int(s["ayahCount"]), expected[int(s["number"])])
              for s in surahs if int(s["ayahCount"]) != expected[int(s["number"])]]
     for number, got, want in wrong[:20]:
-        found.append(("SURAHJSON", "surah %d: surah.json says %d ayat, the %s system counts %d"
+        found.append(("SURAHJSON", "surah %d: surah.json says %d ayahs, the %s system counts %d"
                       % (number, got, system, want)))
     if len(wrong) > 20:
         found.append(("SURAHJSON", "... and %d more surahs disagree" % (len(wrong) - 20)))
@@ -398,7 +398,7 @@ def audit_surah_json(mushaf, system, expected):
 
 
 def audit_id_sequence(mushaf, pages):
-    """verse-N ids must run 1..total once, in reading order, across the whole mushaf."""
+    """ayah-N ids must run 1..total once, in reading order, across the whole mushaf."""
     found, previous, last_page = [], None, None
     for page in pages:
         text, _, polys = read_page(page_path(mushaf, page))
@@ -445,7 +445,7 @@ def main(argv=None):
     keep = set(sum((list(TIERS[t]) for t in TIERS), [])) if args.tier == "all" else set(TIERS[args.tier])
     want_files = args.tier in ("all", "files")
 
-    kufi = qiraat_map.kufi_counts_from_surah_json(
+    kufi = qiraahs_map.kufi_counts_from_surah_json(
         os.path.join(ROOT, "mushafs", "hafs", "kfqc", "json", "surah.json"))
 
     from multiprocessing import Pool
@@ -457,7 +457,7 @@ def main(argv=None):
             for page, found, keys in pool.imap_unordered(audit_page, jobs, chunksize=4):
                 per_page[page] = keys
                 findings += [(page, sig, msg) for sig, msg in found]
-        system = qiraat_map.counting_system(mushaf)
+        system = qiraahs_map.counting_system(mushaf)
         whole_mushaf = pages == list(range(FIRST_PAGE, LAST_PAGE + 1))
         if whole_mushaf:
             system, expected, ident = audit_identity(mushaf, per_page, kufi)
@@ -472,9 +472,9 @@ def main(argv=None):
         counts = collections.Counter(s for _, s, _ in findings)
         totals.update(counts)
 
-        print("%s — %s" % (mushaf, qiraat_map.describe(system)))
+        print("%s — %s" % (mushaf, qiraahs_map.describe(system)))
         if not findings:
-            print("    clean: %d pages, %d ayat\n"
+            print("    clean: %d pages, %d ayahs\n"
                   % (len(pages), sum(len(v) for v in per_page.values())))
             continue
         for tier, sigs in TIERS.items():

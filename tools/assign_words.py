@@ -5,7 +5,7 @@ Pipeline stage 2, after split_line_elements.py. For every line the verified word
 (quran.com v4, KFGQPC layout) says how many words the line holds and what each one reads;
 the elements on the line are clustered into exactly that many words by cutting at the
 widest inter-element gaps. Because all KFGQPC prints share the same words per line across
-qiraat, one Hafs layout drives every edition; the uthmani/imlaei strings attached are the
+qiraahs, one Hafs layout drives every edition; the rasm_uthmani/rasm_imlai strings attached are the
 Hafs forms and per-riwayah spellings can be swapped in later without touching geometry.
 
 Every line gets a confidence record: the margin between the cut gaps and the widest gap
@@ -28,22 +28,22 @@ import urllib.request
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from page import Page
 
-# Taxonomy phase 2 (decision 5). |dx| of a tanween pair's two stroke centers
+# Taxonomy phase 2 (decision 5). |dx| of a tanwin pair's two stroke centers
 # (lower minus upper), measured over ALL 604 pages before choosing
 # (empty-band rule), 8,516 pairs on 2026-08-27:
 #
-#   fathatan (3,630)  stacked cluster |dx| 0.00-0.92 | EMPTY | open 2.18-5.4
-#   kasratan (2,515)  stacked cluster |dx| 0.00-0.82 | EMPTY | open 1.29-7.7
-#   dammatan (2,371)  stacked cluster |dx| 0.28-0.39 | EMPTY | open 3.55-3.9
+#   tanwin_al_fath (3,630)  stacked cluster |dx| 0.00-0.92 | EMPTY | open 2.18-5.4
+#   tanwin_al_kasr (2,515)  stacked cluster |dx| 0.00-0.82 | EMPTY | open 1.29-7.7
+#   tanwin_al_damm (2,371)  stacked cluster |dx| 0.28-0.39 | EMPTY | open 3.55-3.9
 #
-# The signed direction differs (open fathatan shifts the lower stroke right,
-# open kasratan left, open dammatan either), so the threshold is on |dx|,
+# The signed direction differs (open tanwin_al_fath shifts the lower stroke right,
+# open tanwin_al_kasr left, open tanwin_al_damm either), so the threshold is on |dx|,
 # per family, INSIDE each band. Cross-checked against the text's own
-# open/closed tanween encoding (U+08F0-08F2 = idgham/ikhfa = staggered):
+# open/closed tanwin encoding (U+08F0-08F2 = idgham/ikhfa = staggered):
 # 8,515 of 8,516 agree; the one disagreement is p208 10:2 مُّبِينٌ, a closed
-# tanween welded at |dx|=7.65 (geometry wins: it carries staggered).
-_TAN_STAG = {"fathatan": 1.5, "kasratan": 1.05, "dammatan": 1.5}
-# QSVG_TANDUMP: collect every tanween master/twin geometry record here for
+# tanwin welded at |dx|=7.65 (geometry wins: it carries staggered).
+_TAN_STAG = {"tanwin_al_fath": 1.5, "tanwin_al_kasr": 1.05, "tanwin_al_damm": 1.5}
+# QSVG_TANDUMP: collect every tanwin master/twin geometry record here for
 # the measuring script; None (the default) costs nothing.
 TAN_DUMP = [] if os.environ.get("QSVG_TANDUMP") else None
 from svg_lines import transform_box
@@ -52,23 +52,6 @@ import quran_meta                       # surah / juz / hizb metadata + rasm
 
 ROOT = (os.environ.get("QSVG_ROOT")
         or os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
-_WBW = {}
-
-
-def _wbw_map():
-    """{wid: global word id} from .cache/wbw/wid_to_w.json, loaded once.
-
-    Built by tools/build_wbw_map.py from the word-by-word source
-    (.cache/wbw/hafs.json) and the word cache — never edited by hand. Missing
-    file = the map was never built; that is an error for every word, so the
-    caller raises with the command to run."""
-    if "m" not in _WBW:
-        p = os.path.join(ROOT, ".cache", "wbw", "wid_to_w.json")
-        _WBW["m"] = (json.load(open(p, encoding="utf-8"))
-                     if os.path.exists(p) else {})
-    return _WBW["m"]
-
 
 def _ovr_file():
     """Where the human geometry overrides live.
@@ -92,13 +75,13 @@ API = ("https://api.quran.com/api/v4/verses/by_page/%d?words=true&mushaf=2"
 # Page furniture is not part of a word, and the sources glue it on.
 #
 # Measured 2026-08-31 against the King Fahd Complex's OWN data
-# (`UthmanicHafs_v2-0/hafsData_v2-0.json`, 6,236 ayahs of real Uthmani
+# (`UthmanicHafs_v2-0/hafsData_v2-0.json`, 6,236 ayahs of real RasmUthmani
 # Unicode): our per-word text matched it on 77,165 of 77,429 words, 99.659%.
 # Of the 264 that did not:
 #
-#   199  the rub' rosette glued to the following word — "۞إِنَّ" for
-#        "إِنَّ" — in data-uthmani, data-imlaei AND data-qpc. We already
-#        emit that rosette as its own <g class="hizb-mark">, so carrying it in
+#   199  the rubu_al_hizb' rosette glued to the following word — "۞إِنَّ" for
+#        "إِنَّ" — in data-rasm-uthmani, data-rasm-imlai AND data-qpc. We already
+#        emit that rosette as its own <g class="division-mark">, so carrying it in
 #        the word text is a duplicate that reaches anyone searching or
 #        displaying the word.
 #    33  a TATWEEL inside كـَلَّا where the official text writes كَلَّا. The
@@ -110,16 +93,18 @@ API = ("https://api.quran.com/api/v4/verses/by_page/%d?words=true&mushaf=2"
 # text keeps it — it writes خُشُوعٗا۩ — so removing it moves us away from the
 # Complex's own data; our only difference there is a space. And the mark passes
 # read it as the budget signal for the sign: stripping it took the corpus from
-# 15 sajdah-sign marks to 14 and failed the annotation gate. Text-driven
+# 15 sajdah_mark marks to 14 and failed the annotation gate. Text-driven
 # recovery means a symbol in the text can be load-bearing — check what reads it
-# before removing it. The remaining differences are a spacing convention around ۩ and one
-# genuine segmentation site (15:7 لَّوۡمَا, one word officially, two here),
-# which is a word-id decision and deliberately NOT handled by stripping.
-_FURNITURE = "\u06de"                 # ARABIC START OF RUB EL HIZB only
+# before removing it. The remaining differences are a spacing convention
+# around the sajdah sign and, until 2026-09-08, one genuine segmentation
+# site (15:7, one word officially and two here) — a word-id decision,
+# deliberately never handled by stripping, and now settled where
+# segmentation belongs: the boundary plan derived from the release.
+_FURNITURE = "\u06de"                 # ARABIC START OF RUBU_AL_HIZB EL HIZB only
 
 
 def _clean_word(text):
-    """Word text with the rub' rosette removed. ۩ and tatweel are left alone."""
+    """Word text with the rubu_al_hizb' rosette removed. ۩ and tatweel are left alone."""
     if not text:
         return text
     out = "".join(c for c in text if c not in _FURNITURE)
@@ -139,6 +124,8 @@ def page_words(page_no, cache_dir):
         json.dump(data, open(cache, "w", encoding="utf-8"), ensure_ascii=False)
     if _dkseg_on():
         _dkseg_split_data(data)
+    if _wbwseg_on():
+        _wbwseg_fuse_data(data)
     # The art is the KFGQPC madani print, which the QCF v2 page fonts replicate
     # line-for-line; quran.com's own line numbers drift from it on some pages
     # (p4: end-of-line word wrapped). Prefer the QCF layout when we have it.
@@ -154,12 +141,12 @@ def page_words(page_no, cache_dir):
     # surahs put a page break in the middle of almost every one.
     def _monotonic(pick):
         first = {}
-        for verse in data["verses"]:
-            s0, a0 = (int(x) for x in verse["verse_key"].split(":"))
-            for w in verse["words"]:
+        for ayah in data["verses"]:
+            s0, a0 = (int(x) for x in ayah["verse_key"].split(":"))
+            for w in ayah["words"]:
                 if w["char_type_name"] != "word":
                     continue
-                ln = pick(verse["verse_key"], w)
+                ln = pick(ayah["verse_key"], w)
                 if ln is None:
                     continue
                 key = (s0, a0, w["position"])
@@ -174,29 +161,29 @@ def page_words(page_no, cache_dir):
         _QCF_WARN.add(page_no)
 
     lines = {}
-    for verse in data["verses"]:
-        surah, ayah = verse["verse_key"].split(":")
-        for w in verse["words"]:
+    for ayah in data["verses"]:
+        surah, ayah_number = ayah["verse_key"].split(":")
+        for w in ayah["words"]:
             if w["char_type_name"] != "word":     # 'end' = medallion, kept out of #content
                 continue
-            ln = (qcf_lines.get("%s:%s" % (verse["verse_key"], w["position"]),
+            ln = (qcf_lines.get("%s:%s" % (ayah["verse_key"], w["position"]),
                                 w["line_number"]) if use_qcf
                   else w["line_number"])
             ut = w["text_uthmani"]
             if _dktext_on():
-                dt = _dktext(int(surah), int(ayah), w["position"])
+                dt = _word_dktext(int(surah), int(ayah_number), w["position"])
                 # 5:52:12 دَآئِرَ ةٌ: the print draws two chunks and the
                 # composite's internal space carries that to _space_halves;
                 # the DK DB writes one token, so keep the composite there —
                 # a letter-space compound must not lose its space.
-                if dt is not None and not (_space_halves({"uthmani": ut})
+                if dt is not None and not (_space_halves({"rasm_uthmani": ut})
                                            and " " not in dt):
                     ut = dt
             lines.setdefault(ln, []).append({
-                "surah": int(surah), "ayah": int(ayah), "pos": w["position"],
-                "uthmani": _clean_word(ut), "imlaei": _clean_word(w["text_imlaei"]),
+                "surah": int(surah), "ayah": int(ayah_number), "pos": w["position"],
+                "rasm_uthmani": _clean_word(ut), "rasm_imlai": _clean_word(w["text_imlaei"]),
                 "qpc": _clean_word(
-                    _dkseg_qpc(qpc, int(surah), int(ayah), w["position"])),
+                    _word_qpc(qpc, int(surah), int(ayah_number), w["position"])),
             })
     return lines
 
@@ -205,22 +192,22 @@ def page_words(page_no, cache_dir):
 # QSVG_DKTEXT: mark budgets from the DigitalKhatt text — the print's own model
 # ---------------------------------------------------------------------------
 # The DK text (digital-khatt-v2.db, QUL export of the KFGQPC V2 1441H print)
-# won the ink adjudication 5-0 against the uthmani+QPC composite on every
+# won the ink adjudication 5-0 against the rasm_uthmani+QPC composite on every
 # genuinely disputed site (docs/defects/text_contest_eyes.json), and its 339
-# iqlab sites carry the print's real convention (ONE haraka + small م —
-# docs/defects/iqlab_notation.md) natively, so the tanween-pair rewrites stop
+# iqlab sites carry the print's real convention (ONE harakah + small م —
+# docs/defects/iqlab_notation.md) natively, so the tanwin-pair rewrites stop
 # being needed where it is on. Off by default until accepted; when on, the
-# word's "uthmani" field carries the normalised DK text and every budget
+# word's "rasm_uthmani" field carries the normalised DK text and every budget
 # reader downstream follows it unchanged.
 #
 # _dk_norm maps DK's encoding onto the conventions this file's tables
-# (HARAKA / HAMZA_MAP / DOTS / NONJOIN) are built around. Measured over all
+# (HARAKAH / HAMZAH_MAP / DOTS / NONJOIN) are built around. Measured over all
 # 77,432 words against the composite (2026-08-27): after this normalisation
 # the two texts agree EXACTLY on segment count (0 diffs), letter dots
 # (0 diffs) and skeleton (2 diffs: 11:13:3, where quran.com writes the typo
-# افْتَرَاهُ, and one ر-seated hamza) — the only surviving budget deltas are
+# افْتَرَاهُ, and one ر-seated hamzah) — the only surviving budget deltas are
 # the documented content families: 6,643 phantom low meems dropped, 339 iqlab
-# tanween→haraka+م, 190 waqf, 3 maddah, 1 hamza, 1 wasla.
+# tanwin→harakah+م, 190 waqf, 3 maddah, 1 hamzah, 1 hamzat_al_wasl.
 _DK_TEXT = None
 
 
@@ -235,14 +222,14 @@ def _dktext_on():
 def _dk_norm(t):
     # rarities first: U+034F CGJ (5 sites) is invisible; U+08F3 SMALL HIGH WAW
     # (17:7:12 only) is the suffix ۥ this art draws — fold to U+06E5 so the
-    # small-waw budget sees it.
+    # small_waw budget sees it.
     t = t.replace("͏", "").replace("ࣳ", "ۥ")
     # the imala dot of 11:41:6 مَجْرٜىٰهَا: DK writes U+065C, the composite
-    # U+06EA — same drawn dot, and the audit's pause table knows only U+06EA
+    # U+06EA — same drawn dot, and the audit's waqf table knows only U+06EA
     t = t.replace("ٜ", "۪")
-    # DK writes every hamza/wasla seat decomposed (0 precomposed أإؤئ in the
+    # DK writes every hamzah/hamzat_al_wasl seat decomposed (0 precomposed أإؤئ in the
     # whole DB; seats are base + U+0654/0655, the final ya seat is ى+U+0654).
-    # Recompose to the precomposed forms HAMZA_MAP/dot_want key on — without
+    # Recompose to the precomposed forms HAMZAH_MAP/dot_want key on — without
     # this, a medial seat ي is charged its two dots (921 sites).
     for a, b in (("أ", "أ"), ("إ", "إ"),
                  ("ؤ", "ؤ"), ("ئ", "ئ"),
@@ -295,7 +282,7 @@ def _dktext(s0, a0, pos):
     if _dkseg_on():
         return _DK_TEXT.get("%d:%d:%d" % (s0, a0, pos))
     # fused keying: the compound position holds both DK halves
-    sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+    sp = _seg_splits().get((s0, a0), (None, None))[0]
     if sp is None or pos < sp:
         return _DK_TEXT.get("%d:%d:%d" % (s0, a0, pos))
     if pos == sp:
@@ -378,13 +365,15 @@ def _qcf_lines():
         dk_file = os.path.basename(p) in ("v4_lines.json", "dk_lines.json")
         tbl = json.load(open(p)) if os.path.exists(p) else {}
         # dk_lines.json is keyed DK-canonical (the print's own segmentation of
-        # the بَعْدَ مَا compounds, _DKSEG_SPLITS); qcf_lines.json is keyed
+        # the بَعْدَ مَا compounds, _seg_splits()); qcf_lines.json is keyed
         # quran.com-fused. Convert to whichever keying QSVG_DKSEG selects.
         if tbl:
             if dk_file and not _dkseg_on():
                 tbl = _dkseg_lines_convert(tbl, to_dk=False)
             elif not dk_file and _dkseg_on():
                 tbl = _dkseg_lines_convert(tbl, to_dk=True)
+            if _wbwseg_on() and _word_by_word_translation_fuses():
+                tbl = _wbwseg_lines_convert(tbl)
         _QCF_LINES = tbl
     return _QCF_LINES
 
@@ -449,8 +438,8 @@ def dk_header_surahs():
     The line numbers are the part of dk_header_lines() that this artwork does
     not agree with (see rewrite(): four banners sit on the previous page in the
     DB). The surah sets are the part that is solid: 114 banners for 114 surahs,
-    112 basmalahs — every surah but al-Fatiha, whose basmalah is ayah 1:1, and
-    at-Tawba, which has none. Used as the confirming signal for the header
+    112 basmalahs — every surah but Fatihah, whose basmalah is ayah 1:1, and
+    Tawbah, which has none. Used as the confirming signal for the header
     lines the art itself identifies.
     """
     global _DK_HDR_SURAHS
@@ -464,27 +453,74 @@ def dk_header_surahs():
 
 
 # ---------------------------------------------------------------------------
-# The print's own segmentation of the بَعْدَ مَا compounds (QSVG_DKSEG)
+# Word boundaries: the word-by-word-translation-translation release, and nothing else (QSVG_WBWSEG)
 # ---------------------------------------------------------------------------
-# DigitalKhatt's word DB of THIS print — and MushafDatabase, independently —
-# segment بَعْدَ مَا as TWO words in all three ayahs it occurs; quran.com fuses
-# each pair into one word with an internal space (reported.json item 20: the
-# p254 pair straddles a line break, which one fused word cannot express). The
-# DK keying is canonical here: the compound splits at position `fused` into
-# `fused` (بَعْدَ) and `fused+1` (مَا) and every later position shifts +1.
-# 37:130:3 إِلْ يَاسِينَ splits the same way, and used NOT to: it was held as one
-# word because the DK DB fuses it. DK models the 1421H V2 print, not this one
-# (docs/EDITION-1441-FINDING.md), so that was never evidence about this artwork.
-# The Complex's own 1441H text writes the two with a space between them — the
-# maqṭūʿ spelling — and the print's own V4 layout, the only KFGQPC source that
-# marks words at all, gives the ayah FOUR word positions. Splitting it closes the
-# p451 open item, which read "one run more than the joining rules allow": that is
-# what one word holding two words' ink measures as. See docs/MAQTU-MAWSUL.md.
-# 5:52:12 still stays ONE word — there quran.com's internal space is its own typo
-# (DK and MushafDatabase both write one word).
-# QSVG_DKSEG=0 reverts everything to quran.com's fused keying.
-_DKSEG_SPLITS = {(2, 181): (3, 27), (8, 6): (4, 177), (13, 37): (8, 254),
-                 (37, 130): (3, 451)}
+# WHERE WORDS SPLIT COMES FROM ONE SOURCE: `.cache/word_by_word_translation/hafs.json`, the audited
+# word-by-word-translation-translation release Abdullah's product is keyed on (quran-ws/quran-text,
+# data/mushaf/hafs.json — the KFGQPC UthmanicHafs v3.0 text). It already gives
+# every group its word number through the segmentation itself; since
+# 2026-09-08 it gives the boundaries too, and no other source has a vote.
+#
+# The word list still ARRIVES from quran.com — it carries the page membership,
+# the per-word text and the positions — but its boundaries are made to be the
+# release's before anything downstream sees them, by a plan that
+# tools/build_word_by_word_translation_seg.py DERIVES by aligning the two:
+#
+#   .cache/word_by_word_translation/seg_plan.json  {"splits": {"2:181": [pos, page], ...},
+#                              "fuses":  {"15:7": [pos, count]}}
+#
+# Five sites, and every one of them used to be an argument this repo made:
+#
+#   * the three بَعْدَ مَا compounds (2:181, 8:6, 13:37) and 37:130 إِلۡ يَاسِينَ,
+#     which quran.com fuses and the release writes as two — they were a
+#     hand-written table (`_DKSEG_SPLITS`) argued from DigitalKhatt,
+#     MushafDatabase and the V4 layout. Same four sites, same positions; the
+#     difference is that nothing here now claims them.
+#   * 15:7 لَّوۡمَا, which the release writes as ONE word where we (and every
+#     source that marks words) had two — Abdullah's decision, taken 2026-09-08.
+#     docs/MAQTU-MAWSUL.md has the reasoning and what it costs.
+#
+# 5:52:12 دَآئِرَ ةٌ stays ONE word: the release writes one, and quran.com's
+# internal space there is its own typo. The plan is what says so now.
+#
+# A split turns position `pos` into `pos` and `pos+1` and shifts every later
+# position +1; a fuse turns `count` words at `pos` into one and shifts every
+# later position down. Six things derive from the plan and must stay in step:
+# the word text, the QPC text, the DK text, the QCF advance, the line table and
+# the emitted group. QSVG_WBWSEG=0 (or the older QSVG_DKSEG=0, which now means
+# the same thing) drops the plan and uses quran.com's raw boundaries, for A/B.
+_SEG_PLAN = None
+
+
+def _seg_plan():
+    """The derived boundary plan. Missing file is fatal, not a fallback: a
+    silently different segmentation is the one failure mode that would reach
+    every consumer's word ids."""
+    global _SEG_PLAN
+    if _SEG_PLAN is None:
+        p = os.path.join(ROOT, ".cache", "word_by_word_translation", "seg_plan.json")
+        if not os.path.exists(p):
+            raise RuntimeError(
+                "%s is missing — the word boundaries come from the "
+                "word-by-word-translation-translation release and are derived, not hand-kept. "
+                "Run: python3 tools/build_word_by_word_translation_seg.py" % p)
+        d = json.load(open(p, encoding="utf-8"))
+        key = lambda k: tuple(int(x) for x in k.split(":"))
+        _SEG_PLAN = (
+            {key(k): tuple(v) for k, v in d.get("splits", {}).items()},
+            {key(k): tuple(v) for k, v in d.get("fuses", {}).items()})
+    return _SEG_PLAN
+
+
+def _seg_splits():
+    """{(surah, ayah): (position, page)} — one of ours becomes two.
+
+    The table itself, NOT gated on the switch: the passes that convert between
+    the two keyings (the line table, the DK text) need to know where the plan
+    would split precisely when it is off, to map the other way. Every caller
+    that acts on a split checks _dkseg_on() itself."""
+    return _seg_plan()[0]
+
 
 def _dk_fuses(s0, a0):
     """Does the DK DB write this compound as ONE word, where we split it?
@@ -495,7 +531,7 @@ def _dk_fuses(s0, a0):
     the source, and reading them from the source means a DK update cannot
     leave a hand-kept list quietly wrong.
     """
-    sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+    sp = _seg_splits().get((s0, a0), (None, None))[0]
     if sp is None:
         return False
     return " " in (_DK_TEXT.get("%d:%d:%d" % (s0, a0, sp)) or "")
@@ -503,12 +539,16 @@ _DKSEG_HALVES = {}
 
 
 def _dkseg_on():
-    return os.environ.get("QSVG_DKSEG", "1") == "1"
+    """Is the derived boundary plan applied? Both names turn the whole plan on
+    or off together — there is one segmentation source now, so there is one
+    switch; QSVG_DKSEG is kept because older notes and A/B runs use it."""
+    return (os.environ.get("QSVG_WBWSEG", "1") == "1"
+            and os.environ.get("QSVG_DKSEG", "1") == "1")
 
 
 def _dkseg_fused(s0, a0, pos):
     """DK-canonical position -> (quran.com fused position, half or None)."""
-    sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+    sp = _seg_splits().get((s0, a0), (None, None))[0]
     if sp is None or pos < sp:
         return pos, None
     if pos == sp:
@@ -520,19 +560,19 @@ def _dkseg_fused(s0, a0, pos):
 
 def _dkseg_split_data(data):
     """Rewrite a quran.com page payload in place to the print's segmentation."""
-    for verse in data.get("verses", []):
-        s0, a0 = (int(x) for x in verse["verse_key"].split(":"))
-        sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+    for ayah in data.get("verses", []):
+        s0, a0 = (int(x) for x in ayah["verse_key"].split(":"))
+        sp = _seg_splits().get((s0, a0), (None, None))[0]
         if sp is None:
             continue
-        comp = next((w for w in verse["words"]
+        comp = next((w for w in ayah["words"]
                      if w.get("char_type_name") == "word"
                      and w["position"] == sp
                      and " " in (w.get("text_uthmani") or "")), None)
         if comp is None:
             continue                     # not the page holding the compound,
         nw = []                          # or the cache no longer fuses it
-        for w in verse["words"]:
+        for w in ayah["words"]:
             if w is comp:
                 hu = [t for t in w["text_uthmani"].split(" ") if t]
                 hi = [t for t in (w.get("text_imlaei") or "").split(" ") if t]
@@ -549,7 +589,7 @@ def _dkseg_split_data(data):
                     w = dict(w)
                     w["position"] += 1
                 nw.append(w)
-        verse["words"] = nw
+        ayah["words"] = nw
 
 
 def _dkseg_qpc(qpc, s0, a0, pos):
@@ -574,7 +614,7 @@ def _dkseg_lines_convert(tbl, to_dk):
         nd = {}
         for k, ln in d.items():
             s0, a0, p = (int(x) for x in k.split(":"))
-            sp = _DKSEG_SPLITS.get((s0, a0), (None, None))[0]
+            sp = _seg_splits().get((s0, a0), (None, None))[0]
             if sp is None or p < sp:
                 nd[k] = ln
             elif to_dk:
@@ -598,7 +638,7 @@ def _dkseg_half_lw(s0, a0):
     key = (s0, a0)
     if key in _DKSEG_HALVES:
         return _DKSEG_HALVES[key]
-    sp, pg = _DKSEG_SPLITS[key]
+    sp, pg = _seg_splits()[key]
     res = None
     f = os.path.join(ROOT, ".cache", "words", "page-%03d.json" % pg)
     if os.path.exists(f):
@@ -621,7 +661,7 @@ def _dkseg_widths(q):
     compound's advance splits between its halves in proportion to their
     calibrated letter widths (CLAUDE.md: the width prior stays a prior)."""
     out = dict(q)
-    for (s0, a0), (sp, _pg) in _DKSEG_SPLITS.items():
+    for (s0, a0), (sp, _pg) in _seg_splits().items():
         pre = "%d:%d:" % (s0, a0)
         ent = {int(k.split(":")[2]): v for k, v in q.items()
                if k.startswith(pre)}
@@ -640,6 +680,128 @@ def _dkseg_widths(q):
             else:
                 out[pre + str(p + 1)] = v
     return out
+
+
+# ---------------------------------------------------------------------------
+# The fuse half of the boundary plan
+# ---------------------------------------------------------------------------
+# The mirror image of a split, and the other half of what _seg_plan() carries:
+# `count` of our words at `pos` become one, and every later position in the
+# ayah shifts down. One site, 15:7 لَّوۡمَا. Word text and QPC/DK text are joined
+# with NO space (the halves are one rasm token), the QCF advance is summed, the
+# line table keeps the first half's line, and the emitted group holds both
+# halves' ink — the joining rules are untouched, so it still draws as لو / ما.
+
+
+def _wbwseg_on():
+    return _dkseg_on()
+
+
+def _word_by_word_translation_fuses():
+    """{(surah, ayah): (position, count)} — several of ours become one. The
+    table, not gated: _word_by_word_translation_fuse_at() is the gated reader."""
+    return _seg_plan()[1]
+
+
+def _word_by_word_translation_fuse_at(s0, a0):
+    return _word_by_word_translation_fuses().get((s0, a0)) if _wbwseg_on() else None
+
+
+def _word_by_word_translation_pre(s0, a0, pos):
+    """Our position -> the pre-fuse position(s) it is made of, in order."""
+    f = _word_by_word_translation_fuse_at(s0, a0)
+    if f is None:
+        return [pos]
+    fp, n = f
+    if pos < fp:
+        return [pos]
+    if pos == fp:
+        return list(range(fp, fp + n))
+    return [pos + n - 1]
+
+
+def _word_by_word_translation_post(s0, a0, pos):
+    """Pre-fuse position -> our position (the halves share the fused one)."""
+    f = _word_by_word_translation_fuse_at(s0, a0)
+    if f is None:
+        return pos
+    fp, n = f
+    if pos < fp:
+        return pos
+    return fp if pos < fp + n else pos - n + 1
+
+
+def _wbwseg_fuse_data(data):
+    """Rewrite a quran.com page payload in place to the release's boundaries."""
+    for ayah in data.get("verses", []):
+        s0, a0 = (int(x) for x in ayah["verse_key"].split(":"))
+        f = _word_by_word_translation_fuse_at(s0, a0)
+        if f is None:
+            continue
+        fp, n = f
+        parts = [w for w in ayah["words"]
+                 if w.get("char_type_name") == "word"
+                 and fp <= w["position"] < fp + n]
+        if len(parts) != n:
+            continue                     # not the page holding the compound
+        nw, done = [], False
+        for w in ayah["words"]:
+            if any(w is x for x in parts):
+                if done:
+                    continue
+                done = True
+                m = dict(parts[0])
+                m["text_uthmani"] = "".join(x["text_uthmani"] for x in parts)
+                m["text_imlaei"] = "".join(x.get("text_imlaei") or ""
+                                           for x in parts)
+                nw.append(m)
+            else:
+                if w["position"] >= fp + n:
+                    w = dict(w)
+                    w["position"] -= n - 1
+                nw.append(w)
+        ayah["words"] = nw
+
+
+def _wbwseg_lines_convert(tbl):
+    """{page: {"s:a:p": line}} from pre-fuse keys to ours. The fused word takes
+    the FIRST half's line; build_word_by_word_translation_seg refuses a fuse whose halves are drawn
+    on different lines, which one word could not express."""
+    out = {}
+    for pg, d in tbl.items():
+        nd = {}
+        for k, ln in d.items():
+            s0, a0, p = (int(x) for x in k.split(":"))
+            f = _word_by_word_translation_fuse_at(s0, a0)
+            if f is not None and f[0] < p < f[0] + f[1]:
+                continue                 # a later half: the first one has it
+            nd["%d:%d:%d" % (s0, a0, _word_by_word_translation_post(s0, a0, p))] = ln
+        out[pg] = nd
+    return out
+
+
+def _wbwseg_widths(q):
+    """Remap the pre-fuse QCF advance table to ours: the fused word's advance
+    is the SUM of its halves' (one word now draws all of that ink)."""
+    out = {}
+    for k, v in q.items():
+        s0, a0, p = (int(x) for x in k.split(":"))
+        nk = "%d:%d:%d" % (s0, a0, _word_by_word_translation_post(s0, a0, p))
+        out[nk] = out.get(nk, 0.0) + v
+    return out
+
+
+def _word_qpc(qpc, s0, a0, pos):
+    """QPC text for one of our words, across a fuse."""
+    return "".join(_dkseg_qpc(qpc, s0, a0, p) for p in _word_by_word_translation_pre(s0, a0, pos))
+
+
+def _word_dktext(s0, a0, pos):
+    """DK text for one of our words, across a fuse (DK splits what we fuse)."""
+    parts = [_dktext(s0, a0, p) for p in _word_by_word_translation_pre(s0, a0, pos)]
+    if any(p is None for p in parts):
+        return None
+    return "".join(parts)
 
 
 # ---------------------------------------------------------------------------
@@ -690,21 +852,21 @@ def page_elements(page):
 
 # Shapes whose normalised outline has a letter twin (a dagger-alef looks like a full
 # alef once scale is removed) may only force-mark when the drawn size fits the mark.
-# Marks this art never draws below their letter (fatha/kasra and the dot family
+# Marks this art never draws below their letter (fathah/kasrah and the dot family
 # are two-sided and stay unrestricted).
-_ABOVE_ONLY = {"damma", "dammatan", "pause", "sukun", "shadda", "small-circle",
-               "meem-iqlab", "small-waw", "small-alef", "maddah", "wasla"}
+_ABOVE_ONLY = {"dammah", "tanwin_al_damm", "waqf", "sukun", "shaddah", "small_circle",
+               "small_meem", "small_waw", "omitted_alif", "maddah", "hamzat_al_wasl"}
 
-_DUAL_SIZE_CAP = {"small-alef": 12.0, "small-waw": 8.0, "small-ya": 9.5,
-                  "pause": 9.5, "sukun": 4.8, "wasla": 6.5, "shadda": 8.5,
-                  "small-circle": 4.8, "dot": 4.0, "meem-iqlab": 6.0, "letter-part": 11.5,
-                  "fatha": 12.0, "kasra": 12.0, "fathatan": 12.0, "kasratan": 12.0}
+_DUAL_SIZE_CAP = {"omitted_alif": 12.0, "small_waw": 8.0, "small_yaa": 9.5,
+                  "waqf": 9.5, "sukun": 4.8, "hamzat_al_wasl": 6.5, "shaddah": 8.5,
+                  "small_circle": 4.8, "dot": 4.0, "small_meem": 6.0, "letter_part": 11.5,
+                  "fathah": 12.0, "kasrah": 12.0, "tanwin_al_fath": 12.0, "tanwin_al_kasr": 12.0}
 
 
 
 def _human_letter_label(e):
     """True when a HUMAN table entry says this outline is letter ink
-    (letter-hamza / letter / letter-part): the iqlab-م rescues must never
+    (letter_hamzah / letter / letter_part): the iqlab-م rescues must never
     press it into service as the sign (Abdullah 2026-08-28: the seated ء
     82bbe2d7 and the ك armature 7d3b5bf2 were both taken on iqlab words)."""
     try:
@@ -715,12 +877,12 @@ def _human_letter_label(e):
     lb = v.get("label") if isinstance(v, dict) else v
     auto = (v.get("auto", v.get("ai", False))
             if isinstance(v, dict) else False)
-    return (not auto) and lb in ("letter-hamza", "letter", "letter-part")
+    return (not auto) and lb in ("letter_hamzah", "letter", "letter_part")
 
 def classify(elements, lines_info, part_key=None, mark_shapes=None):
     """Tag each element body/mark: known mark shapes first, then baseline geometry.
 
-    Shape identity outranks position — a damma hovering low over a flat letter dips
+    Shape identity outranks position — a dammah hovering low over a flat letter dips
     into the baseline zone, and a dagger-alef is taller than the height ceiling, but
     both ARE marks and their outlines are in the confirmed shape table. Geometry
     decides only what the table does not know: letter bodies stand on the baseline
@@ -740,7 +902,7 @@ def classify(elements, lines_info, part_key=None, mark_shapes=None):
             lab = mark_shapes.get(part_key(e))
             if lab:
                 e["lab"] = lab            # remembered for position/attachment rules
-            if lab in ("letter-hamza", "letter", "letter-part"):
+            if lab in ("letter_hamzah", "letter", "letter_part"):
                 # letter ink — whole letters (ر د و ا…) and detached pieces (the
                 # ك armature) both cluster into words as bodies; as marks they
                 # could re-line onto a neighbouring line's word.
@@ -755,7 +917,7 @@ def classify(elements, lines_info, part_key=None, mark_shapes=None):
                 # letter ه/ة, never a sukun; likewise the dot family is solid —
                 # a contour nested inside another is a ring (a ة head), not dots
                 ok = not (lab == "sukun" and len(e["contours"]) > 1)
-                if ok and lab in ("dot", "two-dots", "three-dots") \
+                if ok and lab in ("dot", "two_dots", "three_dots") \
                         and len(e["contours"]) > 1:
                     bbs = [c["sp"] for c in e["contours"]]
                     for i2, a2 in enumerate(bbs):
@@ -801,21 +963,21 @@ def classify(elements, lines_info, part_key=None, mark_shapes=None):
 
 def composite_marks(elements, part_key=None, known=None):
     """Group mark elements drawn as one logical sign — the waqf ج is a ح curl plus a
-    dot, small قلے/صلے are several strokes, a damma head and its tail. Members stack:
+    dot, small قلے/صلے are several strokes, a dammah head and its tail. Members stack:
     x-ranges overlap and they touch or nearly touch. Two parts that EACH match an
-    already-labeled single shape never merge — a fatha dipping onto a hamza is two
+    already-labeled single shape never merge — a fathah dipping onto a hamzah is two
     marks, and the shape table knows both; a glyph's own fragments match nothing on
     their own and are free to rejoin. The largest member becomes the primary; the
     others point back to it and never count or label on their own.
     """
     known = known or {}
-    DOTFAM = {"dot", "two-dots", "three-dots"}
+    DOTFAM = {"dot", "two_dots", "three_dots"}
 
     def label_of(e):
         return known.get(part_key(e)) if part_key is not None else None
 
     def waqf_of(e):
-        """Which pause sign this is — ج, صلى, قلى — from the shape, not the text."""
+        """Which waqf sign this is — ج, صلى, قلى — from the shape, not the text."""
         return waqf_types().get(part_key(e)) if part_key is not None else None
 
     for ln in {e["line"] for e in elements}:
@@ -913,9 +1075,9 @@ def composite_marks(elements, part_key=None, known=None):
                     continue
                 la, lb = label_of(a), label_of(b)
                 # a slash is a complete mark on its own: it never welds into a
-                # larger unknown piece (the ء of إ under a kasra) — only true
-                # fragments (a damma's tail, a waqf curl) rejoin the unknown
-                SLASH = ("fatha", "kasra", "fathatan", "kasratan")
+                # larger unknown piece (the ء of إ under a kasrah) — only true
+                # fragments (a dammah's tail, a waqf curl) rejoin the unknown
+                SLASH = ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr")
                 if ((la in SLASH and not lb and not nested_dot)
                         or (lb in SLASH and not la and not nested_dot)):
                     continue
@@ -923,7 +1085,7 @@ def composite_marks(elements, part_key=None, known=None):
                     dx = abs((a["x1"] + a["x2"]) / 2 - (b["x1"] + b["x2"]) / 2)
                     tight = dx < 2.5 and vgap <= 0.6
                     dots_pair = la in DOTFAM and lb in DOTFAM and tight
-                    # A waqf letter owns its dot: ج = pause curl + nested dot.
+                    # A waqf letter owns its dot: ج = waqf curl + nested dot.
                     #
                     # Restricting this to ج was tried, on the reasoning that صلى and قلى
                     # have no dot below them and so must be swallowing a letter's dot —
@@ -932,10 +1094,10 @@ def composite_marks(elements, part_key=None, known=None):
                     # the first 120 pages. Un-welding turns a sign's own dot into an
                     # extra dot unit far more often than it recovers a letter's. p27 is
                     # a real defect but not this rule's fault.
-                    waqf_dot = (nested_dot and "pause" in (la, lb)
+                    waqf_dot = (nested_dot and "waqf" in (la, lb)
                                 and (la in DOTFAM or lb in DOTFAM))
-                    pause_pair = la == lb == "pause" and vgap <= 2.2
-                    if not (dots_pair or waqf_dot or pause_pair):
+                    waqf_pair = la == lb == "waqf" and vgap <= 2.2
+                    if not (dots_pair or waqf_dot or waqf_pair):
                         continue         # two complete marks stacked, not one glyph
                 parent[find(j)] = find(i)
 
@@ -1009,15 +1171,15 @@ _WAQF = None
 # vocabulary. Old values are still ACCEPTED on input — waqf_types.json /
 # waqf_places.json may be rebuilt from MushafDatabase, whose vocabulary the
 # left column is — but only the right column is ever emitted.
-_WAQF_CANON = {"waqf lazim": "waqf-lazim", "waqf qila": "waqf-awla",
-               "waqf sali": "wasl-awla", "waqf jaiz": "waqf-jaiz",
-               "waqf taanuq": "muanaqah"}
+_WAQF_CANON = {"waqf madd_lazim": "waqf_lazim", "waqf qila": "waqf_jaiz_waqf_awla",
+               "waqf sali": "waqf_jaiz_wasl_awla", "waqf jaiz": "waqf_jaiz_mustawi_al_tarafayn",
+               "waqf taanuq": "waqf_al_muanaqah"}
 
 
 def waqf_types():
     """{signature: waqf name} — evidence, built by tools/waqf_table.py, applied as data.
 
-    Additive only: the element keeps its `pause` label, so nothing that counts marks
+    Additive only: the element keeps its `waqf` label, so nothing that counts marks
     changes behaviour. Missing file means no `data-waqf` is emitted and everything
     behaves exactly as before.
     """
@@ -1089,8 +1251,8 @@ _RARE_PLACES = None
 
 def rare_places():
     """{(surah, ayah): job} for the seven U+06DC sites, named BY JOB (taxonomy
-    phase 1, decision 4): `saktah` at the five saktah sites, `seen-reading` at
-    the two seen-for-sad sites. A place table exactly like waqf_places() —
+    phase 1, decision 4): `saktah` at the five saktah sites, `seen_al_qiraah` at
+    the two seen-for-saad sites. A place table exactly like waqf_places() —
     the ۜ outline is not one shape (each site has its own signature, and one of
     them, 9a5430a7a9db4617, doubles as a letter س body at 69:17), so the shape
     table cannot carry the job; the PLACE does. Data: .cache/marks/rare_places.json."""
@@ -1100,7 +1262,7 @@ def rare_places():
         _RARE_PLACES = {}
         try:
             d = json.load(open(p, encoding="utf-8"))
-            for job in ("saktah", "seen-reading"):
+            for job in ("saktah", "seen_al_qiraah"):
                 for ref in d.get(job, ()):
                     su, ay = ref.split(":")
                     _RARE_PLACES[(int(su), int(ay))] = job
@@ -1120,6 +1282,8 @@ def qcf_widths():
         # every consumer sees one consistent keying
         if _QCF and _dkseg_on():
             _QCF = _dkseg_widths(_QCF)
+        if _QCF and _wbwseg_on() and _word_by_word_translation_fuses():
+            _QCF = _wbwseg_widths(_QCF)
     return _QCF
 
 
@@ -1130,11 +1294,11 @@ def letters(word):
     """Expected drawn width of a word: the QCF font's own advance when known
     (scaled to roughly page units), else the calibrated letter sum."""
     q = qcf_widths().get("%d:%d:%d" % (word["surah"], word["ayah"], word["pos"]))
-    # a hizb-quarter word's QCF advance includes the ۞ ornament glyph, which this
+    # a rubu-al-hizb word's QCF advance includes the ۞ ornament glyph, which this
     # art draws separately — the inflated width would make the word steal atoms
-    ls = sum(letter_width(s["text"]) for s in segment_word(word["uthmani"])) or 3.0
+    ls = sum(letter_width(s["text"]) for s in segment_word(word["rasm_uthmani"])) or 3.0
     if q and not word.get("half") \
-            and not any(m in word["uthmani"] for m in "۞۩") \
+            and not any(m in word["rasm_uthmani"] for m in "۞۩") \
             and os.environ.get("QSVG_QCF", "1") == "1":
         est = q * 19.5                    # em -> page units (alpha absorbs residual)
         # a handful of cached advances are corrupt (page-boundary drift pages
@@ -1217,10 +1381,10 @@ def _space_halves(word):
     letter on BOTH sides selects exactly the compound family.
 
     Under QSVG_DKSEG (default on) the three بَعْدَ مَا pairs arrive as two
-    ordinary words each (_DKSEG_SPLITS — the print's own segmentation), so
+    ordinary words each (_seg_splits() — the release's segmentation), so
     this fires only for p117 and p451, which the DK DB also keeps fused.
     """
-    core = word["uthmani"].replace("۞", "").replace("۩", "").strip()
+    core = word["rasm_uthmani"].replace("۞", "").replace("۩", "").strip()
     parts = [p for p in core.split(" ") if p]
     if len(parts) != 2 or not all(_LETTER.search(p) for p in parts):
         return None
@@ -1253,7 +1417,7 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
         # a detached alef or a big letter chunk must keep its own atom
         w = b["x2"] - b["x1"]; h = b["y2"] - b["y1"]
         return max(w, h) <= 9.0 and h < 3.0 * w
-    frags = [b for b in bodies if b.get("lab") == "letter-part" and armature(b)]
+    frags = [b for b in bodies if b.get("lab") == "letter_part" and armature(b)]
     bases = [b for b in bodies if b not in frags] or bodies
     atoms = [{"x1": b["x1"], "x2": b["x2"], "els": [b]} for b in bases]
     for f in frags:
@@ -1343,7 +1507,7 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
             if hs:
                 for h in hs:
                     pw = dict(w)
-                    pw["uthmani"] = h
+                    pw["rasm_uthmani"] = h
                     pw["half"] = True     # letters() must not use the full
                     xw.append(pw)         # compound's QCF advance per half
                     src.append(wi)
@@ -1390,22 +1554,22 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
     # none. A real inter-word space still earns a reward, so a true boundary can pay
     # for a slightly worse width fit without splitting kashida-stretched words.
     GAP_REWARD = 1.0
-    all_segs = [segment_word(w["uthmani"]) for w in words]
+    all_segs = [segment_word(w["rasm_uthmani"]) for w in words]
     # two width systems: word-level lens may be QCF-font based, but the letter
     # alignment works in calibrated letter units — give it its own absolute alpha
     cal_total = sum(letter_width(sg["text"]) for segs in all_segs for sg in segs)
     alpha_cal = span_total / max(1e-9, cal_total)
-    n_letters = sum(len("".join(_LETTER.findall(w["uthmani"]))) for w in words) or 1
+    n_letters = sum(len("".join(_LETTER.findall(w["rasm_uthmani"]))) for w in words) or 1
     mean_letter = span_total / n_letters       # scale-free gap normalisation
 
     # The skeleton fixes how many DOT units a word owns — a signal the split
     # search had been ignoring, though it is often the only thing that says
     # where one word ends: ٱلْمُحْصَنَـٰتِ (3) absorbing ثُمَّ (3) reads as 6.
-    _DOTU_C = {"dot": 1, "two-dots": 2, "three-dots": 3}
+    _DOTU_C = {"dot": 1, "two_dots": 2, "three_dots": 3}
 
     def _dots_of_word(w6):
-        raw = _LETTER.findall(w6["uthmani"])
-        sk = [(HAMZA_MAP[c][0] if c in HAMZA_MAP else c, c in HAMZA_MAP)
+        raw = _LETTER.findall(w6["rasm_uthmani"])
+        sk = [(HAMZAH_MAP[c][0] if c in HAMZAH_MAP else c, c in HAMZAH_MAP)
               for c in raw]
         t = 0
         for i6, (ch, seat) in enumerate(sk):
@@ -1443,11 +1607,11 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
             c *= len(all_segs[k - 1]) or 1
         # The art joins letters but never invents pieces: more atoms than expected
         # segments means the word is absorbing a neighbour's fragment — unless it
-        # carries a hamza or tanween, whose tiny floats legitimately add atoms.
+        # carries a hamzah or tanwin, whose tiny floats legitimately add atoms.
         surplus = max(0, (i - j) - len(all_segs[k - 1]))
         if surplus:
-            floaty = any(ch in "ءأإؤئآ" for ch in words[k - 1]["uthmani"]) or \
-                any(ch in "ًࣰٌࣱٍࣲ" for ch in words[k - 1]["uthmani"])
+            floaty = any(ch in "ءأإؤئآ" for ch in words[k - 1]["rasm_uthmani"]) or \
+                any(ch in "ًࣰٌࣱٍࣲ" for ch in words[k - 1]["rasm_uthmani"])
             c += surplus * (0.15 if floaty else _W_SURPLUS)
         # Direct word-width prior: the page font's own advance for this word is
         # ground truth (justification cancels through alpha). Letter alignment
@@ -1499,7 +1663,7 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
         return (max(a["x2"] for a in cl) - min(a["x1"] for a in cl)) if cl else 0.0
 
     def skel(w):
-        return "".join(_LETTER.findall(w["uthmani"]))
+        return "".join(_LETTER.findall(w["rasm_uthmani"]))
 
     def alef_atom(a):
         b = max((e for e in a["els"] if e["kind"] == "body"), default=None,
@@ -1537,11 +1701,11 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
         return 4.0 * alpha * n_out
 
     def _nseg_band(w):
-        segs = segment_word(w["uthmani"])
+        segs = segment_word(w["rasm_uthmani"])
         hi = max(1, len(segs))
         soft = sum(1 for sg in segs if sg["text"] == "\u0621")
         # a lam-alef ligature may be drawn as TWO strokes (one extra piece)
-        sk = "".join(_LETTER.findall(w["uthmani"]))
+        sk = "".join(_LETTER.findall(w["rasm_uthmani"]))
         laa = sum(sk.count("\u0644" + a) for a in "\u0627\u0623\u0625\u0622")
         return (max(1, hi - soft), hi + laa)
 
@@ -1650,7 +1814,7 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
                         best = (d, -j)
             if os.environ.get("QSVG_DEBUG_BND"):
                 print("BND %-10s|%-10s base %.2f best %.2f shift %d" % (
-                    words[k]["uthmani"][:10], words[k + 1]["uthmani"][:10],
+                    words[k]["rasm_uthmani"][:10], words[k + 1]["rasm_uthmani"][:10],
                     base, best[0], best[1]), file=sys.stderr)
             if best[1] and best[0] < base - 0.3 * alpha:
                 j = best[1]
@@ -1678,45 +1842,45 @@ def cluster_line(els, words, ayah_ranges=None, alpha_scale=1.0,
 # ---------------------------------------------------------------------------
 # A connected letter-body IS a ligature: Arabic non-joining letters break the
 # connected groups, so the expected ligature split is computable from the text
-# alone (ٱلَّذِينَ → ٱ / لذ / ين). Marks (harakat, hamza, i'jam dots) are separate
+# alone (ٱلَّذِينَ → ٱ / لذ / ين). Marks (harakahs, hamzah, i'jam dots) are separate
 # small elements; each one's label is predicted from the Unicode marks plus the
 # dot pattern of the skeleton letters, then matched to the atom's observed mark
 # elements above/below the body in right-to-left order. Any count mismatch is
 # flagged, never guessed.
 
-HARAKA = {
-    "ً": ("fathatan", "a"), "ٌ": ("dammatan", "a"),
-    "ٍ": ("kasratan", "b"), "َ": ("fatha", "a"),
-    "ُ": ("damma", "a"), "ِ": ("kasra", "b"),
-    "ّ": ("shadda", "a"), "ْ": ("sukun", "a"),
-    "ٓ": ("maddah", "a"), "ٔ": ("hamza", "a"), "ٕ": ("hamza", "b"),
-    "ٰ": ("small-alef", "a"), "۟": ("small-circle", "a"),
-    "۠": ("small-circle", "a"), "ۡ": ("sukun", "a"),
-    "ۢ": ("meem-iqlab", "a"), "ۭ": ("meem-iqlab", "b"),
-    "ۤ": ("maddah", "a"), "ۥ": ("small-waw", "a"),
-    "ۦ": ("small-ya", "a"), "ۧ": ("small-ya", "a"),
-    "ۖ": ("pause", "a"), "ۗ": ("pause", "a"), "ۘ": ("pause", "a"),
-    "ۙ": ("pause", "a"), "ۚ": ("pause", "a"), "ۛ": ("pause", "a"),
-    "ۜ": ("pause", "a"), "ࣰ": ("fathatan", "a"),
-    "ࣱ": ("dammatan", "a"), "ࣲ": ("kasratan", "b"),
+HARAKAH = {
+    "ً": ("tanwin_al_fath", "a"), "ٌ": ("tanwin_al_damm", "a"),
+    "ٍ": ("tanwin_al_kasr", "b"), "َ": ("fathah", "a"),
+    "ُ": ("dammah", "a"), "ِ": ("kasrah", "b"),
+    "ّ": ("shaddah", "a"), "ْ": ("sukun", "a"),
+    "ٓ": ("maddah", "a"), "ٔ": ("hamzah", "a"), "ٕ": ("hamzah", "b"),
+    "ٰ": ("omitted_alif", "a"), "۟": ("small_circle", "a"),
+    "۠": ("small_circle", "a"), "ۡ": ("sukun", "a"),
+    "ۢ": ("small_meem", "a"), "ۭ": ("small_meem", "b"),
+    "ۤ": ("maddah", "a"), "ۥ": ("small_waw", "a"),
+    "ۦ": ("small_yaa", "a"), "ۧ": ("small_yaa", "a"),
+    "ۖ": ("waqf", "a"), "ۗ": ("waqf", "a"), "ۘ": ("waqf", "a"),
+    "ۙ": ("waqf", "a"), "ۚ": ("waqf", "a"), "ۛ": ("waqf", "a"),
+    "ۜ": ("waqf", "a"), "ࣰ": ("tanwin_al_fath", "a"),
+    "ࣱ": ("tanwin_al_damm", "a"), "ࣲ": ("tanwin_al_kasr", "b"),
 }
 # skeleton letter -> (dots label, above/below); final ya is dotless in this script
 DOTS = {
-    "ب": ("dot", "b"), "ت": ("two-dots", "a"), "ث": ("three-dots", "a"),
+    "ب": ("dot", "b"), "ت": ("two_dots", "a"), "ث": ("three_dots", "a"),
     "ج": ("dot", "b"), "خ": ("dot", "a"), "ذ": ("dot", "a"), "ز": ("dot", "a"),
-    "ش": ("three-dots", "a"), "ض": ("dot", "a"), "ظ": ("dot", "a"),
-    "غ": ("dot", "a"), "ف": ("dot", "a"), "ق": ("two-dots", "a"),
-    "ن": ("dot", "a"), "ي": ("two-dots", "b"), "ة": ("two-dots", "a"),
+    "ش": ("three_dots", "a"), "ض": ("dot", "a"), "ظ": ("dot", "a"),
+    "غ": ("dot", "a"), "ف": ("dot", "a"), "ق": ("two_dots", "a"),
+    "ن": ("dot", "a"), "ي": ("two_dots", "b"), "ة": ("two_dots", "a"),
 }
-HAMZA_MAP = {
-    "أ": ("ا", ("hamza", "a")), "إ": ("ا", ("hamza", "b")),
-    "آ": ("ا", ("maddah", "a")), "ٱ": ("ا", ("wasla", "a")),
-    "ؤ": ("و", ("hamza", "a")), "ئ": ("ي", ("hamza", "a")),
+HAMZAH_MAP = {
+    "أ": ("ا", ("hamzah", "a")), "إ": ("ا", ("hamzah", "b")),
+    "آ": ("ا", ("maddah", "a")), "ٱ": ("ا", ("hamzat_al_wasl", "a")),
+    "ؤ": ("و", ("hamzah", "a")), "ئ": ("ي", ("hamzah", "a")),
 }
 NONJOIN = set("اأإآٱدذرزوؤةى")
 
 
-def segment_word(uthmani):
+def segment_word(rasm_uthmani):
     """Expected ligatures of a word: [{'text', 'marks': [(label, pos)…], 'bad'}].
 
     `text` is the skeleton (rasm) the body path draws. A standalone ء is drawn as a
@@ -1724,7 +1888,7 @@ def segment_word(uthmani):
     counting as a body of its own.
     """
     segs, cur, pend, bad = [], None, [], False
-    for ch in uthmani:
+    for ch in rasm_uthmani:
         if ch == " ":
             # A SPACE BREAKS THE JOIN. The mushaf writes two words as one
             # token in a handful of places (إِلْ يَاسِينَ 37:130) and the
@@ -1744,14 +1908,14 @@ def segment_word(uthmani):
             segs.append(cur)
             pend = []
             continue
-        if ch in HARAKA:
+        if ch in HARAKAH:
             if cur:
-                cur["marks"].append(HARAKA[ch])
+                cur["marks"].append(HARAKAH[ch])
             else:
-                pend.append(HARAKA[ch])
+                pend.append(HARAKAH[ch])
             continue
-        if ch in HAMZA_MAP:
-            base, extra = HAMZA_MAP[ch]
+        if ch in HAMZAH_MAP:
+            base, extra = HAMZAH_MAP[ch]
         elif "ء" <= ch <= "ي" or ch == "ى":
             base, extra = ch, None
         else:
@@ -1763,7 +1927,7 @@ def segment_word(uthmani):
             pend = []
         cur["text"] += base
         if extra:
-            cur["marks"].append(extra)      # hamza carriers are drawn dotless
+            cur["marks"].append(extra)      # hamzah carriers are drawn dotless
         elif base in DOTS:
             cur["marks"].append(DOTS[base])
         if ch in NONJOIN:
@@ -1773,8 +1937,8 @@ def segment_word(uthmani):
     # final ya and alef maqsura are drawn dotless in the Madinah script
     if segs and segs[-1]["text"].endswith("ي"):
         m = segs[-1]["marks"]
-        if ("two-dots", "b") in m:
-            m.remove(("two-dots", "b"))
+        if ("two_dots", "b") in m:
+            m.remove(("two_dots", "b"))
     for s in segs:
         s["bad"] = bad
     return segs
@@ -1784,7 +1948,7 @@ def align_segs_atoms(atoms, segs, alpha=None):
     """Monotone alignment of drawn bodies to expected ligatures, both right-to-left.
 
     The nominal split rule and the art disagree in places — كفروا can be inked as one
-    connected piece (one atom, three segments), a hamza or a stray piece can add an
+    connected piece (one atom, three segments), a hamzah or a stray piece can add an
     atom. Each aligned group is one atom run ↔ one segment run, where at least one side
     is a single item; groups are scored by the same width prior as word clustering.
     Returns (groups, cost): groups = [(atom_list, seg_list)…], cost normalised to the
@@ -1941,9 +2105,9 @@ def put_in_ligature(atoms, e):
 
     A word is emitted as one `<g class="ligature">` per piece the joining rules allow, so
     appending to `atoms[0]` puts the mark in the word's FIRST group whatever it is drawn
-    over. Abdullah caught this on p591: `ٱلسَّمَآءِ`'s final kasra was moved into the
+    over. Abdullah caught this on p591: `ٱلسَّمَآءِ`'s final kasrah was moved into the
     right word and landed in `data-text="وا"`, the group holding the initial و at the
-    other end of the word, instead of the group holding the hamza it sits under.
+    other end of the word, instead of the group holding the hamzah it sits under.
 
     Same rule `_omove` uses for every one of the older movers — nearest by centre x.
     """
@@ -1957,7 +2121,7 @@ def put_in_ligature(atoms, e):
 
 
 def mark_pos(e, baseline, body):
-    """'a' above the line's writing level, 'b' below — fatha vs kasra territory."""
+    """'a' above the line's writing level, 'b' below — fathah vs kasrah territory."""
     cy = (e["y1"] + e["y2"]) / 2
     if baseline is not None:
         return "a" if cy < baseline else "b"
@@ -2014,17 +2178,17 @@ def _surah_attrs(su):
     return (' data-surah-name-ar="%s" data-surah-name-latin="%s"'
             ' data-surah-name-en="%s" data-revelation-place="%s"'
             ' data-ayah-count="%d"'
-            % (esc(c["name_arabic"]), esc(c["name_simple"]),
+            % (esc(c["name_arabic"]), esc(c["name_latin"]),
                esc(c["name_english"]), esc(c["revelation_place"]),
                c["ayah_count"]))
 
 
 def _ayah_start_attrs(akey):
-    """`data-juz-start` / `-hizb-start` / `-nisf-start` / `-rub-start`.
+    """`data-juz-start` / `-hizb-start` / `-nisf-start` / `-rubu-al-hizb-start`.
 
     Emitted only on the ayah that BEGINS a division, so "where does juz 15
     start" is answerable from the pages alone. The numbers come from the
-    cached quran.com verse records (juz/hizb/rubʿ per ayah); see
+    cached quran.com ayah records (juz/hizb/rubʿ per ayah); see
     tools/quran_meta.py.
     """
     try:
@@ -2034,9 +2198,9 @@ def _ayah_start_attrs(akey):
     if not st:
         return ""
     out = ""
-    for k in ("juz", "hizb", "nisf", "rub"):
+    for k in ("juz", "hizb", "nisf", "rubu_al_hizb"):
         if k in st:
-            out += ' data-%s-start="%d"' % (k, st[k])
+            out += ' data-%s-start="%d"' % (k.replace("_", "-"), st[k])
     return out
 
 
@@ -2078,8 +2242,8 @@ def rewrite(page, assignment):
     # runs — 114 runs in the whole mushaf, 112 of LENGTH 2 and 2 of LENGTH 1,
     # with nothing else at all (no run of 3, no run that is not immediately
     # followed by word 1 of ayah 1 of a surah: 114 of 114). The two singletons
-    # are exactly the two surahs that have no basmalah of their own — al-Fatiha
-    # (p1, its basmalah IS ayah 1:1) and at-Tawba (p187). So the run reads
+    # are exactly the two surahs that have no basmalah of their own — Fatihah
+    # (p1, its basmalah IS ayah 1:1) and Tawbah (p187). So the run reads
     # top-down as [surah-name, basmalah], or [surah-name] alone when it is one
     # line, and its surah is the surah of the first word beneath it. 114
     # banners and 112 basmalahs — which is exactly what the mushaf has.
@@ -2183,7 +2347,7 @@ def rewrite(page, assignment):
     # where the basmalah IS ayah 1:1). Measured mushaf-wide (reported.json
     # item 33): 9 thefts on 8 pages, 8 of them a last-line word reaching into
     # the title below — the superscript recoveries hunt small glyphs and read
-    # title letters as small-waw/small-alef/maddah (p590: ٱلصَّـٰلِحَـٰتِ took
+    # title letters as small_waw/omitted_alif/maddah (p590: ٱلصَّـٰلِحَـٰتِ took
     # the dot of the ب in سورة البروج). Evicted ink rejoins the wordless pool,
     # where the header wrapper below picks it up; fabricated mark names are
     # left in place — titles carry real diacritics and are not audited, so a
@@ -2425,7 +2589,7 @@ def rewrite(page, assignment):
     if os.environ.get("QSVG_SAJ", "1") == "1":
         _sajw = {}
         for word, atoms in assignment:
-            if word and "۩" in word["uthmani"] and id(word) in home:
+            if word and "۩" in word["rasm_uthmani"] and id(word) in home:
                 _sajw[(word["surah"], word["ayah"])] = home[id(word)]
         for word, atoms in assignment:
             if word is not None:
@@ -2442,7 +2606,7 @@ def rewrite(page, assignment):
 
     # Invariant: an element is drawn exactly once. Movers that carry a welded
     # master between atoms adopt its mkmembers into the target without pulling
-    # them out of their origin atom (p123's doubled dammatan strokes, AA-dark
+    # them out of their origin atom (p123's doubled tanwin_al_damm strokes, AA-dark
     # edges on 168 pages). Keep the occurrence that sits beside its master —
     # the atom whose els list it in some mkmembers — else the first.
     occ = {}
@@ -2471,7 +2635,7 @@ def rewrite(page, assignment):
                     kept.append(x)
                 a["els"] = kept
 
-    # A dot-family mark is ONE mark (Abdullah, item 36): a three-dots drawn
+    # A dot-family mark is ONE mark (Abdullah, item 36): a three_dots drawn
     # as 2+1 contour groups must emit as a single <path>. Absorb each member's
     # contours into its master when both come from the same source path (same
     # frame — build_d absolutizes separated contours, so coordinates hold and
@@ -2480,7 +2644,7 @@ def rewrite(page, assignment):
     if os.environ.get("QSVG_DOTMERGE", "1") == "1":
         _absorbed_paths = set()
         # generalized (Abdullah 2026-08-28): EVERY welded sign is ONE mark —
-        # a kasratan pair, the ج with its dot, the hizb with its ornament —
+        # a tanwin_al_kasr pair, the ج with its dot, the hizb with its ornament —
         # so occurrence counts are exact. Same-source-frame merge only;
         # cross-path members keep their own reframed path as before.
         for word, atoms in assignment:
@@ -2491,7 +2655,7 @@ def rewrite(page, assignment):
                         keepm = []
                         for m in e["mkmembers"]:
                             # the member may sit in ANY atom of the same
-                            # word (49 open-kasratan pairs emitted split
+                            # word (49 open-tanwin-al-kasr pairs emitted split
                             # because the twin lived one atom over)
                             _hostm = next((a2 for a2 in atoms
                                            if m in a2["els"]), None)
@@ -2562,7 +2726,7 @@ def rewrite(page, assignment):
                                 e["contours"] = list(e["contours"]) + _mc
                                 # A member can be listed by an atom of a
                                 # DIFFERENT word as well as its own (p17:
-                                # خَيْرࣲ's kasratan half was also in
+                                # خَيْرࣲ's tanwin_al_kasr half was also in
                                 # هُودًا's atom, so absorbing it from one
                                 # left the other drawing it a second time —
                                 # one extra contour, 37 bad pixels). Mark it
@@ -2594,7 +2758,7 @@ def rewrite(page, assignment):
     # any other way (e.g. from the assignment order, or from line numbers)
     # would number the fragments in an order the document does not have.
     # Filled in below, once per_path exists and is ordered.
-    _ayah_parts, _ayah_seen = {}, {}
+    _ayah_fragments, _ayah_seen = {}, {}
 
     # Header ink follows the same rule as a word: a banner or basmalah is ONE
     # group, so every element of a header line must reach the wrapper of that
@@ -2644,7 +2808,7 @@ def rewrite(page, assignment):
                                     []).append((word, lig, atom, e))
 
     # READING ORDER (Abdullah 2026-08-29): "the order of elements should match
-    # the order in arabic RTL, so if a word has three dammas the tags for them
+    # the order in arabic RTL, so if a word has three dammahs the tags for them
     # should start right to left." One rule for letter bodies and marks alike —
     # inside a word its ligature groups come out right to left, and inside each
     # ligature group its elements come out right to left, by x descending.
@@ -2660,7 +2824,7 @@ def rewrite(page, assignment):
     #
     # Word-less entries are left exactly where they are: header ink and the
     # standalone sajdah/hizb groups are emitted after their own ayah on
-    # purpose, and word blocks keep their document order so the <g class="ayah">
+    # purpose, and word blocks keep their document order so the <g class="ayah-fragment">
     # runs are unchanged.
     if os.environ.get("QSVG_RTL", "1") == "1":
         def _rtl_key(t):
@@ -2706,7 +2870,7 @@ def rewrite(page, assignment):
     #
     # The rule is semantic, not geometric: a hizb/rubʿ rosette OPENS a
     # division, so it goes immediately before the first element of its ayah;
-    # the sajdah sign closes the ayah that calls for prostration, so it goes
+    # the sajdah sign closes the ayah that calls for sajdah, so it goes
     # immediately after the last element of its ayah. Where the ayah has no
     # ink at all in this wrapper (the sign sits on a line its ayah does not
     # reach) there is nothing to be relative to, and the group is left exactly
@@ -2753,9 +2917,9 @@ def rewrite(page, assignment):
     if os.environ.get("QSVG_EMDBG"):
         for _pi, _lst in per_path.items():
             for _w4, _lg4, _a4, _e4 in _lst:
-                if _e4.get("mkpart") or _e4.get("mark") == "pause":
+                if _e4.get("mkpart") or _e4.get("mark") == "waqf":
                     print("EMDBG path=%s word=%s mark=%s mkpart=%s nc=%d line=%s"
-                          % (_pi, (_w4 or {}).get("uthmani"), _e4.get("mark"),
+                          % (_pi, (_w4 or {}).get("rasm_uthmani"), _e4.get("mark"),
                              _e4.get("mkpart"), len(_e4["contours"]),
                              _e4.get("line")), file=sys.stderr)
 
@@ -2813,8 +2977,8 @@ def rewrite(page, assignment):
     # Count the fragments by REPLAYING the emitter's own walk: step through
     # every path in the same order and every element in the same order, and
     # count how many times each ayah key OPENS. That is exactly what the loop
-    # below does, so data-part numbers fragments in reading order and
-    # data-ayah-parts is the true total. Deriving it from the assignment
+    # below does, so data-fragment numbers fragments in reading order and
+    # data-ayah-fragments is the true total. Deriving it from the assignment
     # order or from line numbers would number them in an order the document
     # does not have.
     for _pi2 in range(len(page.paths)):
@@ -2827,7 +2991,7 @@ def rewrite(page, assignment):
             _ak2 = ((_w2["surah"], _w2["ayah"]) if _w2 else None)
             if _ak2 != _prev_ak:
                 if _ak2 is not None:
-                    _ayah_parts[_ak2] = _ayah_parts.get(_ak2, 0) + 1
+                    _ayah_fragments[_ak2] = _ayah_fragments.get(_ak2, 0) + 1
                 _prev_ak = _ak2
     for pi, p in enumerate(page.paths):
         s, t = p["span"]
@@ -2860,39 +3024,39 @@ def rewrite(page, assignment):
         # in the audits — the editions disagree on WHICH waqf sign at 424 of
         # 4,416 positions, so the ink's signature names the subtype while
         # the count answers to the family.
-        _MFAM = {"wasl-awla": "waqf", "waqf-awla": "waqf",
-                 "waqf-jaiz": "waqf", "waqf-lazim": "waqf",
-                 "muanaqah": "waqf", "pause": "waqf",
+        _MFAM = {"waqf_jaiz_wasl_awla": "waqf", "waqf_jaiz_waqf_awla": "waqf",
+                 "waqf_jaiz_mustawi_al_tarafayn": "waqf", "waqf_lazim": "waqf",
+                 "waqf_al_muanaqah": "waqf", "waqf": "waqf",
                  # DIACRITIC family (Abdullah 2026-08-30): the vowel marks
                  # share one family so "hide the diacritics" is ONE selector.
                  # It covers exactly the marks a reader means by التشكيل and
                  # NOTHING else — the letter dots are letter identity (ب ت ث
                  # differ only by dots) and the waqf signs are recitation, so
                  # hiding either is not undiacritised text, it is damage.
-                 # hamza/wasla/small-alef stay out: they carry letter identity
-                 # or sound, and hiding hamza turns أ into ا.
+                 # hamzah/hamzat_al_wasl/omitted_alif stay out: they carry letter identity
+                 # or sound, and hiding hamzah turns أ into ا.
                  # A mark can belong to MORE THAN ONE family, so this is a
                  # space-separated token list, like `class` — match it with
-                 # `[data-mark-family~="tanween"]`, not `=`.
-                 # The three tanween need both: they are vowel marks, so
+                 # `[data-mark-family~="tanwin"]`, not `=`.
+                 # The three tanwin need both: they are vowel marks, so
                  # "hide the diacritics" must reach them, AND they are the
-                 # tanween, which the audits and §8.2 group on. Giving them
-                 # only `diacritic` silently emptied `tanween` and left
+                 # tanwin, which the audits and §8.2 group on. Giving them
+                 # only `diacritic` silently emptied `tanwin` and left
                  # selecting it a three-name `data-mark` list instead of one
                  # selector. Single-family marks keep one token, so `=` still
                  # works for `dots`, `waqf`, `sifr` and the rest.
-                 "fatha": "diacritic", "kasra": "diacritic",
-                 "damma": "diacritic", "sukun": "diacritic",
-                 "shadda": "diacritic", "maddah": "diacritic",
-                 "fathatan": "diacritic tanween",
-                 "kasratan": "diacritic tanween",
-                 "dammatan": "diacritic tanween",
-                 "dot": "dots", "two-dots": "dots", "three-dots": "dots",
-                 "sifr-mustadir": "sifr", "sifr-mustatil": "sifr",
-                 "sajdah-line": "sajdah", "sajdah-sign": "sajdah",
-                 "saktah": "reading-sign", "seen-reading": "reading-sign",
-                 "imalah": "reading-sign", "ishmam": "reading-sign",
-                 "tashil": "reading-sign"}
+                 "fathah": "diacritic", "kasrah": "diacritic",
+                 "dammah": "diacritic", "sukun": "diacritic",
+                 "shaddah": "diacritic", "maddah": "diacritic",
+                 "tanwin_al_fath": "diacritic tanwin",
+                 "tanwin_al_kasr": "diacritic tanwin",
+                 "tanwin_al_damm": "diacritic tanwin",
+                 "dot": "dots", "two_dots": "dots", "three_dots": "dots",
+                 "rounded_zero": "sifr", "rectangular_zero": "sifr",
+                 "sajdah_line": "sajdah", "sajdah_mark": "sajdah",
+                 "saktah": "reading_sign", "seen_al_qiraah": "reading_sign",
+                 "imalah": "reading_sign", "ishmam": "reading_sign",
+                 "tashil": "reading_sign"}
 
         # Which member elements have been folded into their master's path (see
         # the merge in emit()). They must not be emitted a second time: drawing
@@ -2931,24 +3095,24 @@ def rewrite(page, assignment):
                 return
             eid[0] += 1
             if os.environ.get("QSVG_EIDMAP"):
-                _EIDMAP.append({"eid": "e%d" % eid[0],
+                _EIDMAP.append({"element_id": "e%d" % eid[0],
                                 "x1": round(e["x1"], 1), "y1": round(e["y1"], 1),
                                 "x2": round(e["x2"], 1), "y2": round(e["y2"], 1),
                                 "kind": e["kind"], "mark": e.get("mark"),
                                 "part": bool(e.get("mkpart"))})
-            # data-eid and data-sig are REVIEW-LOOP handles, dev profile only
-            # (Abdullah 2026-08-30). data-eid is not stable across builds — the
+            # data-element-id and data-sig are REVIEW-LOOP handles, dev profile only
+            # (Abdullah 2026-08-30). data-element-id is not stable across builds — the
             # emitter's ordering depends on Python id() — so shipping it invites
             # a consumer to key on it, and we would then either support an
             # unstable id forever or break them. data-sig is an outline shape
             # hash with no meaning outside the review loop, and 85 signatures
-            # serve both fatha and kasra, so it is not an identity either.
+            # serve both fathah and kasrah, so it is not an identity either.
             # Together they are ~1.2M attributes across the corpus.
             extra = ('<path data-kind="%s" ' % e["kind"] if _PROD else
-                     '<path data-eid="e%d" data-kind="%s" ' % (eid[0], e["kind"]))
+                     '<path data-element-id="e%d" data-kind="%s" ' % (eid[0], e["kind"]))
             wq = None
             if e.get("sig"):
-                # Which pause sign this is: the shapes are distinct outlines,
+                # Which waqf sign this is: the shapes are distinct outlines,
                 # so the signature settles it from the ink
                 # (`.cache/marks/waqf_types.json`), by place as fallback.
                 wq = waqf_types().get(e["sig"])
@@ -2957,7 +3121,7 @@ def rewrite(page, assignment):
                         "%.1f,%.1f,%.1f,%.1f" % (e["x1"], e["y1"], e["x2"], e["y2"]))
                     wq = _rec.get("waqf") if isinstance(_rec, dict) else _rec
             nm = e.get("mark")
-            if nm == "pause" and wq and wq != "muanaqah":
+            if nm == "waqf" and wq and wq != "waqf_al_muanaqah":
                 nm = wq
             if nm:
                 # data-mark-part is RETIRED (Abdullah 2026-08-30). A mark is now
@@ -2991,7 +3155,7 @@ def rewrite(page, assignment):
             if e.get("fused"):
                 extra += 'data-fused="1" '
             if e.get("standalone"):
-                extra += ('data-standalone="1" data-aid="%d:%d" '
+                extra += ('data-standalone="1" data-ayah-key="%d:%d" '
                           % e["standalone"])
             _shift = None
             if e["path"] != pi:
@@ -3001,7 +3165,7 @@ def rewrite(page, assignment):
             # a mark across several source paths — p146 6:141:14 splits the ش
             # three-dot cluster into a 2-contour path and a 1-contour path — the
             # members' contours are emitted INSIDE the primary's path, so the
-            # cluster is a single element carrying data-mark="three-dots".
+            # cluster is a single element carrying data-mark="three_dots".
             #
             # Pixel-safe here, and the reason matters: these are separate dots
             # that do not overlap, so `evenodd` has nothing to cancel. That is
@@ -3022,7 +3186,7 @@ def rewrite(page, assignment):
         open_hdr = None
         # ONE PATH per header (Abdullah 2026-08-31). The banner is the
         # semantic unit, so its ink is buffered while the group is open and
-        # written as a single <path data-kind="header-ink"> when it closes —
+        # written as a single <path data-kind="header_ink"> when it closes —
         # not one path per contour cluster.
         #
         # Merging contours is normally forbidden (`evenodd` cancellation fills
@@ -3038,7 +3202,7 @@ def rewrite(page, assignment):
         def flush_hdr():
             if hdr_buf:
                 out.append(head.replace(
-                    "<path ", '<path data-kind="header-ink" ', 1)
+                    "<path ", '<path data-kind="header_ink" ', 1)
                     + build_d(hdr_buf) + tail)
                 del hdr_buf[:]
 
@@ -3081,7 +3245,7 @@ def rewrite(page, assignment):
                     open_hdr = hd
                 # ONE ITEM per header (Abdullah 2026-08-28): inside a surah
                 # name or basmalah the block is the semantic unit — the ink is
-                # plain, with no data-eid/kind/mark decomposition. Header
+                # plain, with no data-element-id/kind/mark decomposition. Header
                 # glyphs stop polluting the mark inventories too.
                 hdr_buf.extend(e["contours"])
                 continue
@@ -3099,21 +3263,24 @@ def rewrite(page, assignment):
                 # A hizb rosette carries WHICH division it opens: its rubʿ
                 # (1-240 global and 1-4 inside the hizb), its nisf half, its
                 # hizb and its juz — all derived from the cached quran.com
-                # verse records, which give every ayah its juz/hizb/rubʿ.
+                # ayah records, which give every ayah its juz/hizb/rubʿ.
                 # Measured: all 199 rosettes in this print sit exactly on a
                 # rubʿ start, so the ayah under the ornament IS the division.
                 _dv = ""
                 if sa[0] == "hizb" and sa[1]:
                     _p = quran_meta.starts_at(sa[1], sa[2])
-                    if _p.get("rub"):
-                        _q = quran_meta.rub_position(_p["rub"])
-                        _dv = (' data-rub="%d" data-rub-in-hizb="%d"'
+                    if _p.get("rubu_al_hizb"):
+                        _q = quran_meta.rubu_al_hizb_position(_p["rubu_al_hizb"])
+                        _dv = (' data-rubu-al-hizb="%d" data-rubu-al-hizb-in-hizb="%d"'
                                ' data-nisf="%d" data-hizb="%d" data-juz="%d"'
-                               % (_q["rub"], _q["rub_in_hizb"], _q["nisf"],
+                               % (_q["rubu_al_hizb"], _q["rubu_al_hizb_in_hizb"], _q["nisf"],
                                   _q["hizb"], _q["juz"]))
+                # the group's class names the CONCEPT (a juz/hizb/rubʿ
+                # rosette is a division mark); data-mark names the sign drawn
+                _cls = "division" if sa[0] == "hizb" else sa[0]
                 out.append('<g class="%s-mark" data-mark="%s"%s%s>'
-                           % (sa[0], sa[0],
-                              (' data-aid="%d:%d"' % (sa[1], sa[2]))
+                           % (_cls, sa[0],
+                              (' data-ayah-key="%d:%d"' % (sa[1], sa[2]))
                               if sa[1] else "", _dv))
                 open_sa = id(atom)
                 emit(e)
@@ -3131,13 +3298,13 @@ def rewrite(page, assignment):
                         out.append("</g>")
                     open_ayah = None
                     if akey:
-                        # data-aid replaces data-surah/data-ayah. An ayah is
-                        # emitted once per LINE it occupies, so data-aid and
-                        # data-marker appear on every fragment of it.
+                        # data-ayah-key replaces data-surah/data-ayah. An ayah is
+                        # emitted once per LINE it occupies, so data-ayah-key and
+                        # data-mark appear on every fragment of it.
                         #
                         # The division-start flags do NOT. A juz starts once,
                         # not once per line: repeating them made a consumer
-                        # looping over [data-rub-start] print "rub 230 opens at
+                        # looping over [data-rubu-al-hizb-start] print "rubu_al_hizb 230 opens at
                         # 73:20" seven times on p575, where that ayah spans
                         # seven lines. Emitting on part 1 alone is exact, and
                         # the counts prove it — 30 juz, 60 hizb, 240 rubʿ, 60
@@ -3145,12 +3312,12 @@ def rewrite(page, assignment):
                         # when every fragment carried them. An ayah never spans
                         # pages (6,236 ayahs, 6,236 page-ayah pairs), so part 1
                         # is always present on the page the division opens on.
-                        _npart = _ayah_parts.get(akey, 0)
+                        _npart = _ayah_fragments.get(akey, 0)
                         _ipart = _ayah_seen.get(akey, 0) + 1
                         _ayah_seen[akey] = _ipart
-                        out.append('<g class="ayah" data-aid="%d:%d" '
-                                   'data-marker="mk-%d-%d" data-part="%d" '
-                                   'data-ayah-parts="%d"%s>'
+                        out.append('<g class="ayah-fragment" data-ayah-key="%d:%d" '
+                                   'data-ayah-mark="mk-%d-%d" data-fragment="%d" '
+                                   'data-ayah-fragments="%d"%s>'
                                    % (akey[0], akey[1], akey[0], akey[1],
                                       _ipart, _npart,
                                       _ayah_start_attrs(akey)
@@ -3158,50 +3325,52 @@ def rewrite(page, assignment):
                         open_ayah = akey
                 if word:
                     # data-qpc is the King Fahd Complex's own text of THIS print, which
-                    # is not the same edition as quran.com's uthmani — see qpc_words().
+                    # is not the same edition as quran.com's rasm_uthmani — see qpc_words().
                     # Emitted alongside rather than instead of, so nothing downstream
-                    # that reads data-uthmani changes behaviour.
-                    # ONE identity attribute (Abdullah 2026-08-29): data-wid
+                    # that reads data-rasm-uthmani changes behaviour.
+                    # ONE identity attribute (Abdullah 2026-08-29): data-word-key
                     # "surah:ayah:word" replaces data-surah/data-ayah/
                     # data-word. Breaking on purpose — every consumer was
                     # migrated in the same change.
                     #
-                    # data-search is THE search key: the IMLAEI (modern)
+                    # data-search is THE search key: the RASM_IMLAI (modern)
                     # spelling with its marks removed. data-rasm is the
-                    # uthmani skeleton and is NOT searchable — the dagger
+                    # rasm_uthmani skeleton and is NOT searchable — the dagger
                     # alef is a combining mark, so stripping it deletes the
                     # alef outright: ميثَٰقكم -> ميثقكم, تظَٰهرون -> تظهرون,
-                    # بٱلإثم keeps its wasla. Nobody types those. The imlaei
-                    # spelling already writes ا where uthmani writes ٱ or a
+                    # بٱلإثم keeps its hamzat_al_wasl. Nobody types those. The rasm_imlai
+                    # spelling already writes ا where rasm_uthmani writes ٱ or a
                     # dagger alef, so stripping IT needs no folding and
                     # yields ميثاقكم / تظاهرون / بالإثم — what a search box
                     # actually receives. Measured: the two differ on 36 words
                     # in the first 40 pages alone. Abdullah 2026-08-29.
                     # data-rasm is kept: it is the skeleton of the INK, which
                     # is the right key for matching against the glyphs.
-                    # data-rasm is the uthmani spelling with
+                    # data-rasm is the rasm_uthmani spelling with
                     # every combining mark, tatweel and small letter removed
                     # (tools/quran_meta.rasm). Nothing is FOLDED — ا/أ/إ/آ/ٱ,
                     # ى/ي and ة/ه all stay as written, per Abdullah's ruling —
                     # so this is the letter skeleton of THIS spelling, not a
-                    # normalised form. data-imlaei is the second search form
+                    # normalised form. data-rasm-imlai is the second search form
                     # and is unchanged.
-                    # data-w: the GLOBAL word id of the word-by-word source
-                    # (.cache/wbw/hafs.json, KFGQPC UthmanicHafs v3.0), the
-                    # same id in every mushaf that has the word. Derived by
-                    # tools/build_wbw_map.py; a word the map does not know
-                    # is a build error, never a silent omission.
+                    # data-word-key IS the word's identity: surah:ayah:word, all
+                    # three ordinals, dense and in order, and Hafs-specific
+                    # (Abdullah, 2026-09-08). There is no second numeric id.
+                    # The word-by-word-translation-translation release's cross-mushaf number used to
+                    # ride along as data-w; it is gone, with the two gaps that
+                    # belong to that scheme rather than to this mushaf — the
+                    # id 25685 Hafs does not write and the 73950+73951 of the
+                    # written-joined 72:16:1 (docs/HAFS-JSON-SOURCE.md). What
+                    # the release still decides is the SEGMENTATION, so
+                    # data-word-key counts the release's words: position N of an
+                    # ayah here is word N of that ayah there, proven for all
+                    # 6,236 by tools/audit_segmentation.py.
                     _wkey = "%d:%d:%d" % (word["surah"], word["ayah"], word["pos"])
-                    _w = _wbw_map().get(_wkey)
-                    if _w is None:
-                        raise RuntimeError(
-                            "%s has no global word id: rebuild the map with "
-                            "tools/build_wbw_map.py" % _wkey)
                     if _PROD:
                         # PRODUCTION PROFILE: the keys and the text of record
-                        # only. The four derived forms (rasm, imlaei, search,
+                        # only. The four derived forms (rasm, rasm_imlai, search,
                         # qpc) are a text index, not geometry, and repeating
-                        # them on all 77,433 word groups cost ~3% of every
+                        # them on all 77,432 word groups cost ~3% of every
                         # page for data that never varies per instance. They
                         # ship once, in index/by-page/NNN.json and
                         # index/words.json, from the same cache and the same
@@ -3209,18 +3378,18 @@ def rewrite(page, assignment):
                         # profile keeps them inline: it is the review
                         # instrument, and the review server reads them.
                         # Abdullah 2026-09-04, consumer report §6.
-                        out.append('<g class="word" data-wid="%s" data-w="%d" '
-                                   'data-uthmani="%s">'
-                                   % (_wkey, _w, esc(word["uthmani"])))
+                        out.append('<g class="word" data-word-key="%s" '
+                                   'data-rasm-uthmani="%s">'
+                                   % (_wkey, esc(word["rasm_uthmani"])))
                     else:
-                        out.append('<g class="word" data-wid="%s" data-w="%d" '
-                                   'data-uthmani="%s" data-rasm="%s" '
-                                   'data-imlaei="%s" data-search="%s"%s>'
-                                   % (_wkey, _w,
-                                      esc(word["uthmani"]),
-                                      esc(quran_meta.rasm(word["uthmani"])),
-                                      esc(word["imlaei"]),
-                                      esc(quran_meta.rasm(word["imlaei"])),
+                        out.append('<g class="word" data-word-key="%s" '
+                                   'data-rasm-uthmani="%s" data-rasm="%s" '
+                                   'data-rasm-imlai="%s" data-search="%s"%s>'
+                                   % (_wkey,
+                                      esc(word["rasm_uthmani"]),
+                                      esc(quran_meta.rasm(word["rasm_uthmani"])),
+                                      esc(word["rasm_imlai"]),
+                                      esc(quran_meta.rasm(word["rasm_imlai"])),
                                       (' data-qpc="%s"' % esc(word["qpc"]))
                                       if word.get("qpc") else ""))
                     open_word = wkey
@@ -3285,11 +3454,11 @@ def part_key_for(page):
 
 
 # Auto (vote-derived) labels may force-mark only unambiguous families; anything a
-# letter can imitate (pause vs ر, damma vs ء curl, hamza) needs a HUMAN-confirmed
+# letter can imitate (waqf vs ر, dammah vs ء curl, hamzah) needs a HUMAN-confirmed
 # label before it may override geometry.
-_SAFE_AUTO = {"fatha", "kasra", "fathatan", "kasratan", "dot", "two-dots",
-              "three-dots", "shadda", "small-circle", "meem-iqlab", "maddah",
-              "small-alef", "wasla"}
+_SAFE_AUTO = {"fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr", "dot", "two_dots",
+              "three_dots", "shaddah", "small_circle", "small_meem", "maddah",
+              "omitted_alif", "hamzat_al_wasl"}
 
 
 def _raw_label(sig):
@@ -3301,7 +3470,7 @@ def mark_shape_table():
     out = {}
     for k, v in shape_labels().items():
         lab = v["label"]
-        if lab in ("word", "ignore", "hamza", "meem-iqlab"):
+        if lab in ("word", "ignore", "hamzah", "small_meem"):
             # ء twins stay letters at classify time; apply still labels. The
             # iqlab meem shares its outline with a final letter م, and only
             # the word's text can tell them apart — so it stays letter ink
@@ -3326,20 +3495,20 @@ def shape_labels():
     return _SHAPE_LABELS
 
 
-# The same stroke is a fatha above the letter and a kasra below it; the shape table
+# The same stroke is a fathah above the letter and a kasrah below it; the shape table
 # stores one name, the drawn position picks the final label.
-_DOTU_F = {"dot": 1, "two-dots": 2, "three-dots": 3}
+_DOTU_F = {"dot": 1, "two_dots": 2, "three_dots": 3}
 
 
 def dot_budget(txt):
     """Dot units a word's letters own, by the rule audit_marks.dot_want uses.
 
-    A final ya is drawn undotted here, and so is a ya carrying a following hamza —
+    A final ya is drawn undotted here, and so is a ya carrying a following hamzah —
     شَيۡءٖ is three dots, not five, which our decomposition and MushafDatabase's agree on
     independently.
     """
     raw = _LETTER.findall(txt)
-    sk = [(HAMZA_MAP[c][0] if c in HAMZA_MAP else c, c in HAMZA_MAP) for c in raw]
+    sk = [(HAMZAH_MAP[c][0] if c in HAMZAH_MAP else c, c in HAMZAH_MAP) for c in raw]
     n = 0
     for i, (ch, seat) in enumerate(sk):
         if seat or ch not in DOTS:
@@ -3351,9 +3520,9 @@ def dot_budget(txt):
     return n
 
 
-_POS_SWAP_FAM = ("fatha", "kasra", "fathatan", "kasratan")
-_POS_SWAP = {("fatha", "b"): "kasra", ("kasra", "a"): "fatha",
-             ("fathatan", "b"): "kasratan", ("kasratan", "a"): "fathatan"}
+_POS_SWAP_FAM = ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr")
+_POS_SWAP = {("fathah", "b"): "kasrah", ("kasrah", "a"): "fathah",
+             ("tanwin_al_fath", "b"): "tanwin_al_kasr", ("tanwin_al_kasr", "a"): "tanwin_al_fath"}
 
 
 def apply_shape_labels(page, assignment, baselines):
@@ -3381,8 +3550,8 @@ def apply_shape_labels(page, assignment, baselines):
     def local_pos(e, atom):
         """Above or below the letter's own ink at the mark's x — not the line.
 
-        A kasra under a letter stacked high in the composition sits above the
-        baseline, and a fatha over low teeth like س sits below the line's middle;
+        A kasrah under a letter stacked high in the composition sits above the
+        baseline, and a fathah over low teeth like س sits below the line's middle;
         only the ink directly at the mark's x-window resolves both.
         """
         if id(atom) not in body_pts:
@@ -3404,11 +3573,11 @@ def apply_shape_labels(page, assignment, baselines):
                                 for x, y in polys[pi][c["sp"]["index"]]]
                                for c in el["contours"]])
 
-    _MARKY = {"fatha", "kasra", "damma", "fathatan", "kasratan", "dammatan",
-              "sukun", "shadda", "hamza", "maddah", "small-alef", "wasla",
-              "dot", "two-dots", "three-dots", "pause", "small-circle",
-              "small-ya", "small-waw", "small-meem", "small-noon",
-              "saktah", "seen-reading", "imalah", "ishmam", "tashil"}
+    _MARKY = {"fathah", "kasrah", "dammah", "tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm",
+              "sukun", "shaddah", "hamzah", "maddah", "omitted_alif", "hamzat_al_wasl",
+              "dot", "two_dots", "three_dots", "waqf", "small_circle",
+              "small_yaa", "small_waw", "small-meem", "small_noon",
+              "saktah", "seen_al_qiraah", "imalah", "ishmam", "tashil"}
     labeled = total = 0
     for word, atoms in assignment:
         for atom in atoms:
@@ -3444,7 +3613,7 @@ def apply_shape_labels(page, assignment, baselines):
                 lab = table.get(e["sig"])
                 # the dot family is SOLID ink: a nested contour is a ring — a
                 # ه/ة head — mislabeled by the auto pass; it is letter ink
-                if lab in ("dot", "two-dots", "three-dots") \
+                if lab in ("dot", "two_dots", "three_dots") \
                         and len(e.get("contours", [])) > 1:
                     bbs = [c["sp"] for c in e["contours"]]
                     for _i, _a in enumerate(bbs):
@@ -3455,16 +3624,16 @@ def apply_shape_labels(page, assignment, baselines):
                                (_b["xmin"] <= _a["xmin"] and _b["xmax"] >= _a["xmax"]
                                     and _b["ymin"] <= _a["ymin"]
                                     and _b["ymax"] >= _a["ymax"]):
-                                lab = "letter-part"
-                if lab in ("ignore", "word", "letter-part", "letter-hamza", "letter"):
-                    if lab in ("letter", "letter-part", "letter-hamza"):
+                                lab = "letter_part"
+                if lab in ("ignore", "word", "letter_part", "letter_hamzah", "letter"):
+                    if lab in ("letter", "letter_part", "letter_hamzah"):
                         e["kind"] = "body"   # letter ink misfiled as a mark
                     labeled += 1          # identified as non-mark ink: accounted for
                     continue
                 if not lab and members:
                     # a composite of dot glyphs is the letter's full dot group:
-                    # ث draws three-dots as a two-dot path plus a one-dot path
-                    DOTN = {"dot": 1, "two-dots": 2, "three-dots": 3}
+                    # ث draws three_dots as a two-dot path plus a one-dot path
+                    DOTN = {"dot": 1, "two_dots": 2, "three_dots": 3}
                     pl = [table.get(sig_key(signature(el_points(x))))
                           for x in [e] + members]
                     if "ignore" in pl:
@@ -3474,14 +3643,14 @@ def apply_shape_labels(page, assignment, baselines):
                             lab = core[0]
                         pl = core
                     if pl and all(l in DOTN for l in pl):
-                        lab = {1: "dot", 2: "two-dots", 3: "three-dots"}.get(
+                        lab = {1: "dot", 2: "two_dots", 3: "three_dots"}.get(
                             sum(DOTN[l] for l in pl))
-                    elif pl and all(l == "pause" or l in DOTN for l in pl) \
-                            and "pause" in pl:
-                        lab = "pause"     # waqf letter + its dot(s)
+                    elif pl and all(l == "waqf" or l in DOTN for l in pl) \
+                            and "waqf" in pl:
+                        lab = "waqf"     # waqf letter + its dot(s)
                     elif pl and all(pl) and not any(
-                            l in ("word", "ignore", "letter", "letter-hamza",
-                                  "letter-part") for l in pl):
+                            l in ("word", "ignore", "letter", "letter_hamzah",
+                                  "letter_part") for l in pl):
                         # every part is individually known: a stacked group whose
                         # welded outline was never seen — name it top-to-bottom and
                         # let the compound splitter cut it back into single marks
@@ -3491,7 +3660,7 @@ def apply_shape_labels(page, assignment, baselines):
                 if not lab and (e["y2"] - e["y1"]) < 2.5 \
                         and (e["x2"] - e["x1"]) > 15.0:
                     lab = "sajdah"        # overline bars have per-length outlines
-                if not lab or lab in ("ignore", "word", "letter-part", "letter-hamza", "letter"):
+                if not lab or lab in ("ignore", "word", "letter_part", "letter_hamzah", "letter"):
                     if not lab and os.environ.get("QSVG_DEBUG_UNACC"):
                         print("UNACC sig", e["sig"], "x%.1f..%.1f y%.1f..%.1f members %d"
                               % (e["x1"], e["x2"], e["y1"], e["y2"], len(members)),
@@ -3500,7 +3669,7 @@ def apply_shape_labels(page, assignment, baselines):
                 if "+" in lab:
                     # compound label for a stacked group drawn touching: names are
                     # top-to-bottom; parts split into name-groups at the largest
-                    # vertical gaps (a pause sign's own dot stays with its curl)
+                    # vertical gaps (a waqf sign's own dot stays with its curl)
                     names = [x.strip() for x in lab.split("+")]
                     parts = sorted([e] + members,
                                    key=lambda x: (x["y1"] + x["y2"]) / 2)
@@ -3530,49 +3699,49 @@ def apply_shape_labels(page, assignment, baselines):
                 for part in members:
                     part["mark"] = final
                 labeled += 1
-            compose_tanween(atom)
+            compose_tanwin(atom)
     return labeled, total
 
 
-def compose_tanween(atom):
-    """Two stacked identical strokes are one tanween: fatha+fatha -> fathatan.
+def compose_tanwin(atom):
+    """Two stacked identical strokes are one tanwin: fathah+fathah -> tanwin_al_fath.
 
-    The dammatan glyph is drawn as one outline and labels directly; the stroke
-    tanweens are drawn as two separate strokes, so without this pass the taxonomy
+    The tanwin_al_damm glyph is drawn as one outline and labels directly; the stroke
+    tanwins are drawn as two separate strokes, so without this pass the taxonomy
     would be inconsistent across the three.
     """
-    # KFQC tucks a shadda's kasra UNDER the shadda but ABOVE the letter, where the
-    # letter-relative rule would read it as fatha. When a stroke shares x-range
-    # with a shadda, the shadda is the reference: below it = kasra, above = fatha.
-    shaddas = [e for e in atom["els"][1:] if e.get("mark") == "shadda"]
-    if shaddas:
+    # KFQC tucks a shaddah's kasrah UNDER the shaddah but ABOVE the letter, where the
+    # letter-relative rule would read it as fathah. When a stroke shares x-range
+    # with a shaddah, the shaddah is the reference: below it = kasrah, above = fathah.
+    shaddahs = [e for e in atom["els"][1:] if e.get("mark") == "shaddah"]
+    if shaddahs:
         for e in atom["els"][1:]:
-            if e.get("mark") not in ("fatha", "kasra"):
+            if e.get("mark") not in ("fathah", "kasrah"):
                 continue
-            for sh in shaddas:
+            for sh in shaddahs:
                 ov = min(e["x2"], sh["x2"]) - max(e["x1"], sh["x1"])
                 if ov < 0.5 * min(e["x2"] - e["x1"], sh["x2"] - sh["x1"]):
                     continue
                 below = (e["y1"] + e["y2"]) / 2 > (sh["y1"] + sh["y2"]) / 2
-                e["mark"] = "kasra" if below else "fatha"
+                e["mark"] = "kasrah" if below else "fathah"
                 break
 
-    # A dammatan drawn as two curls: one piece often matches the damma shape and
-    # the other a dedicated fragment labeled dammatan; touching pieces weld.
-    pool = [e for e in atom["els"][1:] if e.get("mark") in ("damma", "dammatan")]
+    # A tanwin_al_damm drawn as two curls: one piece often matches the dammah shape and
+    # the other a dedicated fragment labeled tanwin_al_damm; touching pieces weld.
+    pool = [e for e in atom["els"][1:] if e.get("mark") in ("dammah", "tanwin_al_damm")]
     for i, a in enumerate(pool):
         for b in pool[i + 1:]:
-            if "dammatan" not in (a.get("mark"), b.get("mark")):
+            if "tanwin_al_damm" not in (a.get("mark"), b.get("mark")):
                 continue
             dx = abs((a["x1"] + a["x2"]) / 2 - (b["x1"] + b["x2"]) / 2)
             dy = abs((a["y1"] + a["y2"]) / 2 - (b["y1"] + b["y2"]) / 2)
             if dx < 7.0 and dy < 6.0:
-                a["mark"] = b["mark"] = "dammatan"
+                a["mark"] = b["mark"] = "tanwin_al_damm"
 
     def _weld_pairs():
-        # a tanween's two strokes (or two damma curls) present as ONE mark: the
+        # a tanwin's two strokes (or two dammah curls) present as ONE mark: the
         # top piece is the master, the other becomes its part
-        for lab in ("fathatan", "kasratan", "dammatan"):
+        for lab in ("tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm"):
             grp = [e for e in atom["els"][1:] if e.get("mark") == lab
                    and not e.get("mkpart")]
             grp.sort(key=lambda e: (e["y1"] + e["y2"]))
@@ -3590,16 +3759,16 @@ def compose_tanween(atom):
                 else:
                     grp = grp[1:]
 
-    for base, tan in (("fatha", "fathatan"), ("kasra", "kasratan")):
+    for base, tan in (("fathah", "tanwin_al_fath"), ("kasrah", "tanwin_al_kasr")):
         strokes = [e for e in atom["els"][1:] if e.get("mark") == base]
         for i, a in enumerate(strokes):
             for b in strokes[i + 1:]:
                 dx = abs((a["x1"] + a["x2"]) / 2 - (b["x1"] + b["x2"]) / 2)
                 dy = abs((a["y1"] + a["y2"]) / 2 - (b["y1"] + b["y2"]) / 2)
-                # measured on real tanween: parallel strokes nearly level,
-                # side-stepped ~3.4 units; neighbouring letters' fathas differ
+                # measured on real tanwin: parallel strokes nearly level,
+                # side-stepped ~3.4 units; neighbouring letters' fathahs differ
                 # by dy >= 4 or dx >= 5
-                lim = 4.2 if base == "fatha" else 5.5
+                lim = 4.2 if base == "fathah" else 5.5
                 if dx < lim and dy < 2.2:
                     a["mark"] = b["mark"] = tan
 
@@ -3608,7 +3777,7 @@ def map_lines(art_widths, api_lines):
     """Order-preserving map from API word-lines to art lines, skipping ornament lines.
 
     A surah-header page dedicates one or two drawn lines to the header frame and the
-    bismillah; the layout data numbers only word-bearing lines, so numbers drift by
+    basmalah; the layout data numbers only word-bearing lines, so numbers drift by
     the count of ornament lines above. Match each API line (expected width from its
     words' letters) to an art line (measured ink width) in order, allowing art lines
     to be skipped at a cost — on ordinary pages the identity mapping wins untouched.
@@ -3658,7 +3827,7 @@ def reflow_words(words_by_line, art_widths, prev_tail=None, next_head=None,
     public layout records (page 77: 13 art lines vs 14 layout lines), so the layout's
     per-line lists cannot be trusted there. The word ORDER is identical, so partition
     the flow into consecutive per-line groups whose expected widths fit the measured
-    line widths. Ornament lines (surah title, bismillah) are the narrow ones and get
+    line widths. Ornament lines (surah title, basmalah) are the narrow ones and get
     no words.
     """
     api_ids = sorted(words_by_line)
@@ -3894,10 +4063,10 @@ def anchored_reflow(words_by_line, art_widths):
     return {ln: flow[j:i] for ln, (j, i) in zip(text_lines, bounds)}
 
 
-def tag_ayah_markers(svg, polys_json, anchors=None):
+def tag_ayah_marks(svg, polys_json, anchors=None):
     """Give every ayah medallion its own identified group.
 
-    The art draws each marker as two sibling groups inside #ayah_markers — the
+    The art draws each marker as two sibling groups inside #ayah_marks — the
     ornament ring (a scaled glyph) followed by the numeral ink.
 
     A medallion is bound to its ayah BY POSITION: it closes the ayah whose last
@@ -3932,7 +4101,7 @@ def tag_ayah_markers(svg, polys_json, anchors=None):
     assignment. Without it the old order-based pairing is used, so callers that
     do not have an assignment still work.
 
-    The pair is wrapped in <g class="ayah-marker" data-aid="surah:ayah">, with
+    The pair is wrapped in <g class="ayah-mark" data-ayah-key="surah:ayah">, with
     data-kind on the ornament and the numeral separately. Nothing moves: this
     writes attributes only.
     """
@@ -4025,23 +4194,23 @@ def tag_ayah_markers(svg, polys_json, anchors=None):
         # single node that is the ayah. Linking costs no ink movement, so the
         # numeral cannot drift and pixel identity is untouched (Abdullah
         # 2026-08-29: link, do not nest).
-        ident = ((' id="mk-%d-%d" data-aid="%d:%d"' % (su, ay, su, ay))
+        ident = ((' id="mk-%d-%d" data-ayah-key="%d:%d"' % (su, ay, su, ay))
                  if su else "")
         out.append(block[pos:orn.start()])
         piece = orn.group(0).replace(
-            "<path ", '<path data-kind="ayah-marker-ornament" ', 1)
+            "<path ", '<path data-kind="ayah_mark_ornament" ', 1)
         if dig is not None:
             # between ornament and numeral sits the artwork's second copy of
             # the ornament on p1/p2 (see _dup above), and nothing elsewhere
             piece += block[orn.end():dig.start()].replace(
-                "<path ", '<path data-kind="ayah-marker-ornament" '
+                "<path ", '<path data-kind="ayah_mark_ornament" '
                           'data-duplicate="1" ')
             piece += dig.group(0).replace(
-                "<path ", '<path data-kind="ayah-number" ', 1)
+                "<path ", '<path data-kind="ayah_number" ', 1)
             pos = dig.end()
         else:
             pos = orn.end()
-        out.append('<g class="ayah-marker"%s>%s</g>' % (ident, piece))
+        out.append('<g class="ayah-mark"%s>%s</g>' % (ident, piece))
     out.append(block[pos:])
     return svg[:i] + "".join(out) + svg[j:]
 
@@ -4055,7 +4224,7 @@ def _num(v):
 
 
 def tag_page_furniture(svg, page):
-    """Name the ink the artwork keeps OUTSIDE #content and #ayah_markers.
+    """Name the ink the artwork keeps OUTSIDE #content and #ayah_marks.
 
     One page in the mushaf, p17, carries four top-level groups before its
     marker layer: the page number ١٧ (two paths, bottom centre, 36 units
@@ -4066,7 +4235,7 @@ def tag_page_furniture(svg, page):
     without a data-kind (consumer report 2026-09-04). Nothing moves and
     nothing is dropped: the group gets a class, the paths a kind, and a
     consumer that only wants words filters on either. Below the page →
-    page-number, above it → running-head, decided from the group's own
+    page_number, above it → running_head, decided from the group's own
     translate under the page frame (the print puts them there)."""
     i = svg.find('<g transform="matrix(')
     if i < 0:
@@ -4081,7 +4250,7 @@ def tag_page_furniture(svg, page):
     def _one(mo):
         x, y = [float(v) for v in mo.group(1).replace(",", " ").split()]
         vy = b * x + d * y + f_
-        kind = "page-number" if vy > vb[1] + vb[3] / 2 else "running-head"
+        kind = "page_number" if vy > vb[1] + vb[3] / 2 else "running_head"
         body = mo.group(2).replace("<path ", '<path data-kind="%s" ' % kind)
         return '<g class="%s" transform="translate(%s)">%s</g>' % (
             kind, mo.group(1), body)
@@ -4131,19 +4300,19 @@ def normalize_frame(svg, page):
 # downloaded on its own can say what it is. Nine attributes on one element per
 # page: the size cost across the corpus is nil.
 #
-# The identity is a TRIPLE — qiraa, riwaya, edition. The directory name is the
-# RIWAYA, not the qiraa: hafs and shubah are both transmissions of Asim, warsh
-# and qalon both of Nafi'. Recording only "hafs" cannot answer "both
-# transmissions of Asim", and calling it a qiraa is simply wrong.
+# The identity is a TRIPLE — qiraah, riwayah, edition. The directory name is the
+# RIWAYAH, not the qiraah: hafs and shubah are both transmissions of Asim, warsh
+# and qalun both of Nafi'. Recording only "hafs" cannot answer "both
+# transmissions of Asim", and calling it a qiraah is simply wrong.
 #
-# Values come from the vendored quranpedia/qiraat-ayah-map dataset
-# (qiraat.json, counting-systems.json) in the artwork repo. Nothing here is
+# Values come from the vendored quranpedia/qiraahs-ayah-map dataset
+# (qiraahs.json, counting-systems.json) in the artwork repo. Nothing here is
 # invented; the full records live in the bundle's catalogue.json.
 #
 # `ayah_numbering` is a property of the printed EDITION, never derived from the
-# qiraa. The King Fahd al-Duri edition proves it: its qiraa (abu-amr) implies
-# the Basran count, but its own colophon declares the First Madinan, and the
-# pages agree with First Madinan in 110 of 114 surahs against 72 for Basran.
+# qiraah. The King Fahd Duri edition proves it: its qiraah (abu-amr) implies
+# the Basri count, but its own colophon declares the First Madani, and the
+# pages agree with First Madani in 110 of 114 surahs against 72 for Basri.
 # Deriving it would mislabel 604 pages.
 #
 # `ayah_total` follows the counting system, NOT the Quran: kufi 6,236 vs
@@ -4151,7 +4320,7 @@ def normalize_frame(svg, page):
 # universal will call a correct Warsh build broken.
 _MUSHAF_META = {
     "hafs/kfqc": {
-        "mushaf": "hafs-kfqc", "qiraa": "asim", "riwaya": "hafs",
+        "mushaf": "hafs-kfqc", "qiraah": "asim", "riwayah": "hafs",
         "edition": "kfgqpc-1441",
         "name_ar": "حفص عن عاصم", "name_en": "Hafs 'an Asim",
         "ayah_numbering": "kufi", "ayah_total": 6236,
@@ -4162,7 +4331,7 @@ _MUSHAF_META = {
         #
         # It is stated PER EDITION and on the page itself because the two will
         # coexist for a while — Hafs ships at "word" while Warsh, Qalun, Duri and
-        # Shuba are still at "ayah". A consumer must be able to ask a file what it
+        # Shubah are still at "ayah". A consumer must be able to ask a file what it
         # holds rather than infer it from which mushaf it is, or from whether a
         # querySelector happened to return null.
         "decomposition": "word",
@@ -4176,11 +4345,11 @@ def _stamp_identity(svg, edition, page_no):
     if not m:
         return svg                      # an edition we have no record for
     attrs = (
-        ' data-mushaf="%s" data-qiraa="%s" data-riwaya="%s" data-edition="%s"'
-        ' data-riwaya-name-ar="%s" data-riwaya-name-en="%s"'
+        ' data-mushaf="%s" data-qiraah="%s" data-riwayah="%s" data-edition="%s"'
+        ' data-riwayah-name-ar="%s" data-riwayah-name-en="%s"'
         ' data-ayah-numbering="%s" data-ayah-total="%d"'
         ' data-decomposition="%s" data-page="%d"'
-        % (m["mushaf"], m["qiraa"], m["riwaya"], m["edition"],
+        % (m["mushaf"], m["qiraah"], m["riwayah"], m["edition"],
            esc(m["name_ar"]), esc(m["name_en"]),
            m["ayah_numbering"], m["ayah_total"], m["decomposition"], page_no))
     # Only the ROOT element, and only once — `<svg` also matches a nested one.
@@ -4237,7 +4406,7 @@ def assign_page(edition, page_no, cache_dir):
                 e["line"] = best
 
     # A mark belongs to its LETTER, not to whatever line band its ink fell into:
-    # a deep kasra under line N sits in line N+1's band and would attach to the
+    # a deep kasrah under line N sits in line N+1's band and would attach to the
     # word below. Re-line each mark to the nearest overlapping body in ln-1..ln+1.
     bodies_by_line = {}
     for e in elements:
@@ -4248,8 +4417,8 @@ def assign_page(edition, page_no, cache_dir):
             continue
         cx = (e["x1"] + e["x2"]) / 2
         cy = (e["y1"] + e["y2"]) / 2
-        # These marks are only ever drawn ABOVE their letter in this art: a damma,
-        # waqf sign or iqlab-meem hanging in the gap between two lines belongs to
+        # These marks are only ever drawn ABOVE their letter in this art: a dammah,
+        # waqf sign or small-meem hanging in the gap between two lines belongs to
         # the line BELOW it, never to the word whose ink ends above it.
         lab_pos = e.get("lab") or _raw_label(pk(e)) if pk else e.get("lab")
         above_only = lab_pos in _ABOVE_ONLY
@@ -4472,7 +4641,7 @@ def assign_page(edition, page_no, cache_dir):
                     seen.append(k)
             page_ayahs = sorted(seen)
         # The layout's own line numbers usually match the art directly — the
-        # 15-line KFGQPC grid counts header and bismillah lines too. Trust the
+        # 15-line KFGQPC grid counts header and basmalah lines too. Trust the
         # identity mapping whenever every layout line has ink and the per-line
         # ink-per-QCF-width densities are mutually consistent; the width-rank
         # heuristics below misfire on multi-surah pages whose short centered
@@ -4497,7 +4666,7 @@ def assign_page(edition, page_no, cache_dir):
                 _drift = True
             if _drift:
                 ident = False
-                # the cached QCF advances were paired word-by-word per QCF
+                # the cached QCF advances were paired word-by-word-translation-translation per QCF
                 # page; on drift pages that pairing is scrambled — distrust
                 # implausible advances here (and only here)
                 _QCF_SUSPECT[0] = True
@@ -4518,7 +4687,7 @@ def assign_page(edition, page_no, cache_dir):
                 _rr.append(art_widths[_ln] / max(1e-9, _qs))
             _md = sorted(_rr)[len(_rr) // 2]
             # every line within a band of the median: a single outlier line
-            # (a bismillah paired with real words on a shifted page) breaks
+            # (a basmalah paired with real words on a shifted page) breaks
             # identity even when the overall spread looks tame
             ident = all(0.62 * _md <= _v <= 1.6 * _md for _v in _rr)
             # every substantial text line in the ART must be claimed by the
@@ -4682,7 +4851,7 @@ def assign_page(edition, page_no, cache_dir):
                                and hb8 <= (o8["y2"] - o8["y1"]) + 1.0
                                for o8 in bods8):
                         eff8.append(b8)
-                ns8 = max(1, len(segment_word(_w8["uthmani"])))
+                ns8 = max(1, len(segment_word(_w8["rasm_uthmani"])))
                 if len(eff8) > ns8:        # holding ink its text cannot own
                     pen += 0.5 * (len(eff8) - ns8)
             return pen
@@ -4774,8 +4943,8 @@ def assign_page(edition, page_no, cache_dir):
                         if (e["kind"] == "mark" and not e.get("mkpart")
                                 and (e["x2"] - e["x1"]) >= 3.5
                                 and e.get("lab") not in
-                                ("fatha", "kasra", "fathatan", "kasratan",
-                                 "damma", "dammatan")
+                                ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr",
+                                 "dammah", "tanwin_al_damm")
                                 and lo <= (e["x1"] + e["x2"]) / 2 <= hi):
                             for x in [e] + e.get("mkmembers", []):
                                 x["kind"] = "body"
@@ -4801,7 +4970,7 @@ def assign_page(edition, page_no, cache_dir):
                         v += 2
                         continue
                     r = (cl[0]["x2"] - cl[-1]["x1"]) / max(1e-9, al * letters(w))
-                    if r < 0.4 or (r > 2.4 and len(cl) > len(segment_word(w["uthmani"]))):
+                    if r < 0.4 or (r > 2.4 and len(cl) > len(segment_word(w["rasm_uthmani"]))):
                         v += 1
                     worst = max(worst, abs(r - 1))
                 return v, worst
@@ -4818,7 +4987,7 @@ def assign_page(edition, page_no, cache_dir):
                     clusters, deviation = best[2], best[3]
             flags = []
             if not words:
-                flags.append("no-words-for-line")       # surah header / bismillah art
+                flags.append("no-words-for-line")       # surah header / basmalah art
             if len(clusters) != len(words) and words:
                 flags.append("count-mismatch:%d-clusters" % len(clusters))
             # completeness: every word must own a sensible share of the line's ink
@@ -4835,7 +5004,7 @@ def assign_page(edition, page_no, cache_dir):
                 ratio = (cl[0]["x2"] - cl[-1]["x1"]) / max(1e-9, alpha_l * letters(w))
                 # Oversize alone is legal — a line-end word can carry a huge kashida —
                 # unless the word also holds more pieces than its letters justify.
-                over = ratio > 2.4 and len(cl) > len(segment_word(w["uthmani"]))
+                over = ratio > 2.4 and len(cl) > len(segment_word(w["rasm_uthmani"]))
                 if ratio < 0.4 or over:
                     flags.append("word-size:%d:%d:%d(x%.1f)"
                                  % (w["surah"], w["ayah"], w["pos"], ratio))
@@ -4859,7 +5028,7 @@ def assign_page(edition, page_no, cache_dir):
                 if band and hh > 1.55 * band:
                     flags.append("word-height:%d:%d:%d(x%.1f)"
                                  % (w["surah"], w["ayah"], w["pos"], hh / band))
-                segs = segment_word(w["uthmani"])
+                segs = segment_word(w["rasm_uthmani"])
                 groups, cost = align_segs_atoms(cl, segs)
                 if cost > 0.6:
                     flags.append("ligatures:%d(cost=%.1f)" % (w["pos"], cost))
@@ -4877,7 +5046,7 @@ def assign_page(edition, page_no, cache_dir):
                         flags.append("marks:%d" % w["pos"])
                 assignment.append((w, cl))
             # clusters[len(words):] is ALL clusters when words is empty, so the
-            # old extra `if not words` loop emitted every header/bismillah
+            # old extra `if not words` loop emitted every header/basmalah
             # cluster twice (p604's stacked-basmalah halo).
             for cl in clusters[len(words):]:
                 assignment.append((None, cl))
@@ -4914,14 +5083,14 @@ def assign_page(edition, page_no, cache_dir):
                 sp = max(e["x2"] for e in els2) - min(e["x1"] for e in els2)
                 rr = sp / (letters(w2) / tq * ta) if ta else 1.0
                 bad = rr < 0.6 or rr > 1.6
-                c3 = w2["uthmani"].count
+                c3 = w2["rasm_uthmani"].count
                 hv = sum(1 for e in els2 if e.get("mark") in
-                         ("fatha", "kasra", "fathatan", "kasratan")
+                         ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr")
                          and not e.get("mkpart"))
                 wv = (c3("\u064e") + c3("\u0650") + c3("\u064b")
                       + c3("\u064d") + c3("\u08f0") + c3("\u08f2"))
                 hd = sum(1 for e in els2 if e.get("mark") in
-                         ("damma", "dammatan") and not e.get("mkpart"))
+                         ("dammah", "tanwin_al_damm") and not e.get("mkpart"))
                 wd = c3("\u064f") + c3("\u064c") + c3("\u08f1")
                 if bad or hv != wv or hd != wd:
                     n += 1
@@ -4952,14 +5121,14 @@ def assign_page(edition, page_no, cache_dir):
                     bad.add(ln2)
                 if width_only:
                     continue
-                c3 = w2["uthmani"].count
+                c3 = w2["rasm_uthmani"].count
                 hv = sum(1 for e in els2 if e.get("mark") in
-                         ("fatha", "kasra", "fathatan", "kasratan")
+                         ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr")
                          and not e.get("mkpart"))
                 wv = (c3("\u064e") + c3("\u0650") + c3("\u064b")
                       + c3("\u064d") + c3("\u08f0") + c3("\u08f2"))
                 hd = sum(1 for e in els2 if e.get("mark") in
-                         ("damma", "dammatan") and not e.get("mkpart"))
+                         ("dammah", "tanwin_al_damm") and not e.get("mkpart"))
                 wd = c3("\u064f") + c3("\u064c") + c3("\u08f1")
                 if hv != wv or hd != wd:
                     bad.add(ln2)
@@ -4979,9 +5148,9 @@ def assign_page(edition, page_no, cache_dir):
         if not sub:
             return 0
         w2, els2 = min(sub, key=lambda t: min(e["x1"] for e in t[1]))
-        c3 = w2["uthmani"].count
+        c3 = w2["rasm_uthmani"].count
         hv = sum(1 for e in els2 if e.get("mark") in
-                 ("fatha", "kasra", "fathatan", "kasratan")
+                 ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr")
                  and not e.get("mkpart"))
         wv = (c3("\u064e") + c3("\u0650") + c3("\u064b")
               + c3("\u064d") + c3("\u08f0") + c3("\u08f2"))
@@ -5113,49 +5282,49 @@ def assign_page(edition, page_no, cache_dir):
     # neighbouring lines within an x-window. One mechanism instead of a
     # rule per failure mode.
     # ------------------------------------------------------------------
-    _FAM = {"fatha": "slash", "kasra": "slash", "damma": "damma",
-            "fathatan": "slash", "kasratan": "slash", "dammatan": "damma",
-            "sukun": "sukun", "hamza": "hamza", "wasla": "wasla",
-            "small-alef": "small-alef", "maddah": "maddah",
-            "shadda": "shadda", "small-circle": "small-circle",
-            "meem-iqlab": "meem-iqlab", "pause": "pause",
-            "small-waw": "small-waw", "small-ya": "small-ya"}
-    # small-waw/small-ya are SUBSCRIPT letters (ride at or below baseline)
-    _ABOVE_FAM = {"damma", "sukun", "wasla", "small-alef", "maddah", "shadda",
-                  "small-circle", "meem-iqlab", "pause"}
+    _FAM = {"fathah": "slash", "kasrah": "slash", "dammah": "dammah",
+            "tanwin_al_fath": "slash", "tanwin_al_kasr": "slash", "tanwin_al_damm": "dammah",
+            "sukun": "sukun", "hamzah": "hamzah", "hamzat_al_wasl": "hamzat_al_wasl",
+            "omitted_alif": "omitted_alif", "maddah": "maddah",
+            "shaddah": "shaddah", "small_circle": "small_circle",
+            "small_meem": "small_meem", "waqf": "waqf",
+            "small_waw": "small_waw", "small_yaa": "small_yaa"}
+    # small_waw/small_yaa are SUBSCRIPT letters (ride at or below baseline)
+    _ABOVE_FAM = {"dammah", "sukun", "hamzat_al_wasl", "omitted_alif", "maddah", "shaddah",
+                  "small_circle", "small_meem", "waqf"}
 
     def _cap(txt, fam):
         c = txt.count
         if fam == "slash":
-            # tanween fathatan/kasratan are drawn as stroke PAIRS in this art
+            # tanwin tanwin_al_fath/tanwin_al_kasr are drawn as stroke PAIRS in this art
             return (c("\u064e") + c("\u0650")
                     + c("\u064b") + c("\u064d")
                     + c("\u08f0") + c("\u08f2"))
-        if fam == "damma":
+        if fam == "dammah":
             return c("\u064f") + c("\u064c") + c("\u08f1")
         if fam == "sukun":
             return c("\u0652") + c("\u06e1")
-        if fam == "hamza":
+        if fam == "hamzah":
             # bare \u0621 is a LETTER body in this art, not a mark
             return (sum(c(x) for x in "\u0623\u0625\u0624\u0626")
                     + c("\u0654") + c("\u0655"))
-        if fam == "wasla":
+        if fam == "hamzat_al_wasl":
             return c("\u0671")
-        if fam == "small-alef":
+        if fam == "omitted_alif":
             return c("\u0670")
         if fam == "maddah":
             return c("\u0653") + c("\u06e4")
-        if fam == "shadda":
+        if fam == "shaddah":
             return c("\u0651")
-        if fam == "small-circle":
+        if fam == "small_circle":
             return c("\u06df") + c("\u06e0")
-        if fam == "meem-iqlab":
+        if fam == "small_meem":
             return c("\u06e2") + c("\u06ed")
-        if fam == "pause":
+        if fam == "waqf":
             return sum(c(x) for x in "\u06d6\u06d7\u06d8\u06d9\u06da\u06db\u06dc")
-        if fam == "small-waw":
+        if fam == "small_waw":
             return c("\u06e5")
-        if fam == "small-ya":
+        if fam == "small_yaa":
             return c("\u06e6") + c("\u06e7")
         return 0
 
@@ -5183,7 +5352,7 @@ def assign_page(edition, page_no, cache_dir):
             fams.setdefault(fam, []).append((e, r))
 
     for fam, marks in fams.items():
-        caps = {id(r): _cap(r["w"]["uthmani"], fam) for r in wrec}
+        caps = {id(r): _cap(r["w"]["rasm_uthmani"], fam) for r in wrec}
         pairs = []
         for e, home in marks:
             cx = (e["x1"] + e["x2"]) / 2
@@ -5193,8 +5362,8 @@ def assign_page(edition, page_no, cache_dir):
                     continue
                 if abs(r["line"] - home["line"]) > 1:
                     continue
-                rare = fam in ("pause", "small-ya", "small-waw",
-                               "meem-iqlab", "wasla", "maddah")
+                rare = fam in ("waqf", "small_yaa", "small_waw",
+                               "small_meem", "hamzat_al_wasl", "maddah")
                 win = 6.0 if rare else 3.0
                 if not (r["x1"] - win < cx < r["x2"] + win):
                     continue
@@ -5251,7 +5420,7 @@ def assign_page(edition, page_no, cache_dir):
         for _ in range(3):
             moved = False
             for r in wrec:
-                capr = _cap(r["w"]["uthmani"], fam)
+                capr = _cap(r["w"]["rasm_uthmani"], fam)
                 mine = [e for e in r["els"] if e.get("mark") in labs
                         and not e.get("mkpart") and not e.get("mkmembers")]
                 if len(mine) <= capr:
@@ -5271,7 +5440,7 @@ def assign_page(edition, page_no, cache_dir):
                             continue
                         n2 = sum(1 for x in r2["els"] if x.get("mark") in labs
                                  and not x.get("mkpart"))
-                        if n2 >= _cap(r2["w"]["uthmani"], fam):
+                        if n2 >= _cap(r2["w"]["rasm_uthmani"], fam):
                             continue
                         vz = (abs(cy - r2["top"]) if fam in _ABOVE_FAM
                               else min(abs(cy - r2["top"]), abs(cy - r2["bot"])))
@@ -5294,14 +5463,14 @@ def assign_page(edition, page_no, cache_dir):
             if not moved:
                 break
 
-    # a tanween's two strokes (and a dammatan's two curls) present as ONE
+    # a tanwin's two strokes (and a tanwin_al_damm's two curls) present as ONE
     # mark: the top piece is the master, its twin becomes a part. The text
-    # says how many tanweens the word carries — pairs of plain damma/fatha/
-    # kasra beyond the word's singles budget ARE its tanweens.
+    # says how many tanwins the word carries — pairs of plain dammah/fathah/
+    # kasrah beyond the word's singles budget ARE its tanwins.
     for r in wrec:
-        txt = r["w"]["uthmani"]
+        txt = r["w"]["rasm_uthmani"]
         for single, tan, chars_s, chars_t in (
-                ("damma", "dammatan", "\u064f", "\u064c\u08f1"),):
+                ("dammah", "tanwin_al_damm", "\u064f", "\u064c\u08f1"),):
             want_t = sum(txt.count(ch) for ch in chars_t)
             if not want_t:
                 continue
@@ -5326,13 +5495,13 @@ def assign_page(edition, page_no, cache_dir):
                 singles.remove(b)
                 spare -= 2
                 want_t -= 1
-        # fathatan/kasratan: the table labels every slash "fatha" or "kasra"
+        # tanwin_al_fath/tanwin_al_kasr: the table labels every slash "fathah" or "kasrah"
         # regardless of position, so pool BOTH kinds; the pair's position
-        # against the body midline says which tanween it is
+        # against the body midline says which tanwin it is
         want_ft = txt.count("\u064b") + txt.count("\u08f0")
         want_kt = txt.count("\u064d") + txt.count("\u08f2")
         if want_ft or want_kt:
-            pool = [e for e in r["els"] if e.get("mark") in ("fatha", "kasra")
+            pool = [e for e in r["els"] if e.get("mark") in ("fathah", "kasrah")
                     and not e.get("mkpart") and not e.get("mkmembers")]
             spare = (len(pool) - txt.count("\u064e") - txt.count("\u0650"))
             mid = (r["top"] + r["bot"]) / 2
@@ -5352,23 +5521,23 @@ def assign_page(edition, page_no, cache_dir):
                 _, a, b = best
                 if spare < 2:
                     # the plain budget is short (a vowel of this word is still
-                    # missing), so only unmistakable stacking proves a tanween
+                    # missing), so only unmistakable stacking proves a tanwin
                     dxb = abs((a["x1"] + a["x2"]) / 2 - (b["x1"] + b["x2"]) / 2)
                     dyb = abs((a["y1"] + a["y2"]) / 2 - (b["y1"] + b["y2"]) / 2)
                     if not (dxb < 4.5 and dyb < 5.0):
                         break
                 pcy = (a["y1"] + a["y2"] + b["y1"] + b["y2"]) / 4
                 if want_kt and (not want_ft or pcy > mid):
-                    tan = "kasratan"
+                    tan = "tanwin_al_kasr"
                     want_kt -= 1
                 else:
-                    tan = "fathatan"
+                    tan = "tanwin_al_fath"
                     want_ft -= 1
                 a["mark"] = b["mark"] = tan
                 pool.remove(a)
                 pool.remove(b)
                 spare -= 2
-        for lab in ("fathatan", "kasratan", "dammatan"):
+        for lab in ("tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm"):
             grp = [e for e in r["els"] if e.get("mark") == lab
                    and not e.get("mkpart")]
             grp.sort(key=lambda e: (e["y1"] + e["y2"]))
@@ -5386,14 +5555,14 @@ def assign_page(edition, page_no, cache_dir):
                 else:
                     i += 1
 
-    # muanaqah (\u06db): drawn as a floating dot-trio well above the word; its
-    # ink matches letter-dot shapes, so only the text can name it
+    # waqf_al_muanaqah (\u06db): drawn as a floating dot-trio well above the word; its
+    # ink matches letter_dot shapes, so only the text can name it
     for r in wrec:
-        n_mu = r["w"]["uthmani"].count("\u06db")
+        n_mu = r["w"]["rasm_uthmani"].count("\u06db")
         if not n_mu:
             continue
         cands = [e for e in r["els"]
-                 if e.get("mark") in ("dot", "two-dots", "three-dots")
+                 if e.get("mark") in ("dot", "two_dots", "three_dots")
                  and not e.get("mkpart")
                  and (e["y1"] + e["y2"]) / 2 < r["top"] - 2.0]
         # The sign is ONE stop drawn as a tight triangle of dots, and a word
@@ -5416,27 +5585,27 @@ def assign_page(edition, page_no, cache_dir):
                 groups.append([e])
         for g in groups[:n_mu]:
             g.sort(key=lambda e: -e["x1"])
-            g[0]["mark"] = "pause"
+            g[0]["mark"] = "waqf"
             for x in g[1:]:
                 x["mkpart"] = True    # welded twins count through their master
 
     # Every waqf sign floats above the line, clear of the letters. Most of
     # them are ligatures of real letters — قلى, صلى, the lone م — so the
     # classifier reads their ink as a letter and the word ends up one piece
-    # heavy and one pause short, with the qaf's two dots counted as letter
+    # heavy and one waqf short, with the qaaf's two dots counted as letter
     # dots on top of that. Nothing in the ink says "this is a stop"; only the
     # text does. So take the COUNT from the text and the POSITION from the
     # ink: pieces standing clear above the word's own letters.
-    # The stop signs only. U+06DD ends an ayah and U+06DE (۞) marks a rub
-    # el hizb: both are ornaments, not stops, and turning them into pause
+    # The stop signs only. U+06DD ends an ayah and U+06DE (۞) marks a rubu_al_hizb
+    # el hizb: both are ornaments, not stops, and turning them into waqf
     # marks invents a stop the text never asked for.
     _WAQF = "\u06d6\u06d7\u06d8\u06d9\u06da\u06dc"
     for r in wrec:
-        want = sum(r["w"]["uthmani"].count(c) for c in _WAQF)
+        want = sum(r["w"]["rasm_uthmani"].count(c) for c in _WAQF)
         if not want:
             continue
         have = sum(1 for e in r["els"]
-                   if e.get("mark") == "pause" and not e.get("mkpart"))
+                   if e.get("mark") == "waqf" and not e.get("mkpart"))
         if have >= want:
             continue
         bods = [e for e in r["els"] if e["kind"] == "body"]
@@ -5450,13 +5619,13 @@ def assign_page(edition, page_no, cache_dir):
         float_up.sort(key=lambda e: e["y2"])
         for e in float_up[:want - have]:
             e["kind"] = "mark"
-            e["mark"] = "pause"
-            e["lab"] = "pause"
+            e["mark"] = "waqf"
+            e["lab"] = "waqf"
             # the dots of the ligature ride with it and are not letter dots
             for d in r["els"]:
                 if d is e or d.get("mkpart") or d["kind"] != "mark":
                     continue
-                if d.get("mark") not in ("dot", "two-dots", "three-dots"):
+                if d.get("mark") not in ("dot", "two_dots", "three_dots"):
                     continue
                 if (d["x1"] >= e["x1"] - 1.5 and d["x2"] <= e["x2"] + 1.5
                         and (d["y1"] + d["y2"]) / 2 < band - 2.0):
@@ -5471,11 +5640,11 @@ def assign_page(edition, page_no, cache_dir):
     # the POSITION from the ink: a piece whose foot stands well above the
     # word's own baseline is not standing on the line, and no letter does that.
     _SUP = ({} if os.environ.get("QSVG_SUP") == "0" else
-            {"\u06e2": "meem-iqlab", "\u06e5": "small-waw",
-             "\u06e6": "small-ya"})
+            {"\u06e2": "small_meem", "\u06e5": "small_waw",
+             "\u06e6": "small_yaa"})
     for r in wrec:
         for ch, name in _SUP.items():
-            want = r["w"]["uthmani"].count(ch)
+            want = r["w"]["rasm_uthmani"].count(ch)
             if not want:
                 continue
             have = sum(1 for e in r["els"]
@@ -5520,7 +5689,7 @@ def assign_page(edition, page_no, cache_dir):
                 if e is big or _owned_by_other(e):
                     continue
                 # These pieces ARE letter fragments — the classifier is not
-                # wrong about that — so "letter-part" cannot rule them out.
+                # wrong about that — so "letter_part" cannot rule them out.
                 # What separates a superscript from a tall letter standing on
                 # a deep descender's line is that it is short as well as
                 # lifted: the alef of أَلِيمٌۢ clears the baseline too, but it
@@ -5536,7 +5705,7 @@ def assign_page(edition, page_no, cache_dir):
                 e["mark"] = name
                 e["lab"] = name
 
-    # A hamza is two different things wearing one outline, which is why a
+    # A hamzah is two different things wearing one outline, which is why a
     # shape table can never settle it. Riding on a carrier — أ إ ؤ ئ — it is a
     # MARK and the spelling counts it. Standing on its own, ء is a LETTER and
     # the spelling wants no mark at all. Only the position separates them: the
@@ -5544,26 +5713,26 @@ def assign_page(edition, page_no, cache_dir):
     # the line, in sequence with the rest of the word.
     _CARRIER = "\u0623\u0625\u0624\u0626\u0654\u0655"
 
-    # The other direction. أَ is drawn as a stack: the hamza sits on the alef
-    # and the fatha sits on the hamza. Both are the same small stroke to the
-    # position labeller, so it names them both fatha and the word comes out a
-    # hamza short and a fatha long — two budgets pointing at one fix. The
-    # lower of the pair is the one touching the carrier, and that is the hamza.
+    # The other direction. أَ is drawn as a stack: the hamzah sits on the alef
+    # and the fathah sits on the hamzah. Both are the same small stroke to the
+    # position labeller, so it names them both fathah and the word comes out a
+    # hamzah short and a fathah long — two budgets pointing at one fix. The
+    # lower of the pair is the one touching the carrier, and that is the hamzah.
     for r in wrec:
-        txt = r["w"]["uthmani"]
+        txt = r["w"]["rasm_uthmani"]
         want_h = sum(txt.count(c) for c in _CARRIER)
         if not want_h:
             continue
-        have_h = sum(1 for e in r["els"] if e.get("mark") == "hamza"
+        have_h = sum(1 for e in r["els"] if e.get("mark") == "hamzah"
                      and not e.get("mkpart"))
         if have_h >= want_h:
             continue
         if os.environ.get("QSVG_HZB") == "0":
             continue
-        _TAN = {"fatha": "\u064b\u08f0", "kasra": "\u064d\u08f2",
-                "damma": "\u064c\u08f1"}
-        _PLAIN = {"fatha": "\u064e", "kasra": "\u0650", "damma": "\u064f"}
-        for fam in ("fatha", "kasra", "damma"):
+        _TAN = {"fathah": "\u064b\u08f0", "kasrah": "\u064d\u08f2",
+                "dammah": "\u064c\u08f1"}
+        _PLAIN = {"fathah": "\u064e", "kasrah": "\u0650", "dammah": "\u064f"}
+        for fam in ("fathah", "kasrah", "dammah"):
             if have_h >= want_h:
                 break
             pool = [e for e in r["els"] if e.get("mark") == fam]
@@ -5571,29 +5740,29 @@ def assign_page(edition, page_no, cache_dir):
             spare = free - sum(txt.count(c) for c in _PLAIN[fam])
             has_tan = any(c in txt for c in _TAN[fam])
             # Shape identity outranks position (Abdullah's e1025, item 38):
-            # an element whose HUMAN-confirmed table label is hamza is the
-            # hamza — no seating geometry needed, the outline is the proof.
-            # classify() deliberately keeps hamza out of lab (ء twins), so
+            # an element whose HUMAN-confirmed table label is hamzah is the
+            # hamzah — no seating geometry needed, the outline is the proof.
+            # classify() deliberately keeps hamzah out of lab (ء twins), so
             # consult the raw table by signature here. The position test
             # below serves only shapes the table cannot tell apart.
-            def _tab_hamza(q):
+            def _tab_hamzah(q):
                 v = shape_labels().get(q.get("sig"))
                 lb = v.get("label") if isinstance(v, dict) else v
                 auto = v.get("auto", False) if isinstance(v, dict) else False
-                return lb == "hamza" and not auto
-            for e in sorted(pool, key=lambda q: (not _tab_hamza(q),
+                return lb == "hamzah" and not auto
+            for e in sorted(pool, key=lambda q: (not _tab_hamzah(q),
                                                  -(q["y1"] + q["y2"]))):
                 if have_h >= want_h:
                     break
-                if _tab_hamza(e) and not e.get("mkpart"):
-                    e["mark"] = "hamza"
-                    e["lab"] = "hamza"
+                if _tab_hamzah(e) and not e.get("mkpart"):
+                    e["mark"] = "hamzah"
+                    e["lab"] = "hamzah"
                     have_h += 1
                     spare -= 1
                     continue
                 # A welded twin is spare capacity too. Two of the same stroke
-                # are welded as a tanween, but this word's spelling has none —
-                # so the pair is not a doubled vowel at all. It is the hamza
+                # are welded as a tanwin, but this word's spelling has none —
+                # so the pair is not a doubled vowel at all. It is the hamzah
                 # with its vowel stacked on top, which is how أَ is drawn.
                 twin = bool(e.get("mkpart"))
                 if twin:
@@ -5622,61 +5791,61 @@ def assign_page(edition, page_no, cache_dir):
                                               if m is not e]
                 else:
                     spare -= 1
-                e["mark"] = "hamza"
-                e["lab"] = "hamza"
+                e["mark"] = "hamzah"
+                e["lab"] = "hamzah"
                 have_h += 1
 
-    # rename slashes inside each word by its own fatha/kasra budget: the ones
-    # below the body midline are the kasras, capacity permitting
+    # rename slashes inside each word by its own fathah/kasrah budget: the ones
+    # below the body midline are the kasrahs, capacity permitting
     for r in wrec:
         sl = [e for e in r["els"] if e["kind"] == "mark"
-              and e.get("mark") in ("fatha", "kasra")
+              and e.get("mark") in ("fathah", "kasrah")
               and not e.get("mkpart") and not e.get("mkmembers")]
         if not sl:
             continue
-        want_k = r["w"]["uthmani"].count("\u0650")
-        # A kasra already carried by a welded mark — the hamza-with-kasra
+        want_k = r["w"]["rasm_uthmani"].count("\u0650")
+        # A kasrah already carried by a welded mark — the hamzah-with-kasrah
         # under the alef of إِيَّاكَ — is not in this list and must still be
         # paid for out of the budget. Left uncounted, the loop below finds no
         # slash below the midline to spend the budget on and forces one ABOVE
-        # into a kasra, which no kasra can be.
+        # into a kasrah, which no kasrah can be.
         want_k -= sum(1 for e in r["els"]
                       if e["kind"] == "mark" and e not in sl
                       and not e.get("mkpart")
-                      and "kasra" in (e.get("mark") or "").split("+"))
+                      and "kasrah" in (e.get("mark") or "").split("+"))
         want_k = max(0, want_k)
         mid = (r["top"] + r["bot"]) / 2
         sl.sort(key=lambda e: -(e["y1"] + e["y2"]))     # lowest first
         for i, e in enumerate(sl):
             below = (e["y1"] + e["y2"]) / 2 > mid
-            e["mark"] = "kasra" if (i < want_k and below) or                 (below and i < want_k + 1 and want_k) else                 ("kasra" if i < want_k and not any(
-                    (x["y1"] + x["y2"]) / 2 > mid for x in sl) else "fatha")
-        # simple pass: lowest want_k slashes that sit below mid become kasra
+            e["mark"] = "kasrah" if (i < want_k and below) or                 (below and i < want_k + 1 and want_k) else                 ("kasrah" if i < want_k and not any(
+                    (x["y1"] + x["y2"]) / 2 > mid for x in sl) else "fathah")
+        # simple pass: lowest want_k slashes that sit below mid become kasrah
         for e in sl:
-            e["mark"] = "fatha"
+            e["mark"] = "fathah"
         k = 0
         for e in sl:
             if k < want_k and (e["y1"] + e["y2"]) / 2 > mid:
-                e["mark"] = "kasra"
+                e["mark"] = "kasrah"
                 k += 1
         if k < want_k:
             for e in sl:
                 if k >= want_k:
                     break
-                if e["mark"] == "fatha":
-                    e["mark"] = "kasra"
+                if e["mark"] == "fathah":
+                    e["mark"] = "kasrah"
                     k += 1
                     break
 
     # A ring is never dots. Letter dots are SOLID ink; a glyph whose outline
     # nests one contour inside another is a ring — the head of a ة or ه — and
-    # several such shapes are auto-labelled "two-dots" in the table. Whatever
+    # several such shapes are auto-labelled "two_dots" in the table. Whatever
     # path named them, they are letter ink: strip the mark globally so the dot
     # budgets below count only real dots.
     for _w3, _at3 in assignment:
         for _a3 in _at3:
             for _e3 in _a3["els"]:
-                if _e3.get("mark") not in ("dot", "two-dots", "three-dots"):
+                if _e3.get("mark") not in ("dot", "two_dots", "three_dots"):
                     continue
                 _cs = _e3.get("contours") or []
                 if len(_cs) < 2:
@@ -5696,32 +5865,32 @@ def assign_page(edition, page_no, cache_dir):
                     _e3.pop("mark", None)
                     _e3.pop("mkpart", None)
                     _e3["kind"] = "body"
-                    _e3["lab"] = "letter-part"
+                    _e3["lab"] = "letter_part"
 
     coverage = (labeled, total_marks)
 
     # Letter ink never carries a diacritic identity: positional labelers can
-    # hand a mark name to a letter-part (the ك dagger reads as a slash, a tall
-    # stem as a damma). The shape table is the authority — strip those labels.
+    # hand a mark name to a letter_part (the ك dagger reads as a slash, a tall
+    # stem as a dammah). The shape table is the authority — strip those labels.
     for _, atoms in assignment:
         for a in atoms:
             for e in a["els"]:
-                if e.get("lab") in ("letter", "letter-part", "letter-hamza") \
+                if e.get("lab") in ("letter", "letter_part", "letter_hamzah") \
                         and e.get("mark"):
                     del e["mark"]
                     e.pop("mkpart", None)
 
-    # In-word tanween weld by TEXT: a kasratan drawn tucked against the
+    # In-word tanwin weld by TEXT: a tanwin_al_kasr drawn tucked against the
     # letter (the عٍ of ضريع/جوع) arrives as two plain slashes that the
-    # positional namer calls fathas. When the text wants a tanween the word
-    # does not yet have, its two stacked surplus slashes ARE that tanween.
-    _TXTW = {"fathatan": ("\u064b", "\u08f0", ("fatha", "kasra")),
-             "kasratan": ("\u064d", "\u08f2", ("fatha", "kasra")),
-             "dammatan": ("\u064c", "\u08f1", ("damma",))}
+    # positional namer calls fathahs. When the text wants a tanwin the word
+    # does not yet have, its two stacked surplus slashes ARE that tanwin.
+    _TXTW = {"tanwin_al_fath": ("\u064b", "\u08f0", ("fathah", "kasrah")),
+             "tanwin_al_kasr": ("\u064d", "\u08f2", ("fathah", "kasrah")),
+             "tanwin_al_damm": ("\u064c", "\u08f1", ("dammah",))}
     for _w, _atoms in assignment:
         if not _w:
             continue
-        txt = _w["uthmani"]
+        txt = _w["rasm_uthmani"]
         _els = [e for a in _atoms for e in a["els"]]
         for tan, (c1, c2, plains) in _TXTW.items():
             want_t = txt.count(c1) + txt.count(c2)
@@ -5732,7 +5901,7 @@ def assign_page(edition, page_no, cache_dir):
             if have_t >= want_t:
                 continue
             plain_want = (txt.count("\u064e") + txt.count("\u0650")
-                          if "fatha" in plains else txt.count("\u064f"))
+                          if "fathah" in plains else txt.count("\u064f"))
             cand = [e for e in _els if e.get("mark") in plains + (tan,)
                     and not e.get("mkpart") and not e.get("mkmembers")]
             if len(cand) - plain_want < 2:
@@ -5756,15 +5925,15 @@ def assign_page(edition, page_no, cache_dir):
                 bot["mkpart"] = True
                 top["mkmembers"] = top.get("mkmembers", []) + [bot]
 
-    # Two dammatan-labeled pieces side by side in one word are ONE dammatan
-    # drawn as a damma pair: weld early so later passes move them as a unit.
+    # Two tanwin-al-damm-labeled pieces side by side in one word are ONE tanwin_al_damm
+    # drawn as a dammah pair: weld early so later passes move them as a unit.
     for _w, _atoms in assignment:
         if not _w:
             continue
-        # same for the stroke tanweens: two same-label kasratan/fathatan
+        # same for the stroke tanwins: two same-label tanwin_al_kasr/tanwin_al_fath
         # singles side by side are ONE pair (p540/p568 twins, Abdullah)
         dt = [e for a in _atoms for e in a["els"]
-              if e.get("mark") in ("dammatan", "kasratan", "fathatan")
+              if e.get("mark") in ("tanwin_al_damm", "tanwin_al_kasr", "tanwin_al_fath")
               and not e.get("mkpart") and not e.get("mkmembers")]
         for i in range(len(dt)):
             for j in range(i + 1, len(dt)):
@@ -5779,15 +5948,15 @@ def assign_page(edition, page_no, cache_dir):
                     b2["mkpart"] = True
                     a2.setdefault("mkmembers", []).append(b2)
 
-    # Tanween pair reunification: a tanween's two strokes can land in
+    # Tanwin pair reunification: a tanwin's two strokes can land in
     # neighbouring words (even across a line break at the column edge), each
     # hiding inside a "balanced" plain-slash count. The text names the owner:
-    # the word that wants the tanween claims the nearest matching stroke pair,
+    # the word that wants the tanwin claims the nearest matching stroke pair,
     # welds it, and oracle repair below settles the displaced plain budgets.
-    _TXTT = {"fathatan": ("\u064b", "\u08f0"), "kasratan": ("\u064d", "\u08f2"),
-             "dammatan": ("\u064c", "\u08f1")}
-    _TPLAIN = {"fathatan": ("fatha",), "kasratan": ("kasra",),
-               "dammatan": ("damma",)}
+    _TXTT = {"tanwin_al_fath": ("\u064b", "\u08f0"), "tanwin_al_kasr": ("\u064d", "\u08f2"),
+             "tanwin_al_damm": ("\u064c", "\u08f1")}
+    _TPLAIN = {"tanwin_al_fath": ("fathah",), "tanwin_al_kasr": ("kasrah",),
+               "tanwin_al_damm": ("dammah",)}
     _recs = []
     for _w, _atoms in assignment:
         if not _w:
@@ -5795,10 +5964,10 @@ def assign_page(edition, page_no, cache_dir):
         _els = [e for a in _atoms for e in a["els"]]
         _recs.append((_w, _atoms, _els))
     def _plain_ct(els):
-        return sum(1 for e in els if e.get("mark") in ("fatha", "kasra")
+        return sum(1 for e in els if e.get("mark") in ("fathah", "kasrah")
                    and not e.get("mkpart") and not e.get("mkmembers"))
     for _w, _atoms, _els in _recs:
-        txt = _w["uthmani"]
+        txt = _w["rasm_uthmani"]
         pw_own = txt.count("\u064e") + txt.count("\u0650")
         for tan, chars in _TXTT.items():
             want_t = sum(txt.count(c) for c in chars)
@@ -5815,14 +5984,14 @@ def assign_page(edition, page_no, cache_dir):
             seeds = [e for e in _els if e.get("mark") == tan
                      and not e.get("mkpart") and not e.get("mkmembers")
                      and mid - 25.0 < (e["y1"] + e["y2"]) / 2 < mid + 20.0]
-            if not seeds and tan == "dammatan":
-                # a dammatan drawn as TWO damma curls inside the word: weld the
+            if not seeds and tan == "tanwin_al_damm":
+                # a tanwin_al_damm drawn as TWO dammah curls inside the word: weld the
                 # closest surplus pair into one unit
-                dms = [e for e in _els if e.get("mark") == "damma"
+                dms = [e for e in _els if e.get("mark") == "dammah"
                        and not e.get("mkpart") and not e.get("mkmembers")
                        and mid - 25.0 < (e["y1"] + e["y2"]) / 2 < mid + 20.0]
                 # a TIGHT side-by-side pair is the ٌ curls even when the م's
-                # own damma strayed to a neighbour — welding exposes the
+                # own dammah strayed to a neighbour — welding exposes the
                 # deficit and the strict pass then fetches the stray
                 tight = False
                 for i1 in range(len(dms)):
@@ -5852,18 +6021,18 @@ def assign_page(edition, page_no, cache_dir):
                 # into a neighbouring word (even a line below)
                 if not seeds:
                     seeds = dms
-            if not seeds and tan != "dammatan" and _plain_ct(_els) > pw_own:
+            if not seeds and tan != "tanwin_al_damm" and _plain_ct(_els) > pw_own:
                 seeds = [e for e in _els
-                         if e.get("mark") in ("fatha", "kasra")
+                         if e.get("mark") in ("fathah", "kasrah")
                          and not e.get("mkpart") and not e.get("mkmembers")
                          and (((e["y1"] + e["y2"]) / 2 > mid)
-                              == (tan == "kasratan"))]
+                              == (tan == "tanwin_al_kasr"))]
             # both strokes may already sit in the word as unwelded plain
-            # slashes (a kasratan pair under مؤمنٰتٍ): weld in place first.
+            # slashes (a tanwin_al_kasr pair under مؤمنٰتٍ): weld in place first.
             # the ع descender can push the word's midline BELOW the upper
             # stroke, so pair from all spare slashes, not just the seeds
             pool = [e for e in _els
-                    if e.get("mark") in ("fatha", "kasra", tan)
+                    if e.get("mark") in ("fathah", "kasrah", tan)
                     and not e.get("mkpart") and not e.get("mkmembers")]
             if len(pool) >= 2 and _plain_ct(_els) >= pw_own + 2:
                 seeds = pool
@@ -5892,7 +6061,7 @@ def assign_page(edition, page_no, cache_dir):
                 for _w2, _at2, _els2 in _recs:
                     if _w2 is _w:
                         continue
-                    t2 = _w2["uthmani"]
+                    t2 = _w2["rasm_uthmani"]
                     for s2 in _els2:
                         if s2.get("mkpart") or s2.get("mkmembers") \
                                 or s2.get("standalone"):
@@ -5901,15 +6070,15 @@ def assign_page(edition, page_no, cache_dir):
                         if mk2 == tan:
                             if sum(t2.count(c) for c in chars):
                                 continue        # donor entitled to it
-                        elif tan == "dammatan" and mk2 == "damma":
+                        elif tan == "tanwin_al_damm" and mk2 == "dammah":
                             c2d = t2.count("\u064f")
                             h2d = sum(1 for x in _els2
-                                      if x.get("mark") == "damma"
+                                      if x.get("mark") == "dammah"
                                       and not x.get("mkpart"))
                             if h2d <= c2d:
                                 continue        # donor not surplus
-                        elif mk2 in ("fatha", "kasra"):
-                            if tan == "dammatan":
+                        elif mk2 in ("fathah", "kasrah"):
+                            if tan == "tanwin_al_damm":
                                 continue
                             if _plain_ct(_els2) <= t2.count("\u064e") \
                                     + t2.count("\u0650"):
@@ -5949,17 +6118,17 @@ def assign_page(edition, page_no, cache_dir):
     # ------------------------------------------------------------------
     def _o_fams(txt):
         return {f: _cap(txt, f) for f in
-                ("slash", "damma", "sukun", "hamza", "wasla", "small-alef",
-                 "maddah", "shadda", "small-circle", "pause",
-                 "small-waw", "small-ya")}
+                ("slash", "dammah", "sukun", "hamzah", "hamzat_al_wasl", "omitted_alif",
+                 "maddah", "shaddah", "small_circle", "waqf",
+                 "small_waw", "small_yaa")}
 
-    _OFAM = {"fatha": "slash", "kasra": "slash", "fathatan": "slash",
-             "kasratan": "slash", "damma": "damma", "dammatan": "damma",
-             "sukun": "sukun", "hamza": "hamza", "wasla": "wasla",
-             "small-alef": "small-alef", "maddah": "maddah", "shadda": "shadda",
-             "small-circle": "small-circle", "pause": "pause",
-             "meem-iqlab": "meem-iqlab",
-             "small-waw": "small-waw", "small-ya": "small-ya"}
+    _OFAM = {"fathah": "slash", "kasrah": "slash", "tanwin_al_fath": "slash",
+             "tanwin_al_kasr": "slash", "dammah": "dammah", "tanwin_al_damm": "dammah",
+             "sukun": "sukun", "hamzah": "hamzah", "hamzat_al_wasl": "hamzat_al_wasl",
+             "omitted_alif": "omitted_alif", "maddah": "maddah", "shaddah": "shaddah",
+             "small_circle": "small_circle", "waqf": "waqf",
+             "small_meem": "small_meem",
+             "small_waw": "small_waw", "small_yaa": "small_yaa"}
 
     owords = []
     for w, at in assignment:
@@ -5972,10 +6141,10 @@ def assign_page(edition, page_no, cache_dir):
         lns = [e.get("line") for e in (bods or els) if e.get("line")]
         ln0 = max(set(lns), key=lns.count) if lns else None
         owords.append({"w": w, "at": at, "ln": ln0,
-                       "nseg": max(1, len(segment_word(w["uthmani"]))),
+                       "nseg": max(1, len(segment_word(w["rasm_uthmani"]))),
                        "top": min(e["y1"] for e in (bods or els)),
                        "bot": max(e["y2"] for e in (bods or els)),
-                       "caps": _o_fams(w["uthmani"])})
+                       "caps": _o_fams(w["rasm_uthmani"])})
 
     _ordix = {id(_r0): _i0 for _i0, _r0 in enumerate(owords)}
 
@@ -6039,7 +6208,7 @@ def assign_page(edition, page_no, cache_dir):
             return min(e["x1"] for e in bs), max(e["x2"] for e in bs)
 
         # Letter ink alone fixes a word's place on the line. Marks reach well
-        # past it -- the hamza of أَوْ stands almost as far left as the whole
+        # past it -- the hamzah of أَوْ stands almost as far left as the whole
         # of مشركة -- so measuring with them makes a crossing look legal.
         fa, fb = _bspan(a), _bspan(b)
         if fa is None or fb is None:
@@ -6089,7 +6258,7 @@ def assign_page(edition, page_no, cache_dir):
             _fr = _tb.extract_stack()[-2]
             sys.stderr.write("MOVE line%-5d %-6s/%s x %.1f-%.1f  %s -> %s\n"
                              % (_fr.lineno, e["kind"], e.get("mark"), e["x1"], e["x2"],
-                                src["w"]["uthmani"], dst["w"]["uthmani"]))
+                                src["w"]["rasm_uthmani"], dst["w"]["rasm_uthmani"]))
         home = None
         for a in src["at"]:
             if e in a["els"]:
@@ -6148,7 +6317,7 @@ def assign_page(edition, page_no, cache_dir):
                     if e["kind"] == "body" and v["ln"] != r["ln"]:
                         continue          # letter ink never crosses lines
                     if e["kind"] == "body" and e.get("lab") in \
-                            ("letter-part", "letter", "letter-hamza"):
+                            ("letter_part", "letter", "letter_hamzah"):
                         continue          # fragments stay with their base
                     cx = (e["x1"] + e["x2"]) / 2
                     win = 18.0 if e["kind"] == "body" else 4.0
@@ -6208,13 +6377,13 @@ def assign_page(edition, page_no, cache_dir):
         if not improved:
             break
 
-    # Welded tanween masters are identity-strong: only a word whose text
-    # carries that tanween may own the pair. Strict surplus->deficit transfer.
-    for lab, chars in (("fathatan", "\u064b\u08f0"),
-                       ("kasratan", "\u064d\u08f2"),
-                       ("dammatan", "\u064c\u08f1")):
+    # Welded tanwin masters are identity-strong: only a word whose text
+    # carries that tanwin may own the pair. Strict surplus->deficit transfer.
+    for lab, chars in (("tanwin_al_fath", "\u064b\u08f0"),
+                       ("tanwin_al_kasr", "\u064d\u08f2"),
+                       ("tanwin_al_damm", "\u064c\u08f1")):
         for r in owords:
-            want_r = sum(r["w"]["uthmani"].count(ch) for ch in chars)
+            want_r = sum(r["w"]["rasm_uthmani"].count(ch) for ch in chars)
             mine = [e for a in r["at"] for e in a["els"]
                     if e.get("mark") == lab and not e.get("mkpart")]
             if len(mine) <= want_r:
@@ -6223,7 +6392,7 @@ def assign_page(edition, page_no, cache_dir):
                 if v is r or v["ln"] is None or r["ln"] is None \
                         or abs(v["ln"] - r["ln"]) > 1:
                     continue
-                want_v = sum(v["w"]["uthmani"].count(ch) for ch in chars)
+                want_v = sum(v["w"]["rasm_uthmani"].count(ch) for ch in chars)
                 have_v = sum(1 for a in v["at"] for e in a["els"]
                              if e.get("mark") == lab and not e.get("mkpart"))
                 if have_v >= want_v:
@@ -6250,9 +6419,9 @@ def assign_page(edition, page_no, cache_dir):
             _lines_of.setdefault(r["ln"], []).append(r)
     for ln2, rs in _lines_of.items():
         rs.sort(key=lambda r: -sum(_ospan(r)) / 2)
-        for fam in ("slash", "damma"):
+        for fam in ("slash", "dammah"):
             labs = tuple(l for l, f in _OFAM.items() if f == fam)
-            want = {id(r): _cap(r["w"]["uthmani"], fam) for r in rs}
+            want = {id(r): _cap(r["w"]["rasm_uthmani"], fam) for r in rs}
             pool = []
             for r in rs:
                 for e in [x for a in r["at"] for x in a["els"]]:
@@ -6296,7 +6465,7 @@ def assign_page(edition, page_no, cache_dir):
         for fam in set(_OFAM.values()):
             labs = tuple(l for l, f in _OFAM.items() if f == fam)
             for r in owords:
-                cap_r = _cap(r["w"]["uthmani"], fam)
+                cap_r = _cap(r["w"]["rasm_uthmani"], fam)
                 mine = [e for a in r["at"] for e in a["els"]
                         if e.get("mark") in labs and not e.get("mkpart")]
                 if len(mine) <= cap_r:
@@ -6305,7 +6474,7 @@ def assign_page(edition, page_no, cache_dir):
                     if v is r or v["ln"] is None or r["ln"] is None \
                             or abs(v["ln"] - r["ln"]) > 1:
                         continue
-                    cap_v = _cap(v["w"]["uthmani"], fam)
+                    cap_v = _cap(v["w"]["rasm_uthmani"], fam)
                     have_v = sum(1 for a in v["at"] for e in a["els"]
                                  if e.get("mark") in labs
                                  and not e.get("mkpart"))
@@ -6330,20 +6499,20 @@ def assign_page(edition, page_no, cache_dir):
         if not moved_any:
             break
 
-    # Text-gated trust for auto damma shapes: the shape table's UNCONFIRMED
-    # damma/dammatan entries are ignored at classify time (a stem can match
-    # them), so on some pages the real damma lands as a small "body". When a
-    # word's text still WANTS a damma-family mark and it holds a small body
-    # whose outline the table calls damma/dammatan, the text confirms the
+    # Text-gated trust for auto dammah shapes: the shape table's UNCONFIRMED
+    # dammah/tanwin_al_damm entries are ignored at classify time (a stem can match
+    # them), so on some pages the real dammah lands as a small "body". When a
+    # word's text still WANTS a dammah-family mark and it holds a small body
+    # whose outline the table calls dammah/tanwin_al_damm, the text confirms the
     # shape — reclassify it as that mark.
     _full_tab = shape_labels()
     for r in owords:
-        want_d = _cap(r["w"]["uthmani"], "damma")
+        want_d = _cap(r["w"]["rasm_uthmani"], "dammah")
         if not want_d:
             continue
         def _dunits(_r=r):
             return sum(1 for a in _r["at"] for x in a["els"]
-                       if x.get("mark") in ("damma", "dammatan")
+                       if x.get("mark") in ("dammah", "tanwin_al_damm")
                        and not x.get("mkpart"))
         if _dunits() >= want_d:
             continue
@@ -6356,7 +6525,7 @@ def assign_page(edition, page_no, cache_dir):
                     continue
                 v = _full_tab.get(pk(e))
                 lab = (v.get("label") if isinstance(v, dict) else v) if v else None
-                if lab in ("damma", "dammatan"):
+                if lab in ("dammah", "tanwin_al_damm"):
                     e["kind"] = "mark"
                     e["mark"] = lab
                     if _dunits() >= want_d:
@@ -6364,10 +6533,10 @@ def assign_page(edition, page_no, cache_dir):
 
     # A slash-family "mark" whose ink sits INSIDE a letter's own box is the
     # letter's armature (the ك dagger) mislabeled by a shape collision — a
-    # real fatha rides above the ink, a kasra below. Only a word whose slash
+    # real fathah rides above the ink, a kasrah below. Only a word whose slash
     # count exceeds its text budget may reclassify, most-interior first.
     for r in owords:
-        want_s = _cap(r["w"]["uthmani"], "slash")
+        want_s = _cap(r["w"]["rasm_uthmani"], "slash")
         def _shave(_r=r):
             return sum(1 for a in _r["at"] for x in a["els"]
                        if _OFAM.get(x.get("mark")) == "slash"
@@ -6378,7 +6547,7 @@ def assign_page(edition, page_no, cache_dir):
                 and (x["y2"] - x["y1"]) >= 8.0]
         cands = []
         for e in [x for a in r["at"] for x in a["els"]
-                  if x.get("mark") in ("fatha", "kasra")
+                  if x.get("mark") in ("fathah", "kasrah")
                   and not x.get("mkpart") and not x.get("mkmembers")]:
             cx = (e["x1"] + e["x2"]) / 2
             cy = (e["y1"] + e["y2"]) / 2
@@ -6394,17 +6563,17 @@ def assign_page(edition, page_no, cache_dir):
             e["kind"] = "body"
             del e["mark"]
 
-    # Absorb stranded damma-family surplus: a word that wants NONE of the
+    # Absorb stranded dammah-family surplus: a word that wants NONE of the
     # family but holds a piece, with every neighbour numerically satisfied,
-    # is carrying half of a neighbour's two-piece damma/dammatan — weld the
+    # is carrying half of a neighbour's two-piece dammah/tanwin_al_damm — weld the
     # piece into the closest adjacent same-family unit instead.
     for r in owords:
         for e in [x for a in r["at"] for x in a["els"]
-                  if x.get("mark") in ("damma", "dammatan")
+                  if x.get("mark") in ("dammah", "tanwin_al_damm")
                   and not x.get("mkpart") and not x.get("mkmembers")]:
-            if _cap(r["w"]["uthmani"], "damma") >= sum(
+            if _cap(r["w"]["rasm_uthmani"], "dammah") >= sum(
                     1 for a in r["at"] for x in a["els"]
-                    if x.get("mark") in ("damma", "dammatan")
+                    if x.get("mark") in ("dammah", "tanwin_al_damm")
                     and not x.get("mkpart")):
                 break
             cx = (e["x1"] + e["x2"]) / 2
@@ -6415,7 +6584,7 @@ def assign_page(edition, page_no, cache_dir):
                         or abs(v["ln"] - r["ln"]) > 1:
                     continue
                 for u in [x for a in v["at"] for x in a["els"]
-                          if x.get("mark") in ("damma", "dammatan")
+                          if x.get("mark") in ("dammah", "tanwin_al_damm")
                           and not x.get("mkpart")]:
                     dx = abs((u["x1"] + u["x2"]) / 2 - cx)
                     dy = abs((u["y1"] + u["y2"]) / 2 - cy)
@@ -6428,37 +6597,37 @@ def assign_page(edition, page_no, cache_dir):
                 e["mkpart"] = True
                 u.setdefault("mkmembers", []).append(e)
 
-    # A meem-iqlab that no text demands is the LETTER meem: give it back to
+    # A small_meem that no text demands is the LETTER meem: give it back to
     # the ink. (Left as a mark it may re-line onto a neighbouring line — the
     # م of يَوْمَ landing on ٱبْنُ below it, and the hole it leaves pulling a
     # piece off each following word.)
-    # THE PRINT's text decides, not uthmani: quran.com writes tanween+\u06e2 at
-    # idgham/ikhfa positions where this print draws NO small م (QPC open-tanween
+    # THE PRINT's text decides, not rasm_uthmani: quran.com writes tanwin+\u06e2 at
+    # idgham/ikhfa positions where this print draws NO small م (QPC open-tanwin
     # encoding is the drawing convention — reported.json items 23/24). Abdullah
     # sampled 16/16 of the residue by eye: all letters. So the demote keys on
     # the QPC text where present.
     for r in owords:
-        _ptxt = r["w"].get("qpc") or r["w"]["uthmani"]
+        _ptxt = r["w"].get("qpc") or r["w"]["rasm_uthmani"]
         if "\u06e2" in _ptxt or "\u06ed" in _ptxt:
             continue
         for a in r["at"]:
             for e in a["els"]:
-                if e.get("mark") == "meem-iqlab" and not e.get("mkpart"):
+                if e.get("mark") == "small_meem" and not e.get("mkpart"):
                     e.pop("mark", None)
                     e["kind"] = "body"
-                    e["lab"] = "letter-part"
+                    e["lab"] = "letter_part"
 
     # Every mark has a natural owner: the word whose letters it is drawn
-    # against, on the correct side — fatha, damma, sukun, shadda, madda,
-    # small-alef and wasla ride above; kasra and kasratan hang below. Budgets
+    # against, on the correct side — fathah, dammah, sukun, shaddah, maddah,
+    # omitted_alif and hamzat_al_wasl ride above; kasrah and tanwin_al_kasr hang below. Budgets
     # cannot recover this, because three words can hold one another's marks in
     # a cycle with every count still balancing. So compute each mark's natural
     # owner from the ink alone and apply the moves together, which unwinds a
     # cycle in one pass.
-    _SIDE_ABOVE = {"fatha", "damma", "sukun", "shadda", "maddah",
-                   "small-alef", "wasla", "fathatan", "dammatan",
-                   "small-circle", "meem-iqlab"}
-    _SIDE_BELOW = {"kasra", "kasratan"}
+    _SIDE_ABOVE = {"fathah", "dammah", "sukun", "shaddah", "maddah",
+                   "omitted_alif", "hamzat_al_wasl", "tanwin_al_fath", "tanwin_al_damm",
+                   "small_circle", "small_meem"}
+    _SIDE_BELOW = {"kasrah", "tanwin_al_kasr"}
     for _round in range(3):
         _ink = {}
         for r in owords:
@@ -6573,14 +6742,14 @@ def assign_page(edition, page_no, cache_dir):
                             continue
                         short = 0
                         if fam0:
-                            capv = _cap(v["w"]["uthmani"], fam0)
+                            capv = _cap(v["w"]["rasm_uthmani"], fam0)
                             havev = sum(1 for a2 in v["at"] for x2 in a2["els"]
                                         if _OFAM.get(x2.get("mark")) == fam0
                                         and not x2.get("mkpart"))
                             short = 1 if havev < capv else 0
                         # a short word's claim is decisive; otherwise the
                         # mark must sit deep inside the other band, not merely
-                        # dip into it the way a low kasra does
+                        # dip into it the way a low kasrah does
                         if not short and depth < 0.25:
                             continue
                         d = abs(cx - (sp[0] + sp[1]) / 2)
@@ -6603,10 +6772,10 @@ def assign_page(edition, page_no, cache_dir):
             return None
         return (min(e["x1"] for e in bs), max(e["x2"] for e in bs))
 
-    _SWAP_FAM = {"fatha": "slash", "kasra": "slash", "damma": "damma",
-                 "sukun": "sukun", "shadda": "shadda", "maddah": "maddah",
-                 "small-alef": "small-alef", "hamza": "hamza",
-                 "dot": "dots", "two-dots": "dots", "three-dots": "dots"}
+    _SWAP_FAM = {"fathah": "slash", "kasrah": "slash", "dammah": "dammah",
+                 "sukun": "sukun", "shaddah": "shaddah", "maddah": "maddah",
+                 "omitted_alif": "omitted_alif", "hamzah": "hamzah",
+                 "dot": "dots", "two_dots": "dots", "three_dots": "dots"}
     for r in owords:
         sp_r = _mspan(r)
         if sp_r is None:
@@ -6650,25 +6819,25 @@ def assign_page(edition, page_no, cache_dir):
                 _omove(e1, r, v)
                 _omove(match[1], v, r)
 
-    # A dammatan drawn as ONE glyph, and the small waw: both share the damma's
-    # outline, so the table names all three "damma". The text separates them —
-    # the tanween rides above the word's last letter, the small waw sits down
+    # A tanwin_al_damm drawn as ONE glyph, and the small waw: both share the dammah's
+    # outline, so the table names all three "dammah". The text separates them —
+    # the tanwin rides above the word's last letter, the small waw sits down
     # at writing level after it.
     for r in owords:
-        txt = r["w"]["uthmani"]
+        txt = r["w"]["rasm_uthmani"]
         els9 = [e for a in r["at"] for e in a["els"]]
         # a welded pair counts through its master, and that master is exactly
-        # what needs the tanween's name
-        dms = [e for e in els9 if e.get("mark") == "damma"
+        # what needs the tanwin's name
+        dms = [e for e in els9 if e.get("mark") == "dammah"
                and not e.get("mkpart")]
         if not dms:
             continue
         plain = txt.count("\u064f")
         want_dt = txt.count("\u064c") + txt.count("\u08f1")
         want_sw = txt.count("\u06e5")
-        have_dt = sum(1 for e in els9 if e.get("mark") == "dammatan"
+        have_dt = sum(1 for e in els9 if e.get("mark") == "tanwin_al_damm"
                       and not e.get("mkpart"))
-        have_sw = sum(1 for e in els9 if e.get("mark") == "small-waw"
+        have_sw = sum(1 for e in els9 if e.get("mark") == "small_waw"
                       and not e.get("mkpart"))
         bods9 = [e for e in els9 if e["kind"] == "body"]
         if not bods9:
@@ -6683,36 +6852,36 @@ def assign_page(edition, page_no, cache_dir):
             if len(dms) <= plain or not cands:
                 break
             mv = min(cands, key=lambda e: abs((e["x1"] + e["x2"]) / 2 - lx9))
-            mv["mark"] = "small-waw"
+            mv["mark"] = "small_waw"
             dms.remove(mv)
-        # then the tanween: the surplus curl nearest the end of the word
+        # then the tanwin: the surplus curl nearest the end of the word
         for _ in range(max(0, want_dt - have_dt)):
             if len(dms) <= plain:
                 break
             mv = min(dms, key=lambda e: abs((e["x1"] + e["x2"]) / 2 - lx9))
-            mv["mark"] = "dammatan"
+            mv["mark"] = "tanwin_al_damm"
             for _m in mv.get("mkmembers", []):
-                _m["mark"] = "dammatan"
+                _m["mark"] = "tanwin_al_damm"
             dms.remove(mv)
 
-    # The hamza of a seated alef: أ ؤ ئ carry it ABOVE, إ carries it BELOW.
+    # The hamzah of a seated alef: أ ؤ ئ carry it ABOVE, إ carries it BELOW.
     # Its outline is not always in the shape table, and where it sits under an
-    # alef the position labeller can even read it as a wasla — which is
-    # impossible, since a wasla only ever sits above. The text says the word
-    # carries a hamza; the geometry says which mark it is.
+    # alef the position labeller can even read it as a hamzat_al_wasl — which is
+    # impossible, since a hamzat_al_wasl only ever sits above. The text says the word
+    # carries a hamzah; the geometry says which mark it is.
     for r in owords:
-        txt = r["w"]["uthmani"]
+        txt = r["w"]["rasm_uthmani"]
         want_h = (sum(txt.count(c) for c in "\u0623\u0625\u0624\u0626")
                   + txt.count("\u0654") + txt.count("\u0655"))
         if not want_h:
             continue
         els9 = [e for a in r["at"] for e in a["els"]]
-        have_h = sum(1 for e in els9 if e.get("mark") == "hamza"
+        have_h = sum(1 for e in els9 if e.get("mark") == "hamzah"
                      and not e.get("mkpart"))
         if have_h >= want_h:
             continue
         below = ("\u0625" in txt or "\u0655" in txt)
-        has_wasla_text = "\u0671" in txt
+        has_hamzat_al_wasl_text = "\u0671" in txt
         alefs = [e for e in els9 if e["kind"] == "body"
                  and (e["x2"] - e["x1"]) <= 7.0
                  and (e["y2"] - e["y1"]) >= 8.0]
@@ -6724,12 +6893,12 @@ def assign_page(edition, page_no, cache_dir):
                 if e["kind"] != "mark" or e.get("mkpart"):
                     continue
                 mk = e.get("mark")
-                if mk == "hamza":
+                if mk == "hamzah":
                     continue
                 if mk is None:
-                    pass                  # unnamed ink: the likeliest hamza
-                elif mk == "wasla" and not has_wasla_text and below:
-                    pass                  # a wasla cannot sit below an alef
+                    pass                  # unnamed ink: the likeliest hamzah
+                elif mk == "hamzat_al_wasl" and not has_hamzat_al_wasl_text and below:
+                    pass                  # a hamzat_al_wasl cannot sit below an alef
                 else:
                     continue
                 cx = (e["x1"] + e["x2"]) / 2
@@ -6743,10 +6912,10 @@ def assign_page(edition, page_no, cache_dir):
                         best = (d, e)
             if best is None:
                 break
-            best[1]["mark"] = "hamza"
+            best[1]["mark"] = "hamzah"
 
-    # Put every wasla over the alef it is drawn on, BEFORE the pass below
-    # pulls alefs toward the words holding them. A wasla rides at the far left
+    # Put every hamzat_al_wasl over the alef it is drawn on, BEFORE the pass below
+    # pulls alefs toward the words holding them. A hamzat_al_wasl rides at the far left
     # of the word before it, standing over the NEXT word's opening alef, and
     # the split search — which sees overlap, not spelling — hands it to the
     # word it overlaps. Left uncorrected first, the pass below reads the stray
@@ -6765,23 +6934,23 @@ def assign_page(edition, page_no, cache_dir):
         # Only a word whose spelling has no ٱ at all is certainly not the
         # owner. Words that do have one keep their mark: neighbouring words
         # overlap — ٱلرَّحْمَـٰنِ and ٱلرَّحِيمِ share 18u on page 1 — so one
-        # word's alef routinely lies under the other's wasla, and geometry
+        # word's alef routinely lies under the other's hamzat_al_wasl, and geometry
         # alone would hand the mark to the wrong one.
-        if "\u0671" in r["w"]["uthmani"]:
+        if "\u0671" in r["w"]["rasm_uthmani"]:
             continue
         stray6 = [e for a in r["at"] for e in a["els"]
-                  if e.get("mark") == "wasla" and not e.get("mkpart")]
+                  if e.get("mark") == "hamzat_al_wasl" and not e.get("mkpart")]
         for wa in stray6:
             wcx = (wa["x1"] + wa["x2"]) / 2
             best = None
             for v in owords:
                 if v is r or v["ln"] != r["ln"]:
                     continue
-                txt6 = v["w"]["uthmani"]
+                txt6 = v["w"]["rasm_uthmani"]
                 if "\u0671" not in txt6:
                     continue
                 # No budget test here on purpose. These misplacements come in
-                # chains — هُوَ holds ٱلسَّمِيعُ's wasla while ٱلسَّمِيعُ holds
+                # chains — هُوَ holds ٱلسَّمِيعُ's hamzat_al_wasl while ٱلسَّمِيعُ holds
                 # ٱلْعَلِيمُ's — so every word in the middle already counts
                 # right and a budget guard refuses the one move that would
                 # start unwinding it. The alef underneath is proof enough.
@@ -6798,20 +6967,20 @@ def assign_page(edition, page_no, cache_dir):
             if best:
                 _omove(wa, r, best[2])
 
-    # A wasla sits on an ALEF, always. So when a word whose text opens with ٱ
-    # owns the wasla mark, the alef directly beneath it is that word's — even
+    # A hamzat_al_wasl sits on an ALEF, always. So when a word whose text opens with ٱ
+    # owns the hamzat_al_wasl mark, the alef directly beneath it is that word's — even
     # where the previous word's tail sweeps underneath and the split search,
     # which can only cut consecutive runs, had to hand it over.
     for r in owords:
-        if "\u0671" not in r["w"]["uthmani"]:
+        if "\u0671" not in r["w"]["rasm_uthmani"]:
             continue
         wl6 = [e for a in r["at"] for e in a["els"]
-               if e.get("mark") == "wasla" and not e.get("mkpart")]
+               if e.get("mark") == "hamzat_al_wasl" and not e.get("mkpart")]
         if not wl6:
             continue
-        # holding more waslas than the spelling allows means one of them is a
+        # holding more hamzat_al_wasls than the spelling allows means one of them is a
         # neighbour's; pulling an alef under it would steal a letter too
-        if len(wl6) > r["w"]["uthmani"].count("\u0671"):
+        if len(wl6) > r["w"]["rasm_uthmani"].count("\u0671"):
             continue
         own = [e for a in r["at"] for e in a["els"] if e["kind"] == "body"]
         for wa in wl6:
@@ -6833,7 +7002,7 @@ def assign_page(edition, page_no, cache_dir):
                         if w7 > 6.0 or (e7["y2"] - e7["y1"]) < 6.0:
                             continue      # an alef is narrow and tall
                         if not (e7["x1"] - 1.0 <= wcx <= e7["x2"] + 1.0):
-                            continue      # must stand under the wasla
+                            continue      # must stand under the hamzat_al_wasl
                         d7 = e7["y1"] - wa["y2"]
                         if not (-1.5 <= d7 <= 4.0):
                             continue
@@ -6851,20 +7020,20 @@ def assign_page(edition, page_no, cache_dir):
     # marks that were never misplaced — so the move is made only where the two
     # agree, and the mark must sit nearer the word that is short of it.
     _WANTC = {
-        "fatha": "\u064e", "kasra": "\u0650", "damma": "\u064f",
-        "fathatan": "\u064b\u08f0", "kasratan": "\u064d\u08f2",
-        "dammatan": "\u064c\u08f1", "sukun": "\u0652\u06e1",
-        "shadda": "\u0651", "maddah": "\u0653\u06e4",
-        "small-alef": "\u0670", "wasla": "\u0671",
-        "small-waw": "\u06e5", "small-ya": "\u06e6\u06e7",
-        "small-circle": "\u06df\u06e0",
-        "hamza": "\u0623\u0625\u0624\u0626\u0654\u0655",
+        "fathah": "\u064e", "kasrah": "\u0650", "dammah": "\u064f",
+        "tanwin_al_fath": "\u064b\u08f0", "tanwin_al_kasr": "\u064d\u08f2",
+        "tanwin_al_damm": "\u064c\u08f1", "sukun": "\u0652\u06e1",
+        "shaddah": "\u0651", "maddah": "\u0653\u06e4",
+        "omitted_alif": "\u0670", "hamzat_al_wasl": "\u0671",
+        "small_waw": "\u06e5", "small_yaa": "\u06e6\u06e7",
+        "small_circle": "\u06df\u06e0",
+        "hamzah": "\u0623\u0625\u0624\u0626\u0654\u0655",
     }
-    _ABOVE8 = {"fatha", "damma", "sukun", "shadda", "maddah", "small-alef",
-               "wasla", "fathatan", "dammatan", "small-circle", "hamza"}
+    _ABOVE8 = {"fathah", "dammah", "sukun", "shaddah", "maddah", "omitted_alif",
+               "hamzat_al_wasl", "tanwin_al_fath", "tanwin_al_damm", "small_circle", "hamzah"}
 
     def _txt8(r, fam):
-        t = r["w"]["uthmani"]
+        t = r["w"]["rasm_uthmani"]
         return sum(t.count(c) for c in _WANTC[fam])
 
     def _held8(r, fam):
@@ -6886,7 +7055,7 @@ def assign_page(edition, page_no, cache_dir):
 
     # Decide every transfer against ONE frozen reading of the page, then apply
     # them together. Deciding and moving in the same sweep lets a corrected
-    # pair feed the next comparison: on p508 a fatha returned to ءَاسِنٍۢ was
+    # pair feed the next comparison: on p508 a fathah returned to ءَاسِنٍۢ was
     # immediately handed on again, leaving that word with none and its
     # neighbour with two. A move is also capped at the smaller of the two
     # imbalances, so a pair can never overshoot into the opposite error.
@@ -6908,15 +7077,15 @@ def assign_page(edition, page_no, cache_dir):
                 if bb is None or ba is None:
                     continue
                 for fam in _WANTC:
-                    # The slash families are not settled here. A fatha and a
-                    # kasra are the same stroke, named later from where it sits
+                    # The slash families are not settled here. A fathah and a
+                    # kasrah are the same stroke, named later from where it sits
                     # and what the word's budget allows, so handing one across
                     # a word boundary re-opens that decision for BOTH words and
-                    # the renaming can come back differently — on p508 a kasra
+                    # the renaming can come back differently — on p508 a kasrah
                     # that landed correctly under غَيْرِ left both words with
-                    # the wrong fatha count. Families whose name is fixed by
+                    # the wrong fathah count. Families whose name is fixed by
                     # shape alone have no such second act.
-                    if fam in ("fatha", "kasra", "fathatan", "kasratan"):
+                    if fam in ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr"):
                         continue
                     held = _held8(a8, fam)
                     if len(held) - _txt8(a8, fam) <= 0:
@@ -6937,7 +7106,7 @@ def assign_page(edition, page_no, cache_dir):
                         if best is None or (db, gap) < best[0]:
                             best = ((db, gap), e)
                     if best:
-                        # Cap by WORD, not by pair: a word short of one fatha
+                        # Cap by WORD, not by pair: a word short of one fathah
                         # has two neighbours, and letting each hand one over
                         # leaves it holding two. Give only what the source can
                         # spare and take only what the destination lacks.
@@ -6956,21 +7125,21 @@ def assign_page(edition, page_no, cache_dir):
         _moved8.add(id(e8))
         _omove(e8, src8, dst8)
 
-    # A hamza standing on its own — ء — is a LETTER, and the spelling wants
+    # A hamzah standing on its own — ء — is a LETTER, and the spelling wants
     # no mark for it. Riding on a carrier it is a mark. The outline is the
     # same, so only the position tells them apart: the mark sits clear above
     # or below its carrier, while the letter stands on the line in sequence.
     # This runs late on purpose. Demote it any earlier and the passes that
-    # name hamzas simply put the mark back, and the word ends up holding one
+    # name hamzahs simply put the mark back, and the word ends up holding one
     # more than its spelling allows.
     _CARRIER9 = "\u0623\u0625\u0624\u0626\u0654\u0655"
     for r in owords:
-        txt = r["w"]["uthmani"]
+        txt = r["w"]["rasm_uthmani"]
         if "\u0621" not in txt or os.environ.get("QSVG_HZA") == "0":
             continue
         want = sum(txt.count(c) for c in _CARRIER9)
         els = [e for a in r["at"] for e in a["els"]]
-        hz = [e for e in els if e.get("mark") == "hamza"
+        hz = [e for e in els if e.get("mark") == "hamzah"
               and not e.get("mkpart")]
         if len(hz) <= want:
             continue
@@ -6985,14 +7154,14 @@ def assign_page(edition, page_no, cache_dir):
         for e in inline[:len(hz) - want]:
             # Anything welded to it was counting through it. Turning the
             # master into letter ink would take its twins out of the count
-            # with it, so free them first — a kasratan welded to the ء still
+            # with it, so free them first — a tanwin_al_kasr welded to the ء still
             # belongs to the word.
             for m in (e.get("mkmembers") or []):
                 m["mkpart"] = False
             e["mkmembers"] = []
             e["kind"] = "body"
             e["mark"] = None
-            e["lab"] = "letter-hamza"
+            e["lab"] = "letter_hamzah"
 
     def _eff_pieces(bods):
         # a stroke drawn over/inside a wider sibling (the kaf armature, the
@@ -7020,11 +7189,11 @@ def assign_page(edition, page_no, cache_dir):
     # over by the consecutive-run split — but only give it back when that word
     # is provably short of pieces, so ordinary overlap is left alone.
     for r in owords:
-        if "\u0671" not in r["w"]["uthmani"]:
+        if "\u0671" not in r["w"]["rasm_uthmani"]:
             continue
         own = [e for a in r["at"] for e in a["els"] if e["kind"] == "body"]
         wl8 = [e for a in r["at"] for e in a["els"]
-               if e.get("mark") == "wasla" and not e.get("mkpart")]
+               if e.get("mark") == "hamzat_al_wasl" and not e.get("mkpart")]
         alef = None
         for wa in wl8:
             wcx = (wa["x1"] + wa["x2"]) / 2
@@ -7061,16 +7230,16 @@ def assign_page(edition, page_no, cache_dir):
                     continue
                 _omove(b, r, prev[1])
 
-    # Iqlab tanween (ً ٌ ٍ followed by ۢ or ۭ): the nunation becomes a MEEM, so
+    # Iqlab tanwin (ً ٌ ٍ followed by ۢ or ۭ): the nunation becomes a MEEM, so
     # this script does not double the stroke — it draws ONE vowel stroke plus a
-    # small meem. Reading it as a plain vowel leaves the word a tanween short
+    # small meem. Reading it as a plain vowel leaves the word a tanwin short
     # and the meem filed as letter ink. The text names both.
-    _IQTAN = {"\u064b": ("fathatan", "fatha", "\u064e"),
-              "\u064c": ("dammatan", "damma", "\u064f"),
-              "\u0650" if False else "\u064d": ("kasratan", "kasra", "\u0650")}
+    _IQTAN = {"\u064b": ("tanwin_al_fath", "fathah", "\u064e"),
+              "\u064c": ("tanwin_al_damm", "dammah", "\u064f"),
+              "\u0650" if False else "\u064d": ("tanwin_al_kasr", "kasrah", "\u0650")}
     for r in owords:
-        txt = r["w"]["uthmani"]
-        # tanween NAMING keys on uthmani (needed at idgham too); only the
+        txt = r["w"]["rasm_uthmani"]
+        # tanwin NAMING keys on rasm_uthmani (needed at idgham too); only the
         # MEEM rescue below keys on the print's text
         _ptx = r["w"].get("qpc") or txt
         _print_meem = "\u06e2" in _ptx or "\u06ed" in _ptx
@@ -7078,13 +7247,13 @@ def assign_page(edition, page_no, cache_dir):
                 if txt[i] in _IQTAN and txt[i + 1] in ("\u06e2", "\u06ed")]
         if _dktext_on():
             # The DK text writes the print's OWN encodings, which the composite
-            # only implies: (a) the open tanween U+08F0-2 where quran.com
-            # writes plain tanween + a phantom \u06ed \u2014 the phantom was what fired
+            # only implies: (a) the open tanwin U+08F0-2 where quran.com
+            # writes plain tanwin + a phantom \u06ed \u2014 the phantom was what fired
             # this pass's stroke NAMING at all ~6,643 idgham/ikhfa sites, so
             # the open char must fire it too (no meem rescue: _print_meem is
-            # false there); (b) true iqlab as PLAIN haraka + \u06e2/\u06ed \u2014 the budget
+            # false there); (b) true iqlab as PLAIN harakah + \u06e2/\u06ed \u2014 the budget
             # wants the plain name, so no renaming, but the meem rescue and
-            # the demote of a shape-table tanween name still run (rename
+            # the demote of a shape-table tanwin name still run (rename
             # False). Both triggers are gated so QSVG_DKTEXT=0 is untouched.
             _open = {"\u08f0": "\u064b", "\u08f1": "\u064c", "\u08f2": "\u064d"}
             _plain = {"\u064e": "\u064b", "\u064f": "\u064c", "\u0650": "\u064d"}
@@ -7099,22 +7268,22 @@ def assign_page(edition, page_no, cache_dir):
         if rx1 is None:
             continue
         for tan, base, plain_ch, rename in want:
-            # The stroke may ALREADY carry the tanween name (a single-outline
-            # dammatan glyph labels straight from the shape table). That must
+            # The stroke may ALREADY carry the tanwin name (a single-outline
+            # tanwin_al_damm glyph labels straight from the shape table). That must
             # not skip the meem rescue below: this print draws iqlab as ONE
-            # haraka plus a small م (docs/defects/iqlab_notation.md), and an
+            # harakah plus a small م (docs/defects/iqlab_notation.md), and an
             # early exit here left the م counted as a letter piece in 12 words.
             mv = next((e for e in els
                        if e.get("mark") == tan and not e.get("mkpart")), None)
             if mv is not None and not rename:
-                # DK iqlab: the budget says PLAIN haraka, so a shape-table
-                # tanween name on the single stroke is demoted to it (only a
+                # DK iqlab: the budget says PLAIN harakah, so a shape-table
+                # tanwin name on the single stroke is demoted to it (only a
                 # lone outline — a welded pair is two real strokes, not this)
                 if not mv.get("mkmembers"):
                     mv["mark"] = base
             if mv is None and not rename:
                 # anchor on the plain stroke the budget names, without renaming
-                fams = ("damma",) if base == "damma" else ("fatha", "kasra")
+                fams = ("dammah",) if base == "dammah" else ("fathah", "kasrah")
                 pool = [e for e in els if e.get("mark") in fams
                         and not e.get("mkpart") and not e.get("mkmembers")]
                 if not pool:
@@ -7122,19 +7291,19 @@ def assign_page(edition, page_no, cache_dir):
                 bods = [e for e in els if e["kind"] == "body"]
                 mid = ((min(e["y1"] for e in bods) + max(e["y2"] for e in bods))
                        / 2 if bods else 0.0)
-                below = tan == "kasratan"
+                below = tan == "tanwin_al_kasr"
                 zone = [e for e in pool
                         if ((e["y1"] + e["y2"]) / 2 > mid) == below] or pool
                 mv = min(zone, key=lambda e: abs((e["x1"] + e["x2"]) / 2 - rx1))
             if mv is None:
-                if base == "damma":
-                    pool = [e for e in els if e.get("mark") == "damma"
+                if base == "dammah":
+                    pool = [e for e in els if e.get("mark") == "dammah"
                             and not e.get("mkpart") and not e.get("mkmembers")]
                     spare = len(pool) - txt.count(plain_ch)
                 else:
                     # the table names every slash by position alone, so a lone
-                    # kasratan stroke can arrive called "fatha": pool both.
-                    pool = [e for e in els if e.get("mark") in ("fatha", "kasra")
+                    # tanwin_al_kasr stroke can arrive called "fathah": pool both.
+                    pool = [e for e in els if e.get("mark") in ("fathah", "kasrah")
                             and not e.get("mkpart") and not e.get("mkmembers")]
                     spare = len(pool) - txt.count("\u064e") - txt.count("\u0650")
                 if spare <= 0 or not pool:
@@ -7142,16 +7311,16 @@ def assign_page(edition, page_no, cache_dir):
                 bods = [e for e in els if e["kind"] == "body"]
                 mid = ((min(e["y1"] for e in bods) + max(e["y2"] for e in bods)) / 2
                        if bods else 0.0)
-                below = tan == "kasratan"
+                below = tan == "tanwin_al_kasr"
                 zone = [e for e in pool
                         if ((e["y1"] + e["y2"]) / 2 > mid) == below] or pool
-                # the tanween sits at the END of the word — nearest its left edge
+                # the tanwin sits at the END of the word — nearest its left edge
                 mv = min(zone, key=lambda e: abs((e["x1"] + e["x2"]) / 2 - rx1))
                 mv["mark"] = tan
             # ... and its meem rides just beside it, usually filed as letter ink
             if not _print_meem:
                 continue          # the PRINT draws no م here (items 23/24)
-            if any(e.get("mark") == "meem-iqlab" and not e.get("mkpart")
+            if any(e.get("mark") == "small_meem" and not e.get("mkpart")
                    for e in els):
                 continue
             cx = (mv["x1"] + mv["x2"]) / 2
@@ -7178,35 +7347,35 @@ def assign_page(edition, page_no, cache_dir):
             if best:
                 e2 = best[1]
                 e2["kind"] = "mark"
-                e2["mark"] = "meem-iqlab"
+                e2["mark"] = "small_meem"
                 e2.pop("lab", None)
 
-    # Fathatan and kasratan are the SAME pair of strokes — only their position
+    # TanwinAlFath and tanwin_al_kasr are the SAME pair of strokes — only their position
     # tells them apart, and the table names them by shape alone. The text is
     # authoritative: rename by what the word actually carries, lowest strokes
     # first, then weld any pair still standing as two units into one mark.
     for r in owords:
-        txt = r["w"]["uthmani"]
+        txt = r["w"]["rasm_uthmani"]
         want_ft = txt.count("\u064b") + txt.count("\u08f0")
         want_kt = txt.count("\u064d") + txt.count("\u08f2")
         if not (want_ft or want_kt):
             continue
         els = [e for a in r["at"] for e in a["els"]]
-        have = [e for e in els if e.get("mark") in ("fathatan", "kasratan")
+        have = [e for e in els if e.get("mark") in ("tanwin_al_fath", "tanwin_al_kasr")
                 and not e.get("mkpart")]
         if not have:
             continue
         if len(have) == want_ft + want_kt:
             have.sort(key=lambda e: -(e["y1"] + e["y2"]))    # lowest first
             for i, e in enumerate(have):
-                nm = "kasratan" if i < want_kt else "fathatan"
+                nm = "tanwin_al_kasr" if i < want_kt else "tanwin_al_fath"
                 e["mark"] = nm
                 for m in e.get("mkmembers", []):
                     m["mark"] = nm
             continue
-        # more units than the text allows: the strokes of one tanween are
+        # more units than the text allows: the strokes of one tanwin are
         # still standing apart — weld the closest same-named pair
-        for nm, wn in (("fathatan", want_ft), ("kasratan", want_kt)):
+        for nm, wn in (("tanwin_al_fath", want_ft), ("tanwin_al_kasr", want_kt)):
             grp = [e for e in els if e.get("mark") == nm and not e.get("mkpart")]
             while len(grp) > wn and wn >= 0:
                 best = None
@@ -7227,7 +7396,7 @@ def assign_page(edition, page_no, cache_dir):
                 top["mkmembers"] = top.get("mkmembers", []) + [bot]
                 grp.remove(bot)
 
-    _DOTUNIT = {"dot": 1, "two-dots": 2, "three-dots": 3}
+    _DOTUNIT = {"dot": 1, "two_dots": 2, "three_dots": 3}
 
     # A letter's dot GROUP can be drawn as several pieces (the three dots of
     # sheen as a two-dot path plus a one-dot path). When a word holds more dot
@@ -7235,7 +7404,7 @@ def assign_page(edition, page_no, cache_dir):
     # UNITS, the touching pieces are one group: weld them into a single mark.
     def _dot_groups(txt):
         raw = _LETTER.findall(txt)
-        sk = [(HAMZA_MAP[ch][0] if ch in HAMZA_MAP else ch, ch in HAMZA_MAP)
+        sk = [(HAMZAH_MAP[ch][0] if ch in HAMZAH_MAP else ch, ch in HAMZAH_MAP)
               for ch in raw]
         out = []
         for i, (ch, seat) in enumerate(sk):
@@ -7247,7 +7416,7 @@ def assign_page(edition, page_no, cache_dir):
         return out
 
     for r in owords:
-        groups = _dot_groups(r["w"]["uthmani"])
+        groups = _dot_groups(r["w"]["rasm_uthmani"])
         pieces = [e for a in r["at"] for e in a["els"]
                   if e.get("mark") in _DOTUNIT and not e.get("mkpart")]
         if len(pieces) <= len(groups):
@@ -7267,13 +7436,13 @@ def assign_page(edition, page_no, cache_dir):
         if best:
             _, a1, b1 = best
             top, bot = (a1, b1) if a1["y1"] <= b1["y1"] else (b1, a1)
-            top["mark"] = "three-dots"
-            bot["mark"] = "three-dots"
+            top["mark"] = "three_dots"
+            bot["mark"] = "three_dots"
             bot["mkpart"] = True
             top["mkmembers"] = top.get("mkmembers", []) + [bot]
 
     # Containment repair: a letter piece drawn INSIDE another word's ink
-    # belongs to that word. The tanween alef of a word like شَرًّۭا is drawn
+    # belongs to that word. The tanwin alef of a word like شَرًّۭا is drawn
     # tucked under its own body, so a neighbour whose cluster reached across
     # can hold it while the owner is left a segment short.
     def _bodies(r):
@@ -7284,7 +7453,7 @@ def assign_page(edition, page_no, cache_dir):
         if len(vb) < 2:
             continue
         for e in list(vb):
-            if e.get("lab") in ("letter", "letter-part", "letter-hamza"):
+            if e.get("lab") in ("letter", "letter_part", "letter_hamzah"):
                 pass                    # letter ink is exactly what may move
             for r in owords:
                 if r is v or r["ln"] is None or v["ln"] is None \
@@ -7442,14 +7611,14 @@ def assign_page(edition, page_no, cache_dir):
                 fam = e.get("mark")
                 if fam not in _WANTC:
                     continue
-                # Not the slash families. A fatha and a kasra are one stroke
+                # Not the slash families. A fathah and a kasrah are one stroke
                 # named later from where it sits and what the word's budget
                 # allows, so carrying one to another line re-opens that
                 # decision for both words and the renaming can come back
                 # differently — p446 and p576 each lost two words that way.
-                if fam in ("fatha", "kasra", "fathatan", "kasratan"):
+                if fam in ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr"):
                     continue
-                txt_r = r["w"]["uthmani"]
+                txt_r = r["w"]["rasm_uthmani"]
                 have_r = sum(1 for q in els if q.get("mark") == fam
                              and not q.get("mkpart"))
                 if have_r <= sum(txt_r.count(c) for c in _WANTC[fam]):
@@ -7466,8 +7635,8 @@ def assign_page(edition, page_no, cache_dir):
 
     def _dots_want(txt):
         raw = _LETTER.findall(txt)
-        # a hamza-carrying seat (ئ ؤ أ إ) is drawn WITHOUT its letter's dots
-        sk = [(HAMZA_MAP[ch][0] if ch in HAMZA_MAP else ch, ch in HAMZA_MAP)
+        # a hamzah-carrying seat (ئ ؤ أ إ) is drawn WITHOUT its letter's dots
+        sk = [(HAMZAH_MAP[ch][0] if ch in HAMZAH_MAP else ch, ch in HAMZAH_MAP)
               for ch in raw]
         n = 0
         for i, (ch, seat) in enumerate(sk):
@@ -7485,7 +7654,7 @@ def assign_page(edition, page_no, cache_dir):
     for _round in range(2):
         moved_any = False
         for r in owords:
-            want_r = _dots_want(r["w"]["uthmani"])
+            want_r = _dots_want(r["w"]["rasm_uthmani"])
             have_r = _dots_have(r)
             if have_r <= want_r:
                 continue
@@ -7495,7 +7664,7 @@ def assign_page(edition, page_no, cache_dir):
                 if v is r or v["ln"] is None or r["ln"] is None \
                         or abs(v["ln"] - r["ln"]) > 1:
                     continue
-                want_v = _dots_want(v["w"]["uthmani"])
+                want_v = _dots_want(v["w"]["rasm_uthmani"])
                 have_v = _dots_have(v)
                 if have_v >= want_v:
                     continue
@@ -7542,14 +7711,14 @@ def assign_page(edition, page_no, cache_dir):
         if extra is not None:
             els = els + [extra]
         bods = [e for e in els if e["kind"] == "body"
-                or e.get("mark") in ("small-ya", "small-waw")
+                or e.get("mark") in ("small_yaa", "small_waw")
                 or e is extra]          # a rescued piece counts as letter ink
         if not bods:
             return None
         span = max(e["x2"] for e in bods) - min(e["x1"] for e in bods)
         qw = _qall.get("%d:%d:%d" % (r["w"]["surah"], r["w"]["ayah"],
                                      r["w"]["pos"]))
-        if not qw or any(m in r["w"]["uthmani"] for m in "\u06de\u06e9"):
+        if not qw or any(m in r["w"]["rasm_uthmani"] for m in "\u06de\u06e9"):
             return None
         rs = [y for y in owords if y["ln"] == r["ln"]]
         ta = tq = 0.0
@@ -7568,7 +7737,7 @@ def assign_page(edition, page_no, cache_dir):
                   and not e.get("mkpart")
                   and max(e["x2"] - e["x1"], e["y2"] - e["y1"]) >= 7.5]
         if strays and os.environ.get("QSVG_DBG_RESC"):
-            print("RESC strays in %s: %s" % (r["w"]["uthmani"],
+            print("RESC strays in %s: %s" % (r["w"]["rasm_uthmani"],
                   ["x%.0f..%.0f y%.0f..%.0f" % (e["x1"], e["x2"], e["y1"], e["y2"])
                    for e in strays]), file=sys.stderr)
         for e in strays:
@@ -7576,7 +7745,7 @@ def assign_page(edition, page_no, cache_dir):
                       if x is not e and x["kind"] == "mark"
                       and not x.get("mkpart")
                       and (not x.get("mark") or x.get("mark") in
-                           ("dot", "two-dots", "three-dots"))
+                           ("dot", "two_dots", "three_dots"))
                       and x["x1"] > e["x1"] - 2.5 and x["x2"] < e["x2"] + 2.5
                       and x["y1"] > e["y1"] - 6.0 and x["y2"] < e["y2"] + 6.0]
             cur = _wlog(r, drop=[e] + riders)
@@ -7599,7 +7768,7 @@ def assign_page(edition, page_no, cache_dir):
                 gain = w_now - w_with
                 if os.environ.get("QSVG_DBG_RESC"):
                     print("RESC cand v=%s gain=%.2f now=%.2f with=%.2f"
-                          % (v["w"]["uthmani"], gain, w_now, w_with),
+                          % (v["w"]["rasm_uthmani"], gain, w_now, w_with),
                           file=sys.stderr)
                 if gain > 0.2 and (best is None or gain > best[0]):
                     best = (gain, v)
@@ -7618,17 +7787,17 @@ def assign_page(edition, page_no, cache_dir):
 
     # Iqlab meem recovery: the small م of نۢ shares its outline with letter
     # fragments, so the table can force it into the NEXT word as body ink.
-    # The text names its owner: a word with a ۢ budget and no meem-iqlab
+    # The text names its owner: a word with a ۢ budget and no small_meem
     # claims a small م-sized body piece standing at its left edge.
     for r in owords:
         # only ۢ (U+06E2) is drawn as a separate small م in this art; the
-        # low ۭ of iqlab tanween leaves no standalone glyph to claim
-        want_m = r["w"]["uthmani"].count("\u06e2")
-        _ptx2 = r["w"].get("qpc") or r["w"]["uthmani"]
+        # low ۭ of iqlab tanwin leaves no standalone glyph to claim
+        want_m = r["w"]["rasm_uthmani"].count("\u06e2")
+        _ptx2 = r["w"].get("qpc") or r["w"]["rasm_uthmani"]
         if not want_m or "\u06e2" not in _ptx2:
             continue          # the PRINT draws no م here (items 23/24)
         have_m = sum(1 for a in r["at"] for e in a["els"]
-                     if e.get("mark") == "meem-iqlab" and not e.get("mkpart"))
+                     if e.get("mark") == "small_meem" and not e.get("mkpart"))
         if have_m >= want_m:
             continue
         rx1, rx2 = _ospan(r)
@@ -7647,10 +7816,10 @@ def assign_page(edition, page_no, cache_dir):
                         continue
                     w2 = e["x2"] - e["x1"]; h2 = e["y2"] - e["y1"]
                     if os.environ.get("QSVG_DBG_MEEM") and abs(e["x1"] - 291) < 3 \
-                            and r["w"]["uthmani"].startswith("\u0645"):
+                            and r["w"]["rasm_uthmani"].startswith("\u0645"):
                         print("MEEM-CAND x%.0f..%.0f y%.0f..%.0f w%.1f h%.1f donor=%s"
                               % (e["x1"], e["x2"], e["y1"], e["y2"], w2, h2,
-                                 v["w"]["uthmani"]), file=sys.stderr)
+                                 v["w"]["rasm_uthmani"]), file=sys.stderr)
                     if not (2.0 <= w2 <= 6.0 and 5.0 <= h2 <= 12.0):
                         continue
                     if _human_letter_label(e):
@@ -7671,7 +7840,7 @@ def assign_page(edition, page_no, cache_dir):
                         if not (ry1 - 12.0 <= cy <= ry2 + 2.0):
                             if os.environ.get("QSVG_DBG_MEEM"):
                                 print("MEEM-YREJ cy=%.0f ry=%.0f..%.0f w=%s"
-                                      % (cy, ry1, ry2, r["w"]["uthmani"]),
+                                      % (cy, ry1, ry2, r["w"]["rasm_uthmani"]),
                                       file=sys.stderr)
                             continue
                     # the donor must not need the piece as a letter segment
@@ -7680,33 +7849,33 @@ def assign_page(edition, page_no, cache_dir):
                     if len(vb) < max(1, v["nseg"]):
                         if os.environ.get("QSVG_DBG_MEEM"):
                             print("MEEM-REJ nseg donor=%s piece x%.0f nseg=%d nb=%d"
-                                  % (v["w"]["uthmani"], e["x1"], v["nseg"],
+                                  % (v["w"]["rasm_uthmani"], e["x1"], v["nseg"],
                                      len(vb)), file=sys.stderr)
                         continue
                     if best is None or d < best[0]:
                         best = (d, e, v)
         if os.environ.get("QSVG_DBG_MEEM"):
             print("MEEM want=%d have=%d word=%s rx1=%.0f best=%s"
-                  % (want_m, have_m, r["w"]["uthmani"], rx1,
+                  % (want_m, have_m, r["w"]["rasm_uthmani"], rx1,
                      "None" if best is None else "d=%.1f x%.0f..%.0f y%.0f..%.0f"
                      % (best[0], best[1]["x1"], best[1]["x2"],
                         best[1]["y1"], best[1]["y2"])), file=sys.stderr)
         if best:
             _, e, v = best
             e["kind"] = "mark"
-            e["mark"] = "meem-iqlab"
+            e["mark"] = "small_meem"
             e.pop("lab", None)
             e["line"] = r["ln"]
             _omove(e, v, r)
 
     # Unassigned strays: a mark sitting in no word joins an adjacent word that
-    # still has budget for its family — including the letter-dot budget derived
+    # still has budget for its family — including the letter_dot budget derived
     # from the word's own skeleton.
-    _DOTU = {"dot": 1, "two-dots": 2, "three-dots": 3}
+    _DOTU = {"dot": 1, "two_dots": 2, "three_dots": 3}
 
     def _dot_want(txt):
         raw = _LETTER.findall(txt)
-        sk = [(HAMZA_MAP[ch][0] if ch in HAMZA_MAP else ch, ch in HAMZA_MAP)
+        sk = [(HAMZAH_MAP[ch][0] if ch in HAMZAH_MAP else ch, ch in HAMZAH_MAP)
               for ch in raw]
         n = 0
         for i, (ch, seat) in enumerate(sk):
@@ -7748,7 +7917,7 @@ def assign_page(edition, page_no, cache_dir):
             elif dotu:
                 have = sum(_DOTU.get(x.get("mark"), 0) for x in els_r
                            if not x.get("mkpart"))
-                need = have + dotu <= _dot_want(r["w"]["uthmani"])
+                need = have + dotu <= _dot_want(r["w"]["rasm_uthmani"])
             if not need:
                 continue
             d = abs((rx1 + rx2) / 2 - cx)
@@ -7768,15 +7937,15 @@ def assign_page(edition, page_no, cache_dir):
             tgt["els"].append(e)
             tgt["els"].extend(e.get("mkmembers", []))
 
-    # Re-run tanween pairing/welding: the repair layers may have reunited a
+    # Re-run tanwin pairing/welding: the repair layers may have reunited a
     # pair that was split at first-weld time.
     for r in owords:
-        txt = r["w"]["uthmani"]
+        txt = r["w"]["rasm_uthmani"]
         els_r = [e for a in r["at"] for e in a["els"]]
         for single, tan, chars_s, chars_t in (
-                ("damma", "dammatan", "\u064f", "\u064c\u08f1"),
-                ("fatha", "fathatan", "\u064e", "\u064b\u08f0"),
-                ("kasra", "kasratan", "\u0650", "\u064d\u08f2")):
+                ("dammah", "tanwin_al_damm", "\u064f", "\u064c\u08f1"),
+                ("fathah", "tanwin_al_fath", "\u064e", "\u064b\u08f0"),
+                ("kasrah", "tanwin_al_kasr", "\u0650", "\u064d\u08f2")):
             want_t = sum(txt.count(ch) for ch in chars_t)
             if not want_t:
                 continue
@@ -7828,7 +7997,7 @@ def assign_page(edition, page_no, cache_dir):
                 singles.remove(a2)
                 singles.remove(b2)
                 have_t += 1
-            # the art's tanween halves are not always labeled alike: a spare
+            # the art's tanwin halves are not always labeled alike: a spare
             # single (or a duplicate tan half) hugging a tan master is that
             # master's second curl
             masters = [e for e in els_r if e.get("mark") == tan
@@ -7859,10 +8028,10 @@ def assign_page(edition, page_no, cache_dir):
                 sgl["mkpart"] = True
                 m1.setdefault("mkmembers", []).append(sgl)
                 singles.remove(sgl)
-            # kasratan/fathatan strokes carry whatever slash name the position
+            # tanwin_al_kasr/tanwin_al_fath strokes carry whatever slash name the position
             # pass guessed: weld two spare slash strokes of any name
-            if tan in ("fathatan", "kasratan") and have_t < want_t:
-                other = "kasra" if single == "fatha" else "fatha"
+            if tan in ("tanwin_al_fath", "tanwin_al_kasr") and have_t < want_t:
+                other = "kasrah" if single == "fathah" else "fathah"
                 spare2 = [e for e in els_r
                           if e.get("mark") in (single, other)
                           and not e.get("mkpart")]
@@ -7885,13 +8054,13 @@ def assign_page(edition, page_no, cache_dir):
                     spare2.remove(s2)
                     have_t += 1
 
-    # a stray tanween half that drifted onto the previous word snaps back to
+    # a stray tanwin half that drifted onto the previous word snaps back to
     # the master it hugs on the neighbouring word
     for ri, r in enumerate(owords):
-        txt = r["w"]["uthmani"]
+        txt = r["w"]["rasm_uthmani"]
         for singles_n, tans_n, chars_s, chars_t in (
-                (("damma",), ("dammatan",), "ُ", "ٌࣱ"),
-                (("fatha", "kasra"), ("fathatan", "kasratan"),
+                (("dammah",), ("tanwin_al_damm",), "ُ", "ٌࣱ"),
+                (("fathah", "kasrah"), ("tanwin_al_fath", "tanwin_al_kasr"),
                  "َِ", "ًࣰٍࣲ")):
             fam = singles_n + tans_n
             els_r = [e for a in r["at"] for e in a["els"]]
@@ -7908,7 +8077,7 @@ def assign_page(edition, page_no, cache_dir):
                 if nb is r or have <= want:
                     continue
                 nb_els = [e for a in nb["at"] for e in a["els"]]
-                nb_txt = nb["w"]["uthmani"]
+                nb_txt = nb["w"]["rasm_uthmani"]
                 nb_want_t = sum(nb_txt.count(ch) for ch in chars_t)
                 nb_have_t = sum(1 for e in nb_els if e.get("mark") in tans_n
                                 and not e.get("mkpart"))
@@ -7919,7 +8088,7 @@ def assign_page(edition, page_no, cache_dir):
                         tan = m1["mark"]
                     elif m1.get("mark") in singles_n \
                             and nb_want_t > nb_have_t:
-                        # the tanween the neighbour's text actually wants
+                        # the tanwin the neighbour's text actually wants
                         tan = next((t for t, ch2 in zip(
                             tans_n, ("ًࣰ", "ٍࣲ") if len(tans_n) == 2
                             else ("ٌࣱ",))
@@ -7956,7 +8125,7 @@ def assign_page(edition, page_no, cache_dir):
     # is never any word's mark or letter.)
     if os.environ.get("QSVG_SAJ", "1") == "1":
         for _ws, _ats in assignment:
-            if not _ws or "۩" not in _ws["uthmani"]:
+            if not _ws or "۩" not in _ws["rasm_uthmani"]:
                 continue
             for _as in _ats:
                 for _es in _as["els"]:
@@ -7971,7 +8140,7 @@ def assign_page(edition, page_no, cache_dir):
                         _es["mark"] = "sajdah"
                         _es["lab"] = "sajdah"
 
-    # Standalone signs (hizb / rub markers, division stars) belong to no word:
+    # Standalone signs (hizb / rubu_al_hizb markers, division stars) belong to no word:
     # eject them and stamp the ayah whose polygon holds them
     _rects_sa = []
     if os.path.exists(polys_path):
@@ -8004,13 +8173,13 @@ def assign_page(edition, page_no, cache_dir):
                 # but fixed height. It belongs to the sajdah sign, never to a
                 # word — collect it even though it carries no mark name.
                 # ... and a later mark-namer can have called the hairline a
-                # vowel (p272: the bar over 16:48-49 renamed kasra and counted
+                # vowel (p272: the bar over 16:48-49 renamed kasrah and counted
                 # in ظِلَـٰلُهُۥ's budget) — the geometry says bar, so the name
                 # is dropped and the bar is ejected all the same.
                 # The name "sajdah" is no exception (p379, p480): a bar named
                 # sajdah used to skip this test and eject as a sign of its
                 # own, keyed to the ayah ABOVE it, so the site came out as two
-                # <g class="sajdah-mark"> groups with two different data-aid.
+                # <g class="sajdah-mark"> groups with two different data-ayah-key.
                 # The geometry decides — the ۩ is 8x11, never a hairline.
                 is_bar = (e.get("lab") == "sajdah" and not e.get("mkpart")
                           and (not e.get("mark")
@@ -8055,8 +8224,8 @@ def assign_page(edition, page_no, cache_dir):
             e["standalone"] = (su, ay)
             ejected.setdefault(("sajdah", su, ay), []).append(e)
     # Taxonomy phase 1 (decision 7): the sajdah compound splits by NAME into
-    # its two components — `sajdah-line` (the hairline overline, which the
-    # appendix says identifies the word making prostration) and `sajdah-sign`
+    # its two components — `sajdah_line` (the hairline overline, which the
+    # appendix says identifies the word making sajdah) and `sajdah_mark`
     # (the ۩ mihrab glyph). Grouping is untouched (Policy P5 still holds one
     # standalone group); only the per-element data-mark changes. The bar test
     # is the same ratio classify() uses: hairline height, many times wider.
@@ -8067,12 +8236,12 @@ def assign_page(edition, page_no, cache_dir):
             for e in grp:
                 _bh = e["y2"] - e["y1"]
                 _bw = e["x2"] - e["x1"]
-                e["mark"] = ("sajdah-line" if _bh < 2.5 and _bw >= 8.0
-                             else "sajdah-sign")
+                e["mark"] = ("sajdah_line" if _bh < 2.5 and _bw >= 8.0
+                             else "sajdah_mark")
             # ONE overline per site: p480's hairline is digitized as two
             # segments and both were masters — 16 lines over 15 signs. The
             # segments weld, rightmost (first in reading order) counting.
-            _sl = sorted((e for e in grp if e["mark"] == "sajdah-line"),
+            _sl = sorted((e for e in grp if e["mark"] == "sajdah_line"),
                          key=lambda e: -e["x1"])
             for e in _sl[1:]:
                 e["mkpart"] = True
@@ -8093,40 +8262,40 @@ def assign_page(edition, page_no, cache_dir):
 
 
     # A mark that changed hands keeps the name its old word gave it, which its
-    # new word may not want at all — a tanween landing on a word whose text has
-    # none, or a plain vowel landing where a tanween belongs. The text decides
+    # new word may not want at all — a tanwin landing on a word whose text has
+    # none, or a plain vowel landing where a tanwin belongs. The text decides
     # again, by position.
     for _w7, _at7 in assignment:
         if _w7 is None:
             continue
-        txt7 = _w7["uthmani"]
+        txt7 = _w7["rasm_uthmani"]
         els7 = [e for a in _at7 for e in a["els"]]
         bods7 = [e for e in els7 if e["kind"] == "body"]
         if not bods7:
             continue
         mid7 = (min(e["y1"] for e in bods7) + max(e["y2"] for e in bods7)) / 2
         for tan7, plain7, chars7 in (
-                ("fathatan", "fatha", "\u064b\u08f0"),
-                ("kasratan", "kasra", "\u064d\u08f2"),
-                ("dammatan", "damma", "\u064c\u08f1")):
+                ("tanwin_al_fath", "fathah", "\u064b\u08f0"),
+                ("tanwin_al_kasr", "kasrah", "\u064d\u08f2"),
+                ("tanwin_al_damm", "dammah", "\u064c\u08f1")):
             want7 = sum(txt7.count(c) for c in chars7)
             got7 = [e for e in els7 if e.get("mark") == tan7
                     and not e.get("mkpart")]
-            for e in got7[want7:]:        # a tanween this word never carries
-                if tan7 == "dammatan":
-                    e["mark"] = "damma"
+            for e in got7[want7:]:        # a tanwin this word never carries
+                if tan7 == "tanwin_al_damm":
+                    e["mark"] = "dammah"
                 else:
                     cy7 = (e["y1"] + e["y2"]) / 2
-                    e["mark"] = "kasra" if cy7 > mid7 else "fatha"
+                    e["mark"] = "kasrah" if cy7 > mid7 else "fathah"
                 for m7 in e.get("mkmembers", []):
                     m7["mark"] = e["mark"]
             if want7 > len(got7):
-                # ... and the tanween it does carry, arriving as a plain vowel
+                # ... and the tanwin it does carry, arriving as a plain vowel
                 pool7 = [e for e in els7 if e.get("mark") == plain7
                          and not e.get("mkpart")]
                 spare7 = len(pool7) - txt7.count(
-                    {"fatha": "\u064e", "kasra": "\u0650",
-                     "damma": "\u064f"}[plain7])
+                    {"fathah": "\u064e", "kasrah": "\u0650",
+                     "dammah": "\u064f"}[plain7])
                 lx7 = min(e["x1"] for e in bods7)
                 for e in sorted(pool7,
                                 key=lambda x: abs((x["x1"] + x["x2"]) / 2 - lx7)):
@@ -8140,50 +8309,50 @@ def assign_page(edition, page_no, cache_dir):
 
     # Re-run the slash renamer: oracle repair moves slashes between words after
     # the first naming pass, so a mark can keep the identity its OLD word gave
-    # it (a fatha arriving above a new word still called kasra). Position and
-    # the new word's own kasra budget decide again.
+    # it (a fathah arriving above a new word still called kasrah). Position and
+    # the new word's own kasrah budget decide again.
     for _w, atoms in assignment:
         if _w is None:
             continue
         els = [e for a in atoms for e in a["els"]]
         sl = [e for e in els if e["kind"] == "mark"
-              and e.get("mark") in ("fatha", "kasra")
+              and e.get("mark") in ("fathah", "kasrah")
               and not e.get("mkpart") and not e.get("mkmembers")]
         if not sl:
             continue
         bods = [e for e in els if e["kind"] == "body"] or els
         mid = (min(e["y1"] for e in bods) + max(e["y2"] for e in bods)) / 2
-        want_k = _w["uthmani"].count("\u0650")
-        # a kasra welded into another mark still spends the word's budget
+        want_k = _w["rasm_uthmani"].count("\u0650")
+        # a kasrah welded into another mark still spends the word's budget
         want_k -= sum(1 for e in els
                       if e["kind"] == "mark" and e not in sl
                       and not e.get("mkpart")
-                      and "kasra" in (e.get("mark") or "").split("+"))
+                      and "kasrah" in (e.get("mark") or "").split("+"))
         want_k = max(0, want_k)
         sl.sort(key=lambda e: -(e["y1"] + e["y2"]))     # lowest first
         for e in sl:
-            e["mark"] = "fatha"
+            e["mark"] = "fathah"
         k = 0
         for e in sl:
             if k < want_k and (e["y1"] + e["y2"]) / 2 > mid:
-                e["mark"] = "kasra"
+                e["mark"] = "kasrah"
                 k += 1
         if k < want_k:
             for e in sl:
                 if k >= want_k:
                     break
-                if e["mark"] == "fatha":
-                    e["mark"] = "kasra"
+                if e["mark"] == "fathah":
+                    e["mark"] = "kasrah"
                     k += 1
                     break
 
-    # Late two-stroke damma weld: oracle repair can reunite an ornate damma's
+    # Late two-stroke dammah weld: oracle repair can reunite an ornate dammah's
     # curl and tail after the early weld ran — join touching stacked pieces.
     for _w, atoms in assignment:
         if _w is None:
             continue
         dm = [e for a in atoms for e in a["els"]
-              if e.get("mark") == "damma" and not e.get("mkpart")]
+              if e.get("mark") == "dammah" and not e.get("mkpart")]
         dm.sort(key=lambda e: e["y1"])
         for i in range(len(dm)):
             for j in range(i + 1, len(dm)):
@@ -8196,9 +8365,9 @@ def assign_page(edition, page_no, cache_dir):
                         and bot["y2"] - top["y1"] < 9.5:
                     bot["mkpart"] = True
                     top.setdefault("mkmembers", []).append(bot)
-        # a dammatan drawn as two side-by-side dammas: weld the two pieces
+        # a tanwin_al_damm drawn as two side-by-side dammahs: weld the two pieces
         dt = [e for a in atoms for e in a["els"]
-              if e.get("mark") == "dammatan" and not e.get("mkpart")
+              if e.get("mark") == "tanwin_al_damm" and not e.get("mkpart")
               and not e.get("mkmembers")]
         for i in range(len(dt)):
             for j in range(i + 1, len(dt)):
@@ -8215,8 +8384,8 @@ def assign_page(edition, page_no, cache_dir):
 
     # The shape table is the strongest identity: repairs and welds sometimes
     # rename a stroke across structural families (a slash pressed into service
-    # as a dot or a tanween half). Where the single-shape table disagrees
-    # across families, it wins; fatha/kasra stay position-resolved.
+    # as a dot or a tanwin half). Where the single-shape table disagrees
+    # across families, it wins; fathah/kasrah stay position-resolved.
     _tbl_fix = {k: (v["label"] if isinstance(v, dict) else v)
                 for k, v in shape_labels().items()}
     from markshape import signature as _sg2, sig_key as _sk2, \
@@ -8250,13 +8419,13 @@ def assign_page(edition, page_no, cache_dir):
                     continue
                 if _e2.get("mkmembers"):
                     # the p85 ذَرَّةࣲ knot (Abdullah's e298/e304 verdict): a
-                    # slash stroke wearing "two-dots" as a MASTER with the
+                    # slash stroke wearing "two_dots" as a MASTER with the
                     # letter's real dot pair welded beneath it. Free the
-                    # members (they are the ة's two-dots) and let the table
+                    # members (they are the ة's two_dots) and let the table
                     # rename the slash; everything else with members stays.
                     _tk = _tbl_fix.get(_late_sig(_e2))
-                    if (_e2.get("mark") == "two-dots"
-                            and _tk in ("fatha", "kasra")
+                    if (_e2.get("mark") == "two_dots"
+                            and _tk in ("fathah", "kasrah")
                             and (_e2["x2"] - _e2["x1"]) >= 4.5):
                         for _mmb in _e2["mkmembers"]:
                             _mmb["mkpart"] = False
@@ -8268,37 +8437,37 @@ def assign_page(edition, page_no, cache_dir):
                 if not t or not cur or t == cur:
                     continue
                 fix = None
-                if cur in ("dot", "two-dots") and t in ("fatha", "kasra") \
+                if cur in ("dot", "two_dots") and t in ("fathah", "kasrah") \
                         and (_e2["x2"] - _e2["x1"]) >= 4.5:
-                    # p85 ذَرَّةࣲ: the kasratan's slash half wore
-                    # "two-dots" as a master, its real pair welded under it
+                    # p85 ذَرَّةࣲ: the tanwin_al_kasr's slash half wore
+                    # "two_dots" as a master, its real pair welded under it
                     fix = "slash"
-                elif cur in ("damma", "dammatan") and t in ("fatha", "kasra"):
+                elif cur in ("dammah", "tanwin_al_damm") and t in ("fathah", "kasrah"):
                     fix = "slash"
-                elif cur in ("fatha", "kasra", "damma", "dammatan")                         and t == "shadda":
-                    fix = "shadda"
-                elif cur == "pause" and t in ("dot", "two-dots",
-                                              "three-dots"):
+                elif cur in ("fathah", "kasrah", "dammah", "tanwin_al_damm")                         and t == "shaddah":
+                    fix = "shaddah"
+                elif cur == "waqf" and t in ("dot", "two_dots",
+                                              "three_dots"):
                     # a letter's dots taken as a waqf sign (p548
-                    # وَٱلشَّهَٰدَةِۖ: the ة pair named pause). Welded
+                    # وَٱلشَّهَٰدَةِۖ: the ة pair named waqf). Welded
                     # sign satellites are mkpart and never reach here.
                     _e2["mark"] = t
-                elif cur == "small-waw" and t == "damma":
-                    _e2["mark"] = "damma"
+                elif cur == "small_waw" and t == "dammah":
+                    _e2["mark"] = "dammah"
                 if fix == "slash":
                     ref = bods2[0] if bods2 else None
                     below = ref is not None and                         (_e2["y1"] + _e2["y2"]) / 2 > (ref["y1"] + ref["y2"]) / 2
-                    _e2["mark"] = "kasra" if below else "fatha"
-                elif fix == "shadda":
-                    _e2["mark"] = "shadda"
+                    _e2["mark"] = "kasrah" if below else "fathah"
+                elif fix == "shaddah":
+                    _e2["mark"] = "shaddah"
 
     # kind follows the final identity: a piece that ended up carrying a mark
     # name is a mark whatever the size heuristic first said, and vice versa
-    _MARKFAM = {"fatha", "kasra", "damma", "fathatan", "kasratan", "dammatan",
-                "sukun", "shadda", "hamza", "maddah", "small-alef", "wasla",
-                "dot", "two-dots", "three-dots", "pause", "small-circle",
-                "small-ya", "small-waw", "small-meem", "small-noon",
-                "saktah", "seen-reading", "imalah", "ishmam", "tashil"}
+    _MARKFAM = {"fathah", "kasrah", "dammah", "tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm",
+                "sukun", "shaddah", "hamzah", "maddah", "omitted_alif", "hamzat_al_wasl",
+                "dot", "two_dots", "three_dots", "waqf", "small_circle",
+                "small_yaa", "small_waw", "small-meem", "small_noon",
+                "saktah", "seen_al_qiraah", "imalah", "ishmam", "tashil"}
     for _w2, _at2 in assignment:
         for _a2 in _at2:
             for _e2 in _a2["els"]:
@@ -8314,9 +8483,9 @@ def assign_page(edition, page_no, cache_dir):
     # A waqf sign recorded by place is a waqf sign, not letter dots. The muʿānaqah is
     # drawn as three dots in a triangle, and this pipeline sees three dots: on p112 the
     # `ٱلْقَوْمِ` under one of them came out holding five dot units where its spelling
-    # allows two. Welding the pieces of one occurrence into a single `pause` makes the
+    # allows two. Welding the pieces of one occurrence into a single `waqf` makes the
     # count agree with both the spelling and the reference — the text does ask for a
-    # pause there, since the QPC text carries the `ۛ`.
+    # waqf there, since the QPC text carries the `ۛ`.
     _places = waqf_places().get(
         str(int(os.path.splitext(page.name)[0].split("-")[0].lstrip("0") or 0)), {})
     if _places:
@@ -8332,19 +8501,19 @@ def assign_page(edition, page_no, cache_dir):
                         _byocc.setdefault(_r["occ"], []).append(_e)
             for _grp in _byocc.values():
                 _grp.sort(key=lambda e: -(e["x2"] - e["x1"]) * (e["y2"] - e["y1"]))
-                _grp[0]["mark"] = "pause"
+                _grp[0]["mark"] = "waqf"
                 _grp[0]["mkmembers"] = _grp[1:]
                 _grp[0].pop("mkpart", None)
                 for _m in _grp[1:]:
-                    _m["mark"] = "pause"
+                    _m["mark"] = "waqf"
                     _m["mkpart"] = True
 
     # A dot label names how many dots the CLUSTER stands for, and the art draws dots at
     # one fixed size — measured over six pages, every `dot` is 2.38 units wide, every
-    # `two-dots` between 4.43 and 4.72, and every welded twin 2.38. So a piece of ink
+    # `two_dots` between 4.43 and 4.72, and every welded twin 2.38. So a piece of ink
     # says how many blobs it holds: its width divided by a single dot's.
     #
-    # `three-dots` masters are the bimodal case, and the reason a word can be credited
+    # `three_dots` masters are the bimodal case, and the reason a word can be credited
     # with ink the page does not draw. Some are 4.55 wide — two blobs, plus a 2.38 twin
     # makes three, and the label is right. Others are 2.38, one blob, and with a 2.38
     # twin the cluster is only two: `شَىْءٍۢ` on p142 draws the ش as three separate blobs
@@ -8354,12 +8523,12 @@ def assign_page(edition, page_no, cache_dir):
     #
     # Two earlier rewrites of this rested on false premises and the gate caught both:
     # renaming by contour count took mark flags 659 -> 32,772 (every dot element has
-    # exactly one contour, `two-dots` included), and renaming by welded-member count
-    # took dot errors 13 -> 9,705 (a `two-dots` has no members at all).
+    # exactly one contour, `two_dots` included), and renaming by welded-member count
+    # took dot errors 13 -> 9,705 (a `two_dots` has no members at all).
     if os.environ.get("QSVG_DOTLBL", "1") == "1":
         _DOT_W = 2.38                      # one drawn dot, in page units
-        _BYN = {1: "dot", 2: "two-dots", 3: "three-dots"}
-        _VAL = {"dot": 1, "two-dots": 2, "three-dots": 3}
+        _BYN = {1: "dot", 2: "two_dots", 3: "three_dots"}
+        _VAL = {"dot": 1, "two_dots": 2, "three_dots": 3}
 
         def _blobs(e):
             return max(1, int(round((e["x2"] - e["x1"]) / _DOT_W)))
@@ -8466,7 +8635,7 @@ def assign_page(edition, page_no, cache_dir):
                         # Nearest ligature group, not blindly the first one —
                         # the same rule every mover follows (see
                         # put_in_ligature's docstring: appending to atoms[0]
-                        # put p591's kasra in the group at the far end of its
+                        # put p591's kasrah in the group at the far end of its
                         # word). put_in_ligature also carries mkmembers.
                         if os.environ.get("QSVG_OVRLIG", "1") == "1":
                             put_in_ligature(_dat, _e9)
@@ -8482,7 +8651,7 @@ def assign_page(edition, page_no, cache_dir):
                         # as the body re-liner above.
                         # Bodies only: "geometry is the truth for bodies", but
                         # a mark belongs to its LETTER and may legitimately sit
-                        # in the neighbouring band (a deep kasra), so marks
+                        # in the neighbouring band (a deep kasrah), so marks
                         # keep the tag their letter gave them — the same split
                         # the two re-liners above this stage make.
                         if _e9["kind"] != "body" or os.environ.get("QSVG_OVRLN", "1") != "1":
@@ -8514,8 +8683,8 @@ def assign_page(edition, page_no, cache_dir):
                         _ek.pop("mark", None)
                         _ek.pop("mkpart", None)
                     # The inverse fact, same table: ink read as a LETTER where a human
-                    # confirmed it is a mark (round-7 pause verdicts, R11 damma blobs —
-                    # a ۖ or a slightly clipped damma outline the classifier called
+                    # confirmed it is a mark (round-7 waqf verdicts, R11 dammah blobs —
+                    # a ۖ or a slightly clipped dammah outline the classifier called
                     # letter ink). The value names the mark. Two signals stand behind
                     # every entry: the word's text budget is short exactly this family,
                     # and the drawn blob was identified by eye (and for the waqf signs
@@ -8525,14 +8694,14 @@ def assign_page(edition, page_no, cache_dir):
                         _ek["mark"] = _kk
                         _ek.pop("mkpart", None)
 
-    # Late same-label tanween pair re-weld: kinds/override arrivals above can
+    # Late same-label tanwin pair re-weld: kinds/override arrivals above can
     # name a pair's second stroke after the early weld already ran (p540/p568
-    # kasratan twins, Abdullah). Same geometry gate as the early weld.
+    # tanwin_al_kasr twins, Abdullah). Same geometry gate as the early weld.
     for _wq2, _atq2 in assignment:
         if not _wq2:
             continue
         _tp = [e for a in _atq2 for e in a["els"]
-               if e.get("mark") in ("dammatan", "kasratan", "fathatan")
+               if e.get("mark") in ("tanwin_al_damm", "tanwin_al_kasr", "tanwin_al_fath")
                and not e.get("mkpart") and not e.get("mkmembers")]
         for _i2 in range(len(_tp)):
             for _j2 in range(_i2 + 1, len(_tp)):
@@ -8562,7 +8731,7 @@ def assign_page(edition, page_no, cache_dir):
     # A diacritic sits ON a letter. If none of its word's letters overlaps it
     # horizontally, it is not sitting on anything that word owns — it is floating above a
     # neighbour's letters. Abdullah found this on p590, where `وَعَمِلُوا۟` had lost a
-    # fatha and a kasra to `ٱلصَّٰلِحَٰتِ`, which had lost two of its own to `لَهُمْ`.
+    # fathah and a kasrah to `ٱلصَّٰلِحَٰتِ`, which had lost two of its own to `لَهُمْ`.
     # Mushaf-wide the test finds 178 such marks, 140 of them invisible to the
     # MushafDatabase comparison, which reads letter extents and dot counts only.
     #
@@ -8574,9 +8743,9 @@ def assign_page(edition, page_no, cache_dir):
     # to the neighbour whose ink it sits over, and the line is kept only if it ends with
     # fewer words whose marks disagree with their spelling than it started with.
     #
-    # Counted per FAMILY GROUP, never per family: fatha and kasra are one stroke named
+    # Counted per FAMILY GROUP, never per family: fathah and kasrah are one stroke named
     # afterwards from which side of the letter it lands on, so a word can be short a
-    # kasra and long a fatha and be wrong in neither column. Same for damma/dammatan.
+    # kasrah and long a fathah and be wrong in neither column. Same for dammah/tanwin_al_damm.
     #
     # Only the immediate neighbour, because a diacritic drifts onto the word beside it and
     # does not cross the page: without that, a word which is itself on the wrong line has
@@ -8584,13 +8753,13 @@ def assign_page(edition, page_no, cache_dir):
     # they get handed to whatever happens to lie under them. On p526 that turned one flag
     # into five. A misplaced word is a line defect and belongs to the line audits.
     if os.environ.get("QSVG_ORPHAN", "1") == "1":
-        _GRP = {"fatha": "slash", "kasra": "slash",
-                "fathatan": "slash", "kasratan": "slash",
-                "damma": "damma", "dammatan": "damma",
-                "dot": "dots", "two-dots": "dots", "three-dots": "dots"}
-        _UNITS = {"dot": 1, "two-dots": 2, "three-dots": 3}
+        _GRP = {"fathah": "slash", "kasrah": "slash",
+                "tanwin_al_fath": "slash", "tanwin_al_kasr": "slash",
+                "dammah": "dammah", "tanwin_al_damm": "dammah",
+                "dot": "dots", "two_dots": "dots", "three_dots": "dots"}
+        _UNITS = {"dot": 1, "two_dots": 2, "three_dots": 3}
         _CHARS = {"slash": "\u064e\u0650\u064b\u064d\u08f0\u08f2",
-                  "damma": "\u064f\u064c\u08f1"}
+                  "dammah": "\u064f\u064c\u08f1"}
 
         def _held(els, grp):
             n = 0
@@ -8602,8 +8771,8 @@ def assign_page(edition, page_no, cache_dir):
 
         def _want(w, grp):
             if grp == "dots":
-                return dot_budget(w["uthmani"])
-            return sum(w["uthmani"].count(c) for c in _CHARS[grp])
+                return dot_budget(w["rasm_uthmani"])
+            return sum(w["rasm_uthmani"].count(c) for c in _CHARS[grp])
 
         def _rename(rec):
             """Re-derive every slash name in this word from the side of the letter it sits on."""
@@ -8625,8 +8794,8 @@ def assign_page(edition, page_no, cache_dir):
 
             The whole-word version is right for the orphan pass, where both words are
             neighbours and every name is in play. It is wrong across a page: on p371 it
-            renamed `ضَلَـٰلٍۢ`'s own correct fatha to a kasra while installing the mark
-            that arrived — fatha 1/2 became fatha 0/2, kasra 2/0. Only the arriving mark
+            renamed `ضَلَـٰلٍۢ`'s own correct fathah to a kasrah while installing the mark
+            that arrived — fathah 1/2 became fathah 0/2, kasrah 2/0. Only the arriving mark
             carries a name earned over someone else's letters; the marks already there
             earned theirs where they sit.
             """
@@ -8642,18 +8811,18 @@ def assign_page(edition, page_no, cache_dir):
                 for m in e.get("mkmembers", []):
                     m["mark"] = nm
 
-        # open tanween U+08F0-2 included: under QSVG_DKTEXT the budget text
+        # open tanwin U+08F0-2 included: under QSVG_DKTEXT the budget text
         # writes them at ~6,643 words, and a counter blind to them sees
         # phantom mismatches — on p576 that made a wrong exchange look like
         # an improvement.
-        _FAMCH = {"fatha": "\u064e", "kasra": "\u0650",
-                  "fathatan": "\u064b\u08f0", "kasratan": "\u064d\u08f2",
-                  "damma": "\u064f", "dammatan": "\u064c\u08f1"}
+        _FAMCH = {"fathah": "\u064e", "kasrah": "\u0650",
+                  "tanwin_al_fath": "\u064b\u08f0", "tanwin_al_kasr": "\u064d\u08f2",
+                  "dammah": "\u064f", "tanwin_al_damm": "\u064c\u08f1"}
 
         def _off(rec):
             """How many ways this word's marks disagree with its spelling.
 
-            Counted per FAMILY — fatha against fatha, kasra against kasra — not per
+            Counted per FAMILY — fathah against fathah, kasrah against kasrah — not per
             group. Abdullah's point, and it is what exposes an exchange: on p591
             `وَٱلسَّمَآءِ` and `وَٱلطَّارِقِ` each hold one of the other's marks, so every
             group total stays right and the line looks untouched. Per family it does not.
@@ -8665,7 +8834,7 @@ def assign_page(edition, page_no, cache_dir):
             for fam, chs in _FAMCH.items():
                 if sum(1 for e in rec["els"]
                        if e.get("mark") == fam and not e.get("mkpart")) \
-                        != sum(rec["w"]["uthmani"].count(c) for c in chs):
+                        != sum(rec["w"]["rasm_uthmani"].count(c) for c in chs):
                     n += 1
             if _held(rec["els"], "dots") != _want(rec["w"], "dots"):
                 n += 1
@@ -8738,11 +8907,11 @@ def assign_page(edition, page_no, cache_dir):
                             continue
                     # Ink drawn in ANOTHER LINE'S BAND is a vertical defect and belongs
                     # to audit_crossline.py, not here; letting it in poisoned p350, where
-                    # `لَا` holds a fatha drawn a line above its own letters.
+                    # `لَا` holds a fathah drawn a line above its own letters.
                     #
                     # Tested by POSITION, not by the element's `line` tag. The tag is
                     # wrong exactly where this matters: on p591 `وَٱلطَّارِقِ` holds the
-                    # kasra belonging under `ٱلسَّمَآءِ`'s hamza, drawn at y 103.7-107.0
+                    # kasrah belonging under `ٱلسَّمَآءِ`'s hamzah, drawn at y 103.7-107.0
                     # squarely inside line 3's band of 88-108, and tagged line 4 because
                     # it hangs low. The tag test skipped it, so only one half of the
                     # exchange was ever proposed and the pair could never resolve — the
@@ -8771,7 +8940,7 @@ def assign_page(edition, page_no, cache_dir):
             # Requiring improvement cannot pass a mutual exchange: on p591 `وَٱلسَّمَآءِ`
             # and `وَٱلطَّارِقِ` each hold one of the other's marks, so every count stays
             # exactly right and the line never improves — while the ink is plainly in the
-            # wrong word, the kasra sitting under `ٱلسَّمَآءِ`'s hamza and the fatha over
+            # wrong word, the kasrah sitting under `ٱلسَّمَآءِ`'s hamzah and the fathah over
             # `ٱلطَّارِقِ`'s letters. Geometry justifies each move on its own; the budget's
             # job here is only to veto a move that breaks a count.
             #
@@ -8790,7 +8959,7 @@ def assign_page(edition, page_no, cache_dir):
                 # Name ONLY the arriving marks (the p371 lesson: the marks
                 # already in place earned their names where they sit; the
                 # whole-word midpoint rename scrambled them — p90's bowl
-                # kasratan became a fathatan and every exchange judged worse).
+                # tanwin_al_kasr became a tanwin_al_fath and every exchange judged worse).
                 # The receiver's budget names the arrival when exactly one
                 # slash family is short (two signals: geometry moved it,
                 # budget names it); position decides only when budget cannot.
@@ -8798,11 +8967,11 @@ def assign_page(edition, page_no, cache_dir):
                     if _e0.get("mark") not in _POS_SWAP_FAM:
                         continue
                     _defs = []
-                    for _fam0, _chs0 in (("fatha", "\u064e"),
-                                         ("kasra", "\u0650"),
-                                         ("fathatan", "\u064b\u08f0"),
-                                         ("kasratan", "\u064d\u08f2")):
-                        _wv = sum(_t0["w"]["uthmani"].count(c) for c in _chs0)
+                    for _fam0, _chs0 in (("fathah", "\u064e"),
+                                         ("kasrah", "\u0650"),
+                                         ("tanwin_al_fath", "\u064b\u08f0"),
+                                         ("tanwin_al_kasr", "\u064d\u08f2")):
+                        _wv = sum(_t0["w"]["rasm_uthmani"].count(c) for c in _chs0)
                         _hv = sum(1 for x in _t0["els"]
                                   if x is not _e0
                                   and x.get("mark") == _fam0
@@ -8833,7 +9002,7 @@ def assign_page(edition, page_no, cache_dir):
                                  % (_ln, len(_plan), _before))
                 for _r0, _t0, _e0 in _plan:
                     sys.stderr.write("   %-16s -> %-16s %-10s x %.1f-%.1f  (off %d -> ?)\n"
-                                     % (_r0["w"]["uthmani"], _t0["w"]["uthmani"],
+                                     % (_r0["w"]["rasm_uthmani"], _t0["w"]["rasm_uthmani"],
                                         _e0.get("mark"), _e0["x1"], _e0["x2"], _off(_r0)))
             _snap = _apply(_plan)
             if os.environ.get("QSVG_ODBG"):
@@ -8842,8 +9011,8 @@ def assign_page(edition, page_no, cache_dir):
                                     "ACCEPT" if sum(_off(r) for r in _line) <= _before else "REJECT"))
                 for _r0, _t0, _e0 in _plan:
                     sys.stderr.write("      %-16s off=%d   %-16s off=%d\n"
-                                     % (_r0["w"]["uthmani"], _off(_r0),
-                                        _t0["w"]["uthmani"], _off(_t0)))
+                                     % (_r0["w"]["rasm_uthmani"], _off(_r0),
+                                        _t0["w"]["rasm_uthmani"], _off(_t0)))
             if sum(_off(r) for r in _line) > _before \
                     and os.environ.get("QSVG_SLASHX", "1") == "1":
                 # Exchange completion (Abdullah's p586 هو/بقول, item 32): the
@@ -8864,8 +9033,8 @@ def assign_page(edition, page_no, cache_dir):
                     # Budget cannot judge these — a true mutual exchange is
                     # exactly count-neutral — so the count below only vetoes.
                     _cands = [x for x in _t["els"]
-                              if x.get("mark") in ("fatha", "kasra",
-                                                   "fathatan", "kasratan")
+                              if x.get("mark") in ("fathah", "kasrah",
+                                                   "tanwin_al_fath", "tanwin_al_kasr")
                               and not x.get("mkpart") and id(x) not in _moved
                               and _ovl(_r["b"], x)
                               > 0.4 * (x["x2"] - x["x1"])]
@@ -8938,7 +9107,7 @@ def assign_page(edition, page_no, cache_dir):
         #
         # All 17 are one defect. In every case the holder is the word at one END of a line
         # and the mark is drawn at the opposite end, in the band of the line above or
-        # below: p350 `لَا` is the first word of line 7 and holds a fatha at x18 tagged
+        # below: p350 `لَا` is the first word of line 7 and holds a fathah at x18 tagged
         # line 6; p543 `بِمَا` is the last word of line 3 and holds two marks at x322-325
         # tagged line 4. The last word of a line and the first word of the next are
         # neighbours in READING order and a page apart on the paper, and the ownership has
@@ -9009,7 +9178,7 @@ def assign_page(edition, page_no, cache_dir):
     # no ink on the page — and eleven of them carry a mark label. Ten are `dot`s, and
     # every one of those ten sits in a word holding exactly ONE dot more than its
     # spelling allows: `مَا` on p536 spells no dot at all and is credited with one.
-    # The other is a `small-alef` on p2. The remaining six are welded twins, counted
+    # The other is a `omitted_alif` on p2. The remaining six are welded twins, counted
     # through their master, so they were already harmless.
     #
     # Nothing moves and nothing is deleted — the element stays exactly where it is and
@@ -9032,12 +9201,12 @@ def assign_page(edition, page_no, cache_dir):
 
     # An iqlab meem drawn between two lines and filed with the wrong one.
     #
-    # `ٍۭ` at the end of a line puts the tanween on the last letter and the little meem
+    # `ٍۭ` at the end of a line puts the tanwin on the last letter and the little meem
     # BELOW it, in the gap between that line and the next — closer to the line below than
     # to the word it belongs to. Abdullah found it on p313, where `نَفْسٍۭ` ends line 3
     # and its meem is held by `هَوَىٰهُ` on line 4, as a letter.
     #
-    # This art normally fuses the meem into the tanween glyph — a measured finding of this
+    # This art normally fuses the meem into the tanwin glyph — a measured finding of this
     # project, and why audit_marks never asks for one — so almost every word spelling `ۭ`
     # rightly holds no separate meem. That is what makes the exception safe to act on:
     #
@@ -9045,13 +9214,13 @@ def assign_page(edition, page_no, cache_dir):
     #        already hold a separate one                        445
     #        hold none                                        6,664
     #           ... and a meem-sized body sits directly under
-    #               the tanween, in the ADJACENT line            29   <- the defect
+    #               the tanwin, in the ADJACENT line            29   <- the defect
     #
     # Twenty-nine, and 28 of them are the same 31.1-unit glyph. Text says the word owns a
     # meem, geometry says which piece of ink it is, and the line gap says why it went
     # astray — the three signals this project asks for before anything moves.
     if os.environ.get("QSVG_IQLINE", "1") != "0":
-        _IQ_TAN = ("kasratan", "fathatan", "dammatan")
+        _IQ_TAN = ("tanwin_al_kasr", "tanwin_al_fath", "tanwin_al_damm")
         _iqw = []
         for _wi2, _ati2 in assignment:
             if not _wi2:
@@ -9064,22 +9233,22 @@ def assign_page(edition, page_no, cache_dir):
             _iqw.append({"w": _wi2, "at": _ati2, "els": _eli,
                          "ln": max(set(_lni), key=_lni.count) if _lni else 0})
         for _src in _iqw:
-            _ti = _src["w"]["uthmani"]
+            _ti = _src["w"]["rasm_uthmani"]
             if not any(c in _ti for c in "\u06ed\u06e2"):
                 continue
-            if any((e.get("mark") or "") == "meem-iqlab" for e in _src["els"]):
+            if any((e.get("mark") or "") == "small_meem" for e in _src["els"]):
                 continue
             _anch = [e for e in _src["els"]
                      if e.get("mark") in _IQ_TAN and not e.get("mkpart")]
             if not _anch and _dktext_on():
                 # Under QSVG_DKTEXT the iqlab stroke is budgeted (and named)
-                # PLAIN — fatha/kasra/damma — so the tanween-name anchor never
-                # exists. Anchor instead on the plain stroke of the haraka the
+                # PLAIN — fathah/kasrah/dammah — so the tanwin-name anchor never
+                # exists. Anchor instead on the plain stroke of the harakah the
                 # DK text writes before its ۢ/ۭ, nearest the word's left edge
                 # (the iqlab always ends the word); the tight geometric window
                 # below is unchanged and still does the deciding.
-                _pf = next((("damma",) if _ti[i] == "ُ"
-                            else ("fatha", "kasra")
+                _pf = next((("dammah",) if _ti[i] == "ُ"
+                            else ("fathah", "kasrah")
                             for i in range(len(_ti) - 1)
                             if _ti[i] in "َُِ" and _ti[i + 1] in "ۭۢ"), None)
                 if _pf:
@@ -9112,15 +9281,15 @@ def assign_page(edition, page_no, cache_dir):
                         put_in_ligature(_src["at"], _ei)
                         _src["els"].append(_ei)
                         _ei["kind"] = "mark"
-                        _ei["mark"] = "meem-iqlab"
+                        _ei["mark"] = "small_meem"
                         break
 
     # A letter's dots welded into the waqf sign above them.
     #
-    # The same mistake as the tanween weld, in the other composer: a stop sign takes in
+    # The same mistake as the tanwin weld, in the other composer: a stop sign takes in
     # the blobs beneath it, and beneath a stop sign at the end of a word are that word's
     # last letter's dots. `حَرْثِهِۦ ۖ` on p485 ends holding NO dots at all where its
-    # spelling asks for three — the ث's dot and two-dots are both inside the صلى.
+    # spelling asks for three — the ث's dot and two_dots are both inside the صلى.
     #
     # A sign really is drawn in several pieces, so most welds are right; what separates
     # them is that a piece of the SIGN overlaps the sign vertically, while a letter's
@@ -9138,7 +9307,7 @@ def assign_page(edition, page_no, cache_dir):
     # measured 2.38 units per blob, and only widths that land squarely on a whole number
     # of blobs are taken.
     if os.environ.get("QSVG_PAUSEDOT", "1") != "0":
-        _PD_BYN = {1: "dot", 2: "two-dots", 3: "three-dots"}
+        _PD_BYN = {1: "dot", 2: "two_dots", 3: "three_dots"}
         _pdw = []
         for _w0, _a0 in assignment:
             if not _w0:
@@ -9152,13 +9321,13 @@ def assign_page(edition, page_no, cache_dir):
                          "y1": min(e["y1"] for e in _b0), "y2": max(e["y2"] for e in _b0)})
 
         def _pd_short(rec):
-            return dot_budget(rec["w"]["uthmani"]) - sum(
-                {"dot": 1, "two-dots": 2, "three-dots": 3}.get(e.get("mark") or "", 0)
+            return dot_budget(rec["w"]["rasm_uthmani"]) - sum(
+                {"dot": 1, "two_dots": 2, "three_dots": 3}.get(e.get("mark") or "", 0)
                 for e in rec["els"] if not e.get("mkpart"))
 
         for _host in _pdw:
             for _mp in list(_host["els"]):
-                if (_mp.get("mark") or "") != "pause" or _mp.get("mkpart"):
+                if (_mp.get("mark") or "") != "waqf" or _mp.get("mkpart"):
                     continue
                 for _mem in list(_mp.get("mkmembers") or []):
                     if not (_mem["y1"] > _mp["y2"] + 0.05 or _mem["y2"] < _mp["y1"] - 0.05):
@@ -9198,31 +9367,31 @@ def assign_page(edition, page_no, cache_dir):
 
     # A letter's dots welded into the mark above them.
     #
-    # `compose_tanween` joins a vowel to the stroke below it, which is right when the word
-    # spells a tanween and wrong when what is below is simply the dots of the letter the
+    # `compose_tanwin` joins a vowel to the stroke below it, which is right when the word
+    # spells a tanwin and wrong when what is below is simply the dots of the letter the
     # vowel sits on. Registering MushafDatabase's decomposition on p210 makes it
     # unmistakable: their `two dots` for `تُتْلَىٰ` is at 300.88..305.24 / 19.54..22.11 and
-    # our welded `damma` twin is at 300.88..305.23 / 19.53..22.11 — the same ink to a
-    # hundredth of a unit, one of us calling it dots and the other half a dammatan.
+    # our welded `dammah` twin is at 300.88..305.23 / 19.53..22.11 — the same ink to a
+    # hundredth of a unit, one of us calling it dots and the other half a tanwin_al_damm.
     #
-    # It happens under other marks too: a dot under a shadda on p117, under a kasra on
-    # p216, under a small-circle on p519. So the host is not the signal. Two things are:
+    # It happens under other marks too: a dot under a shaddah on p117, under a kasrah on
+    # p216, under a small_circle on p519. So the host is not the signal. Two things are:
     # the twin's SHAPE — a whole number of 2.38-unit blobs, area 3 to 18, where a
-    # tanween's second stroke is 26 to 35 — and whether the word is SHORT of dots. Over
+    # tanwin's second stroke is 26 to 35 — and whether the word is SHORT of dots. Over
     # 604 pages that pair is exact:
     #
     #     dot-shaped twin, word's dots already right   5,766   leave alone
     #     dot-shaped twin, word SHORT of dots              9   <- the defect
     #
     # The word's own spelling is deliberately NOT used to veto: `قُرْبَةٌۭ` on p202 does
-    # spell a dammatan, and holds a real one (areas 30.5 and 26.8) somewhere else; the
-    # 13.8-unit blob welded to its damma is the ة's two dots. Testing "does the word spell
-    # a tanween" kept that one broken.
+    # spell a tanwin_al_damm, and holds a real one (areas 30.5 and 26.8) somewhere else; the
+    # 13.8-unit blob welded to its dammah is the ة's two dots. Testing "does the word spell
+    # a tanwin" kept that one broken.
     if os.environ.get("QSVG_UNWELD", "1") != "0":
-        _UW_BYN = {1: "dot", 2: "two-dots", 3: "three-dots"}
+        _UW_BYN = {1: "dot", 2: "two_dots", 3: "three_dots"}
         # One drawn dot, measured on THIS page. 2.38 units is the mushaf-wide figure and
         # it is wrong on the pages that are set at their own scale: p2 draws its dots
-        # 1.70 wide and its two-dots 3.64, so a constant threshold reads every blob there
+        # 1.70 wide and its two_dots 3.64, so a constant threshold reads every blob there
         # as a fraction of a dot and the rule silently skips the page. `يُنفِقُونَ`
         # stayed two dots short for exactly that reason.
         _pdots = sorted((e["x2"] - e["x1"])
@@ -9235,16 +9404,16 @@ def assign_page(edition, page_no, cache_dir):
             if not _wu:
                 continue
             _elu = [e for a in _atu for e in a["els"]]
-            if sum({"dot": 1, "two-dots": 2, "three-dots": 3}.get(e.get("mark") or "", 0)
-                   for e in _elu if not e.get("mkpart")) >= dot_budget(_wu["uthmani"]):
+            if sum({"dot": 1, "two_dots": 2, "three_dots": 3}.get(e.get("mark") or "", 0)
+                   for e in _elu if not e.get("mkpart")) >= dot_budget(_wu["rasm_uthmani"]):
                 continue                      # not short: nothing to recover
             for _mu in _elu:
                 if _mu.get("mkpart") or (_mu.get("mark") or "") in (
-                        "", "pause", "dot", "two-dots", "three-dots"):
+                        "", "waqf", "dot", "two_dots", "three_dots"):
                     # A waqf sign is QSVG_PAUSEDOT's business. A DOT cluster is nobody's:
                     # its label already says how many blobs it stands for, so its welded
                     # twin is counted through the master and unwelding it counts the same
-                    # ink twice. `حَيْثُ`'s ث is drawn as a two-dots and a dot welded
+                    # ink twice. `حَيْثُ`'s ث is drawn as a two_dots and a dot welded
                     # together; separating them credited the word with four where three
                     # are drawn. Six words went wrong that way before this line existed.
                     continue
@@ -9256,7 +9425,7 @@ def assign_page(edition, page_no, cache_dir):
                     if _nu not in _UW_BYN or abs(_bl - _nu) >= 0.28:
                         continue              # not a whole number of drawn dots
                     if not (3.0 * _ASCALE <= _aru <= 18.0 * _ASCALE):
-                        continue              # a tanween's second stroke is 26-35
+                        continue              # a tanwin's second stroke is 26-35
                     _eu["mark"] = _UW_BYN[_nu]
                     _eu.pop("mkpart", None)
                     _mu["mkmembers"] = [x for x in _mu["mkmembers"] if x is not _eu]
@@ -9270,15 +9439,15 @@ def assign_page(edition, page_no, cache_dir):
     # normal size, including the 70 that share a word with one of these stops and really
     # are the word's own dots. Size and spelling agree, with nothing in between.
     #
-    # They are labelled `pause`, which is what audit_marks already calls them: its
-    # TEXT_WANT["pause"] lists `۬ ۪ ۫ ۣ` beside the waqf signs. So one correction settles
+    # They are labelled `waqf`, which is what audit_marks already calls them: its
+    # TEXT_WANT["waqf"] lists `۬ ۪ ۫ ۣ` beside the waqf signs. So one correction settles
     # both counts — the word stops being credited with a dot it does not have and starts
     # holding the stop its spelling asks for.
     if os.environ.get("QSVG_RARESTOP", "1") != "0":
         _RARE_CH = "\u06ea\u06eb\u06ec\u06e3"
         _DOT_AREA = 5.6
         for _wr, _atr in assignment:
-            if not _wr or not any(c in _wr["uthmani"] for c in _RARE_CH):
+            if not _wr or not any(c in _wr["rasm_uthmani"] for c in _RARE_CH):
                 continue
             for _ar in _atr:
                 for _er in _ar["els"]:
@@ -9286,21 +9455,21 @@ def assign_page(edition, page_no, cache_dir):
                         continue
                     if (_er["x2"] - _er["x1"]) * (_er["y2"] - _er["y1"]) <= 2.0 * _DOT_AREA:
                         continue
-                    _er["mark"] = "pause"
+                    _er["mark"] = "waqf"
                     for _mr in _er.get("mkmembers", []):
-                        _mr["mark"] = "pause"
+                        _mr["mark"] = "waqf"
 
     # A mark the wrong SIZE for what it is called, drawn in another line's band.
     #
     # The art draws one glyph per mark, so a family's drawn area is a point rather than a
     # range — measured over all 604 pages, sukun is 13.0 at both the median and the 99th
-    # percentile, damma 35.4/35.4, wasla 22.6/22.6, fatha 25.1/32.8. Only 46 elements in
+    # percentile, dammah 35.4/35.4, hamzat_al_wasl 22.6/22.6, fathah 25.1/32.8. Only 46 elements in
     # the whole mushaf fall outside a third to three times their family's median, and
     # once the fused iqlab meem and the muʿānaqah are set aside, exactly FIVE of those are
     # also drawn outside their own word's line band. Two independent impossibilities on
     # the same element.
     #
-    # Four are the same defect: a fatha of area ~80.4 against a median of 25.1, sitting in
+    # Four are the same defect: a fathah of area ~80.4 against a median of 25.1, sitting in
     # the band of the line above or below, touching a word there that is short of exactly
     # one letter piece by the joining rules — p467 `وَٱلْأَحْزَابُ` 5 of 6, p576
     # `يَرْتَابَ` 2 of 3, p529 `ٱلْكَذَّابُ` 3 of 4, p589 `مُدَّتْ` 1 of 2. The blob is
@@ -9309,16 +9478,16 @@ def assign_page(edition, page_no, cache_dir):
     # three pieces where two are allowed.
     #
     # The fifth is the opposite tail. Abdullah found `ٱلصَّـٰلِحَـٰتِ` on p590 holding a
-    # "kasra" of area 4.4 where its own two kasras are 21 — a dot, 37 units below the
+    # "kasrah" of area 4.4 where its own two kasrahs are 21 — a dot, 37 units below the
     # word, in the gap BETWEEN two lines where the ayah marker sits. There is no word to
     # give it to, so the only correction is to stop counting it.
     if os.environ.get("QSVG_MISCLASS", "1") != "0":
         # measured medians, in square page units
-        _MED = {"fatha": 25.1, "kasra": 21.2, "damma": 35.4, "sukun": 13.0,
-                "shadda": 14.0, "hamza": 15.6, "wasla": 22.6, "small-alef": 12.5,
-                "maddah": 21.0, "small-circle": 13.0, "fathatan": 17.5,
-                "kasratan": 17.5, "dammatan": 30.4, "small-waw": 31.7,
-                "small-ya": 29.8, "dot": 5.6, "two-dots": 12.4, "three-dots": 12.4}
+        _MED = {"fathah": 25.1, "kasrah": 21.2, "dammah": 35.4, "sukun": 13.0,
+                "shaddah": 14.0, "hamzah": 15.6, "hamzat_al_wasl": 22.6, "omitted_alif": 12.5,
+                "maddah": 21.0, "small_circle": 13.0, "tanwin_al_fath": 17.5,
+                "tanwin_al_kasr": 17.5, "tanwin_al_damm": 30.4, "small_waw": 31.7,
+                "small_yaa": 29.8, "dot": 5.6, "two_dots": 12.4, "three_dots": 12.4}
         _BAND_PAD = 10.0          # from the 160x cliff at 10 units
 
         _mrecs = []
@@ -9371,12 +9540,12 @@ def assign_page(edition, page_no, cache_dir):
                     # that word's missing letter. Over 604 pages only four marks exceed
                     # three times their family's median at all, and two of them are in a
                     # word short of pieces: `فَٱلزَّٰجِرَٰتِ` on p446, whose 82.8-unit
-                    # "kasra" is the ت (MushafDatabase draws `text ت` at the same
+                    # "kasrah" is the ت (MushafDatabase draws `text ت` at the same
                     # 189.24..201.14), and `يُكَذِّبُ` on p588. Nothing moves; only the
                     # claim that it is a mark is withdrawn, which also restores the word's
                     # letter extent so its own dots can be found around it.
                     if _big and _runs(_r2["b"]) < max(1, len(segment_word(
-                            _r2["w"]["uthmani"]))):
+                            _r2["w"]["rasm_uthmani"]))):
                         _e2["kind"] = "body"
                         _e2.pop("mark", None)
                         _r2["b"].append(_e2)
@@ -9399,7 +9568,7 @@ def assign_page(edition, page_no, cache_dir):
                             if _ov2 < -2.0:
                                 continue
                             if _runs(_t2["b"]) >= max(1, len(segment_word(
-                                    _t2["w"]["uthmani"]))):
+                                    _t2["w"]["rasm_uthmani"]))):
                                 continue      # it already has every piece it may have
                             if _cand is None or _ov2 > _cand[1]:
                                 _cand = (_t2, _ov2)
@@ -9435,24 +9604,24 @@ def assign_page(edition, page_no, cache_dir):
     # and whether the word's spelling still asks for one.
     #
     # All three together are decisive. Over 604 pages there are 105 bodies the classifier
-    # called a fatha that are the right size for one, and of those only 15 sit in a word
-    # short of a fatha; a further 701 are the wrong size and are left alone. Those 15 are
+    # called a fathah that are the right size for one, and of those only 15 sit in a word
+    # short of a fathah; a further 701 are the wrong size and are left alone. Those 15 are
     # the other half of the exchange the size rule above uncovers — on p589
     # `يَـٰٓأَيُّهَا` gives up an 80-unit blob that is `مُدَّتْ`'s missing `ت` and takes
-    # back a 12.6-unit blob that is its own third fatha — and they also close
+    # back a 12.6-unit blob that is its own third fathah — and they also close
     # `ٱلْمُحْصَنَـٰتِ` on p350 and `ٱلصَّـٰلِحَـٰتِ` on p590, both reported by eye.
     #
     # Runs AFTER the size rule, so a blob demoted to a letter there is not promoted
     # straight back; it cannot be, since it fails the size test that sent it there.
     if os.environ.get("QSVG_LABKIND", "1") != "0":
-        _LK_MED = {"fatha": 25.1, "kasra": 21.2, "damma": 35.4, "sukun": 13.0,
-                   "shadda": 14.0, "small-alef": 12.5, "maddah": 21.0,
-                   "fathatan": 17.5, "kasratan": 17.5, "dammatan": 30.4,
-                   "small-waw": 31.7, "small-ya": 29.8, "two-dots": 12.4}
-        _LK_CH = {"fatha": "\u064e", "kasra": "\u0650", "damma": "\u064f",
-                  "sukun": "\u0652", "shadda": "\u0651", "small-alef": "\u0670",
-                  "maddah": "\u0653", "fathatan": "\u064b", "kasratan": "\u064d",
-                  "dammatan": "\u064c", "small-waw": "\u06e5", "small-ya": "\u06e6"}
+        _LK_MED = {"fathah": 25.1, "kasrah": 21.2, "dammah": 35.4, "sukun": 13.0,
+                   "shaddah": 14.0, "omitted_alif": 12.5, "maddah": 21.0,
+                   "tanwin_al_fath": 17.5, "tanwin_al_kasr": 17.5, "tanwin_al_damm": 30.4,
+                   "small_waw": 31.7, "small_yaa": 29.8, "two_dots": 12.4}
+        _LK_CH = {"fathah": "\u064e", "kasrah": "\u0650", "dammah": "\u064f",
+                  "sukun": "\u0652", "shaddah": "\u0651", "omitted_alif": "\u0670",
+                  "maddah": "\u0653", "tanwin_al_fath": "\u064b", "tanwin_al_kasr": "\u064d",
+                  "tanwin_al_damm": "\u064c", "small_waw": "\u06e5", "small_yaa": "\u06e6"}
         for _wk, _atk in assignment:
             if not _wk:
                 continue
@@ -9467,7 +9636,7 @@ def assign_page(edition, page_no, cache_dir):
                 _mk2 = _LK_MED[_lk]
                 if not (_mk2 / 3.0 <= _ark <= 3.0 * _mk2):
                     continue
-                _need = _wk["uthmani"].count(_LK_CH[_lk]) - sum(
+                _need = _wk["rasm_uthmani"].count(_LK_CH[_lk]) - sum(
                     1 for x in _elk if x.get("mark") == _lk and not x.get("mkpart"))
                 if _need <= 0:
                     continue
@@ -9499,9 +9668,9 @@ def assign_page(edition, page_no, cache_dir):
         _swords = [(w, at) for w, at in assignment if w]
 
         def _suf_need(w, els, fam):
-            ch = "\u06e5" if fam == "small-waw" else "\u06e6"
-            alt = "" if fam == "small-waw" else "\u06e7"
-            n = w["uthmani"].count(ch) + (w["uthmani"].count(alt) if alt else 0)
+            ch = "\u06e5" if fam == "small_waw" else "\u06e6"
+            alt = "" if fam == "small_waw" else "\u06e7"
+            n = w["rasm_uthmani"].count(ch) + (w["rasm_uthmani"].count(alt) if alt else 0)
             held = sum(1 for e in els
                        if e.get("mark") == fam and not e.get("mkpart"))
             return n - held
@@ -9517,7 +9686,7 @@ def assign_page(edition, page_no, cache_dir):
                         continue
                     _w2, _at2 = _swords[_j]
                     _els2 = [x for a in _at2 for x in a["els"]]
-                    for _fam in ("small-waw", "small-ya"):
+                    for _fam in ("small_waw", "small_yaa"):
                         if _suf_need(_w2, _els2, _fam) > 0:
                             _tgt = (_j, _fam)
                             break
@@ -9546,7 +9715,7 @@ def assign_page(edition, page_no, cache_dir):
     # word is short by exactly two dot units.
     #
     # It runs after the size rule above, and has to: the word's letter extent only reaches
-    # those dots once its ت has stopped being called a kasra. Before that the dots fall
+    # those dots once its ت has stopped being called a kasrah. Before that the dots fall
     # two units outside the word and nothing claims them.
     if os.environ.get("QSVG_ADOPT", "1") != "0":
         _ad_orph, _ad_w, _ad_seen = [], [], set()
@@ -9565,7 +9734,7 @@ def assign_page(edition, page_no, cache_dir):
                               "x1": min(e["x1"] for e in _ba), "x2": max(e["x2"] for e in _ba),
                               "y1": min(e["y1"] for e in _ba), "y2": max(e["y2"] for e in _ba)})
         for _ea, _ata in _ad_orph:
-            _u = {"dot": 1, "two-dots": 2, "three-dots": 3}.get(_ea.get("mark") or "", 0)
+            _u = {"dot": 1, "two_dots": 2, "three_dots": 3}.get(_ea.get("mark") or "", 0)
             if not _u or _ea["kind"] == "body" or _ea.get("mkpart") or _ea.get("standalone"):
                 continue
             _cxa = (_ea["x1"] + _ea["x2"]) / 2
@@ -9575,8 +9744,8 @@ def assign_page(edition, page_no, cache_dir):
                     continue
                 if not (_ha["y1"] - 9.0 <= _cya <= _ha["y2"] + 9.0):
                     continue
-                if dot_budget(_ha["w"]["uthmani"]) - sum(
-                        {"dot": 1, "two-dots": 2, "three-dots": 3}.get(x.get("mark") or "", 0)
+                if dot_budget(_ha["w"]["rasm_uthmani"]) - sum(
+                        {"dot": 1, "two_dots": 2, "three_dots": 3}.get(x.get("mark") or "", 0)
                         for x in _ha["els"] if not x.get("mkpart")) != _u:
                     continue              # only if it accounts for the whole shortfall
                 for _aa in _ata:
@@ -9606,7 +9775,7 @@ def assign_page(edition, page_no, cache_dir):
     # so position alone would take real iqlabs away; and the text alone cannot say which
     # piece of ink is meant. Together they are exact — the same two-signals rule that
     # governs every other transfer here.
-    # Late iqlab-meem self-rescue. By now every mover has run, and a word's own
+    # Late small-meem self-rescue. By now every mover has run, and a word's own
     # small م can have ARRIVED as one of its body pieces after both early
     # recoveries already passed (p136 أَلِيمٌۢ receives it from بِمَا
     # mid-pipeline, where the next-word claim rightly refused a donor it would
@@ -9617,7 +9786,7 @@ def assign_page(edition, page_no, cache_dir):
         for _wq, _atq in assignment:
             if not _wq:
                 continue
-            _txt = _wq["uthmani"] or ""
+            _txt = _wq["rasm_uthmani"] or ""
             _ptx3 = _wq.get("qpc") or _txt
             _wantm = _txt.count("ۢ") + _txt.count("ۭ")
             if not _wantm or not ("ۢ" in _ptx3 or "ۭ" in _ptx3):
@@ -9628,11 +9797,11 @@ def assign_page(edition, page_no, cache_dir):
                 continue
             _y1 = min(e["y1"] for e in _bod)
             _y2 = max(e["y2"] for e in _bod)
-            _mks = [e for e in _els if e.get("mark") == "meem-iqlab"
+            _mks = [e for e in _els if e.get("mark") == "small_meem"
                     and not e.get("mkpart")]
 
-            # ۢ is a SUPERSCRIPT م and rides high beside its tanween; a
-            # "meem-iqlab" sitting in the lower half of the word's band is a
+            # ۢ is a SUPERSCRIPT م and rides high beside its tanwin; a
+            # "small_meem" sitting in the lower half of the word's band is a
             # letter stroke mislabeled (p222 تَارِكٌۢ carved it out of the ك)
             # and does not satisfy the budget
             def _high(e):
@@ -9645,16 +9814,16 @@ def assign_page(edition, page_no, cache_dir):
             if len(_bod) <= _nseg:
                 continue              # no surplus piece: nothing to rescue
             # SECOND SIGNAL, same as _IQTAN's rescue: the true م rides beside
-            # the word's OWN iqlab tanween stroke. Anchoring on the left edge
+            # the word's OWN iqlab tanwin stroke. Anchoring on the left edge
             # alone misfired at consecutive-iqlab boundaries (p414 صَبَّارٍۢ
             # beside شَكُورٍۢ), naming the neighbour's pieces.
             _anchor = [e for e in _els
-                       if e.get("mark") in ("fathatan", "kasratan", "dammatan",
-                                            "fatha", "kasra", "damma")
+                       if e.get("mark") in ("tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm",
+                                            "fathah", "kasrah", "dammah")
                        and not e.get("mkpart")]
             if not _anchor:
                 continue
-            _an = min(_anchor, key=lambda e: e["x1"])   # word-final tanween
+            _an = min(_anchor, key=lambda e: e["x1"])   # word-final tanwin
             _ax = (_an["x1"] + _an["x2"]) / 2
             _ay = (_an["y1"] + _an["y2"]) / 2
             _rx1 = min(e["x1"] for e in _bod)
@@ -9668,7 +9837,7 @@ def assign_page(edition, page_no, cache_dir):
                 continue
             _e = min(_cand, key=lambda e: e["x1"])
             _e["kind"] = "mark"
-            _e["mark"] = "meem-iqlab"
+            _e["mark"] = "small_meem"
             _e.pop("lab", None)
             # the true م found: a low impostor goes back to the letter it was
             # carved from
@@ -9692,8 +9861,8 @@ def assign_page(edition, page_no, cache_dir):
     # Two signals, or no move: the position proof (>=15u outside the band, or a
     # >=40u horizontal gap) AND the receiving word — the word whose band the ink
     # is actually drawn in, whose letters sit under/over it — must have text-budget
-    # capacity for the mark's family AFTER position-aware renaming (a "fatha"
-    # descending to the word below becomes that word's kasra candidate, _POS_SWAP).
+    # capacity for the mark's family AFTER position-aware renaming (a "fathah"
+    # descending to the word below becomes that word's kasrah candidate, _POS_SWAP).
     # A move that would leave the DONOR below its own budget is refused. Slash
     # families are normally forbidden from cross-word transfer; here the budget
     # gate is the same test the exception demands (receiver group deficit AND
@@ -9702,38 +9871,38 @@ def assign_page(edition, page_no, cache_dir):
     # QSVG_XBDBG=1 prints every candidate and the decision; QSVG_XBOUT=<file>
     # appends one JSON line per candidate for the trial report.
     if os.environ.get("QSVG_XBAND", "1") == "1":
-        _XB_FAMS = {"pause", "meem-iqlab", "hamza", "small-waw", "small-ya",
-                    "maddah", "small-alef", "sukun", "shadda", "small-circle",
-                    "fatha", "kasra", "fathatan", "kasratan", "damma",
-                    "dammatan"}
-        _XB_SLASH = {"fatha", "kasra", "fathatan", "kasratan"}
-        _XB_DAMMA = {"damma", "dammatan"}
+        _XB_FAMS = {"waqf", "small_meem", "hamzah", "small_waw", "small_yaa",
+                    "maddah", "omitted_alif", "sukun", "shaddah", "small_circle",
+                    "fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr", "dammah",
+                    "tanwin_al_damm"}
+        _XB_SLASH = {"fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr"}
+        _XB_DAMMAH = {"dammah", "tanwin_al_damm"}
         _XB_SLASH_CH = "ًࣰٍࣲَِ"
-        _XB_DAMMA_CH = "ٌࣱُ"
+        _XB_DAMMAH_CH = "ٌࣱُ"
         _XB_CH = {
-            "sukun": "ْۡ", "shadda": "ّ",
-            "maddah": "ٓۤ", "small-alef": "ٰ",
-            "small-waw": "ۥ", "small-ya": "ۦۧ",
-            "small-circle": "۟۠",
-            "hamza": "أإؤئٕٔ",
-            "meem-iqlab": "ۭۢ",
-            "pause": "ۖۗۘۙۚۛۜ",
+            "sukun": "ْۡ", "shaddah": "ّ",
+            "maddah": "ٓۤ", "omitted_alif": "ٰ",
+            "small_waw": "ۥ", "small_yaa": "ۦۧ",
+            "small_circle": "۟۠",
+            "hamzah": "أإؤئٕٔ",
+            "small_meem": "ۭۢ",
+            "waqf": "ۖۗۘۙۚۛۜ",
         }
 
         def _xb_txt(w, fam):
-            t = w["uthmani"] or ""
-            if fam == "pause":
+            t = w["rasm_uthmani"] or ""
+            if fam == "waqf":
                 # the waqf budget comes from the KFGQPC text of THIS print
                 t = w.get("qpc") or t
             if fam in _XB_SLASH:
                 return sum(t.count(c) for c in _XB_SLASH_CH)
-            if fam in _XB_DAMMA:
-                return sum(t.count(c) for c in _XB_DAMMA_CH)
+            if fam in _XB_DAMMAH:
+                return sum(t.count(c) for c in _XB_DAMMAH_CH)
             return sum(t.count(c) for c in _XB_CH[fam])
 
         def _xb_held(rec, fam):
             fams = (_XB_SLASH if fam in _XB_SLASH
-                    else _XB_DAMMA if fam in _XB_DAMMA else (fam,))
+                    else _XB_DAMMAH if fam in _XB_DAMMAH else (fam,))
             return sum(1 for e in rec["els"]
                        if e.get("mark") in fams and not e.get("mkpart")
                        and not e.get("standalone"))
@@ -9858,7 +10027,7 @@ def assign_page(edition, page_no, cache_dir):
                     "holder": "%d:%d:%d" % (_rx["w"]["surah"],
                                             _rx["w"]["ayah"],
                                             _rx["w"]["pos"]),
-                    "holder_text": _rx["w"]["uthmani"],
+                    "holder_text": _rx["w"]["rasm_uthmani"],
                     "mark": _fam,
                     "x": round((_e["x1"] + _e["x2"]) / 2, 1),
                     "y": round(_cy, 1),
@@ -9875,26 +10044,26 @@ def assign_page(edition, page_no, cache_dir):
             _rec.update({
                 "receiver": "%d:%d:%d" % (_t["w"]["surah"],
                                           _t["w"]["ayah"], _t["w"]["pos"]),
-                "receiver_text": _t["w"]["uthmani"],
+                "receiver_text": _t["w"]["rasm_uthmani"],
                 "new_name": _nm,
                 "recv_have": _xb_held(_t, _nm),
                 "recv_want": _xb_txt(_t["w"], _nm),
                 "donor_have": _xb_held(_rx, _fam),
                 "donor_want": _xb_txt(_rx["w"], _fam)})
 
-            # A standalone ء is a LETTER wearing the hamza outline. Where the
+            # A standalone ء is a LETTER wearing the hamzah outline. Where the
             # receiver under the ink spells one and holds none, the stolen
-            # "hamza" mark is that letter: it moves and is demoted the same way
-            # the late hamza pass demotes an in-word ء (kind body, letter-hamza).
+            # "hamzah" mark is that letter: it moves and is demoted the same way
+            # the late hamzah pass demotes an in-word ء (kind body, letter_hamzah).
             # p222 كَنزٌ and p260 لِى both hold the ء of a شَىْءٍۢ on the line
             # they poke into.
-            if _fam == "hamza" and "ء" in (_t["w"]["uthmani"] or ""):
-                _lh_want = _t["w"]["uthmani"].count("ء")
+            if _fam == "hamzah" and "ء" in (_t["w"]["rasm_uthmani"] or ""):
+                _lh_want = _t["w"]["rasm_uthmani"].count("ء")
                 _lh_have = sum(1 for x in _t["els"]
-                               if x.get("lab") == "letter-hamza")
+                               if x.get("lab") == "letter_hamzah")
                 if _lh_have < _lh_want \
                         and _rec["donor_have"] - 1 >= _rec["donor_want"]:
-                    _rec["new_name"] = "letter-hamza"
+                    _rec["new_name"] = "letter_hamzah"
                     _rec["decision"] = "moved as the receiver's letter ء"
                     _xb_log(_rec)
                     # anything welded to the ء (p260: the ٍ pair of شَىْءٍۢ)
@@ -9905,7 +10074,7 @@ def assign_page(edition, page_no, cache_dir):
                     _xb_move(_rx, _t, _e, None)
                     _e["kind"] = "body"
                     _e["mark"] = None
-                    _e["lab"] = "letter-hamza"
+                    _e["lab"] = "letter_hamzah"
                     _e["mkmembers"] = []
                     if _mem:
                         _mem[0]["mkpart"] = False
@@ -9915,11 +10084,11 @@ def assign_page(edition, page_no, cache_dir):
                     _xdone.add(id(_e))
                     continue
 
-            # Two slash strokes side by side are ONE tanween. Where the donor
+            # Two slash strokes side by side are ONE tanwin. Where the donor
             # holds a proved PAIR (both carry the position proof, drawn within
             # 8u of each other over the same receiver) and the receiver is
-            # missing exactly its tanween, the pair moves as one welded sign —
-            # p535 وَلَا holds مَقْطُوعَةٍۢ's kasratan as two stray "fathas".
+            # missing exactly its tanwin, the pair moves as one welded sign —
+            # p535 وَلَا holds مَقْطُوعَةٍۢ's tanwin_al_kasr as two stray "fathahs".
             _mate = None
             if _fam in _XB_SLASH:
                 for _rx2, _e2, _f2, _o2, _g2, _tl2, _cy2 in _xcands:
@@ -9933,9 +10102,9 @@ def assign_page(edition, page_no, cache_dir):
                         _mate = _e2
                         break
             if _mate is not None:
-                _tn = "fathatan" if _xb_side(_t, _e) == "a" else "kasratan"
-                _tn_ch = {"fathatan": "ًࣰ", "kasratan": "ٍࣲ"}[_tn]
-                _tn_want = sum((_t["w"]["uthmani"] or "").count(c)
+                _tn = "tanwin_al_fath" if _xb_side(_t, _e) == "a" else "tanwin_al_kasr"
+                _tn_ch = {"tanwin_al_fath": "ًࣰ", "tanwin_al_kasr": "ٍࣲ"}[_tn]
+                _tn_want = sum((_t["w"]["rasm_uthmani"] or "").count(c)
                                for c in _tn_ch)
                 _tn_have = sum(1 for x in _t["els"]
                                if x.get("mark") == _tn and not x.get("mkpart"))
@@ -9954,14 +10123,14 @@ def assign_page(edition, page_no, cache_dir):
 
             _recv_ok = _rec["recv_have"] < _rec["recv_want"]
             _don_ok = _rec["donor_have"] - 1 >= _rec["donor_want"]
-            # A slash or damma family is counted as a GROUP (the stroke is one
+            # A slash or dammah family is counted as a GROUP (the stroke is one
             # and the name positional), but a group test alone let p371 install
-            # a surplus fatha on a word missing its kasratan — group balanced,
+            # a surplus fathah on a word missing its tanwin_al_kasr — group balanced,
             # family worse. The move must also improve BOTH families it touches:
             # receiver short of the arriving NAME, donor long of the leaving one.
-            if _fam in _XB_SLASH or _fam in _XB_DAMMA:
-                _fch = {"fatha": "َ", "kasra": "ِ", "fathatan": "ًࣰ",
-                        "kasratan": "ٍࣲ", "damma": "ُ", "dammatan": "ٌࣱ"}
+            if _fam in _XB_SLASH or _fam in _XB_DAMMAH:
+                _fch = {"fathah": "َ", "kasrah": "ِ", "tanwin_al_fath": "ًࣰ",
+                        "tanwin_al_kasr": "ٍࣲ", "dammah": "ُ", "tanwin_al_damm": "ٌࣱ"}
 
                 def _heldf(rec, f):
                     return sum(1 for x in rec["els"]
@@ -9969,7 +10138,7 @@ def assign_page(edition, page_no, cache_dir):
                                and not x.get("standalone"))
 
                 def _wantf(w, f):
-                    return sum((w["uthmani"] or "").count(c) for c in _fch[f])
+                    return sum((w["rasm_uthmani"] or "").count(c) for c in _fch[f])
 
                 _recv_ok = _recv_ok and _heldf(_t, _nm) < _wantf(_t["w"], _nm)
                 _don_ok = _don_ok and _heldf(_rx, _fam) > _wantf(_rx["w"], _fam)
@@ -9989,7 +10158,7 @@ def assign_page(edition, page_no, cache_dir):
             # is budget-neutral, so no count can break.
             if not _recv_ok:
                 _grp = (_XB_SLASH if _fam in _XB_SLASH
-                        else _XB_DAMMA if _fam in _XB_DAMMA else {_fam})
+                        else _XB_DAMMAH if _fam in _XB_DAMMAH else {_fam})
                 _tlo, _thi = _xband.get(_t["ln"], (-1e9, 1e9))
                 _back = None
                 for _e2 in _t["els"]:
@@ -10005,7 +10174,7 @@ def assign_page(edition, page_no, cache_dir):
                         continue
                     # the give-back mark must be drawn over the donor's own
                     # letters. Relaxing this to -6u admits p577's إِلَّآ /
-                    # يَخَافُونَ exchange, but the returned fatha lands in
+                    # يَخَافُونَ exchange, but the returned fathah lands in
                     # يَذْكُرُونَ's exclusive core (+1 interval flag): the
                     # mark most probably belongs to يذكرون, a three-way chain
                     # a pairwise swap cannot settle. Strict, measured.
@@ -10041,7 +10210,7 @@ def assign_page(edition, page_no, cache_dir):
         for _wq, _atq in assignment:
             if not _wq:
                 continue
-            _txt = (_wq["uthmani"] or "") + (_wq.get("qpc") or "")
+            _txt = (_wq["rasm_uthmani"] or "") + (_wq.get("qpc") or "")
             if any(_c in _txt for _c in "\u06e2\u06ed"):
                 continue                      # the word really does carry one
             _els = [e for a in _atq for e in a["els"]]
@@ -10051,7 +10220,7 @@ def assign_page(edition, page_no, cache_dir):
             _top = min(e["y1"] for e in _bod)
             _bot = max(e["y2"] for e in _bod)
             for _e in _els:
-                if _e.get("mark") != "meem-iqlab":
+                if _e.get("mark") != "small_meem":
                     continue
                 _f = ((_e["y1"] + _e["y2"]) / 2 - _top) / max(1e-6, _bot - _top)
                 if _f > 0.5:
@@ -10067,7 +10236,7 @@ def assign_page(edition, page_no, cache_dir):
     # the ف beside it (p27 `بِٱلۡمَعۡرُوفِ`) the word comes out holding one dot where its
     # spelling and MushafDatabase both read two.
     #
-    # Un-welding every non-ج pause was tried and is much worse: dot disagreements went
+    # Un-welding every non-ج waqf was tried and is much worse: dot disagreements went
     # from 66 over the mushaf to 150 over the first 120 pages, because the weld is
     # usually correct and breaking it invents a dot. What separates the two cases is not
     # in the ink at all — it is the spelling. So the count comes from the text and the
@@ -10082,7 +10251,7 @@ def assign_page(edition, page_no, cache_dir):
             _els = [e for a in _atd for e in a["els"]]
             _have = sum(_DOTU_F.get(e.get("mark") or "", 0)
                         for e in _els if not e.get("mkpart"))
-            _want = dot_budget(_wd["uthmani"])
+            _want = dot_budget(_wd["rasm_uthmani"])
             if _have >= _want:
                 continue
             _twins = [e for e in _els
@@ -10091,7 +10260,7 @@ def assign_page(edition, page_no, cache_dir):
                 continue
             # The deficit is in UNITS, and a twin inherits its master's label rather
             # than describing itself: the third dot of the `ث` in `فَبَعَثَ` is welded
-            # to a `two-dots` master and carries that name, so releasing it at face
+            # to a `two_dots` master and carries that name, so releasing it at face
             # value adds two where one is owed. Where the twin is narrower than its
             # master it is plainly the smaller mark, and it is renamed down to exactly
             # the units still owed — never up, and never past the deficit.
@@ -10105,7 +10274,7 @@ def assign_page(edition, page_no, cache_dir):
                     _mst = next((m for m in _els if _t in (m.get("mkmembers") or [])), None)
                     if _mst is None or (_t["x2"] - _t["x1"]) >= (_mst["x2"] - _mst["x1"]):
                         continue     # not obviously the smaller of the pair: leave it
-                    _name = {1: "dot", 2: "two-dots", 3: "three-dots"}.get(_need)
+                    _name = {1: "dot", 2: "two_dots", 3: "three_dots"}.get(_need)
                     if not _name:
                         continue
                     _t["mark"] = _name
@@ -10122,21 +10291,21 @@ def assign_page(edition, page_no, cache_dir):
     # empty-band proof AND a text confirmation (tools/audit_marktype.py,
     # docs/defects/marktype_rules.md):
     #
-    # (a) The لأيات name-crossing. A kasratan can NEVER sit above its word's
+    # (a) The لأيات name-crossing. A tanwin_al_kasr can NEVER sit above its word's
     #     band top — clean-subset sabove is empty from -4 to +1 (n=2,585) and
-    #     the only 10 above are this pattern: the word's two stacked fathas
-    #     welded as a "kasratan pair" at the top, while its true kasratan pair
-    #     (QPC open tanween ٖ, drawn as two strokes BELOW) is named
-    #     fatha+fatha. Both budgets stay exactly satisfied after the swap, so
+    #     the only 10 above are this pattern: the word's two stacked fathahs
+    #     welded as a "tanwin_al_kasr pair" at the top, while its true tanwin_al_kasr pair
+    #     (QPC open tanwin ٖ, drawn as two strokes BELOW) is named
+    #     fathah+fathah. Both budgets stay exactly satisfied after the swap, so
     #     the repair is a pure re-labeling.
     #
-    # (b) A "meem-iqlab" in a word whose QPC text draws NO meem (open-tanween
-    #     encoding ٖ/ٗ/ٞ — uthmani writes the small meem at every non-izhar
-    #     tanween, the print draws it only at iqlab). The element is the
-    #     tanween's second stroke or its welded outline: QPC-confirmed meems
+    # (b) A "small_meem" in a word whose QPC text draws NO meem (open-tanwin
+    #     encoding ٖ/ٗ/ٞ — rasm_uthmani writes the small meem at every non-izhar
+    #     tanwin, the print draws it only at iqlab). The element is the
+    #     tanwin's second stroke or its welded outline: QPC-confirmed meems
     #     measure a uniform 3.2x9.5 glyph, these measure w 4.5-11 (926
-    #     mushaf-wide). Renamed to the word's tanween as a welded part —
-    #     meem-iqlab is never counted and the tanween master count is
+    #     mushaf-wide). Renamed to the word's tanwin as a welded part —
+    #     small_meem is never counted and the tanwin master count is
     #     unchanged, so no budget moves.
     # REFUTED by blind verification (docs/defects/marktype_verification.md,
     # reported.json item 24): branch (b) renames what is actually the word's
@@ -10150,20 +10319,20 @@ def assign_page(edition, page_no, cache_dir):
             _bod = [e for e in _els if e["kind"] == "body"]
             if not _bod:
                 continue
-            _u = _wm["uthmani"] or ""
+            _u = _wm["rasm_uthmani"] or ""
             _q = _wm.get("qpc") or ""
             _top = min(e["y1"] for e in _bod)
             _bot = max(e["y2"] for e in _bod)
 
-            # (a) kasratan welded pair above the band top
+            # (a) tanwin_al_kasr welded pair above the band top
             _kt = next((e for e in _els
-                        if e.get("mark") == "kasratan" and not e.get("mkpart")
-                        and any(m.get("mark") == "kasratan"
+                        if e.get("mark") == "tanwin_al_kasr" and not e.get("mkpart")
+                        and any(m.get("mark") == "tanwin_al_kasr"
                                 for m in e.get("mkmembers", []))
                         and _top - (e["y1"] + e["y2"]) / 2 > 0.0), None)
             if _kt is not None:
                 _fw = _u.count("َ")
-                _fh = [e for e in _els if e.get("mark") == "fatha"
+                _fh = [e for e in _els if e.get("mark") == "fathah"
                        and not e.get("mkpart") and not e.get("mkmembers")]
                 _low = sorted([e for e in _fh
                                if (e["y1"] + e["y2"]) / 2 - _bot > 1.5],
@@ -10174,28 +10343,28 @@ def assign_page(edition, page_no, cache_dir):
                            - (_b2["x1"] + _b2["x2"]) / 2) < 8.0 \
                             and abs((_a2["y1"] + _a2["y2"]) / 2
                                     - (_b2["y1"] + _b2["y2"]) / 2) < 8.0:
-                        # top pair -> the word's two fathas
+                        # top pair -> the word's two fathahs
                         for _m in list(_kt.get("mkmembers", [])):
-                            if _m.get("mark") == "kasratan":
-                                _m["mark"] = "fatha"
+                            if _m.get("mark") == "tanwin_al_kasr":
+                                _m["mark"] = "fathah"
                                 _m.pop("mkpart", None)
                                 _kt["mkmembers"].remove(_m)
                         if not _kt["mkmembers"]:
                             _kt.pop("mkmembers", None)
-                        _kt["mark"] = "fatha"
-                        # bottom two strokes -> the kasratan pair
-                        _a2["mark"] = _b2["mark"] = "kasratan"
+                        _kt["mark"] = "fathah"
+                        # bottom two strokes -> the tanwin_al_kasr pair
+                        _a2["mark"] = _b2["mark"] = "tanwin_al_kasr"
                         _b2["mkpart"] = True
                         _a2["mkmembers"] = _a2.get("mkmembers", []) + [_b2]
 
-            # (b) meem-iqlab at a QPC-meemless word -> tanween part
+            # (b) small_meem at a QPC-meemless word -> tanwin part
             if _q and not any(c in _q for c in "ۭۢ"):
                 for _e in _els:
-                    if _e.get("mark") != "meem-iqlab" or _e.get("mkpart"):
+                    if _e.get("mark") != "small_meem" or _e.get("mkpart"):
                         continue
                     _tans = [t for t in _els
-                             if t.get("mark") in ("fathatan", "kasratan",
-                                                  "dammatan")
+                             if t.get("mark") in ("tanwin_al_fath", "tanwin_al_kasr",
+                                                  "tanwin_al_damm")
                              and not t.get("mkpart") and t is not _e]
                     if not _tans:
                         continue
@@ -10219,7 +10388,7 @@ def assign_page(edition, page_no, cache_dir):
     # before the movers and the reviewer overrides, and either can deliver a
     # straggler dot of an occurrence to the owning word AFTER the weld ran:
     # p114's قُلُوبُهُمْۛ ended holding its triangle as a master+part PLUS one
-    # loose `pause` dot that a later mover brought home — counted as pause 2/1.
+    # loose `waqf` dot that a later mover brought home — counted as waqf 2/1.
     # Re-normalize: within one word, all recorded pieces of one occurrence are
     # one master and parts. Nothing moves between words here.
     if _places and os.environ.get("QSVG_WPL2", "1") == "1":
@@ -10237,11 +10406,11 @@ def assign_page(edition, page_no, cache_dir):
                 if len(_grp) < 2:
                     continue
                 _grp.sort(key=lambda e: -(e["x2"] - e["x1"]) * (e["y2"] - e["y1"]))
-                _grp[0]["mark"] = "pause"
+                _grp[0]["mark"] = "waqf"
                 _grp[0]["mkmembers"] = _grp[1:]
                 _grp[0].pop("mkpart", None)
                 for _m in _grp[1:]:
-                    _m["mark"] = "pause"
+                    _m["mark"] = "waqf"
                     _m["mkpart"] = True
                     _m.pop("mkmembers", None)
 
@@ -10259,12 +10428,12 @@ def assign_page(edition, page_no, cache_dir):
             # the word holds more of that family than its spelling allows
             # (the budget veto keeps the ب's own dot safe).
 
-            if "\u06db" in (_wp.get("qpc") or _wp["uthmani"]):
+            if "\u06db" in (_wp.get("qpc") or _wp["rasm_uthmani"]):
                 _elw = [e for _a in _atp for e in _a["els"]]
-                _mst = [e for e in _elw if e.get("mark") == "pause"
+                _mst = [e for e in _elw if e.get("mark") == "waqf"
                         and not e.get("mkpart")]
                 _D1w = "\u0628\u062c\u062e\u0630\u0632\u0636\u0638\u063a\u0641\u0646"
-                _txtw = _wp["uthmani"]
+                _txtw = _wp["rasm_uthmani"]
                 for _m0 in _mst:
                     # a member welded by an earlier pass can be REFERENCED by
                     # two atoms at once — its word's and a wordless one whose
@@ -10322,7 +10491,7 @@ def assign_page(edition, page_no, cache_dir):
                         _consider(e)
                     if os.environ.get("QSVG_MNQDBG"):
                         print("MNQ %s master(%.0f,%.0f) tot=%d cand=%d"
-                              % (_wp["uthmani"], _cxm, _cym, _tot,
+                              % (_wp["rasm_uthmani"], _cxm, _cym, _tot,
                                  len(_cand)), file=sys.stderr)
                         for _wo, _ao in assignment:
                             if _wo:
@@ -10350,20 +10519,20 @@ def assign_page(edition, page_no, cache_dir):
                             _src2["els"].remove(e)
                             _atp[0]["els"].append(e)
                         e["kind"] = "mark"
-                        e["mark"] = "pause"
-                        e["lab"] = "pause"
+                        e["mark"] = "waqf"
+                        e["lab"] = "waqf"
                         e["mkpart"] = True
                         e.pop("mkmembers", None)
                         _m0.setdefault("mkmembers", []).append(e)
                         _tot += len(e["contours"])
-                # the sign IS the muʿānaqah — its catalog name, not a pause
+                # the sign IS the muʿānaqah — its catalog name, not a waqf
                 # wearing an attribute (Abdullah 2026-08-28): each of the six
-                # words holds exactly ONE mark named muanaqah
+                # words holds exactly ONE mark named waqf_al_muanaqah
                 for _m0 in _mst:
-                    _m0["mark"] = "muanaqah"
-                    _m0["lab"] = "muanaqah"
+                    _m0["mark"] = "waqf_al_muanaqah"
+                    _m0["lab"] = "waqf_al_muanaqah"
                     for _mm in (_m0.get("mkmembers") or []):
-                        _mm["mark"] = "muanaqah"
+                        _mm["mark"] = "waqf_al_muanaqah"
 
     # LINE-SET SOLVER (trial, DEFAULT OFF — QSVG_LSOLVE=1 to enable).
     #
@@ -10380,10 +10549,10 @@ def assign_page(edition, page_no, cache_dir):
     # applied (put_in_ligature only); ties within 10% become a proposal
     # record (QSVG_LSOLVE_OUT), never a move.
     #
-    # Scope is deliberately narrow: the six slash/damma families only — the
+    # Scope is deliberately narrow: the six slash/dammah families only — the
     # ones whose name is positional and whose rotations pairwise passes
-    # cannot settle. Everything else (pause, meem-iqlab, hamza, small-waw…)
-    # already has a measured pass with its own proof band. small-waw/small-ya
+    # cannot settle. Everything else (waqf, small_meem, hamzah, small_waw…)
+    # already has a measured pass with its own proof band. small_waw/small_yaa
     # are NEVER entities here: a trailing ۥ/ۦ legitimately sits x-clear of
     # its word (direction beats distance, ~2000 suffixes).
     #
@@ -10393,15 +10562,15 @@ def assign_page(edition, page_no, cache_dir):
     # (docs/defects/proposals.json, e.g. p350's x14.9 stroke, P1) is under
     # adjudication — it neither moves nor testifies in any budget.
     if os.environ.get("QSVG_LSOLVE", "1") == "1":
-        _LS_SLASH = ("fatha", "kasra", "fathatan", "kasratan")
-        _LS_FAMS = _LS_SLASH + ("damma", "dammatan")
-        _LS_CH = {"fatha": "َ", "kasra": "ِ",
-                  "fathatan": "ًࣰ", "kasratan": "ٍࣲ",
-                  "damma": "ُ", "dammatan": "ٌࣱ"}
+        _LS_SLASH = ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr")
+        _LS_FAMS = _LS_SLASH + ("dammah", "tanwin_al_damm")
+        _LS_CH = {"fathah": "َ", "kasrah": "ِ",
+                  "tanwin_al_fath": "ًࣰ", "tanwin_al_kasr": "ٍࣲ",
+                  "dammah": "ُ", "tanwin_al_damm": "ٌࣱ"}
         _LS_GAP = 0.6          # the orphan pass's measured overlap tolerance
         _LS_BAND = 15.0        # the crossband empty band (26 marks in 10-15u)
         _LS_NEAR = 3.0         # a candidate's ink must be under the mark
-        _LS_PAIR = 8.0         # two strokes this close are ONE tanween
+        _LS_PAIR = 8.0         # two strokes this close are ONE tanwin
         _LS_TIE = 0.10         # ties within 10% go to eyes, not to a move
         _LS_CAP = 20000        # combinatorial ceiling; beyond it, propose
 
@@ -10509,12 +10678,12 @@ def assign_page(edition, page_no, cache_dir):
             for _e, _nm in marks_named:
                 if _nm in _have:
                     _have[_nm] += 1
-            _t = r["w"]["uthmani"] or ""
+            _t = r["w"]["rasm_uthmani"] or ""
             return sum(abs(_have[f] - sum(_t.count(c) for c in _LS_CH[f]))
                        for f in _LS_FAMS)
 
         def _ls_sitting(r):
-            """The word's countable slash/damma marks as (element, name)."""
+            """The word's countable slash/dammah marks as (element, name)."""
             return [(e, e["mark"]) for e in r["els"]
                     if e["kind"] != "body" and not e.get("mkpart")
                     and not e.get("standalone")
@@ -10537,7 +10706,7 @@ def assign_page(edition, page_no, cache_dir):
         # COUNT-PAIR TRIGGER (trial, DEFAULT OFF — QSVG_LSCNT=1 to enable).
         # A surplus mark drawn over the boundary sits comfortably inside its
         # holder's ink, so it is never a positional violation — yet rounds 5-6
-        # confirmed a whole family of `fatha 3/2` words whose neighbour is
+        # confirmed a whole family of `fathah 3/2` words whose neighbour is
         # short the same stroke (p44 2:262:15/16, p51, p100, p319, p361,
         # p486, p543 …). The two signals here: BOTH words' counts disagree
         # with their spelling, AND a movable mark of one overlaps the other's
@@ -10583,8 +10752,8 @@ def assign_page(edition, page_no, cache_dir):
             mark that changed hands carries a name earned over someone else's
             letters, and its arrival re-opens the naming of the word it joins.
             Two single strokes within 8u, at least one of them newly arrived,
-            are one tanween named by the side the pair sits on ("two side by
-            side = tanween" — the derived-family rule).
+            are one tanwin named by the side the pair sits on ("two side by
+            side = tanwin" — the derived-family rule).
             """
             named, welds = [], []
             for _e, _arr in final:
@@ -10614,13 +10783,13 @@ def assign_page(edition, page_no, cache_dir):
                            "x2": max(_a["x2"], _b["x2"]),
                            "y1": min(_a["y1"], _b["y1"]),
                            "y2": max(_a["y2"], _b["y2"])}
-                    _tn = ("fathatan" if _ls_side(r, _me) == "a"
-                           else "kasratan")
+                    _tn = ("tanwin_al_fath" if _ls_side(r, _me) == "a"
+                           else "tanwin_al_kasr")
                     # two signals: proximity says pair, the TEXT must say the
-                    # word owns that tanween and is still short of it —
-                    # without this, two of يُنزِفُونَ's plain fathas welded
-                    # into a fathatan it does not spell (p535 line 1)
-                    _tw = sum((r["w"]["uthmani"] or "").count(c)
+                    # word owns that tanwin and is still short of it —
+                    # without this, two of يُنزِفُونَ's plain fathahs welded
+                    # into a tanwin_al_fath it does not spell (p535 line 1)
+                    _tw = sum((r["w"]["rasm_uthmani"] or "").count(c)
                               for c in _LS_CH[_tn])
                     _th = (sum(1 for it in named if it[1] == _tn
                                and id(it[0]) not in (id(_a), id(_b)))
@@ -10637,15 +10806,15 @@ def assign_page(edition, page_no, cache_dir):
             _parts = {id(p) for m, p, n in welds}
             named = [it for it in named if id(it[0]) not in _parts]
             # The iqlab convention, TEXT-driven (reported.json items 18/23):
-            # this print draws iqlab as ONE haraka + small م, so a word whose
-            # text carries ۢ/ۭ owns its tanween as a single stroke. Where such
-            # a word is short its tanween and long its same-side base after
+            # this print draws iqlab as ONE harakah + small م, so a word whose
+            # text carries ۢ/ۭ owns its tanwin as a single stroke. Where such
+            # a word is short its tanwin and long its same-side base after
             # the side naming, the LEFTMOST base stroke (word-final position)
-            # is the tanween. Never geometric, never on a non-iqlab word.
-            _t = r["w"]["uthmani"] or ""
+            # is the tanwin. Never geometric, never on a non-iqlab word.
+            _t = r["w"]["rasm_uthmani"] or ""
             if "ۢ" in _t or "ۭ" in _t:
-                for _base, _tn in (("fatha", "fathatan"),
-                                   ("kasra", "kasratan")):
+                for _base, _tn in (("fathah", "tanwin_al_fath"),
+                                   ("kasrah", "tanwin_al_kasr")):
                     _wb = sum(_t.count(c) for c in _LS_CH[_base])
                     _wt = sum(_t.count(c) for c in _LS_CH[_tn])
                     _hb = [it for it in named if it[1] == _base]
@@ -10665,7 +10834,7 @@ def assign_page(edition, page_no, cache_dir):
             _byid = {id(r): r for r in _set}
             # entities: violating marks, plus same-group marks a contested
             # word holds that overlap another word of the set (the p350
-            # fatha-at-50.7 kind — never itself orphaned, but the rotation
+            # fathah-at-50.7 kind — never itself orphaned, but the rotation
             # cannot close without it)
             _vset = {id(e) for r, e in _viols if id(r) in _byid}
             _vwords = {id(r) for r, e in _viols if id(r) in _byid}
@@ -10747,9 +10916,9 @@ def assign_page(edition, page_no, cache_dir):
                 _ls_log({"page": _ls_page, "lines": _lines, "debug": "group",
                          "entities": [{"mark": e.get("mark"),
                                        "x": round((e["x1"] + e["x2"]) / 2, 1),
-                                       "holder": r["w"]["uthmani"],
+                                       "holder": r["w"]["rasm_uthmani"],
                                        "cands": ["%s ln%d ovl%.1f c%.1f"
-                                                 % (t["w"]["uthmani"], t["ln"],
+                                                 % (t["w"]["rasm_uthmani"], t["ln"],
                                                     _ls_ovl(t["b"], e),
                                                     _ls_cost(t, e))
                                                  for t in _cands[k]]}
@@ -10767,12 +10936,12 @@ def assign_page(edition, page_no, cache_dir):
                              "entities": len(_idx), "combos": _np})
                     continue
                 # only this component's words can gain or lose anything
-                _wids = set()
+                _word_keys = set()
                 for i in _idx:
-                    _wids.add(id(_ents[i][0]))
+                    _word_keys.add(id(_ents[i][0]))
                     for _t in _cands[i]:
-                        _wids.add(id(_t))
-                _cset = [r for r in _set if id(r) in _wids]
+                        _word_keys.add(id(_t))
+                _cset = [r for r in _set if id(r) in _word_keys]
 
                 def _eval(choice, _idx=_idx, _cset=_cset):
                     """(violations, cost) for one component assignment."""
@@ -10811,8 +10980,8 @@ def assign_page(edition, page_no, cache_dir):
                         # HARD receiver-room: an arriving mark may fill a
                         # deficit, never create a surplus — the two-signals
                         # rule every adopted pass obeys. Without it p535's
-                        # line 1 parked a kasratan on يُنزِفُونَ, a word that
-                        # spells no tanween at all, because the ledger still
+                        # line 1 parked a tanwin_al_kasr on يُنزِفُونَ, a word that
+                        # spells no tanwin at all, because the ledger still
                         # improved.
                         _arrN = {}
                         for _fi, (_e3, _a3) in enumerate(_final):
@@ -10823,7 +10992,7 @@ def assign_page(edition, page_no, cache_dir):
                             if _nm3 is not None:
                                 _arrN[_nm3] = 1
                         for _nm3 in _arrN:
-                            _t3 = _r["w"]["uthmani"] or ""
+                            _t3 = _r["w"]["rasm_uthmani"] or ""
                             _hl = sum(1 for e4, n in _named if n == _nm3)
                             if _hl > sum(_t3.count(c)
                                          for c in _LS_CH.get(_nm3, "")):
@@ -10858,8 +11027,8 @@ def assign_page(edition, page_no, cache_dir):
                                      {"mark": _ents[i][1].get("mark"),
                                       "x": round((_ents[i][1]["x1"]
                                                   + _ents[i][1]["x2"]) / 2, 1),
-                                      "holder": _ents[i][0]["w"]["uthmani"],
-                                      "cands": [t["w"]["uthmani"]
+                                      "holder": _ents[i][0]["w"]["rasm_uthmani"],
+                                      "cands": [t["w"]["rasm_uthmani"]
                                                 for t in _cands[i]]}
                                      for i in _idx]})
                     continue      # nothing strictly better than what stands
@@ -10880,11 +11049,11 @@ def assign_page(edition, page_no, cache_dir):
                                    "from": "%d:%d:%d %s" % (r["w"]["surah"],
                                                             r["w"]["ayah"],
                                                             r["w"]["pos"],
-                                                            r["w"]["uthmani"]),
+                                                            r["w"]["rasm_uthmani"]),
                                    "to": "%d:%d:%d %s" % (t["w"]["surah"],
                                                           t["w"]["ayah"],
                                                           t["w"]["pos"],
-                                                          t["w"]["uthmani"])}
+                                                          t["w"]["rasm_uthmani"])}
                                   for r, t, e in _moves]}
                 if _tie:
                     _rec["decision"] = "tie: proposal, no change"
@@ -10969,8 +11138,8 @@ def assign_page(edition, page_no, cache_dir):
                 for _aq, _bq in ((_iq, _iq + 1), (_iq + 1, _iq)):
                     _wA, _atA, _bA = _wsq[_aq]     # short one
                     _wB, _atB, _bB = _wsq[_bq]     # long one
-                    _allowA = len(segment_word(_wA["uthmani"]))
-                    _allowB = len(segment_word(_wB["uthmani"]))
+                    _allowA = len(segment_word(_wA["rasm_uthmani"]))
+                    _allowB = len(segment_word(_wB["rasm_uthmani"]))
                     if not (len(_bA) == _allowA - 1
                             and len(_bB) == _allowB + 1):
                         continue
@@ -11000,18 +11169,18 @@ def assign_page(edition, page_no, cache_dir):
 
     # LATE RE-SEAT of the two word-ANCHORED sign families (QSVG_RESEAT=0 reverts).
     #
-    # wasla ٱ rides above its word's INITIAL alef; the suffix ۥ trails after its
+    # hamzat_al_wasl ٱ rides above its word's INITIAL alef; the suffix ۥ trails after its
     # word's FINAL ha. Both signs sit in the kerned gap between two words, and the
     # neighbour's tail sweeps under them, so collection hands each to the word one
     # step EARLIER in reading order. The mid-pipeline reconcilers cannot repair it:
     # measured on p273 (QSVG_TRACE + oracle instrumentation), at oracle time
-    # ٱلْعَزِيزُ held only the STOLEN wasla — its own was still with وَهُوَ — so
+    # ٱلْعَزِيزُ held only the STOLEN hamzat_al_wasl — its own was still with وَهُوَ — so
     # every budget test saw it at-cap and the trial move scored flat (base=2, d=2)
     # and was reverted. The chain unwinds link by link across later passes and the
     # surplus/deficit pair only exists AFTER the last mover, where nothing ran.
     # Mushaf-wide these two families sat frozen at 27+26 flags through every fix
-    # wave: 13 wasla pairs (all ٱلْX ٱلْY divine-name pairs), 10 small-waw
-    # pair/chains, 5 small-waw captured by unowned furniture, 2 singletons left
+    # wave: 13 hamzat_al_wasl pairs (all ٱلْX ٱلْY divine-name pairs), 10 small_waw
+    # pair/chains, 5 small_waw captured by unowned furniture, 2 singletons left
     # alone here (p223 = quran.com text bug, p337 = unexplained extra outline).
     #
     # (1) Per line, per family: if the words' TEXT budget balances in total but
@@ -11034,14 +11203,14 @@ def assign_page(edition, page_no, cache_dir):
                 "ln": max(set(_lnr), key=_lnr.count) if _lnr else None,
                 "x1": min(e["x1"] for e in _bdr), "x2": max(e["x2"] for e in _bdr),
                 "y1": min(e["y1"] for e in _bdr), "y2": max(e["y2"] for e in _bdr)})
-        _RS_CHAR = {"wasla": ("ٱ",), "small-waw": ("ۥ",)}
+        _RS_CHAR = {"hamzat_al_wasl": ("ٱ",), "small_waw": ("ۥ",)}
         for _fam, _chs in _RS_CHAR.items():
             _byline = {}
             for _r in _rs_words:
                 if _r["ln"] is not None:
                     _byline.setdefault(_r["ln"], []).append(_r)
             for _ln, _rs in _byline.items():
-                _caps = [sum(_r["w"]["uthmani"].count(c) for c in _chs)
+                _caps = [sum(_r["w"]["rasm_uthmani"].count(c) for c in _chs)
                          for _r in _rs]
                 _held = []
                 for _r in _rs:
@@ -11092,18 +11261,18 @@ def assign_page(edition, page_no, cache_dir):
                 continue
             for _au in _atu:
                 for _eu in list(_au["els"]):
-                    if (_eu.get("mark") != "small-waw" or _eu.get("mkpart")
+                    if (_eu.get("mark") != "small_waw" or _eu.get("mkpart")
                             or _eu.get("standalone")):
                         continue
                     _cxu = (_eu["x1"] + _eu["x2"]) / 2
                     _cyu = (_eu["y1"] + _eu["y2"]) / 2
                     _cands = []
                     for _r in _rs_words:
-                        _cap = _r["w"]["uthmani"].count("ۥ")
+                        _cap = _r["w"]["rasm_uthmani"].count("ۥ")
                         if not _cap:
                             continue
                         _n = sum(1 for a in _r["at"] for e in a["els"]
-                                 if e.get("mark") == "small-waw"
+                                 if e.get("mark") == "small_waw"
                                  and not e.get("mkpart"))
                         if _n >= _cap:
                             continue
@@ -11125,19 +11294,19 @@ def assign_page(edition, page_no, cache_dir):
                         for _m in _eu.get("mkmembers", []):
                             _m["line"] = _r["ln"]
 
-    # A pause sign always carries its own dots (Abdullah 2026-08-27): the ج
-    # has one, the قلى has the two of its ق. Measured mushaf-wide: 96 pause
+    # A waqf sign always carries its own dots (Abdullah 2026-08-27): the ج
+    # has one, the قلى has the two of its ق. Measured mushaf-wide: 96 waqf
     # signs had their dots as loose separate elements. Adopt a dot-family
     # element as mark-part of the sign only when its CENTER lies inside the
     # sign's box (a ث's three dots beside a ج stay letter dots — sali and
-    # lazim signs have no dots at all and adopt nothing).
+    # madd_lazim signs have no dots at all and adopt nothing).
     if os.environ.get("QSVG_PAUSEDOTS", "1") == "1":
         _wtypes = waqf_types()
-        _CAP = {"waqf-jaiz": ("dot",), "waqf-awla": ("dot", "two-dots")}
+        _CAP = {"waqf_jaiz_mustawi_al_tarafayn": ("dot",), "waqf_jaiz_waqf_awla": ("dot", "two_dots")}
         _allat = [(a, e) for _w9, _at9 in assignment for a in _at9
                   for e in a["els"]]
         for _pa, _pe in _allat:
-            if _pe.get("mark") != "pause" or _pe.get("mkpart"):
+            if _pe.get("mark") != "waqf" or _pe.get("mkpart"):
                 continue
             _typ = _wtypes.get(_pe.get("sig"))
             _ok = _CAP.get(_typ if isinstance(_typ, str) else
@@ -11145,7 +11314,7 @@ def assign_page(edition, page_no, cache_dir):
                            else None)
             if not _ok:
                 continue
-            _room = 2 if "two-dots" in _ok else 1
+            _room = 2 if "two_dots" in _ok else 1
             for _da, _de in _allat:
                 if _room <= 0:
                     break
@@ -11157,14 +11326,14 @@ def assign_page(edition, page_no, cache_dir):
                         and _pe["y1"] - 1 <= _cy <= _pe["y2"] + 1):
                     continue
                 _de["mkpart"] = True
-                _de["mark"] = "pause"
+                _de["mark"] = "waqf"
                 _pe.setdefault("mkmembers", []).append(_de)
                 if _da is not _pa:
                     if _de in _da["els"]:
                         _da["els"].remove(_de)
                     _pa["els"].append(_de)
                     _de["line"] = _pe.get("line")
-                _room -= 2 if _de.get("mark") == "two-dots" else 1
+                _room -= 2 if _de.get("mark") == "two_dots" else 1
 
     # ------------------------------------------------------------------
     # Taxonomy phase 1 (Abdullah, 2026-08-27) — PURE NAMING, the last thing
@@ -11174,17 +11343,17 @@ def assign_page(edition, page_no, cache_dir):
     #    66 ۠ words, no word carries both; the aspect distributions confirm —
     #    round zero h/w <= 1.34, upright >= 1.44, an empty band between);
     #  - the seven U+06DC sites are named BY JOB from rare_places();
-    #  - at 7:69 the seen is mislabeled `shadda` (its own signature,
+    #  - at 7:69 the seen is mislabeled `shaddah` (its own signature,
     #    c63853f10a0002de, sole occurrence) — renamed by the same place rule,
-    #    guarded by the word's text demanding no shadda.
+    #    guarded by the word's text demanding no shaddah.
     if os.environ.get("QSVG_TAX", "1") == "1":
         _rare = rare_places()
         for _wt, _att in assignment:
             if not _wt:
                 continue
-            _txtt = _wt["uthmani"]
-            _zero = ("sifr-mustatil" if "۠" in _txtt else
-                     "sifr-mustadir" if "۟" in _txtt else None)
+            _txtt = _wt["rasm_uthmani"]
+            _zero = ("rectangular_zero" if "۠" in _txtt else
+                     "rounded_zero" if "۟" in _txtt else None)
             _job = (_rare.get((_wt["surah"], _wt["ayah"]))
                     if "ۜ" in _txtt else None)
             if not _zero and not _job:
@@ -11194,24 +11363,24 @@ def assign_page(edition, page_no, cache_dir):
                 mk = e.get("mark")
                 if not mk:
                     continue
-                if _zero and "small-circle" in mk:
-                    e["mark"] = "+".join(_zero if p2 == "small-circle" else p2
+                if _zero and "small_circle" in mk:
+                    e["mark"] = "+".join(_zero if p2 == "small_circle" else p2
                                          for p2 in mk.split("+"))
             if _job:
-                # the sign to rename: a `pause` that no waqf table names —
+                # the sign to rename: a `waqf` that no waqf table names —
                 # the word's true waqf (if any) keeps its data-waqf identity
                 _page_no_t = str(int(os.path.splitext(page.name)[0]
                                      .split("-")[0].lstrip("0") or 0))
                 _wp = waqf_places().get(_page_no_t, {})
                 _cand = [e for e in _els_t
-                         if e.get("mark") == "pause" and not e.get("mkpart")
+                         if e.get("mark") == "waqf" and not e.get("mkpart")
                          and not waqf_types().get(e.get("sig"))
                          and not _wp.get("%.1f,%.1f,%.1f,%.1f"
                                          % (e["x1"], e["y1"], e["x2"], e["y2"]))]
                 if not _cand and "ّ" not in _txtt \
                         and (_wt.get("qpc") or "").count("ّ") == 0:
                     _cand = [e for e in _els_t
-                             if e.get("mark") == "shadda"
+                             if e.get("mark") == "shaddah"
                              and not e.get("mkpart")]
                 if len(_cand) == 1:
                     _cand[0]["mark"] = _job
@@ -11221,19 +11390,19 @@ def assign_page(edition, page_no, cache_dir):
     # ------------------------------------------------------------------
     # Taxonomy phase 2 (Abdullah, 2026-08-27) — NEW ATTRIBUTES, decisions
     # 5 and 6. Pure metadata: nothing changes hands, name, or kind.
-    #  - decision 5: every tanween PAIR (master + its same-name welded twin)
+    #  - decision 5: every tanwin PAIR (master + its same-name welded twin)
     #    gets data-form="stacked|staggered" on the master, derived from the
     #    two strokes' horizontal center offset |dx|. Thresholds and the
-    #    mushaf-wide histogram live at _TAN_STAG (top of file). A dammatan
+    #    mushaf-wide histogram live at _TAN_STAG (top of file). A tanwin_al_damm
     #    drawn as ONE fused glyph has no twin and carries no data-form.
-    #  - decision 6: the muanaqah's two signs pair within their ayah: both
+    #  - decision 6: the waqf_al_muanaqah's two signs pair within their ayah: both
     #    MASTERS carry data-pair="mnq-<surah>-<ayah>-<n>". Three sites in
-    #    this print (2:2 p2, 5:26 p112, 5:41 p114) — quran.com's uthmani
+    #    this print (2:2 p2, 5:26 p112, 5:41 p114) — quran.com's rasm_uthmani
     #    writes three more (2:195, 7:172, 14:9) where the print draws a
     #    jaiz or nothing (faces of the known 203-site waqf disagreement);
     #    waqf_places, built from the ink, is the authority.
     if os.environ.get("QSVG_TAX2", "1") == "1":
-        _TANW = ("fathatan", "kasratan", "dammatan")
+        _TANW = ("tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm")
         _pg2 = str(int(os.path.splitext(page.name)[0].split("-")[0]
                        .lstrip("0") or 0))
         _wp2 = waqf_places().get(_pg2, {})
@@ -11265,14 +11434,14 @@ def assign_page(edition, page_no, cache_dir):
                                 "page": int(_pg2), "s": _w3["surah"],
                                 "a": _w3["ayah"],
                                 "pos": _w3.get("pos"),
-                                "uthmani": _w3.get("uthmani"),
+                                "rasm_uthmani": _w3.get("rasm_uthmani"),
                                 "mark": mk, "ntwin": len(_tw),
                                 "master": [e["x1"], e["y1"],
                                            e["x2"], e["y2"]],
                                 "twin": ([_tw[0]["x1"], _tw[0]["y1"],
                                           _tw[0]["x2"], _tw[0]["y2"]]
                                          if len(_tw) == 1 else None)})
-                    elif mk == "muanaqah":
+                    elif mk == "waqf_al_muanaqah":
                         # the name IS the identity now (set at the MNQ3
                         # weld); the place table only ever covered the
                         # p112/p114 recordings, p2 paired by luck of the
@@ -11289,7 +11458,7 @@ def assign_page(edition, page_no, cache_dir):
 
     # UNNAMED STANDALONE PIECES: the hizb ۞ / sajdah signs' companion
     # contours were emitted as bare kind=mark with no name (169 mushaf-wide,
-    # on the hizb-quarter pages). An unnamed wordless fragment joins the
+    # on the rubu-al-hizb pages). An unnamed wordless fragment joins the
     # standalone sign whose ink it sits beside (same atom, or within 15u of
     # a named sign) as a part — one sign, one mark. Anything that matches no
     # sign stays visible in the UNNAMED review section.
@@ -11297,7 +11466,7 @@ def assign_page(edition, page_no, cache_dir):
     for _wu, _au in assignment:
         for _a in _au:
             for e in _a["els"]:
-                if e.get("mark") in ("hizb", "sajdah-sign", "sajdah-line") \
+                if e.get("mark") in ("hizb", "sajdah_mark", "sajdah_line") \
                         and not e.get("mkpart"):
                     _signs.append(e)
     for _wu, _au in assignment:
@@ -11327,36 +11496,36 @@ def assign_page(edition, page_no, cache_dir):
                     e["mark"] = _tgt["mark"]
                     e["mkpart"] = True
                     _tgt.setdefault("mkmembers", []).append(e)
-    # ROTATED TANWEEN PAIR (Abdullah 2026-08-28, لَـَٔايَٰتࣲ p499/p268): two
-    # adjacent fathas at a word's TOP get welded and named kasratan, while the
-    # word's real kasratan below wears two fatha names — a perfectly
+    # ROTATED TANWIN PAIR (Abdullah 2026-08-28, لَـَٔايَٰتࣲ p499/p268): two
+    # adjacent fathahs at a word's TOP get welded and named tanwin_al_kasr, while the
+    # word's real tanwin_al_kasr below wears two fathah names — a perfectly
     # count-neutral rotation only an eye caught. Position doctrine applied to
-    # PAIRS: a kasratan pair must sit BELOW the word's letters. When a
-    # kasratan-named pair sits clearly ABOVE the word's letter mid-line AND
-    # at least two below-the-letters marks are named fatha AND the budget
-    # wants no fathatan, rotate: unweld the top pair into two fathas, weld
-    # the two lowest below-fathas as the kasratan.
+    # PAIRS: a tanwin_al_kasr pair must sit BELOW the word's letters. When a
+    # tanwin-al-kasr-named pair sits clearly ABOVE the word's letter mid-line AND
+    # at least two below-the-letters marks are named fathah AND the budget
+    # wants no tanwin_al_fath, rotate: unweld the top pair into two fathahs, weld
+    # the two lowest below-fathahs as the tanwin_al_kasr.
     if os.environ.get("QSVG_TANROT", "1") == "1":
         for _wr2, _ar2 in assignment:
             if not _wr2:
                 continue
-            _t2 = _wr2["uthmani"]
+            _t2 = _wr2["rasm_uthmani"]
             if not any(c in _t2 for c in "\u064d\u08f2"):
-                continue           # word owns no kasratan
+                continue           # word owns no tanwin_al_kasr
             if any(c in _t2 for c in "\u064b\u08f0"):
-                continue           # fathatan present: ambiguous, leave
+                continue           # tanwin_al_fath present: ambiguous, leave
             _e2s = [e for a in _ar2 for e in a["els"]]
             _b2s = [e for e in _e2s if e["kind"] == "body"]
             if not _b2s:
                 continue
             _mid2 = (min(b["y1"] for b in _b2s) + max(b["y2"] for b in _b2s)) / 2
-            _pairs = [e for e in _e2s if e.get("mark") == "kasratan"
+            _pairs = [e for e in _e2s if e.get("mark") == "tanwin_al_kasr"
                       and not e.get("mkpart") and e.get("mkmembers")]
             for _p2 in _pairs:
                 _cy2 = (_p2["y1"] + _p2["y2"]) / 2
                 if _cy2 >= _mid2 - 1.0:
                     continue       # pair is not clearly above
-                _low_f = sorted([e for e in _e2s if e.get("mark") == "fatha"
+                _low_f = sorted([e for e in _e2s if e.get("mark") == "fathah"
                                  and not e.get("mkpart")
                                  and (e["y1"] + e["y2"]) / 2 > _mid2],
                                 key=lambda e: -(e["y1"] + e["y2"]))
@@ -11365,31 +11534,31 @@ def assign_page(edition, page_no, cache_dir):
                 if os.environ.get("QSVG_TANDBG"):
                     print("TANROT p? %d:%d:%d %s" % (
                         _wr2["surah"], _wr2["ayah"], _wr2["pos"],
-                        _wr2["uthmani"]), file=sys.stderr)
-                # rotate: top pair -> two fathas
+                        _wr2["rasm_uthmani"]), file=sys.stderr)
+                # rotate: top pair -> two fathahs
                 for _m2 in _p2.get("mkmembers", []):
                     _m2["mkpart"] = False
-                    _m2["mark"] = "fatha"
-                    _m2["lab"] = "fatha"
+                    _m2["mark"] = "fathah"
+                    _m2["lab"] = "fathah"
                 _p2["mkmembers"] = []
-                _p2["mark"] = "fatha"
-                _p2["lab"] = "fatha"
-                _p2.pop("tanform", None)     # no longer a tanween pair
-                # two lowest below-fathas -> the kasratan pair
+                _p2["mark"] = "fathah"
+                _p2["lab"] = "fathah"
+                _p2.pop("tanform", None)     # no longer a tanwin pair
+                # two lowest below-fathahs -> the tanwin_al_kasr pair
                 _ma2, _mb2 = _low_f[0], _low_f[1]
                 _mb2["mkpart"] = True
-                _mb2["mark"] = "kasratan"
-                _ma2["mark"] = "kasratan"
-                _ma2["lab"] = "kasratan"
+                _mb2["mark"] = "tanwin_al_kasr"
+                _ma2["mark"] = "tanwin_al_kasr"
+                _ma2["lab"] = "tanwin_al_kasr"
                 _ma2.setdefault("mkmembers", []).append(_mb2)
                 break
 
     # IQLAB UNIT (Abdullah 2026-08-28): the print draws iqlab as ONE unit —
-    # a haraka + the small م. Late reconciliation: at every print-iqlab word
-    # (ۢ/ۭ in the print text), the م must wear meem-iqlab (his p531 e236 was
-    # unnamed with a CORRECT table label; p577 e122 wore "pause"), and both
+    # a harakah + the small م. Late reconciliation: at every print-iqlab word
+    # (ۢ/ۭ in the print text), the م must wear small_meem (his p531 e236 was
+    # unnamed with a CORRECT table label; p577 e122 wore "waqf"), and both
     # halves carry one data-iqlab pair id. Names stay catalog-true: the
-    # haraka keeps fatha/kasra/damma — recitation changes, ink does not.
+    # harakah keeps fathah/kasrah/dammah — recitation changes, ink does not.
     # IQLAB SIGN BY TABLE IDENTITY (Abdullah 2026-08-28: قَوْمِۭ p93/p186
     # took its own letter م as the sign; زَوْجِۭ p518 took a letter piece
     # while the real ۭ outline sat as body). The rescues choose by geometry;
@@ -11411,7 +11580,7 @@ def assign_page(edition, page_no, cache_dir):
         for _wq, _aq in assignment:
             if not _wq:
                 continue
-            _ptq = _wq.get("qpc") or _wq["uthmani"]
+            _ptq = _wq.get("qpc") or _wq["rasm_uthmani"]
             if not any(c in _ptq for c in "\u06e2\u06ed"):
                 continue
             _elq = [e for a in _aq for e in a["els"]]
@@ -11423,9 +11592,9 @@ def assign_page(edition, page_no, cache_dir):
                 lb, auto = _qlb(e)
                 if auto:
                     continue
-                if lb == "meem-iqlab":
+                if lb == "small_meem":
                     _tabm.append(e)
-                elif lb in ("letter", "letter-hamza", "letter-part")                         and e.get("mark") == "meem-iqlab":
+                elif lb in ("letter", "letter_hamzah", "letter_part")                         and e.get("mark") == "small_meem":
                     _imp.append(e)
             # a letter-labelled impostor yields even when the true sign is
             # not yet identified — a missing sign flags honestly; a letter
@@ -11438,16 +11607,16 @@ def assign_page(edition, page_no, cache_dir):
             if not _tabm:
                 continue
             for e in _tabm:
-                if e.get("mark") != "meem-iqlab":
+                if e.get("mark") != "small_meem":
                     e["kind"] = "mark"
-                    e["mark"] = "meem-iqlab"
-                    e["lab"] = "meem-iqlab"
+                    e["mark"] = "small_meem"
+                    e["lab"] = "small_meem"
             # one sign per ۢ/ۭ: surplus impostors NOT letter-labelled but
             # geometry-named stay only while the table holds fewer than the
     # text wants — with the table sign present, a second named element
             # that the table cannot vouch for yields
             _wantq = sum(_ptq.count(c) for c in "\u06e2\u06ed")
-            _named = [e for e in _elq if e.get("mark") == "meem-iqlab"
+            _named = [e for e in _elq if e.get("mark") == "small_meem"
                       and not e.get("mkpart")]
             if len(_named) > _wantq:
                 for e in sorted(_named, key=lambda x: x not in _tabm):
@@ -11463,58 +11632,58 @@ def assign_page(edition, page_no, cache_dir):
         for _wi, _ai in assignment:
             if not _wi:
                 continue
-            _ptx = _wi.get("qpc") or _wi["uthmani"]
+            _ptx = _wi.get("qpc") or _wi["rasm_uthmani"]
             if not any(c in _ptx for c in "\u06e2\u06ed"):
                 continue
             _eli = [e for a in _ai for e in a["els"]]
-            _meem = [e for e in _eli if e.get("mark") == "meem-iqlab"
+            _meem = [e for e in _eli if e.get("mark") == "small_meem"
                      and not e.get("mkpart")]
             if not _meem:
                 for e in _eli:
                     v = shape_labels().get(e.get("sig") or "")
                     lb = v.get("label") if isinstance(v, dict) else v
-                    if lb == "meem-iqlab" and not e.get("mkpart"):
+                    if lb == "small_meem" and not e.get("mkpart"):
                         e["kind"] = "mark"
-                        e["mark"] = "meem-iqlab"
-                        e["lab"] = "meem-iqlab"
+                        e["mark"] = "small_meem"
+                        e["lab"] = "small_meem"
                         _meem = [e]
                         break
             if not _meem:
                 for e in _eli:
-                    if (e.get("mark") == "pause" and not e.get("mkpart")
+                    if (e.get("mark") == "waqf" and not e.get("mkpart")
                             and (e["x2"] - e["x1"]) <= 6.5
                             and (e["y2"] - e["y1"]) <= 6.5
                             and not _human_letter_label(e)):
-                        e["mark"] = "meem-iqlab"
-                        e["lab"] = "meem-iqlab"
+                        e["mark"] = "small_meem"
+                        e["lab"] = "small_meem"
                         _meem = [e]
                         break
             if not _meem:
                 continue
             _m0 = _meem[0]
-            # NOON iqlab vs TANWEEN iqlab (Abdullah 2026-08-28, 4:73:9): when
+            # NOON iqlab vs TANWIN iqlab (Abdullah 2026-08-28, 4:73:9): when
             # the print writes the م over a BARE ن (the char before ۢ/ۭ is a
-            # letter, not a haraka), no haraka belongs to the unit — a nearby
-            # damma is its own letter's. Pair a haraka ONLY for tanween iqlab.
+            # letter, not a harakah), no harakah belongs to the unit — a nearby
+            # dammah is its own letter's. Pair a harakah ONLY for tanwin iqlab.
             _hset = "\u064b\u064c\u064d\u064e\u064f\u0650\u08f0\u08f1\u08f2"
             _iqi = max(_ptx.find("\u06e2"), _ptx.find("\u06ed"))
-            _tanween_iqlab = _iqi > 0 and _ptx[_iqi - 1] in _hset
-            if not _tanween_iqlab:
+            _tanwin_iqlab = _iqi > 0 and _ptx[_iqi - 1] in _hset
+            if not _tanwin_iqlab:
                 _m0["iqpair"] = "iq-%d-%d-%d" % (_wi["surah"], _wi["ayah"],
                                                  _wi["pos"])
                 continue
             _cxm = (_m0["x1"] + _m0["x2"]) / 2
             _har = [e for e in _eli
-                    if e.get("mark") in ("fatha", "kasra", "damma",
-                                         "fathatan", "kasratan", "dammatan")
+                    if e.get("mark") in ("fathah", "kasrah", "dammah",
+                                         "tanwin_al_fath", "tanwin_al_kasr", "tanwin_al_damm")
                     and not e.get("mkpart")]
             if _har:
-                # the unit's haraka is named by the TEXT (the char before
+                # the unit's harakah is named by the TEXT (the char before
                 # ۭ/ۢ — Abdullah 2026-08-28, p531 كَلَمْحِۭ). Prefer the
                 # nearest stroke ALREADY wearing that name; rename the
                 # nearest slash only when none does (position misread it).
-                _hnm = {"\u064e": "fatha", "\u0650": "kasra",
-                        "\u064f": "damma"}.get(_ptx[_iqi - 1])
+                _hnm = {"\u064e": "fathah", "\u0650": "kasrah",
+                        "\u064f": "dammah"}.get(_ptx[_iqi - 1])
                 _same = [e for e in _har if e.get("mark") == _hnm]
                 _pool0 = _same or _har
                 _h0 = min(_pool0, key=lambda e:
@@ -11523,7 +11692,7 @@ def assign_page(edition, page_no, cache_dir):
                 _m0["iqpair"] = _pid
                 _h0["iqpair"] = _pid
                 if _hnm and not _same \
-                        and _h0.get("mark") in ("fatha", "kasra", "damma"):
+                        and _h0.get("mark") in ("fathah", "kasrah", "dammah"):
                     _h0["mark"] = _hnm
                     _h0["lab"] = _hnm
 
@@ -11531,15 +11700,15 @@ def assign_page(edition, page_no, cache_dir):
     # By now every sig exists and every namer has spoken; where the word's
     # budget disagrees with the names, the human-confirmed shape table gets
     # the final word: (a) a slash-named mark whose outline is a confirmed
-    # hamza becomes the word's missing hamza (p583 إِذْ, 9-flag family);
+    # hamzah becomes the word's missing hamzah (p583 إِذْ, 9-flag family);
     # (b) a BODY whose outline is a confirmed mark shape becomes the word's
-    # missing mark of that family (p418 e295, the labeled fatha demoted to
+    # missing mark of that family (p418 e295, the labeled fathah demoted to
     # letter ink). Budget deficit is the license in both directions — a
     # balanced word is never touched.
     if os.environ.get("QSVG_SHAPEFIRST", "1") == "1":
         _CARR8 = "\u0623\u0625\u0624\u0626\u0654\u0655"
-        _SLASH8 = {"fatha": "\u064e", "kasra": "\u0650",
-                   "fathatan": "\u064b\u08f0", "kasratan": "\u064d\u08f2"}
+        _SLASH8 = {"fathah": "\u064e", "kasrah": "\u0650",
+                   "tanwin_al_fath": "\u064b\u08f0", "tanwin_al_kasr": "\u064d\u08f2"}
         def _tabl(sig):
             v = shape_labels().get(sig or "")
             lb = v.get("label") if isinstance(v, dict) else v
@@ -11551,12 +11720,12 @@ def assign_page(edition, page_no, cache_dir):
         for _w8, _at8 in assignment:
             if not _w8:
                 continue
-            _txt8 = _w8["uthmani"]
+            _txt8 = _w8["rasm_uthmani"]
             _els8 = [e for a in _at8 for e in a["els"]]
             # (e) HUMAN letter labels outrank every namer: an element wearing
             # a mark name whose confirmed table label calls it letter ink is
-            # letter ink (p159: the seated ء named "damma"). The one twin
-            # exception: letter-hamza ink named "hamza" stays — the final ء
+            # letter ink (p159: the seated ء named "dammah"). The one twin
+            # exception: letter_hamzah ink named "hamzah" stays — the final ء
             # reconciliation decides that pair by carrier budget.
             for e in _els8:
                 if e.get("mkpart") or e["kind"] != "mark" or not e.get("mark"):
@@ -11564,16 +11733,16 @@ def assign_page(edition, page_no, cache_dir):
                 lbE, autoE = _tabl(e.get("sig"))
                 if autoE:
                     continue
-                if lbE in ("letter", "letter-part") or                         (lbE == "letter-hamza" and e["mark"] != "hamza"):
+                if lbE in ("letter", "letter_part") or                         (lbE == "letter_hamzah" and e["mark"] != "hamzah"):
                     for m in (e.get("mkmembers") or []):
                         m["mkpart"] = False
                     e["mkmembers"] = []
                     e["kind"] = "body"
                     e["mark"] = None
                     e["lab"] = lbE
-            # (a) missing hamza, held by a slash name on a confirmed-hamza shape
+            # (a) missing hamzah, held by a slash name on a confirmed-hamzah shape
             _wanth = sum(_txt8.count(c) for c in _CARR8) + _txt8.count("\u0621")
-            _haveh = sum(1 for e in _els8 if e.get("mark") == "hamza"
+            _haveh = sum(1 for e in _els8 if e.get("mark") == "hamzah"
                          and not e.get("mkpart"))
             if _haveh < _wanth:
                 for e in _els8:
@@ -11582,39 +11751,39 @@ def assign_page(edition, page_no, cache_dir):
                     if (e["kind"] == "mark" and not e.get("mkpart")
                             and e.get("mark") in _SLASH8):
                         lb, auto = _tabl(e.get("sig"))
-                        if lb == "hamza" and not auto:
-                            e["mark"] = "hamza"
-                            e["lab"] = "hamza"
+                        if lb == "hamzah" and not auto:
+                            e["mark"] = "hamzah"
+                            e["lab"] = "hamzah"
                             _haveh += 1
-            # (c) كُلࣱّ family (item 37, 11 flags): the word's own damma
-            # welded into the dammatan stack as a third curl. When the text
-            # wants a plain damma AND a dammatan, and a dammatan master
-            # carries two welded twins (3 curls), one twin is the damma —
+            # (c) كُلࣱّ family (item 37, 11 flags): the word's own dammah
+            # welded into the tanwin_al_damm stack as a third curl. When the text
+            # wants a plain dammah AND a tanwin_al_damm, and a tanwin_al_damm master
+            # carries two welded twins (3 curls), one twin is the dammah —
             # peel the bottom-most (nearest the letters) back out.
             _wantd = _txt8.count("\u064f")
-            _haved = sum(1 for e in _els8 if e.get("mark") == "damma"
+            _haved = sum(1 for e in _els8 if e.get("mark") == "dammah"
                          and not e.get("mkpart"))
             if _wantd > _haved and any(c in _txt8 for c in "\u064c\u08f1"):
                 for e in _els8:
                     if _haved >= _wantd:
                         break
-                    if (e.get("mark") == "dammatan" and not e.get("mkpart")
+                    if (e.get("mark") == "tanwin_al_damm" and not e.get("mkpart")
                             and len(e.get("mkmembers", [])) >= 2):
                         mem = sorted(e["mkmembers"],
                                      key=lambda m: -(m["y1"] + m["y2"]))[0]
                         e["mkmembers"] = [m for m in e["mkmembers"]
                                           if m is not mem]
                         mem["mkpart"] = False
-                        mem["mark"] = "damma"
-                        mem["lab"] = "damma"
+                        mem["mark"] = "dammah"
+                        mem["lab"] = "dammah"
                         _haved += 1
             # (b) missing slash mark, its ink demoted to body
             for fam, chs in _SLASH8.items():
                 _want = sum(_txt8.count(c) for c in chs)
                 if not _want:
                     continue
-                grp = ("fatha", "fathatan") if fam in ("fatha", "fathatan") \
-                    else ("kasra", "kasratan")
+                grp = ("fathah", "tanwin_al_fath") if fam in ("fathah", "tanwin_al_fath") \
+                    else ("kasrah", "tanwin_al_kasr")
                 _have = sum(1 for e in _els8 if e.get("mark") in grp
                             and not e.get("mkpart"))
                 _wgrp = sum(_txt8.count(c) for f2 in grp
@@ -11627,9 +11796,9 @@ def assign_page(edition, page_no, cache_dir):
                     if e["kind"] == "body" and not e.get("mkpart"):
                         lb, auto = _tabl(e.get("sig"))
                         # the table stores one canonical slash name; the
-                        # drawn position picks fatha vs kasra, so any slash
+                        # drawn position picks fathah vs kasrah, so any slash
                         # label licenses the deficit family
-                        if lb in ("fatha", "kasra", "fathatan", "kasratan"):
+                        if lb in ("fathah", "kasrah", "tanwin_al_fath", "tanwin_al_kasr"):
                             e["kind"] = "mark"
                             e["mark"] = fam
                             e["lab"] = lb
@@ -11638,19 +11807,19 @@ def assign_page(edition, page_no, cache_dir):
     # A BODY wearing a waqf outline is the waqf (Abdullah 2026-08-28,
     # p548 وَٱلشَّهَٰدَةِۖ: its صلے sat as letter ink and the word read as
     # missing its sign — the only body+data-waqf emission in the mushaf).
-    # Budget is the license: only a word still OWED a pause may promote.
+    # Budget is the license: only a word still OWED a waqf may promote.
     if os.environ.get("QSVG_WQBODY", "1") == "1":
         _wqt = waqf_types()
         _WQC2 = "\u06d6\u06d7\u06d8\u06d9\u06da\u06dc"
         for _wb, _ab in assignment:
             if not _wb:
                 continue
-            _ptb = _wb.get("qpc") or _wb["uthmani"]
+            _ptb = _wb.get("qpc") or _wb["rasm_uthmani"]
             _budb = sum(_ptb.count(c) for c in _WQC2)
             if not _budb:
                 continue
             _elb = [e for a in _ab for e in a["els"]]
-            _hvb = sum(1 for e in _elb if e.get("mark") == "pause"
+            _hvb = sum(1 for e in _elb if e.get("mark") == "waqf"
                        and not e.get("mkpart"))
             if _hvb >= _budb:
                 continue
@@ -11666,13 +11835,13 @@ def assign_page(edition, page_no, cache_dir):
                 if _sg in _wqt:
                     e.setdefault("sig", _sg)
                     e["kind"] = "mark"
-                    e["mark"] = "pause"
-                    e["lab"] = "pause"
+                    e["mark"] = "waqf"
+                    e["lab"] = "waqf"
                     _hvb += 1
 
     # A waqf sign OWNS its satellite ink (Abdullah 2026-08-28, p14
     # مَعَهُمْۗ: the قلي's two lower dots auto-labelled as a second
-    # "pause"). When a word holds more pause MASTERS than its text has waqf
+    # "waqf"). When a word holds more waqf MASTERS than its text has waqf
     # characters, and two of them overlap in x within a line's height, the
     # smaller is the sign's own satellite — weld it in.
     if os.environ.get("QSVG_WQOWN", "1") == "1":
@@ -11680,13 +11849,13 @@ def assign_page(edition, page_no, cache_dir):
         for _ww, _aw in assignment:
             if not _ww:
                 continue
-            _ptw = _ww.get("qpc") or _ww["uthmani"]
+            _ptw = _ww.get("qpc") or _ww["rasm_uthmani"]
             _bud = sum(_ptw.count(c) for c in _WQCH)
             _elz = [e for a in _aw for e in a["els"]]
-            _pm = [e for e in _elz if e.get("mark") == "pause"
+            _pm = [e for e in _elz if e.get("mark") == "waqf"
                    and not e.get("mkpart")]
-            # a pause held with NO waqf budget belongs to the PREVIOUS word
-            # (Abdullah 2026-08-28: pause sits at its word's LEFT end —
+            # a waqf held with NO waqf budget belongs to the PREVIOUS word
+            # (Abdullah 2026-08-28: waqf sits at its word's LEFT end —
             # measured p5 of rel-x is 0.82; p239 إِنَّهُۥ held one at
             # -1.33). Return it when the previous word is owed one.
             if not _bud and _pm:
@@ -11695,10 +11864,10 @@ def assign_page(edition, page_no, cache_dir):
                 if _wi5 is not None and _wi5 > 0:
                     _wpv, _apv = assignment[_wi5 - 1]
                     if _wpv:
-                        _ptv = _wpv.get("qpc") or _wpv["uthmani"]
+                        _ptv = _wpv.get("qpc") or _wpv["rasm_uthmani"]
                         _bpv = sum(_ptv.count(c) for c in _WQCH)
                         _hpv = sum(1 for a5 in _apv for x in a5["els"]
-                                   if x.get("mark") == "pause"
+                                   if x.get("mark") == "waqf"
                                    and not x.get("mkpart"))
                         if _bpv > _hpv:
                             for e in list(_pm):
@@ -11733,7 +11902,7 @@ def assign_page(edition, page_no, cache_dir):
     # p129 e910: the mid-pipeline override applied and a later pass undid
     # it). Re-pin every overridden piece to its human-placed owner after all
     # movers; an optional "|mark" suffix on the value also names it, so a
-    # human weld verdict (p85 e298 "|kasra") feeds the pair welds that run
+    # human weld verdict (p85 e298 "|kasrah") feeds the pair welds that run
     # after this point.
     def _enforce_overrides(rename=True):
         _ovp = _ovr_file()
@@ -11815,7 +11984,7 @@ def assign_page(edition, page_no, cache_dir):
                                     _mm9["mkpart"] = False
                                 # and leave any master that held IT — a named
                                 # override is its own mark (p126 بإذني: the
-                                # second kasra was a member of the first, so
+                                # second kasrah was a member of the first, so
                                 # emit merged the pair and it counted once).
                                 for _wq9, _atq9 in assignment:
                                     for _aq9 in _atq9:
@@ -11898,23 +12067,23 @@ def assign_page(edition, page_no, cache_dir):
     # name it — the SITE does. Weld the adjacent bowl into the unit.
     if os.environ.get("QSVG_SMALLNOON", "1") == "1":
         for _wn, _an in assignment:
-            if not _wn or "\u06e8" not in _wn["uthmani"]:
+            if not _wn or "\u06e8" not in _wn["rasm_uthmani"]:
                 continue
             _eln = [e for a in _an for e in a["els"]]
-            _m0 = next((e for e in _eln if e.get("mark") == "small-noon"
+            _m0 = next((e for e in _eln if e.get("mark") == "small_noon"
                         and not e.get("mkpart")), None)
             if _m0 is None:
                 # the dot outline is SHARED with the jeem-sign dot, so no
                 # table label may name it (it leaked onto p68). The SITE
                 # names it: in the one U+06E8 word, the unnamed dot-sized
-                # mark is the small-noon dot.
+                # mark is the small_noon dot.
                 _m0 = next((e for e in _eln if e["kind"] == "mark"
                             and not e.get("mark") and not e.get("mkpart")
                             and (e["x2"] - e["x1"]) < 4.0
                             and (e["y2"] - e["y1"]) < 4.0), None)
                 if _m0 is not None:
-                    _m0["mark"] = "small-noon"
-                    _m0["lab"] = "small-noon"
+                    _m0["mark"] = "small_noon"
+                    _m0["lab"] = "small_noon"
             if _m0 is None or _m0.get("mkmembers"):
                 continue
             _cx0 = (_m0["x1"] + _m0["x2"]) / 2
@@ -11928,7 +12097,7 @@ def assign_page(edition, page_no, cache_dir):
                         default=None)
             if _bowl is not None:
                 _bowl["kind"] = "mark"
-                _bowl["mark"] = "small-noon"
+                _bowl["mark"] = "small_noon"
                 _bowl["mkpart"] = True
                 _bowl.pop("mkmembers", None)
                 _m0.setdefault("mkmembers", []).append(_bowl)
@@ -11937,7 +12106,7 @@ def assign_page(edition, page_no, cache_dir):
     # A table label naming two marks describes ONE piece of artwork carrying
     # both. classify names the halves but leaves them welded, so the member
     # half counts through the master's name only and one mark vanishes from
-    # every budget (p159 وَءَابَآؤُكُم lost the ؤ's damma). Resolve late,
+    # every budget (p159 وَءَابَآؤُكُم lost the ؤ's dammah). Resolve late,
     # after every namer: a welded member whose name differs from its
     # master's is its own mark — free it; a single element whose contours
     # can carry the names splits into one element per name, top-to-bottom.
@@ -12007,20 +12176,20 @@ def assign_page(edition, page_no, cache_dir):
 
     # Final ء reconciliation. The mid-pipeline demote (see "runs late on
     # purpose" above) is no longer last: movers and table-label passes added
-    # since can name a standalone ء "hamza" after it has run. Same rule,
-    # re-applied once nothing renames after it: a hamza mark beyond the
+    # since can name a standalone ء "hamzah" after it has run. Same rule,
+    # re-applied once nothing renames after it: a hamzah mark beyond the
     # word's carrier budget, standing inside the letter band of a word that
     # spells a bare ء, is that letter (p582 شَىْءٍ / p591 وَٱلسَّمَآءِ,
-    # promoted by the r11 table label "hamza" — identical-ink trap #3).
+    # promoted by the r11 table label "hamzah" — identical-ink trap #3).
     if os.environ.get("QSVG_HZA") != "0":
         _CARR10 = "\u0623\u0625\u0624\u0626\u0654\u0655"
         for _w10, _at10 in assignment:
-            if not _w10 or "\u0621" not in _w10["uthmani"]:
+            if not _w10 or "\u0621" not in _w10["rasm_uthmani"]:
                 continue
-            _txt10 = _w10["uthmani"]
+            _txt10 = _w10["rasm_uthmani"]
             _els10 = [e for a in _at10 for e in a["els"]]
             _want10 = sum(_txt10.count(c) for c in _CARR10)
-            _hz10 = [e for e in _els10 if e.get("mark") == "hamza"
+            _hz10 = [e for e in _els10 if e.get("mark") == "hamzah"
                      and not e.get("mkpart")]
             if len(_hz10) <= _want10:
                 continue
@@ -12039,7 +12208,7 @@ def assign_page(edition, page_no, cache_dir):
                 e["mkmembers"] = []
                 e["kind"] = "body"
                 e["mark"] = None
-                e["lab"] = "letter-hamza"
+                e["lab"] = "letter_hamzah"
 
     # Text-driven dot REGROUPING (Abdullah 2026-08-28, p230 شيخا / p33 فبعث
     # family, 527 words). The digitizer draws a ث/ش triangle or a ي/ة pair as
@@ -12057,15 +12226,15 @@ def assign_page(edition, page_no, cache_dir):
         _D1 = "\u0628\u062c\u062e\u0630\u0632\u0636\u0638\u063a\u0641\u0646"
         _D2 = "\u062a\u0642\u0629\u064a"
         _D3 = "\u062b\u0634"
-        _DFAM = {"dot": 1, "two-dots": 2, "three-dots": 3}
-        _DNAME = {1: "dot", 2: "two-dots", 3: "three-dots"}
+        _DFAM = {"dot": 1, "two_dots": 2, "three_dots": 3}
+        _DNAME = {1: "dot", 2: "two_dots", 3: "three_dots"}
         for _wd, _atd in assignment:
             if not _wd:
                 continue
-            _txtd = _wd["uthmani"]
+            _txtd = _wd["rasm_uthmani"]
             _exp = {"dot": sum(_txtd.count(c) for c in _D1),
-                    "two-dots": sum(_txtd.count(c) for c in _D2),
-                    "three-dots": sum(_txtd.count(c) for c in _D3)}
+                    "two_dots": sum(_txtd.count(c) for c in _D2),
+                    "three_dots": sum(_txtd.count(c) for c in _D3)}
             if not any(_exp.values()):
                 continue
             _mast = [e for a in _atd for e in a["els"]
@@ -12078,7 +12247,7 @@ def assign_page(edition, page_no, cache_dir):
             if _ue != _uh:
                 continue        # a unit is missing or surplus — not a regroup
             # deficits must be strictly in BIGGER groups: outlines only weld
-            _defs = [(k, _exp[k] - _nh[k]) for k in ("three-dots", "two-dots")
+            _defs = [(k, _exp[k] - _nh[k]) for k in ("three_dots", "two_dots")
                      if _exp[k] > _nh[k]]
             if any(_exp[k] > _nh[k] for k in ("dot",)):
                 continue        # would need splitting an outline — impossible
@@ -12136,26 +12305,26 @@ def assign_page(edition, page_no, cache_dir):
                     e["mkpart"] = True
                     _hd.setdefault("mkmembers", []).append(e)
 
-    # LATE TANWEEN PAIR REJOIN (Abdullah 2026-08-28: 23 single-stroke
-    # tanween masters mushaf-wide — p535 held five). The mid-pipeline weld
+    # LATE TANWIN PAIR REJOIN (Abdullah 2026-08-28: 23 single-stroke
+    # tanwin masters mushaf-wide — p535 held five). The mid-pipeline weld
     # runs before the movers and the late renames, and either can leave a
-    # master standing alone while its twin sits beside it wearing "fatha"/
-    # "kasra". Two signals to weld: pair geometry (dx<8, dy<7 — the measured
-    # tanween pair envelope) AND the twin must be SURPLUS to its own
+    # master standing alone while its twin sits beside it wearing "fathah"/
+    # "kasrah". Two signals to weld: pair geometry (dx<8, dy<7 — the measured
+    # tanwin pair envelope) AND the twin must be SURPLUS to its own
     # family's budget. Same-name surplus masters weld the same way.
     if os.environ.get("QSVG_TANPAIR", "1") == "1":
-        _TP = {"fathatan": ("\u064b\u08f0", ("fatha",), "\u064e"),
-               "kasratan": ("\u064d\u08f2", ("kasra",), "\u0650"),
-               "dammatan": ("\u064c\u08f1", ("damma",), "\u064f")}
+        _TP = {"tanwin_al_fath": ("\u064b\u08f0", ("fathah",), "\u064e"),
+               "tanwin_al_kasr": ("\u064d\u08f2", ("kasrah",), "\u0650"),
+               "tanwin_al_damm": ("\u064c\u08f1", ("dammah",), "\u064f")}
         for _wt2, _at2 in assignment:
             if not _wt2:
                 continue
-            _txv = _wt2["uthmani"]
+            _txv = _wt2["rasm_uthmani"]
             _elv = [e for a in _at2 for e in a["els"]]
             for _fam, (_tch, _sng, _sch) in _TP.items():
                 _want = sum(_txv.count(c) for c in _tch)
                 if not _want:
-                    # the word has NO budget for this tanween at all — a
+                    # the word has NO budget for this tanwin at all — a
                     # single stroke wearing its name escaped every check
                     # below (p535 مَقْطُوعَةࣲ, the last survivor of the
                     # 19). It is the single vowel; multi-stroke pairs stay
@@ -12214,10 +12383,10 @@ def assign_page(edition, page_no, cache_dir):
                     _tw["mkpart"] = True
                     _tw["mark"] = _fam
                     _m1.setdefault("mkmembers", []).append(_tw)
-                # TWIN RETRIEVAL (Abdullah 2026-08-28: "tanween is always
+                # TWIN RETRIEVAL (Abdullah 2026-08-28: "tanwin is always
                 # at the END of the word — a stroke at the next word's right
                 # edge, mostly outside its ink, is the rest of the previous
-                # word's tanween", the 8eb38c verdict). Gate: the master is
+                # word's tanwin", the 8eb38c verdict). Gate: the master is
                 # single-stroke (budget-proven deficit) AND the candidate in
                 # the FOLLOWING word lies within the measured pair envelope
                 # (dx<8, dy<7). Slash strokes never cross words on position
@@ -12236,15 +12405,15 @@ def assign_page(edition, page_no, cache_dir):
                     if not _wnx:
                         continue
                     _cand9 = None
-                    _SCH9 = {"fatha": "\u064e", "kasra": "\u0650",
-                             "damma": "\u064f"}
+                    _SCH9 = {"fathah": "\u064e", "kasrah": "\u0650",
+                             "dammah": "\u064f"}
                     _nb9 = [x for a9 in _anx for x in a9["els"]
                             if x["kind"] == "body"]
                     _nbr = max((x["x2"] for x in _nb9), default=None)
                     for _a9 in _anx:
                         for e9 in _a9["els"]:
-                            if (e9.get("mark") not in ("fatha", "kasra",
-                                                       "damma")
+                            if (e9.get("mark") not in ("fathah", "kasrah",
+                                                       "dammah")
                                     or e9.get("_ovr")
                                     or e9.get("mkpart")
                                     or abs((e9["x1"] + e9["x2"]) / 2
@@ -12259,7 +12428,7 @@ def assign_page(edition, page_no, cache_dir):
                             # PROOF only: the stroke's hull must lie at
                             # least 3/4 outside the holder's body hull —
                             # surplus alone cannot say WHICH stroke, and a
-                            # first-letter fatha legitimately floats right
+                            # first-letter fathah legitimately floats right
                             # of its word's body start (p77 re-taught the
                             # forbidden-slash-move lesson)
                             _nbl = min((x["x1"] for x in _nb9), default=None)
@@ -12283,8 +12452,8 @@ def assign_page(edition, page_no, cache_dir):
                     e9["lab"] = _fam
                     e9["line"] = _m1.get("line")
                     _m1.setdefault("mkmembers", []).append(e9)
-                # a tanween NAME requires two strokes (Abdullah 2026-08-28,
-                # d7a8b5/c9b82d verdicts: these are single fathas). A master
+                # a tanwin NAME requires two strokes (Abdullah 2026-08-28,
+                # d7a8b5/c9b82d verdicts: these are single fathahs). A master
                 # still standing on one contour with no twin found does not
                 # get to wear the pair's name — it is the single vowel, and
                 # the missing twin flags honestly in the budget audit.
@@ -12297,18 +12466,18 @@ def assign_page(edition, page_no, cache_dir):
                     _mst.remove(_m1)     # the deficit must become VISIBLE
                                          # to the missing-master branch
                 # MISSING MASTER (Abdullah 2026-08-28: p131 رُسُلࣱ held a
-                # fused dammatan outline named "damma"; p585's pair half the
-                # same). When the word is OWED a tanween and no master
+                # fused tanwin_al_damm outline named "dammah"; p585's pair half the
+                # same). When the word is OWED a tanwin and no master
                 # exists: a surplus single with two-plus contours IS the
                 # fused pair — rename it; else two surplus singles in the
                 # pair envelope on the word's end side weld.
                 if len(_mst) < _want:
-                    # a slash pair's twins can be misnamed ACROSS fatha and
-                    # kasra (one stroke, position-named): pool both for the
-                    # slash tanweens (Abdullah's p529 أَمْرࣲ verdict —
-                    # kasra e361 + "fatha" e362 are the kasratan)
-                    if _fam in ("fathatan", "kasratan"):
-                        _pool_nm = ("fatha", "kasra")
+                    # a slash pair's twins can be misnamed ACROSS fathah and
+                    # kasrah (one stroke, position-named): pool both for the
+                    # slash tanwins (Abdullah's p529 أَمْرࣲ verdict —
+                    # kasrah e361 + "fathah" e362 are the tanwin_al_kasr)
+                    if _fam in ("tanwin_al_fath", "tanwin_al_kasr"):
+                        _pool_nm = ("fathah", "kasrah")
                         _ownw = _txv.count("\u064e") + _txv.count("\u0650")
                     else:
                         _pool_nm = (_sng[0],)
@@ -12360,12 +12529,12 @@ def assign_page(edition, page_no, cache_dir):
                                         break
                 # POSITION SWAP (Abdullah 2026-08-28, p208 مُّبِينٌ):
 
-                # kasratan/dammatan end their word — a master welded at the
+                # tanwin_al_kasr/tanwin_al_damm end their word — a master welded at the
                 # word's START while two loose same-family singles stand
                 # interlocked at the END is inverted. Two signals: the
                 # master fails the position law AND a true pair (two
                 # singles within the pair envelope) exists on the end side.
-                if _fam in ("kasratan", "dammatan"):
+                if _fam in ("tanwin_al_kasr", "tanwin_al_damm"):
                     _bx1 = min((b["x1"] for a2_ in _at2
                                 for b in a2_["els"]
                                 if b["kind"] == "body"), default=None)
@@ -12439,7 +12608,7 @@ def assign_page(edition, page_no, cache_dir):
                 _bH = [e for a in _atH for e in a["els"]
                        if e["kind"] == "body" and not e.get("mkpart")]
                 try:
-                    _allow = max(1, len(segment_word(_wH["uthmani"])))
+                    _allow = max(1, len(segment_word(_wH["rasm_uthmani"])))
                 except Exception:
                     continue
                 if len(_bH) <= _allow:
@@ -12464,22 +12633,22 @@ def assign_page(edition, page_no, cache_dir):
             put_in_ligature(_atV, _eB)
 
     # BUDGET RETURN for unambiguous marks (Abdullah 2026-08-28, p431
-    # رَبُّكُمْۖ wearing إِلَّا's hamza): the holder has NO budget for the
+    # رَبُّكُمْۖ wearing إِلَّا's hamzah): the holder has NO budget for the
     # family, a vertically-adjacent word overlapping the ink's x has an
     # unfilled budget — surplus meets deficit and the shape is not a
-    # derived slash/damma, so the move is exact on both sides. The mark
+    # derived slash/dammah, so the move is exact on both sides. The mark
     # returns and re-seats in the right ligature.
     if os.environ.get("QSVG_BUDGETRET", "1") == "1":
-        _URFAM = {"hamza": ("\u0623\u0625\u0624\u0626\u0654\u0655", 1),
-                  "meem-iqlab": ("\u06e2\u06ed", 1),
+        _URFAM = {"hamzah": ("\u0623\u0625\u0624\u0626\u0654\u0655", 1),
+                  "small_meem": ("\u06e2\u06ed", 1),
                   "sukun": ("\u0652\u06e1", 1),
-                  "shadda": ("\u0651", 1),
+                  "shaddah": ("\u0651", 1),
                   "maddah": ("\u0653\u06e4", 1)}
         _widr = [(w, at) for (w, at) in assignment if w]
         for _wH, _atH in _widr:
             _elH = [e for a in _atH for e in a["els"]]
             for _fam9, (_chs9, _) in _URFAM.items():
-                _bud9 = sum((_wH.get("qpc") or _wH["uthmani"]).count(c)
+                _bud9 = sum((_wH.get("qpc") or _wH["rasm_uthmani"]).count(c)
                             for c in _chs9)
                 _held9 = [e for e in _elH if e.get("mark") == _fam9
                           and not e.get("mkpart")]
@@ -12502,7 +12671,7 @@ def assign_page(edition, page_no, cache_dir):
                         if not (_rx1 - 2.0 <= _cxh <= _rx2 + 2.0):
                             continue
                         _bud_r = sum((_wR.get("qpc")
-                                      or _wR["uthmani"]).count(c)
+                                      or _wR["rasm_uthmani"]).count(c)
                                      for c in _chs9)
                         _held_r = sum(1 for a in _atR for e in a["els"]
                                       if e.get("mark") == _fam9
@@ -12513,36 +12682,36 @@ def assign_page(edition, page_no, cache_dir):
                         if _held_r >= _bud_r:
                             # the family is full — but a SLASH-shaped piece
                             # wearing this name may be the receiver's owed
-                            # fatha/kasra (p431: إلا's kasra rode along
-                            # named "hamza"). Ratio test + deficit.
+                            # fathah/kasrah (p431: إلا's kasrah rode along
+                            # named "hamzah"). Ratio test + deficit.
                             _wq9 = _eH["x2"] - _eH["x1"]
                             _hq9 = _eH["y2"] - _eH["y1"] or 0.1
                             if _wq9 / _hq9 < 1.8:
                                 continue
-                            _txR = _wR["uthmani"]
+                            _txR = _wR["rasm_uthmani"]
                             _fb = _txR.count("\u064e")
                             _kb = _txR.count("\u0650")
                             _fh = sum(1 for a in _atR for e in a["els"]
-                                      if e.get("mark") == "fatha"
+                                      if e.get("mark") == "fathah"
                                       and not e.get("mkpart"))
                             _kh = sum(1 for a in _atR for e in a["els"]
-                                      if e.get("mark") == "kasra"
+                                      if e.get("mark") == "kasrah"
                                       and not e.get("mkpart"))
                             _rmid = (_ry1 + _ry2) / 2 if _bR else 0
                             _cyh2 = (_eH["y1"] + _eH["y2"]) / 2
                             _owed = []
                             if _kh < _kb:
-                                _owed.append("kasra")
+                                _owed.append("kasrah")
                             if _fh < _fb:
-                                _owed.append("fatha")
+                                _owed.append("fathah")
                             if len(_owed) == 1:
                                 # unique deficit names the arrival — the
                                 # stroke was drawn displaced, so its
                                 # position cannot testify
                                 _rename_to = _owed[0]
                             elif len(_owed) == 2:
-                                _rename_to = ("kasra" if _cyh2 > _rmid
-                                              else "fatha")
+                                _rename_to = ("kasrah" if _cyh2 > _rmid
+                                              else "fathah")
                             else:
                                 continue
                         # vertical adjacency: receiver band within a line
@@ -12566,10 +12735,10 @@ def assign_page(edition, page_no, cache_dir):
                     _held9.remove(_eH)
 
     # BOUNDARY SLASH RETURN (Abdullah 2026-08-28, the كَانَ picture): a
-    # stroke named "fatha" drawn BELOW its word's letter band at the edge
-    # toward a neighbour is that neighbour's kasra (and symmetrically). The
+    # stroke named "fathah" drawn BELOW its word's letter band at the edge
+    # toward a neighbour is that neighbour's kasrah (and symmetrically). The
     # SLASHX veto guards it: the move is applied ONLY when it makes BOTH
-    # words' plain fatha AND kasra counts exactly match their budgets —
+    # words' plain fathah AND kasrah counts exactly match their budgets —
     # counts can veto, never approve.
     if os.environ.get("QSVG_SLASHRET", "1") == "1":
         _widx = [(i, w, at) for i, (w, at) in enumerate(assignment) if w]
@@ -12579,9 +12748,9 @@ def assign_page(edition, page_no, cache_dir):
                 for e_ in a_["els"]:
                     if e_.get("mkpart"):
                         continue
-                    if e_.get("mark") == "fatha":
+                    if e_.get("mark") == "fathah":
                         f += 1
-                    elif e_.get("mark") == "kasra":
+                    elif e_.get("mark") == "kasrah":
                         k += 1
             return f, k
         for _pi9 in range(len(_widx) - 1):
@@ -12600,32 +12769,32 @@ def assign_page(edition, page_no, cache_dir):
                 _topB = min(e["y1"] for e in _bB)
                 if abs(_topA - _topB) > 12.0:
                     continue
-                _fbA = _wA["uthmani"].count("\u064e")
-                _kbA = _wA["uthmani"].count("\u0650")
-                _fbB = _wB["uthmani"].count("\u064e")
-                _kbB = _wB["uthmani"].count("\u0650")
+                _fbA = _wA["rasm_uthmani"].count("\u064e")
+                _kbA = _wA["rasm_uthmani"].count("\u0650")
+                _fbB = _wB["rasm_uthmani"].count("\u064e")
+                _kbB = _wB["rasm_uthmani"].count("\u0650")
                 _fA, _kA = _scnt(_atA)
                 _fB, _kB = _scnt(_atB)
                 for _aX in _atA:
                     for _eX in list(_aX["els"]):
                         mkX = _eX.get("mark")
-                        if mkX not in ("fatha", "kasra") \
+                        if mkX not in ("fathah", "kasrah") \
                                 or _eX.get("_ovr") \
                                 or _eX.get("mkpart") \
                                 or _eX.get("mkmembers"):
                             continue
                         _cy = (_eX["y1"] + _eX["y2"]) / 2
-                        if mkX == "fatha" and _cy > _botA + 1.0:
-                            _nm = "kasra"
-                        elif mkX == "kasra" and _cy < _topA - 1.0:
-                            _nm = "fatha"
+                        if mkX == "fathah" and _cy > _botA + 1.0:
+                            _nm = "kasrah"
+                        elif mkX == "kasrah" and _cy < _topA - 1.0:
+                            _nm = "fathah"
                         else:
                             continue
                         # the veto: BOTH words exact after the move
-                        _fA2 = _fA - (mkX == "fatha")
-                        _kA2 = _kA - (mkX == "kasra")
-                        _fB2 = _fB + (_nm == "fatha")
-                        _kB2 = _kB + (_nm == "kasra")
+                        _fA2 = _fA - (mkX == "fathah")
+                        _kA2 = _kA - (mkX == "kasrah")
+                        _fB2 = _fB + (_nm == "fathah")
+                        _kB2 = _kB + (_nm == "kasrah")
                         if not (_fA2 == _fbA and _kA2 == _kbA
                                 and _fB2 == _fbB and _kB2 == _kbB):
                             continue
@@ -12636,8 +12805,8 @@ def assign_page(edition, page_no, cache_dir):
                         _fA, _kA = _fA2, _kA2
                         _fB, _kB = _fB2, _kB2
 
-    # INVERTED SLASH PAIR (Abdullah 2026-08-28, e707/e710: a "kasra" at the
-    # TOP of its word with a "fatha" at the BOTTOM — the names are swapped).
+    # INVERTED SLASH PAIR (Abdullah 2026-08-28, e707/e710: a "kasrah" at the
+    # TOP of its word with a "fathah" at the BOTTOM — the names are swapped).
     # Swapping back is COUNT-NEUTRAL: both family budgets keep their exact
     # totals, position law is restored, nothing moves. The only safe
     # automatic slash rename.
@@ -12646,16 +12815,16 @@ def assign_page(edition, page_no, cache_dir):
             if not _ws2:
                 continue
             _el2 = [e for a in _as2 for e in a["els"]]
-            _kas = [e for e in _el2 if e.get("mark") == "kasra"
+            _kas = [e for e in _el2 if e.get("mark") == "kasrah"
                     and not e.get("mkpart")]
-            _fat = [e for e in _el2 if e.get("mark") == "fatha"
+            _fat = [e for e in _el2 if e.get("mark") == "fathah"
                     and not e.get("mkpart")]
-            # the full law: ALL of a word's fathas ride above ALL its
-            # kasras. When the current names violate that order, re-deal
-            # them by height — top N stay fathas, bottom M kasras. Exactly
+            # the full law: ALL of a word's fathahs ride above ALL its
+            # kasrahs. When the current names violate that order, re-deal
+            # them by height — top N stay fathahs, bottom M kasrahs. Exactly
             # count-neutral by construction.
-            _fb0 = _ws2["uthmani"].count("\u064e")
-            _kb0 = _ws2["uthmani"].count("\u0650")
+            _fb0 = _ws2["rasm_uthmani"].count("\u064e")
+            _kb0 = _ws2["rasm_uthmani"].count("\u0650")
             _all0 = _kas + _fat
             if _all0 and len(_all0) == _fb0 + _kb0 \
                     and (len(_fat) != _fb0 or len(_kas) != _kb0
@@ -12663,17 +12832,17 @@ def assign_page(edition, page_no, cache_dir):
                              and any(k["y2"] < f["y1"] - 0.5
                                      for k in _kas for f in _fat))):
                 # total matches the budget but the split or the order is
-                # wrong (p482 إلا: TWO "fathas", zero kasras, budget 1+1)
-                # — deal by height against the BUDGET: top fathas, bottom
-                # kasras. Count-neutral against the text by construction.
+                # wrong (p482 إلا: TWO "fathahs", zero kasrahs, budget 1+1)
+                # — deal by height against the BUDGET: top fathahs, bottom
+                # kasrahs. Count-neutral against the text by construction.
                 _all0.sort(key=lambda e: (e["y1"] + e["y2"]) / 2)
                 for i9, e in enumerate(_all0):
-                    nm = "fatha" if i9 < _fb0 else "kasra"
+                    nm = "fathah" if i9 < _fb0 else "kasrah"
                     e["mark"] = nm
                     e["lab"] = nm
 
     # WELD OVERRIDES — value "s:a:w|weld:<family>" (Abdullah 2026-08-29,
-    # p552 تِجَٰرَةࣲ: "this is a part of the kasratan, should combine with
+    # p552 تِجَٰرَةࣲ: "this is a part of the tanwin_al_kasr, should combine with
     # it"). The pair passes weld by proximity, so a half drawn 20u from its
     # master is out of their reach and gets demoted back to a single vowel
     # instead. This runs AFTER every pair pass — narrowly, touching only
@@ -12766,7 +12935,7 @@ def assign_page(edition, page_no, cache_dir):
             _MDBSTAT["recut"] += 1
             _MDBSTAT["split" if len(_new) > len(_atM) else
                      "merged" if len(_new) < len(_atM) else "same"] += 1
-            _sgM = segment_word(_wM["uthmani"])
+            _sgM = segment_word(_wM["rasm_uthmani"])
             # With the cut taken from the reference, an atom IS a run, so when
             # the rules produce the same number of pieces the alignment is the
             # identity and the width-prior DP has nothing to decide. The DP is
@@ -12799,16 +12968,16 @@ def assign_page(edition, page_no, cache_dir):
     #
     # Two families, and the same two signals settle both: the mark is drawn on
     # ANOTHER group's letters (geometry), and the text says that group wants it
-    # while this one does not (budget). Neither alone is enough — the damma of
+    # while this one does not (budget). Neither alone is enough — the dammah of
     # أُ in أُمَّةࣰ overlaps the مة group and belongs to the alef, so geometry
     # on its own would move it the wrong way; it is not touched because the
-    # alef group is not short of a damma by the audit's overlap test.
+    # alef group is not short of a dammah by the audit's overlap test.
     #
-    #   * small-alef (91 of 184) — the dagger alef after a non-joining ذ/د sits
+    #   * omitted_alif (91 of 184) — the dagger alef after a non-joining ذ/د sits
     #     past the end of its own piece: p37 ذَٰلِكُمْ's alef spans 168.3-170.3
     #     with ذ at 170.8-176.2 and لكم at 143.3-167.4, a 0.5u gap to the piece
     #     that owns it and 0.9u to the one holding it.
-    #   * tanween (87) — the open fathatan/dammatan/kasratan of a final ء or ة
+    #   * tanwin (87) — the open tanwin_al_fath/tanwin_al_damm/tanwin_al_kasr of a final ء or ة
     #     is drawn over the piece BEFORE it: p85 مَآءࣰ, p20 أُمَّةࣰ.
     #
     # Overlap threshold -0.6u is audit_ligatures' own, and the distribution
@@ -12875,7 +13044,7 @@ def assign_page(edition, page_no, cache_dir):
                     _gt["hold"].append(_e)
 
     # Where each ayah ENDS, for binding the medallions by position rather than
-    # by document order (see tag_ayah_markers). In RTL the last word of an ayah
+    # by document order (see tag_ayah_marks). In RTL the last word of an ayah
     # is its leftmost, and the medallion follows it further left on the same
     # line — so the anchor is that word's leftmost body ink at its vertical
     # centre. Taken from the FINAL assignment, after every mover.
@@ -12895,7 +13064,7 @@ def assign_page(edition, page_no, cache_dir):
 
     out_svg = rewrite(page, assignment)
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
-    out_svg = tag_ayah_markers(
+    out_svg = tag_ayah_marks(
         out_svg, polys_all,
         {k: (v[1], v[2]) for k, v in _mk_anchor.items()})
     if os.environ.get("QSVG_PROFILE", "dev") == "production":

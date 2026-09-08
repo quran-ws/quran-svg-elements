@@ -29,7 +29,7 @@ def page(pg):
         els=[e for a in at for e in a["els"]]
         b=[e for e in els if e["kind"]=="body"]
         ln=[e.get("line") for e in b if e.get("line")]
-        seq.append({"k":"%d:%d:%d"%(w["surah"],w["ayah"],w["pos"]),"t":w["uthmani"],
+        seq.append({"k":"%d:%d:%d"%(w["surah"],w["ayah"],w["pos"]),"t":w["rasm_uthmani"],
                     "nb":len(b),"nm":len(els)-len(b),
                     "x":(min(e["x1"] for e in b),max(e["x2"] for e in b)) if b else None,
                     "ln":max(set(ln),key=ln.count) if ln else None})

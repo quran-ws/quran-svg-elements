@@ -83,7 +83,7 @@ def scan(pg):
                     continue
                 # A mark is wide enough that its centre can tip past its own
                 # word's edge while the mark still stands squarely on that
-                # word's last letter -- the kasra under a word-initial lam
+                # word's last letter -- the kasrah under a word-initial lam
                 # does exactly this. Overlap, not the centre, is the test:
                 # ink that touches its holder at all is not foreign to it.
                 cx = (e["x1"] + e["x2"]) / 2
@@ -97,16 +97,16 @@ def scan(pg):
                 # edge, so they sit over whatever follows. When the text says
                 # the word has one, its position is the script's doing and not
                 # a defect -- and moving it would strip the suffix.
-                if e.get("mark") == "small-waw" and "\u06e5" in w["uthmani"]:
+                if e.get("mark") == "small_waw" and "\u06e5" in w["rasm_uthmani"]:
                     continue
-                if e.get("mark") == "small-ya" and "\u06e6" in w["uthmani"]:
+                if e.get("mark") == "small_yaa" and "\u06e6" in w["rasm_uthmani"]:
                     continue
                 owners = [t for t in iv.values() if ov(t) > 0.5]
                 if len(owners) != 1 or owners[0][2] is w:
                     continue
                 other = owners[0][2]
                 # X-OVERLAP IS NOT TERRITORY (Abdullah 2026-08-29, "what are
-                # the issues here, I can't see it"). A damma/dammatan riding
+                # the issues here, I can't see it"). A dammah/tanwin_al_damm riding
                 # on a final أ or ة sits high above the line and overhangs
                 # the next word's x-range while clearing its LETTERS by a
                 # wide margin -- it is over that word's empty air, not its
@@ -136,7 +136,7 @@ def scan(pg):
                 #   +5.6, +6.6, +6.9
                 # An empty band 1.4u wide. Every record left of it has the
                 # mark TOUCHING its own word (own gap 0.0-2.4) -- يُغَيِّرُ's
-                # own two dots, ٱلْعَزِيزُ's own wasla, and one case whose
+                # own two dots, ٱلْعَزِيزُ's own hamzat_al_wasl, and one case whose
                 # "neighbour" is 151u away. Threshold inside the band.
                 def _gap(bx):
                     g = 1e9
@@ -149,7 +149,7 @@ def scan(pg):
                 if _hb and _ob and _gap(_hb) - _gap(_ob) < 0.3:
                     continue
                 rA, rB = ratio(w), ratio(other)
-                nsegA = max(1, len(aw.segment_word(w["uthmani"])))
+                nsegA = max(1, len(aw.segment_word(w["rasm_uthmani"])))
                 defA = nsegA - len(meta[id(w)][1])
                 # Ink can bleed across a word boundary without a whole piece
                 # changing hands, so the width prior -- not the piece count --
@@ -164,7 +164,7 @@ def scan(pg):
                 else:
                     kind = "MARK-STEAL"          # both sound: the mark alone moved
                 flags.append({"page": pg, "line": ln, "kind": kind,
-                              "holder": w["uthmani"], "inside": other["uthmani"],
+                              "holder": w["rasm_uthmani"], "inside": other["rasm_uthmani"],
                               "key": "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]),
                               "mark": e.get("mark"), "x": round(cx, 1),
                               "rA": None if rA is None else round(rA, 2),

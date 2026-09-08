@@ -31,7 +31,7 @@ def page(pg):
         b = [e for e in els if e["kind"] == "body"]
         if not b: continue
         ln = [e.get("line") for e in b if e.get("line")]
-        W.append({"k": "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), "t": w["uthmani"],
+        W.append({"k": "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), "t": w["rasm_uthmani"],
                   "ln": max(set(ln), key=ln.count) if ln else 0, "els": els, "b": b,
                   "y1": min(e["y1"] for e in b), "y2": max(e["y2"] for e in b)})
     # line bands from the body ink of every word on the line

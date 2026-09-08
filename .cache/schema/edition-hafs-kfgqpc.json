@@ -2,1926 +2,1926 @@
  "divisions": {
   "hizb": 60,
   "juz": 30,
-  "rub": 240,
-  "rub_starts": {
+  "rubu_al_hizb": 240,
+  "rubu_al_hizb_starts": {
    "1": {
     "hizb": 1,
     "juz": 1,
     "nisf": 1,
-    "rub": 1,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 1,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "1:1"
    },
    "10": {
     "hizb": 3,
     "juz": 2,
     "nisf": 1,
-    "rub": 10,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 10,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "2:158"
    },
    "100": {
     "hizb": 25,
     "juz": 13,
     "nisf": 2,
-    "rub": 100,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 100,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "13:5"
    },
    "101": {
     "hizb": 26,
     "juz": 13,
     "nisf": 1,
-    "rub": 101,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 101,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "13:19"
    },
    "102": {
     "hizb": 26,
     "juz": 13,
     "nisf": 1,
-    "rub": 102,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 102,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "13:35"
    },
    "103": {
     "hizb": 26,
     "juz": 13,
     "nisf": 2,
-    "rub": 103,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 103,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "14:10"
    },
    "104": {
     "hizb": 26,
     "juz": 13,
     "nisf": 2,
-    "rub": 104,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 104,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "14:28"
    },
    "105": {
     "hizb": 27,
     "juz": 14,
     "nisf": 1,
-    "rub": 105,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 105,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "15:1"
    },
    "106": {
     "hizb": 27,
     "juz": 14,
     "nisf": 1,
-    "rub": 106,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 106,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "15:49"
    },
    "107": {
     "hizb": 27,
     "juz": 14,
     "nisf": 2,
-    "rub": 107,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 107,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "16:1"
    },
    "108": {
     "hizb": 27,
     "juz": 14,
     "nisf": 2,
-    "rub": 108,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 108,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "16:30"
    },
    "109": {
     "hizb": 28,
     "juz": 14,
     "nisf": 1,
-    "rub": 109,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 109,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "16:51"
    },
    "11": {
     "hizb": 3,
     "juz": 2,
     "nisf": 2,
-    "rub": 11,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 11,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "2:177"
    },
    "110": {
     "hizb": 28,
     "juz": 14,
     "nisf": 1,
-    "rub": 110,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 110,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "16:75"
    },
    "111": {
     "hizb": 28,
     "juz": 14,
     "nisf": 2,
-    "rub": 111,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 111,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "16:90"
    },
    "112": {
     "hizb": 28,
     "juz": 14,
     "nisf": 2,
-    "rub": 112,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 112,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "16:111"
    },
    "113": {
     "hizb": 29,
     "juz": 15,
     "nisf": 1,
-    "rub": 113,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 113,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "17:1"
    },
    "114": {
     "hizb": 29,
     "juz": 15,
     "nisf": 1,
-    "rub": 114,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 114,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "17:23"
    },
    "115": {
     "hizb": 29,
     "juz": 15,
     "nisf": 2,
-    "rub": 115,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 115,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "17:50"
    },
    "116": {
     "hizb": 29,
     "juz": 15,
     "nisf": 2,
-    "rub": 116,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 116,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "17:70"
    },
    "117": {
     "hizb": 30,
     "juz": 15,
     "nisf": 1,
-    "rub": 117,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 117,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "17:99"
    },
    "118": {
     "hizb": 30,
     "juz": 15,
     "nisf": 1,
-    "rub": 118,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 118,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "18:17"
    },
    "119": {
     "hizb": 30,
     "juz": 15,
     "nisf": 2,
-    "rub": 119,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 119,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "18:32"
    },
    "12": {
     "hizb": 3,
     "juz": 2,
     "nisf": 2,
-    "rub": 12,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 12,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "2:189"
    },
    "120": {
     "hizb": 30,
     "juz": 15,
     "nisf": 2,
-    "rub": 120,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 120,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "18:51"
    },
    "121": {
     "hizb": 31,
     "juz": 16,
     "nisf": 1,
-    "rub": 121,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 121,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "18:75"
    },
    "122": {
     "hizb": 31,
     "juz": 16,
     "nisf": 1,
-    "rub": 122,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 122,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "18:99"
    },
    "123": {
     "hizb": 31,
     "juz": 16,
     "nisf": 2,
-    "rub": 123,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 123,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "19:22"
    },
    "124": {
     "hizb": 31,
     "juz": 16,
     "nisf": 2,
-    "rub": 124,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 124,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "19:59"
    },
    "125": {
     "hizb": 32,
     "juz": 16,
     "nisf": 1,
-    "rub": 125,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 125,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "20:1"
    },
    "126": {
     "hizb": 32,
     "juz": 16,
     "nisf": 1,
-    "rub": 126,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 126,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "20:55"
    },
    "127": {
     "hizb": 32,
     "juz": 16,
     "nisf": 2,
-    "rub": 127,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 127,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "20:83"
    },
    "128": {
     "hizb": 32,
     "juz": 16,
     "nisf": 2,
-    "rub": 128,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 128,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "20:111"
    },
    "129": {
     "hizb": 33,
     "juz": 17,
     "nisf": 1,
-    "rub": 129,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 129,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "21:1"
    },
    "13": {
     "hizb": 4,
     "juz": 2,
     "nisf": 1,
-    "rub": 13,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 13,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "2:203"
    },
    "130": {
     "hizb": 33,
     "juz": 17,
     "nisf": 1,
-    "rub": 130,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 130,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "21:29"
    },
    "131": {
     "hizb": 33,
     "juz": 17,
     "nisf": 2,
-    "rub": 131,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 131,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "21:51"
    },
    "132": {
     "hizb": 33,
     "juz": 17,
     "nisf": 2,
-    "rub": 132,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 132,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "21:83"
    },
    "133": {
     "hizb": 34,
     "juz": 17,
     "nisf": 1,
-    "rub": 133,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 133,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "22:1"
    },
    "134": {
     "hizb": 34,
     "juz": 17,
     "nisf": 1,
-    "rub": 134,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 134,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "22:19"
    },
    "135": {
     "hizb": 34,
     "juz": 17,
     "nisf": 2,
-    "rub": 135,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 135,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "22:38"
    },
    "136": {
     "hizb": 34,
     "juz": 17,
     "nisf": 2,
-    "rub": 136,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 136,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "22:60"
    },
    "137": {
     "hizb": 35,
     "juz": 18,
     "nisf": 1,
-    "rub": 137,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 137,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "23:1"
    },
    "138": {
     "hizb": 35,
     "juz": 18,
     "nisf": 1,
-    "rub": 138,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 138,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "23:36"
    },
    "139": {
     "hizb": 35,
     "juz": 18,
     "nisf": 2,
-    "rub": 139,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 139,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "23:75"
    },
    "14": {
     "hizb": 4,
     "juz": 2,
     "nisf": 1,
-    "rub": 14,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 14,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "2:219"
    },
    "140": {
     "hizb": 35,
     "juz": 18,
     "nisf": 2,
-    "rub": 140,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 140,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "24:1"
    },
    "141": {
     "hizb": 36,
     "juz": 18,
     "nisf": 1,
-    "rub": 141,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 141,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "24:21"
    },
    "142": {
     "hizb": 36,
     "juz": 18,
     "nisf": 1,
-    "rub": 142,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 142,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "24:35"
    },
    "143": {
     "hizb": 36,
     "juz": 18,
     "nisf": 2,
-    "rub": 143,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 143,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "24:53"
    },
    "144": {
     "hizb": 36,
     "juz": 18,
     "nisf": 2,
-    "rub": 144,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 144,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "25:1"
    },
    "145": {
     "hizb": 37,
     "juz": 19,
     "nisf": 1,
-    "rub": 145,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 145,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "25:21"
    },
    "146": {
     "hizb": 37,
     "juz": 19,
     "nisf": 1,
-    "rub": 146,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 146,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "25:53"
    },
    "147": {
     "hizb": 37,
     "juz": 19,
     "nisf": 2,
-    "rub": 147,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 147,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "26:1"
    },
    "148": {
     "hizb": 37,
     "juz": 19,
     "nisf": 2,
-    "rub": 148,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 148,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "26:52"
    },
    "149": {
     "hizb": 38,
     "juz": 19,
     "nisf": 1,
-    "rub": 149,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 149,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "26:111"
    },
    "15": {
     "hizb": 4,
     "juz": 2,
     "nisf": 2,
-    "rub": 15,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 15,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "2:233"
    },
    "150": {
     "hizb": 38,
     "juz": 19,
     "nisf": 1,
-    "rub": 150,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 150,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "26:181"
    },
    "151": {
     "hizb": 38,
     "juz": 19,
     "nisf": 2,
-    "rub": 151,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 151,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "27:1"
    },
    "152": {
     "hizb": 38,
     "juz": 19,
     "nisf": 2,
-    "rub": 152,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 152,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "27:27"
    },
    "153": {
     "hizb": 39,
     "juz": 20,
     "nisf": 1,
-    "rub": 153,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 153,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "27:56"
    },
    "154": {
     "hizb": 39,
     "juz": 20,
     "nisf": 1,
-    "rub": 154,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 154,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "27:82"
    },
    "155": {
     "hizb": 39,
     "juz": 20,
     "nisf": 2,
-    "rub": 155,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 155,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "28:12"
    },
    "156": {
     "hizb": 39,
     "juz": 20,
     "nisf": 2,
-    "rub": 156,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 156,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "28:29"
    },
    "157": {
     "hizb": 40,
     "juz": 20,
     "nisf": 1,
-    "rub": 157,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 157,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "28:51"
    },
    "158": {
     "hizb": 40,
     "juz": 20,
     "nisf": 1,
-    "rub": 158,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 158,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "28:76"
    },
    "159": {
     "hizb": 40,
     "juz": 20,
     "nisf": 2,
-    "rub": 159,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 159,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "29:1"
    },
    "16": {
     "hizb": 4,
     "juz": 2,
     "nisf": 2,
-    "rub": 16,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 16,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "2:243"
    },
    "160": {
     "hizb": 40,
     "juz": 20,
     "nisf": 2,
-    "rub": 160,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 160,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "29:26"
    },
    "161": {
     "hizb": 41,
     "juz": 21,
     "nisf": 1,
-    "rub": 161,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 161,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "29:46"
    },
    "162": {
     "hizb": 41,
     "juz": 21,
     "nisf": 1,
-    "rub": 162,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 162,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "30:1"
    },
    "163": {
     "hizb": 41,
     "juz": 21,
     "nisf": 2,
-    "rub": 163,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 163,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "30:31"
    },
    "164": {
     "hizb": 41,
     "juz": 21,
     "nisf": 2,
-    "rub": 164,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 164,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "30:54"
    },
    "165": {
     "hizb": 42,
     "juz": 21,
     "nisf": 1,
-    "rub": 165,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 165,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "31:22"
    },
    "166": {
     "hizb": 42,
     "juz": 21,
     "nisf": 1,
-    "rub": 166,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 166,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "32:11"
    },
    "167": {
     "hizb": 42,
     "juz": 21,
     "nisf": 2,
-    "rub": 167,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 167,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "33:1"
    },
    "168": {
     "hizb": 42,
     "juz": 21,
     "nisf": 2,
-    "rub": 168,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 168,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "33:18"
    },
    "169": {
     "hizb": 43,
     "juz": 22,
     "nisf": 1,
-    "rub": 169,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 169,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "33:31"
    },
    "17": {
     "hizb": 5,
     "juz": 3,
     "nisf": 1,
-    "rub": 17,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 17,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "2:253"
    },
    "170": {
     "hizb": 43,
     "juz": 22,
     "nisf": 1,
-    "rub": 170,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 170,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "33:51"
    },
    "171": {
     "hizb": 43,
     "juz": 22,
     "nisf": 2,
-    "rub": 171,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 171,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "33:60"
    },
    "172": {
     "hizb": 43,
     "juz": 22,
     "nisf": 2,
-    "rub": 172,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 172,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "34:10"
    },
    "173": {
     "hizb": 44,
     "juz": 22,
     "nisf": 1,
-    "rub": 173,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 173,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "34:24"
    },
    "174": {
     "hizb": 44,
     "juz": 22,
     "nisf": 1,
-    "rub": 174,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 174,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "34:46"
    },
    "175": {
     "hizb": 44,
     "juz": 22,
     "nisf": 2,
-    "rub": 175,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 175,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "35:15"
    },
    "176": {
     "hizb": 44,
     "juz": 22,
     "nisf": 2,
-    "rub": 176,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 176,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "35:41"
    },
    "177": {
     "hizb": 45,
     "juz": 23,
     "nisf": 1,
-    "rub": 177,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 177,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "36:28"
    },
    "178": {
     "hizb": 45,
     "juz": 23,
     "nisf": 1,
-    "rub": 178,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 178,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "36:60"
    },
    "179": {
     "hizb": 45,
     "juz": 23,
     "nisf": 2,
-    "rub": 179,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 179,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "37:22"
    },
    "18": {
     "hizb": 5,
     "juz": 3,
     "nisf": 1,
-    "rub": 18,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 18,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "2:263"
    },
    "180": {
     "hizb": 45,
     "juz": 23,
     "nisf": 2,
-    "rub": 180,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 180,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "37:83"
    },
    "181": {
     "hizb": 46,
     "juz": 23,
     "nisf": 1,
-    "rub": 181,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 181,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "37:145"
    },
    "182": {
     "hizb": 46,
     "juz": 23,
     "nisf": 1,
-    "rub": 182,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 182,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "38:21"
    },
    "183": {
     "hizb": 46,
     "juz": 23,
     "nisf": 2,
-    "rub": 183,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 183,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "38:52"
    },
    "184": {
     "hizb": 46,
     "juz": 23,
     "nisf": 2,
-    "rub": 184,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 184,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "39:8"
    },
    "185": {
     "hizb": 47,
     "juz": 24,
     "nisf": 1,
-    "rub": 185,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 185,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "39:32"
    },
    "186": {
     "hizb": 47,
     "juz": 24,
     "nisf": 1,
-    "rub": 186,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 186,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "39:53"
    },
    "187": {
     "hizb": 47,
     "juz": 24,
     "nisf": 2,
-    "rub": 187,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 187,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "40:1"
    },
    "188": {
     "hizb": 47,
     "juz": 24,
     "nisf": 2,
-    "rub": 188,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 188,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "40:21"
    },
    "189": {
     "hizb": 48,
     "juz": 24,
     "nisf": 1,
-    "rub": 189,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 189,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "40:41"
    },
    "19": {
     "hizb": 5,
     "juz": 3,
     "nisf": 2,
-    "rub": 19,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 19,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "2:272"
    },
    "190": {
     "hizb": 48,
     "juz": 24,
     "nisf": 1,
-    "rub": 190,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 190,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "40:66"
    },
    "191": {
     "hizb": 48,
     "juz": 24,
     "nisf": 2,
-    "rub": 191,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 191,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "41:9"
    },
    "192": {
     "hizb": 48,
     "juz": 24,
     "nisf": 2,
-    "rub": 192,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 192,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "41:25"
    },
    "193": {
     "hizb": 49,
     "juz": 25,
     "nisf": 1,
-    "rub": 193,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 193,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "41:47"
    },
    "194": {
     "hizb": 49,
     "juz": 25,
     "nisf": 1,
-    "rub": 194,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 194,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "42:13"
    },
    "195": {
     "hizb": 49,
     "juz": 25,
     "nisf": 2,
-    "rub": 195,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 195,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "42:27"
    },
    "196": {
     "hizb": 49,
     "juz": 25,
     "nisf": 2,
-    "rub": 196,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 196,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "42:51"
    },
    "197": {
     "hizb": 50,
     "juz": 25,
     "nisf": 1,
-    "rub": 197,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 197,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "43:24"
    },
    "198": {
     "hizb": 50,
     "juz": 25,
     "nisf": 1,
-    "rub": 198,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 198,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "43:57"
    },
    "199": {
     "hizb": 50,
     "juz": 25,
     "nisf": 2,
-    "rub": 199,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 199,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "44:17"
    },
    "2": {
     "hizb": 1,
     "juz": 1,
     "nisf": 1,
-    "rub": 2,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 2,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "2:26"
    },
    "20": {
     "hizb": 5,
     "juz": 3,
     "nisf": 2,
-    "rub": 20,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 20,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "2:283"
    },
    "200": {
     "hizb": 50,
     "juz": 25,
     "nisf": 2,
-    "rub": 200,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 200,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "45:12"
    },
    "201": {
     "hizb": 51,
     "juz": 26,
     "nisf": 1,
-    "rub": 201,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 201,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "46:1"
    },
    "202": {
     "hizb": 51,
     "juz": 26,
     "nisf": 1,
-    "rub": 202,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 202,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "46:21"
    },
    "203": {
     "hizb": 51,
     "juz": 26,
     "nisf": 2,
-    "rub": 203,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 203,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "47:10"
    },
    "204": {
     "hizb": 51,
     "juz": 26,
     "nisf": 2,
-    "rub": 204,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 204,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "47:33"
    },
    "205": {
     "hizb": 52,
     "juz": 26,
     "nisf": 1,
-    "rub": 205,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 205,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "48:18"
    },
    "206": {
     "hizb": 52,
     "juz": 26,
     "nisf": 1,
-    "rub": 206,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 206,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "49:1"
    },
    "207": {
     "hizb": 52,
     "juz": 26,
     "nisf": 2,
-    "rub": 207,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 207,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "49:14"
    },
    "208": {
     "hizb": 52,
     "juz": 26,
     "nisf": 2,
-    "rub": 208,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 208,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "50:27"
    },
    "209": {
     "hizb": 53,
     "juz": 27,
     "nisf": 1,
-    "rub": 209,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 209,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "51:31"
    },
    "21": {
     "hizb": 6,
     "juz": 3,
     "nisf": 1,
-    "rub": 21,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 21,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "3:15"
    },
    "210": {
     "hizb": 53,
     "juz": 27,
     "nisf": 1,
-    "rub": 210,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 210,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "52:24"
    },
    "211": {
     "hizb": 53,
     "juz": 27,
     "nisf": 2,
-    "rub": 211,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 211,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "53:26"
    },
    "212": {
     "hizb": 53,
     "juz": 27,
     "nisf": 2,
-    "rub": 212,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 212,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "54:9"
    },
    "213": {
     "hizb": 54,
     "juz": 27,
     "nisf": 1,
-    "rub": 213,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 213,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "55:1"
    },
    "214": {
     "hizb": 54,
     "juz": 27,
     "nisf": 1,
-    "rub": 214,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 214,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "56:1"
    },
    "215": {
     "hizb": 54,
     "juz": 27,
     "nisf": 2,
-    "rub": 215,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 215,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "56:75"
    },
    "216": {
     "hizb": 54,
     "juz": 27,
     "nisf": 2,
-    "rub": 216,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 216,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "57:16"
    },
    "217": {
     "hizb": 55,
     "juz": 28,
     "nisf": 1,
-    "rub": 217,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 217,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "58:1"
    },
    "218": {
     "hizb": 55,
     "juz": 28,
     "nisf": 1,
-    "rub": 218,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 218,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "58:14"
    },
    "219": {
     "hizb": 55,
     "juz": 28,
     "nisf": 2,
-    "rub": 219,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 219,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "59:11"
    },
    "22": {
     "hizb": 6,
     "juz": 3,
     "nisf": 1,
-    "rub": 22,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 22,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "3:33"
    },
    "220": {
     "hizb": 55,
     "juz": 28,
     "nisf": 2,
-    "rub": 220,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 220,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "60:7"
    },
    "221": {
     "hizb": 56,
     "juz": 28,
     "nisf": 1,
-    "rub": 221,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 221,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "62:1"
    },
    "222": {
     "hizb": 56,
     "juz": 28,
     "nisf": 1,
-    "rub": 222,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 222,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "63:4"
    },
    "223": {
     "hizb": 56,
     "juz": 28,
     "nisf": 2,
-    "rub": 223,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 223,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "65:1"
    },
    "224": {
     "hizb": 56,
     "juz": 28,
     "nisf": 2,
-    "rub": 224,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 224,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "66:1"
    },
    "225": {
     "hizb": 57,
     "juz": 29,
     "nisf": 1,
-    "rub": 225,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 225,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "67:1"
    },
    "226": {
     "hizb": 57,
     "juz": 29,
     "nisf": 1,
-    "rub": 226,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 226,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "68:1"
    },
    "227": {
     "hizb": 57,
     "juz": 29,
     "nisf": 2,
-    "rub": 227,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 227,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "69:1"
    },
    "228": {
     "hizb": 57,
     "juz": 29,
     "nisf": 2,
-    "rub": 228,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 228,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "70:19"
    },
    "229": {
     "hizb": 58,
     "juz": 29,
     "nisf": 1,
-    "rub": 229,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 229,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "72:1"
    },
    "23": {
     "hizb": 6,
     "juz": 3,
     "nisf": 2,
-    "rub": 23,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 23,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "3:52"
    },
    "230": {
     "hizb": 58,
     "juz": 29,
     "nisf": 1,
-    "rub": 230,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 230,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "73:20"
    },
    "231": {
     "hizb": 58,
     "juz": 29,
     "nisf": 2,
-    "rub": 231,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 231,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "75:1"
    },
    "232": {
     "hizb": 58,
     "juz": 29,
     "nisf": 2,
-    "rub": 232,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 232,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "76:19"
    },
    "233": {
     "hizb": 59,
     "juz": 30,
     "nisf": 1,
-    "rub": 233,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 233,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "78:1"
    },
    "234": {
     "hizb": 59,
     "juz": 30,
     "nisf": 1,
-    "rub": 234,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 234,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "80:1"
    },
    "235": {
     "hizb": 59,
     "juz": 30,
     "nisf": 2,
-    "rub": 235,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 235,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "82:1"
    },
    "236": {
     "hizb": 59,
     "juz": 30,
     "nisf": 2,
-    "rub": 236,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 236,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "84:1"
    },
    "237": {
     "hizb": 60,
     "juz": 30,
     "nisf": 1,
-    "rub": 237,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 237,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "87:1"
    },
    "238": {
     "hizb": 60,
     "juz": 30,
     "nisf": 1,
-    "rub": 238,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 238,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "90:1"
    },
    "239": {
     "hizb": 60,
     "juz": 30,
     "nisf": 2,
-    "rub": 239,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 239,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "94:1"
    },
    "24": {
     "hizb": 6,
     "juz": 3,
     "nisf": 2,
-    "rub": 24,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 24,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "3:75"
    },
    "240": {
     "hizb": 60,
     "juz": 30,
     "nisf": 2,
-    "rub": 240,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 240,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "100:9"
    },
    "25": {
     "hizb": 7,
     "juz": 4,
     "nisf": 1,
-    "rub": 25,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 25,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "3:93"
    },
    "26": {
     "hizb": 7,
     "juz": 4,
     "nisf": 1,
-    "rub": 26,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 26,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "3:113"
    },
    "27": {
     "hizb": 7,
     "juz": 4,
     "nisf": 2,
-    "rub": 27,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 27,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "3:133"
    },
    "28": {
     "hizb": 7,
     "juz": 4,
     "nisf": 2,
-    "rub": 28,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 28,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "3:153"
    },
    "29": {
     "hizb": 8,
     "juz": 4,
     "nisf": 1,
-    "rub": 29,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 29,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "3:171"
    },
    "3": {
     "hizb": 1,
     "juz": 1,
     "nisf": 2,
-    "rub": 3,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 3,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "2:44"
    },
    "30": {
     "hizb": 8,
     "juz": 4,
     "nisf": 1,
-    "rub": 30,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 30,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "3:186"
    },
    "31": {
     "hizb": 8,
     "juz": 4,
     "nisf": 2,
-    "rub": 31,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 31,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "4:1"
    },
    "32": {
     "hizb": 8,
     "juz": 4,
     "nisf": 2,
-    "rub": 32,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 32,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "4:12"
    },
    "33": {
     "hizb": 9,
     "juz": 5,
     "nisf": 1,
-    "rub": 33,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 33,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "4:24"
    },
    "34": {
     "hizb": 9,
     "juz": 5,
     "nisf": 1,
-    "rub": 34,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 34,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "4:36"
    },
    "35": {
     "hizb": 9,
     "juz": 5,
     "nisf": 2,
-    "rub": 35,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 35,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "4:58"
    },
    "36": {
     "hizb": 9,
     "juz": 5,
     "nisf": 2,
-    "rub": 36,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 36,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "4:74"
    },
    "37": {
     "hizb": 10,
     "juz": 5,
     "nisf": 1,
-    "rub": 37,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 37,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "4:88"
    },
    "38": {
     "hizb": 10,
     "juz": 5,
     "nisf": 1,
-    "rub": 38,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 38,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "4:100"
    },
    "39": {
     "hizb": 10,
     "juz": 5,
     "nisf": 2,
-    "rub": 39,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 39,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "4:114"
    },
    "4": {
     "hizb": 1,
     "juz": 1,
     "nisf": 2,
-    "rub": 4,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 4,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "2:60"
    },
    "40": {
     "hizb": 10,
     "juz": 5,
     "nisf": 2,
-    "rub": 40,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 40,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "4:135"
    },
    "41": {
     "hizb": 11,
     "juz": 6,
     "nisf": 1,
-    "rub": 41,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 41,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "4:148"
    },
    "42": {
     "hizb": 11,
     "juz": 6,
     "nisf": 1,
-    "rub": 42,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 42,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "4:163"
    },
    "43": {
     "hizb": 11,
     "juz": 6,
     "nisf": 2,
-    "rub": 43,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 43,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "5:1"
    },
    "44": {
     "hizb": 11,
     "juz": 6,
     "nisf": 2,
-    "rub": 44,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 44,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "5:12"
    },
    "45": {
     "hizb": 12,
     "juz": 6,
     "nisf": 1,
-    "rub": 45,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 45,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "5:27"
    },
    "46": {
     "hizb": 12,
     "juz": 6,
     "nisf": 1,
-    "rub": 46,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 46,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "5:41"
    },
    "47": {
     "hizb": 12,
     "juz": 6,
     "nisf": 2,
-    "rub": 47,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 47,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "5:51"
    },
    "48": {
     "hizb": 12,
     "juz": 6,
     "nisf": 2,
-    "rub": 48,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 48,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "5:67"
    },
    "49": {
     "hizb": 13,
     "juz": 7,
     "nisf": 1,
-    "rub": 49,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 49,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "5:82"
    },
    "5": {
     "hizb": 2,
     "juz": 1,
     "nisf": 1,
-    "rub": 5,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 5,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "2:75"
    },
    "50": {
     "hizb": 13,
     "juz": 7,
     "nisf": 1,
-    "rub": 50,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 50,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "5:97"
    },
    "51": {
     "hizb": 13,
     "juz": 7,
     "nisf": 2,
-    "rub": 51,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 51,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "5:109"
    },
    "52": {
     "hizb": 13,
     "juz": 7,
     "nisf": 2,
-    "rub": 52,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 52,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "6:13"
    },
    "53": {
     "hizb": 14,
     "juz": 7,
     "nisf": 1,
-    "rub": 53,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 53,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "6:36"
    },
    "54": {
     "hizb": 14,
     "juz": 7,
     "nisf": 1,
-    "rub": 54,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 54,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "6:59"
    },
    "55": {
     "hizb": 14,
     "juz": 7,
     "nisf": 2,
-    "rub": 55,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 55,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "6:74"
    },
    "56": {
     "hizb": 14,
     "juz": 7,
     "nisf": 2,
-    "rub": 56,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 56,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "6:95"
    },
    "57": {
     "hizb": 15,
     "juz": 8,
     "nisf": 1,
-    "rub": 57,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 57,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "6:111"
    },
    "58": {
     "hizb": 15,
     "juz": 8,
     "nisf": 1,
-    "rub": 58,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 58,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "6:127"
    },
    "59": {
     "hizb": 15,
     "juz": 8,
     "nisf": 2,
-    "rub": 59,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 59,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "6:141"
    },
    "6": {
     "hizb": 2,
     "juz": 1,
     "nisf": 1,
-    "rub": 6,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 6,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "2:92"
    },
    "60": {
     "hizb": 15,
     "juz": 8,
     "nisf": 2,
-    "rub": 60,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 60,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "6:151"
    },
    "61": {
     "hizb": 16,
     "juz": 8,
     "nisf": 1,
-    "rub": 61,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 61,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "7:1"
    },
    "62": {
     "hizb": 16,
     "juz": 8,
     "nisf": 1,
-    "rub": 62,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 62,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "7:31"
    },
    "63": {
     "hizb": 16,
     "juz": 8,
     "nisf": 2,
-    "rub": 63,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 63,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "7:47"
    },
    "64": {
     "hizb": 16,
     "juz": 8,
     "nisf": 2,
-    "rub": 64,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 64,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "7:65"
    },
    "65": {
     "hizb": 17,
     "juz": 9,
     "nisf": 1,
-    "rub": 65,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 65,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "7:88"
    },
    "66": {
     "hizb": 17,
     "juz": 9,
     "nisf": 1,
-    "rub": 66,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 66,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "7:117"
    },
    "67": {
     "hizb": 17,
     "juz": 9,
     "nisf": 2,
-    "rub": 67,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 67,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "7:142"
    },
    "68": {
     "hizb": 17,
     "juz": 9,
     "nisf": 2,
-    "rub": 68,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 68,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "7:156"
    },
    "69": {
     "hizb": 18,
     "juz": 9,
     "nisf": 1,
-    "rub": 69,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 69,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "7:171"
    },
    "7": {
     "hizb": 2,
     "juz": 1,
     "nisf": 2,
-    "rub": 7,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 7,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "2:106"
    },
    "70": {
     "hizb": 18,
     "juz": 9,
     "nisf": 1,
-    "rub": 70,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 70,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "7:189"
    },
    "71": {
     "hizb": 18,
     "juz": 9,
     "nisf": 2,
-    "rub": 71,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 71,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "8:1"
    },
    "72": {
     "hizb": 18,
     "juz": 9,
     "nisf": 2,
-    "rub": 72,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 72,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "8:22"
    },
    "73": {
     "hizb": 19,
     "juz": 10,
     "nisf": 1,
-    "rub": 73,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 73,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "8:41"
    },
    "74": {
     "hizb": 19,
     "juz": 10,
     "nisf": 1,
-    "rub": 74,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 74,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "8:61"
    },
    "75": {
     "hizb": 19,
     "juz": 10,
     "nisf": 2,
-    "rub": 75,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 75,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "9:1"
    },
    "76": {
     "hizb": 19,
     "juz": 10,
     "nisf": 2,
-    "rub": 76,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 76,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "9:19"
    },
    "77": {
     "hizb": 20,
     "juz": 10,
     "nisf": 1,
-    "rub": 77,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 77,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "9:34"
    },
    "78": {
     "hizb": 20,
     "juz": 10,
     "nisf": 1,
-    "rub": 78,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 78,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "9:46"
    },
    "79": {
     "hizb": 20,
     "juz": 10,
     "nisf": 2,
-    "rub": 79,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 79,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "9:60"
    },
    "8": {
     "hizb": 2,
     "juz": 1,
     "nisf": 2,
-    "rub": 8,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 8,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "2:124"
    },
    "80": {
     "hizb": 20,
     "juz": 10,
     "nisf": 2,
-    "rub": 80,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 80,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "9:75"
    },
    "81": {
     "hizb": 21,
     "juz": 11,
     "nisf": 1,
-    "rub": 81,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 81,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "9:93"
    },
    "82": {
     "hizb": 21,
     "juz": 11,
     "nisf": 1,
-    "rub": 82,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 82,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "9:111"
    },
    "83": {
     "hizb": 21,
     "juz": 11,
     "nisf": 2,
-    "rub": 83,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 83,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "9:122"
    },
    "84": {
     "hizb": 21,
     "juz": 11,
     "nisf": 2,
-    "rub": 84,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 84,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "10:11"
    },
    "85": {
     "hizb": 22,
     "juz": 11,
     "nisf": 1,
-    "rub": 85,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 85,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "10:26"
    },
    "86": {
     "hizb": 22,
     "juz": 11,
     "nisf": 1,
-    "rub": 86,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 86,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "10:53"
    },
    "87": {
     "hizb": 22,
     "juz": 11,
     "nisf": 2,
-    "rub": 87,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 87,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "10:71"
    },
    "88": {
     "hizb": 22,
     "juz": 11,
     "nisf": 2,
-    "rub": 88,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 88,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "10:90"
    },
    "89": {
     "hizb": 23,
     "juz": 12,
     "nisf": 1,
-    "rub": 89,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 89,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "11:6"
    },
    "9": {
     "hizb": 3,
     "juz": 2,
     "nisf": 1,
-    "rub": 9,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 9,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "2:142"
    },
    "90": {
     "hizb": 23,
     "juz": 12,
     "nisf": 1,
-    "rub": 90,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 90,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "11:24"
    },
    "91": {
     "hizb": 23,
     "juz": 12,
     "nisf": 2,
-    "rub": 91,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 91,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "11:41"
    },
    "92": {
     "hizb": 23,
     "juz": 12,
     "nisf": 2,
-    "rub": 92,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 92,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "11:61"
    },
    "93": {
     "hizb": 24,
     "juz": 12,
     "nisf": 1,
-    "rub": 93,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 93,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "11:84"
    },
    "94": {
     "hizb": 24,
     "juz": 12,
     "nisf": 1,
-    "rub": 94,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 94,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "11:108"
    },
    "95": {
     "hizb": 24,
     "juz": 12,
     "nisf": 2,
-    "rub": 95,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 95,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "12:7"
    },
    "96": {
     "hizb": 24,
     "juz": 12,
     "nisf": 2,
-    "rub": 96,
-    "rub_in_hizb": 4,
+    "rubu_al_hizb": 96,
+    "rubu_al_hizb_in_hizb": 4,
     "starts_at": "12:30"
    },
    "97": {
     "hizb": 25,
     "juz": 13,
     "nisf": 1,
-    "rub": 97,
-    "rub_in_hizb": 1,
+    "rubu_al_hizb": 97,
+    "rubu_al_hizb_in_hizb": 1,
     "starts_at": "12:53"
    },
    "98": {
     "hizb": 25,
     "juz": 13,
     "nisf": 1,
-    "rub": 98,
-    "rub_in_hizb": 2,
+    "rubu_al_hizb": 98,
+    "rubu_al_hizb_in_hizb": 2,
     "starts_at": "12:77"
    },
    "99": {
     "hizb": 25,
     "juz": 13,
     "nisf": 2,
-    "rub": 99,
-    "rub_in_hizb": 3,
+    "rubu_al_hizb": 99,
+    "rubu_al_hizb_in_hizb": 3,
     "starts_at": "12:101"
    }
   }
@@ -1967,7 +1967,7 @@
  "surahs": [
   {
    "ayah_count": 7,
-   "bismillah_pre": false,
+   "basmalah_pre": false,
    "name_arabic": "الفاتحة",
    "name_complex": "Al-Fātiĥah",
    "name_english": "The Opener",
@@ -1982,7 +1982,7 @@
   },
   {
    "ayah_count": 286,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "البقرة",
    "name_complex": "Al-Baqarah",
    "name_english": "The Cow",
@@ -1997,7 +1997,7 @@
   },
   {
    "ayah_count": 200,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "آل عمران",
    "name_complex": "Āli `Imrān",
    "name_english": "Family of Imran",
@@ -2012,7 +2012,7 @@
   },
   {
    "ayah_count": 176,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "النساء",
    "name_complex": "An-Nisā",
    "name_english": "The Women",
@@ -2027,7 +2027,7 @@
   },
   {
    "ayah_count": 120,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المائدة",
    "name_complex": "Al-Mā'idah",
    "name_english": "The Table Spread",
@@ -2042,7 +2042,7 @@
   },
   {
    "ayah_count": 165,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الأنعام",
    "name_complex": "Al-'An`ām",
    "name_english": "The Cattle",
@@ -2057,7 +2057,7 @@
   },
   {
    "ayah_count": 206,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الأعراف",
    "name_complex": "Al-'A`rāf",
    "name_english": "The Heights",
@@ -2072,7 +2072,7 @@
   },
   {
    "ayah_count": 75,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الأنفال",
    "name_complex": "Al-'Anfāl",
    "name_english": "The Spoils of War",
@@ -2087,7 +2087,7 @@
   },
   {
    "ayah_count": 129,
-   "bismillah_pre": false,
+   "basmalah_pre": false,
    "name_arabic": "التوبة",
    "name_complex": "At-Tawbah",
    "name_english": "The Repentance",
@@ -2102,7 +2102,7 @@
   },
   {
    "ayah_count": 109,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "يونس",
    "name_complex": "Yūnus",
    "name_english": "Jonah",
@@ -2117,7 +2117,7 @@
   },
   {
    "ayah_count": 123,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "هود",
    "name_complex": "Hūd",
    "name_english": "Hud",
@@ -2132,7 +2132,7 @@
   },
   {
    "ayah_count": 111,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "يوسف",
    "name_complex": "Yūsuf",
    "name_english": "Joseph",
@@ -2147,7 +2147,7 @@
   },
   {
    "ayah_count": 43,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الرعد",
    "name_complex": "Ar-Ra`d",
    "name_english": "The Thunder",
@@ -2162,7 +2162,7 @@
   },
   {
    "ayah_count": 52,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "ابراهيم",
    "name_complex": "Ibrāhīm",
    "name_english": "Abraham",
@@ -2177,7 +2177,7 @@
   },
   {
    "ayah_count": 99,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الحجر",
    "name_complex": "Al-Ĥijr",
    "name_english": "The Rocky Tract",
@@ -2192,7 +2192,7 @@
   },
   {
    "ayah_count": 128,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "النحل",
    "name_complex": "An-Naĥl",
    "name_english": "The Bee",
@@ -2207,7 +2207,7 @@
   },
   {
    "ayah_count": 111,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الإسراء",
    "name_complex": "Al-'Isrā",
    "name_english": "The Night Journey",
@@ -2222,7 +2222,7 @@
   },
   {
    "ayah_count": 110,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الكهف",
    "name_complex": "Al-Kahf",
    "name_english": "The Cave",
@@ -2237,7 +2237,7 @@
   },
   {
    "ayah_count": 98,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "مريم",
    "name_complex": "Maryam",
    "name_english": "Mary",
@@ -2252,7 +2252,7 @@
   },
   {
    "ayah_count": 135,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "طه",
    "name_complex": "Ţāhā",
    "name_english": "Ta-Ha",
@@ -2267,7 +2267,7 @@
   },
   {
    "ayah_count": 112,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الأنبياء",
    "name_complex": "Al-'Anbyā",
    "name_english": "The Prophets",
@@ -2282,7 +2282,7 @@
   },
   {
    "ayah_count": 78,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الحج",
    "name_complex": "Al-Ĥajj",
    "name_english": "The Pilgrimage",
@@ -2297,7 +2297,7 @@
   },
   {
    "ayah_count": 118,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المؤمنون",
    "name_complex": "Al-Mu'minūn",
    "name_english": "The Believers",
@@ -2312,7 +2312,7 @@
   },
   {
    "ayah_count": 64,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "النور",
    "name_complex": "An-Nūr",
    "name_english": "The Light",
@@ -2327,7 +2327,7 @@
   },
   {
    "ayah_count": 77,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الفرقان",
    "name_complex": "Al-Furqān",
    "name_english": "The Criterion",
@@ -2342,7 +2342,7 @@
   },
   {
    "ayah_count": 227,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الشعراء",
    "name_complex": "Ash-Shu`arā",
    "name_english": "The Poets",
@@ -2357,7 +2357,7 @@
   },
   {
    "ayah_count": 93,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "النمل",
    "name_complex": "An-Naml",
    "name_english": "The Ant",
@@ -2372,7 +2372,7 @@
   },
   {
    "ayah_count": 88,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "القصص",
    "name_complex": "Al-Qaşaş",
    "name_english": "The Stories",
@@ -2387,7 +2387,7 @@
   },
   {
    "ayah_count": 69,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "العنكبوت",
    "name_complex": "Al-`Ankabūt",
    "name_english": "The Spider",
@@ -2402,7 +2402,7 @@
   },
   {
    "ayah_count": 60,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الروم",
    "name_complex": "Ar-Rūm",
    "name_english": "The Romans",
@@ -2417,7 +2417,7 @@
   },
   {
    "ayah_count": 34,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "لقمان",
    "name_complex": "Luqmān",
    "name_english": "Luqman",
@@ -2432,7 +2432,7 @@
   },
   {
    "ayah_count": 30,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "السجدة",
    "name_complex": "As-Sajdah",
    "name_english": "The Prostration",
@@ -2447,7 +2447,7 @@
   },
   {
    "ayah_count": 73,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الأحزاب",
    "name_complex": "Al-'Aĥzāb",
    "name_english": "The Combined Forces",
@@ -2462,7 +2462,7 @@
   },
   {
    "ayah_count": 54,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "سبإ",
    "name_complex": "Saba",
    "name_english": "Sheba",
@@ -2477,7 +2477,7 @@
   },
   {
    "ayah_count": 45,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "فاطر",
    "name_complex": "Fāţir",
    "name_english": "Originator",
@@ -2492,7 +2492,7 @@
   },
   {
    "ayah_count": 83,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "يس",
    "name_complex": "Yā-Sīn",
    "name_english": "Ya Sin",
@@ -2507,7 +2507,7 @@
   },
   {
    "ayah_count": 182,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الصافات",
    "name_complex": "Aş-Şāffāt",
    "name_english": "Those who set the Ranks",
@@ -2522,7 +2522,7 @@
   },
   {
    "ayah_count": 88,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "ص",
    "name_complex": "Şād",
    "name_english": "The Letter \"Saad\"",
@@ -2537,7 +2537,7 @@
   },
   {
    "ayah_count": 75,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الزمر",
    "name_complex": "Az-Zumar",
    "name_english": "The Troops",
@@ -2552,7 +2552,7 @@
   },
   {
    "ayah_count": 85,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "غافر",
    "name_complex": "Ghāfir",
    "name_english": "The Forgiver",
@@ -2567,7 +2567,7 @@
   },
   {
    "ayah_count": 54,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "فصلت",
    "name_complex": "Fuşşilat",
    "name_english": "Explained in Detail",
@@ -2582,7 +2582,7 @@
   },
   {
    "ayah_count": 53,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الشورى",
    "name_complex": "Ash-Shūraá",
    "name_english": "The Consultation",
@@ -2597,7 +2597,7 @@
   },
   {
    "ayah_count": 89,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الزخرف",
    "name_complex": "Az-Zukhruf",
    "name_english": "The Ornaments of Gold",
@@ -2612,7 +2612,7 @@
   },
   {
    "ayah_count": 59,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الدخان",
    "name_complex": "Ad-Dukhān",
    "name_english": "The Smoke",
@@ -2627,7 +2627,7 @@
   },
   {
    "ayah_count": 37,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الجاثية",
    "name_complex": "Al-Jāthiyah",
    "name_english": "The Crouching",
@@ -2642,7 +2642,7 @@
   },
   {
    "ayah_count": 35,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الأحقاف",
    "name_complex": "Al-'Aĥqāf",
    "name_english": "The Wind-Curved Sandhills",
@@ -2657,7 +2657,7 @@
   },
   {
    "ayah_count": 38,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "محمد",
    "name_complex": "Muĥammad",
    "name_english": "Muhammad",
@@ -2672,7 +2672,7 @@
   },
   {
    "ayah_count": 29,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الفتح",
    "name_complex": "Al-Fatĥ",
    "name_english": "The Victory",
@@ -2687,7 +2687,7 @@
   },
   {
    "ayah_count": 18,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الحجرات",
    "name_complex": "Al-Ĥujurāt",
    "name_english": "The Rooms",
@@ -2702,7 +2702,7 @@
   },
   {
    "ayah_count": 45,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "ق",
    "name_complex": "Qāf",
    "name_english": "The Letter \"Qaf\"",
@@ -2717,7 +2717,7 @@
   },
   {
    "ayah_count": 60,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الذاريات",
    "name_complex": "Adh-Dhāriyāt",
    "name_english": "The Winnowing Winds",
@@ -2732,7 +2732,7 @@
   },
   {
    "ayah_count": 49,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الطور",
    "name_complex": "Aţ-Ţūr",
    "name_english": "The Mount",
@@ -2747,7 +2747,7 @@
   },
   {
    "ayah_count": 62,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "النجم",
    "name_complex": "An-Najm",
    "name_english": "The Star",
@@ -2762,7 +2762,7 @@
   },
   {
    "ayah_count": 55,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "القمر",
    "name_complex": "Al-Qamar",
    "name_english": "The Moon",
@@ -2777,7 +2777,7 @@
   },
   {
    "ayah_count": 78,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الرحمن",
    "name_complex": "Ar-Raĥmān",
    "name_english": "The Beneficent",
@@ -2792,7 +2792,7 @@
   },
   {
    "ayah_count": 96,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الواقعة",
    "name_complex": "Al-Wāqi`ah",
    "name_english": "The Inevitable",
@@ -2807,7 +2807,7 @@
   },
   {
    "ayah_count": 29,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الحديد",
    "name_complex": "Al-Ĥadīd",
    "name_english": "The Iron",
@@ -2822,7 +2822,7 @@
   },
   {
    "ayah_count": 22,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المجادلة",
    "name_complex": "Al-Mujādila",
    "name_english": "The Pleading Woman",
@@ -2837,7 +2837,7 @@
   },
   {
    "ayah_count": 24,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الحشر",
    "name_complex": "Al-Ĥashr",
    "name_english": "The Exile",
@@ -2852,7 +2852,7 @@
   },
   {
    "ayah_count": 13,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الممتحنة",
    "name_complex": "Al-Mumtaĥanah",
    "name_english": "She that is to be examined",
@@ -2867,7 +2867,7 @@
   },
   {
    "ayah_count": 14,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الصف",
    "name_complex": "Aş-Şaf",
    "name_english": "The Ranks",
@@ -2882,7 +2882,7 @@
   },
   {
    "ayah_count": 11,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الجمعة",
    "name_complex": "Al-Jumu`ah",
    "name_english": "The Congregation, Friday",
@@ -2897,7 +2897,7 @@
   },
   {
    "ayah_count": 11,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المنافقون",
    "name_complex": "Al-Munāfiqūn",
    "name_english": "The Hypocrites",
@@ -2912,7 +2912,7 @@
   },
   {
    "ayah_count": 18,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "التغابن",
    "name_complex": "At-Taghābun",
    "name_english": "The Mutual Disillusion",
@@ -2927,7 +2927,7 @@
   },
   {
    "ayah_count": 12,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الطلاق",
    "name_complex": "Aţ-Ţalāq",
    "name_english": "The Divorce",
@@ -2942,7 +2942,7 @@
   },
   {
    "ayah_count": 12,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "التحريم",
    "name_complex": "At-Taĥrīm",
    "name_english": "The Prohibition",
@@ -2957,7 +2957,7 @@
   },
   {
    "ayah_count": 30,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الملك",
    "name_complex": "Al-Mulk",
    "name_english": "The Sovereignty",
@@ -2972,7 +2972,7 @@
   },
   {
    "ayah_count": 52,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "القلم",
    "name_complex": "Al-Qalam",
    "name_english": "The Pen",
@@ -2987,7 +2987,7 @@
   },
   {
    "ayah_count": 52,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الحاقة",
    "name_complex": "Al-Ĥāqqah",
    "name_english": "The Reality",
@@ -3002,7 +3002,7 @@
   },
   {
    "ayah_count": 44,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المعارج",
    "name_complex": "Al-Ma`ārij",
    "name_english": "The Ascending Stairways",
@@ -3017,7 +3017,7 @@
   },
   {
    "ayah_count": 28,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "نوح",
    "name_complex": "Nūĥ",
    "name_english": "Noah",
@@ -3032,7 +3032,7 @@
   },
   {
    "ayah_count": 28,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الجن",
    "name_complex": "Al-Jinn",
    "name_english": "The Jinn",
@@ -3047,7 +3047,7 @@
   },
   {
    "ayah_count": 20,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المزمل",
    "name_complex": "Al-Muzzammil",
    "name_english": "The Enshrouded One",
@@ -3062,7 +3062,7 @@
   },
   {
    "ayah_count": 56,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المدثر",
    "name_complex": "Al-Muddaththir",
    "name_english": "The Cloaked One",
@@ -3077,7 +3077,7 @@
   },
   {
    "ayah_count": 40,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "القيامة",
    "name_complex": "Al-Qiyāmah",
    "name_english": "The Resurrection",
@@ -3092,7 +3092,7 @@
   },
   {
    "ayah_count": 31,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الانسان",
    "name_complex": "Al-'Insān",
    "name_english": "The Man",
@@ -3107,7 +3107,7 @@
   },
   {
    "ayah_count": 50,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المرسلات",
    "name_complex": "Al-Mursalāt",
    "name_english": "The Emissaries",
@@ -3122,7 +3122,7 @@
   },
   {
    "ayah_count": 40,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "النبإ",
    "name_complex": "An-Naba",
    "name_english": "The Tidings",
@@ -3137,7 +3137,7 @@
   },
   {
    "ayah_count": 46,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "النازعات",
    "name_complex": "An-Nāzi`āt",
    "name_english": "Those who drag forth",
@@ -3152,7 +3152,7 @@
   },
   {
    "ayah_count": 42,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "عبس",
    "name_complex": "`Abasa",
    "name_english": "He Frowned",
@@ -3167,7 +3167,7 @@
   },
   {
    "ayah_count": 29,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "التكوير",
    "name_complex": "At-Takwīr",
    "name_english": "The Overthrowing",
@@ -3182,7 +3182,7 @@
   },
   {
    "ayah_count": 19,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الإنفطار",
    "name_complex": "Al-'Infiţār",
    "name_english": "The Cleaving",
@@ -3197,7 +3197,7 @@
   },
   {
    "ayah_count": 36,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المطففين",
    "name_complex": "Al-Muţaffifīn",
    "name_english": "The Defrauding",
@@ -3212,7 +3212,7 @@
   },
   {
    "ayah_count": 25,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الإنشقاق",
    "name_complex": "Al-'Inshiqāq",
    "name_english": "The Sundering",
@@ -3227,7 +3227,7 @@
   },
   {
    "ayah_count": 22,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "البروج",
    "name_complex": "Al-Burūj",
    "name_english": "The Mansions of the Stars",
@@ -3242,7 +3242,7 @@
   },
   {
    "ayah_count": 17,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الطارق",
    "name_complex": "Aţ-Ţāriq",
    "name_english": "The Nightcommer",
@@ -3257,7 +3257,7 @@
   },
   {
    "ayah_count": 19,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الأعلى",
    "name_complex": "Al-'A`lá",
    "name_english": "The Most High",
@@ -3272,7 +3272,7 @@
   },
   {
    "ayah_count": 26,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الغاشية",
    "name_complex": "Al-Ghāshiyah",
    "name_english": "The Overwhelming",
@@ -3287,7 +3287,7 @@
   },
   {
    "ayah_count": 30,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الفجر",
    "name_complex": "Al-Fajr",
    "name_english": "The Dawn",
@@ -3302,7 +3302,7 @@
   },
   {
    "ayah_count": 20,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "البلد",
    "name_complex": "Al-Balad",
    "name_english": "The City",
@@ -3317,7 +3317,7 @@
   },
   {
    "ayah_count": 15,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الشمس",
    "name_complex": "Ash-Shams",
    "name_english": "The Sun",
@@ -3332,7 +3332,7 @@
   },
   {
    "ayah_count": 21,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الليل",
    "name_complex": "Al-Layl",
    "name_english": "The Night",
@@ -3347,7 +3347,7 @@
   },
   {
    "ayah_count": 11,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الضحى",
    "name_complex": "Ađ-Đuĥaá",
    "name_english": "The Morning Hours",
@@ -3362,7 +3362,7 @@
   },
   {
    "ayah_count": 8,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الشرح",
    "name_complex": "Ash-Sharĥ",
    "name_english": "The Relief",
@@ -3377,7 +3377,7 @@
   },
   {
    "ayah_count": 8,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "التين",
    "name_complex": "At-Tīn",
    "name_english": "The Fig",
@@ -3392,7 +3392,7 @@
   },
   {
    "ayah_count": 19,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "العلق",
    "name_complex": "Al-`Alaq",
    "name_english": "The Clot",
@@ -3407,7 +3407,7 @@
   },
   {
    "ayah_count": 5,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "القدر",
    "name_complex": "Al-Qadr",
    "name_english": "The Power",
@@ -3422,7 +3422,7 @@
   },
   {
    "ayah_count": 8,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "البينة",
    "name_complex": "Al-Bayyinah",
    "name_english": "The Clear Proof",
@@ -3437,7 +3437,7 @@
   },
   {
    "ayah_count": 8,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الزلزلة",
    "name_complex": "Az-Zalzalah",
    "name_english": "The Earthquake",
@@ -3452,7 +3452,7 @@
   },
   {
    "ayah_count": 11,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "العاديات",
    "name_complex": "Al-`Ādiyāt",
    "name_english": "The Courser",
@@ -3467,7 +3467,7 @@
   },
   {
    "ayah_count": 11,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "القارعة",
    "name_complex": "Al-Qāri`ah",
    "name_english": "The Calamity",
@@ -3482,7 +3482,7 @@
   },
   {
    "ayah_count": 8,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "التكاثر",
    "name_complex": "At-Takāthur",
    "name_english": "The Rivalry in world increase",
@@ -3497,7 +3497,7 @@
   },
   {
    "ayah_count": 3,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "العصر",
    "name_complex": "Al-`Aşr",
    "name_english": "The Declining Day",
@@ -3512,7 +3512,7 @@
   },
   {
    "ayah_count": 9,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الهمزة",
    "name_complex": "Al-Humazah",
    "name_english": "The Traducer",
@@ -3527,7 +3527,7 @@
   },
   {
    "ayah_count": 5,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الفيل",
    "name_complex": "Al-Fīl",
    "name_english": "The Elephant",
@@ -3542,7 +3542,7 @@
   },
   {
    "ayah_count": 4,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "قريش",
    "name_complex": "Quraysh",
    "name_english": "Quraysh",
@@ -3557,7 +3557,7 @@
   },
   {
    "ayah_count": 7,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الماعون",
    "name_complex": "Al-Mā`ūn",
    "name_english": "The Small kindnesses",
@@ -3572,7 +3572,7 @@
   },
   {
    "ayah_count": 3,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الكوثر",
    "name_complex": "Al-Kawthar",
    "name_english": "The Abundance",
@@ -3587,7 +3587,7 @@
   },
   {
    "ayah_count": 6,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الكافرون",
    "name_complex": "Al-Kāfirūn",
    "name_english": "The Disbelievers",
@@ -3602,7 +3602,7 @@
   },
   {
    "ayah_count": 3,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "النصر",
    "name_complex": "An-Naşr",
    "name_english": "The Divine Support",
@@ -3617,7 +3617,7 @@
   },
   {
    "ayah_count": 5,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "المسد",
    "name_complex": "Al-Masad",
    "name_english": "The Palm Fiber",
@@ -3632,7 +3632,7 @@
   },
   {
    "ayah_count": 4,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الإخلاص",
    "name_complex": "Al-'Ikhlāş",
    "name_english": "The Sincerity",
@@ -3647,7 +3647,7 @@
   },
   {
    "ayah_count": 5,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الفلق",
    "name_complex": "Al-Falaq",
    "name_english": "The Daybreak",
@@ -3662,7 +3662,7 @@
   },
   {
    "ayah_count": 6,
-   "bismillah_pre": true,
+   "basmalah_pre": true,
    "name_arabic": "الناس",
    "name_complex": "An-Nās",
    "name_english": "Mankind",

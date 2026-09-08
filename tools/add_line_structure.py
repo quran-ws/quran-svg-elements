@@ -46,8 +46,8 @@ ROOT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 BODY_LINES = 15
 
 # The two opening pages are set on their own spacing rather than the body grid, and hold
-# seven lines each rather than fifteen: Al-Fatiha over seven, and the basmala plus the
-# first six lines of Al-Baqarah. Counted off rendered images of pages 1 and 2 of all five
+# seven lines each rather than fifteen: Fatihah over seven, and the basmalah plus the
+# first six lines of Baqarah. Counted off rendered images of pages 1 and 2 of all five
 # editions — and cross-checked by the segmentation itself, which refused to cut shubah/002
 # into eight when eight was first assumed.
 #
@@ -283,7 +283,7 @@ def rewrite(page, contours, bands):
 
     Line groups sit directly under `#content`, so a page has exactly as many of them as it
     has lines however many paths it was drawn with, and each keeps the `<g transform>`
-    wrappers its paths were under. `hafs/017` is drawn with 162 paths and `qalon/440` with
+    wrappers its paths were under. `hafs/017` is drawn with 162 paths and `qalun/440` with
     886; splitting inside each of those would have scattered a single line across hundreds
     of elements.
     """
@@ -530,17 +530,17 @@ def body_viewbox_of(svg_dir):
 
 
 def editions(selector=None):
-    for qiraa in sorted(os.listdir(ROOT)):
-        qdir = os.path.join(ROOT, qiraa)
+    for qiraah in sorted(os.listdir(ROOT)):
+        qdir = os.path.join(ROOT, qiraah)
         if not os.path.isdir(qdir):
             continue
         for pub in sorted(os.listdir(qdir)):
             svg_dir = os.path.join(qdir, pub, "svg")
             if not os.path.isdir(svg_dir):
                 continue
-            if selector and selector not in ("%s/%s" % (qiraa, pub)):
+            if selector and selector not in ("%s/%s" % (qiraah, pub)):
                 continue
-            yield "%s/%s" % (qiraa, pub), svg_dir
+            yield "%s/%s" % (qiraah, pub), svg_dir
 
 
 def main(argv=None):

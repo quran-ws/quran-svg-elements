@@ -1,11 +1,11 @@
-"""Measure how the ayah-marker ORNAMENT rings fit, mushaf-wide.
+"""Measure how the ayah-mark ORNAMENT rings fit, mushaf-wide.
 
 The rings are not original ink: they were drawn around the existing ayah numerals
 in the artwork repo, so their scale and offset are parameters, and this audit says
 whether they are right.  Three questions, all answered in ONE coordinate space:
 
     CONTAINMENT   is the numeral fully inside the ring's central hole, and centred?
-    CLEARANCE     how close does the ring's outer ink come to any non-marker ink?
+    CLEARANCE     how close does the ring's outer ink come to any non-mark ink?
     FIT           is the ring the right size for the numeral it encircles?
 
 Coordinate space
@@ -46,7 +46,7 @@ ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(os.path.dirname(
     os.path.abspath(__file__)))
 EDITION = "hafs/kfqc"
 
-MARKER_BLOCK = '<g id="ayah_markers"'
+MARK_BLOCK = '<g id="ayah_markers"'
 GROUP = re.compile(r"<g\b([^>]*)>((?:(?!</?g\b).)*)</g>", re.S)
 D_ATTR = re.compile(r'\bd="([^"]*)"')
 AYAH_XY = re.compile(r'ayah:x="([-\d.]+)"\s+ayah:y="([-\d.]+)"')
@@ -223,9 +223,9 @@ def root_matrix(svg):
     return parse_transform(t.group(1))
 
 
-def markers_of(svg):
+def marks_of(svg):
     """(ornament d, numeral d, local transform, numeral transform, ayah:x/y) per marker."""
-    i = svg.find(MARKER_BLOCK)
+    i = svg.find(MARK_BLOCK)
     if i < 0:
         return []
     block = svg[i:_matching_close(svg, i)]
@@ -279,7 +279,7 @@ def measure_page(page_no):
     R = root_matrix(svg)
     page = Page(src)
 
-    # Every non-marker contour on the page, in rendered page units, kept as a bbox
+    # Every non-mark contour on the page, in rendered page units, kept as a bbox
     # first so only the ink near a medallion is ever flattened.
     boxes = page.contours()
     # Contours are flattened path by path and indexed by position, never by slicing
@@ -291,7 +291,7 @@ def measure_page(page_no):
         assert len(f) == len(subpaths(P["d"])), "contour indexing broke"
 
     recs = []
-    for mi, m in enumerate(markers_of(svg)):
+    for mi, m in enumerate(marks_of(svg)):
         Mo = mul(R, parse_transform(m["orn_t"]))
         rings = [densify(xform(c, Mo)) for c in flatten(m["orn_d"]) if len(c) > 2]
         if not rings:
@@ -362,13 +362,13 @@ def measure_page(page_no):
                 if aidx:
                     best = min(aidx, key=lambda e: (e[0] - m["ax"]) ** 2
                                + (e[1] - m["ay"]) ** 2)
-                    rec["aid"] = best[2]
+                    rec["ayah_key"] = best[2]
                     rec["aid_dist"] = round(math.hypot(best[0] - m["ax"],
                                                        best[1] - m["ay"]), 3)
                 rec["proof_dx"] = round(m["ax"] - rec["ring_cx"], 3)
                 rec["proof_dy"] = round(m["ay"] - rec["ring_cy"], 3)
 
-        # Clearance: nearest non-marker ink to the ring's outer silhouette.
+        # Clearance: nearest non-mark ink to the ring's outer silhouette.
         pad = 6.0
         near = [b for b in boxes
                 if b["x2"] > rb[0] - pad and b["x1"] < rb[2] + pad

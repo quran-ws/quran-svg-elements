@@ -2,13 +2,13 @@
 
 The art draws one glyph per mark, so each family's drawn area is a point, not a
 range: over all 604 pages sukun is 13.0 at both the median and the 99th percentile,
-damma 35.4/35.4, wasla 22.6/22.6. Anything outside a third to three times the median
+dammah 35.4/35.4, hamzat_al_wasl 22.6/22.6. Anything outside a third to three times the median
 is therefore not that mark, and only 46 elements in the whole mushaf are.
 
-BOTH tails matter. The high tail is a letter read as a mark — five fathas of area
+BOTH tails matter. The high tail is a letter read as a mark — five fathahs of area
 ~80.4 against a median of 25.1, each one a word's missing letter. The low tail is a
-mark from somewhere else: Abdullah found `الصالحات` on p590 holding a "kasra" of area
-4.4 where its own two kasras are 21, a dot from the line below.
+mark from somewhere else: Abdullah found `الصالحات` on p590 holding a "kasrah" of area
+4.4 where its own two kasrahs are 21, a dot from the line below.
 
     python3 tools/audit_marksize.py 1 604 8 out.json
 """
@@ -35,7 +35,7 @@ def page(pg):
             fam = e.get("mark")
             if not fam: continue
             out.append((fam, round((e["x2"]-e["x1"])*(e["y2"]-e["y1"]), 2), pg,
-                        "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), w["uthmani"],
+                        "%d:%d:%d" % (w["surah"], w["ayah"], w["pos"]), w["rasm_uthmani"],
                         round(e["x1"],1), round(e["y1"],1)))
     return pg, out
 if __name__ == "__main__":
@@ -52,9 +52,9 @@ if __name__ == "__main__":
         rows = sorted(by[fam])
         n = len(rows)
         med = rows[n//2][0]; p99 = rows[min(n-1, int(n*0.99))][0]; mx = rows[-1][0]
-        # BOTH tails. Abdullah found `ٱلصَّـٰلِحَـٰتِ` on p590 holding a "kasra" of area
-        # 4.4 where every real kasra in the same word is 21 — a dot from another line,
-        # labelled a kasra. A mark too SMALL for its family is as impossible as one too
+        # BOTH tails. Abdullah found `ٱلصَّـٰلِحَـٰتِ` on p590 holding a "kasrah" of area
+        # 4.4 where every real kasrah in the same word is 21 — a dot from another line,
+        # labelled a kasrah. A mark too SMALL for its family is as impossible as one too
         # big, and only the high tail was being looked at.
         over = [r for r in rows if r[0] > 3*med or r[0] < med/3.0]
         flag += [(fam,)+r for r in over]
