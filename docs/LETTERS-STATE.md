@@ -16,16 +16,16 @@ proven against the word build it comes from.
 | | rule cutter (first attempt) | **shipped now** |
 |---|---|---|
 | multi-letter runs | 90,244 | 90,313 |
-| runs left uncut (`data-unsplit`) | 10,165 (11.3%) | **534 (0.6%)** |
-| letters emitted | 285,741 | **321,403** |
+| runs left uncut (`data-unsplit`) | 10,165 (11.3%) | **109 (0.12%)** |
+| letters emitted | 285,741 | **322,758** |
 | gate: count (letters vs the text) | 0 | **0** |
 | gate: ink (pieces reproduce their contour, no overlap) | 0 | 6 pages |
 | gate: pixels (raster vs the word build) | 35 pages | 18 pages |
 | joint error vs the tajweed hand cuts, held out | 1.06u | **0.50u** (76.9% within 1u) |
 
 Proof failures 24, all of them the boolean library's seam and sliver class. The two
-priors that rank work rather than block it: shape 915 (islands and ragged cuts), size
-5,764 (letters far from the area that letter takes elsewhere).
+priors that rank work rather than block it: shape 956 (islands and ragged cuts), size
+4,641 (letters far from the area that letter takes elsewhere).
 
 The model is `.cache/letters/model_ft5.pt`. Build with
 `QSVG_LETTERS_TAG=model` → `.cache/letters/cuts-model`, `.cache/letters-svg-model`,
@@ -131,25 +131,47 @@ and the gate is the one that ships.
 
 ## The bottleneck, and what to do next
 
-Five rejected checkpoints in a row say the labels are no longer what limits this. Of the
-42 failing runs on pages 1–60, **34 are runs where the model gave some letter under 2% of
-the ink**: the boundary is in the right place, the letter is handed a sliver, and the
-cutter refuses the whole run rather than accept a piece of almost nothing.
+**The starved letter is fixed (2026-09-08).** Of 533 runs the cutter could not realise,
+452 had a letter under 2% of the ink, and rendering them showed the same thing every
+time: the boundary roughly right, the labels shifted by one, one letter covering two.
+`repair_starved` takes that share back — the donor is the neighbour furthest over the
+area its letter draws elsewhere in the mushaf, it gives only what brings both toward
+that size, and it gives it from the end the starved letter reads on. Mushaf-wide:
 
-1. **Let a starved letter be grown, not fail.** In `cut_run_masks`, grow a letter whose
-   share is a sliver from its own position instead of raising `letter without ink`. This
-   is where the next 300 uncut runs are. **Do not fine-tune again until this is done** —
-   the last five runs were wasted effort against this wall.
-2. **Retire the boolean library.** An exact Bézier splitter removes the refit slivers
-   behind the 6 ink pages, 18 pixel pages and most of the 915 shape flags in one move.
-3. **More drawn pairs.** بم has nothing; ته has two. The page is built by
-   `tools/build_letters_label_page.py --rank --pairs …`, served from `docs/defects` over
-   a plain HTTP server, and every card turns green when its split is complete.
-4. **Then re-measure the model.** Once the cutter tolerates a starved letter, the four
-   measures should be run again from `model_cond_e3` — the training may well have been
-   fine all along and the gate was reading the cutter's limits, not the model's.
+| | before | after |
+|---|---|---|
+| runs the cutter could not realise | 533 | **108** |
+| empty piece | 272 | **8** |
+| letter without ink | 216 | **55** |
+| pieces do not reproduce the run | 36 | 36 |
+| area not conserved | 9 | 9 |
+| runs left uncut in the output | 534 | **109** |
+| letters emitted | 321,403 | **322,758** |
+| size flags | 5,764 | **4,641** |
 
----
+The two failures it does not aim at did not move by one, which is the signature of a
+repair that did what it claimed. `QSVG_LETTERS_STARVE=off` reverts it.
+
+Two repairs were measured and rejected on the way: growing the letter from the model's
+own probability (it bites the donor's middle, the donor splits, the cleanup undoes it)
+and splitting whichever neighbour is widest (wrong donor wherever letters overlap in x).
+So was **recursive halving of long runs** — runs of eight or nine letters used to fail
+every time, so halving them and labelling each half looked obvious, but it made things
+worse (pages 1–60: 97 hard failures to 103, long-run failures 2 of 26 to 8 of 26)
+because the halving leaves a fake stroke end the model has never seen. It needs no
+fixing: the starved-letter repair already took long runs from failing always to failing
+twice in twenty-six.
+
+What is left, in order:
+
+1. **Retire the boolean library.** The 36 reproduce failures, the 9 area failures, the 6
+   ink pages, the 18 pixel pages and most of the 956 shape flags are one cause: skia
+   re-fits curves and clips hole corners. An exact Bézier splitter removes them all.
+2. **More drawn pairs.** بم has nothing, ته has two. The page is built by
+   `tools/build_letters_label_page.py --rank --pairs …`.
+3. **Then re-measure the model.** Five checkpoints were rejected before the cutter was
+   fixed, on a gate that was reading the cutter's limits rather than the labels'. Those
+   four measures should be run again now.
 
 ## Where things live
 
