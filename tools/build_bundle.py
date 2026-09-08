@@ -245,13 +245,17 @@ def build_indexes(out, recs, manifest):
     # one file a consumer parses in full.  Per-page sidecars are objects; the
     # saving there was 0.6 KiB brotli against a 121 KiB page, so readability
     # won.  Always read `fields` rather than assuming the column order.
-    fields = ["wid", "page", "line", "uthmani", "search"]
-    rows = [[w["wid"], r["page"], w["line"], w["uthmani"], w["search"]]
+    fields = ["wid", "w", "page", "line", "uthmani", "search"]
+    rows = [[w["wid"], w["w"], r["page"], w["line"], w["uthmani"], w["search"]]
             for r in recs for w in r["words"]]
     jdump(envelope("quran-svg/words", {
-        "description": "every word in the corpus, in mushaf order. `search` "
-                       "is the fold-ready key; `uthmani` is the text of "
-                       "record. Full text forms and boxes: index/by-page/.",
+        "description": "every word in the corpus, in mushaf order. `w` is "
+                       "the global word id shared with the word-by-word "
+                       "source (the same number for this word in every "
+                       "mushaf that has it; the two pieces of 15:7 لَّوْ مَا "
+                       "share one). `search` is the fold-ready key; "
+                       "`uthmani` is the text of record. Full text forms "
+                       "and boxes: index/by-page/.",
         "count": len(rows), "fields": fields, "rows": rows}),
         os.path.join(idx, "words.json"))
 
@@ -260,7 +264,7 @@ def build_indexes(out, recs, manifest):
         words = []
         for w in r["words"]:
             words.append({
-                "wid": w["wid"], "ayah": w["aid"], "line": w["line"],
+                "wid": w["wid"], "w": w["w"], "ayah": w["aid"], "line": w["line"],
                 "uthmani": w["uthmani"], "rasm": w["rasm"],
                 "imlaei": w["imlaei"], "search": w["search"], "qpc": w["qpc"],
                 "box": rbox(w["box"]) if w["box"] else None,
@@ -373,10 +377,10 @@ def build_schemas(out):
                 description={"type": "string"},
                 fields={"type": "array", "items": {"type": "string"}},
                 rows={"type": "array", "items": {
-                    "type": "array", "minItems": 5, "maxItems": 5,
-                    "prefixItems": [wid, {"type": "integer"},
-                                    {"type": "integer"}, {"type": "string"},
-                                    {"type": "string"}]}})),
+                    "type": "array", "minItems": 6, "maxItems": 6,
+                    "prefixItems": [wid, {"type": "integer", "minimum": 1},
+                                    {"type": "integer"}, {"type": "integer"},
+                                    {"type": "string"}, {"type": "string"}]}})),
 
         "page-words.schema.json": dict(base, title="quran-svg/page-words",
             type="object",
@@ -387,10 +391,13 @@ def build_schemas(out):
                 box_space={"type": "string"},
                 count={"type": "integer"},
                 words={"type": "array", "items": {"type": "object",
-                    "required": ["wid", "ayah", "line", "uthmani", "rasm",
+                    "required": ["wid", "w", "ayah", "line", "uthmani", "rasm",
                                  "imlaei", "search", "qpc", "box"],
                     "properties": {
                         "wid": wid, "ayah": aid,
+                        "w": {"type": "integer", "minimum": 1,
+                              "description": "global word id, shared with the "
+                                             "word-by-word source"},
                         "line": {"type": "integer"},
                         "uthmani": {"type": "string"},
                         "rasm": {"type": "string"},
@@ -469,7 +476,7 @@ const hits = idx.rows.filter(r => fold(r[col.search]).includes(fold('الرحم�
 | `index/surahs.json` | the 114 surah records: names, revelation place, ayah count, page range |
 | `index/divisions.json` | every juz, hizb, half-hizb and rubʿ boundary, with its ayah and page |
 | `index/words.json` | every word in the corpus with its page and search key — the search index |
-| `index/by-page/NNN.json` | one page's words: all five text forms, line, and bounding box |
+| `index/by-page/NNN.json` | one page's words: all five text forms, line, and bounding box. **The page itself carries `data-uthmani` only** — rasm, imlaei, search and qpc live here |
 | `schema/FORMAT.md` | the format specification: structure, attributes, mark taxonomy, known limits |
 | `schema/mark-taxonomy.json` | the closed vocabulary of mark names, with category and family |
 | `schema/*.schema.json` | JSON Schema (2020-12) for every data file above |

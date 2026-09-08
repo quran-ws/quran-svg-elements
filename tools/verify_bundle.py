@@ -36,7 +36,8 @@ except ImportError:
     brotli = None
 
 EXPECT_PAGES = 604
-EXPECT_WORDS = 77432
+EXPECT_WORDS = 77433      # 77,432 + the 37:130 split the print makes (docs/MAQTU-MAWSUL.md, 2026-08-31)
+EXPECT_GLOBAL_WORDS = 77432   # ids in the word-by-word source (docs/HAFS-JSON-SOURCE.md)
 EXPECT_SURAHS = 114
 
 _FAIL = []
@@ -181,19 +182,28 @@ def check_indexes(bundle):
     check("words.json wids are unique",
           len({r[0] for r in words["rows"]}) == len(words["rows"]))
     check("words.json declares its fields",
-          words.get("fields") == ["wid", "page", "line", "uthmani", "search"],
+          words.get("fields") == ["wid", "w", "page", "line", "uthmani", "search"],
           str(words.get("fields")))
 
     total = 0
     boxes = 0
+    gw = []
     for p in range(1, EXPECT_PAGES + 1):
         d = load(bundle, "index/by-page/%03d.json" % p)
         total += len(d["words"])
         boxes += sum(1 for w in d["words"] if w["box"])
+        gw += [w.get("w") for w in d["words"]]
     check("sidecars hold %d words in total" % EXPECT_WORDS,
           total == EXPECT_WORDS, "%d" % total)
     check("every word has a bounding box", boxes == total,
           "%d of %d" % (boxes, total))
+    check("every word has an integer global word id (w)",
+          all(isinstance(x, int) and x > 0 for x in gw),
+          "%d without" % sum(1 for x in gw if not isinstance(x, int)))
+    # 77,432 ids in the word-by-word source; our 77,433 groups map onto all
+    # of them, the two pieces of 15:7 لَّوْ مَا sharing one (build_wbw_map.py)
+    check("global word ids cover the source's %d ids" % EXPECT_GLOBAL_WORDS,
+          len(set(gw)) == EXPECT_GLOBAL_WORDS, "%d distinct" % len(set(gw)))
     check("pages.json word counts sum to the corpus",
           sum(p["words"] for p in pages["pages"]) == EXPECT_WORDS)
 
@@ -250,7 +260,7 @@ def check_crossrefs(bundle, sample):
     for r in words["rows"]:
         by_page.setdefault(r[col["page"]], []).append(r)
 
-    bad_missing, bad_extra, bad_text, bad_order = [], [], [], []
+    bad_missing, bad_extra, bad_text, bad_order, bad_forms = [], [], [], [], []
     for p in sample:
         svg = open(os.path.join(bundle, "pages/%03d.svg" % p),
                    encoding="utf-8").read()
@@ -273,9 +283,14 @@ def check_crossrefs(bundle, sample):
             a = attrs.get(w["wid"])
             if not a:
                 continue
+            # the SVG carries data-uthmani on every profile and the other four
+            # forms on the dev profile only; compare whatever it carries
             for f in ("uthmani", "rasm", "imlaei", "search", "qpc"):
-                if a.get("data-" + f) != w[f]:
+                if "data-" + f in a and a["data-" + f] != w[f]:
                     bad_text.append((p, w["wid"], f))
+            for f in ("uthmani", "rasm", "imlaei", "search", "qpc"):
+                if not w.get(f):
+                    bad_forms.append((p, w["wid"], f))
 
     check("every index wid exists in its page", not bad_missing,
           str(bad_missing[:2] or "none"))
@@ -285,6 +300,8 @@ def check_crossrefs(bundle, sample):
           str(bad_order[:5] or "none"))
     check("sidecar text matches the SVG attributes", not bad_text,
           "%d pages checked; bad %s" % (len(sample), bad_text[:3] or "none"))
+    check("sidecar carries all five text forms for every word", not bad_forms,
+          "%d pages checked; bad %s" % (len(sample), bad_forms[:3] or "none"))
 
 
 def check_boxes(bundle, sample):
@@ -380,6 +397,22 @@ def check_profile(bundle, sample):
                      "VERSION.json says profile=%s" % v.get("profile"))
     check("production profile: no ligature groups", not lig, str(lig[:5]))
     check("production profile: no ayahPolygon paths", not poly, str(poly[:5]))
+    # since 2026-09-04 the four derived text forms ship in the sidecar only
+    forms = [p for p in sample
+             if re.search(r'<g class="word"[^>]*data-(rasm|imlaei|search|qpc)=',
+                          open(os.path.join(bundle, "pages/%03d.svg" % p),
+                               encoding="utf-8").read())]
+    check("production profile: word groups carry data-wid + data-uthmani only",
+          not forms, str(forms[:5]))
+    xf = [p for p in sample
+          if re.search(r'<path\b[^>]*\btransform=',
+                       open(os.path.join(bundle, "pages/%03d.svg" % p),
+                            encoding="utf-8").read())]
+    check("no <path> carries a transform (translations are baked)", not xf, str(xf[:5]))
+    vb = [p for p in sample
+          if 'viewBox="0 0 345 550"' not in open(
+              os.path.join(bundle, "pages/%03d.svg" % p), encoding="utf-8").read()]
+    check("every page uses viewBox 0 0 345 550", not vb, str(vb[:5]))
 
 
 # -------------------------------------------------------------------- sizes

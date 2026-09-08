@@ -70,6 +70,9 @@ def build_page(pg):
 
     def spy(page, assignment):
         cap["assignment"] = assignment
+        # the emitted page is normalised to viewBox "0 0 W H"; boxes here are
+        # computed in the artwork's frame and must move with it (p1, p2)
+        cap["offset"] = page.frame_offset
         return real(page, assignment)
 
     aw.rewrite = spy
@@ -90,6 +93,7 @@ def build_page(pg):
         os.unlink(eidmap_path)
 
     assignment = cap["assignment"]
+    ox, oy = cap.get("offset", (0.0, 0.0))
     reg = _families()
 
     # ---- element -> eid, by (rounded bbox, kind, mark, part) --------------
@@ -149,8 +153,8 @@ def build_page(pg):
                "category": info.get("category"),
                "family": info.get("family"),
                "paths": [x for x in paths if x],
-               "box": [round(e["x1"], 1), round(e["y1"], 1),
-                       round(e["x2"], 1), round(e["y2"], 1)]}
+               "box": [round(e["x1"] + ox, 1), round(e["y1"] + oy, 1),
+                       round(e["x2"] + ox, 1), round(e["y2"] + oy, 1)]}
         if e.get("fused"):
             rec["fused"] = True
         if e.get("tanform"):
