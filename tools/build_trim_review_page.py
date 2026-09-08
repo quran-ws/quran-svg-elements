@@ -89,7 +89,9 @@ def render(letters, index, loop, mode):
 
 def main():
     rows = [json.loads(l) for l in open(VERDICTS, encoding="utf-8") if l.strip()]
-    trims = [r for r in rows if r["verdict"] == "trim"]
+    # only the trims drawn before the containment fix need confirming; the later ones
+    # carry their own `invert` and were drawn against a preview of the result.
+    trims = [r for r in rows if r["verdict"] == "trim" and r.get("needs_confirm")]
     cards = []
     for k, r in enumerate(trims):
         letters = word_of(r["page"], r["wid"])

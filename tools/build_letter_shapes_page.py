@@ -49,8 +49,30 @@ from tools import letters_lib as L          # noqa: E402
 SHAPES = os.path.join(L.ROOT, ".cache", "letters",
                       "shapes" + ("-" + L.BUILD_TAG if L.BUILD_TAG else "") + ".json")
 OUT = os.path.join(L.ROOT, "docs", "defects", "letter_shapes.html")
+RECORD = os.path.join(L.ROOT, "docs", "defects", "letter_shape_verdicts.jsonl")
 FORMS = ["first", "middle", "last", "only"]
 FORM_AR = {"first": "أول الكلمة", "middle": "وسط", "last": "آخر", "only": "منفرد"}
+
+
+def recorded():
+    """What the repo already holds for these shapes, keyed by shape id.
+
+    The page used to remember only in the browser, and a browser remembers only what
+    differs from the default, so a rebuild -- or a second machine -- showed judged
+    shapes as fresh green and the copy button then re-emitted them as "good". That is
+    how fifteen drawn trims came back as goods. The file is the record; the page is
+    seeded from it and the browser may only override it.
+    """
+    out = {}
+    if not os.path.exists(RECORD):
+        return out
+    for line in open(RECORD, encoding="utf-8"):
+        line = line.strip()
+        if not line:
+            continue
+        r = json.loads(line)
+        out[r["id"]] = {"v": r["verdict"], "t": r.get("trim"), "r": bool(r.get("reviewed"))}
+    return out
 
 
 def shape_id(ex):
@@ -86,7 +108,7 @@ def word_paths(page, wid):
     return out
 
 
-def card(c, scale=9, with_word=True):
+def card(c, scale=9, with_word=True, rec=None):
     polys = [poly for d in c["example"]["d"] for poly in L.flatten(d)]
     if not polys:
         return ""
@@ -108,13 +130,25 @@ def card(c, scale=9, with_word=True):
         blob = '<script type="application/json" class="wd">%s</script>' % data
     else:
         cut = blob = ""                      # the rare pass judges the shape, it does not edit it
+    sid = shape_id(ex)
+    r = (rec or {}).get(sid)
+    cls = "sh good"
+    trim = ""
+    if r:
+        if r["t"]:
+            cls = "sh trim"
+            trim = ' data-trim=\'%s\'' % json.dumps(r["t"], ensure_ascii=False).replace("'", "&#39;")
+        elif r["v"] == "bad":
+            cls = "sh bad"
+        if r["r"]:
+            cls += " rev"
     return ('<div data-id="%s" data-ch="%s" data-form="%s" data-n="%d" '
             'data-page="%d" data-wid="%s" data-index="%d" data-w="%.3f" '
-            'data-box="%.3f,%.3f,%.3f,%.3f" onclick="mark(event,this)" class="sh good" '
+            'data-box="%.3f,%.3f,%.3f,%.3f"%s onclick="mark(event,this)" class="%s" '
             'title="p%d %s letter %d">%s%s%s<div class="cnt">%s</div></div>'
-            % (shape_id(ex), html.escape(c["ch"]), c["form"], c["n"], ex["page"], ex["wid"],
-               ex["index"], x1 - x0, x0, y0, x1, y1, ex["page"], ex["wid"], ex["index"],
-               cut, blob, "".join(parts), "{:,}".format(c["n"])))
+            % (sid, html.escape(c["ch"]), c["form"], c["n"], ex["page"], ex["wid"],
+               ex["index"], x1 - x0, x0, y0, x1, y1, trim, cls, ex["page"], ex["wid"],
+               ex["index"], cut, blob, "".join(parts), "{:,}".format(c["n"])))
 
 
 def main():
@@ -132,6 +166,7 @@ def main():
     ap.add_argument("--out", default=OUT)
     a = ap.parse_args()
     clusters = json.load(open(a.shapes, encoding="utf-8"))
+    rec = recorded()
     if a.letter:
         clusters = [c for c in clusters if c["ch"] == a.letter]
     total = sum(c["n"] for c in clusters)
@@ -163,14 +198,21 @@ def main():
             cs = sorted(by_letter[ch].get(form, []), key=(lambda c: c["n"]) if a.rare else (lambda c: -c["n"]))
             if not cs:
                 continue
-            body.append('<h3 class="frm">%s <span class="ar">%s</span> <small>%s letters</small></h3>'
-                        % (form, FORM_AR[form], "{:,}".format(sum(c["n"] for c in cs))))
-            body.append('<div class="row">%s</div>' % "".join(card(c, with_word=not a.rare) for c in cs))
+            body.append('<section class="sect" data-key="%s|%s">' % (html.escape(ch), form))
+            body.append('<h3 class="frm">%s <span class="ar">%s</span> <small>%s letters, %d shapes</small>'
+                        ' <button class="done" onclick="sectionDone(this)">mark section reviewed</button>'
+                        ' <span class="prog"></span></h3>'
+                        % (form, FORM_AR[form], "{:,}".format(sum(c["n"] for c in cs)), len(cs)))
+            body.append('<div class="row">%s</div>' % "".join(card(c, with_word=not a.rare, rec=rec)
+                                                              for c in cs))
+            body.append('</section>')
     if a.rare:
         intro = ("Shapes drawn fewer than %d times in the whole Quran, rarest first. A shape this rare "
                  "is more often a bad cut than a rare form, so read these as suspects: "
-                 "<b>click any that is genuinely wrong</b> and leave the rest green. This pass judges "
-                 "the shape only; correcting one is the job of the common-shapes page." % a.rare)
+                 "<b>click any that is genuinely wrong</b>, then press <b>mark section reviewed</b> "
+                 "under the heading when you finish a block \u2014 Copy and Download emit only the "
+                 "shapes you actually reviewed. This pass judges the shape only; correcting one is "
+                 "the job of the common-shapes page." % a.rare)
     else:
         intro = ("Every shape the split produced, one card per shape, with the number of words that "
                  "draws it. <b>Everything starts marked right \u2014 click a shape to mark it wrong, "
@@ -178,8 +220,12 @@ def main():
                  "the ink or a loop around it, then click the part that IS the letter \u2014 the preview "
                  "shows what the letter becomes, and the same gesture trims a sliver off or takes a "
                  "missing piece back.</b> The shapes are ordered by how much of the mushaf they carry, "
-                 "so the first few cards of each letter are worth far more than the last. Then press "
-                 "Copy and paste the lines back.")
+                 "so the first few cards of each letter are worth far more than the last.</b> "
+                 "Everything you have already sent back is <b>already on this page</b>, read from "
+                 "the record on disk, so a rebuild no longer loses it. When you finish a block, "
+                 "press <b>mark section reviewed</b> under its heading \u2014 a green tick appears on "
+                 "each card and Copy or Download then emits <b>only what you reviewed</b>, so a "
+                 "default green is never mistaken for a judgement.")
     page = ("<!doctype html><meta charset=utf-8><title>Letter shapes — mark the good ones</title>"
             "<style>body{font-family:system-ui;margin:20px;background:#fafafa}"
             "h2.sec{border-bottom:2px solid #333;margin:26px 0 4px;font-size:20px}"
@@ -201,12 +247,19 @@ def main():
             "#ovprev{border-left:1px dashed #ccc;padding-left:14px;min-width:120px}"
             "#ovprev canvas{background:#fff}#ovprev .lbl{font-size:12px;color:#666;margin-top:4px}"
             "#ov button{position:static;margin:0 4px;padding:6px 12px}"
-            "button{position:fixed;top:10px;right:10px;padding:8px 14px;z-index:9}"
-            "#tally{position:fixed;top:10px;right:150px;padding:8px 12px;background:#fff;"
-            "border:1px solid #ccc;border-radius:6px;font-size:13px;z-index:9}"
-            "#restored{position:fixed;top:48px;right:150px;font-size:12px;color:#2a7;z-index:9}</style>"
-            "<button onclick='copyAll()'>Copy verdicts</button>"
-            "<div id=tally>0 wrong</div><div id=restored></div>"
+            "button{padding:8px 14px}"
+            "#bar{position:fixed;top:8px;right:10px;z-index:9;background:#fff;border:1px solid #ccc;"
+            "border-radius:8px;padding:6px 10px;font-size:13px;display:flex;gap:8px;align-items:center}"
+            "#bar button{padding:5px 10px}"
+            "#restored{font-size:12px;color:#2a7}"
+            "button.done{font-size:11px;padding:2px 8px;margin-left:8px;font-weight:400}"
+            ".prog{font-size:11px;color:#888;margin-left:6px}"
+            ".sh.rev:after{content:'\\2713';position:absolute;top:0;right:3px;font-size:11px;color:#2a7}"
+            ".sh.bad.rev:after{color:#b00}.sh.trim.rev:after{color:#c80}"
+            ".sect.alldone h3.frm{color:#2a7}</style>"
+            "<div id=bar><span id=tally></span><span id=restored></span>"
+            "<button onclick='copyAll()'>Copy</button>"
+            "<button onclick='downloadAll()'>Download</button></div>"
             "<div id=ov onclick='if(event.target.id==\"ov\")closeTrim()'><div class=box>"
             "<div id=ovwrap><div id=ovsvg></div><div id=ovprev></div></div><div class=btns><b id=ovmsg>draw the cut across the shape</b><br>"
             "<button onclick='invertSel()'>invert</button>"
@@ -219,7 +272,7 @@ def main():
             "let cur=null,drawing=false,pts=[],side=null,inv=false;"
             "function mark(ev,el){if(ev.target.classList.contains('cut'))return;const s=el.classList;"
             "if(s.contains('good')){s.remove('good');s.add('bad')}else{s.remove('bad');s.remove('trim');s.add('good')}"
-            "delete el.dataset.trim;tally();}"
+            "delete el.dataset.trim;s.add('rev');tally();}"
             "function svgPt(svg,e){const r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;"
             "return[vb.x+(e.clientX-r.left)/r.width*vb.width,vb.y+(e.clientY-r.top)/r.height*vb.height];}"
             "function wordSvg(el){const w=JSON.parse(el.querySelector('.wd').textContent);"
@@ -329,28 +382,54 @@ def main():
             "'draw a line across it or a loop around it, then click the part that IS the letter';tally();}"
             "function closeTrim(){document.getElementById('ov').style.display='none';cur=null;drawing=false;}"
             "const KEY='letter_shape_verdicts_'+location.pathname.split('/').pop();"
+            "function st(e){return{v:e.classList.contains('bad')?'bad':e.dataset.trim?'trim':'good',"
+            "t:e.dataset.trim||null,r:e.classList.contains('rev')};}"
+            "const REC={};document.querySelectorAll('.sh').forEach(e=>{REC[e.dataset.id]=st(e)});"
+            "function same(a,b){return a.v===b.v&&!!a.r===!!b.r&&(a.t||'')===(b.t||'');}"
             "function store(){const o={};document.querySelectorAll('.sh').forEach(e=>{"
-            "const v=e.classList.contains('bad')?'bad':e.dataset.trim?'trim':'good';"
-            "if(v!=='good'||e.dataset.trim)o[e.dataset.id]={v:v,t:e.dataset.trim||null}});"
+            "const s=st(e),base=REC[e.dataset.id]||{v:'good',t:null,r:false};"
+            "if(!same(s,base))o[e.dataset.id]=s});"
             "try{localStorage.setItem(KEY,JSON.stringify(o))}catch(err){}}"
+            "function applyState(e,s){e.classList.remove('good');e.classList.remove('bad');"
+            "e.classList.remove('trim');"
+            "if(s.t){e.dataset.trim=typeof s.t==='string'?s.t:JSON.stringify(s.t);e.classList.add('trim')}"
+            "else{delete e.dataset.trim;e.classList.add(s.v==='bad'?'bad':'good')}"
+            "if(s.r)e.classList.add('rev');else e.classList.remove('rev');}"
             "function restore(){let o={};try{o=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(err){}"
-            "let n=0;document.querySelectorAll('.sh').forEach(e=>{const r=o[e.dataset.id];if(!r)return;n++;"
-            "if(r.t){e.dataset.trim=r.t;e.classList.remove('good');e.classList.add('trim')}"
-            "else if(r.v==='bad'){e.classList.remove('good');e.classList.add('bad')}});"
-            "if(n)document.getElementById('restored').textContent=n+' restored from this browser';tally();}"
+            "let n=0;document.querySelectorAll('.sh').forEach(e=>{const r=o[e.dataset.id];if(!r)return;"
+            "n++;applyState(e,r)});"
+            "if(n)document.getElementById('restored').textContent=n+' unsaved in this browser';tally();}"
             "function forget(){try{localStorage.removeItem(KEY)}catch(err){}location.reload();}"
-            "function tally(){const b=document.querySelectorAll('.sh.bad').length;"
+            "function sectionDone(b){const sec=b.closest('.sect');"
+            "const on=!sec.classList.contains('alldone');"
+            "sec.querySelectorAll('.sh').forEach(e=>{if(on)e.classList.add('rev');"
+            "else e.classList.remove('rev')});tally();}"
+            "function tally(){const all=document.querySelectorAll('.sh').length;"
+            "const b=document.querySelectorAll('.sh.bad').length;"
             "const m=document.querySelectorAll('.sh.trim').length;"
-            "const t=document.querySelectorAll('.sh').length;"
-            "document.getElementById('tally').textContent=b+' wrong, '+m+' trimmed, of '+t;store();}"
-            "function copyAll(){const out=[];document.querySelectorAll('.sh').forEach(e=>{"
-            "const v=e.classList.contains('bad')?'bad':e.dataset.trim?'trim':'good';"
+            "const r=document.querySelectorAll('.sh.rev').length;"
+            "document.getElementById('tally').textContent="
+            "r+' of '+all+' reviewed \u00b7 '+b+' wrong, '+m+' trimmed';"
+            "document.querySelectorAll('.sect').forEach(sec=>{"
+            "const t=sec.querySelectorAll('.sh').length,d=sec.querySelectorAll('.sh.rev').length;"
+            "if(t&&d===t)sec.classList.add('alldone');else sec.classList.remove('alldone');"
+            "const p=sec.querySelector('.prog');if(p)p.textContent=d+' of '+t+' reviewed';"
+            "const bt=sec.querySelector('button.done');"
+            "if(bt)bt.textContent=(t&&d===t)?'not reviewed':'mark section reviewed';});store();}"
+            "function rows(){const out=[];document.querySelectorAll('.sh').forEach(e=>{const s=st(e);"
             "const o={id:e.dataset.id,letter:e.dataset.ch,form:e.dataset.form,n:+e.dataset.n,"
-            "page:+e.dataset.page,wid:e.dataset.wid,index:+e.dataset.index,verdict:v};"
-            "if(e.dataset.trim){o.trim=JSON.parse(e.dataset.trim);o.box=e.dataset.box.split(',').map(Number)}"
-            "out.push(o)});"
-            "navigator.clipboard.writeText(out.map(o=>JSON.stringify(o)).join('\\n'));"
-            "alert(out.length+' verdicts copied');}"
+            "page:+e.dataset.page,wid:e.dataset.wid,index:+e.dataset.index,verdict:s.v,reviewed:s.r};"
+            "if(s.t){o.trim=JSON.parse(s.t);o.box=e.dataset.box.split(',').map(Number)}"
+            "out.push(o)});return out;}"
+            "function text(){return rows().filter(o=>o.reviewed).map(o=>JSON.stringify(o)).join('\\n');}"
+            "function copyAll(){const t=text();if(!t){alert('nothing is marked reviewed yet \u2014 "
+            "press \u201cmark section reviewed\u201d under a heading when you finish it');return}"
+            "navigator.clipboard.writeText(t);alert(t.split('\\n').length+' reviewed verdicts copied');}"
+            "function downloadAll(){const t=text();if(!t){alert('nothing is marked reviewed yet');return}"
+            "const a=document.createElement('a');"
+            "a.href=URL.createObjectURL(new Blob([t+'\\n'],{type:'application/x-ndjson'}));"
+            "a.download=location.pathname.split('/').pop().replace('.html','')+'_reviewed.jsonl';"
+            "document.body.appendChild(a);a.click();a.remove();}"
             "restore();"
             "</script>")
     os.makedirs(os.path.dirname(a.out), exist_ok=True)

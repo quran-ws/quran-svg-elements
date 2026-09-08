@@ -31,6 +31,11 @@ The model is `.cache/letters/model_ft5.pt`. Build with
 `QSVG_LETTERS_TAG=model` → `.cache/letters/cuts-model`, `.cache/letters-svg-model`,
 `.cache/letters/audit-model`.
 
+Shape verdicts stand at **50 reviewed** of the 738 common shapes
+(`docs/defects/letter_shape_verdicts.jsonl`): the whole ل-initial block, 35 shapes carrying
+22,065 letters, of which 23 are right and **12 he trimmed**; plus 15 earlier trims that
+predate the containment fix and wait in `letter_trims_review.html`.
+
 Abdullah has drawn **166 words** by hand (`docs/defects/letters_hand_cuts.jsonl`), all
 of them accepted into the training labels. They cover the letter pairs the tajweed
 layers never colour: لك 44, عل 26, كم 25, لم 23, هم 20, لح 17, ها 14, به 14, and
@@ -69,6 +74,15 @@ re-implemented in the browser, so each card shows every letter on its own the mo
 line lands, green when the pieces match the letter count. Checked against the Python
 masks on 16 words: same piece count, same order, matching pixel shares. Before it, words
 came back a line short and had to be redrawn.
+
+**The repo file, not the browser, is the record of a review.** The shapes page used to
+remember only in `localStorage`, and a browser stores only what differs from the default,
+so a rebuild — or a second machine — showed judged shapes as fresh green and the copy
+button re-emitted them as *good*. Fifteen drawn trims came back that way. The page is now
+seeded from `docs/defects/letter_shape_verdicts.jsonl` at build time, the browser may only
+override it, and each card carries an explicit REVIEWED flag set by *mark section reviewed*
+under its heading. Copy and Download emit **only reviewed shapes**, so a default green can
+never again be mistaken for a judgement.
 
 **Naming a piece by hand where no line can work.** The medial ك+ل ligature is an arm
 plus a bowl and a stem plus a foot — four pieces for two letters, and no chord can give
