@@ -346,6 +346,37 @@ def clean_labels(lab, ink, n, small=0.08):
                     changed = True
         if not changed:
             break
+    # (1b) a contour decides its own owner. Rules (1) and (2) both reason by adjacency,
+    # so nothing at all reaches a piece sitting on a DIFFERENT contour of the run -- and
+    # that is where the strays are: of 4,267 stray pieces on letters that are off their
+    # family's piece norm, 85% lie on another contour (measured over all 604 pages,
+    # 2026-09-08). A contour is one connected stroke of ink; a letter holding a minority
+    # of it while its own body lies elsewhere is holding its neighbour's ink, whether or
+    # not the two happen to touch. Give that minority to the letter that owns the contour.
+    # Letters legitimately drawn on two contours are untouched, because there the letter
+    # IS the majority of its second contour -- a final ك is its bowl plus a separate
+    # stroke, 1,857 times out of 1,893, and this rule leaves every one of them alone.
+    ink_comp0, n_comp0 = ndimage.label(ink, structure=eight)
+    if n_comp0 > 1:
+        for cid in range(1, n_comp0 + 1):
+            contour = ink_comp0 == cid
+            here = lab[contour]
+            here = here[here >= 0]
+            if not len(here):
+                continue
+            counts = np.bincount(here, minlength=n)
+            owner = int(counts.argmax())
+            for k in range(n):
+                if k == owner or counts[k] == 0 or counts[k] >= counts[owner]:
+                    continue
+                mine = lab == k
+                if not mine.any():
+                    continue
+                # only if the letter's own body is somewhere else
+                if int((mine & contour).sum()) * 2 >= int(mine.sum()):
+                    continue
+                lab[mine & contour] = owner
+
     # (2) join what is still in pieces on the same ink component
     ink_comp, _ = ndimage.label(ink, structure=eight)
     dt = ndimage.distance_transform_edt(ink)

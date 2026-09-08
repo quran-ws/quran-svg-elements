@@ -275,3 +275,41 @@ class ShapeTrims(unittest.TestCase):
         outside = mask[12:18, 40:58]
         self.assertTrue((outside == 0b10).all(), "outside must lose letter 0")
         self.assertTrue((mask[~ink] == 0).all(), "non-ink must stay ignored")
+
+
+class ContourOwnership(unittest.TestCase):
+    """clean_labels rule (1b): a contour decides its own owner."""
+
+    def _run(self, lab, ink, n):
+        from tools.letter_model import clean_labels
+        return clean_labels(lab.copy(), ink, n)
+
+    def test_a_speck_on_another_contour_goes_to_that_contours_owner(self):
+        import numpy as np
+        ink = np.zeros((40, 60), dtype=bool)
+        ink[10:30, 5:20] = True                      # contour A, letter 0
+        ink[10:30, 35:55] = True                     # contour B, letter 1, and a speck of 0
+        lab = np.full(ink.shape, -1, dtype=np.int64)
+        lab[10:30, 5:20] = 0
+        lab[10:30, 35:55] = 1
+        lab[11:14, 36:39] = 0                        # letter 0 holding a corner of contour B
+        out = self._run(lab, ink, 2)
+        self.assertEqual(int((out[10:30, 35:55] == 0).sum()), 0,
+                         "the speck must go to the letter that owns that contour")
+        self.assertEqual(int((out[10:30, 5:20] == 0).sum()), 20 * 15,
+                         "the letter's own contour must be untouched")
+
+    def test_a_letter_that_owns_its_second_contour_keeps_it(self):
+        """A final kaf is a bowl plus a separate stroke 1,857 times of 1,893."""
+        import numpy as np
+        ink = np.zeros((40, 60), dtype=bool)
+        ink[10:30, 5:25] = True                      # the bowl, letter 0's body
+        ink[5:8, 30:50] = True                       # the separate stroke, also letter 0
+        ink[10:30, 35:55] = True                     # the neighbour, letter 1
+        lab = np.full(ink.shape, -1, dtype=np.int64)
+        lab[10:30, 5:25] = 0
+        lab[5:8, 30:50] = 0
+        lab[10:30, 35:55] = 1
+        out = self._run(lab, ink, 2)
+        self.assertEqual(int((out[5:8, 30:50] == 0).sum()), 3 * 20,
+                         "a whole second contour the letter owns must survive")

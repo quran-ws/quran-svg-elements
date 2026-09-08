@@ -179,6 +179,58 @@ The dominant failure is not a missing piece but an overfed letter: for most of t
 loop is a strict subset of what the build gave, so the letter is holding ink that belongs
 to its neighbour.
 
+## A letter must be drawn with the number of pieces that letter is drawn with
+
+Abdullah spotted a ن and a و emitted as two contours when each is one stroke. Measured
+over all 322,746 letters (`tools/audit_letter_pieces.py`), 5,620 are emitted as more than
+one piece — but "one letter, one piece" is the wrong rule and would break 1,857 correct
+letters: **a final ك is a bowl plus a separate stroke, 1,857 times out of 1,893**, and an
+isolated ك always. So the legal count is measured per (letter, form) and kept in
+`docs/letter_piece_norms.json`; only ك-final and ك-only are ever two. Against those norms
+**3,583 letters (1.11%) are wrong**, and one family (ٱ-initial) has no clear norm and is
+left alone.
+
+Where the extra piece comes from, measured over the 4,267 stray pieces:
+
+| | | |
+|---|---|---|
+| the letter owns a whole extra contour | 2,194 | 51% |
+| a minority of a contour another letter owns | 1,416 | 33% |
+| a second region on its own contour, never joined | 657 | 15% |
+
+**85% of strays are on a different contour from the letter's body — and nothing in the
+code was looking there.** `clean_labels` enforces continuity twice, and both rules reason
+by adjacency: rule (1) moves a fragment to the letter it *touches*, and rule (2) joins two
+regions only when they lie on the *same* ink component. A piece on another contour touches
+nothing and shares nothing, so neither rule could ever reach it. That gap is the cause.
+
+The fix for that gap is rule (1b): a contour decides its own owner. A letter holding a
+minority of a contour while its own body lies elsewhere is holding its neighbour's ink,
+whether or not the two touch, so that minority goes to the letter that owns the contour.
+Letters legitimately drawn on two contours are untouched, because there the letter IS the
+majority of its second contour — every one of the 1,857 final kafs survives the rule by
+construction, not by an exception.
+
+**It is worth only 52 letters, and the measurement says why.** Re-labelling 143 off-norm
+letters with the model shows **86% are already correct in the labeller's own output** and
+are broken further down. Two candidate causes downstream were tested and are NOT it:
+`cut_run`'s nearest-distance rule for unclaimed components (the model build does not go
+through `cut_run` at all — it emits through `cut_run_masks`), and the positional pairing
+of detached bodies in `cut_run_record`, which was changed to prefer the labels and gave a
+**byte-identical result over 120 pages**. What is left is the mask → path step itself, the
+boolean library, which is already the first item on the list below. So this defect is not
+a new bug: it is the same one, and it now has a number (3,583) and a gate.
+
+Whole-mushaf effect of rule (1b), model build → probe build: off-norm letters 3,583 →
+3,531, runs left uncut 109 → 105. Over pages 1-120 the existing gate moves proof failures
+4 → 3, shape flags 209 → 207, pixel flags 3 → 2, marks unchanged. (The size column reads 0
+for a fresh tag because its size table has not been built; that is not an improvement.)
+
+A second class the measurement separated out: 483 of the off-norm letters sit in runs
+that contain a boundary **the joining rules forbid** (خرة, لصلوة, لحيوة, كوة), where the
+ligature cut has put two letters that cannot join into one run. That is a defect of the
+run cut, not of the labeller, and is not addressed here.
+
 ## Choosing what to draw next
 
 `tools/pairs_worklist.py` ranks every letter pair in the mushaf by joints still guessed —

@@ -361,17 +361,26 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     z, x0, y0 = meta["z"], meta["x0"], meta["y0"]
     others = [p for p in bodies if p is not main]
     missing = [k for k in range(n) if k not in on_main]
-    if others and len(others) == len(missing):
+    # Which letter a detached body belongs to is a question the labels already answer,
+    # so ask them first and pair by position only when they cannot. Pairing right-to-left
+    # whenever the counts happen to match is a guess dressed as a rule: it ignores the
+    # evidence, and where the two disagree it is the guess that is wrong.
+    by_label = {}
+    for p in others:
+        m = L.raster(L.flatten(p["d"]), x0, y0, meta["shape"][1] / z, meta["shape"][0] / z, z)
+        m = m[:meta["shape"][0], :meta["shape"][1]]
+        sub = labels[:m.shape[0], :m.shape[1]][m]
+        sub = sub[sub >= 0]
+        by_label[p["eid"]] = int(np.bincount(sub).argmax()) if len(sub) else None
+    if others and all(v is not None for v in by_label.values()):
+        rec["extra"].update(by_label)
+    elif others and len(others) == len(missing):
         others_sorted = sorted(others, key=lambda p: -L.bbox(L.flatten(p["d"]))[2])
         for p, k in zip(others_sorted, missing):
             rec["extra"][p["eid"]] = k
     else:
         for p in others:
-            m = L.raster(L.flatten(p["d"]), x0, y0, meta["shape"][1] / z, meta["shape"][0] / z, z)
-            m = m[:meta["shape"][0], :meta["shape"][1]]
-            sub = labels[:m.shape[0], :m.shape[1]][m]
-            sub = sub[sub >= 0]
-            rec["extra"][p["eid"]] = int(np.bincount(sub).argmax()) if len(sub) else 0
+            rec["extra"][p["eid"]] = by_label.get(p["eid"]) or 0
         # a missing letter must still get a contour: the free one nearest its template
         held = {}
         for eid, k in rec["extra"].items():

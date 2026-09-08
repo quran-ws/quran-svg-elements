@@ -549,7 +549,7 @@ def split_by_cut(ink, cut, x0, y0, z):
 
 
 
-def cut_run(d, cuts, refs=None, z=8, tol=0.005):
+def cut_run(d, cuts, refs=None, z=8, tol=0.005, labels=None, lab_frame=None):
     """Split the run `d` (one evenodd path) by `cuts` in READING ORDER (cut k lies
     between letter k and k+1) into len(cuts)+1 pieces. A cut is a polyline or a list
     of polylines (a medial kaf meets its neighbour at two places).
@@ -653,20 +653,39 @@ def cut_run(d, cuts, refs=None, z=8, tol=0.005):
         left = ca if pa[0] < pb[0] else cb
         other = cb if left == ca else ca
         owner.setdefault(left if left not in owner else other, n - 1)
-    # unclaimed components (fragments a strip carved off) go to the nearest claimed one
+    # Unclaimed components: ink no letter's anchor sits in. Distance is the wrong
+    # question here -- it was the wrong question for marks too ("nearest-word for ink in
+    # a gap ... direction beats distance") -- and it is what put a whole detached stroke
+    # under the letter that happened to be closest: 86% of letters emitted with the wrong
+    # number of pieces are clean in the labeller's own output and broken right here
+    # (measured on 143 off-norm letters, 2026-09-08). So ask the labels, which already
+    # own every ink pixel, and fall back to distance only when they cannot say.
     claimed = dict(owner)
     for cid in range(1, ncomp + 1):
         if cid in owner:
             continue
         ys, xs = np.nonzero(lab == cid)
-        best = None
-        for oc, k in claimed.items():
-            oys, oxs = np.nonzero(lab == oc)
-            step = max(1, len(oxs) // 400)
-            dd = np.min(np.hypot(xs[:, None] - oxs[None, ::step], ys[:, None] - oys[None, ::step]))
-            if best is None or dd < best[0]:
-                best = (dd, k)
-        owner[cid] = best[1] if best else 0
+        k = None
+        if labels is not None and lab_frame is not None:
+            lx0, ly0, lz = lab_frame
+            lr = np.clip(((y0 + (ys + 0.5) / z - ly0) * lz).astype(int), 0, labels.shape[0] - 1)
+            lc = np.clip(((x0 + (xs + 0.5) / z - lx0) * lz).astype(int), 0, labels.shape[1] - 1)
+            vals = labels[lr, lc]
+            vals = vals[(vals >= 0) & (vals < n)]
+            if len(vals) and np.bincount(vals).max() >= 0.5 * len(vals):
+                cand = int(np.bincount(vals).argmax())
+                if cand in claimed.values():
+                    k = cand
+        if k is None:
+            best = None
+            for oc, j in claimed.items():
+                oys, oxs = np.nonzero(lab == oc)
+                step = max(1, len(oxs) // 400)
+                dd = np.min(np.hypot(xs[:, None] - oxs[None, ::step], ys[:, None] - oys[None, ::step]))
+                if best is None or dd < best[0]:
+                    best = (dd, j)
+            k = best[1] if best else 0
+        owner[cid] = k
     # every chord must separate letters k and k+1
     for k, fl in enumerate(flanks):
         for j, ((ca, pa), (cb, pb)) in enumerate(fl):
