@@ -10,9 +10,10 @@
     "docs/defects/**",
     "docs/demo/data/**",
     "docs/shipping/lib/test/atlas.json",
-    "tools/data/qiraat-ayah-map/**"
+    "tools/data/qiraat-ayah-map/**",
+    "tools/terminology/**"
   ],
-  "_exclude": "tools/texts/qc is the DigitalKhatt text exactly as published (symlinks into .cache/words) — the publisher's transliterations, not names this project chose. docs/defects and docs/demo/data are generated: they are rewritten from the pipeline by tools/make_queue.py, score_confidence.py and docs/demo/build.py, so the fix for a name in them is in the generator, which IS audited. atlas.json carries the surahs' English names, which are glosses a reader sees, not identifiers. tools/data/qiraat-ayah-map is a checked-out copy of quranpedia/qiraat-ayah-map: its file, key and member names belong to that project.",
+  "_exclude": "tools/texts/qc is the DigitalKhatt text exactly as published (symlinks into .cache/words) — the publisher's transliterations, not names this project chose. docs/defects and docs/demo/data are generated: they are rewritten from the pipeline by tools/make_queue.py, score_confidence.py and docs/demo/build.py, so the fix for a name in them is in the generator, which IS audited. atlas.json carries the surahs' English names, which are glosses a reader sees, not identifiers. tools/data/qiraat-ayah-map is a checked-out copy of quranpedia/qiraat-ayah-map: its file, key and member names belong to that project. tools/terminology is a pinned copy of the standard itself, vendored so CI can run the gate without credentials for the private guidelines repo; it lists every spelling of every concept by design, so auditing it is noise.",
   "ignore_words": [
     "pos",
     "part",
