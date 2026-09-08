@@ -31,10 +31,12 @@ The model is `.cache/letters/model_ft5.pt`. Build with
 `QSVG_LETTERS_TAG=model` → `.cache/letters/cuts-model`, `.cache/letters-svg-model`,
 `.cache/letters/audit-model`.
 
-Shape verdicts stand at **50 reviewed** of the 738 common shapes
-(`docs/defects/letter_shape_verdicts.jsonl`): the whole ل-initial block, 35 shapes carrying
-22,065 letters, of which 23 are right and **12 he trimmed**; plus 15 earlier trims that
-predate the containment fix and wait in `letter_trims_review.html`.
+Shape verdicts are **complete for the common pass**: all 738 shapes covering 90% of every
+letter drawn in the mushaf are reviewed (`docs/defects/letter_shape_verdicts.jsonl`), 648
+right and **90 corrected by hand** with a drawn loop. The corrections cluster where the
+letters are: ل 20, ي 9, ا 8, م 8, ن 7, and ك و ه 6 each. Sixteen of the ninety re-derive to
+a letter holding 70-92% of its word's ink, which no single letter does, so they are marked
+`needs_confirm` and shown both ways in `letter_trims_review.html`.
 
 Abdullah has drawn **166 words** by hand (`docs/defects/letters_hand_cuts.jsonl`), all
 of them accepted into the training labels. They cover the letter pairs the tajweed
@@ -75,7 +77,11 @@ line lands, green when the pieces match the letter count. Checked against the Py
 masks on 16 words: same piece count, same order, matching pixel shares. Before it, words
 came back a line short and had to be redrawn.
 
-**The repo file, not the browser, is the record of a review.** The shapes page used to
+**The repo file, not the browser, is the record of a review.** A second lesson came with
+the first: the page's storage key was made page-specific mid-review, which orphaned 90
+drawn trims under the old key `letter_shape_verdicts` and made the page look empty. They
+were recovered from the browser itself. `restore()` now reads the legacy key as a fallback,
+and a storage key must never change under a review in progress. The shapes page used to
 remember only in `localStorage`, and a browser stores only what differs from the default,
 so a rebuild — or a second machine — showed judged shapes as fresh green and the copy
 button re-emitted them as *good*. Fifteen drawn trims came back that way. The page is now
