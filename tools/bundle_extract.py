@@ -86,6 +86,10 @@ def _box_of(el, M):
     return box
 
 
+def _int(v):
+    return int(v) if v is not None else None
+
+
 def read_page(path, page):
     """Return a dict of everything the index needs from one page SVG.
 
@@ -102,6 +106,7 @@ def read_page(path, page):
     ayahs = []           # aid, in document order, first appearance
     seen_aid = set()
     divisions = {}      # aid -> {juz|hizb|nisf|rubu_al_hizb: n} for divisions starting here
+    division_marks = []  # the drawn rosettes, a separate layer from the boundaries
 
     def walk(el, M):
         nonlocal marks
@@ -119,7 +124,13 @@ def read_page(path, page):
                 rec = {"word_key": word_key, "line": cur_line[0],
                        "ayah_key": word_key.rsplit(":", 1)[0]}
                 for f in TEXT_FIELDS:
-                    rec[f] = child.get("data-" + f)
+                    # the ATTRIBUTE keeps the hyphen (data-rasm-uthmani) while
+                    # the code name is snake_case (rasm_uthmani) — CLAUDE.md,
+                    # "attribute NAMES keep the hyphen". Concatenating the code
+                    # name read data-rasm_uthmani, which no page has ever
+                    # carried, so rasm_uthmani and rasm_imlai came back None and
+                    # the cross-check against the word cache stopped the build.
+                    rec[f] = child.get("data-" + f.replace("_", "-"))
                 rec["box"] = _box_of(child, N)
                 for node in child.iter():
                     if node.get("data-kind") == "mark" \
@@ -133,14 +144,43 @@ def read_page(path, page):
             if cls == "line":
                 cur_line[0] = int(child.get("data-line"))
                 lines_seen.append(cur_line[0])
-            if cls == "ayah":
-                # the four division attributes repeat on every fragment of the
-                # ayah (FORMAT §6.2), so first writer wins and the rest agree
-                got = {k: int(child.get("data-%s-start" % k))
+            if cls == "ayah-fragment":
+                # the group is `ayah-fragment`, not `ayah` — renamed in the
+                # terminology adoption (CLAUDE.md: g.ayah -> g.ayah-fragment).
+                # Testing the old name meant this block never ran at all, so
+                # EVERY division was dropped, not just the rubu.
+                # The four division attributes repeat on every fragment of the
+                # ayah (FORMAT §6.2), so first writer wins and the rest agree.
+                # Same hyphen rule as the text fields above: the attribute is
+                # data-rubu-al-hizb-start, not data-rubu_al_hizb-start. juz,
+                # hizb and nisf are single words and so were unaffected, which
+                # is why this showed up as rubu_al_hizb_boundaries: 0 in
+                # VERSION.json rather than as an error — 240 boundaries silently
+                # dropped from the index.
+                got = {k: int(child.get("data-%s-start" % k.replace("_", "-")))
                        for k in ("juz", "hizb", "nisf", "rubu_al_hizb")
-                       if child.get("data-%s-start" % k) is not None}
+                       if child.get("data-%s-start"
+                                    % k.replace("_", "-")) is not None}
                 if got:
                     divisions.setdefault(child.get("data-ayah-key"), got)
+            if cls == "division-mark":
+                # The DRAWN rosette (۞), which is a layer of its own — 199 in
+                # the mushaf, against 240 rubu BOUNDARIES. The 41 without a
+                # rosette all fall on an ayah 1, where the surah header stands
+                # in its place; quran-ws records the same 199 as `division`
+                # marks, a strict subset of our 240. The two answer different
+                # questions and neither replaces the other. NOTE the attributes
+                # here are CONTEXT, not series: `data-nisf` is the half (1 or 2),
+                # not the 1..60 ordinal that `data-nisf-start` carries.
+                division_marks.append({
+                    "ayah_key": child.get("data-ayah-key"),
+                    "rubu_al_hizb": _int(child.get("data-rubu-al-hizb")),
+                    "rubu_al_hizb_in_hizb":
+                        _int(child.get("data-rubu-al-hizb-in-hizb")),
+                    "half": _int(child.get("data-nisf")),
+                    "hizb": _int(child.get("data-hizb")),
+                    "juz": _int(child.get("data-juz")),
+                })
             if cls in ("surah-name", "basmalah"):
                 sid = child.get("data-sid")
                 if cls == "surah-name" and sid:
@@ -179,6 +219,7 @@ def read_page(path, page):
         "surahs": page_surahs,
         "banners": sorted(set(surahs)),
         "divisions": divisions,
+        "division_marks": division_marks,
     }
 
 

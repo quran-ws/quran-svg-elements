@@ -4,7 +4,7 @@ Edition id `hafs-kfgqpc` · 604 pages · 77,433 words · 6,236 ayahs · 114 sura
 (77,433, not the usual 77,432: the print writes 37:130 as two words, `إِلْ` and
 `يَاسِينَ` — `docs/MAQTU-MAWSUL.md`. Older counts of 77,432 in this document
 are that one word short.)
-Artwork: the **KFGQPC Madani mushaf, V2 1441H print**.
+Artwork: the **KFGQPC Madani mushaf, V4 1441H print**.
 
 This document ships with the files. Everything in it was verified against the
 real build; every count is a measurement over all 604 emitted pages, not an
