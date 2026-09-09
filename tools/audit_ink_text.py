@@ -35,6 +35,16 @@ PAGES = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
 LIB = os.path.join(ROOT, ".cache", "word_by_word_translation", "hafs.json")
 
 
+# quran-ws keeps three kinds of sign OUT of the word text, in a marks[] layer
+# tagged by `k`: waqf 4277, hizb 199, sajdah 15. Only waqf belongs back in the
+# word — our SVG carries waqf inside the word group, but draws the rubu_al_hizb
+# rosette and the sajdah sign as their own groups, exactly as quran-ws does.
+# Folding in all three was this audit's own bug: it put a ۞ on the first word of
+# 199 ayahs and made them look like word-numbering drift, one every 2-3 pages
+# across the whole mushaf.
+FOLD_KINDS = {"waqf"}
+
+
 def quran_ws():
     """quran-ws/quran-text v3.0, keyed surah:ayah:word, waqf layer folded in."""
     if not os.path.exists(LIB):
@@ -49,7 +59,8 @@ def quran_ws():
             if w:
                 out["%d:%d:%d" % (a["sura"], a["n"], pos)] = (
                     w.get("t", "")
-                    + "".join(m.get("sign", "") for m in (w.get("marks") or [])))
+                    + "".join(m.get("sign", "") for m in (w.get("marks") or [])
+                              if m.get("k") in FOLD_KINDS))
     return out
 
 
