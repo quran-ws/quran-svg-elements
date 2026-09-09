@@ -290,7 +290,8 @@ def check_crossrefs(bundle, sample):
             # the SVG carries data-rasm-uthmani on every profile and the other four
             # forms on the dev profile only; compare whatever it carries
             for f in ("rasm_uthmani", "rasm", "rasm_imlai", "search", "qpc"):
-                if "data-" + f in a and a["data-" + f] != w[f]:
+                _at = "data-" + f.replace("_", "-")   # see bundle_extract
+                if _at in a and a[_at] != w[f]:
                     bad_text.append((p, w["word_key"], f))
             for f in ("rasm_uthmani", "rasm", "rasm_imlai", "search", "qpc"):
                 if not w.get(f):

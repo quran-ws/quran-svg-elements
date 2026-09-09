@@ -313,7 +313,7 @@ default bundle.
   "schema": "quran-svg-bundle",
   "version": "1.0.0",
   "edition": "hafs-kfgqpc",
-  "print": "KFGQPC Madani mushaf, V2 1441H",
+  "print": "KFGQPC Madani mushaf, V4 1441H",
   "pages": 604, "words": 77432, "ayahs": 6236, "surahs": 114,
   "profile": "production",
   "format_spec": "FORMAT.md@1.0",
