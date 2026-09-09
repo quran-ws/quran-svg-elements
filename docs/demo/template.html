@@ -217,7 +217,7 @@ g.q-hl path{fill:var(--hl)}
 .lab-extra label{display:flex;gap:6px;align-items:center;
   font:500 12px/1 "IBM Plex Mono",monospace;color:var(--muted)}
 
-/* word-by-word-translation-translation reveal. Every ink path ships fill="#231f20" as a presentation
+/* word-by-word translation reveal. Every ink path ships fill="#231f20" as a presentation
    attribute; a CSS rule beats one, so `fill: inherit` hands the path back to
    its group and the whole word recolours by setting ONE property. */
 /* ONE selector over the page's ink, not a list of element types that would
@@ -528,7 +528,7 @@ footer p{max-width:74ch}
         and watch five sixths of Ayahs al-Kursi stop being highlighted, without anything throwing.</p>
     </div>
     <div class="lab" id="lab-ayah"></div>
-    <p class="note">Each fragment carries <code>data-part</code> and <code>data-ayah-fragments</code>, and
+    <p class="note">Each fragment carries <code>data-fragment</code> and <code>data-ayah-fragments</code>, and
       all 13,489 of them carry <code>data-mark</code> pointing at the <code>id</code> of their own
       medallion on the same page. No ayah spans two pages, so if you loaded the right page you will
       always find all N. <b>Never</b> use <code>firstElementChild</code> of one fragment to find the
@@ -883,10 +883,10 @@ word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-
       <p>Move the pointer over any word on the page and its meaning appears. Tap works on touch,
         and the words are focusable so <kbd>Tab</kbd> and the arrow keys do too.
         <code>data-word-key</code> is <code>surah:ayah:word</code>, 1-based — the same key the quran.com
-        API, word-by-word-translation-translation translation sets, morphology data and recitation timings already use, so a
+        API, word-by-word translation sets, morphology data and recitation timings already use, so a
         5 KB file of glosses joins to this ink with no mapping table.</p>
       <p style="margin-top:10px"><b>What you see here is an example, not a feature.</b> The gloss is
-        word-by-word-translation-translation English from quran.com, used because it is open data anyone can check; the point
+        word-by-word translation English from quran.com, used because it is open data anyone can check; the point
         is the join, not the language. Put a tafsir, a grammar tag, a vocabulary card or
         <b>any per-word data you already have</b> in its place and the same three lines still run —
         and none of it is possible on a page image. <b>These files ship no translations.</b></p>
@@ -1465,7 +1465,7 @@ function clonePage(src = PRISTINE) {
   const tag = 'c' + (++cloneSeq) + '-';
   svg.removeAttribute('id');
   svg.querySelectorAll('[id]').forEach(el => { el.id = tag + el.id; });
-  svg.querySelectorAll('g.ayah-fragment[data-mark]').forEach(g => {
+  svg.querySelectorAll('g.ayah-fragment[data-ayah-mark]').forEach(g => {
     g.dataset.ayahMark = tag + g.dataset.ayahMark;
   });
   return svg;
@@ -4351,15 +4351,14 @@ mod('attrs', () => {
   /* keyed 'scope|attr', or 'attr' for a note that holds on every scope */
   const NOTE = {
     'g.word|data-word-key': ['<code>surah:ayah:word</code>, 1-based. Globally unique. <b>The key.</b>', 1],
-    'g.word|data-w': ['the <b>global word id</b> of the word-by-word-translation-translation source (KFGQPC UthmanicHafs v3.0 release): the same integer for this word in every mushaf that has it. 77,432 ids; the two pieces of 15:7 <span class="ar">لَّوْ مَا</span> share one', 1],
     'g.word|data-rasm-uthmani': ["the print's own text, full diacritics — the text of record", 1],
     'g.word|data-rasm': ['skeleton of the rasm_uthmani spelling — <b>the shapes drawn</b> — dev profile only; production ships it in index/by-page', 1],
     'g.word|data-rasm-imlai': ['modern spelling, with marks — dev profile only; production ships it in index/by-page', 1],
     'g.word|data-search': ['skeleton of the modern spelling — <b>the search key</b> — dev profile only; production ships it in index/by-page', 1],
     'g.word|data-qpc': ['the same text in KFGQPC codepoints — dev profile only; production ships it in index/by-page', 1],
     'g.ayah-fragment|data-ayah-key': ['<code>surah:ayah</code> — one fragment per printed line', 1],
-    'g.ayah-fragment|data-mark': ["the <code>id</code> of this ayah's medallion, on the same page", 1],
-    'g.ayah-fragment|data-part': ['which fragment this is, in reading order', 1],
+    'g.ayah-fragment|data-ayah-mark': ["the <code>id</code> of this ayah's medallion, on the same page", 1],
+    'g.ayah-fragment|data-fragment': ['which fragment this is, in reading order', 1],
     'g.ayah-fragment|data-ayah-fragments': ['how many fragments the ayah has — your completeness check', 1],
     'g.ayah-fragment|data-juz-start': ['this ayah opens that juz. Tagged on every fragment of it, hence more than 30', 1],
     'g.ayah-fragment|data-hizb-start': ['opens that hizb', 1],
@@ -4408,8 +4407,8 @@ mod('attrs', () => {
     'svg|data-decomposition': ['<b>how far down this edition is broken up.</b> <code>word</code> — words, ligatures and named marks are all addressable, which is what every section on this page relies on. <code>ayah</code> — page ink with ayah polygons and end-marks, and nothing below the ayah. Read it before writing a word-level selector.', 1],
     'class': ['what the element is. Every selector on this page is built on it.', 1],
     'g|id': ['the wrapper holding the page content', 1],
-    'g.ayah_marks|id': ['the layer the medallions live in, outside the lines', 1],
-    'g.ayah_marks|class': ['the medallion layer', 1]
+    'g.ayah_markers|id': ['the layer the medallions live in, outside the lines', 1],
+    'g.ayah_markers|class': ['the medallion layer', 1]
   };
   const KINDS = { 1: 'both profiles', 2: 'both profiles · review only', 3: 'dev profile only' };
 
