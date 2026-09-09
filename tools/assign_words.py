@@ -18,6 +18,7 @@ review queue; the rest are safe automatic assignments.
 """
 
 import argparse
+import bisect
 import json
 import math
 import os
@@ -201,8 +202,16 @@ def page_words(page_no, cache_dir):
             lines.setdefault(ln, []).append({
                 "surah": int(surah), "ayah": int(ayah_number), "pos": w["position"],
                 "rasm_uthmani": _clean_word(ut), "rasm_imlai": _clean_word(w["text_imlaei"]),
+                # two forms on purpose: `qpc` is what the mark budgets read
+                # (the لأ ligature's maddah counted as the fathah the print
+                # draws), `qpc_text` is quran-ws's own spelling, which is what
+                # data-qpc publishes. Emitting the budget form would put a text
+                # in the artefact that no source actually writes.
                 "qpc": _clean_word(
                     _word_qpc(qpc, int(surah), int(ayah_number), w["position"])),
+                "qpc_text": _clean_word(
+                    _word_qpc_text(qpc, int(surah), int(ayah_number),
+                                   w["position"])),
             })
     return lines
 
@@ -312,6 +321,90 @@ def _dktext(s0, a0, pos):
 
 
 _QPC = {}
+_WSTEXT = None
+
+
+def _wstext_on():
+    """Take the KFGQPC text from quran-ws/quran-text rather than the v2.0 dump.
+
+    Both are the Printing Complex's text of this print, but they are different
+    releases: the cached v2.0 alignment agrees with quran-ws on only 61.8% of
+    words, almost all of it shaddah/harakah ORDER, and v2.0 also drops the
+    sajdah line and simplifies two exceptional marks. quran-ws is the release
+    Abdullah maintains from the Complex's own data and is the text of record.
+    """
+    return os.environ.get("QSVG_WSTEXT", "1") != "0"
+
+
+def _ws_text():
+    """quran-ws/quran-text word text, keyed surah:ayah:word in ITS numbering.
+
+    Its `words` array is dense and its own segmentation is the one this
+    pipeline adopts (build_word_by_word_translation_seg.py derives the split
+    plan from it), so these keys are the FINAL word ids, not quran.com's
+    pre-split ones. Only the waqf kind of the marks layer is folded back into
+    the word: the rubu al-hizb rosette, the sajdah sign and the sajdah line are
+    drawn as their own groups here exactly as quran-ws keeps them in its own
+    layer.
+    """
+    global _WSTEXT
+    if _WSTEXT is not None:
+        return _WSTEXT
+    _WSTEXT = {}
+    f = os.path.join(ROOT, ".cache", "word_by_word_translation", "hafs.json")
+    if not os.path.exists(f):
+        return _WSTEXT
+    h = json.load(open(f, encoding="utf-8"))
+    words, types = h["words"], h["mark_types"]
+    signs = {}
+    for wi, ti in h["marks"]:
+        t = types[ti]
+        if t.get("kind") == "waqf":
+            signs[wi] = signs.get(wi, "") + t.get("sign", "")
+    ast, sst = h["ayah_starts"], h["surah_starts"]
+    for ai, lo in enumerate(ast):
+        hi = ast[ai + 1] if ai + 1 < len(ast) else len(words)
+        si = bisect.bisect_right(sst, lo) - 1
+        an = ai - bisect.bisect_left(ast, sst[si]) + 1
+        for pos, wi in enumerate(range(lo, hi), 1):
+            _WSTEXT["%d:%d:%d" % (si + 1, an, pos)] = words[wi] + signs.get(wi, "")
+    return _WSTEXT
+
+
+# lam + (combining marks) + alef-hamzah + maddah. HarfBuzz shapes that whole run
+# into ONE ligature glyph in UthmanicHafs (578/579/580), and that glyph draws the
+# maddah as a straight slash — the fathah shape the print uses and this pipeline
+# labels `fathah`. Outside the ligature the SAME U+0653 draws the wavy maddah
+# (أٓ alone, آ, بَآئِ all do). Verified over the 277 sites in the mushaf where
+# rasm_uthmani writes hamzah+fathah+alef and quran-ws writes أٓ: 277 of 277 shape
+# into the ligature. So the budget must read that U+0653 as a fathah, or every
+# one of those words demands a maddah the ink never draws — measured as +19 mark
+# flags over 10 pages when the text was swapped in without this.
+_WS_LIG = re.compile("(\u0644[\u064b-\u0655\u0670\u06e1\u08f0-\u08f2]*"
+                     "\u0623)\u0653")
+# quran-ws writes the harakah BEFORE the shaddah (064E 0651 — the Unicode
+# canonical order, since fathah has a lower combining class); rasm_uthmani
+# writes the shaddah first. Same two marks, and this audit's own comparison is
+# order-free, but passes inside the pipeline read the text positionally, and
+# leaving the orders mixed re-opened the fathah/kasrah naming on p218 — a
+# family CLAUDE.md warns is decided by position and budget. Normalise to the
+# order the rest of the pipeline is written against.
+_WS_SHADDAH = re.compile("([\u064b-\u0650\u0670])(\u0651)")
+_WSBUD = None
+
+
+def _ws_text_budget():
+    """quran-ws text as the INK reads it: the ligature maddah counted as a fathah.
+
+    `_ws_text` stays faithful to the release, because that is what data-qpc
+    publishes; this variant is what the mark budgets consume.
+    """
+    global _WSBUD
+    if _WSBUD is None:
+        _WSBUD = {k: _WS_SHADDAH.sub("\\2\\1", _WS_LIG.sub("\\1\u064e", v))
+                  for k, v in _ws_text().items()}
+    return _WSBUD
+
 
 
 def qpc_words(page_no):
@@ -820,7 +913,21 @@ def _wbwseg_widths(q):
 
 
 def _word_qpc(qpc, s0, a0, pos):
-    """QPC text for one of our words, across a fuse."""
+    """QPC text for one of our words, across a fuse.
+
+    The quran-ws release is keyed by the segmentation this pipeline already
+    adopts, so its words are looked up whole; the v2.0 cache is keyed by
+    quran.com's pre-split positions and has to be reassembled across the fuse.
+    """
+    if _wstext_on():
+        return _ws_text_budget().get("%d:%d:%d" % (s0, a0, pos), "")
+    return "".join(_dkseg_qpc(qpc, s0, a0, p) for p in _word_by_word_translation_pre(s0, a0, pos))
+
+
+def _word_qpc_text(qpc, s0, a0, pos):
+    """The published spelling, faithful to the source (see _word_qpc)."""
+    if _wstext_on():
+        return _ws_text().get("%d:%d:%d" % (s0, a0, pos), "")
     return "".join(_dkseg_qpc(qpc, s0, a0, p) for p in _word_by_word_translation_pre(s0, a0, pos))
 
 
@@ -3418,8 +3525,10 @@ def rewrite(page, assignment):
                                       esc(quran_meta.rasm(word["rasm_uthmani"])),
                                       esc(word["rasm_imlai"]),
                                       esc(quran_meta.rasm(word["rasm_imlai"])),
-                                      (' data-qpc="%s"' % esc(word["qpc"]))
-                                      if word.get("qpc") else ""))
+                                      (' data-qpc="%s"'
+                                       % esc(word.get("qpc_text") or word["qpc"]))
+                                      if (word.get("qpc_text")
+                                          or word.get("qpc")) else ""))
                     open_word = wkey
             if word and lig_key != open_lig and not _PROD:
                 # PRODUCTION PROFILE (QSVG_PROFILE=production): one group per
@@ -13028,7 +13137,14 @@ def assign_page(edition, page_no, cache_dir):
                   "small_meem": ("\u06e2\u06ed", 1),
                   "sukun": ("\u0652\u06e1", 1),
                   "shaddah": ("\u0651", 1),
-                  "maddah": ("\u0653\u06e4", 1)}
+                  # U+0622 آ is a PRECOMPOSED alef+maddah and carries a maddah
+                  # exactly as 0627+0653 does — the hamzah row above already
+                  # lists its precomposed forms (أ إ ؤ ئ) for the same reason.
+                  # rasm_uthmani happens to write the decomposed pair, so the
+                  # omission was invisible until a text that writes آ was read
+                  # here: 10:87:1 وَأَوْحَيْنَآ then budgeted 0 maddah and gave
+                  # away the one the print draws.
+                  "maddah": ("\u0653\u06e4\u0622", 1)}
         _widr = [(w, at) for (w, at) in assignment if w]
         for _wH, _atH in _widr:
             _elH = [e for a in _atH for e in a["els"]]
