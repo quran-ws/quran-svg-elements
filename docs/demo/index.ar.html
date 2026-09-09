@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>مصحف المدينة النبوية في ملفات SVG</title>
-<meta name="description" content="مصحف المدينة النبوية كاملاً في ملفات SVG: 604 صفحات، كل صفحة تطابق الطبعة المطبوعة في مظهرها، وكل آية وكلمة وعلامة فيها عنصر حقيقي يمكن تحديده والبحث فيه وتنسيقه والربط إليه.">
+<meta name="description" content="مصحف المدينة النبوية كاملًا في ملفات SVG: 604 صفحات، كل صفحة تطابق الطبعة المطبوعة في مظهرها، وكل آية وكلمة وعلامة فيها عنصر حقيقي يمكن تحديده والبحث فيه وتنسيقه والربط إليه.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Public+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
@@ -85,19 +85,102 @@ a{color:var(--lapis)}
 }
 /* an anchor must never land with its heading under the bar */
 section[id]{scroll-margin-top:62px}
+details.cap{scroll-margin-top:62px}
 
-/* the contents */
-.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px}
-.toc h3{font-family:"Public Sans",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--gold);margin:0 0 10px}
-.toc ol{list-style:none;margin:0;padding:0}
-.toc li{margin:0 0 12px}
-.toc a{display:block;text-decoration:none;color:var(--ink)}
-.toc a:hover .t{color:var(--gold)}
-.toc .n{font:500 11px/1 "IBM Plex Mono",monospace;color:var(--muted);margin-inline-end:7px}
-.toc .t{font:600 15px/1.3 "Spectral",Georgia,serif}
-.toc .d{display:block;font-size:12.5px;line-height:1.45;color:var(--muted);margin-top:3px}
+/* ---------------------------------------------------------------------------
+   THE CAPABILITY GRID
 
+   This replaces eighteen numbered sections that each ran the full width of the
+   page. They shared one silhouette — eyebrow, heading, paragraph, paper, editor
+   — so a visitor scrolling 33,000px could not tell the three that mattered from
+   the fifteen that were variations on them.
+
+   A card is CLOSED at rest: a thumbnail, a title, one line. It is a <details>,
+   so it opens with no script, keyboard and screen reader included, and the
+   lab's own IntersectionObserver does not fire — and therefore fetches nothing
+   — until the card is opened. Opening one makes it span the whole row in place,
+   because a lab needs the width and because the reader should not lose where
+   they were.
+--------------------------------------------------------------------------- */
+.cap-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 22px}
+.cap-bar .hint{font-size:13px;color:var(--muted)}
+
+.band{margin:0 0 40px}
+.band:last-child{margin-bottom:0}
+.band-h{font-family:"Public Sans",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin:0 0 5px}
+.band-n{margin:0 0 16px;font-size:14px;color:var(--muted);max-width:72ch}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:14px;
+  align-items:stretch}
+/* an open card is its own row, so stretching it to a neighbour's height would
+   be meaningless; only closed tiles line up */
+details.cap:not([open]){display:flex;flex-direction:column}
+details.cap:not([open])>summary{flex:1}
+
+details.cap{background:var(--panel);border:1px solid var(--rule);border-radius:3px;min-width:0}
+/* an open card takes the whole row: the lab beside it needs the width, and the
+   cards after it keep their place instead of reflowing around a tall neighbour */
+details.cap[open]{grid-column:1/-1;background:transparent;border-color:var(--gold)}
+details.cap>summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;
+  align-items:start;padding:14px;cursor:pointer;list-style:none;border-radius:2px}
+details.cap>summary::-webkit-details-marker{display:none}
+details.cap>summary:hover{background:var(--sunk)}
+details.cap>summary:focus-visible{outline:2px solid var(--lapis);outline-offset:-2px}
+details.cap[open]>summary{background:var(--panel);border-bottom:1px solid var(--rule);
+  border-radius:2px 2px 0 0}
+.cap-t{min-width:0}
+.cap-t b{display:block;font:600 16px/1.25 "Spectral",Georgia,serif;letter-spacing:-.005em}
+.cap-t i{display:block;font-style:normal;font-size:12.5px;line-height:1.45;color:var(--muted);
+  margin-top:4px}
+/* the chevron, drawn rather than typed so it turns */
+.cap-open{width:9px;height:9px;margin-top:6px;border-right:1.5px solid var(--muted);
+  border-bottom:1.5px solid var(--muted);transform:rotate(45deg);transition:transform .18s ease}
+details.cap[open] .cap-open{transform:rotate(225deg);border-color:var(--gold)}
+@media (prefers-reduced-motion:reduce){.cap-open{transition:none}}
+.cap-body{padding:22px 14px 18px;border:1px solid var(--rule);border-top:0;border-radius:0 0 2px 2px}
+.cap-body>.shead{margin-bottom:18px}
+
+/* the thumbnail: four abstract printed lines, and what this card does to them.
+   A real page reduced to 72px is a grey smudge and would be the same smudge on
+   every card, which is the problem this grid exists to solve. */
+.thumb{width:72px;height:44px;flex:0 0 auto;background:var(--paper);border:1px solid var(--rule);
+  border-radius:2px;overflow:visible}
+.thumb .ln rect{fill:#231f20;opacity:.42}
+.thumb .ln.faint rect{opacity:.12}
+.thumb .band{fill:var(--hl);opacity:.4}
+.thumb .sel{fill:var(--lapis);opacity:.3}
+.thumb .halo{fill:var(--lapis);opacity:.2}
+.thumb .pick{fill:none;stroke:var(--gold);stroke-width:1.6}
+.thumb .dash{fill:none;stroke:#231f20;opacity:.3;stroke-dasharray:3 2.5}
+.thumb .chip{fill:#231f20;opacity:.22}
+.thumb .dots circle{fill:var(--gold)}
+.thumb .crop path,.thumb .wave path{fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linecap:round}
+.thumb .tip{fill:#231f20;opacity:.8}
+.thumb .tipline{stroke:#231f20;opacity:.4;stroke-width:1.2}
+
+/* one card, several techniques — this is what used to be three sections all
+   demonstrating that a CSS rule beats a fill attribute */
+.tabs{display:inline-flex;flex-wrap:wrap;border:1px solid var(--rule);border-radius:2px;
+  overflow:hidden;margin:0 0 20px}
+.tabs button{border:0;border-radius:0;padding:8px 12px;font-size:12px;background:transparent}
+.tabs button+button{border-inline-start:1px solid var(--rule)}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--panel)}
+
+details.ref{border:1px solid var(--rule);border-radius:3px;background:var(--panel);
+  padding:0 16px;margin-top:8px}
+details.ref>summary{display:flex;gap:10px;align-items:center;padding:14px 0;cursor:pointer;
+  list-style:none;font-size:14px;color:var(--muted)}
+details.ref>summary::-webkit-details-marker{display:none}
+details.ref>summary b{font:600 15px/1.3 "Spectral",Georgia,serif;color:var(--ink)}
+details.ref>summary .cap-open{margin-inline-start:auto;margin-top:0}
+details.ref[open]{padding-bottom:18px}
+
+.contract-d{margin-bottom:30px}
+.contract-d .contract{margin:0 0 6px}
+
+.linkish{border:0;background:none;padding:0;color:var(--lapis);text-decoration:underline;
+  font:inherit;cursor:pointer}
 /* sections */
 section{padding:58px 0;border-bottom:1px solid var(--rule)}
 .shead{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-bottom:22px}
@@ -429,23 +512,30 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
   <div class="wrap">
     <p class="eyebrow">مصحف المدينة النبوية · حفص · 604 صفحات</p>
     <h1>المصحف صفحةً صفحة، <em>في ملفات تبني عليها</em></h1>
-    <p class="plain"><b>ما هذا؟</b> مصحف المدينة النبوية كاملاً في ملفات SVG: 604 صفحات، ملف
-      لكل صفحة مطبوعة. تظهر كل صفحة كما هي في الطبعة التي جاءت منها، وكل ما فيها عنصر حقيقي، فتنقر
-      على كلمة فتعرف أيّ كلمة هي، وتُظلّل آية، وتبحث عن عبارة، وتربط مباشرة إلى 2:255، وتغيّر لون
-      الحركات.</p>
-    <p class="plain"><b>لماذا تحتاجها؟</b> من يبني تطبيقاً قرآنياً أو موقعاً يجد نفسه عادةً أمام
-      خيارين رديئين: صورة الصفحة تبدو صحيحة، غير أن لا شيء فيها يُحدَّد أو يُبحث فيه أو يُربط إليه،
-      والنص المصفوف بخط حاسوبي حيّ، لكنه ليس هذه الطبعة، ويلزمك أن تعيد بناء مواضع قطع الأسطر صفحةً
-      صفحة ليظل القارئ يعرف الصفحة التي حفظ منها. وهذه الملفات تجمع لك الأمرين معاً.</p>
-    <p class="plain"><b>وهي تغني كذلك عن قاعدة بيانات المعلومات الوصفية.</b> تشحن معظم التطبيقات صور
-      الصفحات ومعها قاعدة بيانات تقول ما فيها، أما هنا فالمعلومات محمولة على العناصر نفسها: رقم
-      السورة واسمها بالعربية وبالحروف اللاتينية وبالإنجليزية وموضع نزولها وعدد آياتها؛ ومفتاح الآية
-      <code>2:255</code> وأيّ مقاطعها يقع في هذه الصفحة؛ ومفتاح الكلمة <code>2:255:4</code> ونصّها
-      في صورة <code>rasm_uthmani</code>، وصورها الأربع الأخرى في الملف المرافق للصفحة؛ والجزء والحزب والرُبع والنصف وموضع بداية كل منها؛ ورقم الصفحة ورقم السطر؛ وكل
-      علامة مسمّاة، بما فيها علامات السجدة وميمات الإقلاب. وبهذا تصير عبارة
-      <i>«الآية 2:255 في الصفحة 42، السطر 3»</i> مُحدِّد CSS لا استعلاماً في قاعدة بيانات — ولأن
-      الهندسة في الملف ذاته، تحصل أيضاً على ما لا تعطيه قاعدة بيانات: موضع كل واحد من هذه على
-      الصفحة.</p>
+    <p class="plain">مصحف المدينة النبوية كاملًا في ملفات <code>SVG</code>: 604 صفحات، ملف لكل صفحة
+      مطبوعة. تظهر كل صفحة كما هي في الطبعة التي جاءت منها، وكل ما فيها عنصر حقيقي تستطيع تحديده
+      وتنسيقه والربط إليه.</p>
+    <p class="plain">لا <code>SDK</code> ولا خطوة بناء. اجلب صفحة واسألها بـ<code>DOM</code> عادي:</p>
+    <figure class="code" id="mast-code">
+      <button class="copy">نسخ</button>
+<pre><code><span class="tok-k">const</span> res  = <span class="tok-k">await</span> fetch(<span class="tok-s">'pages/042.svg'</span>);
+<span class="tok-k">const</span> page = <span class="tok-k">new</span> DOMParser().parseFromString(<span class="tok-k">await</span> res.text(), <span class="tok-s">'image/svg+xml'</span>);
+
+page.querySelectorAll(<span class="tok-s">'g.word'</span>).length;                            <span class="tok-c">// 147</span>
+page.querySelector(<span class="tok-s">'[data-word-key="2:255:1"]'</span>).dataset.rasmUthmani;  <span class="tok-c">// "ٱللَّهُ"</span>
+page.querySelectorAll(<span class="tok-s">'g.ayah-fragment[data-ayah-key="2:255"]'</span>);     <span class="tok-c">// 6 عُقَد</span></code></pre>
+    </figure>
+    <p class="plain"><b>لماذا تحتاجها؟</b> من يبني تطبيقًا قرآنيًا يجد نفسه عادةً أمام خيارين رديئين.
+      صورة الصفحة تبدو صحيحة، غير أن لا شيء فيها يُحدَّد أو يُبحث فيه أو يُربط إليه. والنص المصفوف
+      بخط حاسوبي حيّ، لكنه ليس هذه الطبعة، ويلزمك أن تعيد بناء مواضع قطع الأسطر صفحةً صفحة ليظل
+      القارئ يعرف الصفحة التي حفظ منها. وهذه الملفات تجمع لك الأمرين معًا.</p>
+    <p class="plain"><b>وهي تغني كذلك عن قاعدة البيانات الوصفية.</b> تشحن معظم التطبيقات صور الصفحات
+      ومعها قاعدة بيانات تقول ما فيها، أما هنا فالبيانات محمولة على العناصر. تحمل كل كلمة مفتاحها
+      <code>2:255:4</code> ونصّها في صورة <code>rasm_uthmani</code>، ويحمل كل مقطع آية
+      <code>2:255</code>، وتحمل كل صفحة سجلات سُوَرها ومواضع بدء الجزء والحزب والرُبع والنصف وأرقام
+      أسطرها وكل علامة باسمها. وبهذا تصير عبارة <i>«الآية 2:255 في الصفحة 42، السطر 3»</i> مُحدِّد
+      <code>CSS</code> لا استعلامًا في قاعدة بيانات، ولأن الهندسة في الملف ذاته تحصل أيضًا على ما لا
+      تعطيه قاعدة بيانات: موضع كل واحد من هذه على الصفحة.</p>
     <div class="mast-foot">
       <span class="chip"><b>604</b> صفحات</span>
       <span class="chip"><b>77,432</b> كلمةً</span>
@@ -465,7 +555,7 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
   <div class="wrap bar">
     <span class="name">مصحف المدينة النبوية · SVG</span>
     <span class="here" id="here"></span>
-    <a class="toclink" href="#toc">المحتويات</a>
+    <a class="toclink" href="#can">المحتويات</a>
   </div>
   <div class="progress" id="progress"></div>
 </nav>
@@ -499,7 +589,7 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
           <dt>في هذه الصفحة</dt><dd id="hero-words">…</dd>
           <dt>مقاطع الآيات</dt><dd id="hero-frags">…</dd>
           <dt>العلامات المسمّاة</dt><dd id="hero-marks-n">…</dd>
-          <dt>حجم الملف</dt><dd>794 KiB خاماً · 197 KiB مضغوطاً بـ gzip</dd>
+          <dt>حجم الملف</dt><dd>794 KiB خامًا · 197 KiB مضغوطًا بـ<code>gzip</code></dd>
         </dl>
       </div>
     </div>
@@ -512,28 +602,26 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
           متقدمة، على بوابة المصحف الرقمي
           <a href="https://dm.qurancomplex.gov.sa" rel="noopener">dm.qurancomplex.gov.sa</a>.</p>
         <p class="quote">مصحف المدينة النبوية لأعمال الطباعة. مصحف المدينة النبوية على هيئة ملفات رقمية باستخدام رسم المتجهات المتقدمة Vectors إنشاء صور رقمية ذات جودة غير محدودة</p>
-        <p class="quote-en">مصحف المدينة النبوية معدّاً لأعمال الطباعة، في صورة ملفات رقمية
-          بالرسوم المتجهة المتقدمة، تنتج صوراً رقمية بجودة غير محدودة.</p>
+        <p class="quote-en">مصحف المدينة النبوية معدًّا لأعمال الطباعة، في صورة ملفات رقمية
+          بالرسوم المتجهة المتقدمة، تنتج صورًا رقمية بجودة غير محدودة.</p>
         <p class="note" style="margin-top:12px">نشر المجمع العمل الفني، ولم ينتج هذا التفكيك
           ولم يراجعه ولم يعتمده، وليس في هذه الصفحة ما يدل على تأييد أو انتساب.</p>
       </div>
       <div class="callout">
         <h3>الضمان</h3>
         <p><b>كل واحدة من 604 صفحات تُعرض مطابقةً للعمل الفني المصدر.</b> وتفكيك الصفحة إلى
-          آيات وكلمات وعلامات لا يغيّر شيئاً مما هو مرسوم.</p>
-        <p>ويُتحقَّق من ذلك بطريقتين، في كل صفحة ومع كل تغيير، بوابةً تمنع الإصدار إن أخفقتا:</p>
+          آيات وكلمات وعلامات لا يغيّر شيئًا مما هو مرسوم.</p>
+        <p>ويجري فحصان على كل صفحة مع كل تغيير، وإخفاق أحدهما يمنع الإصدار:</p>
         <ul class="plain-list" style="margin-top:0">
-          <li><b>حفظ الكفافات (contours)</b> — الكفافات المرسومة في المُخرَج، بتكراراتها، مطابقة
+          <li><b>حفظ الكفافات (<code>contours</code>)</b> — الكفافات المرسومة في المُخرَج، بتكراراتها، مطابقة
             لمثيلتها في المصدر: لا إضافة ولا حذف ولا تكرار. وهذا يكشف ما لا تُظهره الصورة، كعلامة
             رُسمت مرتين في الموضع نفسه.</li>
-          <li><b>مقارنة نقطية (raster) بالعمل الفني المصدر</b>، ليثبت أن شيئاً لم ينتقل عن موضعه.
-            تُعرض الصفحة بعرض 1400 بكسل ويُعاد التحقق عند 2200 بكسل، بتسامح 24/255، مع هامش 10 بكسل
-            عند التماس يقع داخل نطاق فارغ مقيس: تماسات التنعيم تقاس بين 1 و3 بكسل، وأصغر خلل حقيقي
-            عُثر عليه قط تجاوز 100.</li>
+          <li><b>مقارنة نقطية (<code>raster</code>) بالعمل الفني المصدر</b>، ليثبت أن شيئًا لم ينتقل عن
+            موضعه. تُعرض الصفحة بعرض 1400 بكسل ويُعاد التحقق عند 2200 بكسل، بتسامح 24/255، مع هامش
+            10 بكسل عند التماس يستوعب تنعيم الحواف.</li>
         </ul>
-        <p class="note" style="margin-top:12px">هذا كلام عن <b>الحبر</b> وحده: ما رُسم وأين رُسم.
-          أما تسمية الحبر — أيّ خطّ كسرةٌ، وأيّ كلمة تملك أيّ علامة — فمسألة أخرى تقوم على أدلة
-          أخرى، ولا يشملها هذا الضمان.</p>
+        <p class="note" style="margin-top:12px">يشمل الضمان <b>الحبر</b> وحده: ما رُسم وأين رُسم. ولا
+          يشمل تسمية الحبر — أيّ خطّ كسرةٌ، وأيّ كلمة تملك أيّ علامة — فتلك تقوم على أدلة أخرى.</p>
       </div>
     </div>
   </div>
@@ -544,7 +632,7 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
   <div class="wrap">
     <p class="sec-eyebrow">لماذا تحتاجها</p>
     <div class="shead">
-      <h2>الخياران المعتادان جنباً إلى جنب</h2>
+      <h2>الخياران المعتادان جنبًا إلى جنب</h2>
     </div>
     <div class="scroll">
       <table>
@@ -556,632 +644,756 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
           <tr><td>تحديد كلمة أو نسخها</td><td class="no">لا</td><td class="yes">نعم</td><td class="yes">نعم</td></tr>
           <tr><td>بحث</td><td class="no">لا</td><td class="yes">نعم</td><td class="yes">نعم</td></tr>
           <tr><td>الربط إلى آية</td><td class="no">لا</td><td class="yes">نعم</td><td class="yes">نعم</td></tr>
-          <tr><td>تغيير الألوان والمظهر الداكن والتباين العالي</td><td class="no">لا</td><td class="part">جزئياً</td><td class="yes">نعم</td></tr>
+          <tr><td>تغيير الألوان والمظهر الداكن والتباين العالي</td><td class="no">لا</td><td class="part">جزئيًا</td><td class="yes">نعم</td></tr>
           <tr><td>مباعدة الأسطر للطباعة الكبيرة</td><td class="no">لا</td><td class="yes">نعم</td><td class="yes">نعم</td></tr>
           <tr><td>الاستقلال عن دقة العرض</td><td class="no">لا</td><td class="yes">نعم</td><td class="yes">نعم</td></tr>
           <tr><td>قارئ الشاشة</td><td class="no">لا</td><td class="yes">نعم</td><td class="part">ليس بعد — انظر القيود</td></tr>
-          <tr><td>ضبط قطع الأسطر يدوياً لكل صفحة</td><td class="no">لا ينطبق</td><td class="part"><b>نعم، 604 مرات</b></td><td class="yes">لا شيء</td></tr>
+          <tr><td>ضبط قطع الأسطر يدويًا لكل صفحة</td><td class="no">لا ينطبق</td><td class="part"><b>نعم، 604 مرات</b></td><td class="yes">لا شيء</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note">الصف الأخير هو الحجة كلها: مواضع قطع الأسطر هي مواضع الطبعة نفسها، لأن
-      الحبر حبر الطبعة نفسها.</p>
+    <p class="note">الصف الأخير هو الذي يحسم الأمر عمليًا: لا تضبط موضع قطع سطر واحد بيدك، لأن الحبر
+      حبر الطبعة نفسها.</p>
   </div>
 </section>
 
-<section id="toc">
-  <div class="wrap">
-    <p class="sec-eyebrow">المحتويات</p>
-    <div class="shead">
-      <h2>ما في هذه الصفحة</h2>
-      <p>كل قسم مما يلي مثال حيّ قابل للتحرير يعمل على صفحة حقيقية من المصحف. غيّر الشيفرة
-        يتغيّر الناتج معها.</p>
-    </div>
-    <div class="toc" id="toc-body"></div>
-  </div>
-</section>
-
-<!-- ═══════════════ HOW TO USE IT ═══════════════ -->
-
-<section id="start" data-toc-group="البداية" data-toc-note="تحليل صفحة وسؤالها عمّا فيها.">
-  <div class="wrap">
-    <p class="sec-eyebrow">كيفية الاستخدام</p>
-    <div class="contract">
-      <b>كل مقتطف أدناه قابل للتحرير ويعمل فعلياً.</b> عدّل الشيفرة فتُحدَّث النتيجة أثناء الكتابة،
-      و<kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>Enter</kbd> يشغّلها فوراً، و<b>إعادة التعيين</b> تستعيد
-      المقتطف ونسخة سليمة من الصفحة معاً. ولكل محرّر نسخته من الملف، فلا يفسد قسم على آخر. وداخل
-      المقتطف لديك <code>svg</code> (صفحة ذلك القسم)، و<code>stage</code> (الورقة التي تُعرض عليها)،
-      و<code>out(html)</code> و<code>log(…)</code> للإخراج، و<code>H</code> — بضع أدوات مساعدة
-      معرّفة في هذه الصفحة: <code>H.band</code> و<code>H.fold</code> و<code>H.crop</code>
-      و<code>H.getPage</code> و<code>H.toRoot</code> — و<code>signal</code>، وهو
-      <code>AbortSignal</code> يُطلَق عند إعادة تشغيل المقتطف، فيُنظَّف عنك أي مستمع أو مراقب
-      ربطته خارج الصفحة. وما عدا ذلك فهو DOM عادي.
-    </div>
-    <div class="shead">
-      <p class="sel">fetch → DOMParser → querySelectorAll</p>
-      <h2>1 · جلب صفحة والنظر داخلها</h2>
-      <p>لا يوجد SDK هنا. الصفحة ملف SVG عادي بـ<code>viewBox</code> ثابت، حلّله فيجيب عن
-        الأسئلة. وهذا المثال يجلب الصفحة 3 من الشبكة فعلاً، فغيّر رقم الصفحة أو الآية وشغّله
-        مرة أخرى.</p>
-    </div>
-    <div class="lab" id="lab-start"></div>
-    <p class="note">الكلمات داخل السطر مرتّبة بترتيب القراءة من اليمين إلى اليسار، في كل أسطر
-      المصحف التي تحمل كلمات وعددها 8,820، فـ<b>ترتيب المستند هو ترتيب القراءة</b>. لا تُرتّب حسب
-      الهندسة؛ فالمربعات المحيطة تتداخل، إذ إن من المشروع أن تُرسم العلامة فوق جارتها.</p>
-  </div>
-</section>
-
-<section id="ayah" data-toc-group="التحديد والإشارة" data-toc-note="تظليل الآية كاملة دون أن يفوتك خمسة أسداسها.">
+<!-- ═══════ ما الذي تستطيع فعله بها ═══════ -->
+<section id="can">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">svg.querySelectorAll('g.ayah-fragment[data-ayah-key="2:255"]')</p>
-      <h2>2 · تظليل آية — والخطأ الذي يقع فيه الجميع</h2>
-      <p>تخرج الآية <b>مرة لكل سطر مطبوع</b>، فهي عدة عقد شقيقة، وليس ثمة عقدة واحدة «هي»
-        الآية. فـ6,236 آيةً تخرج في 13,489 مقطعاً، منها 4,455 آيةً لها أكثر من مقطع واحد. استعِض
-        عن <code>querySelectorAll</code> بـ<code>querySelector</code> في المحرّر وانظر كيف تكفّ
-        خمسة أسداس آية الكرسي عن التظليل دون أن يُثار أي خطأ.</p>
+      <p class="sel">13 قدرة · <code>DOM</code> عادي · بلا خطوة بناء</p>
+      <h2>ما الذي تستطيع فعله بصفحة</h2>
+      <p>كل بطاقة تُفتح في مكانها وتعمل فعليًا على صفحة مجلوبة من الشبكة، ولا يُجلب شيء حتى تفتح
+        بطاقة.</p>
     </div>
-    <div class="lab" id="lab-ayah"></div>
-    <p class="note">يحمل كل مقطع <code>data-fragment</code> و<code>data-ayah-fragments</code>، وتحمل
-      المقاطع كلها وعددها 13,489 سمة <code>data-mark</code> تشير إلى <code>id</code> علامة رأس
-      آيته في الصفحة نفسها. ولا تمتد آية على صفحتين، فمتى حمّلت الصفحة الصحيحة وجدت مقاطعها كلها.
-      و<b>لا تستخدم أبداً</b> <code>firstElementChild</code> لأحد المقاطع للوصول إلى أول كلمة في
-      الآية، بل استخدم ترتيب <code>data-word-key</code> عبر المقاطع جميعها. والروابط العميقة تعمل على
-      الصفحة أعلى هذا المستند: <a href="#2:254">#2:254</a> و<a href="#2:255">#2:255</a>.</p>
-  </div>
-</section>
-
-<section id="tap" data-toc-group="التحديد والإشارة" data-toc-note="جعل كل نقطة في السطر تابعة لكلمة.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">g.word path { stroke: transparent; pointer-events: all }</p>
-      <h2>3 · جعل اللمسة في الفراغ تصيب الآية</h2>
-      <p>يجري اختبار الإصابة على الحبر، والحبر خطٌّ عربي: ضربات رفيعة وبياض يفصل بين الكلمات.
-        فالإصبع التي تحطّ بين كلمتين من آية واحدة لا تصيب شيئاً. والعلاج قاعدة CSS واحدة <b>لا
-        تغيّر بكسلاً واحداً</b>: فالحدّ الشفاف خلف التعبئة يظل خاضعاً لاختبار الإصابة ولا يطلي
-        شيئاً. انقر على السطر أدناه والهالة عند 0، وابحث عن فراغ، ثم اضبط <code>HALO</code> على
-        1.6 وانقر المواضع نفسها مرة أخرى.</p>
+    <div class="cap-bar">
+      <button id="cap-all" aria-pressed="false">افتح الكل</button>
+      <span class="hint">أو افتح واحدة — كل بطاقة تحمل مقتطفًا تستطيع تعديله وتشغيله</span>
     </div>
-    <div class="lab" id="lab-tap"></div>
-    <p class="note">هذا يغني عن المضلّع الخفي لكل آية الذي تستخدمه ملفات SVG الأقدم للمصاحف
-      طبقةً للإصابة، وهو أدق منه: فحين تشترك آيتان في سطر مطبوع واحد يكون الحدّ الحقيقي متعرّجاً —
-      تتداخل الحروف وتتدلّى العلامات — فيطلي المضلّع المستطيل جزءاً من الآية الأخرى أو يفوته حبر
-      من آيته. أما <b>الصعود من الكلمة فلا يخطئ: حبر الآية هو كلماتها.</b> وفوق 2.5 وحدة تقريباً
-      تبدأ الهالات في سرقة فراغات بعضها.</p>
-  </div>
-</section>
-
-<section id="band" data-toc-group="التحديد والإشارة" data-toc-note="تظليل الآية بشريط ترسمه بنفسك.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">المربع المحيط لكل كلمة عبر getBBox()، موحَّداً لكل سطر مطبوع</p>
-      <h2>4 · الشريط الملوّن خلف الآية</h2>
-      <p>الغرض الآخر لطبقة المضلّع: شريط التظليل. احسبه أنت بدلاً من ذلك. وحّد مربعات الكلمات،
-        مربعاً لكل سطر مطبوع تشغله الآية، واطلها خلف الحبر بوصفها <b>مضلّعاً واحداً</b> —
-        <code>&lt;path&gt;</code> واحد بمسار فرعي لكل سطر. ولا يحمل أي <code>&lt;g&gt;</code>
-        داخل الكلمة تحويلاً، فـ<code>word.getBBox()</code> صالح للاستعمال مباشرة. والدالة كاملة
-        في المحرّر، فغيّر الحشو أو اللون أو الآية وسترى الشريط يتغيّر.</p>
-    </div>
-    <div class="lab" id="lab-band"></div>
-    <div class="callout">
-      <h3>ارسم مضلّعاً واحداً، لا مستطيلاً لكل سطر</h3>
-      <p>الحبر العربي يتجاوز سطره: فحرفا <span class="ar" style="font-size:1em">ل</span>
-        و<span class="ar" style="font-size:1em">ك</span> يصعدان إلى السطر الذي فوقهما، وحرفا
-        <span class="ar" style="font-size:1em">ج</span> و<span class="ar" style="font-size:1em">ي</span>
-        ينزلان تحته. فشريط الآية مستطيل لكل سطر مطبوع، وهذه المستطيلات تتلامس أو تتداخل.</p>
-      <p><b>لا تُخرجها عناصر <code>&lt;rect&gt;</code> منفصلة.</b> فحافّتان متلاصقتان مع تنعيم
-        الحواف لا تجتمعان على عتامة كاملة، فيظهر عند كل التقاء خيط شاحب، وتُقرأ آية من ستة أسطر
-        ستة شرائط لا تظليلاً واحداً. اجعل كل سطر <b>مساراً فرعياً في
-        <code>&lt;path&gt;</code> واحد</b>، ولُفَّها كلها في الاتجاه نفسه، وأوقع بينها تداخلاً
-        رأسياً بكسر من الوحدة. عنصر واحد ومنطقة مصمتة واحدة بلا حدود ظاهرة.</p>
-      <p><b>حدّد <code>fill-rule</code> صراحةً ولا تدعه يُورَث أبداً.</b> فـ<code>nonzero</code>
-        هو ما يجعل المسارات الفرعية المتداخلة <i>تتّحد</i> بدل أن تتلاشى، ولهذا لا يكلّف التداخل
-        شيئاً. أما حبر الصفحة نفسه فـ<code>evenodd</code>، وفيه تتلاشى المحيطات المتداخلة داخل
-        المسار الواحد؛ فإن ورّثته صار كل تداخل ثقباً. ثم تُوضع الشفافية مرة واحدة على المجموعة.
-        ولأن التظليل طبقة خلف الحبر لا لون عليه، تبقى الطبعة كما هي، وهذا هو المهم في ضوء الضمان
-        المذكور آنفاً.</p>
-      <figure class="code" style="margin-top:6px">
-        <button class="copy">نسخ</button>
-<pre><code>&lt;<span class="tok-k">g</span> <span class="tok-a">class</span>=<span class="tok-s">"highlight-layer"</span> <span class="tok-a">opacity</span>=<span class="tok-s">"0.30"</span>&gt;
-  <span class="tok-c">&lt;!-- مسار واحد فقط: مسار فرعي لكل سطر مطبوع --&gt;</span>
-  &lt;<span class="tok-k">path</span> <span class="tok-a">fill</span>=<span class="tok-s">"#d6a326"</span> <span class="tok-a">fill-rule</span>=<span class="tok-s">"nonzero"</span>
-        <span class="tok-a">d</span>=<span class="tok-s">"M12 88H243V104H12Z M12 104H198V120H12Z …"</span>/&gt;
-&lt;/<span class="tok-k">g</span>&gt;</code></pre>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<section id="search" data-toc-group="القراءة والمعنى" data-toc-note="البحث عن كلمة في المصحف كله والوصول إلى حبرها المطبوع.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">صورة search — ولماذا لا تصلح صورة rasm</p>
-      <h2>5 · البحث والوصول إلى الحبر</h2>
-      <p>لا توجد هنا عُقد <code>&lt;text&gt;</code>، فالحبر كله مسارات، ولذلك يعجز بحث المتصفح داخل
-        الصفحة عن العمل. يجري البحث عبر صورة <code>search</code>، وهي تُشحن مرةً واحدة لكل صفحة في
-        <code>index/by-page/NNN.json</code>، وتحملها صفحات وضع التطوير أيضاً في السمة
-        <code>data-search</code>. غيّر الاستعلام في المقتطف، أو ضع <code>rasm</code> مكان
-        <code>search</code> وراقب النتائج تتلاشى.</p>
-    </div>
-    <div class="lab" id="lab-search"></div>
-
-    <div class="callout">
-      <h3>المزلق — استخدم <code>search</code> ولا تستخدم <code>rasm</code> أبداً</h3>
-      <p>الصورتان في الإنتاج حقلان في الملف المرافق للصفحة، <code>index/by-page/NNN.json</code>،
-        ولا تكونان سمتين على الكلمة إلا في وضع التطوير. و<code>rasm</code> هو هيكل
-        <b>الرسم العثماني</b>، وهو ما ترسمه الصفحة. والرسم العثماني
-        يكتب عدداً من حروف المدّ في صورة <i>علامات متراكبة</i>، فتجريد العلامات يحذفها من أصلها،
-        والناتج شيء لا يكتبه أحد. القياس على 77,432 كلمة كاملة:</p>
-      <div class="scroll">
-        <table>
-          <thead><tr><th>الاستعلام</th><th>المطابقات في <code>rasm</code></th><th>المطابقات في <code>search</code></th></tr></thead>
-          <tbody>
-            <tr><td class="mono ar">الله</td><td class="no">2</td><td class="yes">2,555</td></tr>
-            <tr><td class="mono ar">الذين</td><td class="no">0</td><td class="yes">999</td></tr>
-            <tr><td class="mono ar">درجات</td><td class="no">0</td><td class="yes">14</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="note">في <span class="ar" style="font-size:1em">ٱللَّهُ</span> <b>ألف الوصل</b> (U+0671) في موضع تكتب فيه لوحة المفاتيح ألفاً عادية،
-        فتكون <code>rasm</code> هي <span class="ar" style="font-size:1em">ٱلله</span> ولا تطابق شيئاً أبداً. و<span class="ar" style="font-size:1em">دَرَجَٰتࣲ</span> تحمل
-        <b>ألفاً خنجرية</b> (U+0670)، وهي علامة لا حرف، فيصير الرسم <span class="ar" style="font-size:1em">درجت</span> بلا ألف البتة. أما
-        <code>search</code> فهو هيكل الرسم الحديث (صورة <code>rasm_imlai</code>) ولا تعتريه
-        المشكلتان. استخدم <code>rasm</code> فيما وُضع له: مطابقة النص بما هو مرسوم فعلاً على
-        الصفحة.</p>
-      <p class="note"><b>لا يُوحَّد لك شيء</b>، عن قصد. تبقى <span class="ar" style="font-size:1em">ا أ إ آ</span> متمايزة، وكذلك
-        <span class="ar" style="font-size:1em">ى</span>/<span class="ar" style="font-size:1em">ي</span> و<span class="ar" style="font-size:1em">ة</span>/<span class="ar" style="font-size:1em">ه</span>.
-        فإن كان مستخدموك يتوقعون بحثاً متسامحاً، فوحِّد الصور في جانبك وأبقِ القيمة المخزَّنة كما
-        كُتبت. المقتطف أعلاه يُجري هذا التوحيد؛ احذفه وانظر ما يحدث.</p>
-    </div>
-
-    <div class="two" style="margin-top:26px">
-      <div class="panel">
-        <h3>الأمر نفسه على 604 صفحة</h3>
-        <p class="note" style="margin-top:0">فهرس مبني على السمة نفسها: 77,432 صفاً، حجمه 2.0 MiB
-          خاماً و473 KiB بعد ضغط gzip، ويُجلب عند أول بحث لا عند تحميل الصفحة. تعطي النتيجة الواحدة
-          <code>data-word-key</code> ورقم صفحة، ثم تُجلب تلك الصفحة وحدها ويُعلَّم عليها.</p>
-        <div class="row" style="margin-top:12px">
-          <input type="text" id="s-all" placeholder="الرحمن" style="flex:1;min-width:140px" aria-label="البحث في المصحف كله">
-          <button id="s-all-go">بحث</button>
-        </div>
-        <div class="pills" style="margin-top:10px" id="s-all-eg"></div>
-        <div class="out" id="s-all-out">يُجلب الفهرس عند أول استخدام، لا عند تحميل الصفحة.</div>
-      </div>
-      <div class="paper tight empty" id="s-all-stage">لم تُجلب أي صفحة بعد</div>
-    </div>
-    <p class="note"><b>تحذيران عند تقطيع النص إلى وحدات.</b> 367 قيمة من قيم
-      <code>search</code> تحتوي على مسافة، إذ يكتب عُرف النداء <span class="ar" style="font-size:1em">يَٰٓأَيُّهَا</span> هكذا:
-      <span class="ar" style="font-size:1em">يا أيها</span>، وفي كلمة مطبوعة واحدة، <code>37:130:3</code>، مسافة داخل نصها نفسه.
-      و<code>data-word-key</code> هو مفتاح الكلمة الوحيد، فلا تقسّم صفحةً على المسافات أبداً.</p>
-  </div>
-</section>
-
-<section id="word" data-toc-group="القراءة والمعنى" data-toc-note="قراءة صور الكلمة الخمس وكل علامة عليها.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">على الصفحة data-rasm-uthmani · وفي الملف المرافق rasm rasm_imlai search qpc</p>
-      <h2>6 · قراءة كلمة</h2>
-      <p>تحمل كل مجموعة كلمة مفتاحَها ونصَّها في صورة <code>rasm_uthmani</code>، وتأتي صورها الأربع الأخرى
-        من الملف المرافق للصفحة، <code>index/by-page/NNN.json</code>؛ ويُعلن كل مسار عن نوع الحبر الذي هو منه،
-        وعن العلامة بعينها إن كان علامة. يركّب المقتطف المستمع — مرّر المؤشر فوق الصفحة المجاورة
-        له، ثم غيّر ما تعرضه لوحة القراءة.</p>
-    </div>
-    <div class="lab" id="lab-word"></div>
-    <p class="note">أمران لا يمكن استخلاصهما من الشكل المرسوم وحده، والسمات تحسمهما معاً.
-      <b>الفتحة والكسرة شَرطة واحدة</b>، يأتي اسمها من موضعها، فلا سبيل إلى استرجاع الاسم من
-      المخطط الخارجي. و<b>الهمزة</b> علامةً والهمزة حرفاً من حروف الكلمة حبر واحد لا يتمايز، و
-      <code>data-kind</code> هو الفاصل بينهما. وقد تُرسم العلامة <b>خارج</b> كلمتها: فتنوين <span class="ar" style="font-size:1em">ة</span> في
-      آخر الكلمة يطفو في الفراغ نحو الكلمة التالية. فلا تنسب علامةً إلى كلمة بأقرب حبر إليها ولا
-      بالمربع المحيط بها؛ المجموعة الحاوية هي الجواب.</p>
-  </div>
-</section>
-
-<section id="select" data-toc-group="التحديد والإشارة" data-toc-note="السحب على الصفحة ونسخ نص قرآني حقيقي.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">span واحد غير مرئي لكل g.word، فوق الحبر</p>
-      <h2>7 · السحب عبر الصفحة ونسخ نص حقيقي</h2>
-      <p>اسحب بالفأرة فوق الصفحة، ثم اضغط <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>C</kbd>، أو انقر بالزر
-        الأيمن واختر "نسخ"، فيصلك النص القرآني. لا توجد في الملف عناصر
-        <code>&lt;text&gt;</code>، فليس أمام التحديد الأصلي في المتصفح ما يمسك به، والحل أن تُفرد
-        فوق الصفحة طبقة نصية: span واحد لكل كلمة، موضعه مطلق، يحمل نص Unicode الحقيقي ويُطلى
-        بـ<code>color: transparent</code> فوق مربع الكلمة المرسوم. هي الحيلة نفسها التي يستعملها
-        PDF.js، ولا تحتاج إلى مكتبة، والحبر تحتها لا يُمسّ.</p>
-    </div>
-    <div class="lab" id="lab-select"></div>
-
-    <div class="two" style="margin-top:22px">
-      <div class="callout">
-        <h3>خمسة أمور تسوء، وما يُفعل بدلاً منها</h3>
-        <ul class="plain-list" style="margin-top:0">
-          <li><b><code>getBBox()</code> قياس خاطئ.</b> فهو يعطي إحداثيات المجموعة نفسها في فضاء
-            المستخدم ويتجاهل كل تحويل فوقها، فيضع السطر الأول قرب أسفل الصفحة. استخدم
-            <code>getBoundingClientRect()</code> على الكلمة واطرح منه مستطيل الطبقة نفسها، فهو
-            مارٌّ أصلاً بسلسلة التحويلات كاملة. وعندئذ يبلغ أسوأ انحراف متبقٍّ في كلمات الصفحة 3
-            كلها، وعددها 127، <b>0.016 px</b>.</li>
-          <li><b>موضع مؤشر الكتابة داخل عنصر span محكوم بعروض الخط الاحتياطي</b>، وهي لا صلة
-            لها بالحبر، فالسحبة التي تبدأ من وسط كلمة تقطعها عند حرف اعتباطي. وسّع المدى عند
-            <code>mouseup</code> ليشمل عناصر span كاملة. ودقّة الكلمة هي ما يريده قارئ المصحف على
-            كل حال.</li>
-          <li><b>لا تجعل حجم عنصر span بحجم مربع سطره.</b> فمستطيل مجموعة السطر يشمل الصواعد
-            والنوازل التي تتعدّى إلى جيرانه، فتتراكب أشرطة التظليل وتشتدّ قتامتها. أما المربعات
-            على مستوى الكلمة فتبدو صحيحة.</li>
-          <li><b>لا تضع سطراً جديداً داخل عنصر span</b>، ولا تستعمل عنصر فصل منفصلاً بحجم صفر.
-            فالأول يجعل ذلك العنصر بارتفاع سطرين نصيين، فيفيض تظليله على السطر الذي تحته، والثاني
-            يُطوى سطره الجديد فلا يبلغ الحافظة أبداً. ابنِ الحمولة بنفسك في معالج
-            <code>copy</code> بدلاً من ذلك.</li>
-          <li><b>الضغط بالفأرة على نص محدَّد سلفاً لا يبدأ تحديداً جديداً.</b> بل يبدأ سحباً
-            وإفلاتاً أصلياً لذلك النص، ويبقى التحديد القديم جامداً طوال الحركة، فتبدو السحبة
-            الثانية كأنها لا تفعل شيئاً. وأشدّ ما يضرّ حين يعيد المستخدم المحاولة، لأن الكلمات تحت
-            المؤشر هي عينها التي حدّدها للتوّ. يبدو الأمر خللاً في حساباتك الهندسية وليس كذلك.
-            امسح التحديد عند <code>mousedown</code> وارفض <code>dragstart</code>؛ سطران، فيبدأ كل
-            سحب من جديد. ويتشارك هذا القسم و§3 و§10 و§11 الآن طبقةً واحدة <i>وأيضاً</i> حجم مربع
-            واحداً — مربعات بارتفاع كامل تلاقي جيرانها، فلا مناطق ميتة، ولا تحتاج أول كلمة في
-            المدى ولا آخرها إلى تصويب متعمَّد.</li>
+    <details class="ref contract-d">
+      <summary><b>كيف تعمل المحرِّرات</b> <span>كل مقتطف حيّ، ولك أن تغيّره</span>
+        <span class="cap-open" aria-hidden="true"></span></summary>
+      <div class="contract">
+        <p><b>كل مقتطف أدناه قابل للتحرير ويعمل فعليًا.</b> تُحدَّث النتيجة أثناء الكتابة،
+          و<kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>Enter</kbd> يشغّلها فورًا، و<b>إعادة التعيين</b> تستعيد
+          المقتطف ونسخة سليمة من الصفحة معًا. ولكل محرّر نسخته من الملف، فلا يفسد قسم على آخر.</p>
+        <p>ويعمل المقتطف و5 أشياء في متناوله، وما عداها <code>DOM</code> عادي:</p>
+        <ul class="plain-list">
+          <li><code>svg</code> هو صفحة ذلك القسم، محلَّلةً جاهزة.</li>
+          <li><code>stage</code> هي الورقة التي تُعرض عليها الصفحة.</li>
+          <li><code>out(html)</code> و<code>log(…)</code> تكتبان في لوحة القراءة بجانب المحرّر.</li>
+          <li><code>H</code> يحمل الأدوات المساعدة المعرّفة في هذه الصفحة: <code>H.band</code>
+            و<code>H.fold</code> و<code>H.crop</code> و<code>H.getPage</code> و<code>H.toRoot</code>.</li>
+          <li><code>signal</code> هو <code>AbortSignal</code> يُطلَق عند إعادة تشغيل المقتطف، فيُنظَّف
+            عنك أي مستمع أو مراقب ربطته خارج الصفحة.</li>
         </ul>
       </div>
-      <div>
-        <div class="callout">
-          <h3>لماذا يكون بناء الحمولة بنفسك هو الجزء الجيد</h3>
-          <p>لأن النص يُستخرج من <code>data-word-key</code> لا من تسلسل الطبقة نفسها،
-            <b>يمكن للسحبة الواحدة أن تعطي نصوصاً مختلفة</b>: اقتبسه كما تضبطه الطبعة، أو خذ
-            الصورة الإملائية الحديثة، أو خذ الصورة المجردة لتلصقها في صندوق بحث. غيّر سطر
-            <code>WHICH</code> في المحرر، أو استعمل أداة الاختيار في شريط الأدوات.</p>
-          <p class="note" style="margin:0">لا صورة الصفحة ولا النص المصفوف بخطّ يقدّمان لك هذا،
-            فالصورة لا شيء فيها للتحديد، والخط يعطيك صورة إملائية واحدة هي التي صُفّ بها. أما هنا
-            فالتحديد مجموعة من معرّفات الكلمات، والصورة الإملائية تُختار وقت النسخ.</p>
-        </div>
-        <figure class="code">
-          <button class="copy">نسخ</button>
-<pre><code><span class="tok-c">/* الطبقة. يجب ألا تُطبع الأشكال الحرفية أبداً — بل</span>
-<span class="tok-c">   شريط التحديد خلفها فقط. */</span>
-.seltext { position: absolute; inset: <span class="tok-k">0</span> }
-.seltext span {
-  position: absolute;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  white-space: pre;
-  cursor: text;
-}
-.seltext span::selection { background: rgba(<span class="tok-k">45</span>,<span class="tok-k">85</span>,<span class="tok-k">160</span>,.<span class="tok-k">32</span>); color: transparent }</code></pre>
-        </figure>
+    </details>
+    <div class="band" id="band-1">
+      <h3 class="band-h">اقرأ ما في الصفحة</h3>
+      <p class="band-n">الملف يجيب عن الأسئلة. لا قاعدة بيانات ولا <code>SDK</code>.</p>
+      <div class="grid">
+        <details class="cap" id="start">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><rect class="dash" x="2" y="2" width="68" height="40" rx="3"/><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g></svg>
+            <span class="cap-t">
+              <b>جلب صفحة والنظر داخلها</b>
+              <i>تحليل صفحة وسؤالها عمّا فيها.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">fetch → DOMParser → querySelectorAll</p>
+                  <p>الصفحة ملف <code>SVG</code> عادي بـ<code>viewBox</code> ثابت، فحلّله واسأله. وهذا
+                    المقتطف يجلب الصفحة 3 من الشبكة فعلًا، فغيّر رقم الصفحة أو الآية وشغّله مرة أخرى.</p>
+                </div>
+                <div class="lab" id="lab-start"></div>
+                <p class="note"><b>ترتيب المستند هو ترتيب القراءة.</b> فالكلمات داخل السطر تجري من اليمين
+                  إلى اليسار، في كل أسطر المصحف التي تحمل كلمات وعددها 8,820. ولا تُرتّب حسب الهندسة، لأن
+                  المربعات المحيطة تتداخل، إذ إن من المشروع أن تُرسم العلامة فوق جارتها.</p>
+          </div>
+        </details>
+        <details class="cap" id="word">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><rect class="pick" x="30" y="13.5" width="20" height="9" rx="2"/></svg>
+            <span class="cap-t">
+              <b>قراءة كلمة</b>
+              <i>قراءة صور الكلمة الخمس وكل علامة عليها.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">على الصفحة data-rasm-uthmani · وفي الملف المرافق rasm rasm_imlai search qpc</p>
+                  <p>تحمل كل مجموعة كلمة مفتاحَها ونصَّها في صورة <code>rasm_uthmani</code>. وتأتي صورها
+                    الأربع الأخرى من الملف المرافق للصفحة، <code>index/by-page/NNN.json</code>. ويُعلن كل
+                    مسار عن نوع الحبر الذي هو منه، وعن العلامة بعينها إن كان علامة. يركّب المقتطف المستمع،
+                    فمرّر المؤشر فوق الصفحة المجاورة له، ثم غيّر ما تعرضه لوحة القراءة.</p>
+                </div>
+                <div class="lab" id="lab-word"></div>
+                <p class="note"><b>اقرأ اسم العلامة من السمة، لا من شكلها.</b> فالفتحة والكسرة شَرطة واحدة
+                  يأتي اسمها من موضعها، ولا يدلّك المخطط الخارجي على أيّهما بين يديك. والهمزة علامةً والهمزة
+                  حرفًا من حروف الكلمة حبر واحد لا يتمايز، و<code>data-kind</code> هو الفاصل بينهما.</p>
+                <p class="note"><b>وقد تُرسم العلامة خارج كلمتها.</b> فتنوين
+                  <span class="ar" style="font-size:1em">ة</span> في آخر الكلمة يطفو في الفراغ نحو الكلمة
+                  التالية. فانسب العلامة إلى المجموعة الحاوية لها، لا إلى أقرب حبر إليها ولا إلى المربع
+                  المحيط بها.</p>
+          </div>
+        </details>
+        <details class="cap" id="meta">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><rect class="chip" x="4" y="2" width="26" height="8" rx="4"/><rect class="chip" x="33" y="2" width="16" height="8" rx="4"/></svg>
+            <span class="cap-t">
+              <b>بيانات وصفية بلا قاعدة بيانات، وقارئ في 30 سطرًا</b>
+              <i>قراءة السورة والجزء والحزب والرُبع من الصفحة مباشرة.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">data-sid · data-juz-start · data-hizb-start · data-rubu-al-hizb-start</p>
+                  <p>بناء واجهة القارئ لا يحتاج إلى حزمة بيانات وصفية للقرآن، فافتح الصفحة واقرأها منها.
+                    ويعمل المقتطف على أي صفحة يعرضها القارئ — تنقّل بين الصفحات بالأزرار أو بمفتاحَي
+                    <kbd>←</kbd> <kbd>→</kbd> فيُعاد تشغيله على الصفحة الجديدة. جرّب <b>582</b>
+                    (بداية الجزء 30)، و<b>1</b> (الصفحتان الافتتاحيتان)، و<b>42</b> (وردة رُبع)، و<b>176</b>
+                    (علامة سجدة).</p>
+                </div>
+                <div class="lab" id="lab-meta"></div>
+                <p class="note"><b>اجلب الصفحات واحدة تلو الأخرى عند الطلب</b> — 794 KiB خامًا، و197 KiB على
+                  الشبكة بعد ضغطها بـ<code>gzip</code>. وهذا المستند لا يُضمّن صفحةً واحدة: فالصفحة التي في
+                  أعلاه تُجلَب كسائر الصفحات، ويتشارك كل قسم يعرض الصفحة 42 ذلك الطلب الواحد.</p>
+          </div>
+        </details>
+        <details class="cap" id="search">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><circle class="pick" cx="47" cy="27" r="8"/><path class="pick" d="M41 33 L35 39"/></svg>
+            <span class="cap-t">
+              <b>البحث والوصول إلى الحبر</b>
+              <i>البحث عن كلمة في المصحف كله والوصول إلى حبرها المطبوع.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">ابحث في صورة search</p>
+                  <p>الحبر كله مسارات ولا توجد هنا عُقد <code>&lt;text&gt;</code>، ولذلك يعجز بحث المتصفح
+                    داخل الصفحة عن العمل. فابحث في صورة <code>search</code> بدلًا منه، وهي تُشحن مرةً واحدة
+                    لكل صفحة في <code>index/by-page/NNN.json</code>، وتحملها صفحات وضع التطوير أيضًا في
+                    السمة <code>data-search</code>. غيّر الاستعلام في المقتطف، أو ضع <code>rasm</code> مكان
+                    <code>search</code> وراقب النتائج تتلاشى.</p>
+                </div>
+                <div class="lab" id="lab-search"></div>
+
+                <div class="callout">
+                  <h3>البحث في صورة <code>rasm</code> لا يطابق شيئًا تقريبًا</h3>
+                  <p>الصورتان في الإنتاج حقلان في الملف المرافق للصفحة، <code>index/by-page/NNN.json</code>،
+                    ولا تكونان سمتين على الكلمة إلا في وضع التطوير. و<code>rasm</code> هو هيكل
+                    <b>الرسم العثماني</b>، وهو ما ترسمه الصفحة. والرسم العثماني
+                    يكتب عددًا من حروف المدّ في صورة <i>علامات متراكبة</i>، فتجريد العلامات يحذفها من أصلها،
+                    والناتج شيء لا يكتبه أحد. القياس على 77,432 كلمة كاملة:</p>
+                  <div class="scroll">
+                    <table>
+                      <thead><tr><th>الاستعلام</th><th>المطابقات في <code>rasm</code></th><th>المطابقات في <code>search</code></th></tr></thead>
+                      <tbody>
+                        <tr><td class="mono ar">الله</td><td class="no">2</td><td class="yes">2,555</td></tr>
+                        <tr><td class="mono ar">الذين</td><td class="no">0</td><td class="yes">999</td></tr>
+                        <tr><td class="mono ar">درجات</td><td class="no">0</td><td class="yes">14</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p class="note">في <span class="ar" style="font-size:1em">ٱللَّهُ</span> <b>ألف الوصل</b> (U+0671) في موضع تكتب فيه لوحة المفاتيح ألفًا عادية،
+                    فتكون <code>rasm</code> هي <span class="ar" style="font-size:1em">ٱلله</span> ولا تطابق شيئًا أبدًا. و<span class="ar" style="font-size:1em">دَرَجَٰتࣲ</span> تحمل
+                    <b>ألفًا خنجرية</b> (U+0670)، وهي علامة لا حرف، فيصير الرسم <span class="ar" style="font-size:1em">درجت</span> بلا ألف البتة. أما
+                    <code>search</code> فهو هيكل الرسم الحديث (صورة <code>rasm_imlai</code>) ولا تعتريه
+                    المشكلتان. استخدم <code>rasm</code> فيما وُضع له: مطابقة النص بما هو مرسوم فعلًا على
+                    الصفحة.</p>
+                  <p class="note"><b>لا يُوحَّد لك شيء.</b> وهذا مقصود. تبقى <span class="ar" style="font-size:1em">ا أ إ آ</span> متمايزة، وكذلك
+                    <span class="ar" style="font-size:1em">ى</span>/<span class="ar" style="font-size:1em">ي</span> و<span class="ar" style="font-size:1em">ة</span>/<span class="ar" style="font-size:1em">ه</span>.
+                    فإن كان مستخدموك يتوقعون بحثًا متسامحًا، فوحِّد الصور في جانبك وأبقِ القيمة المخزَّنة كما
+                    كُتبت. المقتطف أعلاه يُجري هذا التوحيد؛ احذفه وانظر ما يحدث.</p>
+                </div>
+
+                <div class="two" style="margin-top:26px">
+                  <div class="panel">
+                    <h3>البحث في 604 صفحات</h3>
+                    <p class="note" style="margin-top:0">فهرس مبني على الصورة نفسها: 77,432 صفًا، حجمه
+                      2.0 MiB خامًا و473 KiB بعد ضغط <code>gzip</code>، ويُجلب عند أول بحث لا عند تحميل
+                      الصفحة. تعطي النتيجة الواحدة <code>data-word-key</code> ورقم صفحة، ثم تُجلب تلك
+                      الصفحة وحدها ويُعلَّم عليها.</p>
+                    <div class="row" style="margin-top:12px">
+                      <input type="text" id="s-all" placeholder="الرحمن" style="flex:1;min-width:140px" aria-label="البحث في المصحف كله">
+                      <button id="s-all-go">بحث</button>
+                    </div>
+                    <div class="pills" style="margin-top:10px" id="s-all-eg"></div>
+                    <div class="out" id="s-all-out">يُجلب الفهرس عند أول استخدام، لا عند تحميل الصفحة.</div>
+                  </div>
+                  <div class="paper tight empty" id="s-all-stage">لم تُجلب أي صفحة بعد</div>
+                </div>
+                <p class="note"><b>لا تقسّم صفحةً على المسافات أبدًا.</b> فـ367 قيمة من قيم
+                  <code>search</code> تحتوي على مسافة، إذ يكتب عُرف النداء
+                  <span class="ar" style="font-size:1em">يَٰٓأَيُّهَا</span> هكذا:
+                  <span class="ar" style="font-size:1em">يا أيها</span>، وفي كلمة مطبوعة واحدة،
+                  <code>37:130:3</code>، مسافة داخل نصها نفسه. و<code>data-word-key</code> هو مفتاح الكلمة
+                  الوحيد.</p>
+          </div>
+        </details>
       </div>
     </div>
+    <div class="band" id="band-2">
+      <h3 class="band-h">أشِر إلى شيء</h3>
+      <p class="band-n">الآية عدة عُقَد، والحبر رفيع. ولكلٍّ منهما علاج.</p>
+      <div class="grid">
+        <details class="cap" id="ayah">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><rect class="band" x="14" y="13" width="52" height="19" rx="2"/><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g></svg>
+            <span class="cap-t">
+              <b>تظليل آية</b>
+              <i>ليست عقدةً واحدة أبدًا. حدِّدها، ثم ارسم خلفها.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+            <div class="tabs" role="tablist" aria-label="تظليل آية">
+              <button role="tab" aria-selected="true" aria-controls="pane-ayah" id="tab-ayah">حدِّد كل جزء</button>
+              <button role="tab" aria-selected="false" aria-controls="pane-band" id="tab-band">ارسم الشريط</button>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-ayah" aria-labelledby="tab-ayah">
+                <div class="shead">
+                  <p class="sel">svg.querySelectorAll('g.ayah-fragment[data-ayah-key="2:255"]')</p>
+                  <p>تخرج الآية <b>مرة لكل سطر مطبوع</b>، فهي عدة عقد شقيقة، وليس ثمة عقدة واحدة «هي»
+                    الآية. فـ6,236 آيةً تخرج في 13,489 مقطعًا، منها 4,455 آيةً لها أكثر من مقطع واحد. استعِض
+                    عن <code>querySelectorAll</code> بـ<code>querySelector</code> في المحرّر وانظر كيف تكفّ
+                    خمسة أسداس آية الكرسي عن التظليل دون أن يُثار أي خطأ.</p>
+                </div>
+                <div class="lab" id="lab-ayah"></div>
+                <p class="note">يحمل كل مقطع <code>data-fragment</code> و<code>data-ayah-fragments</code>، وتحمل
+                  المقاطع كلها وعددها 13,489 سمة <code>data-mark</code> تشير إلى <code>id</code> علامة رأس
+                  آيته في الصفحة نفسها. ولا تمتد آية على صفحتين، فمتى حمّلت الصفحة الصحيحة وجدت مقاطعها كلها.
+                  و<b>لا تستخدم أبدًا</b> <code>firstElementChild</code> لأحد المقاطع للوصول إلى أول كلمة في
+                  الآية، بل استخدم ترتيب <code>data-word-key</code> عبر المقاطع جميعها. والروابط العميقة تعمل على
+                  الصفحة أعلى هذا المستند: <a href="#2:254">#2:254</a> و<a href="#2:255">#2:255</a>.</p>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-band" aria-labelledby="tab-band" hidden>
+                <div class="shead">
+                  <p class="sel">المربع المحيط لكل كلمة عبر getBBox()، موحَّدًا لكل سطر مطبوع</p>
+                  <p>احسب الشريط من الكلمات نفسها. وحّد مربعات الكلمات، مربعًا لكل سطر مطبوع تشغله الآية،
+                    واطلها خلف الحبر بوصفها <b>مضلّعًا واحدًا</b> —
+                    <code>&lt;path&gt;</code> واحد بمسار فرعي لكل سطر. ولا يحمل أي <code>&lt;g&gt;</code>
+                    داخل الكلمة تحويلًا، فـ<code>word.getBBox()</code> صالح للاستعمال مباشرة. والدالة كاملة
+                    في المحرّر، فغيّر الحشو أو اللون أو الآية وسترى الشريط يتغيّر.</p>
+                </div>
+                <div class="lab" id="lab-band"></div>
+                <div class="callout">
+                  <h3>ارسم مضلّعًا واحدًا، لا مستطيلًا لكل سطر</h3>
+                  <p>الحبر العربي يتجاوز سطره: فحرفا <span class="ar" style="font-size:1em">ل</span>
+                    و<span class="ar" style="font-size:1em">ك</span> يصعدان إلى السطر الذي فوقهما، وحرفا
+                    <span class="ar" style="font-size:1em">ج</span> و<span class="ar" style="font-size:1em">ي</span>
+                    ينزلان تحته. فشريط الآية مستطيل لكل سطر مطبوع، وهذه المستطيلات تتلامس أو تتداخل.</p>
+                  <p><b>لا تُخرجها عناصر <code>&lt;rect&gt;</code> منفصلة.</b> فحافّتان متلاصقتان مع تنعيم
+                    الحواف لا تجتمعان على عتامة كاملة، فيظهر عند كل التقاء خيط شاحب، وتُقرأ آية من ستة أسطر
+                    6 شرائط لا تظليلًا واحدًا. اجعل كل سطر <b>مسارًا فرعيًا في
+                    <code>&lt;path&gt;</code> واحد</b>، ولُفَّها كلها في الاتجاه نفسه، وأوقع بينها تداخلًا
+                    رأسيًا بكسر من الوحدة. عنصر واحد ومنطقة مصمتة واحدة بلا حدود ظاهرة.</p>
+                  <p><b>حدّد <code>fill-rule</code> صراحةً ولا تدعه يُورَث أبدًا.</b> فـ<code>nonzero</code>
+                    هو ما يجعل المسارات الفرعية المتداخلة <i>تتّحد</i> بدل أن تتلاشى، ولهذا لا يكلّف التداخل
+                    شيئًا. أما حبر الصفحة نفسه فـ<code>evenodd</code>، وفيه تتلاشى المحيطات المتداخلة داخل
+                    المسار الواحد، فإن ورّثته صار كل تداخل ثقبًا. وضع الشفافية مرة واحدة على المجموعة.
+                    والتظليل طبقة خلف الحبر لا لون عليه، فتبقى الطبعة كما هي.</p>
+                  <figure class="code" style="margin-top:6px">
+                    <button class="copy">نسخ</button>
+              <pre><code>&lt;<span class="tok-k">g</span> <span class="tok-a">class</span>=<span class="tok-s">"highlight-layer"</span> <span class="tok-a">opacity</span>=<span class="tok-s">"0.30"</span>&gt;
+              <span class="tok-c">&lt;!-- مسار واحد فقط: مسار فرعي لكل سطر مطبوع --&gt;</span>
+              &lt;<span class="tok-k">path</span> <span class="tok-a">fill</span>=<span class="tok-s">"#d6a326"</span> <span class="tok-a">fill-rule</span>=<span class="tok-s">"nonzero"</span>
+                    <span class="tok-a">d</span>=<span class="tok-s">"M12 88H243V104H12Z M12 104H198V120H12Z …"</span>/&gt;
+              &lt;/<span class="tok-k">g</span>&gt;</code></pre>
+                  </figure>
+                </div>
+            </div>
+          </div>
+        </details>
+        <details class="cap" id="tap">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><circle class="halo" cx="24" cy="27" r="9"/><circle class="pick" cx="24" cy="27" r="3.2"/></svg>
+            <span class="cap-t">
+              <b>جعل اللمسة في الفراغ تصيب الآية</b>
+              <i>جعل كل نقطة في السطر تابعة لكلمة.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">g.word path { stroke: transparent; pointer-events: all }</p>
+                  <p>يجري اختبار الإصابة على الحبر، والحبر خطٌّ عربي فيه ضربات رفيعة وبياض يفصل بين
+                    الكلمات، فالإصبع التي تحطّ بين كلمتين لا تصيب شيئًا. وتعالجه قاعدة <code>CSS</code> واحدة
+                    <b>لا تغيّر بكسلًا واحدًا</b>، لأن الحدّ الشفاف خلف التعبئة يظل خاضعًا لاختبار الإصابة
+                    ولا يطلي شيئًا. انقر على السطر أدناه والهالة عند 0، وابحث عن فراغ، ثم اضبط
+                    <code>HALO</code> على 1.6 وانقر المواضع نفسها مرة أخرى.</p>
+                </div>
+                <div class="lab" id="lab-tap"></div>
+                <p class="note"><b>قدّم هذا على المضلّع الخفي لكل آية</b> الذي تستخدمه ملفات
+                  <code>SVG</code> الأقدم للمصاحف طبقةً للإصابة. فحين تشترك آيتان في سطر مطبوع واحد يكون
+                  الحدّ الحقيقي متعرّجًا، إذ تتداخل الحروف وتتدلّى العلامات، فيطلي المضلّع المستطيل جزءًا من
+                  الآية الأخرى أو يفوته حبر من آيته. أما الصعود من الكلمة فلا يخطئ، لأن حبر الآية هو كلماتها.
+                  وفوق 2.5 وحدة تقريبًا تبدأ الهالات في سرقة فراغات بعضها.</p>
+          </div>
+        </details>
+        <details class="cap" id="select">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><rect class="sel" x="20" y="13" width="46" height="19" rx="1"/><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g></svg>
+            <span class="cap-t">
+              <b>السحب عبر الصفحة ونسخ نص حقيقي</b>
+              <i>السحب على الصفحة ونسخ نص قرآني حقيقي.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">span واحد غير مرئي لكل g.word، فوق الحبر</p>
+                  <p>اسحب بالفأرة فوق الصفحة، ثم اضغط <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>C</kbd>، أو انقر
+                    بالزر الأيمن واختر «نسخ»، فيصلك النص القرآني. ولا توجد في الملف عناصر
+                    <code>&lt;text&gt;</code>، فليس أمام التحديد الأصلي في المتصفح ما يمسك به. فأفرد فوق
+                    الصفحة طبقة نصية: <code>&lt;span&gt;</code> واحد لكل كلمة، موضعه مطلق، يحمل نص
+                    <code>Unicode</code> الحقيقي ويُطلى بـ<code>color: transparent</code> فوق مربع الكلمة
+                    المرسوم. وهي الحيلة نفسها التي يستعملها PDF.js، ولا تحتاج إلى مكتبة، والحبر تحتها لا
+                    يُمسّ.</p>
+                </div>
+                <div class="lab" id="lab-select"></div>
 
-    <p class="note"><b>ما هو مُثبَت بالاختبار وما ليس كذلك.</b> حدث <code>copy</code> والحمولة
-      التي ينتجها مختبَران: سحبة فأرة حقيقية تعبر نهاية سطر، وتطابق شريط التظليل مع مجموعة الكلمات
-      المنسوخة عند الطرفين كليهما، وحفظ نهاية سطر المصحف نفسها في صورة سطر جديد. أما التسليم إلى
-      <b>حافظة نظام التشغيل</b> فلم يكن قابلاً للاختبار في المتصفح بلا واجهة رسومية المستعمل هنا،
-      إذ لا حافظة تسنده، فتلك الخطوة الأخيرة هي الجزء الوحيد من هذا القسم الذي لم يُتحقق منه إلا
-      يدوياً.</p>
-  </div>
-</section>
+                <div class="two" style="margin-top:22px">
+                  <div class="callout">
+                    <h3>5 مشكلات في طبقة التحديد، وعلاج كل منها</h3>
+                    <ul class="plain-list" style="margin-top:0">
+                      <li><b><code>getBBox()</code> قياس خاطئ.</b> فهو يعطي إحداثيات المجموعة نفسها في فضاء
+                        المستخدم ويتجاهل كل تحويل فوقها، فيضع السطر الأول قرب أسفل الصفحة. استخدم
+                        <code>getBoundingClientRect()</code> على الكلمة واطرح منه مستطيل الطبقة نفسها، فهو
+                        مارٌّ أصلًا بسلسلة التحويلات كاملة. وعندئذ يبلغ أسوأ انحراف متبقٍّ في كلمات الصفحة 3
+                        كلها، وعددها 127، <b>0.016 px</b>.</li>
+                      <li><b>موضع مؤشر الكتابة داخل عنصر <code>&lt;span&gt;</code> محكوم بعروض الخط الاحتياطي</b>، وهي لا صلة
+                        لها بالحبر، فالسحبة التي تبدأ من وسط كلمة تقطعها عند حرف اعتباطي. وسّع المدى عند
+                        <code>mouseup</code> ليشمل عناصر <code>&lt;span&gt;</code> كاملة. ودقّة الكلمة هي ما يريده قارئ المصحف على
+                        كل حال.</li>
+                      <li><b>لا تجعل حجم عنصر <code>&lt;span&gt;</code> بحجم مربع سطره.</b> فمستطيل مجموعة السطر يشمل الصواعد
+                        والنوازل التي تتعدّى إلى جيرانه، فتتراكب أشرطة التظليل وتشتدّ قتامتها. أما المربعات
+                        على مستوى الكلمة فتبدو صحيحة.</li>
+                      <li><b>لا تضع سطرًا جديدًا داخل عنصر <code>&lt;span&gt;</code></b>، ولا تستعمل عنصر فصل منفصلًا بحجم صفر.
+                        فالأول يجعل ذلك العنصر بارتفاع سطرين نصيين، فيفيض تظليله على السطر الذي تحته، والثاني
+                        يُطوى سطره الجديد فلا يبلغ الحافظة أبدًا. ابنِ الحمولة بنفسك في معالج
+                        <code>copy</code> بدلًا من ذلك.</li>
+                      <li><b>الضغط بالفأرة على نص محدَّد سلفًا لا يبدأ تحديدًا جديدًا.</b> بل يبدأ سحبًا
+                        وإفلاتًا أصليًا لذلك النص، ويبقى التحديد القديم جامدًا طوال الحركة، فتبدو السحبة
+                        الثانية كأنها لا تفعل شيئًا. وأشدّ ما يضرّ حين يعيد المستخدم المحاولة، لأن الكلمات
+                        تحت المؤشر هي عينها التي حدّدها للتوّ. امسح التحديد عند <code>mousedown</code> وارفض
+                        <code>dragstart</code>: سطران، فيبدأ كل سحب من جديد.</li>
+                      <li><b>اجعل ارتفاع المربعات ارتفاع السطر كاملًا حتى تلاقي جيرانها.</b> وإلا بقيت بين
+                        المربعات مناطق ميتة، واحتاجت أول كلمة في المدى وآخرها إلى تصويب متعمَّد. ولهذا تتشارك
+                        هذه البطاقة و<a href="#tap">جعل اللمسة في الفراغ تصيب الآية</a>
+                        و<a href="#translate">ربط أي بيانات تملكها بكل كلمة</a>
+                        و<a href="#compose">كل ذلك معًا</a> طبقةً واحدة وحجم مربع واحدًا.</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <div class="callout">
+                      <h3>ابنِ الحمولة بنفسك لتختار الصورة الإملائية وقت النسخ</h3>
+                      <p>يُستخرج النص من <code>data-word-key</code> لا من تسلسل الطبقة نفسها، فتستطيع
+                        <b>السحبة الواحدة أن تعطي نصوصًا مختلفة</b>: اقتبسه كما تضبطه الطبعة، أو خذ الصورة
+                        الإملائية الحديثة، أو خذ الصورة المجردة لتلصقها في صندوق بحث. غيّر سطر
+                        <code>WHICH</code> في المحرر، أو استعمل أداة الاختيار في شريط الأدوات.</p>
+                      <p class="note" style="margin:0">صورة الصفحة لا شيء فيها للتحديد، والخط الحاسوبي
+                        يعطيك الصورة الإملائية الواحدة التي صُفّ بها. أما هنا فالتحديد مجموعة من مفاتيح
+                        الكلمات، والصورة الإملائية تُختار حين يضغط المستخدم «نسخ».</p>
+                    </div>
+                    <figure class="code">
+                      <button class="copy">نسخ</button>
+              <pre><code><span class="tok-c">/* الطبقة. يجب ألا تُطبع الأشكال الحرفية أبدًا — بل</span>
+              <span class="tok-c">   شريط التحديد خلفها فقط. */</span>
+              .seltext { position: absolute; inset: <span class="tok-k">0</span> }
+              .seltext span {
+              position: absolute;
+              color: transparent;
+              -webkit-text-fill-color: transparent;
+              white-space: pre;
+              cursor: text;
+              }
+              .seltext span::selection { background: rgba(<span class="tok-k">45</span>,<span class="tok-k">85</span>,<span class="tok-k">160</span>,.<span class="tok-k">32</span>); color: transparent }</code></pre>
+                    </figure>
+                  </div>
+                </div>
 
-<section id="reveal" data-toc-group="القراءة والمعنى" data-toc-note="تخفيت الصفحة إلى الرمادي ثم إظهارها كلمةً كلمة.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">g.word { fill: … } — خاصية واحدة، كلمة واحدة</p>
-      <h2>8 · إظهار الصفحة كلمةً كلمة</h2>
-      <p>تبدأ كل كلمة في الصفحة بلون رمادي فاتح، وموضع القراءة وحده بكامل الحبر، ثم يتقدّم
-        فتظهر كل كلمة تدريجياً عند بلوغها. إلى هذا وحده يعود <b>مُلقِّن الحفظ</b> و<b>عرض
-        المتابعة أثناء القراءة</b> و<b>مؤشّر «أنت هنا»</b>، وما إن تصبح الكلمات قابلة للاستهداف
-        حتى تصير الثلاثة على بُعد خاصية واحدة. أما صورة الصفحة فلا تبلغ ذلك أصلاً، لأن إعادة
-        تلوين كلمة واحدة في كل مرة تقتضي حبراً مستقلاً لكل كلمة.</p>
-    </div>
-    <div class="lab" id="lab-reveal"></div>
+                <p class="note"><b>تغطية الاختبارات.</b> حدث <code>copy</code> والحمولة التي ينتجها
+                  مختبَران: سحبة فأرة حقيقية تعبر نهاية سطر، وتطابق شريط التظليل مع مجموعة الكلمات المنسوخة
+                  عند الطرفين كليهما، وحفظ نهاية سطر المصحف نفسها في صورة سطر جديد. أما التسليم إلى حافظة
+                  نظام التشغيل فيُفحص يدويًا، لأن المتصفح بلا واجهة رسومية المستعمل هنا لا حافظة تسنده.</p>
+          </div>
+        </details>
+        <details class="cap" id="compose">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><rect class="band" x="14" y="13" width="52" height="19" rx="2"/><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><rect class="pick" x="30" y="4.5" width="18" height="9" rx="2"/><circle class="halo" cx="16" cy="36" r="6"/></svg>
+            <span class="cap-t">
+              <b>كل ذلك معًا</b>
+              <i>تشغيل التمرير والنسخ والتظليل معًا في صفحة واحدة.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">طبقة لمس واحدة · قدرات كثيرة</p>
+                  <p>القارئ الحقيقي يشغّل عددًا من هذه القدرات معًا، وها هي ثلاث منها في صفحة واحدة وفي
+                    الوقت نفسه: <b>تمرير المؤشّر على الكلمة لعرض معناها</b>، و<b>السحب عليها ونسخ نص
+                    حقيقي</b>، و<b>شريط تظليل خلف الآية التي أنت عندها</b>. وهي الشيفرة نفسها الموجودة في
+                    <a href="#select">السحب عبر الصفحة ونسخ نص حقيقي</a>
+                    و<a href="#translate">ربط أي بيانات تملكها بكل كلمة</a>
+                    و<a href="#ayah">تظليل آية</a>، تتشارك طبقة لمس واحدة.</p>
+                </div>
+                <div class="lab" id="lab-compose"></div>
+                <div class="callout">
+                  <h3>اجعل المؤشّر لطبقة واحدة وحدها</h3>
+                  <p>الطبقات 3، والعليا وحدها تستقبل المؤشّر. فأشرطة <b>التظليل</b> تقع خلف الحبر،
+                    و<b>الحبر</b> نفسه <code>pointer-events: none</code>، و<b>طبقة اللمس لكل كلمة</b> في
+                    الأعلى هي وحدها ما يبلغه اختبار الإصابة. وتلك الطبقة عنصر واحد لكل كلمة يحمل
+                    <code>data-word-key</code>، فيقرأ التحديد والتمرير واللمس والنقر كلها من المصدر نفسه،
+                    بدل تكديس طبقات متنافسة.</p>
+                  <figure class="code" style="margin-top:6px">
+                    <button class="copy">نسخ</button>
+              <pre><code><span class="tok-c">/* أشرطة التظليل — خلف الحبر، ولا تُختبر للإصابة أبدًا */</span>
+              g.highlight-layer, g.highlight-layer * { pointer-events: none }
 
-    <div class="two" style="margin-top:22px">
-      <div class="callout">
-        <h3>ضبط اللون على المجموعة لا على 1,000 مسار</h3>
-        <p>يحمل كل مسار حبر <code>fill="#231f20"</code> بوصفها سمة عرض، فلا تبلغه التعبئة
-          الموروثة من <code>&lt;g&gt;</code> وحدها. وقاعدة CSS تتقدّم على سمة العرض، فتكفي قاعدة
-          واحدة لإعادة كل مسار إلى مجموعته، وعندئذ تصير إعادة تلوين كلمة كاملة ضبطَ خاصية
-          <b>واحدة</b> على عنصر <b>واحد</b> في كل نبضة، أياً كان ما تتألف منه الكلمة.</p>
-        <figure class="code" style="margin-top:6px">
-          <button class="copy">نسخ</button>
-<pre><code>.reveal g.word path { fill: inherit; transition: fill <span class="tok-k">220</span>ms linear }
+              <span class="tok-c">/* الحبر — مرسوم، ولا يُختبر للإصابة */</span>
+              svg.inert, svg.inert * { pointer-events: none }
 
-<span class="tok-c">// ثم، مع كل نبضة:</span>
-word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-s">'#c9c4b8'</span>;</code></pre>
-        </figure>
-        <p class="note">قياساً على هذه الصفحة: 147 كلمةً موزّعة على 1,061 مساراً، والانتقال على
-          <code>fill</code>. ويبقى سلساً لأن النبضة الواحدة تمسّ عنصراً واحداً لا ألفاً،
-          والمتصفح هو من يتولى الاستيفاء. وإن احتجت إلى ما هو أرخص فاجعل الانتقال على
-          <code>opacity</code> في المجموعة.</p>
+              <span class="tok-c">/* طبقة اللمس لكل كلمة — الطبقة الوحيدة التي تتلقى المؤشر */</span>
+              .hits       { position: absolute; inset: <span class="tok-k">0</span> }
+              .hits span  { position: absolute; color: transparent; white-space: pre }</code></pre>
+                  </figure>
+                  <p class="note">المؤشّر هو الشيء الوحيد الذي يتعذّر على الطبقات تشاركه: فالتحديد يريد
+                    <code>cursor: text</code>، وهدف التلميح يريد <code>cursor: help</code>. اختر واحدًا لكل
+                    سطح، وما عدا ذلك يتركّب معًا.</p>
+                </div>
+          </div>
+        </details>
       </div>
-      <div class="callout">
-        <h3>الجدولة قابلة للإحلال، وليست صوتاً</h3>
-        <p>يقود التقدّمَ دالةُ <code>schedule(i)</code> التي تعيد زمن إضاءة الكلمة <i>i</i>
-          بالميلي ثانية، وهي اليوم إيقاع ثابت. وضع مكانها مصفوفةً بأوقات بدء كل كلمة آتيةً من
-          مُحاذي تلاوة، تتبع الحلقة نفسها تلاوةً حقيقية: الشيفرة نفسها بمصدر مختلف.</p>
-        <p class="note" style="margin:0"><b>لا شيء هنا مُزامَن مع تلاوة.</b> فهذه الملفات لا
-          تحمل صوتاً ولا توقيتات كلمات، والحركة التي تراها ليست إلا إيقاعاً منتظماً. وإنما
-          تستحق العرض لأن <code>data-word-key</code> هو <code>surah:ayah:word</code>، وهو المفتاح
-          نفسه الذي تُنشر به مجموعات توقيتات الكلمات، فلا يحتاج الربط إلى جدول مطابقة.</p>
+    </div>
+    <div class="band" id="band-3">
+      <h3 class="band-h">كلمةً كلمة</h3>
+      <p class="band-n">كل كلمة عنصر، فيمكن قيادة أي شيء على مستوى الكلمة.</p>
+      <div class="grid">
+        <details class="cap" id="reveal">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7" width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/></g><g class="ln faint"><rect x="6" y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g></svg>
+            <span class="cap-t">
+              <b>إظهار الصفحة كلمةً كلمة</b>
+              <i>تخفيت الصفحة إلى الرمادي ثم إظهارها كلمةً كلمة.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">g.word { fill: … } — خاصية واحدة، كلمة واحدة</p>
+                  <p>تبدأ كل كلمة في الصفحة بلون رمادي فاتح، وموضع القراءة وحده بكامل الحبر، ثم يتقدّم
+                    فتظهر كل كلمة تدريجيًا عند بلوغها. إلى هذا وحده يعود <b>مُلقِّن الحفظ</b> و<b>عرض
+                    المتابعة أثناء القراءة</b> و<b>مؤشّر «أنت هنا»</b>. وما إن تصبح الكلمات قابلة
+                    للاستهداف حتى تصير الثلاثة على بُعد خاصية واحدة. أما صورة الصفحة فلا تبلغ ذلك أصلًا،
+                    لأن إعادة تلوين كلمة واحدة في كل مرة تقتضي حبرًا مستقلًا لكل كلمة.</p>
+                </div>
+                <div class="lab" id="lab-reveal"></div>
+
+                <div class="two" style="margin-top:22px">
+                  <div class="callout">
+                    <h3>ضبط اللون على المجموعة لا على 1,000 مسار</h3>
+                    <p>يحمل كل مسار حبر <code>fill="#231f20"</code> بوصفها سمة عرض، فلا تبلغه التعبئة
+                      الموروثة من <code>&lt;g&gt;</code> وحدها. وقاعدة <code>CSS</code> تتقدّم على سمة
+                      العرض، فتكفي قاعدة واحدة لإعادة كل مسار إلى مجموعته. وتصير إعادة تلوين كلمة كاملة بعدها
+                      خاصيةً واحدة على عنصر واحد في كل نبضة، أيًا كان ما تتألف منه الكلمة.</p>
+                    <figure class="code" style="margin-top:6px">
+                      <button class="copy">نسخ</button>
+              <pre><code>.reveal g.word path { fill: inherit; transition: fill <span class="tok-k">220</span>ms linear }
+
+              <span class="tok-c">// ثم، مع كل نبضة:</span>
+              word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-s">'#c9c4b8'</span>;</code></pre>
+                    </figure>
+                    <p class="note">تحمل الصفحة 42 عدد 147 كلمةً موزّعة على 1,061 مسارًا، والانتقال على
+                      <code>fill</code>. ويبقى سلسًا لأن النبضة الواحدة تمسّ عنصرًا واحدًا لا ألفًا،
+                      والمتصفح هو من يتولى الاستيفاء. وإن احتجت إلى ما هو أرخص فاجعل الانتقال على
+                      <code>opacity</code> في المجموعة.</p>
+                  </div>
+                  <div class="callout">
+                    <h3>استبدل بالجدولة توقيتات حقيقية</h3>
+                    <p>تعيد دالة <code>schedule(i)</code> زمن إضاءة الكلمة <i>i</i> بالميلي ثانية، وهي هنا
+                      إيقاع ثابت. مرّر إليها بدلًا منه مصفوفةً بأوقات بدء كل كلمة آتيةً من مُحاذي تلاوة،
+                      تتبع الحلقة نفسها تلاوةً حقيقية.</p>
+                    <p class="note" style="margin:0"><b>لا شيء هنا مُزامَن مع تلاوة.</b> فهذه الملفات لا
+                      تحمل صوتًا ولا توقيتات كلمات، والحركة التي تراها إيقاع منتظم. وإنما تستحق العرض لأن
+                      <code>data-word-key</code> هو <code>surah:ayah:word</code>، وهو المفتاح نفسه الذي
+                      تُنشر به مجموعات توقيتات الكلمات، فلا يحتاج الربط إلى جدول مطابقة.</p>
+                  </div>
+                </div>
+
+                <p class="note">ترتيب الكلمات هو <b>ترتيب المستند</b>: من اليمين إلى اليسار داخل السطر
+                  المطبوع، والأسطر من أعلى إلى أسفل، في أسطر المصحف الحاملة للكلمات جميعها وعددها 8,820
+                  سطرًا. والحلقة أدناه لا تُرتّب حسب الهندسة.</p>
+          </div>
+        </details>
+        <details class="cap" id="audio">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln faint"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><g class="ln"><rect x="18" y="16" width="46" height="4" rx="2"/></g><g class="wave"><path d="M6 38v-4M11 40v-8M16 39v-6M21 41v-10"/></g></svg>
+            <span class="cap-t">
+              <b>متابعة التلاوة كلمةً كلمة</b>
+              <i>متابعة التلاوة كلمةً كلمة.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">المكوّن الثالث من data-word-key هو word_number</p>
+                  <p>الآلية نفسها التي تنقل الكلمة من الرمادي إلى الحبر في
+                    <a href="#reveal">إظهار الصفحة كلمةً كلمة</a>، وقد حلّت التوقيتات الحقيقية لكل كلمة محلّ
+                    الإيقاع الثابت. اضغط «تشغيل» فيتبع التظليل التلاوة، لأن <b>quran.com
+                    تنشر توقيتات الكلمات بالمفتاح نفسه الذي تستعمله هذه الصفحة</b>: <code>word_number</code>
+                    يبدأ من 1 داخل الآية، وهو بعينه المكوّن الثالث من <code>data-word-key</code>. لا جدول
+                    مطابقة ولا خطوة محاذاة.</p>
+                </div>
+                <div class="lab" id="lab-audio"></div>
+
+                <div class="two" style="margin-top:22px">
+                  <div class="callout">
+                    <h3>التحقّق من عدد الكلمات قبل الوثوق بالترقيم</h3>
+                    <p>قد يختلف تفكيكان في عدد كلمات الآية الواحدة. ففي الصفحة 254 تُعدّ
+                      <code>13:37</code> 19 كلمةً عند quran.com و20 كلمةً في هذه الطبعة، التي تجعل
+                      <span class="ar" style="font-size:1em">بَعْدَ مَا</span> كلمتين. وإذا استهلكتَ
+                      التوقيتات على عماها انزاح التظليل بمقدار كلمة حتى نهاية تلك الآية، والانزياح يبدو
+                      وكأن الهندسة خاطئة، وذلك أسوأ من غياب التظليل أصلًا.</p>
+                    <p class="note" style="margin:0">قارِن أعلى <code>word_number</code> بعددك أنت لتلك
+                      الآية، وظلّل الآية كاملةً عند الاختلاف. وفي الصفحات 1 و3 و42 و582 و604 يتطابق العددان
+                      تمامًا في 67 آيةً، والصفحة 254 وحدها فيها عدم التطابق. والمختبر يطبع نتيجة الفحص في
+                      الحالتين.</p>
+                  </div>
+                  <div class="callout">
+                    <h3>من أين يأتي الصوت</h3>
+                    <p>يجري هنا بثّ الصوت والتوقيتات من <b>quran.com</b> لصفحة واحدة، بيانًا للربط
+                      بين <code>word_number</code> و<code>data-word-key</code>. التلاوة:
+                      <b>الشيخ محمد صدّيق المنشاوي</b>، المرتَّل.</p>
+                    <p><b>ملفات <code>SVG</code> لا تحمل صوتًا ولا توقيتات كلمات، ولا شيء من ذلك مخطَّط له.</b> فليس في
+                      الحزمة ولا في مواصفة الصيغة ولا في جداول السمات شيء يخصّ التلاوة. والصوت والتوقيتات
+                      ملك quran.com، وشروطها تسري عليها هي لا على هذه الملفات.</p>
+                    <p class="note" style="margin:0">وهو كذلك الجزء الوحيد من هذه الصفحة الذي يتصل بالشبكة
+                      خارج جلب صفحات المصحف. وإذا تعذّر الوصول إلى <code>API</code> رجع القسم إلى نسخة
+                      مخزّنة حجمها 2 KB من توقيتات هذه الصفحة، وأعلن ذلك.</p>
+                  </div>
+                </div>
+
+                <p class="note"><b>ملف <code>MP3</code> واحد لكل آية، لا لكل صفحة</b>، وأوقات كل آية
+                  منسوبة إلى ملفها هي. فيُتابع المشغّل 4 ملفات على امتداد الصفحة 42، ويصفّر الساعة عند كل
+                  حدّ، ويحمّل التالي قبل انتهاء الحالي. وقُد التظليل من <code>currentTime</code> في كل إطار،
+                  لا من سلسلة مؤقتات، لأن السلسلة تنزاح عن الصوت والانزياح يجعل الهندسة تبدو خاطئة.</p>
+          </div>
+        </details>
+        <details class="cap" id="translate">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><rect class="pick" x="34" y="4.5" width="18" height="9" rx="2"/><path class="tipline" d="M43 14v6"/><rect class="tip" x="26" y="20" width="34" height="12" rx="2"/></svg>
+            <span class="cap-t">
+              <b>ربط أي بيانات تملكها بكل كلمة</b>
+              <i>ربط بياناتك الخاصة بكل كلمة على حدة.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">data-word-key === مفتاح الكلمة في quran.com</p>
+                  <p>مرّر المؤشّر على أي كلمة في الصفحة تظهر البيانات المرتبطة بها. واللمس يعمل على الشاشات
+                    اللمسية، والكلمات قابلة للتركيز فيعمل <kbd>Tab</kbd> ومفاتيح الأسهم كذلك.
+                    و<code>data-word-key</code> هو <code>surah:ayah:word</code> ويبدأ من 1، وهو المفتاح نفسه الذي
+                    تستعمله أصلًا <code>API</code> موقع quran.com ومجموعات الترجمة كلمةً كلمة وبيانات الصرف وتوقيتات
+                    التلاوة، فيرتبط بهذا الحبر ملفٌ حجمه 5 KB دون جدول مطابقة.</p>
+                  <p style="margin-top:10px"><b>وما يظهر هنا مثال، لا ميزة.</b> فالمعروض ترجمة إنجليزية
+                    كلمةً كلمة مصدرها quran.com، اخترناها لأنها بيانات مفتوحة يسهل التحقق منها. ضع مكانها
+                    تفسيرًا أو وسمًا نحويًا أو بطاقة مفردات أو أي بيانات تملكها أصلًا لكل كلمة، فالأسطر
+                    الثلاثة نفسها لا تتغير. <b>وملفات <code>SVG</code> لا تتضمّن أي ترجمة.</b></p>
+                </div>
+                <div class="lab" id="lab-translate"></div>
+                <p class="note"><b>اجعل مناطق اللمس داخل ملف <code>SVG</code></b>، عناصر
+                  <code>&lt;rect&gt;</code> شفافة، واحدة لكل كلمة. فربطها بالمسارات يجعل التلميح يرتجف كلما
+                  عبر المؤشّر الفراغات بين الحروف. وإن جمعتَ هذا مع طبقة النص <code>HTML</code> في
+                  <a href="#select">السحب عبر الصفحة ونسخ نص حقيقي</a> فإن تلك الطبقة تعلو ملف
+                  <code>SVG</code> وتبتلع هذه الأحداث، فاحسم أيّهما يملك <code>pointer-events</code> بدل
+                  تكديس الاثنتين.</p>
+                <p class="note">الترجمة كلمةً كلمة والنقل الحرفي المستعملان هنا مصدرهما <b>quran.com</b>،
+                  وهما بيانات طرف ثالث تُشحن منفصلةً عن ملفات <code>SVG</code> وتُنسب إلى مصدرها. وليست
+                  الترجمات ولا التفاسير ولا الصوت جزءًا من هذه المدوّنة، وكلها ترتبط بالمفتاح نفسه.</p>
+          </div>
+        </details>
       </div>
     </div>
+    <div class="band" id="band-4">
+      <h3 class="band-h">غيِّر شكلها</h3>
+      <p class="band-n">كل مسار يُشحَن بـ fill="#231f20"، وقاعدة <code>CSS</code> تغلب سمة العرض. وكل ما في هذه المجموعة يتفرّع عن ذلك.</p>
+      <div class="grid">
+        <details class="cap" id="style">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><g class="dots"><circle cx="20" cy="3" r="2"/><circle cx="34" cy="3" r="2"/><circle cx="48" cy="3" r="2"/><circle cx="12" cy="21" r="2"/><circle cx="52" cy="21" r="2"/></g></svg>
+            <span class="cap-t">
+              <b>إعادة التلوين أو الإخفاء، حسب المعنى</b>
+              <i>العلامات، وعلامة رأس الآية، والطبعة كلها — من <code>CSS</code>.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+            <div class="tabs" role="tablist" aria-label="إعادة التلوين أو الإخفاء، حسب المعنى">
+              <button role="tab" aria-selected="true" aria-controls="pane-style" id="tab-style">العلامات حسب معناها</button>
+              <button role="tab" aria-selected="false" aria-controls="pane-theme" id="tab-theme">المظهر كله</button>
+              <button role="tab" aria-selected="false" aria-controls="pane-markers" id="tab-markers">علامة رأس الآية</button>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-style" aria-labelledby="tab-style">
+                <div class="shead">
+                  <p class="sel">path[data-kind] · path[data-mark] · path[data-mark-family]</p>
+                  <p>كل مسار حبر في المصحف يحمل <code>fill="#231f20"</code>، وقاعدة <code>CSS</code> تتقدّم على سمة العرض،
+                    فإعادة التلوين حسب المعنى لا تحتاج إلى إعادة تصدير ولا إلى ملف ثانٍ. ونبدأ بالسطر المطبوع
+                    نفسه معروضًا بثلاث صور.</p>
+                </div>
 
-    <p class="note">ترتيب الكلمات هو <b>ترتيب المستند</b>: من اليمين إلى اليسار داخل السطر
-      المطبوع، والأسطر من أعلى إلى أسفل، وهو صحيح في أسطر المصحف الحاملة للكلمات جميعها وعددها
-      8,820 سطراً. والحلقة أدناه لا تُرتّب حسب الهندسة البتة، ولا تحتاج إلى ذلك.</p>
-  </div>
-</section>
+                <div id="spec">
+                  <div>
+                    <p class="spec-lbl">كما هو مطبوع</p>
+                    <div class="paper tight" id="spec-full"></div>
+                  </div>
+                  <div>
+                    <p class="spec-lbl">الحركات مخفية <span id="spec-n1"></span></p>
+                    <div class="paper tight" id="spec-novowel"></div>
+                  </div>
+                  <div>
+                    <p class="spec-lbl">كل العلامات مخفية <span id="spec-n2"></span></p>
+                    <div class="paper tight" id="spec-bare"></div>
+                  </div>
+                </div>
 
-<section id="audio" data-toc-group="القراءة والمعنى" data-toc-note="متابعة التلاوة كلمةً كلمة.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">المكوّن الثالث من data-word-key هو word_number</p>
-      <h2>9 · متابعة التلاوة كلمةً كلمة</h2>
-      <p>الآلية نفسها التي تنقل الكلمة من الرمادي إلى الحبر في §8، وقد حلّت التوقيتات الحقيقية
-        لكل كلمة محلّ الإيقاع الثابت. اضغط «تشغيل» فيتبع التظليل التلاوة، لأن <b>quran.com
-        تنشر توقيتات الكلمات بالمفتاح نفسه الذي تستعمله هذه الصفحة</b>: <code>word_number</code>
-        يبدأ من 1 داخل الآية، وهو بعينه المكوّن الثالث من <code>data-word-key</code>. لا جدول
-        مطابقة ولا خطوة محاذاة.</p>
-    </div>
-    <div class="lab" id="lab-audio"></div>
+                <div class="callout" style="margin-top:0">
+                  <h3>أخفِ الحركات وحدها، لا كل العلامات</h3>
+                  <p>الحركات 9، وتحمل <code>diacritic</code> في <code>data-mark-family</code>: الفتحة والكسرة
+                    والضمة والسكون والشدّة والمدّة والتنوينات الثلاثة. وإخفاؤها وحدها مُحدِّد واحد، ويبقى كل
+                    ما عداها في موضعه. وهذا هو النموذج الثاني أعلاه، وهو ما يطلبه وضع القراءة أو أداة
+                    الحفظ.</p>
+                  <p><b>ولا تُخفِ كل العلامات.</b> فالحركات ونقاط الحروف وعلامات الوقف كلها مسارات تحمل
+                    <code>data-kind="mark"</code>، وقاعدة <code>path[data-kind="mark"]{display:none}</code>
+                    تُسقِط الثلاثة دفعة واحدة، وهو النموذج الثالث أعلاه، وليست نتيجته نصًا غير مشكول.
+                    فالنقاط <b>هي</b> الحروف، إذ لا يفرّق بين
+                    <span class="ar" style="font-size:1em">ب ت ث</span> سواها، وإخفاؤها يمحو هوية الحرف. أما
+                    علامات الوقف فتحمل معلومات تلاوة لا ضبطًا.</p>
+                  <p><b><code>data-mark-family</code> قائمة رموز مفصولة بمسافات، مثل <code>class</code>.</b>
+                    فالعلامة الواحدة قد تنتمي إلى أكثر من عائلة: التنوينات الثلاثة حركات وهي في الوقت نفسه
+                    التنوين، فتحمل <code>data-mark-family="diacritic tanwin"</code> وتستجيب للاسمين معًا.
+                    طابِقها بـ<code>~=</code> لا بـ<code>=</code>:</p>
+                  <figure class="code" style="margin-top:6px">
+                    <button class="copy">نسخ</button>
+              <pre><code>[data-mark-family~=<span class="tok-s">"diacritic"</span>] { display: none }   <span class="tok-c">/* الصواب */</span>
+              [data-mark-family=<span class="tok-s">"diacritic"</span>]  { display: none }   <span class="tok-c">/* يفوته التنوين بصمت */</span></code></pre>
+                  </figure>
+                  <p class="note">المُحدِّد ذو المطابقة التامة خاطئ لا شديد الصرامة فحسب. يبدو أنه يعمل لأنه
+                    يطابق العلامات الـ6 ذات العائلة الواحدة، ثم يُسقِط التنوينات الثلاثة دون أن يشكو من شيء.
+                    وكل مُحدِّد في هذه الصفحة يستعمل <code>~=</code>.</p>
+                </div>
 
-    <div class="two" style="margin-top:22px">
-      <div class="callout">
-        <h3>التحقّق من عدد الكلمات قبل الوثوق بالترقيم</h3>
-        <p>قد يختلف تفكيكان في عدد كلمات الآية الواحدة. ففي الصفحة 254 تُعدّ
-          <code>13:37</code> 19 كلمةً عند quran.com و20 كلمةً في هذه الطبعة، التي تجعل
-          <span class="ar" style="font-size:1em">بَعْدَ مَا</span> كلمتين. وإذا استهلكتَ
-          التوقيتات على عماها انزاح التظليل بمقدار كلمة حتى نهاية تلك الآية، والانزياح يبدو
-          وكأن الهندسة خاطئة، وذلك أسوأ من غياب التظليل أصلاً.</p>
-        <p class="note" style="margin:0">تكفي ثلاثة أسطر لعلاجه: مقارنة أعلى
-          <code>word_number</code> بعددك أنت لتلك الآية، والرجوع إلى تظليل الآية كاملةً عند
-          الاختلاف. وبالقياس على هذه النسخة: الصفحات 1 و3 و42 و582 و604 تتطابق تماماً في
-          67 آيةً، والصفحة 254 وحدها فيها عدم التطابق. والمختبر يطبع نتيجة الفحص في الحالتين،
-          فترى نجاحه بعينك.</p>
+                <div class="lab" id="lab-style" style="margin-top:22px"></div>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-theme" aria-labelledby="tab-theme" hidden>
+                <div class="shead">
+                  <p class="sel">svg path { fill: … }</p>
+                  <p>كل مسار حبر في المصحف كله بلون واحد هو <code>#231f20</code>، فقاعدة واحدة تغيّره
+                    بأكمله. ومن ذلك يأتي مظهر داكن حقيقي، أو ورقة طباعة عالية التباين، أو صفحة تطابق لوحة
+                    ألوانك. ولا شيء من ذلك يمسّ الهندسة.</p>
+                </div>
+                <div class="lab" id="lab-theme"></div>
+                <p class="note"><b>اضبط <code>fill</code>، ولا تُحوّل الصفحة إلى صورة نقطية ثم تُرشّحها.</b>
+                  فوضع <code>filter: invert()</code> فوق صورة يعطيك ورقًا رماديًا وحبرًا معكّرًا، ويتعارض مع
+                  كل لون آخر في الصفحة. أما هنا فالحبر والأرضية مستقلان.</p>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-markers" aria-labelledby="tab-markers" hidden>
+                <div class="shead">
+                  <p class="sel">g.ayah-mark > path[data-kind="ayah_mark_ornament" | "ayah_number"]</p>
+                  <p>علامة رأس الآية هي <code>&lt;g class="ayah-mark" id="mk-2-255"&gt;</code>
+                    تضمّ مسارين: حلقة الزخرفة، والرقم المطبوع. <b>وهما عنصران منفصلان</b>
+                    — وهذا وحده سبب إمكان إعادة تنسيق الزخرفة دون المساس بالرقم. فلك أن تعيد تلوين الحلقة
+                    وحدها، أو تخفيها وتُبقي الرقم، أو تُكبّر العلامة كلها، أو تستبدل بالحلقة شكلًا من عندك، أو
+                    تحذف العلامات كلها لعرض قراءة مجرّد.</p>
+                </div>
+                <div class="lab" id="lab-marks"></div>
+                <p class="note"><b>رسوم الحلقات ليست جزءًا من هذه الصفحة.</b> التصاميم المعروضة في القائمة
+                  تُجلب عند التشغيل من
+                  <a href="https://github.com/quranpedia/ayah-marks">quranpedia/ayah-marks</a>، وهي منقولة عن
+                  20 عائلة خطية: 15 من Google Fonts و5 من fonts.quran.ws. وتحمل <b>رخص تلك العائلات</b> وهي
+                  مختلفة بعضها عن بعض، وكل علامة تذكر مصادرها في <code>collection.json</code> هناك، فاقرأه
+                  قبل إعادة نشر أي منها. ولا تحزم هذه الصفحة ولا المكتبة أي رسم، ولا تقرّر أي منهما شروط
+                  رخصة. وإذا تعذّر الجلب أعلن القسم ذلك وبقيت الحلقات المطبوعة.</p>
+                <p class="note">الرقم مرسوم في الطبعة نفسها لا ناتج خط طباعي، فيبقى كما طُبع مهما زيّنت
+                  الحلقة من حوله. وتحمل الصفحتان 1 و2 كذلك <b>12 وردةً زخرفيةً لا آية لها</b>، وهي إطار
+                  الصفحتين الافتتاحيتين، فاختر <code>g.ayah-mark[data-ayah-key]</code> حين تقصد العلامات
+                  الحقيقية.</p>
+            </div>
+          </div>
+        </details>
+        <details class="cap" id="crop">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><g class="crop"><path d="M26 10h-6v6M52 10h6v6M26 30h-6v-6M52 30h6v-6"/></g></svg>
+            <span class="cap-t">
+              <b>إعادة تشكيل الصفحة</b>
+              <i>اقتطع أي كلمة أو آية في ملف <code>SVG</code> مستقل؛ ووسِّع التباعد.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+            <div class="tabs" role="tablist" aria-label="إعادة تشكيل الصفحة">
+              <button role="tab" aria-selected="true" aria-controls="pane-crop" id="tab-crop">اقتصاص مكوّن</button>
+              <button role="tab" aria-selected="false" aria-controls="pane-spacing" id="tab-spacing">توسيع التباعد</button>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-crop" aria-labelledby="tab-crop">
+                <div class="shead">
+                  <p class="sel">clone → filter → getBBox() → new viewBox</p>
+                  <p>كلمة واحدة لبطاقة مفردات، وسلسلة كلمات لاقتباس، وآية لاستشهاد، وسطر لعنوان. وهي الدالة
+                    نفسها من 12 سطرًا في كل مرة، بمُرشِّح مختلف، والناتج ملف <code>SVG</code> قائم بذاته
+                    تضعه في شريحة أو مقطع مرئي أو تصميم مطبوع بأي مقاس. حرّك مقبضَي <b>من</b> و<b>إلى</b>
+                    لانتقاء سلسلة من آية الكرسي، أو حرّر المُرشِّح لأي شيء آخر.</p>
+                </div>
+                <div class="lab" id="lab-crop"></div>
+                <p class="note">اقرأ <code>viewBox</code> من الملف بدلًا من تثبيت
+                  <code>0 0 345 550</code> في الشيفرة. تستعمله 602 من الصفحات، <b>غير أن الصفحتين 1 و2 لا
+                  تستعملانه</b>: فهما الصفحتان الافتتاحيتان، ولهما <code>viewBox</code> مختلف ومصفوفة صفحة مختلفة و8 أسطر
+                  مطبوعة بدل 15.</p>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-spacing" aria-labelledby="tab-spacing" hidden>
+                <div class="shead">
+                  <p class="sel">g.line { transform: translate(0, …) }</p>
+                  <p>أبعاد الصفحة 345 × 550، والهاتف أضيق من ذلك بكثير قياسًا إلى ارتفاعه، فملاءمة الصفحة
+                    لعرض الشاشة تترك <b>نحو ربع الشاشة فارغًا</b>. وتوزيع الأسطر في هذه المساحة يملأ الشاشة
+                    بالصفحة نفسها: نهايات الأسطر نفسها، ومواضع الأشكال الحرفية نفسها، دون تكبير ولا
+                    تمديد.</p>
+                  <p style="margin-top:10px">والأداة نفسها تعطيك وضع قراءة بخط كبير ولضعاف البصر يحتفظ
+                    بنهايات أسطر الطبعة. حرّك المنزلق، أو اضغط <b>ملء شاشة الهاتف</b> ليحسب المقتطف مقدار
+                    التباعد من <code>viewBox</code> الصفحة وعدد أسطرها.</p>
+                </div>
+                <div class="lab" id="lab-spacing"></div>
+                <div class="scroll">
+                  <table>
+                    <thead><tr><th>الجهاز</th><th class="mono">viewport</th><th class="mono">aspect</th>
+                      <th>الارتفاع المهدور عند ملاءمة الصفحة للعرض</th><th class="mono">التباعد اللازم لملئه</th></tr></thead>
+                    <tbody>
+                      <tr><td>iPhone SE</td><td class="mono">375×667</td><td class="mono">0.562</td><td>10.4%</td><td class="mono">4.5</td></tr>
+                      <tr><td>iPhone 14</td><td class="mono">390×844</td><td class="mono">0.462</td><td>26.3%</td><td class="mono">14.0</td></tr>
+                      <tr><td>iPhone 14 Pro Max</td><td class="mono">430×932</td><td class="mono">0.461</td><td>26.4%</td><td class="mono">14.1</td></tr>
+                      <tr><td>Pixel 7</td><td class="mono">412×915</td><td class="mono">0.450</td><td>28.2%</td><td class="mono">15.4</td></tr>
+                      <tr><td>Galaxy S21</td><td class="mono">360×800</td><td class="mono">0.450</td><td>28.3%</td><td class="mono">15.5</td></tr>
+                      <tr><td>iPad 10.9، عمودي</td><td class="mono">820×1180</td><td class="mono">0.695</td><td class="no">يلائم بالارتفاع</td><td class="no">—</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="note">تتحرك الأسطر كاملةً، ولا شيء يُكبَّر أو يُمدَّد أو يُعاد صفّه. وتحتفظ
+                  الكلمات داخل السطر بمواضعها المطبوعة بالضبط بعضها من بعض، فالصفحة لا تزال الصفحة التي حفظت
+                  منها، وإنما تباعدت أسطرها. ويوسّع المقتطف <code>viewBox</code> بالقدر نفسه فلا يُقتطع شيء.
+                  <b>واشتقّ مقدار التباعد من الصفحة نفسها لا من ثابت:</b> فالصفحتان 1 و2 هما الصفحتان
+                  الافتتاحيتان، ولهما 8 أسطر مطبوعة و<code>viewBox</code> مختلف، فالقيمة المحسوبة لصفحة من
+                  15 سطرًا خاطئة فيهما.</p>
+            </div>
+          </div>
+        </details>
       </div>
-      <div class="callout">
-        <h3>ما هذا القسم، وما ليس هو</h3>
-        <p>يجري هنا بثّ الصوت والتوقيتات من <b>quran.com</b> لصفحة <b>واحدة</b>، بياناً للربط
-          بين <code>word_number</code> و<code>data-word-key</code>. التلاوة:
-          <b>الشيخ محمد صدّيق المنشاوي</b>، المرتَّل.</p>
-        <p><b>ملفات SVG لا تحمل صوتاً ولا توقيتات كلمات، ولا شيء من ذلك مخطَّط له.</b> فليس في
-          الحزمة ولا في مواصفة الصيغة ولا في جداول السمات شيء يخصّ التلاوة. والصوت والتوقيتات
-          ملك quran.com، وشروطها تسري عليها هي، لا على هذه الملفات، ولا العكس.</p>
-        <p class="note" style="margin:0">وهو كذلك الجزء الوحيد من هذه الصفحة الذي يتصل بالشبكة
-          خارج جلب صفحات المصحف. وإذا تعذّر الوصول إلى API رجع القسم إلى نسخة مخزّنة حجمها
-          2 KB من توقيتات هذه الصفحة، وأعلن ذلك.</p>
-      </div>
     </div>
-
-    <p class="note"><b>ملف MP3 واحد لكل آية، لا لكل صفحة</b>، وأوقات كل آية منسوبة إلى ملفها
-      هي، فيُتابع المشغّل أربعة ملفات على امتداد الصفحة 42 ويصفّر الساعة عند كل حدّ، محمّلاً
-      التالي قبل انتهاء الحالي. ويُقاد التظليل من <code>currentTime</code> في كل إطار، لا من
-      سلسلة مؤقتات: فالسلسلة تنزاح عن الصوت، والانزياح هو العطل الذي يجعل الهندسة تبدو
-      خاطئة.</p>
-  </div>
-</section>
-
-<section id="translate" data-toc-group="القراءة والمعنى" data-toc-note="ربط بياناتك الخاصة بكل كلمة على حدة.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">data-word-key === مفتاح الكلمة في quran.com</p>
-      <h2>10 · ربط أي بيانات تملكها بكل كلمة</h2>
-      <p>مرّر المؤشّر على أي كلمة في الصفحة تظهر البيانات المرتبطة بها. واللمس يعمل على الشاشات
-        اللمسية، والكلمات قابلة للتركيز فيعمل <kbd>Tab</kbd> ومفاتيح الأسهم كذلك.
-        و<code>data-word-key</code> هو <code>surah:ayah:word</code> ويبدأ من 1، وهو المفتاح نفسه الذي
-        تستعمله أصلاً API موقع quran.com ومجموعات الترجمة كلمةً كلمة وبيانات الصرف وتوقيتات
-        التلاوة، فيرتبط بهذا الحبر ملفٌ حجمه 5 KB دون جدول مطابقة.</p>
-      <p style="margin-top:10px"><b>وما يظهر هنا مثال، لا ميزة.</b> فالمعروض ترجمة إنجليزية
-        كلمةً كلمة مصدرها quran.com، وهي بيانات جاهزة مفتوحة يسهل التحقق منها؛ والمقصود هو
-        الربط لا اللغة. ضع مكانها تفسيراً أو وسماً نحوياً أو بطاقة مفردات أو أي بيانات تملكها
-        أصلاً لكل كلمة، فالأسطر الثلاثة نفسها لا تتغير، ولا شيء من ذلك ممكن على صورة صفحة.
-        <b>وملفات SVG لا تتضمّن أي ترجمة.</b></p>
-    </div>
-    <div class="lab" id="lab-translate"></div>
-    <p class="note">الترجمة الإنجليزية كلمةً كلمة والنقل الحرفي هنا مصدرهما <b>quran.com</b>،
-      وهما بيانات طرف ثالث تُشحن منفصلةً عن ملفات SVG وتُنسب إلى مصدرها. وليسا جزءاً من هذه
-      المدوّنة، ولا الترجمات ولا التفاسير ولا الصوت، غير أنها جميعاً ترتبط بالمفتاح نفسه.
-      <b>ملحوظتان في التنفيذ.</b> مناطق اللمس عناصر
-      <code>&lt;rect&gt;</code> شفافة <i>داخل</i> ملف SVG، واحدة لكل كلمة: فربطها بالمسارات
-      يجعل التلميح يرتجف كلما عبر المؤشّر الفراغات بين الحروف. وإن جمعتَ هذا مع طبقة النص
-      HTML في §7 فإن الطبقة تعلو ملف SVG وتبتلع هذه الأحداث، فالأولى أن تحسم أيّهما يملك
-      <code>pointer-events</code> بدل تكديس الاثنتين.</p>
-  </div>
-</section>
-
-<section id="compose" data-toc-group="التحديد والإشارة" data-toc-note="تشغيل التمرير والنسخ والتظليل معاً في صفحة واحدة.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">طبقة لمس واحدة · قدرات كثيرة</p>
-      <h2>11 · كل ذلك معاً</h2>
-      <p>هذه ليست بدائل يُختار منها، فالقارئ الحقيقي يشغّل عدداً منها معاً، وها هي مجتمعة في
-        صفحة واحدة وفي الوقت نفسه: <b>تمرير المؤشّر على الكلمة لعرض معناها</b>، و<b>السحب
-        عليها ونسخ نص حقيقي</b>، و<b>شريط تظليل خلف الآية التي أنت عندها</b>. وليس في ذلك
-        حالة خاصة، بل هي المقتطفات الثلاثة نفسها من §7 و§10 و§4، تتشارك طبقة لمس واحدة.</p>
-    </div>
-    <div class="lab" id="lab-compose"></div>
-    <div class="callout">
-      <h3>كيف تتعايش معاً</h3>
-      <p>ثلاث طبقات، واحدة منها وحدها تستقبل المؤشّر. فأشرطة <b>التظليل</b> تقع خلف الحبر،
-        و<b>الحبر</b> نفسه <code>pointer-events: none</code>، و<b>طبقة اللمس لكل كلمة</b> في
-        الأعلى هي وحدها ما يبلغه اختبار الإصابة. ولأن تلك الطبقة عنصر واحد لكل كلمة يحمل
-        <code>data-word-key</code>، يقرأ التحديد والتمرير واللمس والنقر كلها من المصدر نفسه، بدل
-        تكديس طبقات متنافسة.</p>
-      <figure class="code" style="margin-top:6px">
-        <button class="copy">نسخ</button>
-<pre><code><span class="tok-c">/* أشرطة التظليل — خلف الحبر، ولا تُختبر للإصابة أبداً */</span>
-g.highlight-layer, g.highlight-layer * { pointer-events: none }
-
-<span class="tok-c">/* الحبر — جميل، وخامل */</span>
-svg.inert, svg.inert * { pointer-events: none }
-
-<span class="tok-c">/* طبقة اللمس لكل كلمة — الطبقة الوحيدة التي تتلقى المؤشر */</span>
-.hits       { position: absolute; inset: <span class="tok-k">0</span> }
-.hits span  { position: absolute; color: transparent; white-space: pre }</code></pre>
-      </figure>
-      <p class="note">الشيء الوحيد الذي يتعذّر تشاركه فعلاً هو المؤشّر: فالتحديد يريد
-        <code>cursor: text</code>، وهدف التلميح يريد <code>cursor: help</code>. اختر واحداً
-        لكل سطح، وما عدا ذلك يتركّب معاً.</p>
-    </div>
-  </div>
-</section>
-
-<section id="style" data-toc-group="العرض" data-toc-note="تلوين العلامات أو إخفاؤها بحسب معناها.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">path[data-kind] · path[data-mark] · path[data-mark-family]</p>
-      <h2>12 · تنسيق العلامات أو إخفاؤها حسب معناها</h2>
-      <p>كل مسار حبر في المصحف يحمل <code>fill="#231f20"</code>، وقاعدة CSS تتقدّم على سمة العرض،
-        فإعادة التلوين حسب المعنى لا تحتاج إلى إعادة تصدير ولا إلى ملف ثانٍ. ونبدأ بالسطر المطبوع
-        نفسه معروضاً بثلاث صور.</p>
-    </div>
-
-    <div id="spec">
-      <div>
-        <p class="spec-lbl">كما هو مطبوع</p>
-        <div class="paper tight" id="spec-full"></div>
-      </div>
-      <div>
-        <p class="spec-lbl">الحركات مخفية <span id="spec-n1"></span></p>
-        <div class="paper tight" id="spec-novowel"></div>
-      </div>
-      <div>
-        <p class="spec-lbl">كل العلامات مخفية <span id="spec-n2"></span></p>
-        <div class="paper tight" id="spec-bare"></div>
-      </div>
-    </div>
-
-    <div class="callout" style="margin-top:0">
-      <h3>أخفِ الحركات، ولا تُخفِ النقاط أبداً.</h3>
-      <p>كل حركة وكل نقطة حرف وكل علامة وقف مسار يحمل <code>data-kind="mark"</code>،
-        فقاعدة <code>path[data-kind="mark"]{display:none}</code> تُسقِط الثلاثة دفعة واحدة، وهو النموذج
-        الثالث أعلاه. وليست النتيجة نصاً غير مشكول: النقاط <b>هي</b> الحروف،
-        فـ<span class="ar" style="font-size:1em">ب ت ث</span> لا يفرّق بينها سواها، وإخفاؤها يمحو
-        هوية الحرف. أما علامات الوقف فمعلومات تلاوة لا تشكيل.</p>
-      <p>والحركات التسع تحمل <code>diacritic</code> في <code>data-mark-family</code> — الفتحة
-        والكسرة والضمة والسكون والشدّة والمدّة والتنوينات الثلاثة — فإخفاؤها وحدها مُحدِّد واحد،
-        ويبقى كل ما عداها في موضعه. وهذا هو النموذج الثاني، وهو ما يطلبه وضع القراءة أو أداة الحفظ.</p>
-      <p><b><code>data-mark-family</code> قائمة رموز مفصولة بمسافات، مثل <code>class</code>.</b>
-        فالعلامة الواحدة قد تنتمي إلى أكثر من عائلة: التنوينات الثلاثة حركات <i>وهي</i> في الوقت
-        نفسه التنوين، فتحمل <code>data-mark-family="diacritic tanwin"</code> ويجب أن تستجيب
-        للاسمين معاً. طابِقها بـ<code>~=</code> لا بـ<code>=</code>:</p>
-      <figure class="code" style="margin-top:6px">
-        <button class="copy">نسخ</button>
-<pre><code>[data-mark-family~=<span class="tok-s">"diacritic"</span>] { display: none }   <span class="tok-c">/* الصواب */</span>
-[data-mark-family=<span class="tok-s">"diacritic"</span>]  { display: none }   <span class="tok-c">/* يفوته التنوين بصمت */</span></code></pre>
-      </figure>
-      <p class="note">المُحدِّد ذو المطابقة التامة ليس أشدّ صرامة هنا فحسب، بل هو خاطئ: يبدو أنه يعمل
-        لأنه يطابق العلامات الست ذات العائلة الواحدة، ثم يُسقِط التنوينات الثلاثة دون أن يشكو من
-        شيء. وكل مُحدِّد في هذه الصفحة يستعمل <code>~=</code>.</p>
-    </div>
-
-    <div class="lab" id="lab-style" style="margin-top:22px"></div>
-  </div>
-</section>
-
-<section id="theme" data-toc-group="العرض" data-toc-note="إعادة تلوين الطبعة كلها، بما فيها مظهر داكن حقيقي.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">svg path { fill: … }</p>
-      <h2>13 · تغيير مظهر الصفحة</h2>
-      <p>كل مسار حبر في المصحف كله بلون واحد هو <code>#231f20</code>، وقاعدة واحدة تغيّره بأكمله.
-        من ذلك يأتي مظهر داكن حقيقي، أو ورقة طباعة عالية التباين، أو صفحة تطابق لوحة ألوانك — ولا
-        شيء من ذلك يمسّ الهندسة، فتبقى الطبعة هي الطبعة. وصورة الصفحة لا تبلغ شيئاً من هذا؛ فعكس
-        ألوان صورة فوتوغرافية ليس مظهراً داكناً.</p>
-    </div>
-    <div class="lab" id="lab-theme"></div>
-    <p class="note">اضبط <code>fill</code>، ولا تُحوّل الصفحة إلى صورة نقطية ثم تُرشّحها: فوضع
-      <code>filter: invert()</code> فوق صورة يعطيك ورقاً رمادياً وحبراً معكّراً، ويتعارض مع كل لون
-      آخر في الصفحة. أما هنا فالحبر والأرضية مستقلان، لأنهما لم يكونا يوماً غير ذلك.</p>
-  </div>
-</section>
-
-<section id="markers" data-toc-group="العرض" data-toc-note="تغيير شكل علامات رأس الآية أو تبديلها.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">g.ayah-mark > path[data-kind="ayah_mark_ornament" | "ayah_number"]</p>
-      <h2>14 · استبدال علامة رأس الآية أو إعادة تنسيقها</h2>
-      <p>علامة رأس الآية هي <code>&lt;g class="ayah-mark" id="mk-2-255"&gt;</code>
-        تضمّ مسارين: حلقة الزخرفة، والرقم المطبوع. <b>وهما عنصران منفصلان</b>
-        — وهذا وحده سبب إمكان إعادة تنسيق الزخرفة دون المساس بالرقم. فلك أن تعيد تلوين الحلقة
-        وحدها، أو تخفيها وتُبقي الرقم، أو تُكبّر العلامة كلها، أو تستبدل بالحلقة شكلاً من عندك، أو
-        تحذف العلامات كلها لعرض قراءة مجرّد.</p>
-    </div>
-    <div class="lab" id="lab-marks"></div>
-    <p class="note"><b>الرسوم ليست جزءاً من هذه الصفحة.</b> التصاميم المعروضة في القائمة تُجلب عند التشغيل من <a href="https://github.com/quranpedia/ayah-marks">quranpedia/ayah-marks</a>، وهي منقولة عن عشرين عائلة خطية — خمس عشرة من Google Fonts وخمس من fonts.quran.ws — وتحمل <b>رخص تلك العائلات</b> وهي مختلفة بعضها عن بعض؛ وكل علامة تذكر مصادرها في <code>collection.json</code> هناك. فاقرأه قبل إعادة نشر أي منها. لا تحزم هذه الصفحة ولا المكتبة أي رسم، ولا تقرّر أي منهما شروط رخصة. وإذا تعذّر الجلب أعلن القسم ذلك وبقيت الحلقات المطبوعة.</p>
-    <p class="note">الرقم مرسوم في الطبعة نفسها، وليس ناتج خط طباعي، فيبقى كما طُبع مهما زيّنت الحلقة
-      من حوله. وفي الصفحتين 1 و2 كذلك <b>12 وردةً زخرفيةً لا آية لها البتة</b> — إطار الصفحتين
-      الافتتاحيتين — فاختر <code>g.ayah-mark[data-ayah-key]</code> حين تقصد العلامات الحقيقية.</p>
-  </div>
-</section>
-
-<section id="spacing" data-toc-group="العرض" data-toc-note="توسيع تباعد الأسطر وملء شاشة الهاتف.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">g.line { transform: translate(0, …) }</p>
-      <h2>15 · توسيع تباعد الأسطر وملء شاشة الهاتف</h2>
-      <p>هذا على الهاتف ليس ترفاً في إتاحة الوصول، بل هو الفرق بين استعمال الشاشة وإهدارها. أبعاد
-        الصفحة 345 × 550، والهاتف أضيق من ذلك بكثير قياساً إلى ارتفاعه، فملاءمة الصفحة لعرض الشاشة
-        تترك <b>نحو ربع الشاشة فارغاً</b>. وتوزيع الأسطر في هذه المساحة يملأ الشاشة بالصفحة نفسها —
-        نهايات الأسطر نفسها، ومواضع الأشكال الحرفية نفسها، دون تكبير ولا تمديد. أما صورة الصفحة فلا
-        تملك إلا التقريب، وهو يقتطع أو يشوّه.</p>
-      <p style="margin-top:10px">وهو أيضاً وضع قراءة بخط كبير ولضعاف البصر، على صفحة تحتفظ بنهايات
-        أسطر الطبعة نفسها. حرّك المنزلق، أو اضغط <b>ملء شاشة الهاتف</b> ليحسب المقتطف مقدار التباعد
-        من <code>viewBox</code> الصفحة وعدد أسطرها.</p>
-    </div>
-    <div class="lab" id="lab-spacing"></div>
-    <div class="scroll">
-      <table>
-        <thead><tr><th>الجهاز</th><th class="mono">viewport</th><th class="mono">aspect</th>
-          <th>الارتفاع المهدور عند ملاءمة الصفحة للعرض</th><th class="mono">التباعد اللازم لملئه</th></tr></thead>
-        <tbody>
-          <tr><td>iPhone SE</td><td class="mono">375×667</td><td class="mono">0.562</td><td>10.4%</td><td class="mono">4.5</td></tr>
-          <tr><td>iPhone 14</td><td class="mono">390×844</td><td class="mono">0.462</td><td>26.3%</td><td class="mono">14.0</td></tr>
-          <tr><td>iPhone 14 Pro Max</td><td class="mono">430×932</td><td class="mono">0.461</td><td>26.4%</td><td class="mono">14.1</td></tr>
-          <tr><td>Pixel 7</td><td class="mono">412×915</td><td class="mono">0.450</td><td>28.2%</td><td class="mono">15.4</td></tr>
-          <tr><td>Galaxy S21</td><td class="mono">360×800</td><td class="mono">0.450</td><td>28.3%</td><td class="mono">15.5</td></tr>
-          <tr><td>iPad 10.9، عمودي</td><td class="mono">820×1180</td><td class="mono">0.695</td><td class="no">يلائم بالارتفاع</td><td class="no">—</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note">تتحرك الأسطر كاملةً، ولا شيء يُكبَّر أو يُمدَّد أو يُعاد صفّه. وتحتفظ الكلمات داخل
-      السطر بمواضعها المطبوعة بالضبط بعضها من بعض، فالصفحة التي تقرؤها لا تزال الصفحة التي حفظت
-      منها، وإنما تباعدت أسطرها. ويوسّع المقتطف <code>viewBox</code> بالقدر نفسه فلا يُقتطع شيء.
-      <b>اشتقّ مقدار التباعد من الصفحة نفسها، لا من ثابت</b> — فالصفحتان 1 و2 هما الصفحتان
-      الافتتاحيتان، ولهما 8 أسطر مطبوعة و<code>viewBox</code> مختلف، فالقيمة المحسوبة لصفحة من 15
-      سطراً خاطئة فيهما.</p>
-  </div>
-</section>
-
-<section id="crop" data-toc-group="العرض" data-toc-note="اقتصاص أي كلمة أو مقطع أو آية أو سطر في ملف SVG مستقل.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">clone → filter → getBBox() → new viewBox</p>
-      <h2>16 · كل اقتصاص مكوّن قائم بذاته</h2>
-      <p>كلمة واحدة لبطاقة مفردات، وسلسلة كلمات لاقتباس، وآية لاستشهاد، وسطر لعنوان. الدالة نفسها
-        من 12 سطراً، ومُرشِّح مختلف. والناتج ملف SVG قائم بذاته تضعه في شريحة أو مقطع مرئي أو تصميم
-        مطبوع بأي مقاس. حرّك مقبضَي <b>من</b> و<b>إلى</b>
-        لانتقاء سلسلة من آية الكرسي، أو حرّر المُرشِّح لأي شيء آخر.</p>
-    </div>
-    <div class="lab" id="lab-crop"></div>
-    <p class="note">اقرأ <code>viewBox</code> من الملف بدلاً من تثبيت
-      <code>0 0 345 550</code> في الشيفرة. تستعمله 602 من الصفحات، <b>غير أن الصفحتين 1 و2 لا
-      تستعملانه</b>: فهما الصفحتان الافتتاحيتان، ولهما viewBox مختلف ومصفوفة صفحة مختلفة و8 أسطر
-      مطبوعة بدل 15.</p>
-  </div>
-</section>
-
-<section id="meta" data-toc-group="البيانات نفسها" data-toc-note="قراءة السورة والجزء والحزب والرُبع من الصفحة مباشرة.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">data-sid · data-juz-start · data-hizb-start · data-rubu-al-hizb-start</p>
-      <h2>17 · بيانات وصفية بلا قاعدة بيانات، وقارئ في 30 سطراً</h2>
-      <p>لست بحاجة إلى تضمين حزمة بيانات وصفية للقرآن لتبني واجهة قارئ؛ افتح الصفحة واقرأها منها.
-        ويعمل المقتطف على أي صفحة يعرضها القارئ — تنقّل بين الصفحات بالأزرار أو بمفتاحَي
-        <kbd>←</kbd> <kbd>→</kbd> فيُعاد تشغيله على الصفحة الجديدة. جرّب <b>582</b>
-        (بداية الجزء 30)، و<b>1</b> (الصفحتان الافتتاحيتان)، و<b>42</b> (وردة رُبع)، و<b>176</b>
-        (علامة سجدة).</p>
-    </div>
-    <div class="lab" id="lab-meta"></div>
-    <p class="note">تُجلَب الصفحات واحدة تلو الأخرى عند الطلب — 794 KiB خاماً، و197 KiB على الشبكة
-      بعد ضغطها باستخدام gzip، وهي الطريقة نفسها التي ينبغي لأي مستهلك أن يتبعها. وهذا المستند لا
-      يُضمّن صفحةً واحدة: فالصفحة التي في أعلاه تُجلَب كسائر الصفحات، ويتشارك كل قسم يعرض الصفحة 42
-      ذلك الطلب الواحد.</p>
   </div>
 </section>
 
@@ -1190,23 +1402,20 @@ svg.inert, svg.inert * { pointer-events: none }
     <p class="sec-eyebrow">اختياري</p>
     <div class="shead">
       <p class="sel">import { MushafPage } from './lib/mushaf.mjs'</p>
-      <h2>18 · مكتبة، إن أردت</h2>
-      <p>في شريط أدوات كل قسم أعلاه مفتاح <b>بدون مكتبة</b> / <b>بمكتبة</b>. النسختان
-        حقيقيتان، وكلتاهما قابلة للتحرير وتعمل وتعطي النتيجة نفسها. <b>والوضع الافتراضي هو «بدون
-        مكتبة» عن قصد</b> — فهذا هو الدرس وهذه هي الحجّة: أمامك ملفات SVG عادية لا تحتاج إلى مكتبة
-        أصلاً. ولا شيء في هذه الصفحة غلافٌ يلزمك تبنّيه.</p>
-      <p style="margin-top:10px">ما توفّره المكتبة ليس الكتابة بل المزالق. فكل تنبيه في هذه
-        الصفحة عِلّةٌ اضطر أحدهم إلى اكتشافها أولاً: أن الآية عدة عُقَد، وأن <code>getBBox()</code>
-        يبلّغ عن موضع خاطئ، وأن شريط التظليل يجب أن يكون مساراً واحداً، وأن الحبر الأخير في الكلمة
-        يُرسم داخل الفراغ الذي يليها، وأن <code>data-mark-family</code> قائمة رموز لا قيمة واحدة.
-        وهذه كلها مدمجة في المكتبة ومختبَرة.</p>
+      <h2>مكتبة، إن أردت</h2>
+      <p>في شريط أدوات كل قسم أعلاه مفتاح <b>دون مكتبة</b> / <b>بمكتبة</b>. النسختان حقيقيتان،
+        وكلتاهما قابلة للتحرير وتعمل وتعطي النتيجة نفسها. <b>والوضع الافتراضي هو «دون مكتبة»</b>، لأن
+        أمامك ملفات <code>SVG</code> عادية لا تحتاج إلى مكتبة أصلًا.</p>
+      <p style="margin-top:10px">ما توفّره المكتبة هو المزالق لا الكتابة، فهي تحمل تنبيهات هذه الصفحة
+        مدمجةً مختبَرة: أن الآية عدة عُقَد، وأن <code>getBBox()</code> يبلّغ عن موضع خاطئ، وأن شريط
+        التظليل يجب أن يكون مسارًا واحدًا، وأن الحبر الأخير في الكلمة يُرسم داخل الفراغ الذي يليها، وأن
+        <code>data-mark-family</code> قائمة رموز لا قيمة واحدة.</p>
     </div>
 
     <div class="two">
       <div>
         <h3 style="font-size:19px;margin:0 0 10px">الحصول عليها</h3>
-        <p class="note" style="margin-top:0">بلا اعتماديات ولا خطوة بناء ولا إطار عمل. وحدة ES
-          module، أو وسم <code>&lt;script&gt;</code> يضع كل شيء في متغيّر عام واحد — وهو ما تحمّله هذه
+        <p class="note" style="margin-top:0">بلا اعتماديات ولا خطوة بناء ولا إطار عمل. وحدة <code>ES module</code>، أو وسم <code>&lt;script&gt;</code> يضع كل شيء في متغيّر عام واحد — وهو ما تحمّله هذه
           الصفحة أول مرة تضغط فيها <b>بمكتبة</b> في أي شريط أدوات.</p>
         <figure class="code">
           <button class="copy">نسخ</button>
@@ -1220,45 +1429,45 @@ svg.inert, svg.inert * { pointer-events: none }
   attachSelection(page, { citation: <span class="tok-k">true</span> });
 &lt;/<span class="tok-k">script</span>&gt;
 
-<span class="tok-c">&lt;!-- أو بدون وحدات — الواجهة نفسها، متغيّر عام واحد --&gt;</span>
+<span class="tok-c">&lt;!-- أو دون وحدات — الواجهة نفسها، متغيّر عام واحد --&gt;</span>
 &lt;<span class="tok-k">script</span> <span class="tok-a">src</span>=<span class="tok-s">"lib/mushaf.global.js"</span>&gt;&lt;/<span class="tok-k">script</span>&gt;
 &lt;<span class="tok-k">script</span>&gt;Mushaf.MushafPage.load(<span class="tok-k">42</span>).then(page =&gt; { <span class="tok-c">/* … */</span> });&lt;/<span class="tok-k">script</span>&gt;</code></pre>
         </figure>
-        <p class="note"><code>core.mjs</code> لا يستورد شيئاً البتة، وكل ما عداه دالة مستقلة
-          تأخذ صفحة — <code>attachSelection(page, …)</code>،
-          <code>mask(page, …)</code> — وذلك تحديداً كي يستطيع المُحزِّم إسقاط ما لا تستعمله.</p>
+        <p class="note"><code>core.mjs</code> لا يستورد شيئًا، وكل ما عداه دالة مستقلة تأخذ صفحة —
+          <code>attachSelection(page, …)</code> و<code>mask(page, …)</code> — كي يستطيع المُحزِّم إسقاط
+          ما لا تستعمله.</p>
       </div>
       <div>
         <div class="callout">
-          <h3>ثلاث قواعد تلتزم بها في كل موضع</h3>
+          <h3>3 قواعد تلتزم بها المكتبة في كل موضع</h3>
           <ul class="plain-list" style="margin-top:0">
-            <li><b>لا شيء يعدّل صفحة لم تسلّمها إليه.</b>
-              يعطيك <code>MushafPage.load()</code> و<code>page.clone()</code> صفحة تملكها، أما
-              <code>new MushafPage(el)</code> فيغلّف عنصراً <i>دون</i> نسخه، فيغيّر استدعاء لاحق
-              <i>عنصرك أنت</i> — وعلى هذا تقوم كل مقتطفات المكتبة في هذه
-              الصفحة.</li>
-            <li><b>كل استدعاء معدِّل يعيد مِقبضاً فيه <code>.remove()</code></b> يتراجع عمّا
-              فعله بالضبط لا أكثر. فلا توجد إعادة تعيين شاملة، ولا يتركك استدعاءٌ تخمّن في أي حالة
-              أنت.</li>
-            <li><b>طبقة اللمس المشتركة محسوبة بالمراجع.</b> فالتمرير والنقر والتحديد يأخذ كلٌّ
-              منها مرجعاً ثم يعيده، فتُبنى الطبقة مرة واحدة وتُفكَّك حين يُفرج عنها آخر مالك. وبهذا
-              يشغّل §11 ثلاث قدرات على صفحة واحدة دون أن تعلم أي منها بالأخرى.</li>
+            <li><b>لا شيء يعدّل صفحة لم تسلّمها إليه.</b> يعطيك <code>MushafPage.load()</code>
+              و<code>page.clone()</code> صفحة تملكها. أما <code>new MushafPage(el)</code> فيغلّف عنصرًا
+              <i>دون</i> نسخه، فيغيّر استدعاء لاحق <i>عنصرك أنت</i>، وعلى هذا تقوم كل مقتطفات المكتبة في
+              هذه الصفحة.</li>
+            <li><b>كل استدعاء معدِّل يعيد مِقبضًا فيه <code>.remove()</code></b> يتراجع عمّا فعله بالضبط
+              لا أكثر. ولا توجد إعادة تعيين شاملة.</li>
+            <li><b>طبقة اللمس المشتركة محسوبة بالمراجع.</b> فالتمرير والنقر والتحديد يأخذ كلٌّ منها
+              مرجعًا ثم يعيده، فتُبنى الطبقة مرة واحدة وتُفكَّك حين يُفرج عنها آخر مالك. وبهذا تشغّل
+              <a href="#compose">كل ذلك معًا</a> ثلاث قدرات على صفحة واحدة دون أن تعلم أي منها
+              بالأخرى.</li>
           </ul>
         </div>
         <div class="callout">
-          <h3>حيث تخالف المكتبة هذه الصفحة، فاتّبع المكتبة</h3>
-          <p>موضعان تتشدّد فيهما المكتبة عمداً أكثر من المقتطفات المجرّدة. فهي <b>لا تُحدِّد أبداً
-            بـ<code>data-mark-family</code></b> — بل تحلّ العائلة إلى أسماء <code>data-mark</code>
-            عبر تصنيف مدمج، فلا يستطيع بناءٌ يغيّر مفردات السمة أن يكسر شيفرتك. و<b>اختبار اللمس
-            فيها أقرب-مع-الاتجاه</b>: النقطة الواقعة في الفراغ بين كلمتين تعود إلى <i>السابقة</i>،
-            لأن الحبر الأخير في الكلمة يُرسم في هذه الطبعة داخل الفراغ الذي يليها.</p>
-          <p class="note" style="margin:0">اختُبرت بـ217 تأكيداً في متصفح حقيقي على الصفحات
-            1 و42 و48 و176 و582 و604 — الصفحتان الافتتاحيتان، ووردة رُبع، وآية من خمسة عشر مقطعاً،
-            وعلامة سجدة، وافتتاح جزء، وثلاثة عناوين سُوَر في صفحة واحدة — إضافة إلى سحب حقيقي بالفأرة
-            عبر نهاية سطر، وCtrl+C، وتمرير المؤشر، ونقرة في فراغ عرضه 6.96 px، وتغيير حجم النافذة.</p>
+          <h3>موضعان تتشدّد فيهما المكتبة أكثر من هذه المقتطفات</h3>
+          <p>هي <b>لا تُحدِّد أبدًا بـ<code>data-mark-family</code></b>، بل تحلّ العائلة إلى أسماء
+            <code>data-mark</code> عبر تصنيف مدمج، فلا يستطيع بناءٌ يغيّر مفردات السمة أن يكسر
+            شيفرتك.</p>
+          <p>و<b>اختبار اللمس فيها أقرب-مع-الاتجاه</b>: النقطة الواقعة في الفراغ بين كلمتين تعود إلى
+            <i>السابقة</i>، لأن الحبر الأخير في الكلمة يُرسم في هذه الطبعة داخل الفراغ الذي يليها.</p>
+          <p class="note" style="margin:0">اختُبرت بـ321 تأكيدًا في متصفح حقيقي على الصفحات 1 و42 و48
+            و176 و582 و604 — الصفحتان الافتتاحيتان، ووردة رُبع، وآية من 15 مقطعًا، وعلامة سجدة، وافتتاح
+            جزء، و3 عناوين سُوَر في صفحة واحدة — إضافة إلى سحب حقيقي بالفأرة عبر نهاية سطر،
+            و<kbd>Ctrl</kbd>+<kbd>C</kbd>، وتمرير المؤشر، ونقرة في فراغ عرضه 6.96 <code>px</code>،
+            وتغيير حجم النافذة.</p>
         </div>
         <div class="callout placeholder">
-          <h3>الاسم والترخيص — لاحقاً</h3>
+          <h3>الاسم والترخيص — لاحقًا</h3>
           <p><code>mushaf.js</code> اسمٌ مؤقت للعمل، وشروط استعمال المكتبة <b>لم
             تُحسم بعد</b>. ولا شيء في هذه الصفحة منحٌ لأي حقوق.</p>
         </div>
@@ -1268,13 +1477,13 @@ svg.inert, svg.inert * { pointer-events: none }
 </section>
 
 <!-- ═══════════════ WHAT YOU GET ═══════════════ -->
-<section id="bundle" data-toc-group="البيانات نفسها" data-toc-note="ما تُنزّله، وكم يزن، وحدوده المذكورة بصراحة.">
+<section id="bundle" data-toc-group="البيانات نفسها" data-toc-note="ما تُنزّله، وكم يزن، وحدوده المعروفة.">
   <div class="wrap">
     <p class="sec-eyebrow">ما تحصل عليه، وما يكلّفك</p>
     <div class="shead">
       <h2>الحزمة</h2>
-      <p>604 ملفات SVG وحفنة من الملفات المرافقة الصغيرة. لا خطوة بناء ولا بيئة تشغيل ولا
-        اعتماديات. الملفات هي المنتج.</p>
+      <p>604 ملفات <code>SVG</code> وحفنة من الملفات المرافقة الصغيرة. لا خطوة بناء ولا بيئة تشغيل ولا
+        اعتماديات.</p>
     </div>
     <div class="scroll">
       <table>
@@ -1283,9 +1492,9 @@ svg.inert, svg.inert * { pointer-events: none }
           <tr><td class="mono">pages/001.svg … 604.svg</td><td>المنتج — صفحة مطبوعة واحدة لكل ملف</td><td>449 MiB</td><td>110 MiB</td><td>70 MiB</td></tr>
           <tr><td class="mono">&nbsp;&nbsp;— صفحة واحدة</td><td>المتوسط عبر المصحف كله</td><td>762 KiB</td><td>186 KiB</td><td>118 KiB</td></tr>
           <tr><td class="mono">FORMAT.md</td><td>مواصفة التنسيق — كل سمة وكل حالة خاصة وكل حدّ معروف</td><td>57 KB</td><td>—</td><td>—</td></tr>
-          <tr><td class="mono">index/index.json</td><td>من الصفحة إلى سُوَرها، وأول آية فيها وآخرها، وعدد الكلمات؛ ومواضع بدء الأجزاء والأحزاب والأرباع؛ و114 سجلاً للسُوَر</td><td>99 KiB</td><td>—</td><td>10 KiB</td></tr>
-          <tr><td class="mono">index/words.json</td><td>نص كل كلمة مفهرساً بـ<code>data-word-key</code> مع صفحتها — ابنِ منه فهرس بحث، أو ابنه من <code>data-search</code> في صفحات وضع التطوير، وبه بُني فهرس هذا العرض نفسه</td><td>3.4 MiB</td><td>—</td><td>478 KiB</td></tr>
-          <tr><td class="mono">index/wordboxes.json</td><td>77,432 مربعاً محيطاً للكلمات، فتستطيع اختبار اللمس دون عرض الصفحة</td><td>3.0 MiB</td><td>—</td><td>896 KiB</td></tr>
+          <tr><td class="mono">index/index.json</td><td>من الصفحة إلى سُوَرها، وأول آية فيها وآخرها، وعدد الكلمات؛ ومواضع بدء الأجزاء والأحزاب والأرباع؛ و114 سجلًا للسُوَر</td><td>99 KiB</td><td>—</td><td>10 KiB</td></tr>
+          <tr><td class="mono">index/words.json</td><td>نص كل كلمة مفهرسًا بـ<code>data-word-key</code> مع صفحتها — ابنِ منه فهرس بحث، أو ابنه من <code>data-search</code> في صفحات وضع التطوير، وبه بُني فهرس هذا العرض نفسه</td><td>3.4 MiB</td><td>—</td><td>478 KiB</td></tr>
+          <tr><td class="mono">index/wordboxes.json</td><td>77,432 مربعًا محيطًا للكلمات، فتستطيع اختبار اللمس دون عرض الصفحة</td><td>3.0 MiB</td><td>—</td><td>896 KiB</td></tr>
           <tr><td class="mono">index/mark-taxonomy.json</td><td>أسماء العلامات وفئاتها وعائلاتها</td><td>4 KiB</td><td>—</td><td>—</td></tr>
           <tr><td class="mono">VERSION.json · CHECKSUMS.txt</td><td>ما ثبّتّ عليه، وبرهانٌ على ما وصلك</td><td>~50 KiB</td><td>—</td><td>—</td></tr>
         </tbody>
@@ -1295,85 +1504,87 @@ svg.inert, svg.inert * { pointer-events: none }
     <div class="two" style="margin-top:26px">
       <div>
         <h3 style="font-size:19px;margin-bottom:10px">صيغتان</h3>
-        <p class="note" style="margin-top:0">تُخرَج الصفحة نفسها بطريقتين. <b>وضع الإنتاج</b> هي ما
-          تريده: مجموعة <code>&lt;g class="word"&gt;</code> واحدة لكل كلمة، وكل علامة في مسار خاص بها.
-          و<b>وضع التطوير</b> تضيف طبقة <code>&lt;g class="ligature"&gt;</code> ومضلّعاً خفيّاً
-          موروثاً لكل آية، وهذان هما الفرق كله — فكل سمة في المرجع أدناه موجودة في الوضعين، والوضعان
-          تُعرَضان على نحو متطابق. وللتفريق بينهما بسطر واحد:</p>
+        <p class="note" style="margin-top:0">تُخرَج الصفحة نفسها بطريقتين. <b>استعمل وضع الإنتاج:</b>
+          مجموعة <code>&lt;g class="word"&gt;</code> واحدة لكل كلمة، وكل علامة في مسار خاص بها. و<b>وضع
+          التطوير</b> يضيف طبقة <code>&lt;g class="ligature"&gt;</code> ومضلّعًا خفيًّا موروثًا لكل آية،
+          وهذان هما الفرق كله. والوضعان يُعرَضان على نحو متطابق ويحملان كل سمة في المرجع أدناه.
+          وللتفريق بينهما بسطر واحد:</p>
         <figure class="code" style="margin-top:12px">
           <button class="copy">نسخ</button>
 <pre><code><span class="tok-k">const</span> isDev = doc.querySelector(<span class="tok-s">'g.ligature'</span>) !== <span class="tok-k">null</span>;</code></pre>
         </figure>
-        <p class="note">طبقة الوصلات <b>تقطيعٌ للعرض لا هجاء</b>. وهي ليست تقسيماً
-          موثوقاً للحروف — إذ إن 156 كلمةً تُهجّى فيها بحروف أقل مما تحمله فعلاً — فالنص
-          المعتمد هو <code>data-rasm-uthmani</code> على الكلمة، أو صورة <code>rasm</code> في الملف المرافق
-          للصفحة. والصفحة
-          التي في أعلى هذا المستند معروضة في وضع الإنتاج.</p>
+        <p class="note">طبقة الوصلات <b>تقطيعٌ للعرض لا هجاء</b>، وليست تقسيمًا موثوقًا للحروف، إذ إن
+          156 كلمةً تُهجّى فيها بحروف أقل مما تحمله فعلًا. فخذ النص المعتمد من
+          <code>data-rasm-uthmani</code> على الكلمة، أو من صورة <code>rasm</code> في الملف المرافق
+          للصفحة. والصفحة التي في أعلى هذا المستند هي وضع الإنتاج.</p>
 
         <h3 style="font-size:19px;margin:26px 0 10px">مستويان للتفكيك</h3>
-        <p class="note" style="margin-top:0">يحمل عنصر <code>&lt;svg&gt;</code> الجذر في كل صفحة
-          السمة <code>data-decomposition</code>، ولها قيمتان. فالقيمة <code>word</code> تعني ما
-          عرضته هذه الصفحة كلها: الكلمات والوصلات والعلامات المسمّاة كلها قابلة للاستهداف. والقيمة
-          <code>ayah</code> تعني حبر الصفحة مع مضلّعات الآيات وعلامات رؤوسها، <b>ولا شيء دون
-          الآية</b> — فلا <code>g.word</code> ولا <code>data-word-key</code> ولا علامات مسمّاة.</p>
+        <p class="note" style="margin-top:0">يحمل عنصر <code>&lt;svg&gt;</code> الجذر في كل صفحة السمة
+          <code>data-decomposition</code>، ولها قيمتان. فالقيمة <code>word</code> هي ما عرضته هذه الصفحة
+          كلها: الكلمات والوصلات والعلامات المسمّاة كلها قابلة للاستهداف. والقيمة <code>ayah</code> هي حبر
+          الصفحة مع مضلّعات الآيات وعلامات رؤوسها، <b>ولا شيء دون الآية</b>: فلا <code>g.word</code> ولا
+          <code>data-word-key</code> ولا علامات مسمّاة.</p>
         <p class="note"><b>ورواية حفص — وهي المدوّنة الموصوفة هنا — قيمتها <code>word</code>. أما
           ورش وقالون والدوري وشعبة فقيمتها اليوم <code>ayah</code>.</b> فاقرأ السمة قبل أن تكتب
-          مُحدِّداً على مستوى الكلمة؛ فالمُحدِّد في صفحة <code>ayah</code> ليس خاطئاً، لكنه لا
-          يطابق شيئاً.</p>
+          مُحدِّدًا على مستوى الكلمة. فمثل هذا المُحدِّد في صفحة <code>ayah</code> ليس خاطئًا، لكنه لا
+          يطابق شيئًا.</p>
         <figure class="code" style="margin-top:12px">
           <button class="copy">نسخ</button>
 <pre><code><span class="tok-k">if</span> (doc.documentElement.dataset.decomposition !== <span class="tok-s">'word'</span>) <span class="tok-c">/* ayah level only */</span></code></pre>
         </figure>
 
         <h3 style="font-size:19px;margin:26px 0 10px">الإصدارات</h3>
-        <p class="note" style="margin-top:0">ثبّت على وسم؛ فأي URL يحمل رقم إصدار غير قابل للتغيير. والعقد:
-          <b>patch</b> — تصحيح بيانات المسارات أو أسماء العلامات، بلا إضافة سمة ولا حذفها؛
-          و<b>minor</b> — إضافة سمات أو ملفات، بلا حذف ولا إعادة تسمية؛
-          و<b>major</b> — أي حذف أو إعادة تسمية، ومواصفة التنسيق تحمل الرقم الرئيس نفسه.</p>
+        <p class="note" style="margin-top:0">ثبّت على وسم، لأن أي <code>URL</code> يحمل رقم إصدار غير
+          قابل للتغيير. والعقد:</p>
+        <ul class="plain-list">
+          <li><b>patch</b> — تصحيح بيانات المسارات أو أسماء العلامات، بلا إضافة سمة ولا حذفها.</li>
+          <li><b>minor</b> — إضافة سمات أو ملفات، بلا حذف ولا إعادة تسمية.</li>
+          <li><b>major</b> — أي حذف أو إعادة تسمية، ومواصفة التنسيق تحمل الرقم الرئيس نفسه.</li>
+        </ul>
 
         <h3 style="font-size:19px;margin:26px 0 10px">دعم المتصفحات</h3>
-        <p class="note" style="margin-top:0">لا شيء هنا سوى SVG عادي وDOM عادي. تستعمل كل مقتطفات هذه الصفحة
-          <code>querySelectorAll</code> و<code>dataset</code> و<code>closest</code>
-          و<code>getBBox</code> و<code>getScreenCTM</code> — وكلها متاحة في كل المتصفحات منذ عشر سنوات.
-          ولا شيء هنا يحتاج إلى إطار عمل ولا canvas ولا worker ولا polyfill.</p>
+        <p class="note" style="margin-top:0">لا شيء هنا سوى <code>SVG</code> عادي و<code>DOM</code>
+          عادي. تستعمل كل مقتطفات هذه الصفحة <code>querySelectorAll</code> و<code>dataset</code>
+          و<code>closest</code> و<code>getBBox</code> و<code>getScreenCTM</code>، وكلها متاحة في كل
+          المتصفحات منذ 10 سنوات. ولا شيء هنا يحتاج إلى إطار عمل ولا <code>canvas</code> ولا
+          <code>worker</code> ولا <code>polyfill</code>.</p>
       </div>
       <div>
         <div class="callout">
-          <h3>الحدود، بصراحة</h3>
+          <h3>الحدود المعروفة</h3>
           <ul class="plain-list" style="margin-top:0">
-            <li><b>لا عناصر <code>&lt;text&gt;</code> البتة.</b> فالحبر كله مسارات، ولذلك لا يعمل
-              بحث المتصفح داخل الصفحة ولا تحديد النص القرآني ولا نسخه. والبحث يمرّ عبر
-              صورة <code>search</code> في <code>index/by-page/NNN.json</code> أو عبر فهرس مبني منها. وهذا لازمٌ لأي عرض للخط الحقيقي
-              بالمسارات وحدها.</li>
+            <li><b>لا عناصر <code>&lt;text&gt;</code>.</b> فالحبر كله مسارات، ولذلك لا يعمل بحث المتصفح
+              داخل الصفحة ولا تحديد النص القرآني ولا نسخه. فابحث في صورة <code>search</code> في
+              <code>index/by-page/NNN.json</code>، أو في فهرس مبني منها. وهذا لازمٌ لعرض الخط الحقيقي
+              بالمسارات.</li>
             <li><b>لا بيانات وصفية لإمكانية الوصول في الملفات المُسلَّمة بعد.</b> لا <code>&lt;title&gt;</code>
-              ولا <code>role</code> ولا <code>lang</code>. والمقوّمات كلها متوفرة — فالمقتطف في
-              §10 يجعل الصفحة قابلة للقراءة — لكنها ليست مدمجة، وادّعاء غير ذلك أسوأ من
-              الإقرار به.</li>
+              ولا <code>role</code> ولا <code>lang</code>. والمقوّمات كلها متوفرة، فالمقتطف في
+              <a href="#translate">ربط أي بيانات تملكها بكل كلمة</a> يجعل الصفحة قابلة للقراءة، لكنها ليست
+              مشحونة في الملفات.</li>
             <li><b>لا تفكيك على مستوى الحرف.</b> فلا شيء يقول أين ينتهي حرف عربي ويبدأ الذي
-              يليه، ولذلك يتعذّر ربط أحكام التجويد المصوغة نطاقاتِ محارف بالحبر. أما ما هو أصلاً
+              يليه، ولذلك يتعذّر ربط أحكام التجويد المصوغة نطاقاتِ محارف بالحبر. أما ما هو أصلًا
               علامة مسمّاة فيمكن تلوينه اليوم.</li>
-            <li><b>عدّ مسارات العلامات ليس عدّاً للعلامات نفسها.</b> فشرطتان مائلتان مرسومتان
-              متلامستين تتشاركان مساراً واحداً، وعلامة واحدة في المصحف كله تُخرَج في مسارين. والفرق
-              صغير وموثَّق موضعاً موضعاً في مواصفة التنسيق.</li>
+            <li><b>عدّ مسارات العلامات ليس عدًّا للعلامات نفسها.</b> فشرطتان مائلتان مرسومتان متلامستين
+              تتشاركان مسارًا واحدًا، وعلامة واحدة في المصحف كله تُخرَج في مسارين. ومواصفة التنسيق توثّق
+              كل موضع منها.</li>
             <li><b>صفحتان تخرجان عن التخطيط الموحّد.</b> فالصفحتان 1 و2 هما الصفحتان
               الافتتاحيتان: <code>viewBox</code> مختلف، ومصفوفة صفحة مختلفة، و8 أسطر، و12 وردة
               زخرفية لا تحمل آية. فاقرأ السمات ولا تفترض.</li>
-            <li><b>النطاق: الصفحة المطبوعة وما عليها.</b> فالبيانات الوصفية التي تحملها هذه
-              الملفات بيانات المصحف نفسه — السورة والآية والكلمة والسطر والصفحة، وتقسيمات الجزء
-              والحزب والربع والنصف، وكل علامة مسمّاة. أما الترجمة والتفسير والصوت وتوقيتات الكلمات
-              والكتابة الصوتية وتقسيمات الركوع والمنازل فبيانات المستهلك نفسه، وهي تلتحم مباشرة:
-              <code>data-word-key</code> و<code>data-ayah-key</code> هما المفتاحان اللذان تستعملهما تلك
-              البيانات أصلاً.</li>
+            <li><b>النطاق هو الصفحة المطبوعة وما عليها.</b> فالبيانات الوصفية التي تحملها هذه الملفات
+              بيانات المصحف نفسه: السورة والآية والكلمة والسطر والصفحة، وتقسيمات الجزء والحزب والربع
+              والنصف، وكل علامة مسمّاة. أما الترجمة والتفسير والصوت وتوقيتات الكلمات والكتابة الصوتية
+              وتقسيمات الركوع والمنازل فبياناتك أنت، وهي تلتحم مباشرة لأن <code>data-word-key</code>
+              و<code>data-ayah-key</code> هما المفتاحان اللذان تستعملهما تلك البيانات أصلًا.</li>
           </ul>
         </div>
         <div class="callout placeholder">
-          <h3>الترخيص والشروط — لاحقاً</h3>
+          <h3>الترخيص والشروط — لاحقًا</h3>
           <p>شروط استعمال هذه الملفات وإعادة توزيعها <b>لم تُحسم بعد</b>، ولم تُذكر هنا
-            عمداً. وسيحملها هذا القسم متى حُسمت.</p>
+            عمدًا. وسيحملها هذا القسم متى حُسمت.</p>
           <p class="note" style="margin:0">وما يمكن قوله الآن هو المصدر، وهو مذكور أعلاه: العمل الفني هو
             مصحف المدينة النبوية الصادر عن مجمع الملك فهد لطباعة المصحف الشريف،
             من <a href="https://dm.qurancomplex.gov.sa" rel="noopener">dm.qurancomplex.gov.sa</a>.
-            ولا شيء في هذه الصفحة يشكّل منحاً لأي حقوق.</p>
+            ولا شيء في هذه الصفحة يشكّل منحًا لأي حقوق.</p>
         </div>
       </div>
     </div>
@@ -1386,40 +1597,46 @@ svg.inert, svg.inert * { pointer-events: none }
     <p class="sec-eyebrow">مرجع</p>
     <div class="shead">
       <h2>كل سمة، وكم عددها</h2>
-      <p><b>هذا الجدول مولَّد من الملفات نفسها</b> لا مصان يدوياً — فلكل سمة
-        <code>data-*</code> تظهر في أي موضع من 604 صفحات سطرٌ هنا، مع عدد العناصر التي تحملها. والقسم
-        الذي يَعِد بـ«كل» ثم يسرد الثلثين بهدوء أسوأ من قسم لا يَعِد بشيء، لأن المطوّر يستنتج أن
-        السمة الغائبة غير موجودة. والنص المكتوب بجانب كل سطر تحرير، أما الأسطر فقياس.</p>
+      <p><b>هذا الجدول مولَّد من الملفات نفسها</b> لا مصان يدويًا. فلكل سمة <code>data-*</code> تظهر في
+        أي موضع من 604 صفحات سطرٌ هنا، مع عدد العناصر التي تحملها. والأسطر قياس، أما الوصف المكتوب
+        بجانب كل سطر فمكتوب باليد.</p>
+    </div>
+    <!-- مطوية في وضع السكون: مفتوحًا يبلغ هذا الجدول نحو 5,900 بكسل — أكثر
+         من ثلث الوثيقة كلها، وهو شيء يُراجَع لا شيء يُقرأ. -->
+    <details class="ref">
+      <summary><b>الجدول</b> <span id="attr-count">كل سمة data-* في المصحف</span>
+        <span class="cap-open" aria-hidden="true"></span></summary>
       <div class="row" style="margin:16px 0 4px">
         <span class="lbl" style="min-width:0">عرض</span>
         <span class="pills" id="attr-filter"></span>
       </div>
-    </div>
-    <div class="scroll">
-      <table id="attr-table">
-        <thead><tr><th class="mono">على</th><th class="mono">السمة</th><th>ما هي</th>
-          <th class="mono">العدد</th><th class="mono">القيم</th></tr></thead>
-        <tbody id="attr-rows"><tr><td colspan="5" class="no">جارٍ تحميل القياس…</td></tr></tbody>
-      </table>
-    </div>
+      <div class="scroll">
+        <table id="attr-table">
+          <thead><tr><th class="mono">على</th><th class="mono">السمة</th><th>ما هي</th>
+            <th class="mono">العدد</th><th class="mono">القيم</th></tr></thead>
+          <tbody id="attr-rows"><tr><td colspan="5" class="no">جارٍ تحميل القياس…</td></tr></tbody>
+        </table>
+      </div>
+    </details>
 
     <div class="callout" style="margin-top:24px">
-      <h3>الصفحة تعلن أيّ مصحف هي</h3>
-      <p>تسع سمات تجلس على عنصر <code>&lt;svg&gt;</code> الجذر في كل صفحة، فالملف الذي يصلك
-        وحده يظل يقول ما هو. واثنتان منها يسهل الخطأ فيهما.</p>
-      <p><b>اسم المجلد هو <i>الرواية</i> لا القراءة.</b> فـ<code>data-qiraah="asim"</code>
-        يسمّي قراءة عاصم، و<code>data-riwayah="hafs"</code> يسمّي رواية حفص عنه. وحفص وشعبة كلاهما
-        راوٍ عن القراءة نفسها، فلا يحدّد «hafs» وحده قراءةً — بل يحدّد راوياً.</p>
-      <p><b><code>data-ayah-total="6236"</code> حقيقةٌ عن رواية حفص لا عن القرآن.</b> فهو يتبع
-        العدّ الكوفي، وهو العدّ الذي تضبط عليه هذه الطبعة. وأنظمة العدّ الأخرى تقسّم النص المنزَّل نفسه
-        تقسيماً مختلفاً: فالعدّ المدني عن نافع يعطي 6,214. والإجمالي صفةٌ لمذهب في العدّ، فاقرأه من
-        الصفحة ولا تثبّته في شيفرتك.</p>
+      <h3>اقرأ من الملف أيّ مصحف هو</h3>
+      <p>تجلس 9 سمات على عنصر <code>&lt;svg&gt;</code> الجذر في كل صفحة، فالملف الذي يصلك وحده يظل يقول
+        ما هو. واثنتان منها يسهل الخطأ فيهما.</p>
+      <p><b>اسم المجلد هو <i>الرواية</i> لا القراءة.</b> فالقراءة وجه في القراءة، والرواية نقل عنها.
+        فـ<code>data-qiraah="asim"</code> يسمّي قراءة عاصم، و<code>data-riwayah="hafs"</code> يسمّي
+        رواية حفص عنه. وحفص وشعبة كلاهما راوٍ عن القراءة نفسها، فلا يحدّد «hafs» وحده قراءةً بل
+        راويًا.</p>
+      <p><b><code>data-ayah-total="6236"</code> حقيقةٌ عن رواية حفص لا عن القرآن.</b> فهو يتبع العدّ
+        الكوفي، وهو العدّ الذي تضبط عليه هذه الطبعة. وأنظمة العدّ الأخرى تقسّم النص المنزَّل نفسه
+        تقسيمًا مختلفًا، فالعدّ المدني عن نافع يعطي 6,214. فاقرأ الإجمالي من الصفحة ولا تثبّته في
+        شيفرتك.</p>
     </div>
 
-    <p class="note">تظهر <code>data-element-id</code> و<code>data-sig</code> كذلك على المسارات، في
-      <b>كلا</b> الوضعين. وهما أداتا مراجعة: فـ<code>data-element-id</code> <b>غير ثابت بين عمليات
-      البناء</b>، و<code>data-sig</code> بصمة شكل لا هوية — إذ إن 98 بصمة تخدم أكثر من اسم علامة
-      واحد. <b>فلا تجعل أياً منهما مفتاحاً أبداً.</b></p>
+    <p class="note"><b>لا تجعل <code>data-element-id</code> ولا <code>data-sig</code> مفتاحًا أبدًا.</b>
+      تظهر السمتان على المسارات في كلا الوضعين، وكلتاهما أداة مراجعة. فـ<code>data-element-id</code>
+      غير ثابت بين عمليات البناء، و<code>data-sig</code> بصمة شكل لا هوية، إذ إن 98 بصمة تخدم أكثر من
+      اسم علامة واحد.</p>
   </div>
 </section>
 
@@ -1430,8 +1647,8 @@ svg.inert, svg.inert * { pointer-events: none }
     <p>العمل الفني هو مصحف المدينة النبوية الذي نشره <span class="ar" style="font-size:1em">مجمع الملك فهد لطباعة المصحف الشريف</span>
       على <a href="https://dm.qurancomplex.gov.sa" rel="noopener">dm.qurancomplex.gov.sa</a>. ولم ينتج
       المجمع هذا التفكيك ولم يراجعه ولم يعتمده، وليس في هذه الصفحة ما يدل على تأييد أو انتساب.
-      والترجمة الإنجليزية كلمةً كلمة والنقل الحرفي المستعملان في §10 مصدرهما quran.com وليسا جزءاً
-      من هذه المجموعة. أما شروط الترخيص وإعادة التوزيع فلم تُحسم بعد ولا تُذكر في هذه الصفحة.</p>
+      والترجمة كلمةً كلمة والنقل الحرفي المستعملان في هذه الصفحة مصدرهما quran.com وليسا جزءًا من هذه
+      المجموعة. أما شروط الترخيص وإعادة التوزيع فلم تُحسم بعد ولا تُذكر في هذه الصفحة.</p>
   </div>
 </footer>
 
@@ -1505,6 +1722,44 @@ const isolate = s => RLI + s + PDI;
 function mod(name, fn) { try { return fn(); } catch (e) { console.error('[' + name + ']', e); } }
 
 /* ---------------------------------------------------------------------------
+   BUILD ON FIRST SIGHT — and the one case where "first sight" is not a scroll.
+
+   Nothing heavy is built until the reader can see it: no page is fetched for a
+   demo they never reached. An IntersectionObserver is the natural way to say
+   that, and it was the only way here while every demo sat inline.
+
+   It is not sufficient now. A demo lives inside a capability card, and a closed
+   <details> renders its content `display:none` (Chrome gives that subtree
+   content-visibility:hidden). An element going from display:none to laid-out
+   does NOT reliably deliver an IntersectionObserver entry, so a card opened
+   without scrolling afterwards would sit there for ever on "not run yet" — the
+   failure has no error and no console line, which is how it survived a first
+   pass unnoticed.
+
+   So take BOTH signals. The card's own `toggle` cannot be missed, and whichever
+   arrives first wins because `fn` runs at most once.
+--------------------------------------------------------------------------- */
+function whenVisible(el, fn) {
+  let done = false;
+  const fire = () => {
+    if (done) return;
+    done = true;
+    io.disconnect();
+    if (card) card.removeEventListener('toggle', onToggle);
+    fn();
+  };
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) fire(); },
+                                      { rootMargin: '400px' });
+  io.observe(el);
+  const card = el.closest('details.cap');
+  const onToggle = () => { if (card.open) fire(); };
+  if (card) {
+    card.addEventListener('toggle', onToggle);
+    if (card.open) fire();
+  }
+}
+
+/* ---------------------------------------------------------------------------
    THE HERO IS FETCHED, NOT INLINED.
 
    It used to be inlined into the document: 745 KiB of the 965 KiB this file
@@ -1566,7 +1821,13 @@ async function getPage(n) {
     const r = await fetch(INDEX + key + '.json');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const json = await r.json();
-    words = new Map(json.words.map(w => [w.wordKey, w]));
+    /* The shipped sidecar keys every field in snake_case — `word_key`, not
+       `wordKey`. Reading the camelCase name gave a Map of one entry under the
+       key `undefined`, and `forms()` then quietly returned undefined for every
+       word: the section that searches a page threw, and the ones that only
+       DISPLAY a form showed a blank. Accept either spelling rather than betting
+       on one, exactly as the audits here learned to over data-aya/data-ayah. */
+    words = new Map(json.words.map(w => [w.word_key ?? w.wordKey, w]));
   } catch (e) {
     if (!sidecarWarned) {
       sidecarWarned = true;
@@ -1784,7 +2045,7 @@ function hitLayer(svg, stage, opts = {}) {
       const b = box.get(g);
       if (!b) continue;
       const s = document.createElement('span');
-      s.textContent  = g.dataset.rasm_uthmani + ' ';
+      s.textContent  = g.dataset.rasmUthmani + ' ';
       s.dataset.wordKey  = g.dataset.wordKey;
       s.dataset.line = b.line;
       s.style.left   = (b.x0 - origin.left) + 'px';
@@ -1958,11 +2219,21 @@ const FALLBACK_AYAH_TIMINGS = {"2:253":["Minshawi/Murattal/mp3/002253.mp3",[[600
    when present (the dev profile carries all five; every profile carries
    data-rasm-uthmani), the page's sidecar fills the rest, a missing form is
    undefined. */
-const SIDECAR_FORMS = ['rasm', 'rasm_imlai', 'search', 'qpc'];
+/* form name → the dataset property the inline attribute lands under. They are
+   NOT the same string. `dataset` names an attribute in camelCase, so
+   `data-rasm-imlai` arrives as `dataset.rasmImlai`; the snake_case form this
+   file calls it everywhere else reads as undefined however present the
+   attribute is. That is what the terminology rename left behind here — twelve
+   sites asking for a dataset key that cannot exist — and it is why words came
+   out blank rather than throwing. */
+const SIDECAR_FORMS = { rasm: 'rasm', rasm_imlai: 'rasmImlai', search: 'search', qpc: 'qpc' };
 function forms(w) {
   const side = w.ownerSVGElement?.__words?.get(w.dataset.wordKey) || {};
-  const out = { rasm_uthmani: w.dataset.rasm_uthmani };
-  for (const k of SIDECAR_FORMS) out[k] = k in w.dataset ? w.dataset[k] : side[k];
+  const out = { rasm_uthmani: w.dataset.rasmUthmani ?? side.rasm_uthmani };
+  for (const k in SIDECAR_FORMS) {
+    const attr = SIDECAR_FORMS[k];
+    out[k] = attr in w.dataset ? w.dataset[attr] : side[k];
+  }
   return out;
 }
 /* The page's sidecar in its shipped shape, {words: [...]}, rebuilt from the
@@ -2060,7 +2331,7 @@ function makeLab(cfg) {
     sw.className = 'lab-switch';
     sw.setAttribute('role', 'group');
     sw.setAttribute('aria-label', 'أي تنفيذ يُعرض');
-    for (const [k, label] of [['plain', 'بدون مكتبة'], ['library', 'بمكتبة']]) {
+    for (const [k, label] of [['plain', 'دون مكتبة'], ['library', 'بمكتبة']]) {
       const b = document.createElement('button');
       b.textContent = label;
       b.setAttribute('aria-pressed', String(k === variant));
@@ -2159,7 +2430,7 @@ function makeLab(cfg) {
       report('جارٍ جلب المكتبة…', 'ok');
       try { M = await loadLib(); } catch (e) {
         report('<b>تعذّر تحميل المكتبة</b>  ' + esc(e.message) +
-               '<br>نسخة هذا القسم بدون مكتبة ما زالت تعمل.', 'err');
+               '<br>نسخة هذا القسم دون مكتبة ما زالت تعمل.', 'err');
         return;
       }
       if (token !== running) return;
@@ -2227,12 +2498,9 @@ function makeLab(cfg) {
   ctx.rerun = kick;
   ctx.runNow = () => { if (!built) return; clearTimeout(t); freshStage(); run(); };
 
-  /* build on first sight, so the DOM never holds a dozen pages at once */
-  let starting = false;
-  const io = new IntersectionObserver(async entries => {
-    if (!entries.some(e => e.isIntersecting) || starting) return;
-    starting = true;
-    io.disconnect();
+  /* Nothing is fetched for a card the reader never opened, and the DOM never
+     holds a dozen pages at once. */
+  whenVisible(mount, async () => {
     try {
       /* `built` flips only once the page this lab runs on is in hand, so a
          Reset or a variant switch during the fetch cannot run against null */
@@ -2247,8 +2515,8 @@ function makeLab(cfg) {
       report('تعذّر تهيئة هذا العرض: ' + esc(e.message), 'err');
       console.error('[' + cfg.mount + ']', e);
     }
-  }, { rootMargin: '400px' });
-  io.observe(mount);
+  });
+
   return ctx;
 }
 
@@ -2458,46 +2726,90 @@ const FORMAT_LINKS = {
 
 mod('format-links', () => {
   for (const [id, [anchor, label]] of Object.entries(FORMAT_LINKS)) {
-    const sec = $('#' + id);
+    /* a capability is a card (#start), or a tab inside one (#pane-band): the
+       four merged cards keep every old id, so every deep link still resolves */
+    const sec = $('#' + id) || $('#pane-' + id);
     if (!sec) { console.warn('[format-links] no section', id); continue; }
     const p = document.createElement('p');
     p.className = 'note fmt-link';
     p.innerHTML = '<a href="' + FORMAT_BASE + anchor + '">' + label + ' →</a>';
-    sec.querySelector('.wrap').append(p);
+    (sec.querySelector('.wrap') || sec.querySelector('.cap-body') || sec).append(p);
   }
 });
 
-/* ---------- contents, generated from the document ---------- */
-mod('toc', () => {
-  const body = $('#toc-body');
-  const groups = new Map();
-  for (const sec of $$('main section[data-toc-group]')) {
-    const h = sec.querySelector('h2');
-    if (!h) continue;
-    const g = sec.dataset.tocGroup;
-    if (!groups.has(g)) groups.set(g, []);
-    /* the heading carries its own number, so nothing here is hand-maintained
-       and renumbering a section cannot desync the contents */
-    const m = h.textContent.match(/^\s*(\d+)\s*·\s*(.+)$/);
-    groups.get(g).push({ id: sec.id, n: m ? m[1] : '', title: m ? m[2] : h.textContent,
-                         note: sec.dataset.tocNote || '' });
+mod('caps', () => {
+  const caps = $$('details.cap');
+
+  /* ---- tabs: one card, several techniques ---- */
+  for (const box of $$('.tabs')) {
+    const tabs = $$('button', box);
+    const show = pick => {
+      for (const t of tabs) {
+        const on = t === pick;
+        t.setAttribute('aria-selected', String(on));
+        $('#' + t.getAttribute('aria-controls')).hidden = !on;
+      }
+      /* a pane only just unhidden has never been laid out, so the lab inside it
+         has not been built either. Its IntersectionObserver fires on its own
+         once the pane has a box — nothing to poke here. */
+    };
+    tabs.forEach(t => t.addEventListener('click', () => show(t)));
+    box.addEventListener('keydown', e => {
+      const i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      const j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -1;
+      if (j < 0 || j >= tabs.length) return;
+      e.preventDefault();
+      tabs[j].focus();
+      show(tabs[j]);
+    });
   }
-  for (const [name, items] of groups) {
-    const col = document.createElement('div');
-    const h3 = document.createElement('h3');
-    h3.textContent = name;
-    const ol = document.createElement('ol');
-    for (const it of items) {
-      const li = document.createElement('li');
-      li.innerHTML = '<a href="#' + it.id + '">' +
-        (it.n ? '<span class="n">' + it.n + '</span>' : '') +
-        '<span class="t">' + it.title + '</span>' +
-        '<span class="d">' + it.note + '</span></a>';
-      ol.append(li);
+
+  /* ---- open all / close all ---- */
+  const all = $('#cap-all');
+  all.addEventListener('click', () => {
+    const opening = all.getAttribute('aria-pressed') !== 'true';
+    caps.forEach(c => { c.open = opening; });
+    all.setAttribute('aria-pressed', String(opening));
+    all.textContent = opening ? 'close all' : 'open all';
+  });
+  /* the button must not claim "close all" while the reader has closed them by
+     hand, one at a time */
+  const sync = () => {
+    const open = caps.some(c => c.open);
+    all.setAttribute('aria-pressed', String(open));
+    all.textContent = open ? 'close all' : 'open all';
+  };
+  caps.forEach(c => c.addEventListener('toggle', sync));
+
+  /* ---- a deep link opens what it points at ----
+     #ayah names a card; #pane-band, and every id inside a card body, names
+     something buried in one. Walk up from whatever the hash resolves to. */
+  function openForHash() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!target) return;
+    const card = target.closest('details.cap');
+    if (!card) return;
+    card.open = true;
+    /* if the target is a tab pane, select its tab too */
+    const pane = target.closest('.pane');
+    if (pane) {
+      const tab = $('#' + pane.getAttribute('aria-labelledby'));
+      if (tab) tab.click();
     }
-    col.append(h3, ol);
-    body.append(col);
+    /* the browser has already given up scrolling to a target that was
+       display:none when the hash arrived */
+    requestAnimationFrame(() => card.scrollIntoView({ block: 'start' }));
   }
+  addEventListener('hashchange', openForHash);
+  openForHash();
+
+  /* a card's own id in the address bar, so a reader can share what they opened */
+  caps.forEach(c => c.addEventListener('toggle', () => {
+    if (c.open && location.hash.slice(1) !== c.id) history.replaceState(null, '', '#' + c.id);
+  }));
 });
 
 /* ---------- the sticky bar: where you are, and how far ---------- */
@@ -2505,13 +2817,23 @@ mod('bar', () => {
   const bar = $('.index'), here = $('#here'), prog = $('#progress');
   const secs = $$('main section[id]');
 
+  /* An open card is what the reader is actually in, so it outranks the section
+     containing it. A closed one has no body to be halfway down, and its
+     summary is small enough that the 50% band rarely lands on it — either way
+     the section name is the right answer then. */
+  const name = el => {
+    if (el.matches('details.cap')) return el.open ? $('.cap-t b', el).textContent.trim() : null;
+    const h = el.querySelector('h2');
+    return h ? h.textContent.trim() : '';
+  };
   const io = new IntersectionObserver(es => {
     for (const e of es) if (e.isIntersecting) {
-      const h = e.target.querySelector('h2');
-      here.textContent = h ? h.textContent.trim() : '';
+      const n = name(e.target);
+      if (n !== null) here.textContent = n;
     }
   }, { rootMargin: '-50% 0px -50% 0px' });
   secs.forEach(s => io.observe(s));
+  $$('details.cap').forEach(c => io.observe(c));
 
   let last = scrollY, ticking = false;
   addEventListener('scroll', () => {
@@ -2544,7 +2866,7 @@ mod('copy', () => {
     btn.addEventListener('click', async () => {
       const pre = btn.closest('figure').querySelector('pre');
       try { await navigator.clipboard.writeText(pre.innerText); btn.textContent = 'نُسخ'; }
-      catch { btn.textContent = 'حدِّده يدوياً'; }
+      catch { btn.textContent = 'حدِّده يدويًا'; }
       setTimeout(() => { btn.textContent = 'نسخ'; }, 1400);
     });
   });
@@ -2631,7 +2953,7 @@ heroReady.then(() => mod('hero', () => {
           'translate(0 ' + (shift.get(last.closest('g.line').dataset.line) || 0).toFixed(2) + ')');
       });
       refit(hero, 6);
-      said.push('<b>' + lines.length + '</b> سطراً مطبوعاً تباعدت بمقدار ' + GAP +
+      said.push('<b>' + lines.length + '</b> سطرًا مطبوعًا تباعدت بمقدار ' + GAP +
         ' وحدة لكلٍّ منها — مجموعات كاملة أُزيحت، دون تكبير حرف واحد ولا إعادة صفّه');
     }
 
@@ -2657,22 +2979,22 @@ heroReady.then(() => mod('hero', () => {
       const f = frags(), n = bandWords(hero, wordsOf());
       said.push('الآية <b>' + ayahKey + '</b> · ' + wordsOf().length + ' كلمة · ' + f.length +
         ' عقدة مطابِقة، و<code>data-ayah-fragments</code> يقول ' + f[0].dataset.ayahFragments +
-        ' — <b>مضلّع</b> واحد يغطي ' + n + ' سطراً مطبوعاً، لا ' + n + ' شريطاً');
+        ' — <b>مضلّع</b> واحد يغطي ' + n + ' سطرًا مطبوعًا، لا ' + n + ' شريطًا');
     }
 
     if (state.text) {
       const ws = wordsOf();
-      const t = ws.map(w => w.dataset.rasm_uthmani).join(' ');
+      const t = ws.map(w => w.dataset.rasmUthmani).join(' ');
       /* an Arabic run inside LTR UI must be isolated, or the bidi algorithm
          reorders it against the Latin around it */
-      said.push('<b>' + ws.length + ' كلمة</b> نصاً حقيقياً بترميز Unicode، مقروءةً من ' +
-        'العناصر مباشرة — لا OCR ولا تعليقاً مكتوباً:<br><bdi class="ar" style="font-size:1.15em">' +
+      said.push('<b>' + ws.length + ' كلمة</b> نصًا حقيقيًا بترميز Unicode، مقروءةً من ' +
+        'العناصر مباشرة — لا OCR ولا تعليقًا مكتوبًا:<br><bdi class="ar" style="font-size:1.15em">' +
         esc(t.length > 220 ? t.slice(0, 220) + ' …' : t) + '</bdi>');
     }
 
     out.innerHTML = said.length ? said.join('<br><br>') : REST;
     cap.innerHTML = state.lit
-      ? 'الآية <b>' + ayahKey + '</b> تمتد على ' + frags().length + ' سطراً مطبوعاً، فيحمل لها ' +
+      ? 'الآية <b>' + ayahKey + '</b> تمتد على ' + frags().length + ' سطرًا مطبوعًا، فيحمل لها ' +
         'الملف هذا العدد من عقد <code>&lt;g class="ayah-fragment"&gt;</code> المتجاورة، و' +
         '<code>querySelector</code> واحد كان سيعثر على واحدة منها فقط.'
       : CAPTION;
@@ -2736,7 +3058,7 @@ log('viewBox        ', doc.documentElement.getAttribute('viewBox'));
 log('');
 log([...doc.querySelectorAll('g.word')]
   .filter(w => w.dataset.wordKey.startsWith('2:6:'))
-  .map(w => w.dataset.rasm_uthmani).join(' '));
+  .map(w => w.dataset.rasmUthmani).join(' '));
 
 // ثم اعرضها
 stage.className = 'paper tight';
@@ -2795,9 +3117,9 @@ mod('lab-tap', () => bindToggle(makeLab({
   stageSvg: () => crop(PRISTINE, w => w.closest('g.line').dataset.line === '5', 2),
   code: `
 // الحبر خط عربي: خطوط رفيعة بينها فراغ، فاختبار النقر على المسارات
-// نفسها يُضيّع كثيراً من النقرات. ضع عنصراً شفافاً واحداً فوق كل كلمة
+// نفسها يُضيّع كثيرًا من النقرات. ضع عنصرًا شفافًا واحدًا فوق كل كلمة
 // ودع المؤشر له. مع تفعيل GAPFILL يمتد صندوق كل كلمة حتى جاراتها
-// ويأخذ ارتفاع السطر كاملاً، فتصير كل نقطة في السطر تابعة لكلمة
+// ويأخذ ارتفاع السطر كاملًا، فتصير كل نقطة في السطر تابعة لكلمة
 // واحدة بالضبط ولا يبقى موضع تخطئه.
 //
 // والطبقة نفسها تخدم التحديد (§7) والتمرير (§10): السحب المريح
@@ -2818,13 +3140,13 @@ stage.addEventListener('click', e => {
   hit++;
   span.classList.add('lit');
   const word = svg.querySelector('g.word[data-word-key="' + span.dataset.wordKey + '"]');
-  out('<b>' + word.dataset.wordKey + '</b> ' + word.dataset.rasm_uthmani +
+  out('<b>' + word.dataset.wordKey + '</b> ' + word.dataset.rasmUthmani +
       ' → آية <b>' + word.closest('g.ayah-fragment').dataset.ayahKey + '</b>' +
       '، سطر ' + word.closest('g.line').dataset.line +
       '   ' + hit + ' إصابة، ' + miss + ' إخفاق');
 });
 
-out('ملء الفجوات = ' + GAPFILL + '. انقر على السطر، مستهدفاً الفجوات بين الكلمات.');
+out('ملء الفجوات = ' + GAPFILL + '. انقر على السطر، مستهدفًا الفجوات بين الكلمات.');
 `,
   lib: { code: `
 // بلا طبقة فوقية: تحوّل onTap النقرة إلى كلمة بالهندسة، وتُمال النقطة
@@ -2848,7 +3170,7 @@ const tap = page.onTap(r => {
 }, { root: stage });
 signal.addEventListener('abort', () => tap.remove());
 
-out('ملء الفجوات = ' + GAPFILL + '. انقر على السطر، مستهدفاً الفجوات بين الكلمات.');
+out('ملء الفجوات = ' + GAPFILL + '. انقر على السطر، مستهدفًا الفجوات بين الكلمات.');
 ` }
 }), { label: 'ملء الفراغات', name: 'GAPFILL', value: false }));
 
@@ -2876,7 +3198,7 @@ for (const frag of svg.querySelectorAll('g.ayah-fragment[data-ayah-key="' + AID 
   }
 
 // مسار <path> واحد، ومسار فرعي لكل سطر مطبوع، لا كومة مستطيلات.
-// المستطيلات المتلاصقة تُظهر خيطاً من التنعيم عند كل التقاء، فتُقرأ
+// المستطيلات المتلاصقة تُظهر خيطًا من التنعيم عند كل التقاء، فتُقرأ
 // آية من ستة أسطر ستة أشرطة. وتداخلها بمقدار SEAM يزيل ذلك، كما
 // يوحّد fill-rule="nonzero" المسارات الفرعية فيُطلى التداخل مرة
 // واحدة بدل مضاعفة شفافيته.
@@ -2884,8 +3206,8 @@ const SEAM = 0.25;
 const boxes = [...byLine.values()].sort((a, b) => a.y0 - b.y0);
 const d = boxes.map((b, i) => {
   const prev = boxes[i-1], next = boxes[i+1];
-  // التوسيع حيث يلتقي نطاقان فعلاً فقط، حتى لا ينبت تظليل السطرين
-  // 3 و9 ذيولاً في الأسطر بينهما
+  // التوسيع حيث يلتقي نطاقان فعلًا فقط، حتى لا ينبت تظليل السطرين
+  // 3 و9 ذيولًا في الأسطر بينهما
   const y0 = b.y0 - PAD_Y - (prev && (b.y0-PAD_Y) - (prev.y1+PAD_Y) <= SEAM ? SEAM : 0);
   const y1 = b.y1 + PAD_Y + (next && (next.y0-PAD_Y) - (b.y1+PAD_Y) <= SEAM ? SEAM : 0);
   // كل مسار فرعي بالاتجاه نفسه، فيوحّدها nonzero
@@ -2899,8 +3221,8 @@ const path = document.createElementNS(NS, 'path');
 path.setAttribute('d', d);
 path.setAttribute('fill', FILL);
 // اضبطها صراحةً. حبر الصفحة نفسه evenodd، وفيه تتلاشى الحدود
-// المتداخلة داخل المسار الواحد، فلو ورثتَها صار كل تداخل ثقباً بدل
-// أن يكون اتحاداً.
+// المتداخلة داخل المسار الواحد، فلو ورثتَها صار كل تداخل ثقبًا بدل
+// أن يكون اتحادًا.
 path.setAttribute('fill-rule', 'nonzero');
 layer.append(path);
 svg.prepend(layer);          // أول ابن لعنصر <svg> = خلف كل شيء
@@ -2943,14 +3265,14 @@ hits.forEach(w => w.classList.add('q-word'));   // بالأحمر على الص�
 log(hits.length, 'مطابقة في هذه الصفحة للكلمة', QUERY);
 log('');
 hits.slice(0, 10).forEach(w =>
-  log(w.dataset.wordKey.padEnd(10), w.dataset.rasm_uthmani,
+  log(w.dataset.wordKey.padEnd(10), w.dataset.rasmUthmani,
       '  rasm:', H.forms(w).rasm, '  search:', H.forms(w).search));
 `,
   lib: { code: `
 const QUERY = 'الله';          // جرّب: درجات · الرسل · البينات · الرحمان
 
 // يوحّد الجانبين، ولا يوسّع إلى تمريرة متساهلة إلا إذا لم تجد الصارمة
-// شيئاً. جرّب الرحمان: ألفها الخنجرية ليست في صورة search أصلاً.
+// شيئًا. جرّب الرحمان: ألفها الخنجرية ليست في صورة search أصلًا.
 const page = new M.MushafPage(svg);
 page.attachWords(H.sidecar(svg));   // الصور الأربع تُشحن في index/by-page/NNN.json
 const hits = page.search(QUERY);
@@ -2978,7 +3300,7 @@ svg.addEventListener('pointermove', e => {
 
   out(
     '<b>' + word.dataset.wordKey + '</b>\\n' +
-    'rasm_uthmani  ' + word.dataset.rasm_uthmani + '\\n' +
+    'rasm_uthmani  ' + word.dataset.rasmUthmani + '\\n' +
     'rasm     ' + t.rasm    + '\\n' +
     'rasm_imlai   ' + t.rasm_imlai  + '\\n' +
     'search   ' + t.search  + '\\n' +
@@ -3028,7 +3350,7 @@ mod('lab-select', () => {
   const ctx = makeLab({
     mount: 'lab-select',
     label: 'تحديد الصفحة ونسخها',
-    stageNote: 'اسحب عبر الصفحة، وعبر نهاية السطر أيضاً. ' +
+    stageNote: 'اسحب عبر الصفحة، وعبر نهاية السطر أيضًا. ' +
                'ثم Ctrl/⌘+C، أو انقر بالزر الأيمن واختر نسخ.',
     code: `
 // لا يحتوي الملف على <text>، فلا شيء يمسكه التحديد الأصلي. الحل هو
@@ -3037,9 +3359,9 @@ mod('lab-select', () => {
 // الاتجاهين، فلا يبقى في السطر موضع لا كلمة له، ولا تحتاج أولى
 // كلمات المدى ولا آخرها إلى تصويب دقيق.
 //
-// وتمسح hitLayer التحديد عند mousedown أيضاً. لولا ذلك لبدأ السحبُ
-// فوق كلمات محدَّدة سلفاً سحباً وإفلاتاً نصياً أصلياً، ولتجمّد
-// التحديد طوال الحركة، وهو الخلل الذي يبدو هندسياً وليس كذلك.
+// وتمسح hitLayer التحديد عند mousedown أيضًا. لولا ذلك لبدأ السحبُ
+// فوق كلمات محدَّدة سلفًا سحبًا وإفلاتًا نصيًا أصليًا، ولتجمّد
+// التحديد طوال الحركة، وهو الخلل الذي يبدو هندسيًا وليس كذلك.
 const WHICH = 'rasm_uthmani';   // ما يضعه Ctrl+C في الحافظة
 const MARK  = 'arabic';    // أرقام الآيات: 'arabic' ﴿٢٥٣﴾ | 'latin' (2:253) | 'none'
 const PARTIAL = false;     // وسم الآية غير المكتملة بالشكل (2:253:4-9)
@@ -3083,15 +3405,15 @@ function payload(which) {
     last = w;
     text += (prevLine !== null && s.dataset.line !== prevLine ? '\\n'
                                                               : (text ? ' ' : '')) + v;
-    prevLine = s.dataset.line;   // فاصل السطر كما في المصحف، محفوظاً
+    prevLine = s.dataset.line;   // فاصل السطر كما في المصحف، محفوظًا
   }
   if (ayahKey) text += stamp(ayahKey, first, last);
   return text;
 }
 
 function report() {
-  // المحاذاة أولاً ثم الطلاء. الطلاء الأصلي مُعطَّل في CSS، فلا يمكن
-  // أن يُرسم مدى جزئي أصلاً.
+  // المحاذاة أولًا ثم الطلاء. الطلاء الأصلي مُعطَّل في CSS، فلا يمكن
+  // أن يُرسم مدى جزئي أصلًا.
   H.snapToWords(layer);
   const ws = words();
   const lines = H.bandWords(svg, ws);
@@ -3120,7 +3442,7 @@ report();
 `,
     lib: { code: `
 // نداء واحد: طبقة النقر المشتركة، والتوسيع إلى كلمات كاملة، ومعالج
-// النسخ، والتظليل عبر page.band مساراً واحداً لا شريطاً لكل سطر، والعزو.
+// النسخ، والتظليل عبر page.band مسارًا واحدًا لا شريطًا لكل سطر، والعزو.
 const WHICH = 'rasm_uthmani';   // ما تحمله العناصر وما ينسخه Ctrl+C
 
 const page = new M.MushafPage(svg);
@@ -3209,13 +3531,13 @@ const steps = [...new Set(words.map(keyOf))];
 
 // علامة رأس الآية تخص الآية التي تُنهيها، فتضيء عند بلوغ آخر كلمة
 // فيها، وهذا يمنح الحركة نبضة عند كل نهاية آية. وما لا لحظة قراءة
-// له من زخارف الصفحة يبقى رمادياً قصداً لا إهمالاً:
+// له من زخارف الصفحة يبقى رماديًا قصدًا لا إهمالًا:
 //   · وردات الحزب والربع وعلامات السجدة تضيء مع الآية التي تقف
 //     عندها، لأن data-ayah-key يحدد أيها هي؛
 //   · وعنوان السورة يضيء مع أول كلمة في الصفحة، فعندها يصل
 //     إليه القارئ؛
 //   · والوردات الزخرفية الاثنتا عشرة في الصفحتين 1-2 لا تحمل
-//     data-ayah-key ولا آية تُنهيها، فتبقى رمادية دائماً، وإضاءتها
+//     data-ayah-key ولا آية تُنهيها، فتبقى رمادية دائمًا، وإضاءتها
 //     توهم بحد آية لا وجود له.
 const lastWordOf = new Map();
 for (const w of words) lastWordOf.set(w.closest('g.ayah-fragment').dataset.ayahKey, keyOf(w));
@@ -3374,7 +3696,7 @@ mod('lab-audio', () => makeLab({
   code: `
 // التوقيتات والصوت من quran.com. القارئ 9 هو الشيخ محمد صدّيق
 // المنشاوي، بالمرتَّل. هذا العرض لصفحة واحدة، وملفات SVG لا تحمل
-// صوتاً ولا توقيتات.
+// صوتًا ولا توقيتات.
 const PAGE = 42, RECITER = 9;
 const API = 'https://api.quran.com/api/v4/recitations/' + RECITER +
             '/by_page/' + PAGE + '?fields=segments&per_page=60';
@@ -3394,7 +3716,7 @@ bar.append(play, state);
 stage.before(bar);
 signal.addEventListener('abort', () => bar.remove());
 
-function dead(msg) {                    // لا تترك زراً بلا أثر
+function dead(msg) {                    // لا تترك زرًا بلا أثر
   const box = document.createElement('p');
   box.className = 'q-dead';
   box.textContent = msg;
@@ -3402,11 +3724,11 @@ function dead(msg) {                    // لا تترك زراً بلا أثر
   signal.addEventListener('abort', () => box.remove());
 }
 
-// المعامل fields=segments إلزامي. بدونه يعيد API قيمة
-// segments: null بلا خطأ، فيبدو الأمر خللاً في شيفرتك أنت.
+// المعامل fields=segments إلزامي. دونه يعيد API قيمة
+// segments: null بلا خطأ، فيبدو الأمر خللًا في شيفرتك أنت.
 //
 // وحُدّ الطلب بمهلة. الطلب بلا مهلة لا يفشل على شبكة رديئة، بل
-// يتجمّد: لا ينتهي await ويبقى القسم فارغاً إلى الأبد، وهذا أسوأ
+// يتجمّد: لا ينتهي await ويبقى القسم فارغًا إلى الأبد، وهذا أسوأ
 // الاحتمالات الثلاثة.
 let raw = H.FALLBACK_AYAH_TIMINGS, from = 'نسخة مخزَّنة';
 try {
@@ -3427,8 +3749,8 @@ try {
 log('timings  ', from);
 
 // الحارس. يبدأ word_number من 1 داخل الآية، وهو الجزء الثالث من
-// data-word-key، فالربط مباشر. لكن تفكيكين قد يعدّان الكلمات عدّاً
-// مختلفاً (p254 13:37: 19 عندهم، 20 عندنا)، والثقة العمياء به
+// data-word-key، فالربط مباشر. لكن تفكيكين قد يعدّان الكلمات عدًّا
+// مختلفًا (p254 13:37: 19 عندهم، 20 عندنا)، والثقة العمياء به
 // تُزحزح التظليل إلى آخر الآية.
 const ayahs = [];
 for (const frag of svg.querySelectorAll('g.ayah-fragment')) {
@@ -3438,12 +3760,12 @@ for (const frag of svg.querySelectorAll('g.ayah-fragment')) {
   const times = raw[ayahKey][1];
   const perWord = words.length === times.length;
   if (!perWord) log('عدم تطابق', ayahKey, '— لدينا', words.length,
-                    'لديهم', times.length, '· سيُظلَّل كاملاً');
+                    'لديهم', times.length, '· سيُظلَّل كاملًا');
   ayahs.push({ ayahKey, url: raw[ayahKey][0], times, words, perWord });
 }
 if (!ayahs.length) { dead('لا توجد توقيتات لهذه الصفحة، فليس ثمة ما يُتابَع.'); return; }
 log('ayahs    ', ayahs.length, '·',
-    ayahs.reduce((n, a) => n + a.times.length, 0), 'مقطعاً للكلمات');
+    ayahs.reduce((n, a) => n + a.times.length, 0), 'مقطعًا للكلمات');
 log('counts   ', ayahs.every(a => a.perWord)
       ? 'متطابقة — سيُستخدم التوقيت على مستوى الكلمة' : 'مختلفة في موضع ما، انظر أعلاه');
 
@@ -3451,12 +3773,22 @@ log('counts   ', ayahs.every(a => a.perWord)
 svg.classList.add('q-reveal');
 svg.style.setProperty('--fade', '160ms');
 const all = [...svg.querySelectorAll('g.word')];
+// علامة رأس الآية جزء من حبر الصفحة، فبقاؤها سوداء والكلمات حولها رمادية يُقرأ
+// خللًا. وهي تختم آيتها، فتأخذ الحبر حين يبلغ القارئ آخر كلمة منها — وهي القاعدة
+// نفسها التي يستعملها القسم الثامن.
+const marks = new Map();
+for (const g of svg.querySelectorAll('g.ayah-mark[data-ayah-key]'))
+  marks.set(g.dataset.ayahKey, g);
 function paint(ayah, i) {
   for (const w of all) w.style.fill = '#c9c4b8';
+  for (const g of marks.values()) g.style.fill = '#c9c4b8';
   if (!ayah) return;
+  const mark = marks.get(ayah.ayahKey);
   if (!ayah.perWord) { for (const w of ayah.words) w.style.fill = '#231f20'; return; }
   const w = ayah.words[i];
   if (w) w.style.fill = '#231f20';
+  // آخر كلمة في الآية — وعلامتها هي التالية في القراءة
+  if (mark && i === ayah.times.length - 1) mark.style.fill = '#231f20';
 }
 paint(null);
 
@@ -3498,14 +3830,14 @@ play.addEventListener('click', () => {
     return;
   }
   if (!audio.src) load(0);
-  // الصوت يُجلب من CDN، فقل ذلك بدل أن تبدو معطلاً
+  // الصوت يُجلب من CDN، فقل ذلك بدل أن تبدو معطلًا
   play.disabled = true;
   play.textContent = '…  جارٍ التحميل';
   state.textContent = 'يجري جلب ' + ayahs[at].ayahKey + ' من شبكة توصيل المحتوى';
   audio.play().then(() => {
     play.disabled = false;
     play.textContent = '❚❚  إيقاف مؤقت';
-    play.setAttribute('aria-label', 'إيقاف التلاوة مؤقتاً');
+    play.setAttribute('aria-label', 'إيقاف التلاوة مؤقتًا');
   }).catch(e => {
     play.disabled = false;
     play.textContent = '▶  تشغيل التلاوة';
@@ -3521,7 +3853,7 @@ raf = requestAnimationFrame(frame);
 `,
   lib: { code: `
 // الوصل والحارس والساعة في نداء واحد. وحيث يختلف التقسيمان في عدّ الكلمات
-// (ص٢٥٤، ١٣:٣٧: تسع عشرة عندهم وعشرون عندنا) تُتابَع الآية كاملةً بدل أن
+// (ص254، 13:37: 19 عندهم و20 عندنا) تُتابَع الآية كاملةً بدل أن
 // تنجرف إلى آخرها. أما شريط التحكم أدناه فمن صنع المستدعي.
 const PAGE = 42, RECITER = 9;
 
@@ -3568,7 +3900,7 @@ signal.addEventListener('abort', () => follow.remove());
 
 for (const m of follow.mismatches)
   log('اختلاف', m.ayahKey, '— عندنا', m.ours, 'عندهم', m.theirs, '· تُظلَّل كاملةً');
-log(follow.ayahs.length, 'آية ·', follow.segments, 'مقطعاً للكلمات');
+log(follow.ayahs.length, 'آية ·', follow.segments, 'مقطعًا للكلمات');
 
 play.addEventListener('click', () => {
   if (follow.playing) { follow.pause(); play.textContent = '▶  استمع للتلاوة'; return; }
@@ -3600,7 +3932,7 @@ mod('lab-translate', () => {
 // السمة data-word-key هي مفتاح الكلمة عند quran.com، فيتم الربط بلا
 // جدول مطابقة. وأي بيانات عندك لكل كلمة تعمل بالطريقة نفسها.
 const gloss = await (await fetch('data/gloss-042.json')).json();
-const PIN_TITLES = false;   // وعَلِّق كذلك <title> أصلياً على كل كلمة
+const PIN_TITLES = false;   // وعَلِّق كذلك <title> أصليًا على كل كلمة
 
 // طبقة اللمس المشتركة، عنصر لكل كلمة، وهي نفسها التي ينقرها §3
 // ويختار منها §7. عنصر واحد لكل كلمة يعني أن التلميح لا يرتجف
@@ -3619,7 +3951,7 @@ for (const s of layer.children) {
   const g = gloss[s.dataset.wordKey];
   if (g) joined++;
   const w = svg.querySelector('g.word[data-word-key="' + s.dataset.wordKey + '"]');
-  s.setAttribute('aria-label', w.dataset.rasm_uthmani + (g ? ', ' + g[0] : ''));
+  s.setAttribute('aria-label', w.dataset.rasmUthmani + (g ? ', ' + g[0] : ''));
   if (PIN_TITLES && g) {                 // النسخة الدائمة
     const el = document.createElementNS(H.SVGNS, 'title');
     el.textContent = g[0] + '  ·  ' + g[1];
@@ -3634,11 +3966,11 @@ function show(span) {
   span.classList.add('lit');
   tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
                   (g ? '<i>' + g[1] + '</i>' : '') +
-                  '<u>' + span.dataset.wordKey + '  ·  <bdi>' + w.dataset.rasm_uthmani + '</bdi></u>';
+                  '<u>' + span.dataset.wordKey + '  ·  <bdi>' + w.dataset.rasmUthmani + '</bdi></u>';
   tip.classList.add('on');
 
-  // بعيداً عن الكلمة التي يصفها، ينقلب قرب الحواف، ولا يتجاوز
-  // عرض المسرح: التلميح يجب ألا يُنشئ شريط تمرير خاصاً به
+  // بعيدًا عن الكلمة التي يصفها، ينقلب قرب الحواف، ولا يتجاوز
+  // عرض المسرح: التلميح يجب ألا يُنشئ شريط تمرير خاصًا به
   const host = stage.getBoundingClientRect(), box = span.getBoundingClientRect();
   const above = box.top - host.top - tip.offsetHeight - 8;
   tip.style.top = (above > 4 ? above : box.bottom - host.top + 8) + 'px';
@@ -3671,7 +4003,7 @@ log(joined, 'من', layer.children.length,
 `,
     lib: { code: `
 const gloss = await (await fetch('data/gloss-042.json')).json();
-const PIN_TITLES = false;   // سلّم الصفحة إلى قارئ الشاشة أيضاً
+const PIN_TITLES = false;   // سلّم الصفحة إلى قارئ الشاشة أيضًا
 
 const page = new M.MushafPage(svg);
 
@@ -3697,7 +4029,7 @@ log(joined, 'من', page.wordCount,
     'كلمة مرتبطة عبر data-word-key. مرّر المؤشر فوق الصفحة.');
 ` }
   });
-  bindToggle(ctx, { label: 'تثبيت <title> أيضاً', name: 'PIN_TITLES', value: false });
+  bindToggle(ctx, { label: 'تثبيت <title> أيضًا', name: 'PIN_TITLES', value: false });
 });
 
 /* 11 · all of it at once */
@@ -3707,10 +4039,10 @@ mod('lab-compose', () => makeLab({
   stageNote: 'مرّر المؤشر لترى المعنى · اسحب واضغط Ctrl/⌘+C للنسخ · انقر كلمة لتظليل آيتها.',
   code: `
 // ثلاث إمكانات وطبقة لمس واحدة. لا شيء أدناه معالج بحالة خاصة:
-// هو §10 و§7 و§4 تعمل معاً.
+// هو §10 و§7 و§4 تعمل معًا.
 const gloss = await (await fetch('data/gloss-042.json')).json();
 
-// طبقة واحدة تتلقى المؤشر. وتجعل hitLayer الحبر خاملاً، والتظليل
+// طبقة واحدة تتلقى المؤشر. وتجعل hitLayer الحبر خاملًا، والتظليل
 // pointer-events: none، فلا تنازع بينها.
 const layer = H.hitLayer(svg, stage, { signal });
 
@@ -3726,7 +4058,7 @@ layer.addEventListener('pointerover', e => {
   const s = e.target.closest('span'); if (!s) return;
   const g = gloss[s.dataset.wordKey];
   tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
-                  '<u>' + s.dataset.wordKey + '  ·  <bdi>' + wordOf(s).dataset.rasm_uthmani + '</bdi></u>';
+                  '<u>' + s.dataset.wordKey + '  ·  <bdi>' + wordOf(s).dataset.rasmUthmani + '</bdi></u>';
   tip.classList.add('on');
   const host = stage.getBoundingClientRect(), box = s.getBoundingClientRect();
   const above = box.top - host.top - tip.offsetHeight - 8;
@@ -3758,7 +4090,7 @@ document.addEventListener('copy', e => {
   for (const s of layer.children) {
     if (!r.intersectsNode(s)) continue;
     text += (prev !== null && s.dataset.line !== prev ? '\\n' : (text ? ' ' : '')) +
-            wordOf(s).dataset.rasm_uthmani;
+            wordOf(s).dataset.rasmUthmani;
     prev = s.dataset.line;
   }
   if (!text) return;
@@ -3767,7 +4099,7 @@ document.addEventListener('copy', e => {
   out('<b>نُسخ</b>\\n\\n' + text);
 }, { signal });
 
-out('مرّر المؤشر على كلمة · انقرها لتظليل آيتها · اسحب وانسخ. الثلاثة معاً.');
+out('مرّر المؤشر على كلمة · انقرها لتظليل آيتها · اسحب وانسخ. الثلاثة معًا.');
 `,
   lib: { code: `
 // ثلاث إمكانات فوق طبقة واحدة معدودة المراجع: التحويم لا يلزمه
@@ -3804,7 +4136,7 @@ signal.addEventListener('abort', () => {
   if (lit) lit.remove();
 });
 
-out('مرّر المؤشر على كلمة · انقرها لتظليل آيتها · اسحب وانسخ. الثلاثة معاً.');
+out('مرّر المؤشر على كلمة · انقرها لتظليل آيتها · اسحب وانسخ. الثلاثة معًا.');
 ` }
 }));
 
@@ -3823,7 +4155,7 @@ mod('lab-style', () => makeLab({
 
 /* الحركات التسع لها عائلة خاصة بها، فيكفيها مُحدِّد واحد.
    وهو لا يمس نقاط الحروف، إذ لا يفرّق بين ب ت ث سواها،
-   ولا علامات الوقف، فهي تلاوة لا تشكيل. */
+   ولا علامات الوقف، فهي تلاوة لا ضبط. */
 [data-mark-family~="diacritic"] { fill: #b8892b }
 
 /* الحروف نفسها */
@@ -3839,7 +4171,7 @@ mod('lab-style', () => makeLab({
 [data-mark="shaddah"]     { fill: #c1662a }   /* 22,678 */
 [data-mark="maddah"]     { fill: #3b6fc4 }   /* المدّ، 5,376 */
 
-/* وضع القراءة: إخفاء التشكيل مع إبقاء كل ما يحمل هوية الحرف
+/* وضع القراءة: إخفاء الحركات مع إبقاء كل ما يحمل هوية الحرف
    أو التلاوة. أزل التعليق عنه. */
 /* [data-mark-family~="diacritic"] { display: none } */
 
@@ -3861,7 +4193,7 @@ page.styleMarks({ name: 'small_meem' }, { fill: '#0a8f6a' });
 page.styleMarks({ name: 'shaddah' },     { fill: '#c1662a' });
 page.styleMarks({ name: 'maddah' },     { fill: '#3b6fc4' });
 
-// وضع القراءة: إخفاء التشكيل مع إبقاء كل ما يحمل هوية الحرف
+// وضع القراءة: إخفاء الحركات مع إبقاء كل ما يحمل هوية الحرف
 // أو التلاوة. أزل التعليق عنه.
 // page.hideMarks({ family: 'diacritic' });
 
@@ -3870,7 +4202,7 @@ page.styleMarks({ name: 'maddah' },     { fill: '#3b6fc4' });
 
 log(page.marks({ family: 'diacritic' }).length, 'حركة، منها',
     page.marks({ family: 'tanwin' }).length, 'تنوين — وهي من الاثنتين',
-    'معاً، ولهذا كانت data-mark-family قائمة رموز.');
+    'معًا، ولهذا كانت data-mark-family قائمة رموز.');
 ` }
 }));
 
@@ -3883,7 +4215,7 @@ mod('lab-theme', () => {
     reverse: true,
     cssNote: c => 'مطبَّق. كل واحد من <b>' +
       c.svg.querySelectorAll('path').length +
-      '</b> مسار حبر في هذه الصفحة له اللون نفسه في الملف، فقاعدة واحدة تبلغها جميعاً.',
+      '</b> مسار حبر في هذه الصفحة له اللون نفسه في الملف، فقاعدة واحدة تبلغها جميعًا.',
     code: `
 /* كل مسار حبر في المصحف يُشحن بـ fill="#231f20"، وقاعدة CSS تغلب
    سمة العرض. فتُعاد ألوان الطبعة كلها بمُحدِّد واحد، بلا تصدير
@@ -4054,7 +4386,7 @@ if (!HIDE_ALL && MARKER) try {
   log(SET);
   log(e.message);
   log('');
-  log('الحلقات المطبوعة لم تُمسّ، وسائر أقسام الصفحة تعمل. والرسوم ليست جزءاً من هذه الصفحة.');
+  log('الحلقات المطبوعة لم تُمسّ، وسائر أقسام الصفحة تعمل. والرسوم ليست جزءًا من هذه الصفحة.');
 }
 `,
     lib: { code: `
@@ -4120,12 +4452,12 @@ const lines = [...svg.querySelectorAll('g.line')];
 // لملء نافذة العرض، اشتق الفجوة من الصفحة بدل التخمين (وإعادة
 // الضبط أدناه تحشو إلى الحبر، فالملاءمة قريبة لا مضبوطة).
 // اقرأ الرقمين من الملف: الصفحتان 1 و2 فيهما 8 أسطر، ولهما
-// viewBox مختلف، فأي ثابت محسوب لصفحة من 15 سطراً خطأ فيهما.
+// viewBox مختلف، فأي ثابت محسوب لصفحة من 15 سطرًا خطأ فيهما.
 //   const [ , , W, H ] = svg.getAttribute('viewBox').split(/\\s+/).map(Number);
 //   const needed = W * screenH / screenW;   // ارتفاع viewBox الذي يملؤها
 //   const gap    = (needed - H) / (lines.length - 1);
 // على هاتف 390x844 يقارب ذلك 14 وحدة، ويستعيد نحو ربع الشاشة
-// الذي تتركه الملاءمة بالعرض فارغاً.
+// الذي تتركه الملاءمة بالعرض فارغًا.
 const mid = (lines.length - 1) / 2;
 const shift = new Map();
 
@@ -4162,11 +4494,11 @@ const page = new M.MushafPage(svg);
 // حتى لا يُقتطع شيء.
 const h = M.setLineGap(page, GAP);
 
-log(h.lines, 'سطراً أُبعدت بمقدار', h.gap, 'وحدة ·', h.viewBox, '·',
+log(h.lines, 'سطرًا أُبعدت بمقدار', h.gap, 'وحدة ·', h.viewBox, '·',
     page.el.querySelectorAll('path').length, 'رسمة دون مساس');
 
 // دالة gapToFill حساب محض بلا DOM، فتحسب لجهاز لست عليه، وتُصفَّر عند
-// الحاجة: الآيباد أطول أصلاً مما يلزم.
+// الحاجة: الآيباد أطول أصلًا مما يلزم.
 //   needed = pageW·viewH/viewW ; gap = (needed-pageH)/(lines-1)
 const vb = page.viewBox, lines = page.lines().length;
 for (const [name, w, hgt] of [['iPhone SE', 375, 667], ['iPhone 14', 390, 844],
@@ -4236,7 +4568,7 @@ log('words   ', words.length, '(' + AID + ':' + FROM + '..' + TO + ')');
 log('paths   ', cropped.querySelectorAll('path').length);
 log('viewBox ', cropped.getAttribute('viewBox'));
 log('');
-log(words.map(w => w.dataset.rasm_uthmani).join(' '));
+log(words.map(w => w.dataset.rasmUthmani).join(' '));
 `,
     lib: { code: `
 // سلسلة متصلة من الكلمات. اسحب FROM و TO في شريط الأدوات أو حرّرهما هنا.
@@ -4294,7 +4626,7 @@ log('on page  ', ayahKeys[0], '→', ayahKeys[ayahKeys.length - 1],
     '(' + svg.querySelectorAll('g.word').length + ' كلمة)');
 
 // التقسيمات موسومة على الآية التي تفتتحها: الأجزاء الثلاثون
-// والأحزاب الستون و240 رُبعاً، منها 41 بلا وردة مرسومة
+// والأحزاب الستون و240 رُبعًا، منها 41 بلا وردة مرسومة
 const j = svg.querySelector('g.ayah-fragment[data-juz-start]');
 if (j) log('juz      ', j.dataset.juzStart, 'يبدأ عند', j.dataset.ayahKey);
 const h = svg.querySelector('g.ayah-fragment[data-hizb-start]');
@@ -4312,7 +4644,7 @@ log('sajdah   ', sj.length ? sj.join(', ') : 'لا شيء');
 const page = new M.MushafPage(svg);
 
 // السورة الموجودة في الصفحة دون أن تبدأ فيها تعود بـ hasBanner false
-// ورقمِها وحده، مقروءاً من data-word-key، فالقائمة كاملة على الحالين.
+// ورقمِها وحده، مقروءًا من data-word-key، فالقائمة كاملة على الحالين.
 for (const s of page.surahs()) {
   if (s.hasBanner) {
     log('surah    ', s.number, s.arabic, '·', s.latin, '·', s.english);
@@ -4324,9 +4656,9 @@ for (const s of page.surahs()) {
 
 const keys = page.ayahKeys();
 log('on page  ', keys[0], '→', keys[keys.length - 1],
-    '(' + page.wordCount + ' كلمة، ' + page.lines().length + ' سطراً مطبوعاً)');
+    '(' + page.wordCount + ' كلمة، ' + page.lines().length + ' سطرًا مطبوعًا)');
 
-// تعطي divisions() كل حدٍّ يبدأ هنا، ومنه 41 رُبعاً بلا وردة مرسومة،
+// تعطي divisions() كل حدٍّ يبدأ هنا، ومنه 41 رُبعًا بلا وردة مرسومة،
 // وتعطي rosettes() المرسومة وحدها. سؤالان مختلفان.
 const d = page.divisions();
 for (const k of ['juz', 'hizb', 'nisf', 'rubu_al_hizb'])
@@ -4373,10 +4705,9 @@ log('sajdah   ', sj.length ? sj.map(s => s.ayahKey).join(', ') : 'لا شيء');
 });
 
 /* ---------- the three-way specimen in §8 ---------- */
-mod('spec', () => {
-  const io = new IntersectionObserver(entries => {
-    if (!entries.some(e => e.isIntersecting)) return;
-    io.disconnect();
+mod('spec', () => whenVisible($('#spec'), async () => {
+  /* opening the card can now beat the hero's own fetch, which this crops from */
+  await heroReady;
     const line = w => w.closest('g.line').dataset.line === '9';
 
     const full = crop(PRISTINE, line, 2);
@@ -4393,10 +4724,8 @@ mod('spec', () => {
     const all = bare.querySelectorAll('path[data-kind="mark"]');
     all.forEach(p => p.remove());
     $('#spec-bare').append(bare);
-    $('#spec-n2').textContent = '(' + all.length + ' أُزيلت، وذهبت النقاط معها، فصارت ب ت ث شكلاً واحداً)';
-  }, { rootMargin: '300px' });
-  io.observe($('#spec'));
-});
+    $('#spec-n2').textContent = '(' + all.length + ' أُزيلت، وذهبت النقاط معها، فصارت ب ت ث شكلًا واحدًا)';
+}));
 
 /* ---------------------------------------------------------------------------
    THE ATTRIBUTE TABLE — generated from the corpus, not maintained by hand.
@@ -4418,7 +4747,7 @@ mod('attrs', () => {
   /* keyed 'scope|attr', or 'attr' for a note that holds on every scope */
   const NOTE = {
     'g.word|data-word-key': ['<code>surah:ayah:word</code>، يبدأ العدّ من 1. فريد في المصحف كله. <b>هو المفتاح.</b>', 1],
-    'g.word|data-rasm-uthmani': ["نص الطبعة نفسها بتشكيل كامل — وهو النص المعتمد", 1],
+    'g.word|data-rasm-uthmani': ["نص الطبعة نفسها بضبط كامل — وهو النص المعتمد", 1],
     'g.word|data-rasm': ['هيكل الرسم العثماني — <b>الأشكال المرسومة</b> — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
     'g.word|data-rasm-imlai': ['الرسم الإملائي الحديث، بالعلامات — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
     'g.word|data-search': ['هيكل الرسم الإملائي الحديث — <b>مفتاح البحث</b> — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
@@ -4433,7 +4762,7 @@ mod('attrs', () => {
     'g.ayah-fragment|data-rubu-al-hizb-start': ['تفتتح ذلك الرُّبع — جميع حدود الأرباع الـ240، ومنها 41 بلا وردة مرسومة', 1],
     'g.ayah-mark|id': ['<code>mk-&lt;surah&gt;-&lt;ayah&gt;</code>، فريد في المصحف كله', 1],
     'g.ayah-mark|data-ayah-key': ['الآية التي تختمها علامة رأس الآية هذه — على كل مجموعة من مجموعات العلامات الـ6,236. في الصفحتين 1–2 يرسم العمل الفني الحلقة مرتين، وتقع النسخة الثانية داخل المجموعة نفسها بالسمة <code>data-duplicate="1"</code>.', 1],
-    'path|data-duplicate': ['الحلقة الثانية المطابقة حرفياً التي يرسمها العمل الفني في الصفحتين 1–2 (12 مساراً). أُبقيت لأن حذفها يخفّف حافة الحلقة المنعَّمة؛ احذف <code>[data-duplicate]</code> بنفسك إن شئت', 1],
+    'path|data-duplicate': ['الحلقة الثانية المطابقة حرفيًا التي يرسمها العمل الفني في الصفحتين 1–2 (12 مسارًا). أُبقيت لأن حذفها يخفّف حافة الحلقة المنعَّمة؛ احذف <code>[data-duplicate]</code> بنفسك إن شئت', 1],
     'g.line|data-line': ['رقم السطر المطبوع، 1–15 (1–8 في الصفحتين 1–2)', 1],
     'data-sid': ["رقم السورة. <b>على الصفحة الأولى من السورة فقط</b>، ولذلك العدد هنا 114 و112 لا 604.", 1],
     'data-surah-name-ar': ['مثال: <bdi class="ar" style="font-size:1em">البقرة</bdi>', 1],
@@ -4442,25 +4771,25 @@ mod('attrs', () => {
     'data-revelation-place': ['<code>makkah</code> / <code>madinah</code>', 1],
     'data-ayah-count': ['عدد آيات السورة', 1],
     'path|data-kind': ['<code>body</code> (حبر الحروف) · <code>mark</code> · <code>header_ink</code> · <code>ornament</code> · <code>ayah_mark_ornament</code> · <code>ayah_number</code> · <code>page_number</code> و<code>running_head</code> (أربعة مسارات غير مرئية من أثاث الصفحة 17 خارج إطار العرض)', 1],
-    'path|data-mark': ['أيّ علامة هي — مفردات مغلقة من 34 اسماً', 1],
-    'path|data-mark-family': ['يجمع العلامات حسب المعنى. <b>قائمة رموز مفصولة بمسافات</b> مثل <code>class</code>: التنوين يحمل <code>"diacritic tanwin"</code>. طابِق بـ<code>~=</code> لا بـ<code>=</code> أبداً.', 1],
+    'path|data-mark': ['أيّ علامة هي — مفردات مغلقة من 34 اسمًا', 1],
+    'path|data-mark-family': ['يجمع العلامات حسب المعنى. <b>قائمة رموز مفصولة بمسافات</b> مثل <code>class</code>: التنوين يحمل <code>"diacritic tanwin"</code>. طابِق بـ<code>~=</code> لا بـ<code>=</code> أبدًا.', 1],
     'path|data-form': ['<code>staggered</code> / <code>stacked</code> — كيف يُرسم زوج التنوين', 1],
     'path|data-iqlab': ['يربط الحركة بميم الإقلاب الصغيرة في موضع الإقلاب', 1],
     'path|data-pair': ['يربط شطري المعانقة — 3 أزواج بالضبط، أي 6 مسارات', 1],
     'path|data-standalone': ['علامة لا تتبع أي كلمة: 199 وردة حزب + 30 علامة سجدة', 1],
     'path|data-ayah-key': ['على علامة مستقلة، الآية التي تقف عندها', 1],
-    'path|data-element-id': ['رقم عنصر خاص بكل عملية بناء. <b>غير ثابت بين بناء وآخر — لا تتخذه مفتاحاً أبداً.</b>', 2],
-    'path|data-sig': ['بصمة شكل لا هوية: 98 بصمة تخدم أكثر من اسم علامة واحد. <b>لا تتخذها مفتاحاً أبداً.</b>', 2],
+    'path|data-element-id': ['رقم عنصر خاص بكل عملية بناء. <b>غير ثابت بين بناء وآخر — لا تتخذه مفتاحًا أبدًا.</b>', 2],
+    'path|data-sig': ['بصمة شكل لا هوية: 98 بصمة تخدم أكثر من اسم علامة واحد. <b>لا تتخذها مفتاحًا أبدًا.</b>', 2],
     'g.division-mark|data-ayah-key': ['الآية التي تقف عندها وردة الرُّبع المرسومة', 1],
-    'g.division-mark|data-mark': ['دائماً <code>rubu-al-hizb-sign</code> — الوردة نفسها', 1],
+    'g.division-mark|data-mark': ['دائمًا <code>rubu-al-hizb-sign</code> — الوردة نفسها', 1],
     'g.division-mark|data-rubu-al-hizb': ['أيّ الأرباع الـ240 هذا', 1],
     'g.division-mark|data-rubu-al-hizb-in-hizb': ['موضعه داخل حزبه: 1 أو 2 أو 3 أو 4', 1],
     'g.division-mark|data-nisf': ['في أيّ نصفَي الحزب يقع', 1],
     'g.division-mark|data-hizb': ['أيّ الأحزاب الـ60', 1],
     'g.division-mark|data-juz': ['أيّ الأجزاء الـ30', 1],
     'g.sajdah-mark|data-ayah-key': ['آية السجدة', 1],
-    'g.sajdah-mark|data-mark': ['علامة السجدة — 15 موضعاً و17 مجموعة', 1],
-    'g.ligature|data-text': ['حروف وصلة واحدة عند الرسم. <b>في وضع التطوير فقط</b>، و<b>ليست تقطيعاً موثوقاً للحروف</b> — 156 كلمة تُهجّى فيها بحروف أقل مما تحمل فعلاً.', 3],
+    'g.sajdah-mark|data-mark': ['علامة السجدة — 15 موضعًا و17 مجموعة', 1],
+    'g.ligature|data-text': ['حروف وصلة واحدة عند الرسم. <b>في وضع التطوير فقط</b>، و<b>ليست تقطيعًا موثوقًا للحروف</b> — 156 كلمة تُهجّى فيها بحروف أقل مما تحمل فعلًا.', 3],
     'path.ayahPolygon|id': ['مضلّع لمس غير مرئي موروث عن بناء سابق. <b>في وضع التطوير فقط</b>، وقد حلّ محله §3 و§4.', 3],
     'svg|data-mushaf': ['إلى أيّ مصحف ينتمي هذا الملف', 1],
     'svg|data-qiraah': ['القراءة — <code>asim</code>، أي قراءة عاصم. <b>وهي غير الرواية.</b>', 1],
@@ -4471,13 +4800,13 @@ mod('attrs', () => {
     'svg|data-ayah-numbering': ['نظام عدّ الآي — <code>kufi</code>، أي العدّ الكوفي', 1],
     'svg|data-ayah-total': ['عدد آيات المصحف كله <b>وفق ذلك النظام في عدّ الآي</b>. حقيقة عن العدّ الكوفي لا عن القرآن.', 1],
     'svg|data-page': ['رقم الصفحة، 1–604', 1],
-    'svg|data-decomposition': ['<b>إلى أي حدّ فُكِّكت هذه الطبعة.</b> فالقيمة <code>word</code> تعني أن الكلمات والوصلات والعلامات المسمّاة كلها قابلة للاستهداف، وعليها يقوم كل قسم في هذه الصفحة. والقيمة <code>ayah</code> تعني حبر الصفحة مع مضلّعات الآيات وعلامات رؤوسها، ولا شيء دون الآية. فاقرأها قبل أن تكتب مُحدِّداً على مستوى الكلمة.', 1],
+    'svg|data-decomposition': ['<b>إلى أي حدّ فُكِّكت هذه الطبعة.</b> فالقيمة <code>word</code> تعني أن الكلمات والوصلات والعلامات المسمّاة كلها قابلة للاستهداف، وعليها يقوم كل قسم في هذه الصفحة. والقيمة <code>ayah</code> تعني حبر الصفحة مع مضلّعات الآيات وعلامات رؤوسها، ولا شيء دون الآية. فاقرأها قبل أن تكتب مُحدِّدًا على مستوى الكلمة.', 1],
     'class': ['ما هو العنصر. وكل مُحدِّد في هذه الصفحة مبني عليه.', 1],
     'g|id': ['الغلاف الذي يحوي محتوى الصفحة', 1],
     'g.ayah_markers|id': ['الطبقة التي تسكنها علامات رؤوس الآي، خارج الأسطر', 1],
     'g.ayah_markers|class': ['طبقة علامات رؤوس الآي', 1]
   };
-  const KINDS = { 1: 'الوضعان معاً', 2: 'الوضعان معاً · للمراجعة فقط', 3: 'وضع التطوير فقط' };
+  const KINDS = { 1: 'الوضعان معًا', 2: 'الوضعان معًا · للمراجعة فقط', 3: 'وضع التطوير فقط' };
 
   const arabic = s => /[؀-ۿࢠ-ࣿ]/.test(s);
   /* an Arabic sample inside an LTR code cell needs isolating, or the bidi
@@ -4527,6 +4856,9 @@ mod('attrs', () => {
         pills.append(b);
       };
       add('all', 'الكل (' + rows.length + ')');
+      /* المطوية مغلقة، فلا بد أن تقول ما وراءها */
+      $('#attr-count').textContent = rows.length +
+        ' سمة، مقيسة على 604 صفحات كلها — لا قائمة مصونة باليد';
       add('prod', 'وضع الإنتاج فقط');
       scopes.forEach(s => add(s, s));
       draw();
