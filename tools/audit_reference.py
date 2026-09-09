@@ -40,9 +40,26 @@ _KEEP = set(range(0x0621, 0x064B)) | {0x0671, 0x0672, 0x0673, 0x0675,
                                         0x0640}
 
 
+# The two sources spell the same LETTERS differently, and comparing the raw
+# code points reports thousands of differences that are not differences:
+#   فِى   0641 0649   vs  فِي   0641 064A   — final alef maqsura against yaa
+#   ٱلْـَٔاخِرِ  ..0640 0627..  vs  ٱلۡأٓخِرِ  ..0623..  — a tatweel+alef hamza seat
+#                                                       against hamza-on-alef
+# Folding them leaves the real disagreements: Abdullah, 2026-09-09, "not 5%,
+# its 2-3 cases in mushaf" — لوما against لو ما, and ال ياسين as two words,
+# which are exactly the sites the segmentation plan already names.
+_FOLD = {0x0649: "\u064a",                       # ى -> ي
+         0x0623: "\u0627", 0x0625: "\u0627",    # أ إ -> ا
+         0x0622: "\u0627", 0x0671: "\u0627",    # آ ٱ -> ا
+         0x0672: "\u0627", 0x0673: "\u0627", 0x0675: "\u0627",
+         0x0624: "\u0648", 0x0626: "\u064a",    # ؤ -> و, ئ -> ي
+         0x0629: "\u0647",                       # ة -> ه
+         0x0640: ""}                              # tatweel draws no letter
+
+
 def skeleton(t):
-    """Just the letters: the two sources spell the marks differently."""
-    return "".join(c for c in (t or "") if ord(c) in _KEEP)
+    """Just the letters, in one spelling: what the word IS, not how it is written."""
+    return "".join(_FOLD.get(ord(c), c) for c in (t or "") if ord(c) in _KEEP)
 
 
 WAQF = "\u06d6\u06d7\u06d8\u06d9\u06da\u06db\u06dc\u06dd\u06de\u06e9"

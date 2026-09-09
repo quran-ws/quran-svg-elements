@@ -487,6 +487,19 @@
    "turned_out": "CAUSE TRACED, not yet fixed. QSVG_TRACE=79.6 shows the mover PROPOSING the correct move and then rejecting it: `MOVE line6358 body فَـَٔامَنَ -> لَهُۥ` immediately undone by line6385. The accept test is `take = ok_w and d < base - 0.5`, and the comment above it says why it can never fire here: the oracle counts MARKS, so it is flat on a body move that leaves both words' mark budgets intact — a letter piece in the wrong word scores exactly like one in the right word. The width prior that exists to break that tie (QSVG_WDECIDE) is off because it was measured worse mushaf-wide. So the pass sees the right move, scores it 0, and drops it. An override would move the ink and leave the cause: Abdullah, 2026-09-09, 'make sure no ترقيع'. A per-place override was written and REVERTED for that reason. The fix has to be a rule the oracle can use — the piece budget (audit_marks treats len(eff) > nseg as unambiguous stolen ink) is the signal the mover already has and does not consult — and it has to be measured over all 604 pages before it is kept.",
    "status": "open — cause identified, rule not yet written",
    "fixed": false
+  },
+  {
+   "id": 46,
+   "date": "2026-09-09",
+   "page": 315,
+   "words": [
+    "20:58:2",
+    "20:58:3"
+   ],
+   "reported": "ink_identity 'ownership' difference against MushafDatabase: we and the reference swap two marks between 20:58:2 and 20:58:3 — ours_extra 5.65x3.15 at (48.0,257.2), theirs_extra 6.31x3.41 at (46.3,246.9).",
+   "turned_out": "OURS IS CORRECT — Abdullah, 2026-09-09, by eye: 'for this mismatch we are the correct'. The reference is wrong here. Recorded so the entry is not chased again: of 369 pixel-level differences against MushafDatabase only FOUR are class 'ownership', and they are two sites — this one, and p451 37:130:3/4, which is the إِلۡ يَاسِينَ split the two sources make differently and the segmentation plan already documents. The other 365 are representation, not ownership: 316 subpath-split, 28 degenerate contours of ours, 20 the reference's own sajdah rule, 1 region.",
+   "status": "closed, ours correct",
+   "fixed": false
   }
  ]
 }
