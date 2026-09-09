@@ -12,6 +12,7 @@ not something the diacritic text spells, so they are excluded.
 
 Usage: python3 tools/audit_ink_text.py [first] [last] [--json OUT]
 """
+import bisect
 import collections
 import glob
 import json
@@ -47,26 +48,40 @@ FOLD_KINDS = {"waqf"}
 
 
 def quran_ws():
-    """quran-ws/quran-text v3.0, keyed surah:ayah:word, waqf layer folded in."""
+    """quran-ws/quran-text, keyed surah:ayah:word, waqf layer folded in.
+
+    The v1.0 release format: `words` is a dense flat array of strings,
+    `surah_starts`/`ayah_starts` hold the word index each surah/ayah begins at,
+    and `marks` are [word_index, mark_type_index] pairs interned into
+    `mark_types` [{kind, side, sign}]. This replaced an earlier shape with
+    per-word dicts (`w`/`t`) and a sparse `w` index that had holes — the holes
+    are now documented in `numbering` instead of being load-bearing, so word
+    positions no longer have to be counted around them.
+    """
     if not os.path.exists(LIB):
         return {}
     h = json.load(open(LIB, encoding="utf-8"))
-    by = {x["w"]: x for x in h["words"]}
+    words, types = h["words"], h["mark_types"]
+
+    # only the waqf kind belongs back inside the word; `division` (the rubu
+    # al-hizb rosette), `sajdah` (۩) and `sajdah_line` (ۤ) are drawn as their
+    # own groups in our SVG exactly as quran-ws keeps them in its own layer.
+    signs = collections.defaultdict(str)
+    for wi, ti in h["marks"]:
+        t = types[ti]
+        if t["kind"] in FOLD_KINDS:
+            signs[wi] += t["sign"]
+
+    ayah_starts = h["ayah_starts"]
+    surah_starts = h["surah_starts"]
     out = {}
-    for a in h["ayat"]:
-        lo, hi = a["words"]
-        # The release's `w` index space HAS GAPS — 1-77,434 over 77,432 words
-        # (docs/HAFS-JSON-SOURCE.md). Numbering positions from the raw index
-        # RANGE therefore shifts every word after a hole by one, which looked
-        # like a word-boundary disagreement running to the end of the ayah at
-        # 9:100 (7 words) and 72:16 (5 words). Number the words that EXIST.
-        for pos, i in enumerate([j for j in range(lo, hi + 1) if j in by], 1):
-            w = by[i]
-            if w:
-                out["%d:%d:%d" % (a["sura"], a["n"], pos)] = (
-                    w.get("t", "")
-                    + "".join(m.get("sign", "") for m in (w.get("marks") or [])
-                              if m.get("k") in FOLD_KINDS))
+    for ai, lo in enumerate(ayah_starts):
+        hi = ayah_starts[ai + 1] if ai + 1 < len(ayah_starts) else len(words)
+        # which surah this ayah belongs to, and its number within it
+        si = bisect.bisect_right(surah_starts, lo) - 1
+        ayah_no = ai - bisect.bisect_left(ayah_starts, surah_starts[si]) + 1
+        for pos, wi in enumerate(range(lo, hi), 1):
+            out["%d:%d:%d" % (si + 1, ayah_no, pos)] = words[wi] + signs[wi]
     return out
 
 
