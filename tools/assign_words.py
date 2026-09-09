@@ -3789,6 +3789,17 @@ def compose_tanwin(atom):
 
     for base, tan in (("fathah", "tanwin_al_fath"), ("kasrah", "tanwin_al_kasr")):
         strokes = [e for e in atom["els"][1:] if e.get("mark") == base]
+        lim = 4.2 if base == "fathah" else 5.5
+        # A tanwin is exactly TWO strokes, so a stroke may join at most one
+        # pair. This was an all-pairs loop: where three strokes sit close
+        # together every pair qualified and all three became a tanwin, eating
+        # the word's own vowel. On p526 نَزْلَةً spells نَ + لَ + ً — two fathahs
+        # and a tanwin — and came out holding one fathah, because the لَ was
+        # welded into the tanwin with it (Abdullah, 2026-09-09: "it has welded
+        # three fathas, two are tanween and one is your fatha").  terminology: ignore
+        # Pairs are taken
+        # nearest first, and each stroke is spent once.
+        cand = []
         for i, a in enumerate(strokes):
             for b in strokes[i + 1:]:
                 dx = abs((a["x1"] + a["x2"]) / 2 - (b["x1"] + b["x2"]) / 2)
@@ -3796,9 +3807,15 @@ def compose_tanwin(atom):
                 # measured on real tanwin: parallel strokes nearly level,
                 # side-stepped ~3.4 units; neighbouring letters' fathahs differ
                 # by dy >= 4 or dx >= 5
-                lim = 4.2 if base == "fathah" else 5.5
                 if dx < lim and dy < 2.2:
-                    a["mark"] = b["mark"] = tan
+                    cand.append((dx * dx + dy * dy, i, strokes.index(b), a, b))
+        used = set()
+        for _d, ia, ib, a, b in sorted(cand, key=lambda t: t[0]):
+            if ia in used or ib in used:
+                continue
+            used.add(ia)
+            used.add(ib)
+            a["mark"] = b["mark"] = tan
 
 
 def map_lines(art_widths, api_lines):
@@ -9191,6 +9208,350 @@ def assign_page(edition, page_no, cache_dir):
                                     _a["els"].remove(_m)
                             break
                     put_in_ligature(_t["at"], _e)
+
+        # Cross-line transfer, settled by the text alone.
+        #
+        # Every mover above is line-scoped, so a sign the print draws at the END
+        # of one line for the word that OPENS the next is invisible to all of
+        # them — QSVG_TRACE on p399's waqf_lazim prints nothing at all, because
+        # `_omove` is never reached for it. Abdullah found it by eye:
+        # "مأواكم stole م from لوط" — the waqf_lazim ۘ is a small meem.
+        #
+        # Measured over all 604 pages and 77,432 words, across the families
+        # whose COUNT the text settles and whose NAME is not derived from
+        # position (the slash families are excluded — moving one re-opens the
+        # naming for both words), the whole mushaf holds exactly ONE word with a
+        # mark of such a family its spelling does not call for, and exactly ONE
+        # word missing one, and they are a pair across a line break:
+        #
+        #     p399  وَمَأْوَىٰكُمُ  line 5   holds 1 waqf, spells 0
+        #           لُوطࣱۘ          line 6   holds 0 waqf, spells 1
+        #
+        # An empty band that wide is a proof and needs no second signal, so this
+        # asks nothing of geometry. It fires only where a family has exactly one
+        # surplus word and exactly one deficit word on the page and their lines
+        # are adjacent — the only configuration in which the owner is not in
+        # doubt. Anything less certain is left for the eye.
+        if os.environ.get("QSVG_XLINE", "1") != "0":
+            _XCH = {"waqf": "\u06d6\u06d7\u06d8\u06d9\u06da\u06db",
+                    "small_waw": "\u06e5", "small_yaa": "\u06e6\u06e7",
+                    "maddah": "\u0653\u06e4", "small_meem": "\u06e2\u06ed",
+                    "hamzat_al_wasl": "\u0671", "omitted_alif": "\u0670"}
+            for _fam, _chs in _XCH.items():
+                _over, _under = [], []
+                for _r in _recs:
+                    _have = sum(1 for _e in _r["els"]
+                                if _e.get("mark") == _fam and not _e.get("mkpart"))
+                    _wnt = sum(_r["w"]["rasm_uthmani"].count(_c) for _c in _chs)
+                    if _have > _wnt:
+                        _over.append(_r)
+                    elif _wnt > _have:
+                        _under.append(_r)
+                if len(_over) != 1 or len(_under) != 1:
+                    continue
+                _src, _dst = _over[0], _under[0]
+                if _src["ln"] is None or _dst["ln"] is None:
+                    continue
+                if abs(_src["ln"] - _dst["ln"]) != 1:
+                    continue
+                _mv = next((_e for _e in _src["els"]
+                            if _e.get("mark") == _fam and not _e.get("mkpart")), None)
+                if _mv is None:
+                    continue
+                _src["els"].remove(_mv)
+                _dst["els"].append(_mv)
+                for _a in _src["at"]:
+                    if _mv in _a["els"]:
+                        _a["els"].remove(_mv)
+                        for _m in _mv.get("mkmembers", []):
+                            if _m in _a["els"]:
+                                _a["els"].remove(_m)
+                        break
+                put_in_ligature(_dst["at"], _mv)
+
+        # A word that is already full does not take the next run.
+        #
+        # Abdullah, 2026-09-09, on p399 29:26: "فامن already got all of its
+        # expected marks, so why does it add the next that belongs to له — and
+        # after ignoring those two we should know that the text below them
+        # doesn't belong to فامن."
+        #
+        # He is right, and the ink says so. Turning every mover OFF leaves the
+        # partition unchanged, so nothing moved that run: the first assignment
+        # handed it over. It does that because it cuts at the widest gap, and
+        # here the widest gap is in the WRONG place — 2.9u between فَـَٔامَنَ's
+        # «من» and the next run, 7.0u between that run and لَهُۥ's. Gap size
+        # alone picks the 7.0 and hands فَـَٔامَنَ a third run.
+        #
+        # The spelling already knows better. The joining rules say how many runs
+        # a word may draw, and `audit_marks` calls anything beyond that
+        # "unambiguous stolen ink" — a SURPLUS is proof, where a deficit is
+        # usually just the art joining letters. So a word that is already full
+        # spills its leftmost run, with the marks standing over it, to the next
+        # word in reading order, and that word spills in turn if the arrival
+        # puts it over. On p399 the cascade is exactly what the eye found:
+        # فَـَٔامَنَ -> لَهُۥ -> لُوطࣱ -> وَقَالَ, which ends with وَقَالَ holding the
+        # three runs «و» «قا» «ل» that it was one short of.
+        if os.environ.get("QSVG_SPILL", "1") != "0":
+
+            def _sp_runs(rec):
+                """Effective body runs, merged as audit_marks merges them."""
+                bods = [e for e in rec["els"] if e["kind"] == "body"]
+                if not bods:
+                    return []
+                par = list(range(len(bods)))
+
+                def _f(k):
+                    while par[k] != k:
+                        par[k] = par[par[k]]
+                        k = par[k]
+                    return k
+
+                for a1, o in enumerate(bods):
+                    for a2 in range(a1 + 1, len(bods)):
+                        b = bods[a2]
+                        wb = b["x2"] - b["x1"]
+                        xov = min(o["x2"], b["x2"]) - max(o["x1"], b["x1"])
+                        yov = min(o["y2"], b["y2"]) - max(o["y1"], b["y1"])
+                        if (xov >= 0.6 * wb and (o["x2"] - o["x1"]) > wb) \
+                                or (xov > 0.5 and yov > 3.0):
+                            par[_f(a1)] = _f(a2)
+                grp = {}
+                for k, b in enumerate(bods):
+                    grp.setdefault(_f(k), []).append(b)
+                return sorted(grp.values(),
+                              key=lambda g: -max(b["x2"] for b in g))
+
+
+            def _sp_err(rec):
+                """How many ways this word's ink disagrees with its spelling."""
+                t = rec["w"]["rasm_uthmani"]
+                n = 0
+                for _g in ("slash", "dammah", "dots"):
+                    n += abs(_held(rec["els"], _g) - _want(rec["w"], _g))
+                for _nm, _chs in (("waqf", "\u06d6\u06d7\u06d8\u06d9\u06da\u06db"),
+                                  ("small_waw", "\u06e5"), ("small_yaa", "\u06e6\u06e7"),
+                                  ("maddah", "\u0653\u06e4"), ("shaddah", "\u0651"),
+                                  ("hamzat_al_wasl", "\u0671"), ("omitted_alif", "\u0670"),
+                                  ("small_meem", "\u06e2\u06ed")):
+                    n += abs(sum(1 for e in rec["els"] if e.get("mark") == _nm
+                                 and not e.get("mkpart"))
+                             - sum(t.count(c) for c in _chs))
+                # Counted in ATOMS, the unit align_segs_atoms distributes, and
+                # in BOTH directions. Merged runs fold overlapping boxes into
+                # one, so on p526 ٱلْـَٔاخِرَةُ reads as 3 when it holds 5 atoms for
+                # 4 segments; and a surplus-only term scores a move that cures a
+                # DEFICIT at zero, which is what made the guard undo the very
+                # repair the rule had just found.
+                _at = sum(1 for _a in rec["at"]
+                          if any(x["kind"] == "body" for x in _a["els"]))
+                return n + abs(_at - max(1, len(segment_word(t))))
+
+            _sp_by = {}
+            for _r in _recs:
+                if _r["ln"] is not None and _r["els"]:
+                    _sp_by.setdefault(_r["ln"], []).append(_r)
+            for _ws in _sp_by.values():
+                _ws = sorted(_ws, key=lambda r: -max(e["x2"] for e in r["els"]))
+                # The surplus is a DETECTOR, not a corrector: the run merge
+                # cannot always tell one letter drawn in two contours from two
+                # letters, so an unguarded cascade damages lines that were
+                # right. Measured over 604 pages it took the mark flags from 9
+                # to 67 and made 17 pages worse against 2 better. So the line
+                # keeps the cascade only when the line as a whole ends up
+                # disagreeing with its text LESS than before.
+                _snap = [(r, list(r["els"]),
+                          [(a, list(a["els"])) for a in r["at"]]) for r in _ws]
+                _before = sum(_sp_err(r) for r in _ws)
+
+                def _sp_at(rec):
+                    return sum(1 for _a in rec["at"]
+                               if any(x["kind"] == "body" for x in _a["els"]))
+
+                def _sp_allow(rec):
+                    return max(1, len(segment_word(rec["w"]["rasm_uthmani"])))
+
+                # ONE pass, and the side is chosen by where the shortfall is.
+                # Running forward first and backward after does not work: on
+                # p526 وَكَم holds 3 atoms for 2 segments and the run it should
+                # give back is its RIGHTMOST, to وَٱلْأُولَىٰ (3 atoms of 5). A
+                # forward-only pass pushes its LEFTMOST run on to مِّن instead,
+                # strips وَكَم to a single atom, and by the time the backward
+                # pass looks there is nothing left to move. Abdullah, 2026-09-09:
+                # "instead of stealing next one we should check if previous one
+                # has extra one first."
+                # A tanwin_al_damm whose two curls fell in different atoms.
+                #
+                # compose_tanwin() already merges a dammah curl into an adjacent
+                # tanwin_al_damm (dx<7, dy<6), but it runs per ATOM, so it only
+                # compares curls drawn over the same letter run. On p399 لُوطࣱۘ's
+                # tanwin is two curls at x 53.9..58.0 and 57.3..62.1 — dx 3.75,
+                # dy 0.0, well inside that test — sitting over the و and the ط,
+                # so they are never compared and one curl is counted as a second
+                # dammah. Same family as the unpaired tanwin_al_kasr strokes in
+                # shape_notes.
+                #
+                # Only the damm tanwin needs this: it is the one drawn as curls
+                # that can straddle two letters. It fires only where the word
+                # holds MORE of the two families than its spelling allows
+                # between them, and the pair is re-homed on the LEFTMOST atom it
+                # spans — a tanwin sits at the end of the word, and in a
+                # right-to-left line the end is the left (Abdullah, 2026-09-09).
+                for _r in _recs:
+                    _txt = _r["w"]["rasm_uthmani"]
+                    _wn = sum(_txt.count(c) for c in "\u064c\u08f1")
+                    _wb = _txt.count("\u064f")
+                    if not _wn:
+                        continue
+                    _free = [e for e in _r["els"]
+                             if e.get("mark") in ("tanwin_al_damm", "dammah")
+                             and not e.get("mkpart")]
+                    if len(_free) <= _wn + _wb:
+                        continue
+                    for _m in [e for e in _free if e.get("mark") == "tanwin_al_damm"]:
+                        if _m.get("mkpart"):
+                            continue
+                        _best, _bd = None, 1e9
+                        for _o in _free:
+                            # the partner must be a plain curl of the SAME
+                            # family, never another tanwin: two masters fusing
+                            # would claim four curls for one sign
+                            if _o is _m or _o.get("mkpart") \
+                                    or _o.get("mark") != "dammah":
+                                continue
+                            _dx = abs((_m["x1"] + _m["x2"]) / 2
+                                      - (_o["x1"] + _o["x2"]) / 2)
+                            _dy = abs((_m["y1"] + _m["y2"]) / 2
+                                      - (_o["y1"] + _o["y2"]) / 2)
+                            if _dx < 7.0 and _dy < 6.0 and _dx + _dy < _bd:
+                                _best, _bd = _o, _dx + _dy
+                        if _best is None:
+                            continue
+                        _best["mark"] = "tanwin_al_damm"
+                        _best["mkpart"] = True
+                        _m.setdefault("mkmembers", []).append(_best)
+                        _host = None
+                        for _a in _r["at"]:
+                            if any(x is _m or x is _best for x in _a["els"]):
+                                if _host is None or min(x["x1"] for x in _host["els"]) \
+                                        > min(x["x1"] for x in _a["els"]):
+                                    _host = _a
+                        if _host is None:
+                            continue
+                        for _a in _r["at"]:
+                            if _a is _host:
+                                continue
+                            for _x in (_m, _best):
+                                if _x in _a["els"]:
+                                    _a["els"].remove(_x)
+                        for _x in (_m, _best):
+                            if _x not in _host["els"]:
+                                _host["els"].append(_x)
+
+                # BEFORE the forward cascade: a run that lies INSIDE the
+                # previous word's span was taken from it, and must go back.
+                #
+                # p526: وَكَم holds 3 atoms for 2 segments, and its rightmost run
+                # (x 168.5..180.2) lies 2.6u inside وَٱلْأُولَىٰ's span
+                # (177.6..203.6), which is starved at 3 atoms of 5. Abdullah saw
+                # it as "how الاولى lost all of this to next word".
+                #
+                # It runs first because the forward cascade would otherwise see
+                # وَكَم's surplus and push its LEFTMOST run on to مِّن — stripping
+                # the word to a single atom and leaving nothing to give back.
+                # Backward needs proof, not a preference: a real overlap with the
+                # previous word's ink, and a previous word that is actually short.
+                for _i in range(len(_ws) - 1, 0, -1):
+                    for _ in range(3):
+                        _src, _dst = _ws[_i], _ws[_i - 1]
+                        _runs = _sp_runs(_src)
+                        _allow = max(1, len(segment_word(_src["w"]["rasm_uthmani"])))
+                        _atoms = sum(1 for _a in _src["at"]
+                                     if any(x["kind"] == "body" for x in _a["els"]))
+                        _dat = sum(1 for _a in _dst["at"]
+                                   if any(x["kind"] == "body" for x in _a["els"]))
+                        _dallow = max(1, len(segment_word(_dst["w"]["rasm_uthmani"])))
+                        if len(_runs) < 2 or _atoms <= _allow or _dat >= _dallow:
+                            break
+                        _db = [e for e in _dst["els"] if e["kind"] == "body"]
+                        if not _db:
+                            break
+                        _run = _runs[0]                  # the rightmost
+                        _ov = (min(max(b["x2"] for b in _run),
+                                   max(e["x2"] for e in _db))
+                               - max(min(b["x1"] for b in _run),
+                                     min(e["x1"] for e in _db)))
+                        if _ov <= 0.5:
+                            break
+                        _x1 = min(b["x1"] for b in _run)
+                        _x2 = max(b["x2"] for b in _run)
+                        _go = list(_run)
+                        for _e in _src["els"]:
+                            if _e["kind"] == "body" or _e.get("mkpart"):
+                                continue
+                            _cx = (_e["x1"] + _e["x2"]) / 2
+                            if _x1 - 0.5 <= _cx <= _x2 + 0.5:
+                                _go.append(_e)
+                        for _e in _go:
+                            if _e in _src["els"]:
+                                _src["els"].remove(_e)
+                            for _a in _src["at"]:
+                                if _e in _a["els"]:
+                                    _a["els"].remove(_e)
+                                    for _m in _e.get("mkmembers", []):
+                                        if _m in _a["els"]:
+                                            _a["els"].remove(_m)
+                                    break
+                            _dst["els"].append(_e)
+                            if _e["kind"] != "body":
+                                _rename1(_dst, _e)
+                            put_in_ligature(_dst["at"], _e)
+
+                # A word that is already full spills its leftmost run — the
+                # one nearest the word it runs into — with the marks standing
+                # over it, and the receiver spills in turn if the arrival puts
+                # it over. Counted in ATOMS, the unit align_segs_atoms works in:
+                # a merged count folds overlapping boxes together and hides the
+                # surplus entirely.
+                for _i in range(len(_ws) - 1):
+                    for _ in range(4):            # a cascade, not a loop
+                        _src, _dst = _ws[_i], _ws[_i + 1]
+                        _runs = _sp_runs(_src)
+                        _allow = max(1, len(segment_word(_src["w"]["rasm_uthmani"])))
+                        _atoms = sum(1 for _a in _src["at"]
+                                     if any(x["kind"] == "body" for x in _a["els"]))
+                        if not _runs or (len(_runs) <= _allow and _atoms <= _allow):
+                            break
+                        _run = _runs[-1]
+                        _x1 = min(b["x1"] for b in _run)
+                        _x2 = max(b["x2"] for b in _run)
+                        _go = list(_run)
+                        for _e in _src["els"]:
+                            if _e["kind"] == "body" or _e.get("mkpart"):
+                                continue
+                            _cx = (_e["x1"] + _e["x2"]) / 2
+                            if _x1 - 0.5 <= _cx <= _x2 + 0.5:
+                                _go.append(_e)
+                        for _e in _go:
+                            if _e in _src["els"]:
+                                _src["els"].remove(_e)
+                            for _a in _src["at"]:
+                                if _e in _a["els"]:
+                                    _a["els"].remove(_e)
+                                    for _m in _e.get("mkmembers", []):
+                                        if _m in _a["els"]:
+                                            _a["els"].remove(_m)
+                                    break
+                            _dst["els"].append(_e)
+                            if _e["kind"] != "body":
+                                _rename1(_dst, _e)
+                            put_in_ligature(_dst["at"], _e)
+                if sum(_sp_err(r) for r in _ws) >= _before:
+                    for _r, _els0, _ats in _snap:
+                        _r["els"] = _els0
+                        for _a, _e0 in _ats:
+                            _a["els"] = _e0
+
 
     # Ink that draws nothing, counted as a mark.
     #
