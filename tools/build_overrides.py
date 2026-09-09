@@ -38,11 +38,21 @@ def main():
             continue
         if decisions.get(e["id"]) == "rejected":
             continue
-        moves.setdefault(e["page"], {})[e["payload"]["element_id"]] = (
-            e["payload"]["to"], e["payload"].get("box"))
+        # the platform writes `eid`; this file was written expecting
+        # `element_id`, so it crashed on the first edit the platform ever made
+        pay = e["payload"]
+        el_id = pay.get("element_id") or pay.get("eid")
+        if not el_id:
+            print("skipping an edit with no element id: %s" % e.get("id"))
+            continue
+        moves.setdefault(e["page"], {})[el_id] = (pay["to"], pay.get("box"))
     if not moves:
         print("no move-element edits found")
         return
+    # This REBUILDS overrides.json from edits.jsonl. An override whose source
+    # edit is no longer in the log is dropped — which is right when a rule has
+    # replaced it, and silent data loss when it has not. It dropped p399's waqf
+    # override on 2026-09-09; the cross-line rule had made it redundant.
 
     import assign_words as aw
     out = json.load(open(OUT)) if os.path.exists(OUT) else {}

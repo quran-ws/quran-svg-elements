@@ -459,6 +459,34 @@
    "verdict": "REAL — root cause in assign_words.py's standalone-ejection loop. The hairline overline is normally collected into `bars` and joined to the ۩ of the same site, but the `is_bar` test excluded any element already named mark=='sajdah'. On these two pages a namer had given the bar that name, so it skipped the bar path and ejected as a sign of its own, keyed by _ayah_at at ITS OWN centre — the ayah on the line ABOVE the bar. Two ejected keys => two <g class=\"sajdah-mark\"> groups with different data-aid. Fixed at cause: geometry decides (h<2.5<=w), the name no longer vetoes it; the ۩ is 8x11 and can never match.",
    "status": "fixed",
    "evidence": "all 15 sajdah sites now emit ONE group with the correct aid (1 sajdah_line + 1 sajdah_mark each); bench SCORE 137, no failures, pixelfail 0; audit_pixels clean on all 15 pages; annotations rebuilt 1-604 and validate_annotations OK. Note the annotation gate was BLIND to this: counts were 15+15 either way."
+  },
+  {
+   "id": 44,
+   "date": "2026-09-09",
+   "page": 350,
+   "words": [
+    "24:2:12 رَأْفَةࣱ",
+    "24:2:13 فِى"
+   ],
+   "reported": "interval audit MARK-STEAL: tanwin_al_damm held by رَأْفَةࣱ but drawn inside فِى's exclusive territory (line 5).",
+   "turned_out": "NO ISSUE — Abdullah verified in the review platform 2026-09-09 and by eye on the crop: the tanwin belongs to رَأْفَةࣱ and is held by it. The interval test measures territory, not ownership, and a word-final tanwin over a tightly-kerned neighbour reads as a trespass to it. Second time this same site has been adjudicated no-issue (see item 42).",
+   "status": "closed, no-issue",
+   "fixed": false
+  },
+  {
+   "id": 45,
+   "date": "2026-09-09",
+   "page": 399,
+   "words": [
+    "29:26:1 فَـَٔامَنَ",
+    "29:26:2 لَهُۥ",
+    "29:26:3 لُوطࣱۘ",
+    "29:26:4 وَقَالَ"
+   ],
+   "reported": "Abdullah, in the review platform: فآمن stole له completely; e366/e367/e368 belong to له. Then, on the word cards: ALL of 29:26:2/3/4 are wrong — له holds لو, لوط holds طوو, وقال is short its waw. The body partition is shifted by about one letter-group along the whole ayah.",
+   "turned_out": "CAUSE TRACED, not yet fixed. QSVG_TRACE=79.6 shows the mover PROPOSING the correct move and then rejecting it: `MOVE line6358 body فَـَٔامَنَ -> لَهُۥ` immediately undone by line6385. The accept test is `take = ok_w and d < base - 0.5`, and the comment above it says why it can never fire here: the oracle counts MARKS, so it is flat on a body move that leaves both words' mark budgets intact — a letter piece in the wrong word scores exactly like one in the right word. The width prior that exists to break that tie (QSVG_WDECIDE) is off because it was measured worse mushaf-wide. So the pass sees the right move, scores it 0, and drops it. An override would move the ink and leave the cause: Abdullah, 2026-09-09, 'make sure no ترقيع'. A per-place override was written and REVERTED for that reason. The fix has to be a rule the oracle can use — the piece budget (audit_marks treats len(eff) > nseg as unambiguous stolen ink) is the signal the mover already has and does not consult — and it has to be measured over all 604 pages before it is kept.",
+   "status": "open — cause identified, rule not yet written",
+   "fixed": false
   }
  ]
 }
