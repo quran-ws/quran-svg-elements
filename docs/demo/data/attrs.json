@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-08T15:30:17",
+ "generated": "2026-09-09T20:33:13",
  "pages": 604,
  "rows": [
   {
@@ -143,7 +143,7 @@
   },
   {
    "scope": "g.ayah-fragment",
-   "attr": "data-rubu_al_hizb-start",
+   "attr": "data-rubu-al-hizb-start",
    "count": 240,
    "distinct": 240,
    "distinct_capped": false,
@@ -225,7 +225,7 @@
   {
    "scope": "g.basmalah",
    "attr": "class",
-   "count": 111,
+   "count": 112,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
@@ -234,9 +234,9 @@
   },
   {
    "scope": "g.basmalah",
-   "attr": "data-sid",
-   "count": 111,
-   "distinct": 111,
+   "attr": "data-ayah-count",
+   "count": 112,
+   "distinct": 76,
    "distinct_capped": false,
    "samples": [
     "3",
@@ -245,22 +245,101 @@
     "6",
     "7",
     "8",
-    "10",
+    "9",
     "11"
    ]
   },
   {
-   "scope": "g.hizb-mark",
+   "scope": "g.basmalah",
+   "attr": "data-revelation-place",
+   "count": 112,
+   "distinct": 2,
+   "distinct_capped": false,
+   "samples": [
+    "makkah",
+    "madinah"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-sid",
+   "count": 112,
+   "distinct": 112,
+   "distinct_capped": false,
+   "samples": [
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "10"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-surah-name-ar",
+   "count": 112,
+   "distinct": 112,
+   "distinct_capped": false,
+   "samples": [
+    "ص",
+    "ق",
+    "طه",
+    "يس",
+    "سبإ",
+    "عبس",
+    "نوح",
+    "هود"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-surah-name-en",
+   "count": 112,
+   "distinct": 112,
+   "distinct_capped": false,
+   "samples": [
+    "Hud",
+    "Mary",
+    "Noah",
+    "Jonah",
+    "Sheba",
+    "Ta-Ha",
+    "Joseph",
+    "Luqman"
+   ]
+  },
+  {
+   "scope": "g.basmalah",
+   "attr": "data-surah-name-latin",
+   "count": 112,
+   "distinct": 112,
+   "distinct_capped": false,
+   "samples": [
+    "Ala",
+    "Asr",
+    "Fil",
+    "Hud",
+    "Nas",
+    "Nuh",
+    "Nur",
+    "Rad"
+   ]
+  },
+  {
+   "scope": "g.division-mark",
    "attr": "class",
    "count": 199,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
-    "hizb-mark"
+    "division-mark"
    ]
   },
   {
-   "scope": "g.hizb-mark",
+   "scope": "g.division-mark",
    "attr": "data-ayah-key",
    "count": 199,
    "distinct": 199,
@@ -277,7 +356,7 @@
    ]
   },
   {
-   "scope": "g.hizb-mark",
+   "scope": "g.division-mark",
    "attr": "data-hizb",
    "count": 199,
    "distinct": 59,
@@ -294,7 +373,7 @@
    ]
   },
   {
-   "scope": "g.hizb-mark",
+   "scope": "g.division-mark",
    "attr": "data-juz",
    "count": 199,
    "distinct": 30,
@@ -311,7 +390,7 @@
    ]
   },
   {
-   "scope": "g.hizb-mark",
+   "scope": "g.division-mark",
    "attr": "data-mark",
    "count": 199,
    "distinct": 1,
@@ -321,7 +400,7 @@
    ]
   },
   {
-   "scope": "g.hizb-mark",
+   "scope": "g.division-mark",
    "attr": "data-nisf",
    "count": 199,
    "distinct": 2,
@@ -332,7 +411,7 @@
    ]
   },
   {
-   "scope": "g.hizb-mark",
+   "scope": "g.division-mark",
    "attr": "data-rubu-al-hizb",
    "count": 199,
    "distinct": 199,
@@ -349,7 +428,7 @@
    ]
   },
   {
-   "scope": "g.hizb-mark",
+   "scope": "g.division-mark",
    "attr": "data-rubu-al-hizb-in-hizb",
    "count": 199,
    "distinct": 4,
@@ -362,9 +441,36 @@
    ]
   },
   {
+   "scope": "g.ligature",
+   "attr": "class",
+   "count": 156719,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "ligature"
+   ]
+  },
+  {
+   "scope": "g.ligature",
+   "attr": "data-text",
+   "count": 156719,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "ء",
+    "ا",
+    "ب",
+    "ة",
+    "ت",
+    "ث",
+    "ج",
+    "د"
+   ]
+  },
+  {
    "scope": "g.line",
    "attr": "class",
-   "count": 9044,
+   "count": 9046,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
@@ -374,7 +480,7 @@
   {
    "scope": "g.line",
    "attr": "data-line",
-   "count": 9044,
+   "count": 9046,
    "distinct": 15,
    "distinct_capped": false,
    "samples": [
@@ -448,7 +554,7 @@
   {
    "scope": "g.surah-name",
    "attr": "class",
-   "count": 113,
+   "count": 114,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
@@ -457,19 +563,98 @@
   },
   {
    "scope": "g.surah-name",
-   "attr": "data-sid",
-   "count": 113,
-   "distinct": 113,
+   "attr": "data-ayah-count",
+   "count": 114,
+   "distinct": 77,
    "distinct_capped": false,
    "samples": [
-    "2",
     "3",
     "4",
     "5",
     "6",
     "7",
     "8",
-    "9"
+    "9",
+    "11"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-revelation-place",
+   "count": 114,
+   "distinct": 2,
+   "distinct_capped": false,
+   "samples": [
+    "makkah",
+    "madinah"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-sid",
+   "count": 114,
+   "distinct": 114,
+   "distinct_capped": false,
+   "samples": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-surah-name-ar",
+   "count": 114,
+   "distinct": 114,
+   "distinct_capped": false,
+   "samples": [
+    "ص",
+    "ق",
+    "طه",
+    "يس",
+    "سبإ",
+    "عبس",
+    "نوح",
+    "هود"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-surah-name-en",
+   "count": 114,
+   "distinct": 114,
+   "distinct_capped": false,
+   "samples": [
+    "Hud",
+    "Mary",
+    "Noah",
+    "Jonah",
+    "Sheba",
+    "Ta-Ha",
+    "Joseph",
+    "Luqman"
+   ]
+  },
+  {
+   "scope": "g.surah-name",
+   "attr": "data-surah-name-latin",
+   "count": 114,
+   "distinct": 114,
+   "distinct_capped": false,
+   "samples": [
+    "Ala",
+    "Asr",
+    "Fil",
+    "Hud",
+    "Nas",
+    "Nuh",
+    "Nur",
+    "Rad"
    ]
   },
   {
@@ -484,19 +669,87 @@
   },
   {
    "scope": "g.word",
+   "attr": "data-qpc",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "إِن",
+    "ذُو",
+    "فِي",
+    "قُل",
+    "لَآ",
+    "لَا",
+    "لَن",
+    "مَا"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-rasm",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "أم",
+    "أن",
+    "أو",
+    "إذ",
+    "إن",
+    "به",
+    "حب",
+    "حق"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-rasm-imlai",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "آلِ",
+    "إِن",
+    "الم",
+    "ذُو",
+    "فِي",
+    "قُل",
+    "لَا",
+    "لَن"
+   ]
+  },
+  {
+   "scope": "g.word",
    "attr": "data-rasm-uthmani",
    "count": 77432,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
-    "أَن",
     "إِن",
+    "ذُو",
     "فِى",
+    "قُل",
     "لَا",
     "لَن",
     "مَا",
-    "مَن",
-    "مِن"
+    "مَن"
+   ]
+  },
+  {
+   "scope": "g.word",
+   "attr": "data-search",
+   "count": 77432,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "آل",
+    "أم",
+    "أن",
+    "أو",
+    "إذ",
+    "إن",
+    "به",
+    "حب"
    ]
   },
   {
@@ -506,14 +759,14 @@
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
-    "2:58:1",
-    "2:58:2",
-    "2:58:3",
-    "2:58:4",
-    "2:58:5",
-    "2:58:6",
-    "2:58:7",
-    "2:58:8"
+    "1:1:1",
+    "1:1:2",
+    "1:1:3",
+    "1:1:4",
+    "1:2:1",
+    "1:2:2",
+    "1:2:3",
+    "1:2:4"
    ]
   },
   {
@@ -545,8 +798,25 @@
   },
   {
    "scope": "path",
+   "attr": "data-element-id",
+   "count": 598405,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "e1",
+    "e2",
+    "e3",
+    "e4",
+    "e5",
+    "e6",
+    "e7",
+    "e8"
+   ]
+  },
+  {
+   "scope": "path",
    "attr": "data-form",
-   "count": 8508,
+   "count": 8510,
    "distinct": 2,
    "distinct_capped": false,
    "samples": [
@@ -557,7 +827,7 @@
   {
    "scope": "path",
    "attr": "data-iqlab",
-   "count": 940,
+   "count": 936,
    "distinct": 500,
    "distinct_capped": true,
    "samples": [
@@ -574,7 +844,7 @@
   {
    "scope": "path",
    "attr": "data-kind",
-   "count": 611169,
+   "count": 611119,
    "distinct": 7,
    "distinct_capped": false,
    "samples": [
@@ -590,7 +860,7 @@
   {
    "scope": "path",
    "attr": "data-mark",
-   "count": 436628,
+   "count": 436627,
    "distinct": 34,
    "distinct_capped": false,
    "samples": [
@@ -607,7 +877,7 @@
   {
    "scope": "path",
    "attr": "data-mark-family",
-   "count": 393970,
+   "count": 393969,
    "distinct": 7,
    "distinct_capped": false,
    "samples": [
@@ -634,12 +904,56 @@
   },
   {
    "scope": "path",
+   "attr": "data-sig",
+   "count": 598391,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "002d9c0f7cd02d83",
+    "005430b3c8b67c6a",
+    "0079787d91c42c19",
+    "00a9baded4b220d0",
+    "00ae149d2e60a8b2",
+    "00c433fdffb44850",
+    "017cd5c2d7a28f28",
+    "01d7e29b3384831b"
+   ]
+  },
+  {
+   "scope": "path",
    "attr": "data-standalone",
    "count": 229,
    "distinct": 1,
    "distinct_capped": false,
    "samples": [
     "1"
+   ]
+  },
+  {
+   "scope": "path.ayahPolygon",
+   "attr": "class",
+   "count": 6236,
+   "distinct": 1,
+   "distinct_capped": false,
+   "samples": [
+    "ayahPolygon"
+   ]
+  },
+  {
+   "scope": "path.ayahPolygon",
+   "attr": "id",
+   "count": 6236,
+   "distinct": 500,
+   "distinct_capped": true,
+   "samples": [
+    "verse-1",
+    "verse-2",
+    "verse-3",
+    "verse-4",
+    "verse-5",
+    "verse-6",
+    "verse-7",
+    "verse-8"
    ]
   },
   {

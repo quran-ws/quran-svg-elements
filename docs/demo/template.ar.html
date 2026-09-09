@@ -216,7 +216,7 @@ g.q-hl path{fill:var(--hl)}
 .lab-extra label{display:flex;gap:6px;align-items:center;
   font:500 12px/1 "IBM Plex Mono",monospace;color:var(--muted)}
 
-/* word-by-word-translation-translation reveal. Every ink path ships fill="#231f20" as a presentation
+/* word-by-word translation reveal. Every ink path ships fill="#231f20" as a presentation
    attribute; a CSS rule beats one, so `fill: inherit` hands the path back to
    its group and the whole word recolours by setting ONE property. */
 /* ONE selector over the page's ink, not a list of element types that would
@@ -622,7 +622,7 @@ body > div[style*="left: -99999px"]{left:0!important;top:-99999px!important}
         خمسة أسداس آية الكرسي عن التظليل دون أن يُثار أي خطأ.</p>
     </div>
     <div class="lab" id="lab-ayah"></div>
-    <p class="note">يحمل كل مقطع <code>data-part</code> و<code>data-ayah-fragments</code>، وتحمل
+    <p class="note">يحمل كل مقطع <code>data-fragment</code> و<code>data-ayah-fragments</code>، وتحمل
       المقاطع كلها وعددها 13,489 سمة <code>data-mark</code> تشير إلى <code>id</code> علامة رأس
       آيته في الصفحة نفسها. ولا تمتد آية على صفحتين، فمتى حمّلت الصفحة الصحيحة وجدت مقاطعها كلها.
       و<b>لا تستخدم أبداً</b> <code>firstElementChild</code> لأحد المقاطع للوصول إلى أول كلمة في
@@ -1535,7 +1535,7 @@ function clonePage(src = PRISTINE) {
   const tag = 'c' + (++cloneSeq) + '-';
   svg.removeAttribute('id');
   svg.querySelectorAll('[id]').forEach(el => { el.id = tag + el.id; });
-  svg.querySelectorAll('g.ayah-fragment[data-mark]').forEach(g => {
+  svg.querySelectorAll('g.ayah-fragment[data-ayah-mark]').forEach(g => {
     g.dataset.ayahMark = tag + g.dataset.ayahMark;
   });
   return svg;
@@ -4418,15 +4418,14 @@ mod('attrs', () => {
   /* keyed 'scope|attr', or 'attr' for a note that holds on every scope */
   const NOTE = {
     'g.word|data-word-key': ['<code>surah:ayah:word</code>، يبدأ العدّ من 1. فريد في المصحف كله. <b>هو المفتاح.</b>', 1],
-    'g.word|data-w': ['<b>المعرِّف العالمي للكلمة</b> في مصدر «كلمة بكلمة» (إصدار مجمع الملك فهد UthmanicHafs v3.0): العدد نفسه لهذه الكلمة في كل مصحف يحتويها. 77,432 معرِّفاً؛ ويشترك جزءا الكلمة في 15:7 <span class="ar">لَّوْ مَا</span> في معرِّف واحد', 1],
     'g.word|data-rasm-uthmani': ["نص الطبعة نفسها بتشكيل كامل — وهو النص المعتمد", 1],
     'g.word|data-rasm': ['هيكل الرسم العثماني — <b>الأشكال المرسومة</b> — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
     'g.word|data-rasm-imlai': ['الرسم الإملائي الحديث، بالعلامات — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
     'g.word|data-search': ['هيكل الرسم الإملائي الحديث — <b>مفتاح البحث</b> — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
     'g.word|data-qpc': ['النص نفسه بنقاط ترميز KFGQPC — في وضع التطوير فقط؛ وفي الإنتاج تُشحن في index/by-page', 1],
     'g.ayah-fragment|data-ayah-key': ['<code>surah:ayah</code> — مقطع واحد لكل سطر مطبوع', 1],
-    'g.ayah-fragment|data-mark': ["قيمة <code>id</code> لعلامة رأس هذه الآية، في الصفحة نفسها", 1],
-    'g.ayah-fragment|data-part': ['أيّ مقطع هذا، بترتيب القراءة', 1],
+    'g.ayah-fragment|data-ayah-mark': ["قيمة <code>id</code> لعلامة رأس هذه الآية، في الصفحة نفسها", 1],
+    'g.ayah-fragment|data-fragment': ['أيّ مقطع هذا، بترتيب القراءة', 1],
     'g.ayah-fragment|data-ayah-fragments': ['عدد مقاطع الآية — وبه تتحقق من الاكتمال', 1],
     'g.ayah-fragment|data-juz-start': ['هذه الآية تفتتح ذلك الجزء. تُوسَم على كل مقطع منها، ولذلك يزيد العدد على 30', 1],
     'g.ayah-fragment|data-hizb-start': ['تفتتح ذلك الحزب', 1],
@@ -4475,8 +4474,8 @@ mod('attrs', () => {
     'svg|data-decomposition': ['<b>إلى أي حدّ فُكِّكت هذه الطبعة.</b> فالقيمة <code>word</code> تعني أن الكلمات والوصلات والعلامات المسمّاة كلها قابلة للاستهداف، وعليها يقوم كل قسم في هذه الصفحة. والقيمة <code>ayah</code> تعني حبر الصفحة مع مضلّعات الآيات وعلامات رؤوسها، ولا شيء دون الآية. فاقرأها قبل أن تكتب مُحدِّداً على مستوى الكلمة.', 1],
     'class': ['ما هو العنصر. وكل مُحدِّد في هذه الصفحة مبني عليه.', 1],
     'g|id': ['الغلاف الذي يحوي محتوى الصفحة', 1],
-    'g.ayah_marks|id': ['الطبقة التي تسكنها علامات رؤوس الآي، خارج الأسطر', 1],
-    'g.ayah_marks|class': ['طبقة علامات رؤوس الآي', 1]
+    'g.ayah_markers|id': ['الطبقة التي تسكنها علامات رؤوس الآي، خارج الأسطر', 1],
+    'g.ayah_markers|class': ['طبقة علامات رؤوس الآي', 1]
   };
   const KINDS = { 1: 'الوضعان معاً', 2: 'الوضعان معاً · للمراجعة فقط', 3: 'وضع التطوير فقط' };
 
