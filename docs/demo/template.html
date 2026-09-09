@@ -85,18 +85,102 @@ a{color:var(--lapis)}
 }
 /* an anchor must never land with its heading under the bar */
 section[id]{scroll-margin-top:62px}
+details.cap{scroll-margin-top:62px}
 
-/* the contents */
-.toc{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px}
-.toc h3{font-family:"Public Sans",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--gold);margin:0 0 10px}
-.toc ol{list-style:none;margin:0;padding:0}
-.toc li{margin:0 0 12px}
-.toc a{display:block;text-decoration:none;color:var(--ink)}
-.toc a:hover .t{color:var(--gold)}
-.toc .n{font:500 11px/1 "IBM Plex Mono",monospace;color:var(--muted);margin-right:7px}
-.toc .t{font:600 15px/1.3 "Spectral",Georgia,serif}
-.toc .d{display:block;font-size:12.5px;line-height:1.45;color:var(--muted);margin-top:3px}
+/* ---------------------------------------------------------------------------
+   THE CAPABILITY GRID
+
+   This replaces eighteen numbered sections that each ran the full width of the
+   page. They shared one silhouette — eyebrow, heading, paragraph, paper, editor
+   — so a visitor scrolling 33,000px could not tell the three that mattered from
+   the fifteen that were variations on them.
+
+   A card is CLOSED at rest: a thumbnail, a title, one line. It is a <details>,
+   so it opens with no script, keyboard and screen reader included, and the
+   lab's own IntersectionObserver does not fire — and therefore fetches nothing
+   — until the card is opened. Opening one makes it span the whole row in place,
+   because a lab needs the width and because the reader should not lose where
+   they were.
+--------------------------------------------------------------------------- */
+.cap-bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:0 0 22px}
+.cap-bar .hint{font-size:13px;color:var(--muted)}
+
+.band{margin:0 0 40px}
+.band:last-child{margin-bottom:0}
+.band-h{font-family:"Public Sans",sans-serif;font-size:11px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin:0 0 5px}
+.band-n{margin:0 0 16px;font-size:14px;color:var(--muted);max-width:72ch}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:14px;
+  align-items:stretch}
+/* an open card is its own row, so stretching it to a neighbour's height would
+   be meaningless; only closed tiles line up */
+details.cap:not([open]){display:flex;flex-direction:column}
+details.cap:not([open])>summary{flex:1}
+
+details.cap{background:var(--panel);border:1px solid var(--rule);border-radius:3px;min-width:0}
+/* an open card takes the whole row: the lab beside it needs the width, and the
+   cards after it keep their place instead of reflowing around a tall neighbour */
+details.cap[open]{grid-column:1/-1;background:transparent;border-color:var(--gold)}
+details.cap>summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;
+  align-items:start;padding:14px;cursor:pointer;list-style:none;border-radius:2px}
+details.cap>summary::-webkit-details-marker{display:none}
+details.cap>summary:hover{background:var(--sunk)}
+details.cap>summary:focus-visible{outline:2px solid var(--lapis);outline-offset:-2px}
+details.cap[open]>summary{background:var(--panel);border-bottom:1px solid var(--rule);
+  border-radius:2px 2px 0 0}
+.cap-t{min-width:0}
+.cap-t b{display:block;font:600 16px/1.25 "Spectral",Georgia,serif;letter-spacing:-.005em}
+.cap-t i{display:block;font-style:normal;font-size:12.5px;line-height:1.45;color:var(--muted);
+  margin-top:4px}
+/* the chevron, drawn rather than typed so it turns */
+.cap-open{width:9px;height:9px;margin-top:6px;border-right:1.5px solid var(--muted);
+  border-bottom:1.5px solid var(--muted);transform:rotate(45deg);transition:transform .18s ease}
+details.cap[open] .cap-open{transform:rotate(225deg);border-color:var(--gold)}
+@media (prefers-reduced-motion:reduce){.cap-open{transition:none}}
+.cap-body{padding:22px 14px 18px;border:1px solid var(--rule);border-top:0;border-radius:0 0 2px 2px}
+.cap-body>.shead{margin-bottom:18px}
+
+/* the thumbnail: four abstract printed lines, and what this card does to them.
+   A real page reduced to 72px is a grey smudge and would be the same smudge on
+   every card, which is the problem this grid exists to solve. */
+.thumb{width:72px;height:44px;flex:0 0 auto;background:var(--paper);border:1px solid var(--rule);
+  border-radius:2px;overflow:visible}
+.thumb .ln rect{fill:#231f20;opacity:.42}
+.thumb .ln.faint rect{opacity:.12}
+.thumb .band{fill:var(--hl);opacity:.4}
+.thumb .sel{fill:var(--lapis);opacity:.3}
+.thumb .halo{fill:var(--lapis);opacity:.2}
+.thumb .pick{fill:none;stroke:var(--gold);stroke-width:1.6}
+.thumb .dash{fill:none;stroke:#231f20;opacity:.3;stroke-dasharray:3 2.5}
+.thumb .chip{fill:#231f20;opacity:.22}
+.thumb .dots circle{fill:var(--gold)}
+.thumb .crop path,.thumb .wave path{fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linecap:round}
+.thumb .tip{fill:#231f20;opacity:.8}
+.thumb .tipline{stroke:#231f20;opacity:.4;stroke-width:1.2}
+
+/* one card, several techniques — this is what used to be three sections all
+   demonstrating that a CSS rule beats a fill attribute */
+.tabs{display:inline-flex;flex-wrap:wrap;border:1px solid var(--rule);border-radius:2px;
+  overflow:hidden;margin:0 0 20px}
+.tabs button{border:0;border-radius:0;padding:8px 12px;font-size:12px;background:transparent}
+.tabs button+button{border-inline-start:1px solid var(--rule)}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--panel)}
+
+details.ref{border:1px solid var(--rule);border-radius:3px;background:var(--panel);
+  padding:0 16px;margin-top:8px}
+details.ref>summary{display:flex;gap:10px;align-items:center;padding:14px 0;cursor:pointer;
+  list-style:none;font-size:14px;color:var(--muted)}
+details.ref>summary::-webkit-details-marker{display:none}
+details.ref>summary b{font:600 15px/1.3 "Spectral",Georgia,serif;color:var(--ink)}
+details.ref>summary .cap-open{margin-inline-start:auto;margin-top:0}
+details.ref[open]{padding-bottom:18px}
+
+.contract-d{margin-bottom:30px}
+.contract-d .contract{margin:0 0 6px}
+
+.linkish{border:0;background:none;padding:0;color:var(--lapis);text-decoration:underline;
+  font:inherit;cursor:pointer}
 
 /* sections */
 section{padding:58px 0;border-bottom:1px solid var(--rule)}
@@ -333,24 +417,31 @@ footer p{max-width:74ch}
   <div class="wrap">
     <p class="eyebrow">Madinah Mushaf · Hafs · 604 pages</p>
     <h1>The mushaf, page by page, <em>as files you can build with</em></h1>
-    <p class="plain"><b>What this is.</b> The 604 pages of the Madinah Mushaf, as SVG files — one file
-      per printed page. Each page looks exactly like the print it came from. Everything on it is a real
-      element, so you can click a word and know which word it is, highlight an ayah, search for a
-      phrase, link straight to 2:255, or change the colour of the vowel marks.</p>
-    <p class="plain"><b>Why you would want it.</b> If you are building a Quran app or site you normally
-      pick between two bad options. A picture of the page looks right, but nothing on it can be
-      selected, searched or linked. Text set in a font is alive, but it is not this print, and you have
-      to rebuild the line breaks page by page so a reader still recognises the page they memorised
-      from. These files give you both at once.</p>
+    <p class="plain">The 604 pages of the Madinah Mushaf as SVG files, one file per printed page. Each
+      page looks exactly like the print it came from, and everything on it is a real element you can
+      select, style and link to.</p>
+    <p class="plain">There is no SDK and no build step. Fetch a page and query it with plain DOM:</p>
+    <figure class="code" id="mast-code">
+      <button class="copy">copy</button>
+<pre><code><span class="tok-k">const</span> res  = <span class="tok-k">await</span> fetch(<span class="tok-s">'pages/042.svg'</span>);
+<span class="tok-k">const</span> page = <span class="tok-k">new</span> DOMParser().parseFromString(<span class="tok-k">await</span> res.text(), <span class="tok-s">'image/svg+xml'</span>);
+
+page.querySelectorAll(<span class="tok-s">'g.word'</span>).length;                            <span class="tok-c">// 147</span>
+page.querySelector(<span class="tok-s">'[data-word-key="2:255:1"]'</span>).dataset.rasmUthmani;  <span class="tok-c">// "ٱللَّهُ"</span>
+page.querySelectorAll(<span class="tok-s">'g.ayah-fragment[data-ayah-key="2:255"]'</span>);     <span class="tok-c">// 6 nodes</span></code></pre>
+    </figure>
+    <p class="plain"><b>Why you would want it.</b> Building a Quran app usually means choosing between
+      two bad options. A page image looks right, but nothing on it can be selected, searched or linked.
+      Text set in a font is alive, but it is not this print, and you have to rebuild the line breaks
+      page by page so a reader still recognises the page they memorised from. These files give you
+      both at once.</p>
     <p class="plain"><b>It also replaces your Quran metadata database.</b> Most apps ship page images
-      alongside a database that says what is on them. Here that information is on the elements
-      themselves — the surah's number, its name in Arabic, Latin and English, where it was revealed and
-      how many ayahs it has; the ayah key <code>2:255</code> and which parts of it fall on this page;
-      the word key <code>2:255:4</code> with its rasm_uthmani text, and its other four forms in the page's sidecar; juz, hizb, rubʿ and nisf and where
-      each begins; the page and line number; and every mark named, sajdah signs and iqlab meems
-      included. So <i>"ayah 2:255 is on page 42, line 3"</i> is a CSS selector rather than a query — and
-      because the geometry is in the same file, you also get the one thing a database cannot give you:
-      where each of those sits on the page.</p>
+      next to a database that says what is on them. Here that information is on the elements. Every
+      word carries its key <code>2:255:4</code> and its rasm_uthmani text; every ayah fragment carries
+      <code>2:255</code>; every page carries its surah records, its juz, hizb, rubʿ and nisf starts,
+      its line numbers, and every mark by name. So <i>"ayah 2:255 is on page 42, line 3"</i> is a CSS
+      selector rather than a query, and because the geometry is in the same file you also get what a
+      database cannot give you: where each of those sits on the page.</p>
     <div class="mast-foot">
       <span class="chip"><b>604</b> pages</span>
       <span class="chip"><b>77,432</b> words</span>
@@ -359,7 +450,7 @@ footer p{max-width:74ch}
       <button id="theme-toggle" aria-label="Switch colour theme">theme</button>
     </div>
     <div class="cta">
-      <a href="#start">Show me the code</a>
+      <a href="#can">What you can do with it</a>
       <a class="ghost" href="#bundle">What you get</a>
       <a class="ghost" href="#attrs">Attribute reference</a>
     </div>
@@ -370,7 +461,7 @@ footer p{max-width:74ch}
   <div class="wrap bar">
     <span class="name">Madinah Mushaf · SVG</span>
     <span class="here" id="here"></span>
-    <a class="toclink" href="#toc">Contents</a>
+    <a class="toclink" href="#can">Capabilities</a>
   </div>
   <div class="progress" id="progress"></div>
 </nav>
@@ -424,21 +515,20 @@ footer p{max-width:74ch}
       </div>
       <div class="callout">
         <h3>The guarantee</h3>
-        <p><b>Every one of the 604 pages renders identically to the source artwork.</b> Taking a page
-          apart into ayahs, words and marks changes nothing about what is drawn.</p>
-        <p>That is checked two ways on every page, on every change, as a gate that blocks a release:</p>
+        <p><b>Every one of the 604 pages renders identically to the source artwork.</b> Decomposing a
+          page into ayahs, words and marks changes nothing that is drawn.</p>
+        <p>Two checks run on every page on every change, and a failure blocks the release:</p>
         <ul class="plain-list" style="margin-top:0">
           <li><b>Contour conservation</b> — the multiset of drawn contours in the output is identical to
             the source. Nothing added, nothing removed, nothing duplicated. This catches what a picture
             cannot show, such as a mark drawn twice in the same place.</li>
           <li><b>Raster comparison against the source artwork</b>, so nothing has moved. Rendered 1400 px
-            wide, re-verified at 2200 px, tolerance 24/255, with a 10 px seam allowance that sits inside a
-            measured empty band: anti-aliasing seams measure 1–3 px, the smallest real defect ever found
-            measured over 100.</li>
+            wide and re-verified at 2200 px, tolerance 24/255, with a 10 px seam allowance for
+            anti-aliasing.</li>
         </ul>
-        <p class="note" style="margin-top:12px">This is a statement about the <b>ink</b>: what is drawn,
-          and where. How the ink is named — which stroke is a kasrah, which word owns which mark — is a
-          separate matter resting on separate evidence, and is not covered by this guarantee.</p>
+        <p class="note" style="margin-top:12px">The guarantee covers the <b>ink</b>: what is drawn, and
+          where. It does not cover how the ink is named — which stroke is a kasrah, which word owns which
+          mark. That rests on separate evidence.</p>
       </div>
     </div>
   </div>
@@ -469,640 +559,755 @@ footer p{max-width:74ch}
         </tbody>
       </table>
     </div>
-    <p class="note">The last row is the argument. The line breaks are the print's own, because the ink is
-      the print's own.</p>
+    <p class="note">The last row is the one that decides it in practice. You never hand-tune a line
+      break, because the ink is the print's own.</p>
   </div>
 </section>
 
-<section id="toc">
-  <div class="wrap">
-    <p class="sec-eyebrow">Contents</p>
-    <div class="shead">
-      <h2>What is on this page</h2>
-      <p>Every section below is a live, editable example running against a real page of the mushaf.
-        Change the code and the result changes with it.</p>
-    </div>
-    <div class="toc" id="toc-body"></div>
-  </div>
-</section>
-
-<!-- ═══════════════ HOW TO USE IT ═══════════════ -->
-
-<section id="start" data-toc-group="Getting started" data-toc-note="Parse a page and ask it questions.">
-  <div class="wrap">
-    <p class="sec-eyebrow">How to use it</p>
-    <div class="contract">
-      <b>Every snippet below is editable and runs for real.</b> Change the code and the result updates
-      as you type; <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>Enter</kbd> runs it immediately, and <b>Reset</b>
-      restores both the snippet and an untouched copy of the page. Each editor has its own copy of the
-      file, so one section cannot disturb another. Inside a snippet you have <code>svg</code> (that
-      section's page), <code>stage</code> (the paper it sits on), <code>out(html)</code> and
-      <code>log(…)</code> to report, <code>H</code> — a few helpers defined on this page:
-      <code>H.band</code>, <code>H.fold</code>, <code>H.crop</code>, <code>H.getPage</code>,
-      <code>H.toRoot</code> — and <code>signal</code>, an <code>AbortSignal</code> that fires when
-      the snippet is re-run, so a listener or an observer you attach outside the page is cleaned up
-      for you. Everything else is plain DOM.
-    </div>
-    <div class="shead">
-      <p class="sel">fetch → DOMParser → querySelectorAll</p>
-      <h2>1 · Fetch a page and look inside it</h2>
-      <p>There is no SDK. A page is an ordinary SVG file with a fixed <code>viewBox</code>. Parse it and
-        it answers questions. This really fetches page 3 over the network — change the page number, or
-        the ayah, and run it again.</p>
-    </div>
-    <div class="lab" id="lab-start"></div>
-    <p class="note">Words inside a line are in reading order, right to left, on all 8,820 lines of the
-      mushaf that hold words, so <b>document order is reading order</b>. Do not sort by geometry;
-      bounding boxes overlap, because a mark may legitimately be drawn over its neighbour.</p>
-  </div>
-</section>
-
-<section id="ayah" data-toc-group="Selecting and pointing" data-toc-note="Select a whole ayah without missing five sixths of it.">
+<!-- ═══════ WHAT YOU CAN DO WITH IT ═══════ -->
+<section id="can">
   <div class="wrap">
     <div class="shead">
-      <p class="sel">svg.querySelectorAll('g.ayah-fragment[data-ayah-key="2:255"]')</p>
-      <h2>2 · Highlight an ayah — and the one thing everybody gets wrong</h2>
-      <p>An ayah is emitted <b>once per printed line</b>, so it is several sibling nodes and there is no
-        single node that "is" the ayah. 6,236 ayahs are emitted as 13,489 fragments; 4,455 of them have
-        more than one. Change <code>querySelectorAll</code> to <code>querySelector</code> in the editor
-        and watch five sixths of Ayahs al-Kursi stop being highlighted, without anything throwing.</p>
+      <p class="sel">13 capabilities · plain DOM · no build step</p>
+      <h2>What you can do with a page</h2>
+      <p>Each card opens where it sits and runs for real against a page fetched over the network.
+        Nothing is fetched until you open a card.</p>
     </div>
-    <div class="lab" id="lab-ayah"></div>
-    <p class="note">Each fragment carries <code>data-fragment</code> and <code>data-ayah-fragments</code>, and
-      all 13,489 of them carry <code>data-mark</code> pointing at the <code>id</code> of their own
-      medallion on the same page. No ayah spans two pages, so if you loaded the right page you will
-      always find all N. <b>Never</b> use <code>firstElementChild</code> of one fragment to find the
-      ayah's first word — use <code>data-word-key</code> order across all fragments. Deep links work on the
-      page at the top of this document: <a href="#2:254">#2:254</a>, <a href="#2:255">#2:255</a>.</p>
-  </div>
-</section>
-
-<section id="tap" data-toc-group="Selecting and pointing" data-toc-note="Make every point on a line belong to a word.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">g.word path { stroke: transparent; pointer-events: all }</p>
-      <h2>3 · Make a tap in the gap still hit the ayah</h2>
-      <p>Hit-testing runs against the ink, and the ink is calligraphy: thin strokes with white space
-        between the words. A finger landing between two words of one ayah hits nothing. The fix is one
-        CSS rule and <b>it changes no pixel</b> — a transparent stroke behind the fill is still
-        hit-tested, and paints nothing. Click the line below with the halo at 0, hunt for a gap, then
-        set <code>HALO</code> to 1.6 and click the same spots again.</p>
+    <div class="cap-bar">
+      <button id="cap-all" aria-pressed="false">open all</button>
+      <span class="hint">or open one — each carries a snippet you can edit and run</span>
     </div>
-    <div class="lab" id="lab-tap"></div>
-    <p class="note">This replaces the invisible per-ayah polygon that older mushaf SVGs use as a hit
-      layer, and it is more accurate than one: where two ayahs share a printed line the real boundary
-      is jagged — letters interleave, marks overhang — so a rectangular polygon paints part of the
-      wrong ayah or misses ink of its own. <b>Walking up from the word cannot be wrong: the ayah's ink
-      is its words.</b> Above about 2.5 units the halos start stealing each other's gaps.</p>
-  </div>
-</section>
-
-<section id="band" data-toc-group="Selecting and pointing" data-toc-note="Draw the stripe behind an ayah yourself.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">getBBox() per word, unioned per printed line</p>
-      <h2>4 · The coloured stripe behind an ayah</h2>
-      <p>The other thing a polygon layer was for: a highlight band. Compute it instead. Union the word
-        boxes, one box per printed line the ayah occupies, and paint them behind the ink as
-        <b>one polygon</b> — a single <code>&lt;path&gt;</code> with a subpath per line. No
-        <code>&lt;g&gt;</code> inside a word carries a transform, so <code>word.getBBox()</code> is
-        directly usable. The whole function is in the editor — change the padding, the colour or the
-        ayah and it redraws.</p>
-    </div>
-    <div class="lab" id="lab-band"></div>
-    <div class="callout">
-      <h3>Draw one polygon, not one rectangle per line</h3>
-      <p>Arabic ink overruns its line: <span class="ar" style="font-size:1em">ل</span> and
-        <span class="ar" style="font-size:1em">ك</span> reach up into the line above,
-        <span class="ar" style="font-size:1em">ج</span> and <span class="ar" style="font-size:1em">ي</span>
-        reach down. So the band for an ayah is one rectangle per printed line, and those rectangles
-        meet or overlap.</p>
-      <p><b>Do not emit them as separate <code>&lt;rect&gt;</code>s.</b> Two abutting antialiased
-        edges do not add up to opaque, so every join shows a pale hairline and a six-line ayah reads
-        as six stripes rather than one highlight. Make each line a <b>subpath of a single
-        <code>&lt;path&gt;</code></b>, wind them all the same direction, and overlap them vertically
-        by a fraction of a unit. One element, one flat region, no seams.</p>
-      <p><b>Set <code>fill-rule</code> explicitly; never inherit it.</b> <code>nonzero</code> is what
-        makes overlapping subpaths <i>union</i> instead of cancel — which is why the overlap costs
-        nothing. The page's own ink is <code>evenodd</code>, where overlapping contours inside one
-        path cancel: inherit that and every overlap becomes a hole. The alpha then goes once, on the
-        group. Because the highlight is a layer behind the ink rather than a colour on it, the print
-        is still the print, which matters given the guarantee above.</p>
-      <figure class="code" style="margin-top:6px">
-        <button class="copy">copy</button>
-<pre><code>&lt;<span class="tok-k">g</span> <span class="tok-a">class</span>=<span class="tok-s">"highlight-layer"</span> <span class="tok-a">opacity</span>=<span class="tok-s">"0.30"</span>&gt;
-  <span class="tok-c">&lt;!-- ONE path: one subpath per printed line --&gt;</span>
-  &lt;<span class="tok-k">path</span> <span class="tok-a">fill</span>=<span class="tok-s">"#d6a326"</span> <span class="tok-a">fill-rule</span>=<span class="tok-s">"nonzero"</span>
-        <span class="tok-a">d</span>=<span class="tok-s">"M12 88H243V104H12Z M12 104H198V120H12Z …"</span>/&gt;
-&lt;/<span class="tok-k">g</span>&gt;</code></pre>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<section id="search" data-toc-group="Reading and meaning" data-toc-note="Find a word anywhere and land on the printed ink.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">the search form — and why not rasm</p>
-      <h2>5 · Search, and land on the ink</h2>
-      <p>There are no <code>&lt;text&gt;</code> nodes here — all ink is paths, so browser find-in-page
-        cannot work. Search goes through the <code>search</code> form, which ships once per page in
-        <code>index/by-page/NNN.json</code> (dev-profile pages also carry it inline as
-        <code>data-search</code>). Edit the query in the snippet, or swap <code>search</code> for
-        <code>rasm</code> and watch the hits vanish.</p>
-    </div>
-    <div class="lab" id="lab-search"></div>
-
-    <div class="callout">
-      <h3>The trap — use <code>search</code>, never <code>rasm</code></h3>
-      <p>In production both are fields of the page's sidecar, <code>index/by-page/NNN.json</code>;
-        only the dev profile carries them inline as attributes. <code>rasm</code> is the skeleton of
-        the <b>rasm_uthmani</b> spelling, which is what the page draws. The rasm_uthmani spelling writes several long vowels as <i>combining marks</i>, and stripping
-        the marks deletes them outright. Nobody types the result. Measured over all 77,432 words:</p>
-      <div class="scroll">
-        <table>
-          <thead><tr><th>query</th><th>matches in <code>rasm</code></th><th>matches in <code>search</code></th></tr></thead>
-          <tbody>
-            <tr><td class="mono ar">الله</td><td class="no">2</td><td class="yes">2,555</td></tr>
-            <tr><td class="mono ar">الذين</td><td class="no">0</td><td class="yes">999</td></tr>
-            <tr><td class="mono ar">درجات</td><td class="no">0</td><td class="yes">14</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="note"><span class="ar" style="font-size:1em">ٱللَّهُ</span> has an <b>alef hamzat_al_wasl</b>
-        (U+0671) where a keyboard produces a plain alef, so <code>rasm</code> is
-        <span class="ar" style="font-size:1em">ٱلله</span> and never matches.
-        <span class="ar" style="font-size:1em">دَرَجَٰتࣲ</span> carries a <b>dagger alef</b> (U+0670),
-        which is a mark, so the rasm is <span class="ar" style="font-size:1em">درجت</span> with no alef
-        at all. <code>search</code> is the skeleton of the modern (<code>rasm_imlai</code>)
-        spelling and has neither problem. Use <code>rasm</code> for what it is for: matching text
-        against the shapes actually drawn on the page.</p>
-      <p class="note"><b>Nothing is folded for you</b>, deliberately.
-        <span class="ar" style="font-size:1em">ا أ إ آ</span> stay distinct, so do
-        <span class="ar" style="font-size:1em">ى</span>/<span class="ar" style="font-size:1em">ي</span>
-        and <span class="ar" style="font-size:1em">ة</span>/<span class="ar" style="font-size:1em">ه</span>.
-        If your users expect a forgiving search, fold on your side and keep the stored value as written.
-        The snippet above does the fold; delete it and see what happens.</p>
-    </div>
-
-    <div class="two" style="margin-top:26px">
-      <div class="panel">
-        <h3>The same thing across all 604 pages</h3>
-        <p class="note" style="margin-top:0">An index built from the same attribute: 77,432 rows, 2.0 MiB
-          raw and 473 KiB gzipped, fetched on your first search rather than on page load. A hit gives a
-          <code>data-word-key</code> and a page number; the demo then fetches that one page and marks it.</p>
-        <div class="row" style="margin-top:12px">
-          <input type="text" id="s-all" placeholder="الرحمن" style="flex:1;min-width:140px" aria-label="search the whole mushaf">
-          <button id="s-all-go">search</button>
-        </div>
-        <div class="pills" style="margin-top:10px" id="s-all-eg"></div>
-        <div class="out" id="s-all-out">The index is fetched on first use, not on page load.</div>
-      </div>
-      <div class="paper tight empty" id="s-all-stage">no page fetched yet</div>
-    </div>
-    <p class="note"><b>Two cautions when you tokenise.</b> 367 <code>search</code> values contain a
-      space — the vocative convention writes <span class="ar" style="font-size:1em">يَٰٓأَيُّهَا</span> as
-      <span class="ar" style="font-size:1em">يا أيها</span> — and one printed word,
-      <code>37:130:3</code>, has a space in its own text. <code>data-word-key</code> is the only word key;
-      never split a page on whitespace.</p>
-  </div>
-</section>
-
-<section id="word" data-toc-group="Reading and meaning" data-toc-note="Read a word’s five text forms and every mark on it.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">data-rasm-uthmani on the page · rasm rasm_imlai search qpc in the sidecar</p>
-      <h2>6 · Read a word</h2>
-      <p>Every word group carries its key and its rasm_uthmani text; the other four forms come from the
-        page's sidecar, <code>index/by-page/NNN.json</code>. Every path says what kind of ink
-        it is and, if it is a mark, which mark. The snippet installs the listener — hover the page
-        beside it, then change what the readout reports.</p>
-    </div>
-    <div class="lab" id="lab-word"></div>
-    <p class="note">Two things a drawing cannot tell you, and the attributes settle both.
-      <b>fathah and kasrah are the same stroke</b>, named by where it sits; you cannot recover the name
-      from the outline. And a <b>hamzah</b> that is a diacritic and a hamzah that is a letter of the word
-      are identical ink — <code>data-kind</code> is what separates them. A mark can also be drawn
-      <b>outside</b> its own word: the tanwin of a word-final
-      <span class="ar" style="font-size:1em">ة</span> floats into the gap toward the next word. Never
-      assign a mark to a word by nearest ink or by bounding box; the enclosing group is the answer.</p>
-  </div>
-</section>
-
-<section id="select" data-toc-group="Selecting and pointing" data-toc-note="Drag over the page and copy real Quranic text.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">one invisible &lt;span&gt; per g.word, over the ink</p>
-      <h2>7 · Drag across the page and copy real text</h2>
-      <p>Drag over the page with the mouse, then <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>C</kbd>, or
-        right-click and Copy. You get the Quranic text. There are no
-        <code>&lt;text&gt;</code> elements in the file, so native selection has nothing to grab —
-        the fix is to overlay a text layer, one absolutely-positioned span per word, carrying the
-        real Unicode and painted with <code>color: transparent</code> on top of the word's own
-        rendered box. It is the same trick PDF.js uses, it needs no library, and the ink underneath
-        is untouched.</p>
-    </div>
-    <div class="lab" id="lab-select"></div>
-
-    <div class="two" style="margin-top:22px">
-      <div class="callout">
-        <h3>Five things that go wrong, and what to do instead</h3>
-        <ul class="plain-list" style="margin-top:0">
-          <li><b><code>getBBox()</code> is the wrong measurement.</b> It reports a group's own
-            user-space coordinates and ignores every transform above it, which puts line 1 near the
-            bottom of the page. Use <code>getBoundingClientRect()</code> on the word and subtract the
-            layer's own rect — it is already through the whole transform chain. Worst residual
-            misalignment across all 127 words of page 3 is then <b>0.016 px</b>.</li>
-          <li><b>Caret placement inside a span uses the fallback font's advances</b>, which have
-            nothing to do with the ink, so a drag starting mid-word cuts it at an arbitrary letter.
-            Snap the range out to whole spans on <code>mouseup</code>. Word granularity is what a
-            mushaf reader wants anyway.</li>
-          <li><b>Do not size a span to its LINE's box.</b> A line group's rect includes the
-            ascenders and descenders that overrun into its neighbours, so the bands overlap and
-            darken. Per-word boxes look right.</li>
-          <li><b>Do not put a newline inside a span</b>, and do not use a separate zero-size break
-            span. The first makes that span two text lines tall, so its band spills onto the line
-            below; the second has its newline collapsed away and never reaches the clipboard. Build
-            the payload yourself in a <code>copy</code> handler instead.</li>
-          <li><b>A mousedown on already-selected text does not start a new selection.</b> It starts a
-            native drag-and-drop of that text, and the old selection sits frozen for the whole
-            gesture. The second drag therefore appears to do nothing — and it bites hardest exactly
-            when the user tries again, because the words under the pointer are the ones they just
-            selected. It looks like a bug in your geometry and it is not. Clear the selection on
-            <code>mousedown</code> and refuse <code>dragstart</code>; two lines, and every drag starts
-            fresh. This section and §3, §10 and §11 now share one layer <i>and</i> one box size —
-            full-height boxes that meet their neighbours, so there are no dead zones and the first and
-            last word of a range need no deliberate aim.</li>
+    <details class="ref contract-d">
+      <summary><b>How the editors work</b> <span>every snippet is live, and yours to change</span>
+        <span class="cap-open" aria-hidden="true"></span></summary>
+      <div class="contract">
+        <p><b>Every snippet below is editable and runs for real.</b> The result updates as you type,
+        <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>Enter</kbd> runs it immediately, and <b>Reset</b> restores both
+        the snippet and an untouched copy of the page. Each editor holds its own copy of the file, so one
+        section cannot disturb another.</p>
+        <p>A snippet runs with five things in scope, and everything else is plain DOM:</p>
+        <ul class="plain-list">
+          <li><code>svg</code> is that section's page, already parsed.</li>
+          <li><code>stage</code> is the paper the page sits on.</li>
+          <li><code>out(html)</code> and <code>log(…)</code> write to the readout beside the editor.</li>
+          <li><code>H</code> holds the helpers this page defines: <code>H.band</code>, <code>H.fold</code>,
+            <code>H.crop</code>, <code>H.getPage</code> and <code>H.toRoot</code>.</li>
+          <li><code>signal</code> is an <code>AbortSignal</code> that fires when the snippet re-runs, so
+            a listener or an observer you attach outside the page is cleaned up for you.</li>
         </ul>
       </div>
-      <div>
-        <div class="callout">
-          <h3>Why building the payload yourself is the good part</h3>
-          <p>Because the text is looked up from <code>data-word-key</code> rather than serialised out of
-            the layer, <b>the same drag can yield different text</b>. Quote it as the print sets it,
-            take the modern spelling, or take the bare form to paste into a search box. Change the
-            <code>WHICH</code> line in the editor, or use the selector in the toolbar.</p>
-          <p class="note" style="margin:0">Neither a page image nor text set in a font can offer
-            this. An image has nothing to select; a font gives you one spelling, the one it was set
-            in. Here the selection is a set of word ids, and the spelling is chosen at copy time.</p>
-        </div>
-        <figure class="code">
-          <button class="copy">copy</button>
-<pre><code><span class="tok-c">/* the layer. The glyphs must never paint — only the</span>
-<span class="tok-c">   selection band behind them. */</span>
-.seltext { position: absolute; inset: <span class="tok-k">0</span> }
-.seltext span {
-  position: absolute;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  white-space: pre;
-  cursor: text;
-}
-.seltext span::selection { background: rgba(<span class="tok-k">45</span>,<span class="tok-k">85</span>,<span class="tok-k">160</span>,.<span class="tok-k">32</span>); color: transparent }</code></pre>
-        </figure>
+    </details>
+    <div class="band" id="band-read-what-is-on-the-page">
+      <h3 class="band-h">Read what is on the page</h3>
+      <p class="band-n">The file answers questions. There is no database and no SDK.</p>
+      <div class="grid">
+        <details class="cap" id="start">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><rect class="dash" x="2" y="2" width="68" height="40" rx="3"/><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g></svg>
+            <span class="cap-t">
+              <b>Look inside a page</b>
+              <i>Fetch one file, count its words, read its viewBox.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">fetch → DOMParser → querySelectorAll</p>
+                  <p>A page is an ordinary SVG file with a fixed <code>viewBox</code>. Parse it and query it.
+                    This snippet fetches page 3 over the network for real — change the page number, or the ayah,
+                    and run it again.</p>
+                </div>
+                <div class="lab" id="lab-start"></div>
+                <p class="note"><b>Document order is reading order.</b> Words inside a line run right to left,
+                  on all 8,820 lines of the mushaf that hold words. Don't sort by geometry: bounding boxes
+                  overlap, because a mark may legitimately be drawn over its neighbour.</p>
+          </div>
+        </details>
+        <details class="cap" id="word">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><rect class="pick" x="30" y="13.5" width="20" height="9" rx="2"/></svg>
+            <span class="cap-t">
+              <b>Read a word</b>
+              <i>Five spellings and every named mark, on one word.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">data-rasm-uthmani on the page · rasm rasm_imlai search qpc in the sidecar</p>
+                  <p>Every word group carries its key and its rasm_uthmani text. The other four spellings come
+                    from the page's sidecar, <code>index/by-page/NNN.json</code>. Every path says what kind of ink
+                    it is and, if it is a mark, which mark. The snippet installs the listener — hover the page
+                    beside it, then change what the readout reports.</p>
+                </div>
+                <div class="lab" id="lab-word"></div>
+                <p class="note"><b>Read the name off the attribute, never off the shape.</b> fathah and kasrah are
+                  the same stroke, named by where it sits, so the outline cannot tell you which one you have. A
+                  hamzah that is a diacritic and a hamzah that is a letter of the word are identical ink too, and
+                  <code>data-kind</code> is what separates them.</p>
+                <p class="note"><b>A mark can be drawn outside its own word.</b> The tanwin of a word-final
+                  <span class="ar" style="font-size:1em">ة</span> floats into the gap toward the next word. Assign a
+                  mark by its enclosing group, not by nearest ink or by bounding box.</p>
+          </div>
+        </details>
+        <details class="cap" id="meta">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><rect class="chip" x="4" y="2" width="26" height="8" rx="4"/><rect class="chip" x="33" y="2" width="16" height="8" rx="4"/></svg>
+            <span class="cap-t">
+              <b>Metadata without a database</b>
+              <i>Surah, juz, hizb and rubʿ, straight off the element.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">data-sid · data-juz-start · data-hizb-start · data-rubu-al-hizb-start</p>
+                  <p>Building reader chrome needs no Quran metadata package. Open the page and read it off. The
+                    snippet runs on whichever page the reader is showing — turn pages with the buttons or the
+                    <kbd>←</kbd> <kbd>→</kbd> keys and it re-runs on the new one. Try <b>582</b> (juz 30 opens),
+                    <b>1</b> (the opening spread), <b>42</b> (a rubʿ rosette), <b>176</b> (a sajdah).</p>
+                </div>
+                <div class="lab" id="lab-meta"></div>
+                <p class="note"><b>Fetch pages one at a time, on demand</b> — 794 KiB raw, 197 KiB over the wire
+                  gzipped. This document inlines no page at all: the one at the top is fetched exactly like the
+                  rest, and every section showing page 42 shares that single request.</p>
+          </div>
+        </details>
+        <details class="cap" id="search">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><circle class="pick" cx="47" cy="27" r="8"/><path class="pick" d="M41 33 L35 39"/></svg>
+            <span class="cap-t">
+              <b>Search, and land on the ink</b>
+              <i>This page or all 604 — then light up the printed word.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">search on the <code>search</code> form</p>
+                  <p>All ink is paths and there are no <code>&lt;text&gt;</code> nodes, so browser find-in-page
+                    cannot work. Search the <code>search</code> form instead. It ships once per page in
+                    <code>index/by-page/NNN.json</code>, and dev-profile pages also carry it inline as
+                    <code>data-search</code>. Edit the query in the snippet, or swap <code>search</code> for
+                    <code>rasm</code> and watch the hits vanish.</p>
+                </div>
+                <div class="lab" id="lab-search"></div>
+
+                <div class="callout">
+                  <h3>Searching on <code>rasm</code> matches almost nothing</h3>
+                  <p><code>rasm</code> is the skeleton of the <b>rasm_uthmani</b> spelling, which is what the page
+                    draws. rasm_uthmani writes several long vowels as <i>combining marks</i>, so stripping the marks
+                    deletes those vowels outright and leaves a spelling nobody types. Measured over all 77,432
+                    words:</p>
+                  <div class="scroll">
+                    <table>
+                      <thead><tr><th>query</th><th>matches in <code>rasm</code></th><th>matches in <code>search</code></th></tr></thead>
+                      <tbody>
+                        <tr><td class="mono ar">الله</td><td class="no">2</td><td class="yes">2,555</td></tr>
+                        <tr><td class="mono ar">الذين</td><td class="no">0</td><td class="yes">999</td></tr>
+                        <tr><td class="mono ar">درجات</td><td class="no">0</td><td class="yes">14</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <p class="note"><span class="ar" style="font-size:1em">ٱللَّهُ</span> has an <b>alef hamzat_al_wasl</b>
+                    (U+0671) where a keyboard produces a plain alef, so <code>rasm</code> is
+                    <span class="ar" style="font-size:1em">ٱلله</span> and never matches.
+                    <span class="ar" style="font-size:1em">دَرَجَٰتࣲ</span> carries a <b>dagger alef</b> (U+0670),
+                    which is a mark, so the rasm is <span class="ar" style="font-size:1em">درجت</span> with no alef
+                    at all. <code>search</code> is the skeleton of the modern (<code>rasm_imlai</code>) spelling and
+                    has neither problem. Use <code>rasm</code> for what it is for: matching text against the shapes
+                    actually drawn on the page.</p>
+                  <p class="note"><b>Nothing is folded for you.</b> That is deliberate.
+                    <span class="ar" style="font-size:1em">ا أ إ آ</span> stay distinct, so do
+                    <span class="ar" style="font-size:1em">ى</span>/<span class="ar" style="font-size:1em">ي</span>
+                    and <span class="ar" style="font-size:1em">ة</span>/<span class="ar" style="font-size:1em">ه</span>.
+                    If your users expect a forgiving search, fold on your side and keep the stored value as written.
+                    The snippet above does the fold; delete it and see what happens.</p>
+                </div>
+
+                <div class="two" style="margin-top:26px">
+                  <div class="panel">
+                    <h3>Searching all 604 pages</h3>
+                    <p class="note" style="margin-top:0">An index built from the same field: 77,432 rows, 2.0 MiB
+                      raw and 473 KiB gzipped, fetched on your first search rather than on page load. A hit gives a
+                      <code>data-word-key</code> and a page number; the demo then fetches that one page and marks it.</p>
+                    <div class="row" style="margin-top:12px">
+                      <input type="text" id="s-all" placeholder="الرحمن" style="flex:1;min-width:140px" aria-label="search the whole mushaf">
+                      <button id="s-all-go">search</button>
+                    </div>
+                    <div class="pills" style="margin-top:10px" id="s-all-eg"></div>
+                    <div class="out" id="s-all-out">The index is fetched on first use, not on page load.</div>
+                  </div>
+                  <div class="paper tight empty" id="s-all-stage">no page fetched yet</div>
+                </div>
+                <p class="note"><b>Never split a page on whitespace.</b> 367 <code>search</code> values contain a
+                  space, because the vocative convention writes <span class="ar" style="font-size:1em">يَٰٓأَيُّهَا</span>
+                  as <span class="ar" style="font-size:1em">يا أيها</span>, and one printed word,
+                  <code>37:130:3</code>, has a space in its own text. <code>data-word-key</code> is the only word
+                  key.</p>
+          </div>
+        </details>
       </div>
     </div>
+    <div class="band" id="band-point-at-something">
+      <h3 class="band-h">Point at something</h3>
+      <p class="band-n">An ayah is several nodes, and the ink is thin. Both have a fix.</p>
+      <div class="grid">
+        <details class="cap" id="ayah">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><rect class="band" x="14" y="13" width="52" height="19" rx="2"/><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g></svg>
+            <span class="cap-t">
+              <b>Highlight an ayah</b>
+              <i>It is never one node. Select it, then paint behind it.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+            <div class="tabs" role="tablist" aria-label="Highlight an ayah">
+              <button role="tab" aria-selected="true" aria-controls="pane-ayah" id="tab-ayah">select every fragment</button>
+              <button role="tab" aria-selected="false" aria-controls="pane-band" id="tab-band">paint the band</button>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-ayah" aria-labelledby="tab-ayah">
+                <div class="shead">
+                  <p class="sel">svg.querySelectorAll('g.ayah-fragment[data-ayah-key="2:255"]')</p>
+                  <p>An ayah is emitted <b>once per printed line</b>, so it is several sibling nodes and there is no
+                    single node that "is" the ayah. 6,236 ayahs are emitted as 13,489 fragments; 4,455 of them have
+                    more than one. Change <code>querySelectorAll</code> to <code>querySelector</code> in the editor
+                    and watch five sixths of Ayat al-Kursi stop being highlighted, without anything throwing.</p>
+                </div>
+                <div class="lab" id="lab-ayah"></div>
+                <p class="note">Each fragment carries <code>data-fragment</code> and <code>data-ayah-fragments</code>, and
+                  all 13,489 of them carry <code>data-mark</code> pointing at the <code>id</code> of their own
+                  medallion on the same page. No ayah spans two pages, so if you loaded the right page you will
+                  always find all N. <b>Never</b> use <code>firstElementChild</code> of one fragment to find the
+                  ayah's first word — use <code>data-word-key</code> order across all fragments. Deep links work on the
+                  page at the top of this document: <a href="#2:254">#2:254</a>, <a href="#2:255">#2:255</a>.</p>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-band" aria-labelledby="tab-band" hidden>
+                <div class="shead">
+                  <p class="sel">getBBox() per word, unioned per printed line</p>
+                  <p>Compute the band from the words. Union the word boxes, one box per printed line the ayah
+                    occupies, and paint them behind the ink as <b>one polygon</b> — a single
+                    <code>&lt;path&gt;</code> with a subpath per line. No <code>&lt;g&gt;</code> inside a word
+                    carries a transform, so <code>word.getBBox()</code> is directly usable. The whole function is
+                    in the editor: change the padding, the colour or the ayah and it redraws.</p>
+                </div>
+                <div class="lab" id="lab-band"></div>
+                <div class="callout">
+                  <h3>Draw one polygon, not one rectangle per line</h3>
+                  <p>Arabic ink overruns its line: <span class="ar" style="font-size:1em">ل</span> and
+                    <span class="ar" style="font-size:1em">ك</span> reach up into the line above,
+                    <span class="ar" style="font-size:1em">ج</span> and <span class="ar" style="font-size:1em">ي</span>
+                    reach down. So the band for an ayah is one rectangle per printed line, and those rectangles
+                    meet or overlap.</p>
+                  <p><b>Do not emit them as separate <code>&lt;rect&gt;</code>s.</b> Two abutting antialiased
+                    edges do not add up to opaque, so every join shows a pale hairline and a six-line ayah reads
+                    as six stripes rather than one highlight. Make each line a <b>subpath of a single
+                    <code>&lt;path&gt;</code></b>, wind them all the same direction, and overlap them vertically
+                    by a fraction of a unit. One element, one flat region, no seams.</p>
+                  <p><b>Set <code>fill-rule</code> explicitly; never inherit it.</b> <code>nonzero</code> makes
+                    overlapping subpaths <i>union</i> instead of cancel, which is why the overlap costs nothing.
+                    The page's own ink is <code>evenodd</code>, where overlapping contours inside one path cancel,
+                    so inheriting it turns every overlap into a hole. Set the alpha once, on the group. The
+                    highlight is a layer behind the ink rather than a colour on it, so the print stays
+                    untouched.</p>
+                  <figure class="code" style="margin-top:6px">
+                    <button class="copy">copy</button>
+              <pre><code>&lt;<span class="tok-k">g</span> <span class="tok-a">class</span>=<span class="tok-s">"highlight-layer"</span> <span class="tok-a">opacity</span>=<span class="tok-s">"0.30"</span>&gt;
+              <span class="tok-c">&lt;!-- ONE path: one subpath per printed line --&gt;</span>
+              &lt;<span class="tok-k">path</span> <span class="tok-a">fill</span>=<span class="tok-s">"#d6a326"</span> <span class="tok-a">fill-rule</span>=<span class="tok-s">"nonzero"</span>
+                    <span class="tok-a">d</span>=<span class="tok-s">"M12 88H243V104H12Z M12 104H198V120H12Z …"</span>/&gt;
+              &lt;/<span class="tok-k">g</span>&gt;</code></pre>
+                  </figure>
+                </div>
+            </div>
+          </div>
+        </details>
+        <details class="cap" id="tap">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><circle class="halo" cx="24" cy="27" r="9"/><circle class="pick" cx="24" cy="27" r="3.2"/></svg>
+            <span class="cap-t">
+              <b>Make a tap in the gap land</b>
+              <i>One CSS rule, and not a single pixel changes.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">g.word path { stroke: transparent; pointer-events: all }</p>
+                  <p>Hit-testing runs against the ink, and the ink is calligraphy: thin strokes with white space
+                    between the words, so a finger landing between two words hits nothing. One CSS rule fixes it
+                    and <b>changes no pixel</b>, because a transparent stroke behind the fill is still hit-tested
+                    and paints nothing. Click the line below with the halo at 0, hunt for a gap, then set
+                    <code>HALO</code> to 1.6 and click the same spots again.</p>
+                </div>
+                <div class="lab" id="lab-tap"></div>
+                <p class="note"><b>Prefer this to the invisible per-ayah polygon</b> that older mushaf SVGs use as
+                  a hit layer. Where two ayahs share a printed line the real boundary is jagged, because letters
+                  interleave and marks overhang, so a rectangular polygon paints part of the wrong ayah or misses
+                  ink of its own. Walking up from the word cannot be wrong, since the ayah's ink is its words.
+                  Above about 2.5 units the halos start stealing each other's gaps.</p>
+          </div>
+        </details>
+        <details class="cap" id="select">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><rect class="sel" x="20" y="13" width="46" height="19" rx="1"/><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g></svg>
+            <span class="cap-t">
+              <b>Drag across it and copy real text</b>
+              <i>A selection layer over ink that has no text nodes.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">one invisible &lt;span&gt; per g.word, over the ink</p>
+                  <p>Drag over the page with the mouse, then <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>C</kbd>, or
+                    right-click and Copy. You get the Quranic text. The file has no <code>&lt;text&gt;</code>
+                    elements, so native selection has nothing to grab. Overlay a text layer instead: one
+                    absolutely-positioned span per word, carrying the real Unicode and painted with
+                    <code>color: transparent</code> on top of the word's own rendered box. PDF.js uses the same
+                    trick, it needs no library, and the ink underneath is untouched.</p>
+                </div>
+                <div class="lab" id="lab-select"></div>
 
-    <p class="note"><b>What is verified, and what is not.</b> The <code>copy</code> event and the
-      payload it produces are tested: a real mouse drag across a line break, the highlighted band and
-      the copied word set agreeing at both boundaries, and the mushaf's own line break preserved as a
-      newline. The handoff to the <b>operating system clipboard</b> was not testable in the headless
-      browser used here — it has no clipboard backing — so that last step is the one part of this
-      section proven only by hand.</p>
-  </div>
-</section>
+                <div class="two" style="margin-top:22px">
+                  <div class="callout">
+                    <h3>Five problems with a selection layer, and the fix for each</h3>
+                    <ul class="plain-list" style="margin-top:0">
+                      <li><b><code>getBBox()</code> is the wrong measurement.</b> It reports a group's own
+                        user-space coordinates and ignores every transform above it, which puts line 1 near the
+                        bottom of the page. Use <code>getBoundingClientRect()</code> on the word and subtract the
+                        layer's own rect — it is already through the whole transform chain. Worst residual
+                        misalignment across all 127 words of page 3 is then <b>0.016 px</b>.</li>
+                      <li><b>Caret placement inside a span uses the fallback font's advances</b>, which have
+                        nothing to do with the ink, so a drag starting mid-word cuts it at an arbitrary letter.
+                        Snap the range out to whole spans on <code>mouseup</code>. Word granularity is what a
+                        mushaf reader wants anyway.</li>
+                      <li><b>Do not size a span to its LINE's box.</b> A line group's rect includes the
+                        ascenders and descenders that overrun into its neighbours, so the bands overlap and
+                        darken. Per-word boxes look right.</li>
+                      <li><b>Do not put a newline inside a span</b>, and do not use a separate zero-size break
+                        span. The first makes that span two text lines tall, so its band spills onto the line
+                        below; the second has its newline collapsed away and never reaches the clipboard. Build
+                        the payload yourself in a <code>copy</code> handler instead.</li>
+                      <li><b>A mousedown on already-selected text does not start a new selection.</b> It starts a
+                        native drag-and-drop of that text, and the old selection stays frozen for the whole
+                        gesture, so the second drag appears to do nothing. It bites hardest when the user tries
+                        again, because the words under the pointer are the ones they just selected. Clear the
+                        selection on <code>mousedown</code> and refuse <code>dragstart</code>: two lines, and every
+                        drag starts fresh.</li>
+                      <li><b>Give the boxes full line height, so they meet their neighbours.</b> Otherwise a range
+                        has dead zones between the boxes, and the first and last word need deliberate aim. This
+                        card and <a href="#tap">Make a tap in the gap land</a>, <a href="#translate">Hover a word</a> and
+                        <a href="#compose">Three of these at once</a> share one layer and one box size for that
+                        reason.</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <div class="callout">
+                      <h3>Build the payload yourself, and choose the spelling at copy time</h3>
+                      <p>The text is looked up from <code>data-word-key</code> rather than serialised out of the
+                        layer, so <b>the same drag can yield different text</b>. Quote it as the print sets it,
+                        take the modern spelling, or take the bare form to paste into a search box. Change the
+                        <code>WHICH</code> line in the editor, or use the selector in the toolbar.</p>
+                      <p class="note" style="margin:0">A page image has nothing to select, and a font gives you the
+                        one spelling it was set in. Here the selection is a set of word keys, and the spelling is
+                        chosen when the user presses copy.</p>
+                    </div>
+                    <figure class="code">
+                      <button class="copy">copy</button>
+              <pre><code><span class="tok-c">/* the layer. The glyphs must never paint — only the</span>
+              <span class="tok-c">   selection band behind them. */</span>
+              .seltext { position: absolute; inset: <span class="tok-k">0</span> }
+              .seltext span {
+              position: absolute;
+              color: transparent;
+              -webkit-text-fill-color: transparent;
+              white-space: pre;
+              cursor: text;
+              }
+              .seltext span::selection { background: rgba(<span class="tok-k">45</span>,<span class="tok-k">85</span>,<span class="tok-k">160</span>,.<span class="tok-k">32</span>); color: transparent }</code></pre>
+                    </figure>
+                  </div>
+                </div>
 
-<section id="reveal" data-toc-group="Reading and meaning" data-toc-note="Grey the page and bring it in word by word.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">g.word { fill: … } — one property, one word</p>
-      <h2>8 · Reveal the page word by word</h2>
-      <p>Every word on the page starts light grey. The reading position is full ink, and it advances,
-        each word fading in as it is reached. This is what a <b>memorisation prompt</b>, a
-        <b>reading-along view</b> and a <b>"you are here" indicator</b> all reduce to, and once words
-        are addressable all three are one property away. A page image cannot do it at all — recolouring
-        one word at a time needs per-word ink.</p>
-    </div>
-    <div class="lab" id="lab-reveal"></div>
+                <p class="note"><b>Test coverage.</b> The <code>copy</code> event and the payload it produces are
+                  tested: a real mouse drag across a line break, the highlighted band and the copied word set
+                  agreeing at both boundaries, and the mushaf's own line break preserved as a newline. The handoff
+                  to the operating system clipboard is checked by hand, because the headless browser used here has
+                  no clipboard backing.</p>
+          </div>
+        </details>
+        <details class="cap" id="compose">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><rect class="band" x="14" y="13" width="52" height="19" rx="2"/><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><rect class="pick" x="30" y="4.5" width="18" height="9" rx="2"/><circle class="halo" cx="16" cy="36" r="6"/></svg>
+            <span class="cap-t">
+              <b>Three of these at once</b>
+              <i>Do hover, copy and highlight fight each other? No.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">one hit layer · many capabilities</p>
+                  <p>A real reader runs several of these together, so here are three at once on one page:
+                    <b>hover a word for its meaning</b>, <b>drag across it and copy real text</b>, and <b>a band
+                    behind the ayah you are on</b>. This is the same code as <a href="#select">Drag across it and copy
+                    real text</a>, <a href="#translate">Hover a word</a> and <a href="#ayah">Highlight an
+                    ayah</a>, sharing one hit
+                    layer.</p>
+                </div>
+                <div class="lab" id="lab-compose"></div>
+                <div class="callout">
+                  <h3>Give the pointer to one layer only</h3>
+                  <p>There are three layers, and only the top one takes the pointer. The <b>highlight bands</b> sit
+                    behind the ink, the <b>ink itself</b> is <code>pointer-events: none</code>, and the <b>per-word
+                    hit layer</b> on top is the only thing hit-testing reaches. That layer is one element per word
+                    carrying its <code>data-word-key</code>, so selection, hover, tap and click all read from the
+                    same source instead of stacking competing overlays.</p>
+                  <figure class="code" style="margin-top:6px">
+                    <button class="copy">copy</button>
+              <pre><code><span class="tok-c">/* highlight bands — behind the ink, never hit-tested */</span>
+              g.highlight-layer, g.highlight-layer * { pointer-events: none }
 
-    <div class="two" style="margin-top:22px">
-      <div class="callout">
-        <h3>Set the colour on the group, not on 1,000 paths</h3>
-        <p>Every ink path ships <code>fill="#231f20"</code> as a presentation attribute, so a
-          <code>&lt;g&gt;</code>'s inherited fill will not reach it on its own. A CSS rule beats a
-          presentation attribute, so one rule hands each path back to its group — and then recolouring a
-          whole word is setting <b>one</b> property on <b>one</b> element per tick, whatever the word is
-          made of.</p>
-        <figure class="code" style="margin-top:6px">
-          <button class="copy">copy</button>
-<pre><code>.reveal g.word path { fill: inherit; transition: fill <span class="tok-k">220</span>ms linear }
+              <span class="tok-c">/* the ink — drawn, but never hit-tested */</span>
+              svg.inert, svg.inert * { pointer-events: none }
 
-<span class="tok-c">// then, per tick:</span>
-word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-s">'#c9c4b8'</span>;</code></pre>
-        </figure>
-        <p class="note">Measured on this page: 147 words over 1,061 paths, and the transition is on
-          <code>fill</code>. It stays smooth because a tick touches one element, not a thousand — the
-          browser does the interpolation. If you ever need it cheaper, transition
-          <code>opacity</code> on the group instead.</p>
+              <span class="tok-c">/* the per-word hit layer — the only layer that takes the pointer */</span>
+              .hits       { position: absolute; inset: <span class="tok-k">0</span> }
+              .hits span  { position: absolute; color: transparent; white-space: pre }</code></pre>
+                  </figure>
+                  <p class="note">The cursor is the one thing the layers cannot share: selection wants
+                    <code>cursor: text</code> and a tooltip target wants <code>cursor: help</code>. Pick one per
+                    surface. Everything else composes.</p>
+                </div>
+          </div>
+        </details>
       </div>
-      <div class="callout">
-        <h3>The schedule is pluggable, and it is not audio</h3>
-        <p>The advance is driven by a <code>schedule(i)</code> function returning the millisecond at
-          which word <i>i</i> lights. Today that is a constant tempo. Swap in an array of per-word start
-          times from a recitation aligner and the same loop follows a recitation — same code, different
-          source.</p>
-        <p class="note" style="margin:0"><b>Nothing here is synced to a recitation.</b> These files
-          carry no audio and no word timings, and the animation you are watching is a metronome. The
-          reason it is worth showing anyway is that <code>data-word-key</code> is
-          <code>surah:ayah:word</code> — the same key word-level timing datasets are published under —
-          so the join needs no mapping table.</p>
+    </div>
+    <div class="band" id="band-one-word-at-a-time">
+      <h3 class="band-h">One word at a time</h3>
+      <p class="band-n">Every word is an element, so anything can be driven per word.</p>
+      <div class="grid">
+        <details class="cap" id="reveal">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7" width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/></g><g class="ln faint"><rect x="6" y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g></svg>
+            <span class="cap-t">
+              <b>Reveal the page word by word</b>
+              <i>Grey the page and bring it in on a schedule.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">g.word { fill: … } — one property, one word</p>
+                  <p>Every word on the page starts light grey. The reading position is full ink, and it advances,
+                    each word fading in as it is reached. This is what a <b>memorisation prompt</b>, a
+                    <b>reading-along view</b> and a <b>"you are here" indicator</b> all reduce to. Once words are
+                    addressable, all three are one property away. A page image cannot do it at all, because
+                    recolouring one word at a time needs per-word ink.</p>
+                </div>
+                <div class="lab" id="lab-reveal"></div>
+
+                <div class="two" style="margin-top:22px">
+                  <div class="callout">
+                    <h3>Set the colour on the group, not on 1,000 paths</h3>
+                    <p>Every ink path ships <code>fill="#231f20"</code> as a presentation attribute, so a
+                      <code>&lt;g&gt;</code>'s inherited fill will not reach it on its own. A CSS rule beats a
+                      presentation attribute, so one rule hands each path back to its group. Recolouring a whole
+                      word is then one property on one element per tick, whatever the word is made of.</p>
+                    <figure class="code" style="margin-top:6px">
+                      <button class="copy">copy</button>
+              <pre><code>.reveal g.word path { fill: inherit; transition: fill <span class="tok-k">220</span>ms linear }
+
+              <span class="tok-c">// then, per tick:</span>
+              word.style.fill = lit ? <span class="tok-s">'#231f20'</span> : <span class="tok-s">'#c9c4b8'</span>;</code></pre>
+                    </figure>
+                    <p class="note">Page 42 holds 147 words over 1,061 paths, and the transition is on
+                      <code>fill</code>. It stays smooth because a tick touches one element rather than a thousand,
+                      and the browser does the interpolation. If you need it cheaper, transition
+                      <code>opacity</code> on the group instead.</p>
+                  </div>
+                  <div class="callout">
+                    <h3>Swap the schedule for real timings</h3>
+                    <p>A <code>schedule(i)</code> function returns the millisecond at which word <i>i</i> lights.
+                      Here it is a constant tempo. Pass an array of per-word start times from a recitation aligner
+                      instead and the same loop follows a recitation.</p>
+                    <p class="note" style="margin:0"><b>Nothing here is synced to a recitation.</b> These files carry
+                      no audio and no word timings, and this animation is a metronome. It is worth showing because
+                      <code>data-word-key</code> is <code>surah:ayah:word</code>, the same key word-level timing
+                      datasets are published under, so the join needs no mapping table.</p>
+                  </div>
+                </div>
+
+                <p class="note">Word order is <b>document order</b>: right to left within a printed line, lines top
+                  to bottom, on all 8,820 lines of the mushaf that hold words. The loop below never sorts by
+                  geometry.</p>
+          </div>
+        </details>
+        <details class="cap" id="audio">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln faint"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><g class="ln"><rect x="18" y="16" width="46" height="4" rx="2"/></g><g class="wave"><path d="M6 38v-4M11 40v-8M16 39v-6M21 41v-10"/></g></svg>
+            <span class="cap-t">
+              <b>Follow a recitation</b>
+              <i>Word-level timings against word-level elements.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">word_number → the third part of data-word-key</p>
+                  <p>The same grey-to-ink mechanism as <a href="#reveal">Reveal the page word by word</a>, with
+                    the tempo replaced by real per-word timings. Press
+                    play and the highlight follows the recitation, because <b>quran.com publishes word timings
+                    under the same key this page uses</b>: <code>word_number</code> is 1-based within the ayah,
+                    which is the third component of <code>data-word-key</code>. No mapping table, no alignment
+                    step.</p>
+                </div>
+                <div class="lab" id="lab-audio"></div>
+
+                <div class="two" style="margin-top:22px">
+                  <div class="callout">
+                    <h3>Check the word counts before you trust the numbering</h3>
+                    <p>Two decompositions can disagree about how many words an ayah has. On page 254,
+                      <code>13:37</code> is 19 words to quran.com and 20 in this print, which sets
+                      <span class="ar" style="font-size:1em">بَعْدَ مَا</span> as two words. Consume the timings
+                      blindly and the highlight drifts by one word to the end of that ayah, which looks like a
+                      geometry bug and is worse than no highlight at all.</p>
+                    <p class="note" style="margin:0">Compare the highest <code>word_number</code> against your own
+                      count for that ayah, and highlight the ayah whole when they differ. Across pages 1, 3, 42,
+                      582 and 604 the counts agree exactly on 67 ayahs; page 254 has the one mismatch. The lab
+                      prints the check either way.</p>
+                  </div>
+                  <div class="callout">
+                    <h3>Where the audio comes from</h3>
+                    <p>This section streams audio and timings from <b>quran.com</b> for one page, to demonstrate the
+                      join between <code>word_number</code> and <code>data-word-key</code>. Recitation:
+                      <b>Mohamed Siddiq al-Minshawi</b>, Murattal.</p>
+                    <p><b>The SVGs carry no audio and no word timings, and none is planned.</b> Nothing about
+                      recitation is in the bundle, the format specification or the attribute tables. The audio and
+                      the timings are quran.com's, and their terms apply to them rather than to these files.</p>
+                    <p class="note" style="margin:0">This is also the only part of the page that talks to the
+                      network beyond fetching mushaf pages. If the API is unreachable the section falls back to a
+                      2 KB cached copy of this page's timings and says so.</p>
+                  </div>
+                </div>
+
+                <p class="note"><b>One MP3 per ayah, not per page</b>, with each ayah's times relative to its own
+                  file. The player sequences four files across page 42, resets the clock at each boundary, and
+                  preloads the next before the current one ends. Drive the highlight from <code>currentTime</code>
+                  on every frame, never from a chain of timeouts: a chain drifts against the audio, and drift makes
+                  the geometry look wrong.</p>
+          </div>
+        </details>
+        <details class="cap" id="translate">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><rect class="pick" x="34" y="4.5" width="18" height="9" rx="2"/><path class="tipline" d="M43 14v6"/><rect class="tip" x="26" y="20" width="34" height="12" rx="2"/></svg>
+            <span class="cap-t">
+              <b>Hover a word, see what it means</b>
+              <i>A gloss keyed by data-word-key.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+                <div class="shead">
+                  <p class="sel">data-word-key === quran.com's word key</p>
+                  <p>Move the pointer over any word on the page and its meaning appears. Tap works on touch,
+                    and the words are focusable so <kbd>Tab</kbd> and the arrow keys do too.
+                    <code>data-word-key</code> is <code>surah:ayah:word</code>, 1-based — the same key the quran.com
+                    API, word-by-word translation sets, morphology data and recitation timings already use, so a
+                    5 KB file of glosses joins to this ink with no mapping table.</p>
+                  <p style="margin-top:10px"><b>The gloss shown here is an example, not a feature.</b> It is
+                    word-by-word translation English from quran.com, chosen because it is open data anyone can
+                    check. Put a tafsir, a grammar tag, a vocabulary card or any per-word data you already have in
+                    its place and the same three lines still run. <b>These files ship no translations.</b></p>
+                </div>
+                <div class="lab" id="lab-translate"></div>
+                <p class="note"><b>Put the hit areas inside the SVG</b>, as transparent <code>&lt;rect&gt;</code>
+                  elements, one per word. Attaching to the paths makes the tooltip flicker as the pointer crosses
+                  the gaps between letters. If you combine this with the HTML text layer in
+                  <a href="#select">Drag across it and copy real text</a>, that layer sits above the
+                  SVG and swallows these events, so decide which one owns <code>pointer-events</code> rather than
+                  stacking both.</p>
+                <p class="note">The word-by-word translation and transliteration used here come from
+                  <b>quran.com</b>. They are third-party data, shipped separately from the SVGs and attributed to
+                  their source. Translations, tafsir and audio are not part of this corpus either, and all of them
+                  join on the same key.</p>
+          </div>
+        </details>
       </div>
     </div>
+    <div class="band" id="band-change-how-it-looks">
+      <h3 class="band-h">Change how it looks</h3>
+      <p class="band-n">Every path ships fill="#231f20", and a CSS rule beats a presentation attribute. Everything in this band follows from that.</p>
+      <div class="grid">
+        <details class="cap" id="style">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><g class="dots"><circle cx="20" cy="3" r="2"/><circle cx="34" cy="3" r="2"/><circle cx="48" cy="3" r="2"/><circle cx="12" cy="21" r="2"/><circle cx="52" cy="21" r="2"/></g></svg>
+            <span class="cap-t">
+              <b>Recolour or hide, by meaning</b>
+              <i>Marks, the medallion, or the whole print — from CSS.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+            <div class="tabs" role="tablist" aria-label="Recolour or hide, by meaning">
+              <button role="tab" aria-selected="true" aria-controls="pane-style" id="tab-style">marks by meaning</button>
+              <button role="tab" aria-selected="false" aria-controls="pane-theme" id="tab-theme">the whole theme</button>
+              <button role="tab" aria-selected="false" aria-controls="pane-markers" id="tab-markers">the ayah medallion</button>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-style" aria-labelledby="tab-style">
+                <div class="shead">
+                  <p class="sel">path[data-kind] · path[data-mark] · path[data-mark-family]</p>
+                  <p>Every ink path in the mushaf is <code>fill="#231f20"</code>, and a CSS rule beats a presentation
+                    attribute, so recolouring by meaning needs no re-export and no second file. First, the same
+                    printed line three ways.</p>
+                </div>
 
-    <p class="note">Word order is <b>document order</b>: right to left within a printed line, lines top
-      to bottom, correct on all 8,820 lines of the mushaf that hold words. The loop below never sorts
-      by geometry, and it does not need to.</p>
-  </div>
-</section>
+                <div id="spec">
+                  <div>
+                    <p class="spec-lbl">as printed</p>
+                    <div class="paper tight" id="spec-full"></div>
+                  </div>
+                  <div>
+                    <p class="spec-lbl">vowel marks hidden <span id="spec-n1"></span></p>
+                    <div class="paper tight" id="spec-novowel"></div>
+                  </div>
+                  <div>
+                    <p class="spec-lbl">every mark hidden <span id="spec-n2"></span></p>
+                    <div class="paper tight" id="spec-bare"></div>
+                  </div>
+                </div>
 
-<section id="audio" data-toc-group="Reading and meaning" data-toc-note="Follow a recitation, one word at a time.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">word_number → the third part of data-word-key</p>
-      <h2>9 · Follow a recitation, word by word</h2>
-      <p>The same grey-to-ink mechanism as §8, with the tempo replaced by real per-word timings.
-        Press play: the highlight follows the recitation because <b>quran.com publishes word
-        timings under the same key this page uses</b> — <code>word_number</code> is 1-based within
-        the ayah, which is exactly the third component of <code>data-word-key</code>. No mapping table,
-        no alignment step.</p>
-    </div>
-    <div class="lab" id="lab-audio"></div>
+                <div class="callout" style="margin-top:0">
+                  <h3>Hide the vowel marks, not every mark</h3>
+                  <p>The 9 vowel marks carry <code>diacritic</code> in <code>data-mark-family</code>: fathah,
+                    kasrah, dammah, sukun, shaddah, maddah and the 3 tanwin. Hiding exactly those is one selector,
+                    and everything else stays where it belongs. That is the second specimen above, and it is what a
+                    reader mode or a memorisation aid wants.</p>
+                  <p><b>Do not hide every mark.</b> Diacritics, letter dots and waqf signs are all
+                    <code>data-kind="mark"</code> paths, so <code>path[data-kind="mark"]{display:none}</code> takes
+                    all three away at once — the third specimen above, and it is not undiacritised text. The dots
+                    <b>are</b> the letters: <span class="ar" style="font-size:1em">ب ت ث</span> differ by nothing
+                    else, so hiding them destroys letter identity. The waqf signs carry recitation information
+                    rather than vowelling.</p>
+                  <p><b><code>data-mark-family</code> is a space-separated token list, like <code>class</code>.</b>
+                    A mark can belong to more than one family: the 3 tanwin are vowel marks and they are also the
+                    tanwin, so they carry <code>data-mark-family="diacritic tanwin"</code> and answer to both
+                    names. Match it with <code>~=</code>, never <code>=</code>:</p>
+                  <figure class="code" style="margin-top:6px">
+                    <button class="copy">copy</button>
+              <pre><code>[data-mark-family~=<span class="tok-s">"diacritic"</span>] { display: none }   <span class="tok-c">/* right */</span>
+              [data-mark-family=<span class="tok-s">"diacritic"</span>]  { display: none }   <span class="tok-c">/* silently misses the tanwin */</span></code></pre>
+                  </figure>
+                  <p class="note">An exact-match selector is wrong rather than merely strict. It looks like it
+                    works, because it still matches the 6 single-family marks, and it drops the 3 tanwin without an
+                    error. Every selector on this page uses <code>~=</code>.</p>
+                </div>
 
-    <div class="two" style="margin-top:22px">
-      <div class="callout">
-        <h3>Check the word counts before you trust the numbering</h3>
-        <p>Two decompositions can disagree about how many words an ayah has. On page 254,
-          <code>13:37</code> is 19 words to quran.com and 20 in this print, which sets
-          <span class="ar" style="font-size:1em">بَعْدَ مَا</span> as two. Consume the timings
-          blindly and the highlight drifts by one word to the end of that ayah — and drift looks
-          like the geometry is wrong, which is worse than no highlight at all.</p>
-        <p class="note" style="margin:0">Three lines fix it: compare the highest
-          <code>word_number</code> against your own count for that ayah, and fall back to
-          highlighting the ayah whole when they differ. Measured against this build: pages 1, 3, 42,
-          582 and 604 agree exactly across 67 ayahs; page 254 has the one mismatch. The lab prints
-          the check either way, so you can see it pass.</p>
+                <div class="lab" id="lab-style" style="margin-top:22px"></div>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-theme" aria-labelledby="tab-theme" hidden>
+                <div class="shead">
+                  <p class="sel">svg path { fill: … }</p>
+                  <p>Every ink path in the whole mushaf is the same colour, <code>#231f20</code>, so one rule
+                    changes all of it. That gives you a real dark mode, a high-contrast print sheet, or a page that
+                    matches your own palette. None of it touches the geometry.</p>
+                </div>
+                <div class="lab" id="lab-theme"></div>
+                <p class="note"><b>Set the <code>fill</code>; do not rasterise the page and filter it.</b> A CSS
+                  <code>filter: invert()</code> over an image gives you grey paper and muddy ink, and it fights
+                  every other colour on the page. Here the ink and the ground are independent.</p>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-markers" aria-labelledby="tab-markers" hidden>
+                <div class="shead">
+                  <p class="sel">g.ayah-mark > path[data-kind="ayah_mark_ornament" | "ayah_number"]</p>
+                  <p>The medallion at the end of an ayah is <code>&lt;g class="ayah-mark" id="mk-2-255"&gt;</code>
+                    holding two paths: the ornament ring, and the printed numeral. <b>They are separate elements</b>,
+                    so you can restyle the ring without touching the number. Recolour the ring on its own, hide it
+                    and keep the numeral, scale the whole medallion, replace the ring with a shape of your own, or
+                    drop the medallions entirely for a plain reading view.</p>
+                </div>
+                <div class="lab" id="lab-marks"></div>
+                <p class="note"><b>The ring outlines are not part of this page.</b> The designs in the picker are
+                  fetched at runtime from <a href="https://github.com/quranpedia/ayah-marks">quranpedia/ayah-marks</a>,
+                  which traces them from 20 type families: 15 from Google Fonts and 5 from fonts.quran.ws. They
+                  carry <b>those families' licences</b>, which differ from one another, and every marker names its
+                  own <code>sources</code> in that repository's <code>collection.json</code>. Read it before you
+                  redistribute anything. Neither this page nor the library ships an outline or states any licence
+                  terms. If the fetch fails the section says so and the printed rings stay.</p>
+                <p class="note">The numeral is the print's own drawing of the number rather than a font rendering,
+                  so it stays exactly as printed however you dress the ring around it. Pages 1 and 2 also carry
+                  <b>12 decorative rosettes with no ayah at all</b>, the frame of the opening spread, so select
+                  <code>g.ayah-mark[data-ayah-key]</code> when you mean the real ones.</p>
+            </div>
+          </div>
+        </details>
+        <details class="cap" id="crop">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><g class="crop"><path d="M26 10h-6v6M52 10h6v6M26 30h-6v-6M52 30h6v-6"/></g></svg>
+            <span class="cap-t">
+              <b>Reshape the page</b>
+              <i>Cut any word or ayah into its own SVG; open the leading.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+            <div class="tabs" role="tablist" aria-label="Reshape the page">
+              <button role="tab" aria-selected="true" aria-controls="pane-crop" id="tab-crop">crop to a component</button>
+              <button role="tab" aria-selected="false" aria-controls="pane-spacing" id="tab-spacing">open the leading</button>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-crop" aria-labelledby="tab-crop">
+                <div class="shead">
+                  <p class="sel">clone → filter → getBBox() → new viewBox</p>
+                  <p>One word for a vocabulary card, a run of words for a quotation, one ayah for a citation, one
+                    line for a header. It is the same 12-line function each time with a different filter, and the
+                    result is a standalone SVG you can drop into a slide, a video or a print layout at any size.
+                    Drag <b>from</b> and <b>to</b> to pick a run out of Ayat al-Kursi, or edit the filter for
+                    anything else.</p>
+                </div>
+                <div class="lab" id="lab-crop"></div>
+                <p class="note">Read the <code>viewBox</code> off the file rather than hardcoding
+                  <code>0 0 345 550</code>. 602 pages use it, but <b>pages 1 and 2 do not</b>: they are the opening
+                  spread, with a different viewBox, a different page matrix and 8 printed lines instead of 15.</p>
+            </div>
+            <div class="pane" role="tabpanel" id="pane-spacing" aria-labelledby="tab-spacing" hidden>
+                <div class="shead">
+                  <p class="sel">g.line { transform: translate(0, …) }</p>
+                  <p>The page is 345 × 550, and a phone is far narrower for its height, so fitting the page to the
+                    width leaves <b>about a quarter of the display empty</b>. Spreading the lines into that space
+                    fills the screen with the same page: same line breaks, same glyph positions, nothing scaled or
+                    stretched.</p>
+                  <p style="margin-top:10px">The same control gives you a large-print and low-vision reading mode
+                    that keeps the print's own line breaks. Drag the slider, or press <b>fill a phone screen</b> to
+                    let the snippet compute the gap from the page's own <code>viewBox</code> and line count.</p>
+                </div>
+                <div class="lab" id="lab-spacing"></div>
+                <div class="scroll">
+                  <table>
+                    <thead><tr><th>device</th><th class="mono">viewport</th><th class="mono">aspect</th>
+                      <th>wasted height, page fitted to width</th><th class="mono">gap to fill it</th></tr></thead>
+                    <tbody>
+                      <tr><td>iPhone SE</td><td class="mono">375×667</td><td class="mono">0.562</td><td>10.4%</td><td class="mono">4.5</td></tr>
+                      <tr><td>iPhone 14</td><td class="mono">390×844</td><td class="mono">0.462</td><td>26.3%</td><td class="mono">14.0</td></tr>
+                      <tr><td>iPhone 14 Pro Max</td><td class="mono">430×932</td><td class="mono">0.461</td><td>26.4%</td><td class="mono">14.1</td></tr>
+                      <tr><td>Pixel 7</td><td class="mono">412×915</td><td class="mono">0.450</td><td>28.2%</td><td class="mono">15.4</td></tr>
+                      <tr><td>Galaxy S21</td><td class="mono">360×800</td><td class="mono">0.450</td><td>28.3%</td><td class="mono">15.5</td></tr>
+                      <tr><td>iPad 10.9, portrait</td><td class="mono">820×1180</td><td class="mono">0.695</td><td class="no">fits by height</td><td class="no">—</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="note">Whole lines move, and nothing is scaled, stretched or re-set. The words inside a
+                  line keep their exact printed positions relative to each other, so the page is still the page you
+                  memorised from, just further apart. The snippet grows the <code>viewBox</code> to match, so
+                  nothing is cropped. <b>Derive the gap from the page, never from a constant:</b> pages 1 and 2 are
+                  the opening spread, with 8 printed lines and a different <code>viewBox</code>, so a figure
+                  computed for a 15-line page is wrong there.</p>
+            </div>
+          </div>
+        </details>
       </div>
-      <div class="callout">
-        <h3>What this section is, and is not</h3>
-        <p>This streams audio and timings from <b>quran.com</b> for <b>one page</b>, to demonstrate
-          the join between <code>word_number</code> and <code>data-word-key</code>. Recitation:
-          <b>Mohamed Siddiq al-Minshawi</b>, Murattal.</p>
-        <p><b>The SVGs carry no audio and no word timings, and none is planned.</b> Nothing about
-          recitation is in the bundle, the format specification or the attribute tables. The audio
-          and the timings are quran.com's, and their terms apply to them — not to these files, and
-          not the other way round.</p>
-        <p class="note" style="margin:0">It is also the one part of this page that talks to the
-          network beyond fetching mushaf pages. If the API is unreachable the section falls back to a
-          2 KB cached copy of this page's timings and says so.</p>
-      </div>
     </div>
-
-    <p class="note"><b>One MP3 per ayah, not per page</b>, and each ayah's times are relative to its
-      own file — so the player sequences four files across page 42 and resets the clock at each
-      boundary, preloading the next before the current ends. The highlight is driven from
-      <code>currentTime</code> on every frame, never from a chain of timeouts: a chain drifts against
-      the audio, and drift is the failure that makes the geometry look wrong.</p>
-  </div>
-</section>
-
-<section id="translate" data-toc-group="Reading and meaning" data-toc-note="Hover a word and show what it means.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">data-word-key === quran.com's word key</p>
-      <h2>10 · Hover a word, see what it means</h2>
-      <p>Move the pointer over any word on the page and its meaning appears. Tap works on touch,
-        and the words are focusable so <kbd>Tab</kbd> and the arrow keys do too.
-        <code>data-word-key</code> is <code>surah:ayah:word</code>, 1-based — the same key the quran.com
-        API, word-by-word translation sets, morphology data and recitation timings already use, so a
-        5 KB file of glosses joins to this ink with no mapping table.</p>
-      <p style="margin-top:10px"><b>What you see here is an example, not a feature.</b> The gloss is
-        word-by-word translation English from quran.com, used because it is open data anyone can check; the point
-        is the join, not the language. Put a tafsir, a grammar tag, a vocabulary card or
-        <b>any per-word data you already have</b> in its place and the same three lines still run —
-        and none of it is possible on a page image. <b>These files ship no translations.</b></p>
-    </div>
-    <div class="lab" id="lab-translate"></div>
-    <p class="note">Word-by-word-translation English and transliteration here come from <b>quran.com</b>. They are
-      third-party data, shipped separately from the SVGs and attributed to their source. They are not
-      part of this corpus, and neither are translations, tafsir or audio — but they all join on the same
-      key. <b>Two implementation notes.</b> The hit areas are transparent
-      <code>&lt;rect&gt;</code>s <i>inside</i> the SVG, one per word: attaching to the paths makes the
-      tooltip flicker as the pointer crosses the gaps between letters. And if you ever combine this
-      with §7's HTML text layer, the layer sits above the SVG and will swallow these events — decide
-      which one owns <code>pointer-events</code> rather than stacking both.</p>
-  </div>
-</section>
-
-<section id="compose" data-toc-group="Selecting and pointing" data-toc-note="Run hover, copy and highlight together on one page.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">one hit layer · many capabilities</p>
-      <h2>11 · All of it at once</h2>
-      <p>These are not alternatives. A real reader runs several together, so here they are on one
-        page at the same time: <b>hover a word for its meaning</b>, <b>drag across it and copy real
-        text</b>, and <b>a band behind the ayah you are on</b>. Nothing here is a special case — it
-        is the same three snippets from §7, §10 and §4, sharing one hit layer.</p>
-    </div>
-    <div class="lab" id="lab-compose"></div>
-    <div class="callout">
-      <h3>How they coexist</h3>
-      <p>Three layers, and only one of them takes the pointer. The <b>highlight bands</b> sit behind
-        the ink and the <b>ink itself</b> is <code>pointer-events: none</code>; the <b>per-word hit
-        layer</b> on top is the only thing hit-testing ever reaches. Because that layer is one
-        element per word carrying its <code>data-word-key</code>, selection, hover, tap and click all read
-        from the same source instead of stacking competing overlays.</p>
-      <figure class="code" style="margin-top:6px">
-        <button class="copy">copy</button>
-<pre><code><span class="tok-c">/* highlight bands — behind the ink, never hit-tested */</span>
-g.highlight-layer, g.highlight-layer * { pointer-events: none }
-
-<span class="tok-c">/* the ink — beautiful, and inert */</span>
-svg.inert, svg.inert * { pointer-events: none }
-
-<span class="tok-c">/* the per-word hit layer — the only layer that takes the pointer */</span>
-.hits       { position: absolute; inset: <span class="tok-k">0</span> }
-.hits span  { position: absolute; color: transparent; white-space: pre }</code></pre>
-      </figure>
-      <p class="note">The one thing that genuinely cannot be shared is the cursor: selection wants
-        <code>cursor: text</code> and a tooltip target wants <code>cursor: help</code>. Pick one per
-        surface. Everything else composes.</p>
-    </div>
-  </div>
-</section>
-
-<section id="style" data-toc-group="Presentation" data-toc-note="Colour or hide marks by what they mean.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">path[data-kind] · path[data-mark] · path[data-mark-family]</p>
-      <h2>12 · Style or hide marks by meaning</h2>
-      <p>Every ink path in the mushaf is <code>fill="#231f20"</code>, and a CSS rule beats a presentation
-        attribute, so recolouring by meaning needs no re-export and no second file. First, the same
-        printed line three ways.</p>
-    </div>
-
-    <div id="spec">
-      <div>
-        <p class="spec-lbl">as printed</p>
-        <div class="paper tight" id="spec-full"></div>
-      </div>
-      <div>
-        <p class="spec-lbl">vowel marks hidden <span id="spec-n1"></span></p>
-        <div class="paper tight" id="spec-novowel"></div>
-      </div>
-      <div>
-        <p class="spec-lbl">every mark hidden <span id="spec-n2"></span></p>
-        <div class="paper tight" id="spec-bare"></div>
-      </div>
-    </div>
-
-    <div class="callout" style="margin-top:0">
-      <h3>Hide the vowels. Never hide the dots.</h3>
-      <p>Every diacritic, every letter dot and every waqf sign is a <code>data-kind="mark"</code> path,
-        so <code>path[data-kind="mark"]{display:none}</code> takes all three away at once — the third
-        specimen above. That is not undiacritised text. The dots <b>are</b> the letters:
-        <span class="ar" style="font-size:1em">ب ت ث</span> differ by nothing else, and hiding them
-        destroys letter identity. The waqf signs are recitation information, not tashkil.</p>
-      <p>The nine vowel marks carry <code>diacritic</code> in <code>data-mark-family</code> — fathah,
-        kasrah, dammah, sukun, shaddah, maddah and the three tanwin — so hiding exactly those is one
-        selector, and everything else stays where it belongs. That is the second specimen, and it is
-        what a reader mode or a memorisation ayahKey wants.</p>
-      <p><b><code>data-mark-family</code> is a space-separated token list, like <code>class</code>.</b>
-        A mark can belong to more than one family: the three tanwin are vowel marks <i>and</i> they
-        are the tanwin, so they carry <code>data-mark-family="diacritic tanwin"</code> and must
-        answer to both names. Match it with <code>~=</code>, never <code>=</code>:</p>
-      <figure class="code" style="margin-top:6px">
-        <button class="copy">copy</button>
-<pre><code>[data-mark-family~=<span class="tok-s">"diacritic"</span>] { display: none }   <span class="tok-c">/* right */</span>
-[data-mark-family=<span class="tok-s">"diacritic"</span>]  { display: none }   <span class="tok-c">/* silently misses the tanwin */</span></code></pre>
-      </figure>
-      <p class="note">An exact-match selector is not merely stricter here, it is wrong: it looks like
-        it works, because it still matches the six single-family marks, and it drops the three tanwin
-        without an error. Every selector on this page uses <code>~=</code>.</p>
-    </div>
-
-    <div class="lab" id="lab-style" style="margin-top:22px"></div>
-  </div>
-</section>
-
-<section id="theme" data-toc-group="Presentation" data-toc-note="Recolour the whole print, including a real dark mode.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">svg path { fill: … }</p>
-      <h2>13 · Theme the page</h2>
-      <p>Every ink path in the whole mushaf is the same colour, <code>#231f20</code>. One rule changes
-        all of it. That gives you a real dark mode, a high-contrast print sheet, or a page that matches
-        your own palette — and none of it touches the geometry, so the print stays the print. A page
-        image cannot do any of this; inverting a photograph is not a dark mode.</p>
-    </div>
-    <div class="lab" id="lab-theme"></div>
-    <p class="note">Set the <code>fill</code>. Do not rasterise the page and filter it: a CSS
-      <code>filter: invert()</code> over an image gives you grey paper and muddy ink, and it fights
-      every other colour on the page. Here the ink and the ground are independent, because they always
-      were.</p>
-  </div>
-</section>
-
-<section id="markers" data-toc-group="Presentation" data-toc-note="Restyle or swap the ayah medallions.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">g.ayah-mark > path[data-kind="ayah_mark_ornament" | "ayah_number"]</p>
-      <h2>14 · Swap or restyle the ayah end-mark</h2>
-      <p>The medallion at the end of an ayah is <code>&lt;g class="ayah-mark" id="mk-2-255"&gt;</code>
-        holding two paths: the ornament ring, and the printed numeral. <b>They are separate elements</b>
-        — which is the whole reason you can restyle the furniture without touching the number. Recolour
-        the ring on its own, hide it and keep the numeral, scale the whole medallion, replace the ring
-        with a shape of your own, or drop the markers entirely for a plain reading view.</p>
-    </div>
-    <div class="lab" id="lab-marks"></div>
-    <p class="note"><b>The outlines are not part of this page.</b> The designs in the picker are fetched at runtime from <a href="https://github.com/quranpedia/ayah-marks">quranpedia/ayah-marks</a>, which traces them from twenty type families — fifteen from Google Fonts, five from fonts.quran.ws. They carry <b>those families' licences</b>, which differ from one another; every marker names its own <code>sources</code> in that repository's <code>collection.json</code>. Read it before you redistribute anything. Neither this page nor the library ships a single outline, and neither states any licence terms. If the fetch fails the section says so and the printed rings stay.</p>
-    <p class="note">The numeral is the print's own drawing of the number, not a font rendering of it, so
-      it stays exactly as printed however you dress the ring around it. On pages 1 and 2 there are also
-      <b>12 decorative rosettes with no ayah at all</b> — the frame of the opening spread — so select
-      <code>g.ayah-mark[data-ayah-key]</code> when you mean the real ones.</p>
-  </div>
-</section>
-
-<section id="spacing" data-toc-group="Presentation" data-toc-note="Open up the leading and fill a phone screen.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">g.line { transform: translate(0, …) }</p>
-      <h2>15 · Open up the leading, and fill a phone screen</h2>
-      <p>On a phone this is not an accessibility nicety, it is the difference between using the screen
-        and wasting it. The page is 345 × 550; a phone is far narrower for its height, so fitting the
-        page to the width leaves <b>about a quarter of the display empty</b>. Spreading the lines into
-        that space fills the screen with the same page — same line breaks, same glyph positions,
-        nothing scaled or stretched. A page image can only zoom, which crops or distorts.</p>
-      <p style="margin-top:10px">It is also a large-print and low-vision reading mode, on a page that
-        still has the print's own line breaks. Drag the slider, or press <b>fill a phone screen</b> to
-        let the snippet compute the gap from the page's own <code>viewBox</code> and line count.</p>
-    </div>
-    <div class="lab" id="lab-spacing"></div>
-    <div class="scroll">
-      <table>
-        <thead><tr><th>device</th><th class="mono">viewport</th><th class="mono">aspect</th>
-          <th>wasted height, page fitted to width</th><th class="mono">gap to fill it</th></tr></thead>
-        <tbody>
-          <tr><td>iPhone SE</td><td class="mono">375×667</td><td class="mono">0.562</td><td>10.4%</td><td class="mono">4.5</td></tr>
-          <tr><td>iPhone 14</td><td class="mono">390×844</td><td class="mono">0.462</td><td>26.3%</td><td class="mono">14.0</td></tr>
-          <tr><td>iPhone 14 Pro Max</td><td class="mono">430×932</td><td class="mono">0.461</td><td>26.4%</td><td class="mono">14.1</td></tr>
-          <tr><td>Pixel 7</td><td class="mono">412×915</td><td class="mono">0.450</td><td>28.2%</td><td class="mono">15.4</td></tr>
-          <tr><td>Galaxy S21</td><td class="mono">360×800</td><td class="mono">0.450</td><td>28.3%</td><td class="mono">15.5</td></tr>
-          <tr><td>iPad 10.9, portrait</td><td class="mono">820×1180</td><td class="mono">0.695</td><td class="no">fits by height</td><td class="no">—</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <p class="note">Whole lines move; nothing is scaled, stretched or re-set. The words inside a line
-      keep their exact printed positions relative to each other, so the page you are reading is still
-      the page you memorised from, just further apart. The snippet grows the <code>viewBox</code> to
-      match, so nothing is cropped. <b>Derive the gap from the page, never from a constant</b> — pages
-      1 and 2 are the opening spread, with 8 printed lines and a different <code>viewBox</code>, so a
-      figure computed for a 15-line page is wrong there.</p>
-  </div>
-</section>
-
-<section id="crop" data-toc-group="Presentation" data-toc-note="Cut any word, run, ayah or line into its own SVG.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">clone → filter → getBBox() → new viewBox</p>
-      <h2>16 · Any crop is a component</h2>
-      <p>One word for a vocabulary card, a run of words for a quotation, one ayah for a citation, one
-        line for a header. Same twelve-line function, different filter. The result is a standalone SVG
-        you can drop into a slide, a video or a print layout at any size. Drag <b>from</b> and <b>to</b>
-        to pick a run out of Ayahs al-Kursi, or edit the filter for anything else.</p>
-    </div>
-    <div class="lab" id="lab-crop"></div>
-    <p class="note">Read the <code>viewBox</code> off the file rather than hardcoding
-      <code>0 0 345 550</code>. 602 pages use it, but <b>pages 1 and 2 do not</b>: they are the opening
-      spread, with a different viewBox, a different page matrix and 8 printed lines instead of 15.</p>
-  </div>
-</section>
-
-<section id="meta" data-toc-group="The data itself" data-toc-note="Read surah, juz, hizb and rubʿ straight off the page.">
-  <div class="wrap">
-    <div class="shead">
-      <p class="sel">data-sid · data-juz-start · data-hizb-start · data-rubu-al-hizb-start</p>
-      <h2>17 · Metadata without a database, and a reader in thirty lines</h2>
-      <p>You do not need to bundle a Quran metadata package to build a reader chrome. Open the page and
-        read it off. The snippet runs on whichever page the reader is showing — turn pages with the
-        buttons or the <kbd>←</kbd> <kbd>→</kbd> keys and it re-runs on the new one. Try <b>582</b>
-        (juz 30 opens), <b>1</b> (the opening spread), <b>42</b> (a rubʿ rosette), <b>176</b> (a
-        sajdah).</p>
-    </div>
-    <div class="lab" id="lab-meta"></div>
-    <p class="note">Pages are fetched one at a time, on demand — 794 KiB raw, 197 KiB over the wire
-      gzipped, which is the same technique any consumer should use. This document inlines no page at
-      all: the one at the top is fetched exactly like the rest, and every section that shows page 42
-      shares that single request.</p>
   </div>
 </section>
 
@@ -1111,16 +1316,15 @@ svg.inert, svg.inert * { pointer-events: none }
     <p class="sec-eyebrow">Optional</p>
     <div class="shead">
       <p class="sel">import { MushafPage } from './lib/mushaf.mjs'</p>
-      <h2>18 · A library, if you want one</h2>
-      <p>Every section above has a <b>plain JS</b> / <b>library</b> switch in its toolbar. Both
-        versions are real, both are editable, both run, and both produce the same result. <b>Plain JS
-        is the default on purpose</b> — it is the teaching, and it is the argument: these are ordinary
-        SVG files and they need no library at all. Nothing on this page is a wrapper you must adopt.</p>
-      <p style="margin-top:10px">What the library saves you is not typing, it is the traps. Every
-        one of the callouts on this page is a bug somebody had to find first — that an ayah is several
-        nodes, that <code>getBBox()</code> reports the wrong position, that a band must be one path,
-        that a word's trailing ink is drawn into the following gap, that
-        <code>data-mark-family</code> is a token list. The library has those baked in and tested.</p>
+      <h2>A library, if you want one</h2>
+      <p>Every section above has a <b>plain JS</b> / <b>library</b> switch in its toolbar. Both versions
+        are real, both are editable, both run, and both produce the same result. <b>Plain JS is the
+        default</b>, because these are ordinary SVG files and need no library at all.</p>
+      <p style="margin-top:10px">What the library saves you is the traps, not the typing. It has the
+        callouts on this page built in and tested: that an ayah is several nodes, that
+        <code>getBBox()</code> reports the wrong position, that a band must be one path, that a word's
+        trailing ink is drawn into the following gap, and that <code>data-mark-family</code> is a token
+        list.</p>
     </div>
 
     <div class="two">
@@ -1145,40 +1349,39 @@ svg.inert, svg.inert * { pointer-events: none }
 &lt;<span class="tok-k">script</span> <span class="tok-a">src</span>=<span class="tok-s">"lib/mushaf.global.js"</span>&gt;&lt;/<span class="tok-k">script</span>&gt;
 &lt;<span class="tok-k">script</span>&gt;Mushaf.MushafPage.load(<span class="tok-k">42</span>).then(page =&gt; { <span class="tok-c">/* … */</span> });&lt;/<span class="tok-k">script</span>&gt;</code></pre>
         </figure>
-        <p class="note"><code>core.mjs</code> imports nothing at all, and everything else is a free
-          function taking a page — <code>attachSelection(page, …)</code>,
-          <code>mask(page, …)</code> — precisely so a bundler can drop what you do not use.</p>
+        <p class="note"><code>core.mjs</code> imports nothing, and everything else is a free function
+          taking a page — <code>attachSelection(page, …)</code>, <code>mask(page, …)</code> — so a
+          bundler can drop what you do not use.</p>
       </div>
       <div>
         <div class="callout">
-          <h3>Three rules it keeps everywhere</h3>
+          <h3>Three rules the library keeps everywhere</h3>
           <ul class="plain-list" style="margin-top:0">
-            <li><b>Nothing mutates a page you did not hand it.</b>
-              <code>MushafPage.load()</code> and <code>page.clone()</code> give you a page you own;
-              <code>new MushafPage(el)</code> wraps an element <i>without</i> cloning, so a later call
-              changes <i>your</i> element — which is what every library snippet on this page relies
-              on.</li>
+            <li><b>Nothing mutates a page you did not hand it.</b> <code>MushafPage.load()</code> and
+              <code>page.clone()</code> give you a page you own. <code>new MushafPage(el)</code> wraps an
+              element <i>without</i> cloning, so a later call changes <i>your</i> element, which is what
+              every library snippet on this page relies on.</li>
             <li><b>Every mutating call returns a handle with <code>.remove()</code></b> that undoes
-              exactly what it did and nothing else. There is no global reset, and no call leaves you
-              guessing what state you are in.</li>
-            <li><b>The shared hit layer is reference counted.</b> Hover, click and selection all take
-              a reference and give it back; the layer is built once and torn down when the last
-              holder releases it. That is what lets §11 run three capabilities over one page without
-              any of them knowing about the others.</li>
+              exactly what it did and nothing else. There is no global reset.</li>
+            <li><b>The shared hit layer is reference counted.</b> Hover, click and selection each take a
+              reference and give it back, so the layer is built once and torn down when the last holder
+              releases it. That is what lets <a href="#compose">Three of these at once</a> run three
+              capabilities over one page without any of them
+              knowing about the others.</li>
           </ul>
         </div>
         <div class="callout">
-          <h3>Where it disagrees with this page, follow the library</h3>
-          <p>Two places it is deliberately stricter than the plain snippets. It <b>never selects on
-            <code>data-mark-family</code></b> — it resolves a family to <code>data-mark</code> names
-            through an embedded taxonomy, so a build that changes the attribute's vocabulary cannot
-            break your code. And its <b>hit testing is nearest-with-direction</b>: a point in the gap
-            between two words goes to the <i>preceding</i> one, because in this print a word's
-            trailing ink is drawn into the gap that follows it.</p>
-          <p class="note" style="margin:0">It is tested with 217 assertions in a real browser against
-            pages 1, 42, 48, 176, 582 and 604 — the opening spread, a rubʿ rosette, a fifteen-fragment
-            ayah, a sajdah, a juz opening and three banners on one page — plus a genuine mouse drag
-            across a line break, Ctrl+C, hover, a click in a 6.96 px gap, and a window resize.</p>
+          <h3>Two places the library is stricter than these snippets</h3>
+          <p>It <b>never selects on <code>data-mark-family</code></b>. It resolves a family to
+            <code>data-mark</code> names through an embedded taxonomy, so a build that changes the
+            attribute's vocabulary cannot break your code.</p>
+          <p>Its <b>hit testing is nearest-with-direction</b>: a point in the gap between two words goes
+            to the <i>preceding</i> one, because in this print a word's trailing ink is drawn into the
+            gap that follows it.</p>
+          <p class="note" style="margin:0">Tested with 321 assertions in a real browser against pages 1,
+            42, 48, 176, 582 and 604 — the opening spread, a rubʿ rosette, a 15-fragment ayah, a sajdah,
+            a juz opening and 3 banners on one page — plus a real mouse drag across a line break, Ctrl+C,
+            hover, a click in a 6.96 px gap, and a window resize.</p>
         </div>
         <div class="callout placeholder">
           <h3>Name and licence — to follow</h3>
@@ -1191,13 +1394,13 @@ svg.inert, svg.inert * { pointer-events: none }
 </section>
 
 <!-- ═══════════════ WHAT YOU GET ═══════════════ -->
-<section id="bundle" data-toc-group="The data itself" data-toc-note="What you download, what it weighs, and the honest limits.">
+<section id="bundle" data-toc-group="The data itself" data-toc-note="What you download, what it weighs, and the known limits.">
   <div class="wrap">
     <p class="sec-eyebrow">What you get, and what it costs</p>
     <div class="shead">
       <h2>The bundle</h2>
-      <p>604 SVGs and a handful of small companion files. No build step, no runtime, no dependencies.
-        The files are the product.</p>
+      <p>604 SVGs and a handful of small companion files. No build step, no runtime, no
+        dependencies.</p>
     </div>
     <div class="scroll">
       <table>
@@ -1218,75 +1421,76 @@ svg.inert, svg.inert * { pointer-events: none }
     <div class="two" style="margin-top:26px">
       <div>
         <h3 style="font-size:19px;margin-bottom:10px">Two profiles</h3>
-        <p class="note" style="margin-top:0">The same page is emitted two ways. <b>Production</b> is what
-          you want: one <code>&lt;g class="word"&gt;</code> per word, every mark its own path. <b>Dev</b>
-          adds a <code>&lt;g class="ligature"&gt;</code> layer and a legacy invisible polygon per ayah,
-          and those two are the whole difference — every attribute in the reference below is in both.
-          They render identically. Tell them apart in one line:</p>
+        <p class="note" style="margin-top:0">The same page is emitted two ways. <b>Use production:</b> one
+          <code>&lt;g class="word"&gt;</code> per word, every mark its own path. <b>Dev</b> adds a
+          <code>&lt;g class="ligature"&gt;</code> layer and a legacy invisible polygon per ayah, and those
+          two are the whole difference. Both render identically and carry every attribute in the reference
+          below. Tell them apart in one line:</p>
         <figure class="code" style="margin-top:12px">
           <button class="copy">copy</button>
 <pre><code><span class="tok-k">const</span> isDev = doc.querySelector(<span class="tok-s">'g.ligature'</span>) !== <span class="tok-k">null</span>;</code></pre>
         </figure>
-        <p class="note">The ligature layer is a <b>rendering run, not a spelling</b>. It is not a
-          reliable letter segmentation — 156 words spell fewer letters in it than they actually have —
-          so use <code>data-rasm-uthmani</code> on the word, or the <code>rasm</code> form in the page's
-          sidecar, as the text of record.
-          The page at the top of this document is shown in the production profile.</p>
+        <p class="note">The ligature layer is a <b>rendering run, not a spelling</b>, and it is not a
+          reliable letter segmentation: 156 words spell fewer letters in it than they actually have. Take
+          the text of record from <code>data-rasm-uthmani</code> on the word, or from the <code>rasm</code>
+          form in the page's sidecar. The page at the top of this document is the production profile.</p>
 
         <h3 style="font-size:19px;margin:26px 0 10px">Two levels of decomposition</h3>
         <p class="note" style="margin-top:0">Every page's root <code>&lt;svg&gt;</code> carries
-          <code>data-decomposition</code>, and it has two values.
-          <code>word</code> means what this whole page has been showing: words, ligatures and named
-          marks are addressable. <code>ayah</code> means page ink with ayah polygons and end-marks
-          and <b>nothing below the ayah</b> — no <code>g.word</code>, no <code>data-word-key</code>, no
-          named marks.</p>
+          <code>data-decomposition</code>, with two possible values. <code>word</code> is what this page
+          has been showing: words, ligatures and named marks are all addressable. <code>ayah</code> is page
+          ink with ayah polygons and end-marks and <b>nothing below the ayah</b> — no
+          <code>g.word</code>, no <code>data-word-key</code>, no named marks.</p>
         <p class="note"><b>Hafs — the corpus described here — is <code>word</code>. Warsh, Qālūn,
           al-Dūrī and Shuʿba are <code>ayah</code> today.</b> Read the attribute before writing a
-          word-level selector; on an <code>ayah</code> page the selector is not wrong, it simply
-          matches nothing.</p>
+          word-level selector. On an <code>ayah</code> page such a selector is not wrong, it simply matches
+          nothing.</p>
         <figure class="code" style="margin-top:12px">
           <button class="copy">copy</button>
 <pre><code><span class="tok-k">if</span> (doc.documentElement.dataset.decomposition !== <span class="tok-s">'word'</span>) <span class="tok-c">/* ayah level only */</span></code></pre>
         </figure>
 
         <h3 style="font-size:19px;margin:26px 0 10px">Versioning</h3>
-        <p class="note" style="margin-top:0">Pin to a tag; a versioned URL is immutable. The contract:
-          <b>patch</b> — path data or mark labels corrected, no attribute added or removed;
-          <b>minor</b> — attributes or files added, nothing removed or renamed;
-          <b>major</b> — anything removed or renamed, and the format spec carries the same major.</p>
+        <p class="note" style="margin-top:0">Pin to a tag, because a versioned URL is immutable. The
+          contract:</p>
+        <ul class="plain-list">
+          <li><b>patch</b> — path data or mark labels corrected, no attribute added or removed.</li>
+          <li><b>minor</b> — attributes or files added, nothing removed or renamed.</li>
+          <li><b>major</b> — anything removed or renamed. The format specification carries the same
+            major.</li>
+        </ul>
 
         <h3 style="font-size:19px;margin:26px 0 10px">Browser support</h3>
         <p class="note" style="margin-top:0">Plain SVG and plain DOM. Every snippet on this page uses
-          <code>querySelectorAll</code>, <code>dataset</code>, <code>closest</code>,
-          <code>getBBox</code> and <code>getScreenCTM</code> — all universally available for a decade.
-          Nothing here needs a framework, a canvas, a worker or a polyfill.</p>
+          <code>querySelectorAll</code>, <code>dataset</code>, <code>closest</code>, <code>getBBox</code>
+          and <code>getScreenCTM</code>, all universally available for a decade. Nothing here needs a
+          framework, a canvas, a worker or a polyfill.</p>
       </div>
       <div>
         <div class="callout">
-          <h3>Honest limits</h3>
+          <h3>Known limits</h3>
           <ul class="plain-list" style="margin-top:0">
-            <li><b>No <code>&lt;text&gt;</code> elements, ever.</b> All ink is paths, so browser
-              find-in-page, native text selection and copy of the Quranic text do not work. Search goes
-              through the <code>search</code> form in <code>index/by-page/NNN.json</code> or an index built
-              from it. This is inherent to a
-              paths-only rendering of real calligraphy.</li>
+            <li><b>No <code>&lt;text&gt;</code> elements.</b> All ink is paths, so browser find-in-page,
+              native text selection and copy of the Quranic text do not work. Search the <code>search</code>
+              form in <code>index/by-page/NNN.json</code>, or an index built from it. This is inherent to
+              rendering real calligraphy as paths.</li>
             <li><b>No accessibility metadata in the shipped files yet.</b> No <code>&lt;title&gt;</code>,
               no <code>role</code>, no <code>lang</code>. The ingredients are all there — the snippet in
-              §10 makes a page readable — but it is not baked in, and pretending otherwise would be worse
-              than saying so.</li>
+              <a href="#translate">Hover a word, see what it means</a> makes a page readable — but it is
+              not shipped in the files.</li>
             <li><b>No letter-level decomposition.</b> Nothing says where one Arabic letter ends and the
               next begins, so tajwid rules expressed as character ranges cannot be mapped to ink. What
               is already a named mark can be coloured today.</li>
             <li><b>Counting mark paths is not counting signs.</b> Two slash strokes drawn touching share
-              one path; one sign in the corpus emits as two paths. The difference is small and
-              documented site by site in the format spec.</li>
+              one path, and one sign in the corpus emits as two paths. The format specification documents
+              each site.</li>
             <li><b>Two pages break the uniform layout.</b> Pages 1 and 2 are the opening spread: a
               different <code>viewBox</code>, a different page matrix, 8 lines, and 12 decorative
               rosettes that carry no ayah. Read the attributes rather than assuming.</li>
-            <li><b>Scope: the printed page and what is on it.</b> The metadata these files carry is
-              the mushaf's own — surah, ayah, word, line, page, the juz/hizb/rubʿ/nisf divisions, and
-              every named mark. Translation, tafsir, audio and word timings, transliteration, and the
-              ruku and manzil divisions are a consumer's own data, and they join straight on:
+            <li><b>The scope is the printed page and what is on it.</b> These files carry the mushaf's own
+              metadata: surah, ayah, word, line, page, the juz, hizb, rubʿ and nisf divisions, and every
+              named mark. Translation, tafsir, audio, word timings, transliteration and the ruku and manzil
+              divisions are your own data, and they join straight on, because
               <code>data-word-key</code> and <code>data-ayah-key</code> are the keys those datasets already
               use.</li>
           </ul>
@@ -1311,42 +1515,48 @@ svg.inert, svg.inert * { pointer-events: none }
     <p class="sec-eyebrow">Reference</p>
     <div class="shead">
       <h2>Every attribute, and how many there are</h2>
-      <p><b>This table is generated from the files themselves</b>, not maintained by hand — every
+      <p><b>This table is generated from the files themselves</b>, not maintained by hand. Every
         <code>data-*</code> attribute that appears anywhere in the 604 pages has a row here, with the
-        number of elements carrying it. A section that promises "every" and quietly lists two thirds is
-        worse than one that promises nothing, because a developer concludes the missing attribute does
-        not exist. The prose beside each row is editorial; the rows are a measurement.</p>
+        number of elements carrying it. The rows are a measurement; the description beside each row is
+        written by hand.</p>
+    </div>
+    <!-- Closed at rest. Open, this table is 5,900px — more than a third of the
+         whole document — and it is a thing you consult, not a thing you read. -->
+    <details class="ref">
+      <summary><b>The table</b> <span id="attr-count">every data-* attribute in the corpus</span>
+        <span class="cap-open" aria-hidden="true"></span></summary>
       <div class="row" style="margin:16px 0 4px">
         <span class="lbl" style="min-width:0">show</span>
         <span class="pills" id="attr-filter"></span>
       </div>
-    </div>
-    <div class="scroll">
-      <table id="attr-table">
-        <thead><tr><th class="mono">on</th><th class="mono">attribute</th><th>what it is</th>
-          <th class="mono">count</th><th class="mono">values</th></tr></thead>
-        <tbody id="attr-rows"><tr><td colspan="5" class="no">loading the measurement…</td></tr></tbody>
-      </table>
-    </div>
+      <div class="scroll">
+        <table id="attr-table">
+          <thead><tr><th class="mono">on</th><th class="mono">attribute</th><th>what it is</th>
+            <th class="mono">count</th><th class="mono">values</th></tr></thead>
+          <tbody id="attr-rows"><tr><td colspan="5" class="no">loading the measurement…</td></tr></tbody>
+        </table>
+      </div>
+    </details>
 
     <div class="callout" style="margin-top:24px">
-      <h3>The page announces which mushaf it is</h3>
-      <p>Nine attributes sit on every page's root <code>&lt;svg&gt;</code>, so a file that arrives on
-        its own still says what it is. Two of them are easy to get wrong.</p>
-      <p><b>The directory name is the <i>riwayah</i>, not the qiraah.</b> <code>data-qiraah="asim"</code>
-        names the reading of ʿĀṣim; <code>data-riwayah="hafs"</code> names Hafs's transmission of it.
-        Hafs and Shuʿbah are both transmissions of the same qiraah, so "hafs" alone does not identify a
-        reading — it identifies a rawi.</p>
-      <p><b><code>data-ayah-total="6236"</code> is a Hafs fact, not a Quran fact.</b> It follows the
-        Kufi counting system, which is what this print sets. Other counting systems divide the same
-        revealed text differently: Nāfiʿ's Madani count gives 6,214. A total is a property of a
-        counting tradition, so read it off the page rather than hardcoding it.</p>
+      <h3>Reading which mushaf a file is</h3>
+      <p>9 attributes sit on every page's root <code>&lt;svg&gt;</code>, so a file that arrives on its own
+        still says what it is. Two of them are easy to get wrong.</p>
+      <p><b>The directory name is the <i>riwayah</i>, not the qiraah.</b> A qiraah is a reading and a
+        riwayah is one transmission of it. <code>data-qiraah="asim"</code> names the reading of ʿĀṣim, and
+        <code>data-riwayah="hafs"</code> names Hafs's transmission of that reading. Hafs and Shuʿbah are
+        both transmissions of the same qiraah, so "hafs" alone identifies a rawi rather than a
+        reading.</p>
+      <p><b><code>data-ayah-total="6236"</code> is a Hafs fact, not a Quran fact.</b> It follows the Kufi
+        numbering system, which is what this print sets. Other numbering systems divide the same revealed
+        text differently, and Nāfiʿ's Madani count gives 6,214. Read the total off the page rather than
+        hardcoding it.</p>
     </div>
 
-    <p class="note"><code>data-element-id</code> and <code>data-sig</code> also appear on paths, in
-      <b>both</b> profiles. They are review instruments: <code>data-element-id</code> is <b>not stable across
-      builds</b> and <code>data-sig</code> is a shape signature, not an identity — 98 signatures serve
-      more than one mark name. <b>Never key on either.</b></p>
+    <p class="note"><b>Never key on <code>data-element-id</code> or <code>data-sig</code>.</b> Both appear
+      on paths in both profiles, and both are review instruments. <code>data-element-id</code> is not stable
+      across builds, and <code>data-sig</code> is a shape signature rather than an identity: 98 signatures
+      serve more than one mark name.</p>
   </div>
 </section>
 
@@ -1358,7 +1568,7 @@ svg.inert, svg.inert * { pointer-events: none }
       Complex — <span class="ar" style="font-size:1em">مجمع الملك فهد لطباعة المصحف الشريف</span> —
       <a href="https://dm.qurancomplex.gov.sa" rel="noopener">dm.qurancomplex.gov.sa</a>. The Complex did
       not produce, review or approve this decomposition, and nothing here implies endorsement or
-      affiliation. Word-by-word-translation English and transliteration used in §10 are from quran.com and are not
+      affiliation. The word-by-word translation and transliteration used on this page are from quran.com and are not
       part of this corpus. Licence and redistribution terms are not settled and are not stated on this
       page.</p>
   </div>
@@ -1434,6 +1644,44 @@ const isolate = s => RLI + s + PDI;
 function mod(name, fn) { try { return fn(); } catch (e) { console.error('[' + name + ']', e); } }
 
 /* ---------------------------------------------------------------------------
+   BUILD ON FIRST SIGHT — and the one case where "first sight" is not a scroll.
+
+   Nothing heavy is built until the reader can see it: no page is fetched for a
+   demo they never reached. An IntersectionObserver is the natural way to say
+   that, and it was the only way here while every demo sat inline.
+
+   It is not sufficient now. A demo lives inside a capability card, and a closed
+   <details> renders its content `display:none` (Chrome gives that subtree
+   content-visibility:hidden). An element going from display:none to laid-out
+   does NOT reliably deliver an IntersectionObserver entry, so a card opened
+   without scrolling afterwards would sit there for ever on "not run yet" — the
+   failure has no error and no console line, which is how it survived a first
+   pass unnoticed.
+
+   So take BOTH signals. The card's own `toggle` cannot be missed, and whichever
+   arrives first wins because `fn` runs at most once.
+--------------------------------------------------------------------------- */
+function whenVisible(el, fn) {
+  let done = false;
+  const fire = () => {
+    if (done) return;
+    done = true;
+    io.disconnect();
+    if (card) card.removeEventListener('toggle', onToggle);
+    fn();
+  };
+  const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) fire(); },
+                                      { rootMargin: '400px' });
+  io.observe(el);
+  const card = el.closest('details.cap');
+  const onToggle = () => { if (card.open) fire(); };
+  if (card) {
+    card.addEventListener('toggle', onToggle);
+    if (card.open) fire();
+  }
+}
+
+/* ---------------------------------------------------------------------------
    THE HERO IS FETCHED, NOT INLINED.
 
    It used to be inlined into the document: 745 KiB of the 965 KiB this file
@@ -1496,7 +1744,13 @@ async function getPage(n) {
     const r = await fetch(INDEX + key + '.json');
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const json = await r.json();
-    words = new Map(json.words.map(w => [w.wordKey, w]));
+    /* The shipped sidecar keys every field in snake_case — `word_key`, not
+       `wordKey`. Reading the camelCase name gave a Map of one entry under the
+       key `undefined`, and `forms()` then quietly returned undefined for every
+       word: the section that searches a page threw, and the ones that only
+       DISPLAY a form showed a blank. Accept either spelling rather than betting
+       on one, exactly as the audits here learned to over data-aya/data-ayah. */
+    words = new Map(json.words.map(w => [w.word_key ?? w.wordKey, w]));
   } catch (e) {
     if (!sidecarWarned) {
       sidecarWarned = true;
@@ -1714,7 +1968,7 @@ function hitLayer(svg, stage, opts = {}) {
       const b = box.get(g);
       if (!b) continue;
       const s = document.createElement('span');
-      s.textContent  = g.dataset.rasm_uthmani + ' ';
+      s.textContent  = g.dataset.rasmUthmani + ' ';
       s.dataset.wordKey  = g.dataset.wordKey;
       s.dataset.line = b.line;
       s.style.left   = (b.x0 - origin.left) + 'px';
@@ -1888,11 +2142,21 @@ const FALLBACK_AYAH_TIMINGS = /*TIMINGS*/null;
    when present (the dev profile carries all five; every profile carries
    data-rasm-uthmani), the page's sidecar fills the rest, a missing form is
    undefined. */
-const SIDECAR_FORMS = ['rasm', 'rasm_imlai', 'search', 'qpc'];
+/* form name → the dataset property the inline attribute lands under. They are
+   NOT the same string. `dataset` names an attribute in camelCase, so
+   `data-rasm-imlai` arrives as `dataset.rasmImlai`; the snake_case form this
+   file calls it everywhere else reads as undefined however present the
+   attribute is. That is what the terminology rename left behind here — twelve
+   sites asking for a dataset key that cannot exist — and it is why words came
+   out blank rather than throwing. */
+const SIDECAR_FORMS = { rasm: 'rasm', rasm_imlai: 'rasmImlai', search: 'search', qpc: 'qpc' };
 function forms(w) {
   const side = w.ownerSVGElement?.__words?.get(w.dataset.wordKey) || {};
-  const out = { rasm_uthmani: w.dataset.rasm_uthmani };
-  for (const k of SIDECAR_FORMS) out[k] = k in w.dataset ? w.dataset[k] : side[k];
+  const out = { rasm_uthmani: w.dataset.rasmUthmani ?? side.rasm_uthmani };
+  for (const k in SIDECAR_FORMS) {
+    const attr = SIDECAR_FORMS[k];
+    out[k] = attr in w.dataset ? w.dataset[attr] : side[k];
+  }
   return out;
 }
 /* The page's sidecar in its shipped shape, {words: [...]}, rebuilt from the
@@ -1926,10 +2190,9 @@ const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
    THE LIBRARY, LOADED ONLY IF YOU ASK FOR IT.
 
    Every lab below is written twice: once in plain DOM, once against
-   mushaf.js. The plain version is the default and it is the teaching — it
-   carries the argument that these files need no library at all. The library
-   version is the same result in fewer lines, for the reader who would rather
-   not re-derive the traps.
+   mushaf.js. The plain version is the default, because these files need no
+   library at all. The library version is the same result in fewer lines, for
+   the reader who would rather not re-derive the traps.
 
    The script is fetched on the first switch to a library snippet, never on
    page load, so a reader who never touches the toggle pays nothing for it.
@@ -2157,12 +2420,9 @@ function makeLab(cfg) {
   ctx.rerun = kick;
   ctx.runNow = () => { if (!built) return; clearTimeout(t); freshStage(); run(); };
 
-  /* build on first sight, so the DOM never holds a dozen pages at once */
-  let starting = false;
-  const io = new IntersectionObserver(async entries => {
-    if (!entries.some(e => e.isIntersecting) || starting) return;
-    starting = true;
-    io.disconnect();
+  /* Nothing is fetched for a card the reader never opened, and the DOM never
+     holds a dozen pages at once. */
+  whenVisible(mount, async () => {
     try {
       /* `built` flips only once the page this lab runs on is in hand, so a
          Reset or a variant switch during the fetch cannot run against null */
@@ -2177,8 +2437,8 @@ function makeLab(cfg) {
       report('could not prepare this demo: ' + esc(e.message), 'err');
       console.error('[' + cfg.mount + ']', e);
     }
-  }, { rootMargin: '400px' });
-  io.observe(mount);
+  });
+
   return ctx;
 }
 
@@ -2388,46 +2648,99 @@ const FORMAT_LINKS = {
 
 mod('format-links', () => {
   for (const [id, [anchor, label]] of Object.entries(FORMAT_LINKS)) {
-    const sec = $('#' + id);
+    /* a capability is a card (#start), or a tab inside one (#pane-band): the
+       four merged cards keep every old id, so every deep link still resolves */
+    const sec = $('#' + id) || $('#pane-' + id);
     if (!sec) { console.warn('[format-links] no section', id); continue; }
     const p = document.createElement('p');
     p.className = 'note fmt-link';
     p.innerHTML = '<a href="' + FORMAT_BASE + anchor + '">' + label + ' →</a>';
-    sec.querySelector('.wrap').append(p);
+    (sec.querySelector('.wrap') || sec.querySelector('.cap-body') || sec).append(p);
   }
 });
 
-/* ---------- contents, generated from the document ---------- */
-mod('toc', () => {
-  const body = $('#toc-body');
-  const groups = new Map();
-  for (const sec of $$('main section[data-toc-group]')) {
-    const h = sec.querySelector('h2');
-    if (!h) continue;
-    const g = sec.dataset.tocGroup;
-    if (!groups.has(g)) groups.set(g, []);
-    /* the heading carries its own number, so nothing here is hand-maintained
-       and renumbering a section cannot desync the contents */
-    const m = h.textContent.match(/^\s*(\d+)\s*·\s*(.+)$/);
-    groups.get(g).push({ id: sec.id, n: m ? m[1] : '', title: m ? m[2] : h.textContent,
-                         note: sec.dataset.tocNote || '' });
+/* ---------------------------------------------------------------------------
+   THE CAPABILITY GRID
+
+   The cards are <details>, so opening, closing, keyboard and screen readers all
+   work with this block deleted. What it adds is the three things markup cannot
+   do on its own: the tabs inside a merged card, "open all", and making a deep
+   link to a capability — or to a tab inside one — open the card it lives in
+   before the browser scrolls to it.
+--------------------------------------------------------------------------- */
+mod('caps', () => {
+  const caps = $$('details.cap');
+
+  /* ---- tabs: one card, several techniques ---- */
+  for (const box of $$('.tabs')) {
+    const tabs = $$('button', box);
+    const show = pick => {
+      for (const t of tabs) {
+        const on = t === pick;
+        t.setAttribute('aria-selected', String(on));
+        $('#' + t.getAttribute('aria-controls')).hidden = !on;
+      }
+      /* a pane only just unhidden has never been laid out, so the lab inside it
+         has not been built either. Its IntersectionObserver fires on its own
+         once the pane has a box — nothing to poke here. */
+    };
+    tabs.forEach(t => t.addEventListener('click', () => show(t)));
+    box.addEventListener('keydown', e => {
+      const i = tabs.indexOf(document.activeElement);
+      if (i < 0) return;
+      const j = e.key === 'ArrowRight' ? i + 1 : e.key === 'ArrowLeft' ? i - 1 : -1;
+      if (j < 0 || j >= tabs.length) return;
+      e.preventDefault();
+      tabs[j].focus();
+      show(tabs[j]);
+    });
   }
-  for (const [name, items] of groups) {
-    const col = document.createElement('div');
-    const h3 = document.createElement('h3');
-    h3.textContent = name;
-    const ol = document.createElement('ol');
-    for (const it of items) {
-      const li = document.createElement('li');
-      li.innerHTML = '<a href="#' + it.id + '">' +
-        (it.n ? '<span class="n">' + it.n + '</span>' : '') +
-        '<span class="t">' + it.title + '</span>' +
-        '<span class="d">' + it.note + '</span></a>';
-      ol.append(li);
+
+  /* ---- open all / close all ---- */
+  const all = $('#cap-all');
+  all.addEventListener('click', () => {
+    const opening = all.getAttribute('aria-pressed') !== 'true';
+    caps.forEach(c => { c.open = opening; });
+    all.setAttribute('aria-pressed', String(opening));
+    all.textContent = opening ? 'close all' : 'open all';
+  });
+  /* the button must not claim "close all" while the reader has closed them by
+     hand, one at a time */
+  const sync = () => {
+    const open = caps.some(c => c.open);
+    all.setAttribute('aria-pressed', String(open));
+    all.textContent = open ? 'close all' : 'open all';
+  };
+  caps.forEach(c => c.addEventListener('toggle', sync));
+
+  /* ---- a deep link opens what it points at ----
+     #ayah names a card; #pane-band, and every id inside a card body, names
+     something buried in one. Walk up from whatever the hash resolves to. */
+  function openForHash() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    const target = document.getElementById(id);
+    if (!target) return;
+    const card = target.closest('details.cap');
+    if (!card) return;
+    card.open = true;
+    /* if the target is a tab pane, select its tab too */
+    const pane = target.closest('.pane');
+    if (pane) {
+      const tab = $('#' + pane.getAttribute('aria-labelledby'));
+      if (tab) tab.click();
     }
-    col.append(h3, ol);
-    body.append(col);
+    /* the browser has already given up scrolling to a target that was
+       display:none when the hash arrived */
+    requestAnimationFrame(() => card.scrollIntoView({ block: 'start' }));
   }
+  addEventListener('hashchange', openForHash);
+  openForHash();
+
+  /* a card's own id in the address bar, so a reader can share what they opened */
+  caps.forEach(c => c.addEventListener('toggle', () => {
+    if (c.open && location.hash.slice(1) !== c.id) history.replaceState(null, '', '#' + c.id);
+  }));
 });
 
 /* ---------- the sticky bar: where you are, and how far ---------- */
@@ -2435,13 +2748,23 @@ mod('bar', () => {
   const bar = $('.index'), here = $('#here'), prog = $('#progress');
   const secs = $$('main section[id]');
 
+  /* An open card is what the reader is actually in, so it outranks the section
+     containing it. A closed one has no body to be halfway down, and its
+     summary is small enough that the 50% band rarely lands on it — either way
+     the section name is the right answer then. */
+  const name = el => {
+    if (el.matches('details.cap')) return el.open ? $('.cap-t b', el).textContent.trim() : null;
+    const h = el.querySelector('h2');
+    return h ? h.textContent.trim() : '';
+  };
   const io = new IntersectionObserver(es => {
     for (const e of es) if (e.isIntersecting) {
-      const h = e.target.querySelector('h2');
-      here.textContent = h ? h.textContent.trim() : '';
+      const n = name(e.target);
+      if (n !== null) here.textContent = n;
     }
   }, { rootMargin: '-50% 0px -50% 0px' });
   secs.forEach(s => io.observe(s));
+  $$('details.cap').forEach(c => io.observe(c));
 
   let last = scrollY, ticking = false;
   addEventListener('scroll', () => {
@@ -2592,7 +2915,7 @@ heroReady.then(() => mod('hero', () => {
 
     if (state.text) {
       const ws = wordsOf();
-      const t = ws.map(w => w.dataset.rasm_uthmani).join(' ');
+      const t = ws.map(w => w.dataset.rasmUthmani).join(' ');
       /* an Arabic run inside LTR UI must be isolated, or the bidi algorithm
          reorders it against the Latin around it */
       said.push('<b>' + ws.length + ' words</b> of real Unicode, read straight off the ' +
@@ -2666,7 +2989,7 @@ log('viewBox        ', doc.documentElement.getAttribute('viewBox'));
 log('');
 log([...doc.querySelectorAll('g.word')]
   .filter(w => w.dataset.wordKey.startsWith('2:6:'))
-  .map(w => w.dataset.rasm_uthmani).join(' '));
+  .map(w => w.dataset.rasmUthmani).join(' '));
 
 // and draw it
 stage.className = 'paper tight';
@@ -2749,7 +3072,7 @@ stage.addEventListener('click', e => {
   hit++;
   span.classList.add('lit');
   const word = svg.querySelector('g.word[data-word-key="' + span.dataset.wordKey + '"]');
-  out('<b>' + word.dataset.wordKey + '</b> ' + word.dataset.rasm_uthmani +
+  out('<b>' + word.dataset.wordKey + '</b> ' + word.dataset.rasmUthmani +
       ' → ayah <b>' + word.closest('g.ayah-fragment').dataset.ayahKey + '</b>' +
       ', line ' + word.closest('g.line').dataset.line +
       '   ' + hit + ' hits, ' + miss + ' misses');
@@ -2874,7 +3197,7 @@ hits.forEach(w => w.classList.add('q-word'));   // red on the page
 log(hits.length, 'match(es) on this page for', QUERY);
 log('');
 hits.slice(0, 10).forEach(w =>
-  log(w.dataset.wordKey.padEnd(10), w.dataset.rasm_uthmani,
+  log(w.dataset.wordKey.padEnd(10), w.dataset.rasmUthmani,
       '  rasm:', H.forms(w).rasm, '  search:', H.forms(w).search));
 `,
   lib: { code: `
@@ -2909,7 +3232,7 @@ svg.addEventListener('pointermove', e => {
 
   out(
     '<b>' + word.dataset.wordKey + '</b>\\n' +
-    'rasm_uthmani  ' + word.dataset.rasm_uthmani + '\\n' +
+    'rasm_uthmani  ' + word.dataset.rasmUthmani + '\\n' +
     'rasm     ' + t.rasm    + '\\n' +
     'rasm_imlai   ' + t.rasm_imlai  + '\\n' +
     'search   ' + t.search  + '\\n' +
@@ -3384,12 +3707,22 @@ log('counts   ', ayahs.every(a => a.perWord)
 svg.classList.add('q-reveal');
 svg.style.setProperty('--fade', '160ms');
 const all = [...svg.querySelectorAll('g.word')];
+// The medallion is part of the page's ink, so leaving it black while the words
+// around it are grey reads as a bug. It CLOSES its ayah, so it takes the ink at
+// the moment the reciter reaches that ayah's last word — the same rule §8 uses.
+const marks = new Map();
+for (const g of svg.querySelectorAll('g.ayah-mark[data-ayah-key]'))
+  marks.set(g.dataset.ayahKey, g);
 function paint(ayah, i) {
   for (const w of all) w.style.fill = '#c9c4b8';
+  for (const g of marks.values()) g.style.fill = '#c9c4b8';
   if (!ayah) return;
+  const mark = marks.get(ayah.ayahKey);
   if (!ayah.perWord) { for (const w of ayah.words) w.style.fill = '#231f20'; return; }
   const w = ayah.words[i];
   if (w) w.style.fill = '#231f20';
+  // last word of the ayah — the medallion is what comes next in the reading
+  if (mark && i === ayah.times.length - 1) mark.style.fill = '#231f20';
 }
 paint(null);
 
@@ -3552,7 +3885,7 @@ for (const s of layer.children) {
   const g = gloss[s.dataset.wordKey];
   if (g) joined++;
   const w = svg.querySelector('g.word[data-word-key="' + s.dataset.wordKey + '"]');
-  s.setAttribute('aria-label', w.dataset.rasm_uthmani + (g ? ', ' + g[0] : ''));
+  s.setAttribute('aria-label', w.dataset.rasmUthmani + (g ? ', ' + g[0] : ''));
   if (PIN_TITLES && g) {                 // the persistent variant
     const el = document.createElementNS(H.SVGNS, 'title');
     el.textContent = g[0] + '  ·  ' + g[1];
@@ -3567,7 +3900,7 @@ function show(span) {
   span.classList.add('lit');
   tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
                   (g ? '<i>' + g[1] + '</i>' : '') +
-                  '<u>' + span.dataset.wordKey + '  ·  <bdi>' + w.dataset.rasm_uthmani + '</bdi></u>';
+                  '<u>' + span.dataset.wordKey + '  ·  <bdi>' + w.dataset.rasmUthmani + '</bdi></u>';
   tip.classList.add('on');
 
   // clear of the word it describes, flipped near the edges, and never
@@ -3658,7 +3991,7 @@ layer.addEventListener('pointerover', e => {
   const s = e.target.closest('span'); if (!s) return;
   const g = gloss[s.dataset.wordKey];
   tip.innerHTML = '<b>' + (g ? g[0] : '(no gloss)') + '</b>' +
-                  '<u>' + s.dataset.wordKey + '  ·  <bdi>' + wordOf(s).dataset.rasm_uthmani + '</bdi></u>';
+                  '<u>' + s.dataset.wordKey + '  ·  <bdi>' + wordOf(s).dataset.rasmUthmani + '</bdi></u>';
   tip.classList.add('on');
   const host = stage.getBoundingClientRect(), box = s.getBoundingClientRect();
   const above = box.top - host.top - tip.offsetHeight - 8;
@@ -3690,7 +4023,7 @@ document.addEventListener('copy', e => {
   for (const s of layer.children) {
     if (!r.intersectsNode(s)) continue;
     text += (prev !== null && s.dataset.line !== prev ? '\\n' : (text ? ' ' : '')) +
-            wordOf(s).dataset.rasm_uthmani;
+            wordOf(s).dataset.rasmUthmani;
     prev = s.dataset.line;
   }
   if (!text) return;
@@ -3755,7 +4088,7 @@ mod('lab-style', () => makeLab({
 
 /* the nine vowel marks have their own family, so this is one selector.
    It does NOT touch the letter dots — ب ت ث differ by nothing else —
-   nor the waqf signs, which are recitation, not tashkil. */
+   nor the waqf signs, which carry recitation information. */
 [data-mark-family~="diacritic"] { fill: #b8892b }
 
 /* the letters themselves */
@@ -3771,7 +4104,7 @@ mod('lab-style', () => makeLab({
 [data-mark="shaddah"]     { fill: #c1662a }   /* 22,678 */
 [data-mark="maddah"]     { fill: #3b6fc4 }   /* madd, 5,376 */
 
-/* reader mode: hide the tashkil, keep everything that carries
+/* reader mode: hide the vowel marks, keep everything that carries
    letter identity or recitation. Uncomment it. */
 /* [data-mark-family~="diacritic"] { display: none } */
 
@@ -3793,7 +4126,7 @@ page.styleMarks({ name: 'small_meem' }, { fill: '#0a8f6a' });
 page.styleMarks({ name: 'shaddah' },     { fill: '#c1662a' });
 page.styleMarks({ name: 'maddah' },     { fill: '#3b6fc4' });
 
-// reader mode: hide the tashkil, keep everything that carries
+// reader mode: hide the vowel marks, keep everything that carries
 // letter identity or recitation. Uncomment it.
 // page.hideMarks({ family: 'diacritic' });
 
@@ -4169,7 +4502,7 @@ log('words   ', words.length, '(' + AID + ':' + FROM + '..' + TO + ')');
 log('paths   ', cropped.querySelectorAll('path').length);
 log('viewBox ', cropped.getAttribute('viewBox'));
 log('');
-log(words.map(w => w.dataset.rasm_uthmani).join(' '));
+log(words.map(w => w.dataset.rasmUthmani).join(' '));
 `,
     lib: { code: `
 // A RUN of words. Drag FROM and TO in the toolbar, or edit them here.
@@ -4306,30 +4639,27 @@ log('sajdah   ', sj.length ? sj.map(s => s.ayahKey).join(', ') : 'none');
 });
 
 /* ---------- the three-way specimen in §8 ---------- */
-mod('spec', () => {
-  const io = new IntersectionObserver(entries => {
-    if (!entries.some(e => e.isIntersecting)) return;
-    io.disconnect();
-    const line = w => w.closest('g.line').dataset.line === '9';
+mod('spec', () => whenVisible($('#spec'), async () => {
+  /* opening the card can now beat the hero's own fetch, which this crops from */
+  await heroReady;
+  const line = w => w.closest('g.line').dataset.line === '9';
 
-    const full = crop(PRISTINE, line, 2);
-    if (!full) return;
-    $('#spec-full').append(full);
+  const full = crop(PRISTINE, line, 2);
+  if (!full) return;
+  $('#spec-full').append(full);
 
-    const noVowel = crop(PRISTINE, line, 2);
-    const v = noVowel.querySelectorAll('[data-mark-family~="diacritic"]');
-    v.forEach(p => p.remove());
-    $('#spec-novowel').append(noVowel);
-    $('#spec-n1').textContent = '(' + v.length + ' removed — the letters are still themselves)';
+  const noVowel = crop(PRISTINE, line, 2);
+  const v = noVowel.querySelectorAll('[data-mark-family~="diacritic"]');
+  v.forEach(p => p.remove());
+  $('#spec-novowel').append(noVowel);
+  $('#spec-n1').textContent = '(' + v.length + ' removed — the letters are still themselves)';
 
-    const bare = crop(PRISTINE, line, 2);
-    const all = bare.querySelectorAll('path[data-kind="mark"]');
-    all.forEach(p => p.remove());
-    $('#spec-bare').append(bare);
-    $('#spec-n2').textContent = '(' + all.length + ' removed — the dots went too, so ب ت ث are now one shape)';
-  }, { rootMargin: '300px' });
-  io.observe($('#spec'));
-});
+  const bare = crop(PRISTINE, line, 2);
+  const all = bare.querySelectorAll('path[data-kind="mark"]');
+  all.forEach(p => p.remove());
+  $('#spec-bare').append(bare);
+  $('#spec-n2').textContent = '(' + all.length + ' removed — the dots went too, so ب ت ث are now one shape)';
+}));
 
 /* ---------------------------------------------------------------------------
    THE ATTRIBUTE TABLE — generated from the corpus, not maintained by hand.
@@ -4401,8 +4731,8 @@ mod('attrs', () => {
     'svg|data-edition': ['which printed edition the artwork is', 1],
     'svg|data-riwayah-name-ar': ['the riwayah named in Arabic, as the file carries it: حفص عن عاصم', 1],
     'svg|data-riwayah-name-en': ['the same name in Latin script', 1],
-    'svg|data-ayah-numbering': ['the counting system — <code>kufi</code>', 1],
-    'svg|data-ayah-total': ['ayahs in the whole mushaf <b>under that counting system</b>. A Hafs fact, not a Quran fact.', 1],
+    'svg|data-ayah-numbering': ['the numbering system — <code>kufi</code>', 1],
+    'svg|data-ayah-total': ['ayahs in the whole mushaf <b>under that numbering system</b>. A Hafs fact, not a Quran fact.', 1],
     'svg|data-page': ['the page number, 1–604', 1],
     'svg|data-decomposition': ['<b>how far down this edition is broken up.</b> <code>word</code> — words, ligatures and named marks are all addressable, which is what every section on this page relies on. <code>ayah</code> — page ink with ayah polygons and end-marks, and nothing below the ayah. Read it before writing a word-level selector.', 1],
     'class': ['what the element is. Every selector on this page is built on it.', 1],
@@ -4460,6 +4790,9 @@ mod('attrs', () => {
         pills.append(b);
       };
       add('all', 'everything (' + rows.length + ')');
+      /* the disclosure is closed, so it has to say what is behind it */
+      $('#attr-count').textContent = rows.length +
+        ' attributes, measured over all 604 pages — not a hand-kept list';
       add('prod', 'production profile only');
       scopes.forEach(s => add(s, s));
       draw();

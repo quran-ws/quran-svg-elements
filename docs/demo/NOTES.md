@@ -10,6 +10,61 @@ defect counts, sweeps or review state. The project's rigour appears once, as a
 
 ---
 
+## 2026-09-09 — eighteen sections became a capability grid
+
+Abdullah, on the page as it stood: *"many examples that are repeating itself …
+we want to show the use cases in a way that a dev who visits the site sees
+different capabilities without being overwhelmed."*
+
+**What was wrong, measured.** The document was **32,896px** — about forty
+screens — of eighteen numbered sections that all had the same silhouette:
+eyebrow, selector line, numbered `<h2>`, paragraph, paper, editor, note. Equal
+weight for everything means no weight for anything. And eighteen sections were
+demonstrating five mechanisms:
+
+| the one mechanism | the sections that each showed it again |
+|---|---|
+| select by `data-*`, then paint | 2 highlight · 3 hit-test · 4 band · 7 drag-copy · 11 all-at-once |
+| a CSS rule beats the `fill` attribute | 12 marks · 13 theme · 14 medallions |
+| iterate `g.word`, act per word | 8 reveal · 9 audio · 10 hover-gloss |
+| read text and attributes off the file | 1 fetch · 5 search (twice) · 6 word · 17 metadata |
+| move geometry | 15 leading · 16 crop |
+
+**What it is now.** One `#can` section: **thirteen cards in four bands**, each a
+closed `<details>` showing a drawn thumbnail, a title and one line. Opening a
+card gives it the whole row, in place, with the section that used to sit inline.
+**Nothing written was thrown away** — every body survives verbatim; the four
+groups that were one mechanism told three times are one card with tabs
+(`#ayah` + `#band`; `#style` + `#theme` + `#markers`; `#crop` + `#spacing`).
+Every old anchor still resolves: a card keeps its id, a merged half becomes
+`#pane-band`, and `mod('caps')` opens whatever card the hash lands in.
+
+**32,896px → 9,173px at rest**, and the whole capability map fits on one and a
+bit screens. The attribute table — 5,893px of it, 41% of what was left — is
+behind a disclosure, because it is consulted, not read.
+
+### Two bugs this uncovered, both older than the restructure
+
+- **`dataset` was being asked for snake_case names.** Twelve sites read
+  `w.dataset.rasm_uthmani`, which cannot exist: `data-rasm-uthmani` arrives as
+  `dataset.rasmUthmani`. Left behind by the terminology adoption, and silent —
+  words came out blank rather than throwing.
+- **The sidecar reader keyed on `wordKey` where the shipped JSON writes
+  `word_key`.** Every lookup missed, so `forms()` returned undefined for every
+  word and the search section threw. Both spellings are accepted now, the way
+  the audits learned to over `data-aya`/`data-ayah`.
+
+### The trap in the pattern
+
+A lab builds itself on an `IntersectionObserver`, so a card nobody opens fetches
+nothing. **That observer does not fire for an element that goes from
+`display:none` to laid out** — which is exactly what opening a `<details>` does.
+Every card opened on an editor reading "not run yet", with no error anywhere.
+`whenVisible()` takes the card's `toggle` as well; whichever signal arrives
+first wins.
+
+---
+
 ## How to run it
 
 ```bash
