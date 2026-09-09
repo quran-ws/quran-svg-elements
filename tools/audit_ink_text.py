@@ -25,6 +25,36 @@ from audit_marks import TEXT_WANT  # the one code-point table, not a second copy
 
 PAGES = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
 
+# Three texts, and it matters which KFGQPC release is meant. `data-qpc` in the
+# emitted SVG is UthmanicHafs v2.0 (.cache/official/hafsData_v2-0.json, aligned
+# by scratchpad/warm_qpc.py); quran-ws/quran-text ships v3.0. They are NOT the
+# same text — 61.8% of words identical, the rest almost all the shaddah/harakah
+# ORDER (v2.0 writes 0651 064E, v3.0 writes 064E 0651). Mark multisets are
+# order-free, so that difference cannot reach this audit, but the two must
+# still be reported separately or "qpc" silently means whichever you assumed.
+LIB = os.path.join(ROOT, ".cache", "word_by_word_translation", "hafs.json")
+
+
+def quran_ws():
+    """quran-ws/quran-text v3.0, keyed surah:ayah:word, waqf layer folded in."""
+    if not os.path.exists(LIB):
+        return {}
+    h = json.load(open(LIB, encoding="utf-8"))
+    by = {x["w"]: x for x in h["words"]}
+    out = {}
+    for a in h["ayat"]:
+        lo, hi = a["words"]
+        for pos, i in enumerate(range(lo, hi + 1), 1):
+            w = by.get(i)
+            if w:
+                out["%d:%d:%d" % (a["sura"], a["n"], pos)] = (
+                    w.get("t", "")
+                    + "".join(m.get("sign", "") for m in (w.get("marks") or [])))
+    return out
+
+
+WS = quran_ws()
+
 # invert TEXT_WANT: code point -> mark name. A code point claimed by two names
 # (ۜ is both saktah and seen_al_qiraah; ۬ both ishmam and tashil) is ambiguous
 # from the text alone, so it is recorded under both and a mismatch is only
@@ -43,7 +73,15 @@ WAQF = {
     "\u06d8": "waqf_lazim",
 }
 
+# U+0622 (alef with madda above) is one code point carrying a letter AND a
+# maddah; rasm_uthmani decomposes it as U+0627 U+0653 and quran-ws v3.0 does
+# not. Without this, every alef-madda in the mushaf reads as a maddah the text
+# forgot — 2,934 phantom words, the single largest class against quran-ws.
+PRECOMPOSED = {"\u0622": "maddah"}
+
 CP = collections.defaultdict(set)
+for ch, name in PRECOMPOSED.items():
+    CP[ch].add(name)
 for ch, name in WAQF.items():
     CP[ch].add(name)
 for name, cps in TEXT_WANT.items():
@@ -73,6 +111,23 @@ for ch, name in QPC_AS.items():
 
 # the ink families this audit judges; letter dots are not spelled by the text
 SKIP_INK = {"dot", "two_dots", "three_dots"}
+
+# Letters only, for the alignment check below. Marks are exactly what is in
+# dispute, so they cannot be part of deciding whether two records are the same
+# word; the letter skeleton can.
+_MARKS = set("\u064b\u064c\u064d\u064e\u064f\u0650\u0651\u0652\u0653"
+             "\u0654\u0655\u0656\u0657\u065e\u0670\u06d6\u06d7\u06d8"
+             "\u06d9\u06da\u06db\u06dc\u06df\u06e0\u06e1\u06e2\u06e3"
+             "\u06e4\u06e5\u06e6\u06e8\u06e9\u06ea\u06eb\u06ec\u06ed"
+             "\u0640\u08f0\u08f1\u08f2")
+_FOLD = {"\u0622": "\u0627", "\u0623": "\u0627", "\u0625": "\u0627",
+         "\u0671": "\u0627", "\u0649": "\u064a", "\u0624": "\u0648",
+         "\u0626": "\u064a", "\u0629": "\u0647"}
+
+
+def skeleton(t):
+    return "".join(_FOLD.get(c, c) for c in (t or "") if c not in _MARKS)
+
 
 WORD = re.compile(r'<g class="word" ([^>]*)>(.*?)(?=<g class="word" |</g></g>|$)', re.S)
 ATTR = re.compile(r'([a-z-]+)="([^"]*)"')
@@ -131,15 +186,24 @@ def page_rows(path):
         ink = [m for m in MARK.findall(body) if m not in SKIP_INK]
         cov["words"] += 1
         cov["marks"] += len(ink)
-        for src in ("data-rasm-uthmani", "data-qpc"):
-            t = a.get(src)
+        for src in ("data-rasm-uthmani", "data-qpc", "quran-ws"):
+            t = WS.get(key) if src == "quran-ws" else a.get(src)
             if t is None:
                 continue
-            table = CP_QPC if src == "data-qpc" else CP
+            # quran-ws numbers words by its own scheme, which drifts from ours
+            # at the split/fuse sites (72:16 وَأَلَّوِ holds two of its numbers).
+            # A drifted row compares one word's ink to another word's text and
+            # reports pure noise, so it is counted apart, never as a mismatch.
+            if skeleton(t) != skeleton(a.get("data-rasm-uthmani")):
+                cov["misaligned_" + src] += 1
+                continue
+            # v2.0 and v3.0 share the KFGQPC alphabet; only rasm_uthmani differs
+            table = CP if src == "data-rasm-uthmani" else CP_QPC
             miss, sur = compare(ink, flatten(text_marks(t, table)))
             if miss or sur:
                 rows.append({
-                    "page": page, "word_key": key, "source": src[5:],
+                    "page": page, "word_key": key,
+                    "source": src[5:] if src.startswith("data-") else src,
                     "text": t,
                     "ink_draws_text_omits": dict(sur),
                     "text_spells_ink_omits": dict(miss),
@@ -173,6 +237,10 @@ def main():
     missing = (last - first + 1) - pages
     print("compared %d words / %d mark elements over %d pages"
           % (seen["words"], seen["marks"], pages))
+    for k in sorted(seen):
+        if k.startswith("misaligned_"):
+            print("  %s: %d words the two sources do not key to the same word "
+                  "(skipped, not a mismatch)" % (k[11:], seen[k]))
     if missing:
         raise SystemExit("REFUSING: %d page(s) missing from %s — regenerate "
                          "them first, or this reads clean by not looking"
