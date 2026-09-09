@@ -28,6 +28,24 @@ LIB = os.path.join(QROOT, ".cache", "word_by_word_translation", "hafs.json")
 REF = os.path.join(ROOT, "MushafDatabase-Ligature-Based-SVG", "SVG V1.01")
 OUT = os.path.join(ROOT, "docs", "defects", "text_contest.html")
 
+# Every source is drawn in the font the print itself is set in — KFGQPC
+# UthmanicHafs v3.0, shipped alongside the text by quran-ws/quran-text.
+# Abdullah checked it against the artwork: it matches. This matters because a
+# system Arabic face draws U+06DF and U+0652 almost alike, and that pair IS
+# the biggest class of disagreement — a generic font would settle the question
+# by accident. Embedded base64 so the page travels on its own.
+FONT = os.path.join(QROOT, ".cache", "fonts", "UthmanicHafs-v-3.0.ttf")
+
+
+def font_css():
+    import base64
+    if not os.path.exists(FONT):
+        raise SystemExit("missing font: " + FONT)
+    b64 = base64.b64encode(open(FONT, "rb").read()).decode("ascii")
+    return ('@font-face{font-family:"hafs";font-display:block;'
+            'src:url(data:font/ttf;base64,%s)}' % b64)
+
+
 WORD = re.compile(r'<g class="word" data-word-key="(\d+):(\d+):(\d+)"'
                   r'[^>]*data-rasm-uthmani="([^"]*)"[^>]*>')
 TAG = re.compile(r"<g\b|</g>")
@@ -156,7 +174,7 @@ def main():
 
     doc = """<!doctype html><meta charset="utf-8">
 <title>Which source spells the print</title>
-<style>
+<style>@@FONTS@@
  :root{--bg:#fbfaf7;--fg:#1a1a1a;--mut:#666;--line:#e2ded5}
  body{margin:0;background:var(--bg);color:var(--fg);
       font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -175,7 +193,8 @@ def main():
  .k{font:11px ui-monospace,Menlo,monospace;color:var(--mut);margin-bottom:6px}
  .src{margin:6px 0}
  .src b{display:block;font-size:11px;color:var(--mut);font-weight:600}
- .ar{font-size:21px;display:block;line-height:1.9}
+ .ar{font-family:"hafs",serif;font-size:27px;display:block;
+      line-height:2.1;direction:rtl;unicode-bidi:isolate}
  .cp{font:10px ui-monospace,Menlo,monospace;color:var(--mut);word-break:break-all}
  .na{font-size:12px;color:var(--mut);font-style:italic}
  .ask{margin-top:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
@@ -196,7 +215,8 @@ quran-ws/quran-text ships its own, and MushafDatabase labels the same artwork a
 third way. They disagree on <b>@@N@@ of 77,432 words</b> — but the disagreement is
 almost all ENCODING, not content, so the verdict belongs to the KIND of
 difference, not to each word. The ink above each card is what the page actually
-draws.</p></header>
+draws.</p>
+<p class="sub">All three are set in <b>KFGQPC UthmanicHafs v3.0</b>, the face this print uses, so the three spellings are drawn the way the mushaf would draw them.</p></header>
 @@ROWS@@
 <footer><button id="save">Copy verdicts as JSON</button></footer>
 <pre id="out"></pre>
@@ -228,7 +248,7 @@ document.getElementById('save').onclick = () => {
     total = sum(c["n"] for _, c in order)
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     open(OUT, "w", encoding="utf-8").write(
-        doc.replace("@@N@@", "{:,}".format(total)).replace("@@ROWS@@", "".join(rows)))
+        doc.replace("@@FONTS@@", font_css()).replace("@@N@@", "{:,}".format(total)).replace("@@ROWS@@", "".join(rows)))
     print("%s: %d classes, %d differing words"
           % (os.path.relpath(OUT, ROOT), len(order), total))
     for cid, c in order:
