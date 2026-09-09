@@ -73,9 +73,25 @@ def jdump(obj, path):
     return len(text.encode())
 
 
+# The Quran.ws licensing policy has exactly two rules a tool can check: every
+# dataset carries a `license` field in its manifest, and every top-level folder
+# is named in LICENSE. This is the first. The value is the SPDX id of OUR
+# contribution — the decomposition, the labels, the indexes. It is NOT a claim
+# over the drawn ink: the page artwork and the Quranic text belong to the King
+# Fahd Glorious Quran Printing Complex and stay under their terms, which is why
+# `rights` points at the file rather than pretending one id covers both.
+LICENSE_SPDX = "CC-BY-4.0"
+LICENSE_NOTE = ("CC BY 4.0 covers this project's decomposition, labels and "
+                "indexes, with attribution waived for use inside a product. "
+                "The page artwork and the Quranic text are the King Fahd "
+                "Glorious Quran Printing Complex's and are NOT licensed by it. "
+                "See LICENSE.")
+
+
 def envelope(kind, payload):
     d = {"schema": kind, "schema_version": SCHEMA_VERSION,
-         "edition": EDITION_ID}
+         "edition": EDITION_ID, "license": LICENSE_SPDX,
+         "rights": LICENSE_NOTE}
     d.update(payload)
     return d
 
@@ -332,8 +348,12 @@ def build_schemas(out):
         "schema": {"type": "string"},
         "schema_version": {"type": "string"},
         "edition": {"type": "string"},
+        # required, not optional: the licensing policy's one machine-checkable
+        # rule about datasets is that the manifest carries a `license` field
+        "license": {"type": "string"},
+        "rights": {"type": "string"},
     }
-    env_req = ["schema", "schema_version", "edition"]
+    env_req = ["schema", "schema_version", "edition", "license"]
     aid = {"type": "string", "pattern": r"^\d+:\d+$"}
     word_key = {"type": "string", "pattern": r"^\d+:\d+:\d+$"}
 
@@ -699,6 +719,19 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     # the ink. Copied from the repository root so there is ONE source of truth;
     # the placeholder below is kept only as the fallback for a checkout that
     # somehow lacks them, and a bundle built that way says so plainly.
+    # NOTICE.md carries the coverage split — what the licence covers, and the
+    # KFGQPC artwork it cannot. LICENSE is the verbatim CC BY 4.0 text and says
+    # nothing bundle-specific, so the policy's "every top-level folder is named
+    # in the licensing files" rule is satisfied by NOTICE, as it is in
+    # quran-ws/quran-text. Shipping one without the other would publish a
+    # licence that appears to cover the printed artwork.
+    _notice = os.path.join(ROOT, "NOTICE.md")
+    if os.path.exists(_notice):
+        shutil.copyfile(_notice, os.path.join(bundle, "NOTICE.md"))
+    else:
+        raise SystemExit("NOTICE.md is missing: it states what the licence "
+                         "does NOT cover, and must ship beside LICENSE")
+
     _lic = os.path.join(ROOT, "LICENSE")
     _notice = os.path.join(ROOT, "NOTICE.md")
     if os.path.exists(_lic):
@@ -746,6 +779,8 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
         "schema_version": SCHEMA_VERSION,
         "edition": EDITION_ID,
         "print": manifest.get("print"),
+        "license": LICENSE_SPDX,
+        "rights": LICENSE_NOTE,
         "profile": profile,
         # a DATE, not a clock reading: two builds on the same day are identical
         "build_date": datetime.datetime.now(datetime.timezone.utc)
