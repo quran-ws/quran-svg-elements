@@ -24,6 +24,7 @@ sys.path.insert(0, os.path.join(ROOT, "scratchpad"))
 from audit_marks import TEXT_WANT  # the one code-point table, not a second copy
 
 PAGES = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
+FONT = os.path.join(ROOT, ".cache", "fonts", "UthmanicHafs-v-3.0.ttf")
 
 # Three texts, and it matters which KFGQPC release is meant. `data-qpc` in the
 # emitted SVG is UthmanicHafs v2.0 (.cache/official/hafsData_v2-0.json, aligned
@@ -54,8 +55,13 @@ def quran_ws():
     out = {}
     for a in h["ayat"]:
         lo, hi = a["words"]
-        for pos, i in enumerate(range(lo, hi + 1), 1):
-            w = by.get(i)
+        # The release's `w` index space HAS GAPS — 1-77,434 over 77,432 words
+        # (docs/HAFS-JSON-SOURCE.md). Numbering positions from the raw index
+        # RANGE therefore shifts every word after a hole by one, which looked
+        # like a word-boundary disagreement running to the end of the ayah at
+        # 9:100 (7 words) and 72:16 (5 words). Number the words that EXIST.
+        for pos, i in enumerate([j for j in range(lo, hi + 1) if j in by], 1):
+            w = by[i]
             if w:
                 out["%d:%d:%d" % (a["sura"], a["n"], pos)] = (
                     w.get("t", "")
@@ -120,6 +126,25 @@ CP_QPC = dict(CP)
 for ch, name in QPC_AS.items():
     CP_QPC[ch] = {name}
 
+# U+0653 is not one mark. Shaped by the print's own font it draws EITHER a
+# wavy madda (alone, or on a bare alef: آ) OR, absorbed into the لأ ligature,
+# a straight slash indistinguishable from a fathah — which is what the print
+# draws and what this pipeline labels `fathah`. Measured over the 277 sites
+# where the two readings disagreed: 277/277 absorb into a ligature, and the
+# only two words that ALSO yield a standalone madda glyph (18:5:7, 33:5:2) are
+# the two carrying a second, agreed maddah in بَآئِ. So the name depends on the
+# shaping context, not on the code point, and a flat table gets it wrong 277
+# times. Abdullah's reading of the ink; confirmed with HarfBuzz against
+# UthmanicHafs v3.0.
+# lam + (optional fathah) + alef-hamza + madda. HarfBuzz shapes this whole run
+# into ONE ligature glyph in UthmanicHafs (578/579/580), and that glyph draws
+# the madda as a straight slash — the fathah shape the print uses and this
+# pipeline labels `fathah`. Outside the ligature the SAME U+0653 draws as the
+# wavy madda (أٓ alone, آ, بَآئِ all do). So the mark's name depends on the
+# shaping context, not the code point.
+LAM_ALEF_HAMZA = re.compile(
+    "\u0644[\u064b-\u0655\u0670\u06e1\u08f0-\u08f2]*\u0623\u0653")
+
 # the ink families this audit judges; letter dots are not spelled by the text
 SKIP_INK = {"dot", "two_dots", "three_dots"}
 
@@ -130,8 +155,10 @@ _MARKS = set("\u064b\u064c\u064d\u064e\u064f\u0650\u0651\u0652\u0653"
              "\u0654\u0655\u0656\u0657\u065e\u0670\u06d6\u06d7\u06d8"
              "\u06d9\u06da\u06db\u06dc\u06df\u06e0\u06e1\u06e2\u06e3"
              "\u06e4\u06e5\u06e6\u06e8\u06e9\u06ea\u06eb\u06ec\u06ed"
-             "\u0640\u08f0\u08f1\u08f2")
-_FOLD = {"\u0622": "\u0627", "\u0623": "\u0627", "\u0625": "\u0627",
+             "\u0640\u08f0\u08f1\u08f2\u065c\u0655\u0656\u0657")
+# a hamzah is written as a LETTER (U+0621) or as a MARK over a seat (U+0654);
+# the skeleton must not treat that as two different words
+_FOLD = {"\u0621": "", "\u0622": "\u0627", "\u0623": "\u0627", "\u0625": "\u0627",
          "\u0671": "\u0627", "\u0649": "\u064a", "\u0624": "\u0648",
          "\u0626": "\u064a", "\u0629": "\u0647"}
 
@@ -210,7 +237,14 @@ def page_rows(path):
                 continue
             # v2.0 and v3.0 share the KFGQPC alphabet; only rasm_uthmani differs
             table = CP if src == "data-rasm-uthmani" else CP_QPC
-            miss, sur = compare(ink, flatten(text_marks(t, table)))
+            want = flatten(text_marks(t, table))
+            n = len(LAM_ALEF_HAMZA.findall(t))
+            if n:
+                want["maddah"] = want.get("maddah", 0) - n
+                if want["maddah"] <= 0:
+                    want.pop("maddah", None)
+                want["fathah"] = want.get("fathah", 0) + n
+            miss, sur = compare(ink, want)
             if miss or sur:
                 rows.append({
                     "page": page, "word_key": key,
