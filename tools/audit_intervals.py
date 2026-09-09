@@ -138,12 +138,19 @@ def scan(pg):
                 # mark TOUCHING its own word (own gap 0.0-2.4) -- يُغَيِّرُ's
                 # own two dots, ٱلْعَزِيزُ's own hamzat_al_wasl, and one case whose
                 # "neighbour" is 151u away. Threshold inside the band.
+                # HORIZONTALLY only. The 2-D form measured vertical distance
+                # too, which is about how TALL the neighbouring letter is, not
+                # about who owns the mark: on p350 رَأْفَةࣱ's tanwin overlaps its
+                # own ة by 0.4u and فِى by 1.1u, so dx is 0 to both and the
+                # decision fell entirely to dy — فِى's ف simply rises higher
+                # (y 166.2) than the ة (y 167.4), and won the mark by 1.2u.
+                # Abdullah, 2026-09-09: "we should measure that in x axis only,
+                # not the distance." A mark that still overlaps its own word
+                # horizontally has not gone anywhere.
                 def _gap(bx):
                     g = 1e9
                     for b in bx:
-                        dx = max(0.0, b["x1"] - e["x2"], e["x1"] - b["x2"])
-                        dy = max(0.0, b["y1"] - e["y2"], e["y1"] - b["y2"])
-                        g = min(g, (dx * dx + dy * dy) ** 0.5)
+                        g = min(g, max(0.0, b["x1"] - e["x2"], e["x1"] - b["x2"]))
                     return g
                 _hb = [x for x in els if x["kind"] == "body"]
                 if _hb and _ob and _gap(_hb) - _gap(_ob) < 0.3:
