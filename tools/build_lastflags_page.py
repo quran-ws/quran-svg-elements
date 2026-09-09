@@ -16,6 +16,8 @@ import os
 import re
 import sys
 
+import sys as _sys
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CACHE = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")
 OUT = os.path.join(ROOT, "docs", "defects", "last_flags.html")
@@ -23,6 +25,47 @@ OUT = os.path.join(ROOT, "docs", "defects", "last_flags.html")
 # one hue per word position, so the partition is visible at a glance
 HUES = ["#c1121f", "#1d3557", "#2a9d8f", "#e07a00", "#6a4c93",
         "#0b7285", "#b5179e", "#386641", "#9c6644", "#3a0ca3"]
+
+
+_BOXES = {}
+
+
+def boxes_for(pg):
+    """{element id: "x1,y1,x2,y2"} exactly as the pipeline keys an override.
+
+    tools/build_overrides.py REFUSES an edit that carries only an element id —
+    ids are handed out in emission order and shift with every pipeline change,
+    so resolving one later can name the wrong piece entirely. The geometry has
+    to be recorded at the moment of the edit, and it has to be the pipeline's
+    own: `"%.1f,%.1f,%.1f,%.1f" % (x1, y1, x2, y2)`, verified here against the
+    override already live on page 6 (245.3,411.2,252.4,427.0 -> 2:35:13).
+    """
+    if pg in _BOXES:
+        return _BOXES[pg]
+    _sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import assign_words as aw
+    cap = {}
+    orig = aw.rewrite
+
+    def spy(page, assignment, _c=cap):
+        _c["a"] = assignment
+        return orig(page, assignment)
+
+    aw.rewrite = spy
+    try:
+        aw.assign_page("hafs/kfqc", pg,
+                       os.path.join(ROOT, ".cache", "words"))
+    finally:
+        aw.rewrite = orig
+    out, n = {}, 0
+    for w, atoms in cap.get("a", []):
+        for a in atoms:
+            for el in a["els"]:
+                n += 1
+                out["e%d" % n] = "%.1f,%.1f,%.1f,%.1f" % (
+                    el["x1"], el["y1"], el["x2"], el["y2"])
+    _BOXES[pg] = out
+    return out
 
 
 def group_at(src, start):
@@ -55,14 +98,23 @@ def line_frame(src, frag):
     return head, (inner.group(0) if inner else "<g>")
 
 
-def colour(frag, flagged):
-    """Give every word its own hue; the flagged ones get a halo."""
+def colour(frag, flagged, boxes):
+    """Give every word its own hue, and every path its id, box and owner."""
     def paint(m):
         key = m.group(1)
         pos = int(key.split(":")[2])
         hue = HUES[(pos - 1) % len(HUES)]
         grp = group_at(frag, m.start())
         new = grp.replace('fill="#231f20"', 'fill="%s"' % hue)
+
+        def stamp(pm):
+            eid = pm.group(1)
+            box = boxes.get(eid)
+            return (pm.group(0)[:-1]
+                    + ' data-owner="%s"' % key
+                    + (' data-box="%s"' % box if box else "")
+                    + ">")
+        new = re.sub(r'<path\b[^>]*data-element-id="(e\d+)"[^>]*>', stamp, new)
         if key in flagged:
             new = new.replace('<g class="word"',
                               '<g class="word flagged"', 1)
@@ -96,9 +148,9 @@ def legend(src, ayah_key, flagged):
         pos = int(key.split(":")[2])
         hue = HUES[(pos - 1) % len(HUES)]
         cls = " on" if key in flagged else ""
-        items.append('<span class="sw%s"><i style="background:%s"></i>'
-                     '<span class="ar">%s</span> <span class="k">%s</span></span>'
-                     % (cls, hue, html.escape(txt), key))
+        items.append('<button class="sw%s" data-word="%s"><i style="background:%s">'
+                     '</i><span class="ar">%s</span> <span class="k">%s</span></button>'
+                     % (cls, key, hue, html.escape(txt), key))
     return '<div class="legend">' + "".join(items) + "</div>"
 
 
@@ -107,6 +159,7 @@ def render(pg, ayah_key, flagged):
     if not os.path.exists(f):
         return "<p>page %d not emitted</p>" % pg
     src = open(f, encoding="utf-8").read()
+    boxes = boxes_for(pg)
     vb = re.search(r'viewBox="[^"]*"', src)
     page_frame = re.search(r'<g transform="matrix[^"]*">', src)
     svgs = []
@@ -116,7 +169,7 @@ def render(pg, ayah_key, flagged):
             '<svg xmlns="http://www.w3.org/2000/svg" %s class="ink">%s%s%s</g></g></svg>'
             % (vb.group(0) if vb else "",
                page_frame.group(0) if page_frame else "<g>",
-               inner, colour(frag, flagged)))
+               inner, colour(frag, flagged, boxes)))
     return "".join(svgs) + legend(src, ayah_key, flagged)
 
 
@@ -164,12 +217,15 @@ def main():
             '<h2>%d. page %d &middot; ayah %s</h2>'
             '<ul class="flags">%s</ul>'
             '<div class="stage">%s</div>'
-            '<div class="ask"><p>Which word does the disputed ink belong to? '
-            'Every word of the ayah is drawn in its own colour above.</p>'
+            '<div class="ask">'
+            '<p><b>To say what belongs where:</b> click a word below to arm it, '
+            'then click each piece of ink that belongs to it. Click a piece '
+            'again to undo. The armed word is outlined.</p>'
+            '<div class="moves"><em>no moves yet</em></div>'
             '<label>verdict '
             '<select><option value="">—</option>'
             '<option>ours is right, the audit is wrong</option>'
-            '<option>the ink is mis-partitioned, fix it</option>'
+            '<option>the ink is mis-partitioned — the moves above say how</option>'
             '<option>needs the print</option>'
             '</select></label>'
             '<textarea rows="3" placeholder="what you see"></textarea></div>'
@@ -206,6 +262,17 @@ def main():
  select,textarea{font:inherit;padding:6px 8px;border:1px solid var(--line);
                  border-radius:6px;background:#fff}
  textarea{flex:1 1 320px;resize:vertical}
+ .sw{font:inherit;border:1px solid var(--line);background:#fff0;color:inherit;
+      padding:3px 7px;border-radius:6px;cursor:pointer}
+ .sw:hover{border-color:var(--fg)}
+ .sw.armed{outline:2px solid #0b7285;outline-offset:1px;background:#0b728514}
+ svg.ink path{cursor:pointer}
+ svg.ink path:hover{stroke:#0b7285;stroke-width:.6}
+ svg.ink path.moved{stroke:#0b7285;stroke-width:.9;stroke-dasharray:1.2 .8}
+ .moves{font-size:13px;margin:0 0 10px;flex:1 1 100%}
+ .moves em{color:var(--mut)}
+ .moves div{font:12px ui-monospace,Menlo,monospace;margin:2px 0}
+ .moves b{font-family:inherit;font-size:14px}
  footer{padding:22px 32px;display:flex;gap:12px;align-items:center}
  button{font:inherit;padding:8px 14px;border-radius:6px;border:1px solid #0b7285;
         background:#0b7285;color:#fff;cursor:pointer}
@@ -253,15 +320,56 @@ for (const svg of document.querySelectorAll('svg.ink')) {
   svg.setAttribute('viewBox',
     [x0 - padX, y0 - padY, (x1 - x0) + 2 * padX, (y1 - y0) + 2 * padY].join(' '));
 }
+/* Arm a word, then click the ink that belongs to it. A move is recorded
+   against the piece's OWN geometry, which is what tools/build_overrides.py
+   keys an override by — it refuses an edit carrying only an element id. */
+const moves = new Map();                       // path element -> target word key
+
+function redraw(c) {
+  const box = c.querySelector('.moves');
+  const mine = [...c.querySelectorAll('svg.ink path.moved')];
+  if (!mine.length) { box.innerHTML = '<em>no moves yet</em>'; return; }
+  box.innerHTML = mine.map(p =>
+    `<div>${p.dataset.elementId}&nbsp; <b class="ar">${p.dataset.owner}</b>` +
+    ` &rarr; <b class="ar">${moves.get(p)}</b>&nbsp; <span style="opacity:.6">` +
+    `${p.dataset.box || 'NO GEOMETRY'}</span></div>`).join('');
+}
+
+for (const c of document.querySelectorAll('.case')) {
+  let armed = null;
+  c.querySelectorAll('.sw').forEach(sw => sw.onclick = () => {
+    c.querySelectorAll('.sw').forEach(o => o.classList.toggle('armed', o === sw && o !== armed));
+    armed = (armed === sw) ? null : sw;
+  });
+  c.querySelectorAll('svg.ink path').forEach(path => path.onclick = () => {
+    if (moves.has(path)) { moves.delete(path); path.classList.remove('moved'); }
+    else if (armed) { moves.set(path, armed.dataset.word); path.classList.add('moved'); }
+    else { return; }
+    redraw(c);
+  });
+}
+
 document.getElementById('save').onclick = () => {
-  const out = [...document.querySelectorAll('.case')].map(c => ({
-    case: +c.dataset.case, page: +c.dataset.page, ayah: c.dataset.ayah,
-    verdict: c.querySelector('select').value,
-    note: c.querySelector('textarea').value
-  })).filter(v => v.verdict || v.note);
-  const j = JSON.stringify(out, null, 1);
-  document.getElementById('out').textContent = j;
-  navigator.clipboard && navigator.clipboard.writeText(j);
+  const lines = [], notes = [];
+  for (const c of document.querySelectorAll('.case')) {
+    const page = +c.dataset.page;
+    for (const p of c.querySelectorAll('svg.ink path.moved')) {
+      lines.push(JSON.stringify({
+        id: crypto.randomUUID(), page, step: 'words', kind: 'move-element',
+        payload: { element_id: p.dataset.elementId, to: moves.get(p),
+                   from: p.dataset.owner, box: p.dataset.box },
+        editor: 'abdullah', ts: new Date().toISOString().slice(0, 19),
+        status: 'proposed'
+      }));
+    }
+    const v = c.querySelector('select').value, n = c.querySelector('textarea').value;
+    if (v || n) notes.push({ page, ayah: c.dataset.ayah, verdict: v, note: n });
+  }
+  const text = (lines.length ? '# append to .cache/review/edits.jsonl\n' + lines.join('\n') : '')
+    + (notes.length ? '\n\n# verdicts\n' + JSON.stringify(notes, null, 1) : '')
+    || 'nothing recorded yet';
+  document.getElementById('out').textContent = text;
+  navigator.clipboard && navigator.clipboard.writeText(text);
 };
 </script>
 """

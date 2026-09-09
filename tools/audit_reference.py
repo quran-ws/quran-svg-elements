@@ -64,7 +64,11 @@ def reference(path):
         if a.get("type") != "text":
             continue
         try:
-            sa = (int(a["surah"]), int(a["ayah"]))
+            # V1.01 writes `data-aya`, the earlier release `data-ayah`; both
+            # are the publisher's name for the same field. Reading only one
+            # matched ZERO of 77,432 words and reported "0 pages" — a gate that
+            # passes because it compared nothing.
+            sa = (int(a["surah"]), int(a.get("aya", a.get("ayah"))))
             idx = int(a["word-index-in-ayah"])
         except (KeyError, ValueError):
             continue
