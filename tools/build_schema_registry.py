@@ -170,7 +170,12 @@ def edition():
         "schema": "edition-manifest",
         "version": REGISTRY_VERSION,
         "id": "hafs-kfgqpc",
-        "print": "KFGQPC Madani mushaf, V2 1441H",
+        # V4 is the 1441H print; V2 is 1421H and is what DigitalKhatt models.
+        # docs/EDITION-1441-FINDING.md: line agreement against the ink is
+        # 100.0000% for V4/1441H and 96.33% for DK V2/1421H. Naming this V2
+        # 1441H paired the wrong version with the right year, in the one file
+        # a consumer reads to learn which printing they have.
+        "print": "KFGQPC Madani mushaf, V4 1441H",
         "layout_source": name,
         "font": font,
         "pages": pages,

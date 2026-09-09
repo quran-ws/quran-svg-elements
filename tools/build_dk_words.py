@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a word cache from the DigitalKhatt layout of the KFGQPC V2 1441H print.
+"""Build a word cache from the DigitalKhatt layout of the KFGQPC V2 1421H print.
 
 quran.com's mushaf-2 layout is wrong about which words are on the page for 25
 pages (reported.json item 21; 18 of them in juz 29-30 — the juz-30 mechanism).

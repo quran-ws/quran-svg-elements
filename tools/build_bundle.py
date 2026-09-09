@@ -222,6 +222,16 @@ def build_indexes(out, recs, manifest):
                      "half": 1 if rih <= 2 else 2,
                      "juz": d.get("juz"), "ayah_key": aid, "page": pg})
     rubu_al_hizbs.sort(key=lambda x: x["rubu_al_hizb"])
+    # The DRAWN rosettes, a separate layer from the boundaries above: 199 of
+    # them against 240 rubu boundaries, the 41 without one all falling on an
+    # ayah 1 where the surah header stands in its place. quran-ws records the
+    # same 199 in its marks layer as kind `division`, a strict SUBSET of our
+    # 240 — verified, zero in theirs that is not in ours. Neither number is
+    # wrong and neither replaces the other: 240 answers "where does rubu N
+    # begin", 199 answers "where is a rosette drawn".
+    division_marks = sorted(
+        [dict(m, page=r["page"]) for r in recs for m in r["division_marks"]],
+        key=lambda x: (x["rubu_al_hizb"] is None, x["rubu_al_hizb"]))
     juz = sorted(
         [{"juz": d["juz"], "ayah_key": aid, "page": pg}
          for aid, pg, d in starts if "juz" in d], key=lambda x: x["juz"])
@@ -235,8 +245,14 @@ def build_indexes(out, recs, manifest):
         "description": "every juz, hizb, half-hizb and rubʿ boundary, with "
                        "the ayah it begins at and that ayah's page. A rubʿ "
                        "record's `half` is which half of its hizb it is in; "
-                       "the `nisf` series lists the 60 second-half starts.",
-        "juz": juz, "hizb": hizb, "nisf": nisf, "rubu_al_hizb": rubu_al_hizbs}),
+                       "the `nisf` series lists the 60 second-half starts. "
+                       "`division_marks` is a DIFFERENT layer: the 199 places a "
+                       "rosette is actually drawn. The 41 rubu boundaries with "
+                       "no rosette all begin an ayah 1, where the surah header "
+                       "stands in its place. On a mark, `half` is 1 or 2 — the "
+                       "half of its hizb it sits in, not the `nisf` ordinal.",
+        "juz": juz, "hizb": hizb, "nisf": nisf, "rubu_al_hizb": rubu_al_hizbs,
+        "division_marks": division_marks}),
         os.path.join(idx, "divisions.json"))
 
     # ---- index/words.json: the corpus-wide SEARCH index ----------------
@@ -276,7 +292,8 @@ def build_indexes(out, recs, manifest):
             os.path.join(by_page, "%03d.json" % r["page"]))
 
     return {"pages": len(pages), "surahs": len(surahs), "words": len(rows),
-            "rubu_al_hizb": len(rubu_al_hizbs)}
+            "rubu_al_hizb": len(rubu_al_hizbs),
+            "division_marks": len(division_marks)}
 
 
 # --------------------------------------------------------------- JSON Schema
@@ -376,10 +393,18 @@ def build_schemas(out):
             properties=dict(env_props, count={"type": "integer"},
                 description={"type": "string"},
                 fields={"type": "array", "items": {"type": "string"}},
+                # five columns, matching `fields` above: word_key, page, line,
+                # rasm_uthmani, search. The schema asked for SIX until
+                # 2026-09-09 — a third integer, the cross-mushaf word number
+                # carried as data-w for four days and withdrawn 2026-09-08
+                # (CLAUDE.md, docs/HAFS-JSON-SOURCE.md). The builder dropped
+                # the column and the schema did not, so every bundle failed its
+                # own validation on the last row it checked. Keep this list and
+                # `fields` in step.
                 rows={"type": "array", "items": {
-                    "type": "array", "minItems": 6, "maxItems": 6,
+                    "type": "array", "minItems": 5, "maxItems": 5,
                     "prefixItems": [word_key, {"type": "integer", "minimum": 1},
-                                    {"type": "integer"}, {"type": "integer"},
+                                    {"type": "integer"},
                                     {"type": "string"}, {"type": "string"}]}})),
 
         "page-words.schema.json": dict(base, title="quran-svg/page-words",
@@ -738,6 +763,7 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
             "words": counts["words"],
             "marks": marks,
             "rubu_al_hizb_boundaries": counts["rubu_al_hizb"],
+            "division_marks": counts["division_marks"],
         },
         "compression": {"brotli": bool(brotli_pages) and "quality 11",
                         "gzip": bool(gzip_pages) and "level 9, mtime 0"},

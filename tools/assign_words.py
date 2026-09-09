@@ -219,7 +219,8 @@ def page_words(page_no, cache_dir):
 # ---------------------------------------------------------------------------
 # QSVG_DKTEXT: mark budgets from the DigitalKhatt text — the print's own model
 # ---------------------------------------------------------------------------
-# The DK text (digital-khatt-v2.db, QUL export of the KFGQPC V2 1441H print)
+# The DK text (digital-khatt-v2.db, QUL export of the KFGQPC V2 1421H print —
+# a DIFFERENT printing from this artwork's V4 1441H, see EDITION-1441-FINDING)
 # won the ink adjudication 5-0 against the rasm_uthmani+QPC composite on every
 # genuinely disputed site (docs/defects/text_contest_eyes.json), and its 339
 # iqlab sites carry the print's real convention (ONE harakah + small م —
