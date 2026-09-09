@@ -10,6 +10,117 @@ defect counts, sweeps or review state. The project's rigour appears once, as a
 
 ---
 
+## 2026-09-09 — the prose rewritten against the Quran.ws writing guides
+
+Abdullah: *"use … writing-guides.md and writing-style.md to rewrite all of the
+contents of the demo pages in both languages"*, and then the standard that
+outranks them: *"show first, explain second, reveal complexity only when needed,
+and optimize for the developer who wants to get something working now."*
+
+**The guides are in a private repo.** `raw.githubusercontent.com` returns 404 for
+`quran-ws/guidelines`; `gh api repos/…/contents/…` reads it. Fetch the **English**
+`writing-style.md` too — the Arabic §13 carries no English rules and points at it,
+and the two pages are meant to state the same rule.
+
+### Show first
+
+The hero opened with three dense paragraphs — what it is, why you want it, the
+metadata argument — before the reader saw a line of code. It now opens with one
+sentence and a snippet: fetch, parse, three queries. The three annotations are
+measured against `042.svg`, not illustrative:
+
+| the snippet says | measured |
+|---|---|
+| `querySelectorAll('g.word').length` | **147** |
+| `[data-word-key="2:255:1"].dataset.rasmUthmani` | **ٱللَّهُ** |
+| `g.ayah-fragment[data-ayah-key="2:255"]` | **6** |
+
+Re-check them if the artwork pin moves; a hero snippet that lies is worse than no
+hero snippet.
+
+### Headings name what the reader is looking for
+
+| was | is |
+|---|---|
+| The trap — use `search`, never `rasm` | Searching on `rasm` matches almost nothing |
+| Five things that go wrong, and what to do instead | Five problems with a selection layer, and the fix for each |
+| Why building the payload yourself is the good part | Build the payload yourself, and choose the spelling at copy time |
+| How they coexist | Give the pointer to one layer only |
+| What this section is, and is not | Where the audio comes from |
+| Honest limits | Known limits |
+| 18 · A library, if you want one | A library, if you want one |
+
+### What was cut, and why
+
+Writing-style §3 is *state the rule, not how it was reached*. The guarantee no
+longer narrates the empty-band measurement behind the 10 px seam allowance, the
+library section no longer explains that each callout was once somebody's bug, and
+the attribute table no longer argues that a section promising "every" and listing
+two thirds is worse than one promising nothing. The rules those sentences carried
+all survive; the derivations went. Two reference blobs that were one paragraph
+each — the editor contract, the versioning contract — are lists, because they are
+consulted rather than read.
+
+### The Arabic rules that have no English counterpart
+
+All applied by script over the whole file, with `<code>`, `<pre>`, `<script>`,
+Quranic `span.ar` and tag attributes masked out first:
+
+| rule | sites |
+|---|---|
+| tanwin al-fath before the alif (§1) — `كاملاً` → `كاملًا` | **290** |
+| §10's error table — `بدون` → `دون` | 5 |
+| Western digits (§1), in prose and in code comments | 2 blocks |
+| a Latin word inside an Arabic sentence takes code marks, and the waw does not glue to it (§8) | 204 → 251 code runs |
+| a heading that gives an order opens with a verb (§12) | `ابنِ` `اجعل` `استبدل` `أخفِ` `اقرأ` |
+
+**Zero Quranic spans were touched by the tanwin sweep** — checked before running
+it, because `اً` is a legitimate sequence in some rasm and a blind replace would
+have edited the text of record.
+
+### The trap in the pattern
+
+**After the tanwin sweep the file writes shadda *then* tanwin** — `يّ` + `ً` + `ا`
+— because that is what moving the tanwin off the alif produces. A search string
+typed by hand the other way round (`ً` then `ّ`) is a different byte sequence and
+matches nothing. Two replacement batches failed on exactly this, silently looking
+like the text had already changed. Every batch script now normalises both halves
+of every pair through one `_n()` before matching.
+
+### Four defects found while rewriting, all older than this pass
+
+- **`Ayahs al-Kursi`** — the terminology adoption's `ayat` → `ayahs` rule ran over
+  a proper name. It is *Ayat al-Kursi*. The Arabic side (`آية الكرسي`) was never
+  wrong, which is the tell: a rename that damages one language only is a rename
+  that ran on text, not on meaning.
+- **`a memorisation ayahKey wants`** — the same family. Something ate "aid".
+- **The library is tested with 321 assertions, not 217.** `lib/test/README.md` and
+  the harness both say 321; the page had never been re-measured after the suite
+  grew.
+- **Every `§3` / `§7` / `§10` / `§11` cross-reference resolved to nothing.** They
+  are the old numbered layout's, left behind by the capability-grid restructure
+  below. They are links to the cards now (`#tap`, `#select`, `#translate`,
+  `#compose`, `#reveal`, `#ayah`). The `§` numbers still in *this* file, and in the
+  `FORMAT.md` handoff map, are a different scheme and are correct.
+
+### What this pass verified
+
+Both templates build; tag balance is zero-sum on `div`/`p`/`section`/`details`/
+`ul`/`li`/`figure` in both editions; no console errors on either page; the hero
+snippet's three annotations re-measured against the artwork. Opening 7 cards
+staged 12 labs, of which **10 ran**; `lab-meta` and `lab-ayah` reported "not run
+yet" — **reproduced on the committed pre-change `index.html`**, so it is the
+`IntersectionObserver` behaviour already recorded under "Still to do", not a
+regression. (The commit message for this pass says "12 of 14", which counted the
+staged labs rather than the ones that ran. 10 of 12 is the number.)
+
+**The "Verified" section below predates the capability-grid restructure.** Its 12
+combinations × 17 labs sweep has not been re-run since; the lab count is still
+right (17 labs across 13 cards, the extras being tab panes) but nothing in it has
+been re-asserted against the current text.
+
+---
+
 ## 2026-09-09 — eighteen sections became a capability grid
 
 Abdullah, on the page as it stood: *"many examples that are repeating itself …
