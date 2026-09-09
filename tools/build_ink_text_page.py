@@ -243,13 +243,16 @@ This is the complete list of places where it does not describe the ink this
 mushaf actually draws — <b>@@N@@ words out of 77,432</b>, checked across
 331,129 mark elements. Everything else agrees, once encoding is read as
 encoding rather than as content.</p>
-<p class="sub">Three encoding conventions are normalised first, or they drown
-the real signal: the five waqf signs (one name each, not one bucket), the
-KFGQPC alphabet (U+0652 as the rounded zero, U+0656/7/E as the open tanwin),
-and the precomposed <span dir="rtl">آ</span> U+0622, which carries its maddah
-inside the letter where rasm_uthmani decomposes it. A further 213 words are
-skipped because quran-ws numbers them differently from us at the split/fuse
-sites — those need keys reconciled, not marks.</p>
+<p class="sub">Four conventions are normalised first, or they drown the real
+signal: the five waqf signs get one name each rather than one bucket; the KFGQPC
+alphabet (U+0652 as the rounded zero, U+0656/7/E as the open tanwin); the
+precomposed <span dir="rtl">آ</span> U+0622, which carries its maddah inside the
+letter where rasm_uthmani decomposes it; and quran-ws's <code>marks[]</code>
+layer, of which ONLY the waqf kind belongs back in the word — folding in its
+hizb (199) and sajdah (15) kinds too put a <span dir="rtl">۞</span> on the first
+word of 199 ayahs and made them look like word-boundary errors. A further 14
+words genuinely key to a different word on each side (9:100, 72:16, 11:41,
+2:72) and need boundaries reconciled, not marks.</p>
 <p class="sub">These are the words where adopting quran-ws would change a mark
 budget, so each one needs your verdict. The image is the real ink, cropped from
 the page it is drawn on; <span style="color:var(--ok)">teal</span> is the
