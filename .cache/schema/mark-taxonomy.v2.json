@@ -25,7 +25,9 @@
   "body": "letter ink of a word",
   "header_ink": "ink inside a surah-name or basmalah banner, undecomposed",
   "mark": "a named diacritic or sign",
-  "ornament": "banner decoration, not a mark"
+  "ornament": "banner decoration, not a mark",
+  "page_number": "the printed page number (p17 only: the artwork keeps it)",
+  "running_head": "a juz/surah running head drawn above the viewBox, never visible (p17 only)"
  },
  "marks": {
   "dammah": {
@@ -34,14 +36,6 @@
    "family": null,
    "features": [
     "placement"
-   ]
-  },
-  "tanwin_al_damm": {
-   "active": true,
-   "category": "tanwin",
-   "family": "tanwin",
-   "features": [
-    "arrangement"
    ]
   },
   "dot": {
@@ -58,15 +52,13 @@
     "placement"
    ]
   },
-  "tanwin_al_fath": {
-   "active": true,
-   "category": "tanwin",
-   "family": "tanwin",
-   "features": [
-    "arrangement"
-   ]
-  },
   "hamzah": {
+   "active": true,
+   "category": "orthographic",
+   "family": null,
+   "features": []
+  },
+  "hamzat_al_wasl": {
    "active": true,
    "category": "orthographic",
    "family": null,
@@ -98,38 +90,28 @@
     "placement"
    ]
   },
-  "tanwin_al_kasr": {
-   "active": true,
-   "category": "tanwin",
-   "family": "tanwin",
-   "features": [
-    "arrangement"
-   ]
-  },
   "maddah": {
    "active": true,
    "category": "orthographic",
    "family": null,
    "features": []
   },
-  "small_meem": {
+  "omitted_alif": {
    "active": true,
-   "category": "dabt",
+   "category": "orthographic",
    "family": null,
-   "features": [
-    "placement"
-   ]
-  },
-  "waqf_al_muanaqah": {
-   "active": true,
-   "category": "waqf",
-   "family": "waqf",
    "features": []
   },
-  "waqf": {
+  "rectangular_zero": {
    "active": true,
-   "category": "waqf",
-   "family": "waqf",
+   "category": "dabt",
+   "family": "sifr",
+   "features": []
+  },
+  "rounded_zero": {
+   "active": true,
+   "category": "dabt",
+   "family": "sifr",
    "features": []
   },
   "sajdah_line": {
@@ -162,23 +144,13 @@
    "family": null,
    "features": []
   },
-  "rounded_zero": {
+  "small_meem": {
    "active": true,
    "category": "dabt",
-   "family": "sifr",
-   "features": []
-  },
-  "rectangular_zero": {
-   "active": true,
-   "category": "dabt",
-   "family": "sifr",
-   "features": []
-  },
-  "omitted_alif": {
-   "active": true,
-   "category": "orthographic",
    "family": null,
-   "features": []
+   "features": [
+    "placement"
+   ]
   },
   "small_noon": {
    "active": true,
@@ -204,6 +176,30 @@
    "family": null,
    "features": []
   },
+  "tanwin_al_damm": {
+   "active": true,
+   "category": "tanwin",
+   "family": "tanwin",
+   "features": [
+    "arrangement"
+   ]
+  },
+  "tanwin_al_fath": {
+   "active": true,
+   "category": "tanwin",
+   "family": "tanwin",
+   "features": [
+    "arrangement"
+   ]
+  },
+  "tanwin_al_kasr": {
+   "active": true,
+   "category": "tanwin",
+   "family": "tanwin",
+   "features": [
+    "arrangement"
+   ]
+  },
   "tashil": {
    "active": true,
    "category": "reading_sign",
@@ -222,13 +218,31 @@
    "family": "dots",
    "features": []
   },
-  "waqf_jaiz_waqf_awla": {
+  "waqf": {
+   "active": true,
+   "category": "waqf",
+   "family": "waqf",
+   "features": []
+  },
+  "waqf_al_muanaqah": {
    "active": true,
    "category": "waqf",
    "family": "waqf",
    "features": []
   },
   "waqf_jaiz_mustawi_al_tarafayn": {
+   "active": true,
+   "category": "waqf",
+   "family": "waqf",
+   "features": []
+  },
+  "waqf_jaiz_waqf_awla": {
+   "active": true,
+   "category": "waqf",
+   "family": "waqf",
+   "features": []
+  },
+  "waqf_jaiz_wasl_awla": {
    "active": true,
    "category": "waqf",
    "family": "waqf",
@@ -246,18 +260,6 @@
    "family": "waqf",
    "features": [],
    "note": "this print emits no لا sign (ALLOWED_WAQF is the five-value set); token reserved, not active"
-  },
-  "waqf_jaiz_wasl_awla": {
-   "active": true,
-   "category": "waqf",
-   "family": "waqf",
-   "features": []
-  },
-  "hamzat_al_wasl": {
-   "active": true,
-   "category": "orthographic",
-   "family": null,
-   "features": []
   }
  },
  "schema": "mark-taxonomy",
