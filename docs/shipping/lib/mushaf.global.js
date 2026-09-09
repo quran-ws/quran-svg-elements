@@ -1068,7 +1068,7 @@
       });
       svg.querySelectorAll('g.surah-name, g.basmalah, g.division-mark, g.sajdah-mark')
          .forEach(g => { if (!g.querySelector('g.word')) g.remove(); });
-      const layer = svg.querySelector('[id$="ayah_marks"]');
+      const layer = svg.querySelector('[id$="ayah_markers"]');
       if (layer && !layer.children.length) layer.remove();
 
       const viewBox = copy.refit(pad);
