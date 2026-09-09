@@ -49,3 +49,5 @@ dist/
 
 # local state of the maestro plugin, not part of the project
 .maestro/
+
+MushafDatabase-Ligature-Based-SVG/

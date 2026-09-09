@@ -139,7 +139,12 @@ def read_page(path):
         end = _close(s, m.start())
         if gid.startswith("md-word-") and a.get("data-type") == "text":
             try:
-                rec = {"surah": int(a["data-surah"]), "ayah": int(a["data-ayah"]),
+                # The release writes `data-aya`; an earlier one wrote
+                # `data-ayah`. Both are the publisher's name for the same
+                # thing, quoted as it writes them — reading only one silently
+                # matched ZERO words out of 77,432 and reported "0 pages".
+                _ay = a.get("data-aya", a.get("data-ayah"))
+                rec = {"surah": int(a["data-surah"]), "ayah": int(_ay),
                        "idx": int(a["data-word-index-in-ayah"])}
             except (KeyError, ValueError):
                 continue
