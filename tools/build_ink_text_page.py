@@ -25,6 +25,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QROOT = os.environ.get("QSVG_ROOT", ROOT)
 CACHE = os.path.join(QROOT, ".cache", "words-svg", "hafs-kfqc")
 ROWS = os.path.join(ROOT, "docs", "defects", "ink_vs_text.json")
+sys.path.insert(0, os.path.join(ROOT, "tools"))
 FONT = os.path.join(QROOT, ".cache", "fonts", "UthmanicHafs-v-3.0.ttf")
 OUT = os.path.join(ROOT, "docs", "defects", "ink_vs_text.html")
 
@@ -38,10 +39,16 @@ def font_coverage(texts):
 
     A missing glyph does not error — the browser silently substitutes another
     font for that run, so the text quietly stops being set in the print's face
-    exactly where the interesting marks are. Verified rather than assumed:
-    UthmanicHafs v3.0 covers both texts completely, while the review platform's
-    V22 face is missing U+08F0-08F2 (the open tanwin) which rasm_uthmani uses
-    6,643 times — picking that one would have fallen back on every tanwin.
+    exactly where the interesting marks are. So it is measured, not assumed, and
+    what it measures is not trivia: UthmanicHafs v3.0 covers rasm_uthmani and
+    the v2.0 text completely, but has NO GLYPH for U+0622, the precomposed
+    alef-madda that quran-ws's own text is written with (confirmed against
+    fontTools; the V22 face lacks it too, and also the open tanwin U+08F0-08F2
+    that rasm_uthmani uses 6,643 times). A face built for this print cannot
+    draw that code point, which is itself an argument about which encoding the
+    print intends — the decomposed U+0627 U+0653 that rasm_uthmani writes.
+    Cards whose text needs a missing glyph are marked rather than quietly
+    rendered in whatever font the browser reaches for.
     """
     d = open(FONT, "rb").read()
     n = struct.unpack(">H", d[4:6])[0]
@@ -67,11 +74,7 @@ def font_coverage(texts):
             a, e, _ = struct.unpack(">III", d[st + 16 + 12 * i:st + 28 + 12 * i])
             chars.update(range(a, e + 1))
     missing = {c for t in texts for c in (t or "") if ord(c) not in chars}
-    if missing:
-        raise SystemExit("font lacks %d code point(s) the page draws: %s"
-                         % (len(missing),
-                            " ".join("U+%04X" % ord(c) for c in sorted(missing))))
-    return len(chars)
+    return len(chars), missing
 
 
 def font_css():
@@ -116,10 +119,19 @@ def sig(r):
 
 
 def main():
+    from audit_ink_text import WS
+
     rows = json.load(open(ROWS, encoding="utf-8"))
-    want = collections.defaultdict(list)
+    # both KFGQPC releases flag the same words the same way, so one card per
+    # WORD carrying every source, not one card per source-word pair
+    merged = {}
     for r in rows:
-        want[r["page"]].append(r)
+        k = (r["page"], r["word_key"])
+        m = merged.setdefault(k, dict(r, sources=[]))
+        m["sources"].append(r["source"])
+    want = collections.defaultdict(list)
+    for (pg, _), r in merged.items():
+        want[pg].append(r)
 
     cards = collections.defaultdict(list)
     for pg in sorted(want):
@@ -142,6 +154,7 @@ def main():
                 "page": pg, "key": r["word_key"],
                 "svg": snippet(src, start),
                 "uth": a.get("data-rasm-uthmani"), "qpc": a.get("data-qpc"),
+                "ws": WS.get(r["word_key"]), "sources": r["sources"],
                 "ink": ink,
                 "plus": r["ink_draws_text_omits"],
                 "minus": r["text_spells_ink_omits"],
@@ -155,7 +168,7 @@ def main():
         if a:
             bits.append('<span class="pill ink">ink draws <b>%s</b></span>' % html.escape(a))
         if b:
-            bits.append('<span class="pill txt">qpc spells <b>%s</b></span>' % html.escape(b))
+            bits.append('<span class="pill txt">quran-ws spells <b>%s</b></span>' % html.escape(b))
         cs = []
         for it in items:
             cs.append(
@@ -163,12 +176,18 @@ def main():
                 '<div class="k">p%d · %s</div>'
                 '<div class="src ok"><b>ours · rasm_uthmani</b>'
                 '<span class="ar">%s</span><span class="cp">%s</span></div>'
-                '<div class="src no"><b>data-qpc</b>'
+                '<div class="src no"><b>KFGQPC v2.0 · data-qpc</b>'
+                '<span class="ar">%s</span><span class="cp">%s</span></div>'
+                '<div class="src no"><b>quran-ws/quran-text v3.0</b>%s'
                 '<span class="ar">%s</span><span class="cp">%s</span></div>'
                 '<div class="ink-list"><b>ink names</b> %s</div></div>'
                 % (it["svg"], it["page"], html.escape(it["key"]),
                    html.escape(it["uth"] or ""), cps(it["uth"]),
                    html.escape(it["qpc"] or ""), cps(it["qpc"]),
+                   ('<span class="warn">\u0622 has no glyph in this font \u2014 '
+                    'the browser substitutes another face for it</span>'
+                    if "\u0622" in (it["ws"] or "") else ""),
+                   html.escape(it["ws"] or ""), cps(it["ws"]),
                    html.escape(", ".join(it["ink"]))))
         out.append(
             '<section class="cls"><h2>%d word%s <span class="pills">%s</span></h2>'
@@ -176,7 +195,7 @@ def main():
             % (len(items), "" if len(items) == 1 else "s", "".join(bits), "".join(cs)))
 
     doc = """<!doctype html><meta charset="utf-8">
-<title>Ink against its own text</title>
+<title>quran-ws against the ink</title>
 <style>@@FONTS@@
  :root{--bg:#fbfaf7;--fg:#1a1a1a;--mut:#666;--line:#e2ded5;--ok:#0b7285;--no:#a5361f}
  body{margin:0;background:var(--bg);color:var(--fg);
@@ -203,6 +222,8 @@ def main():
  .ar{font-family:"hafs",serif;font-size:27px;display:block;line-height:2.1;
      direction:rtl;unicode-bidi:isolate}
  .cp{font:10px ui-monospace,Menlo,monospace;color:var(--mut);word-break:break-all}
+ .warn{display:block;font-size:10px;color:#a5361f;background:#fbeee9;
+        border:1px solid #e6c6bd;border-radius:4px;padding:3px 6px;margin:3px 0}
  .ink-list{font-size:11px;color:var(--mut);margin-top:8px;
            border-top:1px dashed var(--line);padding-top:6px}
  .ink-list b{color:var(--fg)}
@@ -216,19 +237,25 @@ def main():
   .card .ink-list b{color:#1a1a1a}
  }
 </style>
-<header><h1>Ink against its own text</h1>
-<p class="sub">Does each word's emitted text describe the ink in that same word
-group? Over <b>77,432 words and 331,129 mark elements</b>, our text of record
-<code>data-rasm-uthmani</code> disagrees with the ink <b>nowhere</b>. These
-<b>@@N@@</b> are the whole residue, and every one of them is the secondary
-<code>data-qpc</code> attribute.</p>
-<p class="sub">The image on each card is the real ink, cropped out of the page
-it is drawn on. Both spellings are set in <b>KFGQPC UthmanicHafs v3.0</b>, the
-face of this print — verified to cover every code point on this page, so no
-character quietly falls back to another font.
-<span style="color:var(--ok)">Teal</span> is ours,
-<span style="color:var(--no)">red</span> is qpc — read the ink and see which one
-it is.</p></header>
+<header><h1>Where quran-ws and the ink disagree</h1>
+<p class="sub">quran-ws/quran-text v3.0 is the text of record we are moving to.
+This is the complete list of places where it does not describe the ink this
+mushaf actually draws — <b>@@N@@ words out of 77,432</b>, checked across
+331,129 mark elements. Everything else agrees, once encoding is read as
+encoding rather than as content.</p>
+<p class="sub">Three encoding conventions are normalised first, or they drown
+the real signal: the five waqf signs (one name each, not one bucket), the
+KFGQPC alphabet (U+0652 as the rounded zero, U+0656/7/E as the open tanwin),
+and the precomposed <span dir="rtl">آ</span> U+0622, which carries its maddah
+inside the letter where rasm_uthmani decomposes it. A further 213 words are
+skipped because quran-ws numbers them differently from us at the split/fuse
+sites — those need keys reconciled, not marks.</p>
+<p class="sub">These are the words where adopting quran-ws would change a mark
+budget, so each one needs your verdict. The image is the real ink, cropped from
+the page it is drawn on; <span style="color:var(--ok)">teal</span> is the
+current text, <span style="color:var(--no)">red</span> the two KFGQPC releases
+(v2.0 as carried in <code>data-qpc</code>, and yours). They flag identically
+here, though they are not the same text elsewhere.</p></header>
 @@ROWS@@
 <script>
 for (const svg of document.querySelectorAll('svg.ink')) {
@@ -247,9 +274,12 @@ for (const svg of document.querySelectorAll('svg.ink')) {
 </script>
 """
     total = sum(len(v) for _, v in order)
-    glyphs = font_coverage([it[k] for _, v in order for it in v
-                            for k in ("uth", "qpc")])
-    print("font covers every code point drawn (%d in its cmap)" % glyphs)
+    glyphs, missing = font_coverage([it[k] for _, v in order for it in v
+                                     for k in ("uth", "qpc", "ws")])
+    print("font cmap: %d code points; %d drawn here it cannot render%s"
+          % (glyphs, len(missing),
+             (": " + " ".join("U+%04X" % ord(c) for c in sorted(missing)))
+             if missing else ""))
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     open(OUT, "w", encoding="utf-8").write(
         doc.replace("@@FONTS@@", font_css())
