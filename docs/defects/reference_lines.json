@@ -1,1 +1,478 @@
-[]
+[
+ {
+  "page": 1,
+  "key": "1:1:1",
+  "word": "بِسۡمِ",
+  "ref_line": 7,
+  "our_line": 2
+ },
+ {
+  "page": 1,
+  "key": "1:1:2",
+  "word": "ٱللَّهِ",
+  "ref_line": 7,
+  "our_line": 2
+ },
+ {
+  "page": 1,
+  "key": "1:1:3",
+  "word": "ٱلرَّحۡمَٰنِ",
+  "ref_line": 7,
+  "our_line": 2
+ },
+ {
+  "page": 1,
+  "key": "1:1:4",
+  "word": "ٱلرَّحِيمِ",
+  "ref_line": 7,
+  "our_line": 2
+ },
+ {
+  "page": 1,
+  "key": "1:2:1",
+  "word": "ٱلۡحَمۡدُ",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 1,
+  "key": "1:2:2",
+  "word": "لِلَّهِ",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 1,
+  "key": "1:2:3",
+  "word": "رَبِّ",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 1,
+  "key": "1:2:4",
+  "word": "ٱلۡعَٰلَمِينَ",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 1,
+  "key": "1:3:1",
+  "word": "ٱلرَّحۡمَٰنِ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 1,
+  "key": "1:3:2",
+  "word": "ٱلرَّحِيمِ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 1,
+  "key": "1:4:1",
+  "word": "مَٰلِكِ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 1,
+  "key": "1:4:2",
+  "word": "يَوۡمِ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 1,
+  "key": "1:4:3",
+  "word": "ٱلدِّينِ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 1,
+  "key": "1:5:1",
+  "word": "إِيَّاكَ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 1,
+  "key": "1:5:2",
+  "word": "نَعۡبُدُ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 1,
+  "key": "1:5:3",
+  "word": "وَإِيَّاكَ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 1,
+  "key": "1:5:4",
+  "word": "نَسۡتَعِينُ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 1,
+  "key": "1:6:1",
+  "word": "ٱهۡدِنَا",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 1,
+  "key": "1:6:2",
+  "word": "ٱلصِّرَٰطَ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 1,
+  "key": "1:6:3",
+  "word": "ٱلۡمُسۡتَقِيمَ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 1,
+  "key": "1:7:1",
+  "word": "صِرَٰطَ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 1,
+  "key": "1:7:2",
+  "word": "ٱلَّذِينَ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 1,
+  "key": "1:7:3",
+  "word": "أَنۡعَمۡتَ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 1,
+  "key": "1:7:4",
+  "word": "عَلَيۡهِمۡ",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 1,
+  "key": "1:7:5",
+  "word": "غَيۡرِ",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 1,
+  "key": "1:7:6",
+  "word": "ٱلۡمَغۡضُوبِ",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 1,
+  "key": "1:7:7",
+  "word": "عَلَيۡهِمۡ",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 1,
+  "key": "1:7:8",
+  "word": "وَلَا",
+  "ref_line": 13,
+  "our_line": 8
+ },
+ {
+  "page": 1,
+  "key": "1:7:9",
+  "word": "ٱلضَّآلِّينَ",
+  "ref_line": 13,
+  "our_line": 8
+ },
+ {
+  "page": 2,
+  "key": "2:1:1",
+  "word": "الٓمٓ",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 2,
+  "key": "2:2:1",
+  "word": "ذَٰلِكَ",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 2,
+  "key": "2:2:2",
+  "word": "ٱلۡكِتَٰبُ",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 2,
+  "key": "2:2:3",
+  "word": "لَا",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 2,
+  "key": "2:2:4",
+  "word": "رَيۡبَ",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 2,
+  "key": "2:2:5",
+  "word": "فِيهِ",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 2,
+  "key": "2:2:6",
+  "word": "هُدٗى",
+  "ref_line": 8,
+  "our_line": 3
+ },
+ {
+  "page": 2,
+  "key": "2:2:7",
+  "word": "لِّلۡمُتَّقِينَ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 2,
+  "key": "2:3:1",
+  "word": "ٱلَّذِينَ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 2,
+  "key": "2:3:2",
+  "word": "يُؤۡمِنُونَ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 2,
+  "key": "2:3:3",
+  "word": "بِٱلۡغَيۡبِ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 2,
+  "key": "2:3:4",
+  "word": "وَيُقِيمُونَ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 2,
+  "key": "2:3:5",
+  "word": "ٱلصَّلَوٰةَ",
+  "ref_line": 9,
+  "our_line": 4
+ },
+ {
+  "page": 2,
+  "key": "2:3:6",
+  "word": "وَمِمَّا",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 2,
+  "key": "2:3:7",
+  "word": "رَزَقۡنَٰهُمۡ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 2,
+  "key": "2:3:8",
+  "word": "يُنفِقُونَ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 2,
+  "key": "2:4:1",
+  "word": "وَٱلَّذِينَ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 2,
+  "key": "2:4:2",
+  "word": "يُؤۡمِنُونَ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 2,
+  "key": "2:4:3",
+  "word": "بِمَآ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 2,
+  "key": "2:4:4",
+  "word": "أُنزِلَ",
+  "ref_line": 10,
+  "our_line": 5
+ },
+ {
+  "page": 2,
+  "key": "2:4:5",
+  "word": "إِلَيۡكَ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 2,
+  "key": "2:4:6",
+  "word": "وَمَآ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 2,
+  "key": "2:4:7",
+  "word": "أُنزِلَ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 2,
+  "key": "2:4:8",
+  "word": "مِن",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 2,
+  "key": "2:4:9",
+  "word": "قَبۡلِكَ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 2,
+  "key": "2:4:10",
+  "word": "وَبِٱلۡأٓخِرَةِ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 2,
+  "key": "2:4:11",
+  "word": "هُمۡ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 2,
+  "key": "2:4:12",
+  "word": "يُوقِنُونَ",
+  "ref_line": 11,
+  "our_line": 6
+ },
+ {
+  "page": 2,
+  "key": "2:5:1",
+  "word": "أُوْلَٰٓئِكَ",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 2,
+  "key": "2:5:2",
+  "word": "عَلَىٰ",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 2,
+  "key": "2:5:3",
+  "word": "هُدٗى",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 2,
+  "key": "2:5:4",
+  "word": "مِّن",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 2,
+  "key": "2:5:5",
+  "word": "رَّبِّهِمۡ",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 2,
+  "key": "2:5:6",
+  "word": "وَأُوْلَٰٓئِكَ",
+  "ref_line": 12,
+  "our_line": 7
+ },
+ {
+  "page": 2,
+  "key": "2:5:7",
+  "word": "هُمُ",
+  "ref_line": 13,
+  "our_line": 8
+ },
+ {
+  "page": 2,
+  "key": "2:5:8",
+  "word": "ٱلۡمُفۡلِحُونَ",
+  "ref_line": 13,
+  "our_line": 8
+ },
+ {
+  "page": 59,
+  "key": "3:75:19",
+  "word": "مَا",
+  "ref_line": 10,
+  "our_line": 9
+ },
+ {
+  "page": 549,
+  "key": "60:4:22",
+  "word": "بِكُمۡ",
+  "ref_line": 12,
+  "our_line": 11
+ },
+ {
+  "page": 577,
+  "key": "74:53:1",
+  "word": "كَلَّا",
+  "ref_line": 3,
+  "our_line": 2
+ }
+]
