@@ -96,7 +96,14 @@ WAQF = {
 # forgot — 2,934 phantom words, the single largest class against quran-ws.
 PRECOMPOSED = {"\u0622": "maddah"}
 
+# The imalah dot is written U+06EA by rasm_uthmani and U+065C by quran-ws.
+# One site in the mushaf (11:41:6 مَجْر۪ىٰهَا), a clean 1<->1 swap: ours writes
+# U+06EA once and U+065C never, quran-ws the reverse. Same dot, same place.
+IMALAH_ALT = {"\u065c": "imalah"}
+
 CP = collections.defaultdict(set)
+for ch, name in IMALAH_ALT.items():
+    CP[ch].add(name)
 for ch, name in PRECOMPOSED.items():
     CP[ch].add(name)
 for ch, name in WAQF.items():
