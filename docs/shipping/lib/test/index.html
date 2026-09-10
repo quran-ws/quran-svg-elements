@@ -1302,6 +1302,192 @@ try {
   ok('22.20 timings that cover none of this page are an error, not a silent no-op',
      !!refused, refused);
 
+  /* ============================ 23. another mushaf's ornaments (ornaments.mjs)
+   *
+   * No ornament ships with this repository — the set is fetched at runtime and
+   * is `redistributable: false` while its publishers are asked for permission.
+   * So the assertions run against a SYNTHETIC set served by a stub fetch,
+   * shaped exactly like the real one: a catalog.json of typed records with a
+   * palette, a data-slot and (for the border) slices, and assets that layer
+   * with <g data-part> and mirror themselves with <use>.                     */
+  {
+    /* every asset draws one quadrant and mirrors it — the <use> case that
+       makes a stylesheet the wrong tool for recolouring these */
+    const asset = (slot, w, extra = '') =>
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' 100" ' +
+      'data-slot="' + slot + '">' +
+      '<metadata>{"provenance":"a blob repeated in the catalogue"}</metadata>' +
+      '<defs><g id="q">' +
+      '<g class="slot" data-part="slot" fill="none"><path d="M0 0h10v10h-10Z"/></g>' +
+      '<g class="c1" data-part="c1" fill="#ffffff"><path d="M0 0h5v5h-5Z"/></g>' +
+      '<g class="line" data-part="line" fill="none" stroke="#303641"><path d="M0 0h' + w + 'v100"/></g>' +
+      '</g></defs><use href="#q"/><use href="#q" transform="matrix(-1 0 0 1 ' + w + ' 0)"/>' +
+      extra + '</svg>';
+    /* a slice carries the sliver of the text area its crop cut through */
+    const slice = (w, h) =>
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '">' +
+      '<g class="slot" data-part="slot" fill="none"><path d="M0 0h1v1h-1Z"/></g>' +
+      '<g class="c1" data-part="c1" fill="#ffffff"><path d="M0 0h' + w + 'v' + h + 'h-' + w + 'Z"/></g>' +
+      '<g class="line" data-part="line" fill="none" stroke="#303641"><path d="M0 0h' + w + '"/></g></svg>';
+
+    const PAL = [{ name: 'slot', hex: 'none' }, { name: 'c1', hex: '#ffffff' },
+                 { name: 'line', hex: '#303641', stroke: true }];
+    const CAT = { assets: [
+      { id: 'ayah-markers/stubi', type: 'ayah-markers', style: 'stubi', riwaya: 'Stub',
+        viewBox: '0 0 60 100', palette: PAL,
+        variants: { color: 'assets/ayah-markers/stubi/color.svg' },
+        license: { id: 'CC-BY-NC-SA-4.0', status: 'provisional', redistributable: false } },
+      { id: 'surah-headers/stubi', type: 'surah-headers', style: 'stubi', palette: PAL,
+        variants: { color: 'assets/surah-headers/stubi/color.svg' },
+        license: { id: 'CC-BY-NC-SA-4.0', status: 'provisional', redistributable: false } },
+      { id: 'page-frames/stubi', type: 'page-frames', style: 'stubi', palette: PAL,
+        variants: { color: 'assets/page-frames/stubi/color.svg' },
+        slices: { files: { corner: 'assets/page-frames/stubi/slices/corner.svg',
+                           'edge-h': 'assets/page-frames/stubi/slices/edge-h.svg',
+                           'edge-v': 'assets/page-frames/stubi/slices/edge-v.svg' },
+                  corner: { w: 10, h: 8 }, repeat: { h: 6, v: 6 }, corner_mode: 'mirror' },
+        license: { id: 'CC-BY-NC-SA-4.0', status: 'provisional', redistributable: false } },
+      /* a second mushaf whose border does NOT tile: no slices to assemble */
+      { id: 'page-frames/plain', type: 'page-frames', style: 'plain', palette: PAL,
+        variants: { color: 'assets/page-frames/plain/color.svg' },
+        license: { id: 'CC-BY-NC-SA-4.0', status: 'provisional', redistributable: false } }
+    ] };
+    const FILES = {
+      'catalog.json': CAT,
+      'assets/ayah-markers/stubi/color.svg': asset('12 22 36 56', 60),
+      'assets/surah-headers/stubi/color.svg': asset('180 8 500 84', 860),
+      'assets/page-frames/stubi/color.svg': asset('5 5 57 89', 68),
+      'assets/page-frames/plain/color.svg': asset('5 5 57 89', 68),
+      'assets/page-frames/stubi/slices/corner.svg': slice(10, 8),
+      'assets/page-frames/stubi/slices/edge-h.svg': slice(6, 5),
+      'assets/page-frames/stubi/slices/edge-v.svg': slice(5, 6)
+    };
+    let served = 0;
+    const asked = [];
+    const stub = async url => {
+      served++; asked.push(String(url));
+      const key = String(url).replace(/^orn:\/\//, '');
+      if (!(key in FILES)) return { ok: false, status: 404 };
+      const body = FILES[key];
+      return { ok: true, status: 200, json: async () => body, text: async () => String(body) };
+    };
+
+    const oset = await M.loadOrnamentSet('orn://', { fetch: stub });
+    eq('23.1 the set lists the mushafs it holds', oset.styles(), ['plain', 'stubi']);
+    eq('23.2 a record is found by OUR name for the concept',
+       oset.record('ayahMark', 'stubi').id, 'ayah-markers/stubi');
+    eq('23.3 and by the catalogue\'s own type string, for a caller reading it directly',
+       oset.record('surah-headers', 'stubi').id, 'surah-headers/stubi');
+    eq('23.4 the licence is handed through whole, so a caller can honour it',
+       oset.licence('stubi'),
+       { id: 'CC-BY-NC-SA-4.0', status: 'provisional', redistributable: false });
+
+    const orn = await oset.ornaments('stubi');
+    eq('23.5 all three parts, under the library\'s vocabulary',
+       ['ayahMark', 'surahBanner', 'pageBorder'].map(k => !!orn[k]), [true, true, true]);
+    eq('23.6 the parts a picker should offer come off the catalogue palette',
+       orn.parts, ['slot', 'c1', 'line']);
+    eq('23.7 data-slot is read into the asset\'s own units',
+       orn.surahBanner.slot, { x: 180, y: 8, w: 500, h: 84 });
+    ok('23.8 the provenance blob is dropped, not cloned once per medallion',
+       !orn.ayahMark.nodes.some(n => n.nodeName === 'metadata'));
+    ok('23.9 FILE-LOCAL ids are renamed, and the <use> that mirrors them follows',
+       (() => {
+         const wrap = document.createElement('div');
+         for (const n of orn.ayahMark.nodes) wrap.appendChild(n.cloneNode(true));
+         const id = wrap.querySelector('[id]').id;
+         return id !== 'q' && [...wrap.querySelectorAll('use')]
+           .every(u => u.getAttribute('href') === '#' + id);
+       })());
+    eq('23.10 the border\'s slices are read too, corner and both repeat units',
+       Object.keys(orn.pageBorder.slices.art).sort(), ['corner', 'edge-h', 'edge-v']);
+
+    const before = served;
+    await oset.ornaments('stubi');
+    eq('23.11 a style is read once and cached', served, before);
+    const same = await M.loadOrnamentSet('orn://', { fetch: stub });
+    ok('23.12 the set itself is cached per URL', same === oset);
+
+    /* ---- dressing a real page ---- */
+    const po = show(await load(604));            /* three banners, 15 medallions */
+    const vbWas = po.el.getAttribute('viewBox');
+    const numerals = po.ayahMarks().map(m => m.numeral.getAttribute('d'));
+    const h = M.dressPage(po, orn, { gap: 5 });
+
+    eq('23.13 one medallion per printed ring, and one banner per printed name',
+       [h.ayahMarks, h.surahBanners], [po.ayahMarks().length, po.el.querySelectorAll('g.surah-name').length]);
+    ok('23.14 the border is assembled from slices, not stretched',
+       h.border && !h.stretched && h.repeats > 4, { repeats: h.repeats, stretched: h.stretched });
+    eq('23.15 nothing was missing for this style', h.missing, []);
+    ok('23.16 the ornaments are ONE group at the FRONT, so they render behind the print',
+       po.el.firstElementChild === h.el && h.el.classList.contains('mushaf-ornaments'));
+    eq('23.17 the printed rings are hidden, not removed',
+       po.ayahMarks().every(m => m.ring.getAttribute('display') === 'none' && m.ring.isConnected), true);
+    eq('23.18 THE PRINTED NUMERALS ARE UNTOUCHED — this module never draws a number',
+       po.ayahMarks().map(m => m.numeral.getAttribute('d')), numerals);
+    ok('23.19 the border grew the page rather than covering a word',
+       (() => { const v = po.viewBox; return v.x < 0 && v.y < 0 && v.w > 345 && v.h > 550; })(),
+       po.el.getAttribute('viewBox'));
+    eq('23.20 an assembled border keeps no slot — the slivers a crop cut through',
+       h.el.querySelector('defs [id^="mushaf-slice-"] [data-part="slot"]'), null);
+    ok('23.20b but a WHOLE asset keeps its slot: the banner\'s name window is real',
+       h.el.querySelector('[data-part="slot"]') !== null);
+    eq('23.21 the page\'s own ink is not touched at all',
+       po.el.querySelectorAll('g.word path').length,
+       (await load(604)).el.querySelectorAll('g.word path').length);
+
+    /* ---- colour is an attribute, because a <use> is a shadow copy ---- */
+    const paint = M.colourOrnaments(po, { c1: '#123456', line: '#654321' });
+    ok('23.22 a fill part is painted on the ORIGINAL, so every <use> copy follows',
+       [...h.el.querySelectorAll('[data-part="c1"]')].every(g => g.getAttribute('fill') === '#123456'));
+    ok('23.23 the `line` part is a stroke, not a fill',
+       [...h.el.querySelectorAll('[data-part="line"]')].every(
+         g => g.getAttribute('stroke') === '#654321' && g.getAttribute('fill') === 'none'));
+    paint.remove();
+    ok('23.24 removing the paint restores the design\'s own colours',
+       [...h.el.querySelectorAll('[data-part="c1"]')].every(g => g.getAttribute('fill') === '#ffffff'));
+
+    h.remove();
+    eq('23.25 remove() takes the layer away', M.hasOrnaments(po), false);
+    eq('23.26 remove() puts every printed ring back, byte for byte',
+       po.ayahMarks().every(m => m.ring.getAttribute('display') === null), true);
+    eq('23.27 remove() restores the viewBox the border grew', po.el.getAttribute('viewBox'), vbWas);
+
+    /* ---- line art keeps one group and needs no second file ---- */
+    const fetchesBefore = served;
+    const hl = M.dressPage(po, orn, { lineArt: true });
+    eq('23.28 line art drops every fill part and keeps the strokes',
+       [hl.el.querySelectorAll('[data-part]:not([data-part="line"])').length,
+        hl.el.querySelectorAll('[data-part="line"]').length > 0], [0, true]);
+    eq('23.29 and fetches nothing — the colour file already carries the strokes',
+       served, fetchesBefore);
+    ok('23.30 including the TILED border, which line.svg could not have given',
+       hl.el.querySelector('svg[preserveAspectRatio="none"] [data-part="line"]') !== null);
+    M.resetOrnaments(po);
+    eq('23.31 resetOrnaments undoes it the same way', M.hasOrnaments(po), false);
+
+    /* ---- parts a page or a style does not have ---- */
+    const p42o = show(await load(42));           /* no surah banner on this page */
+    const h42 = M.dressPage(p42o, orn);
+    eq('23.32 a page with no printed surah name simply gets no banner',
+       [h42.surahBanners, h42.missing], [0, []]);
+    h42.remove();
+
+    const plain = await oset.ornaments('plain');
+    const hp = M.dressPage(po, plain);
+    ok('23.33 a border with no slices is scaled whole, and SAYS so',
+       hp.stretched === true && hp.border === true);
+    eq('23.34 and the parts this style does not publish are reported, not faked',
+       hp.missing, ['surahBanner', 'ayahMark']);
+    hp.remove();
+
+    let rejected = null;
+    try { await oset.ornaments('nope'); } catch (e) { rejected = e.message; }
+    ok('23.35 an unknown mushaf is an error naming the set, not an empty pane',
+       !!rejected && rejected.includes('orn://'), rejected);
+    show(p42);
+  }
+
   /* left up on purpose for the interactive drag / resize probes */
   show(p42);
   const live = M.attachSelection(p42, { form: 'rasm_uthmani', citation: true });
