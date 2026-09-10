@@ -28,16 +28,40 @@ itself fetches live; this is the fallback.
 
 data/search-index.json is built separately by build_search_index.py
 
+It also vendors ONE mushaf's ornaments from a clone of quran-ws/quran-assets
+into data/ornaments/, as the offline fallback for the "dress the page" section.
+See vendor_ornaments() for what is copied and why it is only one style.
+
 Run:  QSVG_ROOT=$PWD python3 docs/demo/build.py
 """
 import json
 import os
 import pathlib
+import shutil
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = pathlib.Path(os.environ.get("QSVG_ROOT") or HERE.parent.parent).resolve()
 SVGDIR = ROOT / ".cache/words-svg/hafs-kfqc"
 HERO = 42
+
+# ── the ornament fallback ──────────────────────────────────────────────────
+# The section fetches quran-ws/quran-assets at runtime and ships no outline of
+# its own — except this one set, so the section is never simply dead. It is ONE
+# style because the whole catalogue is 2.9 MB of colour/mono/line and this is a
+# fallback, not the product; the live fetch is where the other seven mushafs
+# come from.
+#
+# Only `color.svg` is taken. Mono and line are the same drawing with the paint
+# removed, and the section recolours through CSS anyway — a `line` variant would
+# add ~120 KB to say what a stylesheet already says.
+#
+# LICENSING. Every asset in that repository is `redistributable: false` while
+# written permission is sought from the mushaf publishers (its LICENSE.md and
+# docs/PLAN.md §6). What is copied here is copied under the same terms and the
+# catalogue entry carries them; the section prints them on screen. Publishing
+# this demo publishes them, so read that file before you do.
+ORNAMENT_STYLE = "qalon"
+ORNAMENT_TYPES = ("ayah-markers", "surah-headers", "page-frames")
 
 
 def build_gloss(page: int) -> bytes:
@@ -53,6 +77,59 @@ def build_gloss(page: int) -> bytes:
                 w["transliteration"]["text"],
             ]
     return json.dumps(gloss, ensure_ascii=False, separators=(",", ":")).encode()
+
+
+def vendor_ornaments() -> str:
+    """Copy one style out of a quran-assets clone, with a catalog cut to it.
+
+    The clone is found at $QURAN_ASSETS, or beside the repository, or through
+    the docs/demo/ornaments symlink a developer may already have made. Missing
+    is not an error: the vendored copy that is already committed stays, and a
+    checkout that has never had one gets a section that falls back to nothing
+    and says so.
+    """
+    dest = HERE / "data/ornaments"
+    cand = [os.environ.get("QURAN_ASSETS"), HERE / "ornaments",
+            ROOT.parent / "quran-assets", ROOT / "../quran-assets"]
+    src = next((pathlib.Path(c) for c in cand
+                if c and (pathlib.Path(c) / "catalog.json").exists()), None)
+    if src is None:
+        have = (dest / "catalog.json").exists()
+        return ("ornaments  no quran-assets clone found; "
+                + ("keeping the vendored fallback" if have else "no fallback vendored")
+                + " (set QURAN_ASSETS=/path/to/quran-assets)")
+
+    cat = json.loads((src / "catalog.json").read_text(encoding="utf-8"))
+    keep, files = [], 0
+    for a in cat["assets"]:
+        if a["style"] != ORNAMENT_STYLE or a["type"] not in ORNAMENT_TYPES:
+            continue
+        # the delivered catalog names only what is delivered: a variant listed
+        # but not copied is a 404 the section cannot tell from a dead host
+        paths = [a["variants"]["color"]]
+        a["variants"] = {"color": a["variants"]["color"]}
+        a.pop("source_crop", None)
+        paths += list((a.get("slices") or {}).get("files", {}).values())
+        for rel in paths:
+            (dest / rel).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(src / rel, dest / rel)
+            files += 1
+        keep.append(a)
+    if not keep:
+        raise SystemExit(f"{src} holds no {ORNAMENT_STYLE} assets — wrong clone?")
+
+    cat["assets"] = keep
+    cat["count"] = len(keep)
+    cat["fallback"] = {
+        "of": "quran-ws/quran-assets",
+        "style": ORNAMENT_STYLE,
+        "note": "one style, colour variant only. The live fetch carries all 8 mushafs.",
+        "pipeline_commit": keep[0].get("pipeline_commit"),
+    }
+    (dest / "catalog.json").write_text(
+        json.dumps(cat, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    kb = sum(f.stat().st_size for f in dest.rglob("*.svg")) / 1024
+    return f"ornaments  {ORNAMENT_STYLE}, {files} files, {kb:.0f} KB from {src}"
 
 
 def main() -> None:
@@ -90,6 +167,7 @@ def main() -> None:
         assemble("template.ar.html", "index.ar.html")
     print(f"gloss-{HERO:03d}   {len(gloss)/1024:.1f} KB")
     print(f"timings-{HERO:03d} {len(timings)/1024:.1f} KB inlined")
+    print(vendor_ornaments())
     print(f"page {HERO:03d} is NOT inlined — fetched at runtime like every other page")
 
 

@@ -1243,6 +1243,68 @@ page.querySelectorAll(<span class="tok-s">'g.ayah-fragment[data-ayah-key="2:255"
             </div>
           </div>
         </details>
+        <details class="cap" id="dress">
+          <summary>
+            <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="crop"><path d="M6 4h60v36H6z"/><path d="M12 10h48v24H12z"/></g><g class="ln"><rect x="18" y="15" width="36" height="3" rx="1.5"/><rect x="22" y="22" width="32" height="3" rx="1.5"/><rect x="16" y="29" width="38" height="3" rx="1.5"/></g><g class="dots"><circle cx="36" cy="7" r="2.4"/><circle cx="10" cy="22" r="2"/><circle cx="62" cy="22" r="2"/></g></svg>
+            <span class="cap-t">
+              <b>Dress the page in another mushaf&rsquo;s ornaments</b>
+              <i>Swap the medallion, the surah band and the border &mdash; and recolour them.</i>
+            </span>
+            <span class="cap-open" aria-hidden="true"></span>
+          </summary>
+          <div class="cap-body">
+            <div class="shead">
+              <p class="sel">g.ayah-mark &middot; g.surah-name &middot; the page viewBox</p>
+              <p>The medallion, the surah band and the page border are the three decorative parts of a
+                printed mushaf, and in these files each of them is a named group you can find, measure and
+                replace. Below, page 604 is dressed in the ornaments of a different mushaf entirely
+                &mdash; a Q&#257;l&#363;n print &mdash; while every glyph of the King Fahd Complex text
+                stays exactly where it was printed.</p>
+            </div>
+            <div class="lab" id="lab-dress"></div>
+            <div class="callout">
+              <h3>Measure the ink, do not guess the box</h3>
+              <p>Every ornament is placed from a measurement of the group it dresses: the medallion from
+                the printed ring&rsquo;s box, the band from the surah name&rsquo;s box, the border from the
+                page&rsquo;s own <code>viewBox</code>. That is why it lands correctly on a page it was never
+                drawn for. Nothing here is a fixed offset, and the same twenty lines run on all 604 pages.</p>
+              <p><b>The printed number never moves.</b> A medallion is a group of two paths &mdash; the ring
+                ornament and the numeral &mdash; so hiding
+                <code>[data-kind="ayah_mark_ornament"]</code> leaves the King Fahd Complex&rsquo;s own drawing
+                of the number on top of the ornament that replaced its ring. The number is the print&rsquo;s
+                ink, not a font&rsquo;s digits, and it stays that way.</p>
+              <p><b>Recolour by setting the part&rsquo;s paint, not with a stylesheet.</b> Each printed
+                colour is one <code>&lt;g data-part&gt;</code>, so recolouring is one assignment per part.
+                But these designs are symmetric &mdash; they draw one quadrant and mirror it with
+                <code>&lt;use&gt;</code> &mdash; and a <code>&lt;use&gt;</code> instance is a shadow copy that a
+                selector of yours does not reach. A CSS rule recolours the original in
+                <code>&lt;defs&gt;</code> and leaves the copies on screen as printed, which reads as the
+                colour control doing nothing. Everywhere else on this page a stylesheet is the right
+                answer; here it is not, and the reason is <code>&lt;use&gt;</code>.</p>
+              <p><b>Line art costs no second file.</b> Every colour file already carries its
+                constant-width strokes as <code>&lt;g data-part="line"&gt;</code>, path for path what the
+                published <code>line.svg</code> holds. So <b>line art</b> drops the fill parts and keeps that
+                one group &mdash; and since the drawing is then one ink, the swatches collapse to a single
+                colour rather than offering wells for parts that are no longer there.</p>
+              <p><b>The border grows the page; it never covers a word.</b> The frame is drawn <i>around</i>
+                the text, so the snippet widens the <code>viewBox</code> by the band it added. Stretching one
+                frame drawing to a different page shape is what makes side borders fatter than top ones;
+                these frames ship a corner and two repeat units, so the corner keeps its shape and only the
+                straight run tiles.</p>
+            </div>
+            <p class="note"><b>The ornaments are not part of these files.</b> They are fetched at runtime from
+              <a href="https://github.com/quran-ws/quran-assets">quran-ws/quran-assets</a>, which traces them
+              from scans of eight printed mushafs. Every one of them is licensed
+              <code>CC-BY-NC-SA-4.0</code> with status <b>provisional</b> and
+              <code>redistributable: false</code> while written permission is sought from the publishers, and
+              each names its own source mushaf, archive.org item and PDF page in that repository&rsquo;s
+              <code>catalog.json</code>. Read it before you redistribute anything. This page ships one style
+              as an offline fallback, under those same terms, and the readout says which source it drew.</p>
+            <p class="note">The decomposition itself carries no ornament of its own beyond the print&rsquo;s:
+              swapping one in is entirely your side of the line, and nothing above re-exports a file or edits
+              a path.</p>
+          </div>
+        </details>
         <details class="cap" id="crop">
           <summary>
             <svg class="thumb" viewBox="0 0 72 44" aria-hidden="true"><g class="ln"><rect x="10" y="7"  width="54" height="4" rx="2"/><rect x="18" y="16" width="46" height="4" rx="2"/><rect x="6"  y="25" width="58" height="4" rx="2"/><rect x="26" y="34" width="38" height="4" rx="2"/></g><g class="crop"><path d="M26 10h-6v6M52 10h6v6M26 30h-6v-6M52 30h6v-6"/></g></svg>
@@ -2165,8 +2227,167 @@ function sidecar(svg) {
   return svg && svg.__words ? { words: [...svg.__words.values()] } : null;
 }
 
+/* ---------------------------------------------------------------------------
+   ORNAMENTS — surah bands, page borders and ayah medallions from OUTSIDE
+   this decomposition.
+
+   None of these outlines is part of the mushaf files. They are traced from
+   scans of eight other printed mushafs by quran-ws/quran-assets, every one of
+   them licensed CC-BY-NC-SA-4.0 with status `provisional` and
+   `redistributable: false` while the publishers are asked for permission, and
+   they are fetched at runtime for exactly that reason.
+
+   THREE SOURCES ARE TRIED, IN ORDER, and the first that answers wins:
+
+     1. ?ornaments=<url>   — a reader or a developer pointing at their own copy
+     2. the live set       — a checkout looks for the `ornaments` symlink beside
+                             this file; published, the repository's Pages site
+     3. data/ornaments/    — the one style build.py vendors, so the section is
+                             never simply dead
+
+   The live set is a superset (8 mushafs to the fallback's 1), so this is a
+   preference order and not a failover of last resort — the readout always says
+   which one it drew from, because "which mushaf's ornaments are these" is a
+   licensing question and not a cosmetic one.
+--------------------------------------------------------------------------- */
+const ORN_BASES = (() => {
+  const asked = new URLSearchParams(location.search).get('ornaments');
+  if (asked) return [asked.replace(/\/?$/, '/'), 'data/ornaments/'];
+  return [LOCAL ? 'ornaments/' : 'https://quran-ws.github.io/quran-assets/',
+          'data/ornaments/'];
+})();
+
+let ornPromise = null;
+/* The catalogue is fetched once per document, not once per run: the snippet
+   below re-runs on every keystroke and on every slider drag. */
+function ornCatalog() {
+  if (ornPromise) return ornPromise;
+  ornPromise = (async () => {
+    let last = null;
+    for (const base of ORN_BASES) {
+      try {
+        const r = await fetch(base + 'catalog.json');
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return { base, cat: await r.json() };
+      } catch (e) { last = e; }
+    }
+    throw new Error('no ornament set could be reached (' +
+                    ORN_BASES.join(', ') + ') — ' + (last && last.message));
+  })();
+  return ornPromise;
+}
+
+const ornFiles = new Map();
+function ornText(url) {
+  if (!ornFiles.has(url)) ornFiles.set(url, fetch(url).then(r => {
+    if (!r.ok) throw new Error('HTTP ' + r.status + ' for ' + url);
+    return r.text();
+  }));
+  return ornFiles.get(url);
+}
+
+/* An asset parsed and made safe to put in a document that already holds one.
+
+   Its ids are FILE-local: every marker defines <g id="q"> and mirrors it with
+   <use href="#q">. Two copies in one document is a duplicate id, and every
+   <use> then silently draws the FIRST one — which is how a mirrored ornament
+   comes out drawn twice on the same side. So the ids are renamed on the way
+   in, along with the references to them. */
+let ornUid = 0;
+function ornParse(text) {
+  const el = new DOMParser().parseFromString(text, 'image/svg+xml').documentElement;
+  if (el.localName === 'parsererror') throw new Error('could not parse the ornament');
+  el.querySelectorAll('metadata').forEach(m => m.remove());
+  const tag = '-o' + (++ornUid);
+  el.querySelectorAll('[id]').forEach(n => {
+    const old = n.id;
+    el.querySelectorAll('use').forEach(u => {
+      const href = u.getAttribute('href') || u.getAttribute('xlink:href');
+      if (href === '#' + old) u.setAttribute('href', '#' + old + tag);
+    });
+    n.id = old + tag;
+  });
+  const vb = (el.getAttribute('viewBox') || '0 0 100 100').split(/\s+/).map(Number);
+  const slot = (el.getAttribute('data-slot') || '').split(/\s+/).map(Number);
+  return { node: el, vb,
+           /* the transparent window the design leaves for the name, the text
+              area or the number, in the asset's own units */
+           slot: slot.length === 4 && slot.every(n => !isNaN(n))
+                 ? { x: slot[0], y: slot[1], w: slot[2], h: slot[3] } : null };
+}
+
+/* Everything one style needs, fetched once. `frame.slices` is present only for
+   the borders that actually tile; the rest have to be scaled whole, and the
+   snippet says so on screen rather than pretending. */
+const ornSets = new Map();
+function ornaments(style) {
+  if (ornSets.has(style)) return ornSets.get(style);
+  const job = (async () => {
+    const { base, cat } = await ornCatalog();
+    const of = t => cat.assets.find(a => a.type === t && a.style === style);
+    const out = { style, base, live: base !== 'data/ornaments/',
+                  styles: [...new Set(cat.assets.map(a => a.style))].sort(),
+                  palette: [], licence: null };
+    for (const [key, type] of [['marker', 'ayah-markers'],
+                               ['header', 'surah-headers'],
+                               ['frame',  'page-frames']]) {
+      const rec = of(type);
+      if (!rec) continue;
+      out[key] = ornParse(await ornText(base + rec.variants.color));
+      out[key].rec = rec;
+      out.licence = out.licence || rec.license;
+      for (const p of rec.palette || []) {
+        if (!out.palette.some(q => q.name === p.name)) out.palette.push(p);
+      }
+      if (key === 'frame' && rec.slices) {
+        out.slices = { ...rec.slices, art: {} };
+        for (const [name, path] of Object.entries(rec.slices.files))
+          out.slices.art[name] = ornParse(await ornText(base + path));
+      }
+    }
+    if (!out.marker && !out.header && !out.frame)
+      throw new Error('the catalogue at ' + base + ' has no "' + style + '"');
+    return out;
+  })();
+  ornSets.set(style, job);
+  return job;
+}
+
+/* An element's bounding box in the PAGE's own viewBox units.
+
+   Nothing else in this file needs it, and this section needs it for every
+   ornament it places. The page frame is `matrix(1.3333 0 0 -1.3333 …)` and a
+   medallion's ring sits under a further `scale(0.011 -0.011)`, so a raw
+   getBBox() from one group and another are not in the same space and not even
+   the same way up. Composing the two screen matrices puts every measurement
+   into one space — the page's — and then there is only ever one space to think
+   about. */
+function pageBox(svg, el) {
+  const m = svg.getScreenCTM().inverse().multiply(el.getScreenCTM());
+  const b = el.getBBox();
+  const pts = [[b.x, b.y], [b.x + b.width, b.y],
+               [b.x, b.y + b.height], [b.x + b.width, b.y + b.height]]
+    .map(([x, y]) => { const p = svg.createSVGPoint(); p.x = x; p.y = y; return p.matrixTransform(m); });
+  const xs = pts.map(p => p.x), ys = pts.map(p => p.y);
+  return { x: Math.min(...xs), y: Math.min(...ys),
+           w: Math.max(...xs) - Math.min(...xs), h: Math.max(...ys) - Math.min(...ys) };
+}
+
+/* An asset placed as a NESTED <svg>: it keeps its own viewBox and coordinate
+   system, and all we give it is a box on the page. No transform arithmetic,
+   and no chance of inheriting the page's y-flip by accident. */
+function ornNest(asset, x, y, w, h, fit) {
+  const box = document.createElementNS(SVGNS, 'svg');
+  box.setAttribute('viewBox', asset.vb.join(' '));
+  box.setAttribute('x', x); box.setAttribute('y', y);
+  box.setAttribute('width', w); box.setAttribute('height', h);
+  box.setAttribute('preserveAspectRatio', fit || 'xMidYMid meet');
+  for (const n of [...asset.node.childNodes]) box.append(n.cloneNode(true));
+  return box;
+}
+
 const H = { band, clearBands, fold, crop, refit, getPage, toRoot, clonePage, SVGNS,
-            forms, sidecar,
+            forms, sidecar, ornaments, pageBox, ornNest,
             hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_AYAH_TIMINGS,
             /* Where the pages live. A snippet must never hardcode the dev
                checkout path: the same page is served from the bundle, from a
@@ -2495,12 +2716,18 @@ function bindToggle(ctx, o) {
   b.addEventListener('click', () => {
     const on = b.getAttribute('aria-pressed') !== 'true';
     b.setAttribute('aria-pressed', String(on));
+    /* a toggle may decide which OTHER controls make sense — line art has one
+       colour, not one per printed part — so it gets to rebuild them first */
+    o.onChange && o.onChange(on);
     if (!rx.test(ctx.ta.value)) return;
     ctx.ta.value = ctx.ta.value.replace(rx, '$1' + on);
     ctx.runNow();
   });
   ctx.extra.append(b);
-  ctx.onReset.push(() => b.setAttribute('aria-pressed', String(!!o.value)));
+  ctx.onReset.push(() => {
+    b.setAttribute('aria-pressed', String(!!o.value));
+    o.onChange && o.onChange(!!o.value);
+  });
   return b;
 }
 
@@ -2574,7 +2801,11 @@ function bindPartColours(ctx, o) {
       i.type = 'color';
       i.value = (defaults && defaults[p]) || (p.startsWith('fill') ? '#f4ecd8' : '#b08d2e');
       i.setAttribute('aria-label', p);
-      i.addEventListener('input', () => { current[p] = i.value; write(); });
+      /* `change`, not `input`. A colour well fires `input` continuously while
+         the picker is open, and every one of those re-runs the snippet — which
+         re-clones a whole page and rebuilds everything on it. On `change`, once
+         the picker is closed, one run per colour chosen. */
+      i.addEventListener('change', () => { current[p] = i.value; write(); });
       l.append(t, i);
       box.append(l);
     }
@@ -2637,6 +2868,8 @@ const FORMAT_LINKS = {
               '§8 — the mark taxonomy, all 35 names with their families'],
   theme:     ['#65-on-path', '§6.5 — every attribute on a path'],
   markers:   ['#63-on-g-classayah-mark', '§6.3 the medallions, and §9.2 the decorative rosettes'],
+  dress:     ['#67-on-g-classsurah-name-and-g-classbasmalah',
+              '§6.7 the surah band, §6.3 the medallions, and §5.1 the page frame'],
   spacing:   ['#52-the-line-frame', '§5.2 the line frame, and §9.2 the eight-line opening spread'],
   crop:      ['#51-the-page-frame', '§5.1 the page frame, and §9.2 the two pages with their own'],
   meta:      ['#66-page-identity-nine-attributes-on-the-root-svg',
@@ -4368,6 +4601,242 @@ else try {
   bindSlider(ctx, { label: 'size', name: 'SIZE', min: 0.4, max: 1.8,
                     step: 0.05, value: 1, digits: 2 });
   bindToggle(ctx, { label: 'hide all', name: 'HIDE_ALL', value: false });
+});
+
+/* 10b · ornaments from another mushaf */
+mod('lab-dress', () => {
+  let picker = null, colours = null, loaded = null;
+  const ctx = makeLab({
+  mount: 'lab-dress',
+  page: 604,
+  label: 'dress the page in another mushaf’s ornaments',
+  /* The catalogue is read once, here, so the picker offers the mushafs the
+     source really holds rather than a list baked into this page — the live set
+     carries eight and the offline fallback one. If nothing answers, the picker
+     says so and the page stays exactly as printed. */
+  setup: async () => {
+    try {
+      loaded = await H.ornaments('qalon');
+      picker.options = loaded.styles.map(v => ({ value: v, label: v }));
+      onStyle(picker.value);
+    } catch (e) {
+      picker.options = [{ value: 'qalon', label: 'no ornament set could be reached' }];
+      picker.el.disabled = true;
+    }
+  },
+  code: `
+// THE ORNAMENTS ARE NOT PART OF THESE FILES. They are fetched at runtime from
+// quran-ws/quran-assets, traced from scans of eight printed mushafs, and every
+// one is CC-BY-NC-SA-4.0, status provisional, redistributable: false. The
+// readout below names the source it drew and the licence it carries.
+const STYLE   = 'qalon';   // whose ornaments. Nothing about the TEXT changes.
+const COLOURS = {};        // data-part -> colour. Drag a swatch.
+const GAP     = 5;         // breathing space between the text and the border
+const LINE    = false;     // line art: the constant-width strokes, one colour
+const MARKERS = true;
+const HEADERS = true;
+const FRAME   = true;
+
+const set = await H.ornaments(STYLE);
+if (signal.aborted) return;               // a newer run already replaced this stage
+
+// ONE group, at the BACK of the page, in the page's own coordinates. Everything
+// drawn into it goes UNDER the print — which is the whole trick with the ayah
+// numbers: they are the King Fahd Complex's own ink and they simply stay on top
+// of whatever ornament replaced the ring around them.
+const orn = document.createElementNS(H.SVGNS, 'g');
+orn.setAttribute('class', 'ornaments');
+svg.insertBefore(orn, svg.firstChild);
+
+// COLOUR. Each printed colour of an ornament is one <g data-part> carrying a
+// paint of its own — 'line' a stroke, everything else a fill — so recolouring
+// is one assignment per part and needs no re-export and no second file.
+//
+// SET THE ATTRIBUTE, NOT A CSS RULE. These designs are symmetric: they draw one
+// quadrant and mirror it with <use>, and a <use> instance is a shadow copy that
+// your selector does not reach. A stylesheet recolours the original in <defs>
+// and leaves the three copies on screen exactly as printed — which looks like
+// the colour control doing nothing at all. Painting the original's attribute
+// works because every instance inherits from it.
+const paint = root => {
+  for (const part in COLOURS) {
+    root.querySelectorAll('[data-part="' + part + '"]').forEach(g =>
+      g.setAttribute(part === 'line' ? 'stroke' : 'fill', COLOURS[part]));
+  }
+};
+
+const [vx, vy, W, PH] = svg.getAttribute('viewBox').split(/\\s+/).map(Number);
+
+// ── the border ───────────────────────────────────────────────────────────
+// A frame publishes its TEXT AREA as data-slot. Map this page's text block onto
+// that slot and the band thickness follows at the mushaf's own proportions —
+// so one uniform scale, never a stretch to the page box.
+if (FRAME && set.frame && set.frame.slot) {
+  const slot = set.frame.slot;
+  const unit = (W + 2 * GAP) / slot.w;             // page units per frame unit
+  const boxX = vx - GAP - slot.x * unit;
+  const boxY = vy - GAP - slot.y * unit;
+  const unitW = set.frame.vb[2];                   // frame units across
+  const unitH = (PH + 2 * GAP) / unit + 2 * slot.y;// and down — this page's aspect
+  const boxW = unitW * unit, boxH = unitH * unit;
+
+  if (set.slices) {
+    // THE CORNER KEEPS ITS SHAPE; ONLY THE STRAIGHT RUN REPEATS. That is what
+    // stretching one drawing to a different page gets wrong — it makes the side
+    // borders fatter than the top and bottom.
+    const S = set.slices, cw = S.corner.w, ch = S.corner.h;
+    const turn = S.corner_mode === 'rotate';
+    const inner = document.createElementNS(H.SVGNS, 'svg');
+    inner.setAttribute('viewBox', '0 0 ' + unitW + ' ' + unitH);
+    inner.setAttribute('x', boxX); inner.setAttribute('y', boxY);
+    inner.setAttribute('width', boxW); inner.setAttribute('height', boxH);
+    inner.setAttribute('preserveAspectRatio', 'none');
+    const defs = document.createElementNS(H.SVGNS, 'defs');
+    for (const name in S.art) {
+      const g = document.createElementNS(H.SVGNS, 'g');
+      g.id = 'sl-' + name;
+      for (const n of [...S.art[name].node.childNodes]) g.append(n.cloneNode(true));
+      // A slice carries the sliver of the text-area shape that its crop cut
+      // through. Whole, those slivers are the interior; tiled, they are four
+      // stubs in the corners — invisible while the slot is transparent, and
+      // four red bars the moment anyone colours it. The assembled border has
+      // no interior, so it keeps no slot.
+      g.querySelectorAll('[data-part="slot"]').forEach(n => n.remove());
+      defs.append(g);
+    }
+    inner.append(defs);
+    const put = (name, t) => {
+      const u = document.createElementNS(H.SVGNS, 'use');
+      u.setAttribute('href', '#sl-' + name);
+      u.setAttribute('transform', t);
+      inner.append(u);
+    };
+    put('corner', 'translate(0 0)');
+    put('corner', turn ? 'matrix(-1 0 0 -1 ' + unitW + ' ' + ch + ')'
+                       : 'translate(' + unitW + ' 0) scale(-1 1)');
+    put('corner', turn ? 'matrix(-1 0 0 -1 ' + cw + ' ' + unitH + ')'
+                       : 'translate(0 ' + unitH + ') scale(1 -1)');
+    put('corner', turn ? 'translate(' + (unitW - cw) + ' ' + (unitH - ch) + ')'
+                       : 'matrix(-1 0 0 -1 ' + unitW + ' ' + unitH + ')');
+    // a whole number of repeats, each nudged to fit exactly — a part-drawn
+    // motif at the end of a run is the thing the eye catches
+    const run = (total, u) => { const n = Math.max(1, Math.round(total / u)); return { n, step: total / n }; };
+    const across = run(unitW - 2 * cw, S.repeat.h);
+    for (let i = 0; i < across.n; i++) {
+      const x = cw + i * across.step, k = across.step / S.repeat.h;
+      put('edge-h', 'translate(' + x + ' 0) scale(' + k + ' 1)');
+      put('edge-h', 'translate(' + x + ' ' + unitH + ') scale(' + k + ' -1)');
+    }
+    const down = run(unitH - 2 * ch, S.repeat.v);
+    for (let i = 0; i < down.n; i++) {
+      const y = ch + i * down.step, k = down.step / S.repeat.v;
+      put('edge-v', 'translate(0 ' + y + ') scale(1 ' + k + ')');
+      put('edge-v', 'translate(' + unitW + ' ' + y + ') scale(-1 ' + k + ')');
+    }
+    orn.append(inner);
+    log('border  ', across.n * 2 + down.n * 2, 'repeats around 4 corners, tiled to this page');
+  } else {
+    // this border does not tile: there is nothing to do but scale it whole
+    orn.append(H.ornNest(set.frame, boxX, boxY, boxW, boxH, 'none'));
+    log('border  ', 'no slices for this mushaf — the whole frame is stretched');
+  }
+  // THE FRAME IS DRAWN AROUND THE TEXT, so the page grows by the band it added.
+  // Nothing is scaled and no word moves.
+  svg.setAttribute('viewBox', [boxX, boxY, boxW, boxH].map(n => n.toFixed(2)).join(' '));
+}
+
+// ── the surah band ───────────────────────────────────────────────────────
+// g.surah-name is the printed name of the surah, and only its first page has
+// one. The band spans the text column, and the name is centred in the design's
+// own data-slot rather than in the drawing.
+let bands = 0;
+if (HEADERS && set.header && set.header.slot) {
+  const slot = set.header.slot, vbw = set.header.vb[2];
+  // #content is the group holding all of the page's text. This demo prefixes
+  // every id when it clones a page — ten labs hold copies at once — so it has
+  // to ask for it with $=; in a file you fetched yourself it is '#content'.
+  const column = H.pageBox(svg, svg.querySelector('[id$="content"]'));
+  for (const name of svg.querySelectorAll('g.surah-name')) {
+    const b = H.pageBox(svg, name);
+    const k = column.w / vbw;
+    orn.append(H.ornNest(set.header, column.x,
+                         b.y + b.h / 2 - (slot.y + slot.h / 2) * k,
+                         vbw * k, 100 * k, 'none'));
+    bands++;
+  }
+  log('bands   ', bands, 'surah name' + (bands === 1 ? '' : 's') + ' on this page, each measured');
+}
+
+// ── the medallions ───────────────────────────────────────────────────────
+// A medallion is a GROUP of two paths: the ring ornament and the numeral. Only
+// the ring is hidden. Measure it BEFORE hiding it — display:none has no box.
+let marks = 0;
+if (MARKERS && set.marker) {
+  for (const m of svg.querySelectorAll('g.ayah-mark')) {
+    const ring = m.querySelector('[data-kind="ayah_mark_ornament"]');
+    if (!ring) continue;
+    const b = H.pageBox(svg, ring);
+    ring.style.display = 'none';
+    const w = b.h * set.marker.vb[2] / 100;
+    orn.append(H.ornNest(set.marker, b.x + b.w / 2 - w / 2, b.y, w, b.h));
+    marks++;
+  }
+  log('marks   ', marks, 'rings replaced; every printed numeral left where it was');
+}
+
+// LINE ART is the same drawing with the fills taken away. Every colour file
+// already carries the constant-width strokes as <g data-part="line">, and that
+// group is path-for-path what the published line.svg holds — so this drops the
+// other parts rather than fetching a second file. One part left means one
+// colour to choose, and the swatches say so.
+if (LINE) {
+  orn.querySelectorAll('[data-part]').forEach(g => {
+    if (g.getAttribute('data-part') !== 'line') g.remove();
+  });
+}
+
+// every ornament is in place now, defs included, so one pass paints them all
+paint(orn);
+
+log('parts   ', LINE ? 'line — line art draws one ink, so there is one colour'
+                     : set.palette.map(p => p.name).join(', ') + ' — recolour any of them');
+log('source  ', set.base, set.live ? '(live)' : '(the offline fallback in this page)');
+log('licence ', set.licence ? set.licence.id + ', ' + set.licence.status +
+                              ', redistributable: ' + set.licence.redistributable
+                            : 'unstated');
+log('glyphs  ', svg.querySelectorAll('g.word path').length, 'of the print: untouched');
+`
+  });
+  /* The swatches open on the design's OWN colours, read out of the catalogue,
+     so the first thing on screen is the ornament as its mushaf printed it. A
+     part the chosen style does not draw would be a lie about the drawing, so
+     they are rebuilt per style rather than fixed. */
+  let lineMode = false;
+  async function onStyle(style) {
+    if (!colours) return;
+    try {
+      const set = await H.ornaments(style || picker.value);
+      const baked = {};
+      /* `slot` is the transparent window — the name, the text area, the number
+         disc. It has no colour until you give it one, and an <input type=color>
+         cannot show "none". */
+      for (const p of set.palette) baked[p.name] = p.hex === 'none' ? '#f4ecd8' : p.hex;
+      /* line art draws ONE ink, so it gets one swatch. A row of six wells for
+         parts the drawing no longer has would be a lie about what is on screen. */
+      colours.show(lineMode ? ['line'] : set.palette.map(p => p.name),
+                   { line: '#3b2f18', ...baked });
+    } catch (e) { colours.hide(); }
+  }
+  picker = bindChoice(ctx, { label: 'mushaf', name: 'STYLE',
+                             value: 'qalon', onChange: onStyle });
+  colours = bindPartColours(ctx, { name: 'COLOURS', value: {} });
+  bindSlider(ctx, { label: 'breathing space', name: 'GAP', min: 0, max: 24,
+                    step: 1, value: 5, digits: 0 });
+  bindToggle(ctx, { label: 'line art', name: 'LINE', value: false,
+                    onChange: on => { lineMode = on; onStyle(picker.value); } });
+  bindToggle(ctx, { label: 'medallions', name: 'MARKERS', value: true });
+  bindToggle(ctx, { label: 'surah band', name: 'HEADERS', value: true });
+  bindToggle(ctx, { label: 'border', name: 'FRAME', value: true });
 });
 
 /* 11 · line height */

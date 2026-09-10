@@ -10,6 +10,100 @@ defect counts, sweeps or review state. The project's rigour appears once, as a
 
 ---
 
+## 2026-09-10 — `#dress`: another mushaf's ornaments on this print
+
+Abdullah: *"add a new demo to replace/recolour assets using
+https://github.com/quran-ws/quran-assets"*. One new card in **Change how it
+looks**, `#dress`, `lab-dress`, on **page 604** (three surah bands, 15
+medallions, 416 KB — the smallest page that exercises all three parts). It
+dresses the page in a Qālūn print's ayah medallion, surah band and border while
+every glyph of the KFGQPC text stays where it was printed.
+
+### Where the ornaments come from, and why the section can look dead
+
+`quran-ws/quran-assets` is **private**, its Pages job is deliberately off, and
+every asset is `CC-BY-NC-SA-4.0`, status `provisional`, `redistributable: false`
+while the publishers are asked for permission (its `LICENSE.md`, `docs/PLAN.md`
+§6). So the section resolves **three sources in order** and says on screen which
+one it drew:
+
+| | |
+|---|---|
+| `?ornaments=<url>` | a reader or developer pointing at their own copy |
+| `ornaments/` served locally, else `https://quran-ws.github.io/quran-assets/` | the full 8-mushaf set |
+| `data/ornaments/` | the one style `build.py` vendors, so the section is never dead |
+
+`docs/demo/ornaments` is a **gitignored symlink** to a local clone — make one
+with `ln -s /path/to/quran-assets docs/demo/ornaments`, or point `build.py` at a
+clone with `QURAN_ASSETS=`. Published, the live tier is a 404 until somebody
+sets `PUBLISH_DEMO=true` on that repository, and the reader silently gets the
+vendored Qālūn instead. **Abdullah chose to vendor a fallback** knowing it
+copies provisional assets; `vendor_ornaments()` carries the reasoning and copies
+`color.svg` only (~293 KB), never mono or line.
+
+### The two things that were wrong the first time
+
+**A stylesheet does not recolour these ornaments.** Every design is symmetric:
+it draws one quadrant and mirrors it with `<use>`. A `<use>` instance is a
+shadow copy, so `.ornaments [data-part="c2"]{fill:…}` matches the original in
+`<defs>` and never reaches the four copies on screen — the colour control
+appeared to do nothing at all while `getComputedStyle` on the original said the
+rule had applied. The section paints the **attribute** on the original instead,
+and every instance inherits it. This is the one place on the page where "a CSS
+rule beats a presentation attribute" is not the answer, and the card says so.
+
+**`input` on a colour well is one full re-run per pixel of drag** (Abdullah:
+*"its so slow, no need to change color in each drag only when close the color
+picker"*). `bindPartColours` now listens on `change`, so a colour costs one run,
+not fifty. That is a change to the shared widget: `lab-marks` gets it too.
+
+**Line art needs no second file** (Abdullah: *"add a check box to show it in
+(Line) mode"*, then *"in that only choose one color"*). Every colour file
+already carries its constant-width strokes as `<g data-part="line">`, and that
+group is path-for-path identical to the published `line.svg` — checked by
+hashing the `d` attributes of `ayah-markers/qalon`'s two variants. So `LINE`
+drops the fill parts and keeps that one group, which also gives the tiled border
+line art for free, where fetching `line.svg` would not have (`slices/` ships one
+variant). One ink left means one swatch: `bindToggle` gained an `onChange` so a
+toggle can rebuild the colour wells, and offering six for parts the drawing no
+longer has would misdescribe what is on screen.
+
+Two smaller ones, both measured on screen:
+
+- Ids inside an ornament are file-local (`<g id="q">` in every marker). Two in
+  one document is a duplicate id and every `<use>` then draws the first — one
+  mirrored half drawn twice on the same side. `ornParse()` renames them on the
+  way in.
+- A page-frame **slice** carries the sliver of the text-area shape its crop cut
+  through. Tiled, those slivers are four stubs in the corners: invisible while
+  the slot is transparent, four coloured bars the moment anyone fills it. The
+  assembled border keeps no `slot`.
+
+### The measurement rule, which is the actual point of the card
+
+Nothing is placed at a fixed offset. The medallion is sized from the printed
+ring's box, the band from the surah name's box, the border from the page's own
+`viewBox` — so the same twenty lines land correctly on all 604 pages of a print
+these ornaments were never drawn for. `H.pageBox()` is new and exists for this:
+the page frame is `matrix(1.3333 0 0 -1.3333 …)` and a ring sits under a further
+`scale(0.011 -0.011)`, so two raw `getBBox()` results are neither in the same
+space nor the same way up. Composing the screen CTMs leaves exactly one space to
+think about. Ornaments go into one `g.ornaments` at the **front** of the root,
+so they render behind the print and the ayah numerals stay on top of whatever
+replaced their rings.
+
+The border is assembled from `slices/` — corner plus two repeat units, a whole
+number of repeats each nudged to fit — not stretched, and the page's `viewBox`
+grows by the band it added rather than the border covering a word. A frame with
+no slices is scaled whole and the readout says so.
+
+The technique is adapted from `quran-assets`' own `demo/index.html`, which
+dresses a KFGQPC page the same way; the frame geometry here is derived from
+`catalog.json` (`slots[0]` and `slices`) instead of that demo's extra
+`data-band` / `data-frame-w` attributes, which the catalogue does not publish.
+
+---
+
 ## 2026-09-09 — the prose rewritten against the Quran.ws writing guides
 
 Abdullah: *"use … writing-guides.md and writing-style.md to rewrite all of the
