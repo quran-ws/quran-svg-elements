@@ -2388,6 +2388,8 @@ function ornNest(asset, x, y, w, h, fit) {
 
 const H = { band, clearBands, fold, crop, refit, getPage, toRoot, clonePage, SVGNS,
             forms, sidecar, ornaments, pageBox, ornNest,
+            /* the resolution order, so a library snippet can show it too */
+            ORNAMENT_SOURCES: ORN_BASES,
             hitLayer, selectedWords, snapToWords, bandWords, FALLBACK_AYAH_TIMINGS,
             /* Where the pages live. A snippet must never hardcode the dev
                checkout path: the same page is served from the bundle, from a
@@ -4805,7 +4807,60 @@ log('licence ', set.licence ? set.licence.id + ', ' + set.licence.status +
                               ', redistributable: ' + set.licence.redistributable
                             : 'unstated');
 log('glyphs  ', svg.querySelectorAll('g.word path').length, 'of the print: untouched');
-`
+`,
+    lib: { code: `
+// Ornaments are FETCHED from quran-ws/quran-assets; nothing here ships one, and
+// every asset is CC-BY-NC-SA-4.0, provisional, redistributable: false.
+const SOURCES = H.ORNAMENT_SOURCES;   // tried in order; see the note below
+const STYLE   = 'qalon';
+const COLOURS = {};
+const GAP     = 5;
+const LINE    = false;
+const MARKERS = true;
+const HEADERS = true;
+const FRAME   = true;
+
+const page = new M.MushafPage(svg);
+
+// The library takes ONE base URL, so the fallback order is the caller's to
+// express — which is right: which ornaments a page is allowed to draw is a
+// licensing question, not something a library should decide.
+let set = null, from = null, last = null;
+for (const url of SOURCES) {
+  try { set = await M.loadOrnamentSet(url); from = url; break; }
+  catch (e) { last = e; }
+}
+
+try {
+  if (!set) throw last || new Error('no source reachable');
+  const orn = await set.ornaments(STYLE);          // the three assets, cached per style
+  if (signal.aborted) return;                      // a newer run replaced this stage
+
+  // Every ornament is measured off the group it dresses, the printed numerals are
+  // never drawn, and the border grows the page rather than covering a word.
+  const h = M.dressPage(page, orn, {
+    ayahMark: MARKERS, surahBanner: HEADERS, pageBorder: FRAME,
+    gap: GAP, lineArt: LINE, colours: COLOURS
+  });
+
+  log('border  ', h.border ? (h.stretched ? 'no slices — scaled whole'
+                                          : h.repeats + ' pieces, tiled to this page') : 'off');
+  log('bands   ', h.surahBanners, 'surah name' + (h.surahBanners === 1 ? '' : 's'));
+  log('marks   ', h.ayahMarks, 'rings replaced; every printed numeral left where it was');
+  log('parts   ', LINE ? 'line — line art draws one ink, so there is one colour'
+                       : orn.parts.join(', ') + ' — recolour any of them');
+  log('source  ', from);
+  log('licence ', h.licence ? h.licence.id + ', ' + h.licence.status +
+                              ', redistributable: ' + h.licence.redistributable : 'unstated');
+  log('glyphs  ', svg.querySelectorAll('g.word path').length, 'of the print: untouched');
+} catch (e) {
+  log('could not fetch the ornament set from');
+  log(SOURCES.join(', '));
+  log(e.message);
+  log('');
+  log('The page is untouched, and every other section still works.');
+}
+` }
   });
   /* The swatches open on the design's OWN colours, read out of the catalogue,
      so the first thing on screen is the ornament as its mushaf printed it. A
