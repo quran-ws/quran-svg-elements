@@ -79,6 +79,17 @@ Two smaller ones, both measured on screen:
   the slot is transparent, four coloured bars the moment anyone fills it. The
   assembled border keeps no `slot`.
 
+### The library variant
+
+Every lab on this page is written twice, and `#dress` is no exception: the same
+result through `mushaf.js` (`loadOrnamentSet` / `set.ornaments(style)` /
+`dressPage`), added 2026-09-10 when the technique moved into
+`docs/shipping/lib/ornaments.mjs`. The library takes ONE base URL, so the
+three-source order stays the caller's to express — which is right, since which
+ornaments a page may draw is a licensing question and not something a library
+should decide. `H.ORNAMENT_SOURCES` is that list, so the library snippet can
+show it.
+
 ### The measurement rule, which is the actual point of the card
 
 Nothing is placed at a fixed offset. The medallion is sized from the printed
