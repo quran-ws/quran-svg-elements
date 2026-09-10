@@ -26,7 +26,8 @@ are stated in this directory].**
 [Metadata](#metadata) · [Words, ayahs, lines](#words-ayahs-and-lines) ·
 [Text](#text) · [Search](#search) · [Highlighting](#highlighting) ·
 [Hit testing](#hit-testing) · [Marks](#marks) · [Theme](#theme) ·
-[Ayah markers](#ayah-end-marks) · [Layout](#layout) · [Crop](#crop) ·
+[Ayah markers](#ayah-end-marks) · [Ornaments](#another-mushafs-ornaments) ·
+[Layout](#layout) · [Crop](#crop) ·
 [Overlay, hover, tap](#overlay-hover-and-tap) · [Selection](#selection-and-copy) ·
 [Memorisation](#memorisation) · [Accessibility](#accessibility) ·
 [View](#view) · [Raster](#raster-export) · [Atlas](#atlas-cross-page-lookup) ·
@@ -879,6 +880,133 @@ upstream.
 
 ---
 
+## Another mushaf's ornaments (`ornaments.mjs`)
+
+Put a *different printed mushaf's* furniture on this print: the medallion that closes
+an ayah, the banner behind a surah's printed name, and the border around the page —
+while every glyph of this print stays exactly where the King Fahd Complex put it.
+
+`markers.mjs` swaps the ring on one medallion. This is the same contract one layer up,
+for all three decorative parts at once.
+
+**Nothing is placed at a fixed offset.** Each ornament is sized from a *measurement* of
+the group it dresses — the medallion from the printed ring's box, the banner from the
+surah name's box, the border from the page's own `viewBox`. That is why the same call
+lands correctly on all 604 pages, and on pages 1–2 whose viewBox and page matrix are
+different again.
+
+**Nothing is redistributed.** No ornament ships with this library. The reference set is
+[`quran-ws/quran-assets`](https://github.com/quran-ws/quran-assets), traced from scans
+of eight printed mushafs. Every asset is `CC-BY-NC-SA-4.0`, status **provisional**,
+`redistributable: false` while written permission is sought from the publishers, and
+each names its source mushaf, archive.org item and PDF page. `set.licence(style)` hands
+the terms straight through so you can honour them. **Check it before you ship anything.**
+
+### `loadOrnamentSet(baseUrl, {fetch, cache})` → `Promise<OrnamentSet>`
+
+Fetches `catalog.json` once. Cached per URL; a *failed* load is not cached, so a retry
+when the network returns works. Rejects with the URL in the message.
+
+```js
+const set = await loadOrnamentSet('https://example.org/quran-assets/');
+set.styles();                       // ['douri', 'hafs-adi', 'qalon', …] — the mushafs
+set.record('ayahMark', 'qalon');    // the catalogue record, by OUR name for the concept
+set.record('ayah-markers', 'qalon');// or by the catalogue's own type string
+set.licence('qalon');               // {id, status, redistributable, attribution, …}
+```
+
+`ORNAMENT_TYPES` is the mapping, and it is the vocabulary rule of this library applied
+to someone else's names: the medallion is an **ayah mark** everywhere, a surah's printed
+title is its **banner** (`page.surahs().hasBanner`), and the frame around the text is
+the **border**.
+
+| ours | the catalogue's |
+|---|---|
+| `ayahMark` | `ayah-markers` |
+| `surahBanner` | `surah-headers` |
+| `pageBorder` | `page-frames` |
+
+### `set.ornaments(style)` → `Promise<{ayahMark, surahBanner, pageBorder, parts, palette, licence}>`
+
+Everything one mushaf needs, fetched and parsed on first ask, then cached. A style that
+publishes only some of the three gets only those. `parts` is the list of colourable part
+names — **what a colour picker should offer**; a control for a part the design does not
+draw would misdescribe the drawing.
+
+Each asset carries `{viewBox, vb, slot, nodes, parts}`. `slot` is the transparent window
+the design leaves for the surah name, the text area or the ayah number, in the asset's
+own units.
+
+### `dressPage(page, ornaments, {…})` → handle
+
+```js
+const h = dressPage(page, await set.ornaments('qalon'), {
+  ayahMark: true, surahBanner: true, pageBorder: true,
+  gap: 5, size: 1, lineArt: false, colours: { c1: '#fffdf7', line: '#3b2a12' }
+});
+h.ayahMarks;    // medallions drawn
+h.surahBanners; // banners drawn — 0 on a page with no surah start, which is most pages
+h.border;       // whether a border was drawn
+h.repeats;      // pieces the border was assembled from
+h.stretched;    // true when this border does not tile and was scaled whole
+h.missing;      // ['surahBanner', …] — parts this style does not publish
+h.remove();     // rings back, layer gone, viewBox restored
+```
+
+| option | | |
+|---|---|---|
+| `ayahMark` / `surahBanner` / `pageBorder` | `true` | which parts to draw |
+| `gap` | `5` | breathing space between the text and the border, in page units |
+| `size` | `1` | factor on each medallion; 1 matches the printed ring's box |
+| `lineArt` | `false` | keep the constant-width strokes only, and drop the fills |
+| `colours` | `null` | `{part: colour}`, painted on the ornaments and never on the print |
+
+Everything goes into one `<g class="mushaf-ornaments">` at the **front** of the root, so
+it renders behind the print. That is the whole trick with the ayah numbers: **this module
+never draws a number.** The printed ring is *hidden*, the numeral is this print's own ink
+and it stays on top of whatever replaced the ring around it.
+
+**The border grows the page; it never covers a word.** It is drawn *around* the text, so
+the `viewBox` is widened by the band that was added. Nothing is scaled and no word moves.
+Where a border tiles, it is assembled from a corner and two repeat units — the corner
+keeps its shape and only the straight run repeats, a whole number of times each nudged to
+fit exactly. Where it does not tile, the whole drawing is scaled and `stretched` says so.
+
+### `colourOrnaments(page, colours)` → `{count, remove()}`
+
+Recolour what is on the page without rebuilding it. `line` is a stroke; every other part
+is a fill. A part the design does not draw is a no-op, not an error.
+
+> **This is the one place in the library where a stylesheet is the wrong tool.** These
+> designs are symmetric — one quadrant mirrored with `<use>` — and a `<use>` instance is a
+> shadow copy that your selector does not reach. A CSS rule recolours the original in
+> `<defs>` and leaves the copies on screen exactly as printed, which reads as the colour
+> control doing nothing at all while `getComputedStyle` on the original insists the rule
+> applied. This paints the original's attribute, and every instance inherits it.
+
+### `resetOrnaments(page)` / `hasOrnaments(page)`
+
+`resetOrnaments` is `handle.remove()` for a caller who did not keep the handle.
+
+### `readOrnament(svgText, record)` → `{viewBox, vb, slot, nodes, parts}`
+
+Read one asset. Exposed because it is the whole parse, and because two things happen on
+the way in that a caller doing this by hand will get wrong: `<metadata>` is dropped (a
+provenance blob repeated in the catalogue, otherwise cloned once per medallion), and
+**ids are renamed**. They are *file*-local — every marker defines `<g id="q">` and mirrors
+it with `<use href="#q">` — so two assets in one document is a duplicate id and every
+`<use>` then silently draws the first one: one mirrored half drawn twice on the same
+side, with no error anywhere.
+
+### Line art
+
+`lineArt: true` keeps `<g data-part="line">` and drops the rest. That group is path for
+path what the published `line.svg` holds, so **no second file is fetched** — and it gives
+the *tiled* border line art too, which `line.svg` could not have, since `slices/`
+publishes one variant only. One ink left means one colour to choose.
+
+---
+
 ## Atlas (cross-page lookup)
 
 A single page file cannot answer "which page is 2:255 on". **Nothing in the core
@@ -973,7 +1101,7 @@ narrower than the ink it names. Trust `data-word-key`, never geometry, for owner
 
 ## Testing
 
-321 assertions run in Chromium against real pages (326 with `?markers=<url>`) — **1** (opening spread, 8 lines,
+357 assertions run in Chromium against real pages (362 with `?markers=<url>`) — **1** (opening spread, 8 lines,
 doubled ornaments), **42** (rubʿ rosette, 2:255), **48** (2:282, fifteen fragments),
 **176** (sajdah), **582** (juz 30 opens, banner + basmalah), **604** (last page, three
 banners) — plus the interactive checks: a genuine mouse drag across a line break,
@@ -982,7 +1110,10 @@ failed requests.
 
 The end-mark assertions run against a **synthetic** marker set served by a stub
 `fetch` — a square ring whose counter is annotated into a different part, which is
-exactly the shape of the real trap — because no outline may ship here. Point the page
+exactly the shape of the real trap — because no outline may ship here. The ornament
+assertions are stubbed for the same reason, and the synthetic set carries the traps that
+matter: every asset mirrors itself with `<use>` off a file-local `id`, and its border
+slices carry the text-area slivers their crops cut through. Point the page
 at a real set with `?markers=<url>` and it additionally checks that set for
 conformance: every marker cuts into at least one layer, every command is absolute, and
 `#0b7771` survives nowhere.

@@ -55,6 +55,7 @@ selection.mjs   the transparent text layer (drag-select + copy)
 memorize.mjs    masking / progressive reveal
 a11y.mjs        accessible text for screen readers
 atlas.mjs       cross-page lookup, backed by a generated index file
+ornaments.mjs   another mushaf's medallion / surah banner / page border
 view.mjs        scroll a word or ayah into view
 raster.mjs      crop -> PNG
 mushaf.mjs      barrel: re-exports everything (this is what the global build wraps)
@@ -352,6 +353,55 @@ Four decisions worth the words:
    both — a single path had to be split per part and the winding-based counters
    re-punched — and getting that wrong turned 39 of 47 designs into solid blobs. All of
    it is deleted.
+
+### `ornaments.mjs`
+
+- `loadOrnamentSet(baseUrl)` / `set.ornaments(style)` / `dressPage(page, ornaments, …)` /
+  `colourOrnaments(page, colours)` / `resetOrnaments(page)` / `hasOrnaments(page)`.
+
+The same shape as `markers.mjs`, one layer up: that module swaps the ring on a
+medallion, this one dresses the whole page — medallion, the banner behind a surah's
+printed name, and the border around the text — in the ornaments of a *different printed
+mushaf*. The reference set is [`quran-ws/quran-assets`](https://github.com/quran-ws/quran-assets),
+traced from scans of eight mushafs; nothing ships, everything is fetched, and
+`set.licence(style)` hands the terms through because every asset is `provisional` and
+`redistributable: false` while its publishers are asked.
+
+Five decisions worth the words:
+
+1. **Nothing is placed at a fixed offset.** The medallion is sized from the printed
+   ring's box, the banner from the surah name's box, the border from the page's own
+   `viewBox` — which is why the same code lands on all 604 pages, and on pages 1–2
+   whose viewBox and page matrix are different again. Every measurement is
+   `boxInView()`, never a raw `getBBox()`: a ring sits under `scale(0.011 -0.011)`
+   inside a y-flipped page frame, so two raw boxes are neither in one space nor one
+   way up. The banner's column is the **union of the page's line boxes**, not `#content`
+   — `page.clone()` namespaces ids, so a library asking for that id breaks on the copy
+   it handed out itself.
+2. **Ornaments render behind the print, and the numeral is never drawn.** One
+   `g.mushaf-ornaments` at the FRONT of the root. The printed ring is *hidden* with a
+   `display` presentation attribute (not `el.style`, whose removal still serialises
+   `style=""`), and this print's own numeral simply stays on top of whatever replaced
+   the ring around it — the same rule `setAyahMark()` keeps.
+3. **Colour is an attribute here, and only here.** These designs are symmetric: one
+   quadrant mirrored with `<use>`. A `<use>` instance is a shadow copy a selector does
+   not reach, so a stylesheet recolours the original in `<defs>` and leaves the copies
+   on screen as printed — the colour control appears to do nothing while
+   `getComputedStyle` on the original says the rule applied. `colourOrnaments()` paints
+   the original's `fill`, or `stroke` for the `line` part, and every instance follows.
+4. **Line art costs no second file.** Every colour asset already carries its
+   constant-width strokes as `<g data-part="line">`, path for path what the published
+   `line.svg` holds. `lineArt: true` drops the fill parts — which also gives the *tiled*
+   border line art, where fetching `line.svg` would not have, since `slices/` publishes
+   one variant only.
+5. **A border is assembled, not stretched, and it grows the page.** Where it tiles, the
+   corner keeps its shape and only the straight run repeats, a whole number of times
+   each nudged to fit; where it does not, the whole drawing is scaled and the handle
+   says `stretched: true` rather than pretending. The border is drawn *around* the text,
+   so the `viewBox` grows by the band it added and no word moves. A slice carries the
+   sliver of the text-area shape its crop cut through, so an assembled border keeps no
+   `slot`: whole, those slivers are the interior; tiled, they are four coloured stubs in
+   the corners the moment anyone fills it.
 
 ---
 
