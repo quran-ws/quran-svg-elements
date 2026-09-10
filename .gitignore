@@ -51,3 +51,8 @@ dist/
 .maestro/
 
 MushafDatabase-Ligature-Based-SVG/
+
+# a local clone of quran-ws/quran-assets, symlinked in so the demo's ornament
+# section can be developed against the full 8-mushaf set. The demo ships only
+# the one-mushaf fallback that build.py vendors into docs/demo/data/ornaments/.
+docs/demo/ornaments
