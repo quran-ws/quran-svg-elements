@@ -18,7 +18,7 @@ const OUT = 'mushaf.global.js';
 
 /* dependency order: core first, then everything that uses it */
 const MODULES = ['core.mjs', 'layout.mjs', 'overlay.mjs', 'selection.mjs', 'memorize.mjs',
-                 'a11y.mjs', 'view.mjs', 'raster.mjs', 'atlas.mjs', 'markers.mjs', 'recite.mjs'];
+                 'a11y.mjs', 'view.mjs', 'raster.mjs', 'atlas.mjs', 'markers.mjs', 'ornaments.mjs', 'recite.mjs'];
 
 const here = __dirname;
 const exported = [];

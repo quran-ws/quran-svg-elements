@@ -32,7 +32,7 @@ is never committed anywhere.
 | Words emitted as two `<g class="word">` | 1158 | **0** |
 | Bench | SCORE 77 | **SCORE 136**, no failures, budget-mismatch 0, pixelfail 0 |
 | Pixel identity | — | **604/604 identical** |
-| `mushaf.js` suite | — | **321 pass, 0 fail** |
+| `mushaf.js` suite | — | **357 pass, 0 fail** |
 | vs MushafDatabase | 99.994% line agreement | **73,449 words matched by identity AND text; 0 words in one source only; 67 line disagreements on 5 pages** |
 | vs quran-ws/quran-text, ink against text | — | **2 words of 77,432 (99.9974%)** — `tools/audit_ink_text.py` |
 
@@ -565,7 +565,7 @@ juz/hizb/rubʿ rosette is a **division mark** (`page.divisionMarks()`,
 `page.hideMarks({family:'diacritic'})` silently hide nothing — two definitions
 of `hideMarks` on `MushafPage`, and the later one won.
 
-`docs/shipping/lib/test/` is the gate: **313 assertions**, run in Chrome
+`docs/shipping/lib/test/` is the gate: **357 assertions**, run in Chrome
 against the emitted pages.
 
 ```bash
@@ -577,7 +577,7 @@ cp docs/shipping/lib/test/atlas.json /tmp/serve/
 # window.__RESULTS__ carries {pass, fail, tests[]} once __RESULTS__.done
 ```
 
-**All 321 pass.** They did not always: six failures traced to page 1 being drawn
+**All 357 pass.** They did not always: six failures traced to page 1 being drawn
 at `0 0 235 235` with 7 lines and no surah banner, which upstream had already
 fixed — the artwork pin was simply stale, and moving it from `f8ea2002` to
 `b91d39e1` fixed all six and took `audit_export`'s `viewbox` count to 0 as
