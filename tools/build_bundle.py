@@ -524,7 +524,7 @@ const hits = idx.rows.filter(r => fold(r[col.search]).includes(fold('الرحم�
 | `schema/*.schema.json` | JSON Schema (2020-12) for every data file above |
 | `VERSION.json` | schema version, build date, source commits, corpus counts |
 | `CHECKSUMS.txt` | sha256 of every other file — `sha256sum -c CHECKSUMS.txt` |
-| `LICENSE` | CC0 1.0 for this project's own contribution; the publishers' terms for the ink |
+| `LICENSE` | CC BY 4.0 for this project's own contribution; the publishers' terms for the ink |
 | `NOTICE.md` | source editions, attribution and the publishers' grants |
 {lib_row}
 ## Naming rules
@@ -634,22 +634,6 @@ so it cannot also be listed in it.
 
 """
 
-LICENSE_PLACEHOLDER = """\
-PLACEHOLDER — NOT A LICENCE
-===========================
-
-No licence has been chosen for this bundle yet, and no terms are stated here.
-
-Nothing in this file grants any permission. Until this file is replaced with a
-real licence text by the copyright holder, treat the contents of this bundle as
-"all rights reserved" and ask before redistributing.
-
-The Quranic text and the page artwork have their own provenance, recorded in
-VERSION.json and in schema/FORMAT.md; their terms are not this file's to state.
-
-If you are the copyright holder: replace this file wholesale, and re-run
-tools/build_bundle.py so CHECKSUMS.txt matches.
-"""
 
 
 # --------------------------------------------------------------------- build
@@ -714,33 +698,35 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     tax["schema_version"] = SCHEMA_VERSION
     tax["edition"] = EDITION_ID
     jdump(tax, os.path.join(bundle, "schema", "mark-taxonomy.json"))
-    # The real licence, decided by Abdullah 2026-08-30: follow quran-svg's
-    # model — CC0 for our own contribution, the publishers' terms untouched for
-    # the ink. Copied from the repository root so there is ONE source of truth;
-    # the placeholder below is kept only as the fallback for a checkout that
-    # somehow lacks them, and a bundle built that way says so plainly.
-    # NOTICE.md carries the coverage split — what the licence covers, and the
+    # The licence: CC BY 4.0 for our own contribution, the publishers' terms
+    # untouched for the ink — the same notice every Quran.ws repository ships.
+    #
+    # Both files come from REPO, not ROOT. ROOT is the artwork/data root and is
+    # overridable with QSVG_ROOT; the licence files are version-controlled here,
+    # in the pipeline repo, so reading them from ROOT made the bundle's licence
+    # depend on where the artwork happened to be checked out.
+    #
+    # There is no placeholder fallback. v1.0.0 shipped one — a file saying "no
+    # licence has been chosen ... treat the contents as all rights reserved" —
+    # because the bundle was built before the root LICENSE was committed and
+    # released 50 minutes after. A missing licence must stop the build, never
+    # quietly publish 108 MB that grants nothing.
+    #
+    # NOTICE.md carries the coverage split: what the licence covers, and the
     # KFGQPC artwork it cannot. LICENSE is the verbatim CC BY 4.0 text and says
     # nothing bundle-specific, so the policy's "every top-level folder is named
     # in the licensing files" rule is satisfied by NOTICE, as it is in
     # quran-ws/quran-text. Shipping one without the other would publish a
     # licence that appears to cover the printed artwork.
-    _notice = os.path.join(ROOT, "NOTICE.md")
-    if os.path.exists(_notice):
-        shutil.copyfile(_notice, os.path.join(bundle, "NOTICE.md"))
-    else:
-        raise SystemExit("NOTICE.md is missing: it states what the licence "
-                         "does NOT cover, and must ship beside LICENSE")
-
-    _lic = os.path.join(ROOT, "LICENSE")
-    _notice = os.path.join(ROOT, "NOTICE.md")
-    if os.path.exists(_lic):
-        shutil.copyfile(_lic, os.path.join(bundle, "LICENSE"))
-    else:
-        with open(os.path.join(bundle, "LICENSE"), "w", encoding="utf-8") as fh:
-            fh.write(LICENSE_PLACEHOLDER)
-    if os.path.exists(_notice):
-        shutil.copyfile(_notice, os.path.join(bundle, "NOTICE.md"))
+    for name, why in (
+            ("LICENSE", "it is the terms the bundle is published under"),
+            ("NOTICE.md", "it states what the licence does NOT cover"),
+    ):
+        src = os.path.join(REPO, name)
+        if not os.path.exists(src):
+            raise SystemExit("%s is missing from %s: %s, and the two must ship "
+                             "together." % (name, REPO, why))
+        shutil.copyfile(src, os.path.join(bundle, name))
 
     # optional: the JS library, when there is one to ship (--lib DIR)
     if lib and os.path.isdir(lib):
