@@ -91,7 +91,7 @@ The numbering is a property of this printed edition, declared on every page as `
 - **Counts, measured rather than quoted.** Reading all 604 shipped pages gives 77,432 `g.word` groups (matching `index/words.json`), 13,489 `g.ayah-fragment` nodes for 6,236 ayat, and 436,841 paths carrying `data-mark`. The mark total differs from `VERSION.json` and from `FORMAT.md` §6.5, which count marks differently; cite the measurement you need and say which it is.
 - **Integrity.** `CHECKSUMS.txt` covers every file in the bundle; the release also publishes a `.sha256` for the tarball itself. Both verified against the published v1.0.0 while writing this.
 - **Reproducibility.** `VERSION.json` for v1.0.0 records `pipeline_dirty: true` and `artwork_dirty: true`, so the two commits it names do not reproduce the released bytes on their own. The build is deterministic from its inputs; the inputs are not yet addressable by commit.
-- **Licence: unresolved.** See below, and ask before redistributing.
+- **Licence: CC BY 4.0** for our own contribution, with the King Fahd Complex's terms untouched for the artwork and the text. See below.
 
 ## Quick start
 
@@ -197,8 +197,10 @@ The repository, the release asset and the schema ids are all still named after `
 
 ## Licence
 
-**Unresolved. Ask before redistributing.**
+**CC BY 4.0**, the same notice every Quran.ws repository publishes: code under MIT, data and content under Creative Commons Attribution 4.0 International. The root `LICENSE` is the authoritative text and `NOTICE.md` states what it does not cover.
 
-The bundle's own `LICENSE` is a placeholder stating that no licence has been chosen and that the contents should be treated as all rights reserved. Every JSON file in the same bundle declares `CC-BY-4.0`, the bundle README describes the file as CC0 1.0, and this repository's root `LICENSE` is the CC BY 4.0 text. Four answers; none of them can be relied on until one is chosen.
+This settles a contradiction. There used to be four answers: the bundle's own `LICENSE` was a placeholder saying no licence had been chosen and the contents were all rights reserved; every JSON file in the same bundle declared `CC-BY-4.0`; the bundle README's file table said CC0 1.0; and the root `LICENSE` was CC BY 4.0. The placeholder shipped in `v1.0.0` because the bundle was built before the root `LICENSE` was committed and released fifty minutes after it. The builder no longer has a placeholder to fall back on — a missing licence now stops the build.
+
+**`v1.0.0` still carries the placeholder**, because it is the published bytes rather than the source. It has to be re-cut before the terms above apply to anything anyone can download.
 
 Separately and regardless: the page artwork and the Qurʾānic text are the **King Fahd Glorious Qurʾān Printing Complex's**, and are not this project's to license.

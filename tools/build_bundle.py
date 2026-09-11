@@ -35,6 +35,7 @@ import shutil
 import subprocess
 import sys
 import tarfile
+import textwrap
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -524,7 +525,7 @@ const hits = idx.rows.filter(r => fold(r[col.search]).includes(fold('الرحم�
 | `schema/*.schema.json` | JSON Schema (2020-12) for every data file above |
 | `VERSION.json` | schema version, build date, source commits, corpus counts |
 | `CHECKSUMS.txt` | sha256 of every other file — `sha256sum -c CHECKSUMS.txt` |
-| `LICENSE` | CC0 1.0 for this project's own contribution; the publishers' terms for the ink |
+| `LICENSE` | CC BY 4.0 for this project's own contribution; the publishers' terms for the ink |
 | `NOTICE.md` | source editions, attribution and the publishers' grants |
 {lib_row}
 ## Naming rules
@@ -634,22 +635,130 @@ so it cannot also be listed in it.
 
 """
 
-LICENSE_PLACEHOLDER = """\
-PLACEHOLDER — NOT A LICENCE
-===========================
 
-No licence has been chosen for this bundle yet, and no terms are stated here.
 
-Nothing in this file grants any permission. Until this file is replaced with a
-real licence text by the copyright holder, treat the contents of this bundle as
-"all rights reserved" and ask before redistributing.
+# ------------------------------------------------------------------- licence
 
-The Quranic text and the page artwork have their own provenance, recorded in
-VERSION.json and in schema/FORMAT.md; their terms are not this file's to state.
+# What the bundle's own LICENSE says about each top-level entry it ships.
+#
+# The repository root LICENSE is the ONE source of truth for the terms — the
+# waqf dedication, CC BY 4.0, the attribution waiver, the King Fahd Complex's
+# grant, the warranty disclaimer, the full texts. None of that is restated
+# here and none of it is rewritten.
+#
+# What IS rewritten is the coverage table, because the root table describes a
+# repository and the bundle is not one. The root table names `.cache/`,
+# `.github/`, `conformance/`, `docs/` and `tools/` — not one of which is in
+# the bundle — and names none of `pages/`, `index/` or `schema/`, which is all
+# the bundle contains. Copying it verbatim ships a licence whose own table
+# describes an artifact the reader does not have. That is the same defect as
+# the placeholder v1.0.0 shipped, only quieter: a licence file that does not
+# describe what it sits next to.
+#
+# NOTICE.md is already written bundle-side ("Every top-level entry in the
+# bundle is named above") and ships verbatim.
+BUNDLE_COVERAGE = {
+    "pages/":        "CC BY 4.0 for the decomposition; the printed ink is the "
+                     "King Fahd Complex's — see NOTICE.md",
+    "index/":        "CC BY 4.0",
+    "schema/":       "CC BY 4.0",
+    "lib/":          "MIT",
+    "VERSION.json":  "CC BY 4.0",
+    "CHECKSUMS.txt": "CC BY 4.0",
+    "README.md":     "CC BY 4.0",
+    "NOTICE.md":     "CC BY 4.0  — what the licence covers, and what it cannot",
+    "LICENSE":       "this file",
+}
 
-If you are the copyright holder: replace this file wholesale, and re-run
-tools/build_bundle.py so CHECKSUMS.txt matches.
-"""
+# The coverage block in the root LICENSE, delimited by its heading rule and by
+# the sentence that closes it. Both are matched exactly: if either moves, the
+# build stops rather than shipping the repository's table in the bundle.
+_COVER_HEAD = "WHAT IS COVERED BY WHAT\n" + "\u2550" * 79 + "\n"
+_COVER_TAIL = "Where a directory or file carries its own LICENSE or NOTICE"
+
+
+def bundle_licence(bundle, licence_text):
+    """The root licence with a coverage table describing THIS bundle.
+
+    Raises if the block cannot be found, or if the bundle ships a top-level
+    entry `BUNDLE_COVERAGE` does not classify — the org policy is that every
+    top-level entry is named in the licensing files, and a new directory
+    appearing in the bundle must fail the build, not go out unnamed.
+    """
+    head = licence_text.find(_COVER_HEAD)
+    tail = licence_text.find(_COVER_TAIL)
+    if head < 0 or tail < 0 or tail < head:
+        raise SystemExit(
+            "LICENSE: the 'WHAT IS COVERED BY WHAT' block was not found where "
+            "expected. The bundle's coverage table is generated from it; "
+            "refusing to ship the repository's table inside the bundle.")
+
+    present = []
+    for name in sorted(os.listdir(bundle)):
+        if name.startswith("."):
+            continue
+        present.append(name + "/" if os.path.isdir(os.path.join(bundle, name))
+                       else name)
+    # written after this function runs, so it is never on disk yet
+    if "CHECKSUMS.txt" not in present:
+        present.append("CHECKSUMS.txt")
+    present.sort()
+
+    unknown = [n for n in present if n not in BUNDLE_COVERAGE]
+    if unknown:
+        raise SystemExit(
+            "these bundle entries are not named in BUNDLE_COVERAGE: %s. Every "
+            "top-level entry must be classified in the licence before it "
+            "ships." % ", ".join(unknown))
+
+    # the rest of the licence is hard-wrapped at 79; the table follows suit,
+    # continuation lines hanging under the description rather than the name
+    width = max(len(n) for n in present) + 2
+    rows = ""
+    for n in present:
+        wrapped = textwrap.wrap(BUNDLE_COVERAGE[n], 77 - width) or [""]
+        rows += "  %-*s%s\n" % (width, n, wrapped[0])
+        for cont in wrapped[1:]:
+            rows += "  %s%s\n" % (" " * width, cont)
+    return licence_text[:head] + _COVER_HEAD + "\n" + rows + "\n" \
+        + licence_text[tail:]
+
+
+def write_licence(bundle):
+    """LICENSE + NOTICE.md into the bundle. A missing one stops the build.
+
+    v1.0.0 shipped a placeholder reading "no licence has been chosen ... treat
+    the contents as all rights reserved", because the bundle was built before
+    the root LICENSE existed and released fifty minutes after it landed. The
+    builder substituted rather than stopped. Publishing 108 MB that grants
+    nothing is strictly worse than failing, so there is no fallback now.
+
+    Both files come from REPO, not ROOT: ROOT is the artwork/data root and is
+    overridable with QSVG_ROOT, which made the bundle's licence depend on
+    where the artwork happened to be checked out. They are version-controlled
+    here, in the pipeline repo.
+
+    They ship together. LICENSE alone would appear to cover the printed
+    artwork; NOTICE.md alone would state an exclusion from nothing.
+    """
+    for name, why in (
+            ("LICENSE", "it is the terms the bundle is published under"),
+            ("NOTICE.md", "it states what the licence does NOT cover"),
+    ):
+        src = os.path.join(REPO, name)
+        if not os.path.exists(src):
+            raise SystemExit("%s is missing from %s: %s, and the two must ship "
+                             "together." % (name, REPO, why))
+
+    notice = io.open(os.path.join(REPO, "NOTICE.md"), encoding="utf-8").read()
+    io.open(os.path.join(bundle, "NOTICE.md"), "w",
+            encoding="utf-8").write(notice)
+
+    lic = io.open(os.path.join(REPO, "LICENSE"), encoding="utf-8").read()
+    # the KFGQPC block speaks of "this repository"; in the bundle it is not one
+    lic = lic.replace("fonts in this repository", "fonts in this bundle")
+    io.open(os.path.join(bundle, "LICENSE"), "w",
+            encoding="utf-8").write(bundle_licence(bundle, lic))
 
 
 # --------------------------------------------------------------------- build
@@ -714,33 +823,8 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     tax["schema_version"] = SCHEMA_VERSION
     tax["edition"] = EDITION_ID
     jdump(tax, os.path.join(bundle, "schema", "mark-taxonomy.json"))
-    # The real licence, decided by Abdullah 2026-08-30: follow quran-svg's
-    # model — CC0 for our own contribution, the publishers' terms untouched for
-    # the ink. Copied from the repository root so there is ONE source of truth;
-    # the placeholder below is kept only as the fallback for a checkout that
-    # somehow lacks them, and a bundle built that way says so plainly.
-    # NOTICE.md carries the coverage split — what the licence covers, and the
-    # KFGQPC artwork it cannot. LICENSE is the verbatim CC BY 4.0 text and says
-    # nothing bundle-specific, so the policy's "every top-level folder is named
-    # in the licensing files" rule is satisfied by NOTICE, as it is in
-    # quran-ws/quran-text. Shipping one without the other would publish a
-    # licence that appears to cover the printed artwork.
-    _notice = os.path.join(ROOT, "NOTICE.md")
-    if os.path.exists(_notice):
-        shutil.copyfile(_notice, os.path.join(bundle, "NOTICE.md"))
-    else:
-        raise SystemExit("NOTICE.md is missing: it states what the licence "
-                         "does NOT cover, and must ship beside LICENSE")
-
-    _lic = os.path.join(ROOT, "LICENSE")
-    _notice = os.path.join(ROOT, "NOTICE.md")
-    if os.path.exists(_lic):
-        shutil.copyfile(_lic, os.path.join(bundle, "LICENSE"))
-    else:
-        with open(os.path.join(bundle, "LICENSE"), "w", encoding="utf-8") as fh:
-            fh.write(LICENSE_PLACEHOLDER)
-    if os.path.exists(_notice):
-        shutil.copyfile(_notice, os.path.join(bundle, "NOTICE.md"))
+    # The licence and the notice are emitted at step 7, once every top-level
+    # entry the bundle will ship actually exists — see write_licence().
 
     # optional: the JS library, when there is one to ship (--lib DIR)
     if lib and os.path.isdir(lib):
@@ -828,7 +912,11 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     with open(os.path.join(bundle, "README.md"), "w", encoding="utf-8") as fh:
         fh.write(readme)
 
-    # ---- 7. checksums, then the archive --------------------------------
+    # ---- 7. licence, checksums, then the archive -----------------------
+    # last, so the coverage table it generates sees every top-level entry the
+    # bundle actually ships — `lib/` included when --lib was passed
+    write_licence(bundle)
+
     say("7/7 checksums…")
     rows = []
     for dirpath, dirnames, filenames in os.walk(bundle):
