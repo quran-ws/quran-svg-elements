@@ -18,11 +18,12 @@ Full policy: https://github.com/quran-ws/guidelines
 WHAT IS COVERED BY WHAT
 ═══════════════════════════════════════════════════════════════════════════════
 
-  .cache/     Third-party  — build cache; contains third-party fonts and renders
-  .github/    MIT
-  docs/       CC BY 4.0
-  scratchpad/ Third-party  — working material, not part of any release
-  tools/      MIT
+  .cache/      Third-party  — build cache; third-party fonts and renders
+  .github/     MIT
+  LICENSES/    the full third-party licence texts, under their own terms
+  conformance/ MIT for the tests, CC BY 4.0 for the specs they check
+  docs/        CC BY 4.0
+  tools/       MIT
 
 Where a directory or file carries its own LICENSE or NOTICE, that notice
 governs for that material. Names, logos and trademarks are not licensed.
