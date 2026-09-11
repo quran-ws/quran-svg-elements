@@ -169,8 +169,16 @@ doc.querySelectorAll('g.ayah-fragment[data-ayah-key="2:6"]').forEach(g => g.clas
 // one word
 doc.querySelector('g.word[data-word-key="2:6:3"]');
 
-// search: strip marks, use data-search
-[...doc.querySelectorAll('g.word')].filter(w => w.dataset.search === 'الذين');
+// search: use data-search — but fold BOTH sides, never compare raw.
+// data-search keeps أ/ة/ى as modern spelling writes them, so a raw === misses
+// انعمت against the stored أنعمت. See docs/SEARCH-FOLD.md.
+const fold = s => s.normalize('NFKC')
+  .replace(/[\p{Mn}\p{Me}\p{Lm}\p{Sk}\p{So}\p{Cf}]/gu, '')
+  .replace(/[\u0671\u0623\u0625\u0622]/gu, '\u0627')
+  .replace(/[\u0649\u0626]/gu, '\u064A')
+  .replace(/\u0624/gu, '\u0648').replace(/\u0629/gu, '\u0647');
+const q = fold('الذين');
+[...doc.querySelectorAll('g.word')].filter(w => fold(w.dataset.search) === q);
 ```
 
 ---
