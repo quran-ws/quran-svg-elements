@@ -1,7 +1,9 @@
 # Licence and attribution
 
-`LICENSE` is the **Creative Commons Attribution 4.0 International** licence
-(CC BY 4.0), verbatim and unmodified. This file says what it covers, what it
+The **Creative Commons Attribution 4.0 International** licence (CC BY 4.0)
+applies to this repository; its verbatim text is in `LICENSES/CC-BY-4.0.txt`,
+and `LICENSE` carries it together with the directory table and the third-party
+notices. This file says what it covers, what it
 cannot cover, and the attribution it asks you to carry.
 
 This work is a waqf, offered seeking the reward of Allah, published so that it
