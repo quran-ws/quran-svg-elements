@@ -13,7 +13,7 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 WORK="${QSVG_ROOT:-$HOME/Dev/github.com/AbdullahObaid/quran-svg-work}"
 SHARE="${1:-$HOME/Public/hafs-svg}"
-BUNDLE="$REPO/dist/quran-svg-hafs-kfgqpc"
+BUNDLE="$REPO/dist/quran-svg-elements-hafs-kfgqpc"
 
 [ -d "$BUNDLE" ] || { echo "no bundle at $BUNDLE — run tools/build_bundle.py first" >&2; exit 1; }
 
@@ -25,8 +25,8 @@ cp -r "$BUNDLE"/pages "$BUNDLE"/index "$BUNDLE"/schema "$SHARE"/
 cp "$BUNDLE"/VERSION.json "$BUNDLE"/CHECKSUMS.txt "$BUNDLE"/LICENSE \
    "$BUNDLE"/NOTICE.md "$BUNDLE"/README.md "$SHARE"/
 cp -r "$REPO/docs/shipping/lib" "$SHARE"/lib
-[ -f "$REPO/dist/quran-svg-hafs-kfgqpc.tar.gz" ] &&
-  cp "$REPO/dist/quran-svg-hafs-kfgqpc.tar.gz"* "$SHARE"/
+[ -f "$REPO/dist/quran-svg-elements-hafs-kfgqpc.tar.gz" ] &&
+  cp "$REPO/dist/quran-svg-elements-hafs-kfgqpc.tar.gz"* "$SHARE"/
 
 # 2. both demos, with every path made RELATIVE.
 #    The built pages point at the published host; served from a folder they

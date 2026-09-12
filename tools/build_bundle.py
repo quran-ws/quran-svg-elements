@@ -54,7 +54,14 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 EDITION = "hafs/kfqc"
 EDITION_ID = "hafs-kfgqpc"
-BUNDLE_NAME = "quran-svg-" + EDITION_ID
+# The bundle is named after the repository it comes from. It used to be
+# "quran-svg-" + EDITION_ID, which named a DIFFERENT repository:
+# quran-ws/quran-svg publishes whole muṣḥafs addressable at ayah level and
+# has a v1.0.0 of its own, so a reader sent to "the quran-svg bundle" could
+# download an archive that unpacks cleanly and contains no g.word at all.
+# The name decides the tarball, its .sha256 line, and the root directory
+# inside the archive, so all three say quran-svg-elements together.
+BUNDLE_NAME = "quran-svg-elements-" + EDITION_ID
 SCHEMA_VERSION = "1.0.0"
 
 # Every JSON file carries these two so a consumer can tell what it is holding

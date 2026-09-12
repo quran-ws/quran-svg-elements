@@ -19,4 +19,15 @@ Verified against the shipped v1.0.0 bundle. The specification is otherwise the b
 
 ## A caution about the names
 
-The repository, the release asset and the schema ids are all still named after `quran-svg`. A reader sent to "the quran-svg bundle" can land on [`quran-ws/quran-svg`](https://github.com/quran-ws/quran-svg) instead, which has a v1.0.0 release of its own — a different product, five muṣḥafs at ayah level. It will load and contain no `g.word`. The bundle you want is `quran-svg-hafs-kfgqpc.tar.gz`, from this repository.
+A reader sent to "the quran-svg bundle" can land on [`quran-ws/quran-svg`](https://github.com/quran-ws/quran-svg) instead, which has a v1.0.0 release of its own — a different product, five muṣḥafs at ayah level. It unpacks cleanly and contains no `g.word` at all, so the mistake reads as an empty answer rather than as a failed download, and nothing tells the reader they are in the wrong place.
+
+The names are being brought in line one layer at a time:
+
+| | says |
+|---|---|
+| the repository | `quran-svg-elements` |
+| the schema ids in every file | `quran-svg-elements/…` |
+| what `tools/build_bundle.py` produces | `quran-svg-elements-hafs-kfgqpc.tar.gz`, and the same name as the root directory inside the archive |
+| **the asset published on v1.0.0 today** | **`quran-svg-hafs-kfgqpc.tar.gz`** — the old name, until the release is re-cut |
+
+The published asset is the last one left, and it changes when v1.0.0 is re-cut. Until then, the file to download from this repository is still `quran-svg-hafs-kfgqpc.tar.gz`; afterwards both the tarball and the directory it unpacks to say `quran-svg-elements-hafs-kfgqpc`, and this section can go.
