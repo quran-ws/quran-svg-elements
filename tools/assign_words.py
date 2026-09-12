@@ -521,7 +521,25 @@ def dk_header_lines():
                              "digital-khatt-15-lines.db")
         wdb_p = os.path.join(ROOT, ".cache", "digitalkhatt",
                              "digital-khatt-v2.db")
-        if os.path.exists(lay_p) and os.path.exists(wdb_p):
+        # Absent is NOT fine here. These two carry every surah-name and
+        # basmalah banner in the corpus; without them this returns {} and the
+        # build emits 604 pages with no headers at all, writes a valid
+        # CHECKSUMS.txt and exits 0. That happened on 2026-09-12 and produced a
+        # 108 MB bundle missing all 114 banners, caught only by diffing against
+        # the published release. Compare _load_confirmed() above, which already
+        # takes this position for the human-confirmed files after the banners
+        # lost their metadata the same way on 2026-09-08 — absent is fine for an
+        # optional override, never for a required input.
+        missing = [q for q in (lay_p, wdb_p) if not os.path.exists(q)]
+        if missing:
+            raise RuntimeError(
+                "the DigitalKhatt layout databases are required to place the "
+                "surah banners and are missing:\n  %s\nThey are a QUL export "
+                "(Mushaf layouts id 21, and the Digital Khatt V2 word-by-word "
+                "script). Without them every banner is silently dropped, so "
+                "the build stops here rather than shipping a mushaf with no "
+                "surah headers." % "\n  ".join(missing))
+        if True:
             import sqlite3
             lay = sqlite3.connect(lay_p)
             wdb = sqlite3.connect(wdb_p)

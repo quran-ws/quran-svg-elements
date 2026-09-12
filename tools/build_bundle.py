@@ -770,11 +770,60 @@ def human(n):
         n /= 1024.0
 
 
+# Inputs the pipeline reads from $QSVG_ROOT/.cache and cannot correctly do
+# without. Each is read behind an `os.path.exists(...) else {}` in
+# assign_words.py, so when one is absent the build does not fail — it produces a
+# plausible, quietly wrong bundle.
+#
+# That is not hypothetical. On 2026-09-12 the two digitalkhatt databases were
+# absent (a history rewrite had removed them from the repository and nothing
+# declared them as inputs), and the build emitted 604 pages with **no surah
+# headers at all**, a valid CHECKSUMS.txt and a correct LICENSE, exit code 0.
+# The loss was found only by diffing the result against the published release.
+#
+# Checking here rather than at each reader is deliberate: the readers are lazy
+# and per-page, so a missing file surfaces (if at all) deep inside a parallel
+# map over 604 pages, while this runs once, before any work, and names
+# everything that is missing at once.
+REQUIRED_CACHE_INPUTS = [
+    ("digitalkhatt/digital-khatt-15-lines.db",
+     "surah-name and basmalah banners (QUL Mushaf layouts id 21)"),
+    ("digitalkhatt/digital-khatt-v2.db",
+     "banner surah attribution and DK word text (QUL Digital Khatt V2, word by word)"),
+    ("word_by_word_translation/hafs.json", "per-word script forms"),
+    ("word_by_word_translation/seg_plan.json", "word segmentation plan"),
+    ("marks/labels.json", "shape labels shipped as data-mark values"),
+    ("letter-widths.json", "letter width calibration"),
+    ("qcf_widths.json", "QCF width table"),
+]
+
+
+def check_cache_inputs(root):
+    """Fail before building if a required .cache input is absent.
+
+    A missing input here costs a 25-minute build and a wrong 108 MB artefact;
+    this costs one stat() each.
+    """
+    missing = [(rel, why) for rel, why in REQUIRED_CACHE_INPUTS
+               if not os.path.exists(os.path.join(root, ".cache", rel))]
+    if missing:
+        raise SystemExit(
+            "required build inputs are missing from %s/.cache:\n%s\n\n"
+            "These are read behind existence checks that fall back to empty, so "
+            "building without them yields a bundle that looks complete and is "
+            "not. Restore them (the digitalkhatt databases are a QUL export) "
+            "before building."
+            % (root, "\n".join("  %-46s %s" % (rel, why)
+                               for rel, why in missing)))
+
+
 def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
           brotli_pages=True, archive=True, lib=None, reuse_pages=False,
           quiet=False):
     if brotli is None and brotli_pages:
         raise SystemExit("brotli module not installed; --no-brotli to skip")
+
+    check_cache_inputs(ROOT)
 
     bundle = os.path.join(out_root, BUNDLE_NAME)
     if os.path.isdir(bundle):
