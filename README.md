@@ -2,14 +2,18 @@
 
 <img src=".github/banner.svg" alt="Quran SVG Elements — Pages & Assets, Beta" width="820">
 
-**Fully split, interactive Mushaf pages — every word and every mark addressable — and the library that drives them.**
+**Fully decomposed Mushaf pages where words, marks, and other page elements can be addressed programmatically.**
 
 <a href="https://quran.ws/blocks/quran-svg-elements"><img alt="See it work" src="https://img.shields.io/badge/See_it_work-15705D?style=for-the-badge&labelColor=102F29"></a>
 <a href="https://quran.ws/docs/reference/quran-svg-elements"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-102F29?style=for-the-badge&labelColor=102F29"></a>
 
 </div>
 
-> صفحات المصحف مُفصَّلةً إلى كلماتٍ وعلاماتٍ، يمكن مخاطبة كلٍّ منها على حدة.
+Use it when your application needs interaction at word or mark level, such as recitation highlighting, learning tools, word-level audio, meanings, or linguistic data.
+
+> صفحات مصحف مفصّلة إلى عناصر يمكن الوصول إليها برمجيًا، من الكلمات إلى العلامات الدقيقة داخل الصفحة.
+>
+> استخدمها عندما تحتاج التفاعل على مستوى الكلمة أو العلامة، مثل التظليل أثناء التلاوة، والتعليم، وربط الكلمات بالصوت أو المعاني أو البيانات اللغوية.
 
 | | |
 |---|---|
