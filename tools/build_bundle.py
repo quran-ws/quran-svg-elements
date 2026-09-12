@@ -176,7 +176,7 @@ def build_indexes(out, recs, manifest):
             "ayahs": len(aids),
             "divisions": r["divisions"],
         })
-    jdump(envelope("quran-svg/pages", {
+    jdump(envelope("quran-svg-elements/pages", {
         "count": len(pages),
         "description": "one record per printed page; boxes and word text are "
                        "in index/by-page/NNN.json",
@@ -196,7 +196,7 @@ def build_indexes(out, recs, manifest):
             "pages": s["pages"],
             "has_basmalah": bool(s.get("basmalah_pre")),
         })
-    jdump(envelope("quran-svg/surahs",
+    jdump(envelope("quran-svg-elements/surahs",
                    {"count": len(surahs), "surahs": surahs}),
           os.path.join(idx, "surahs.json"))
 
@@ -258,7 +258,7 @@ def build_indexes(out, recs, manifest):
     nisf = sorted(
         [{"nisf": d["nisf"], "ayah_key": aid, "page": pg}
          for aid, pg, d in starts if "nisf" in d], key=lambda x: x["nisf"])
-    jdump(envelope("quran-svg/divisions", {
+    jdump(envelope("quran-svg-elements/divisions", {
         "description": "every juz, hizb, half-hizb and rubʿ boundary, with "
                        "the ayah it begins at and that ayah's page. A rubʿ "
                        "record's `half` is which half of its hizb it is in; "
@@ -281,7 +281,7 @@ def build_indexes(out, recs, manifest):
     fields = ["word_key", "page", "line", "rasm_uthmani", "search"]
     rows = [[w["word_key"], r["page"], w["line"], w["rasm_uthmani"], w["search"]]
             for r in recs for w in r["words"]]
-    jdump(envelope("quran-svg/words", {
+    jdump(envelope("quran-svg-elements/words", {
         "description": "every word in the corpus, in mushaf order. "
                        "`word_key` is surah:ayah:word, all three ordinals "
                        "and Hafs-specific, and it is the only word key. "
@@ -302,7 +302,7 @@ def build_indexes(out, recs, manifest):
                 "rasm_imlai": w["rasm_imlai"], "search": w["search"], "qpc": w["qpc"],
                 "box": rbox(w["box"]) if w["box"] else None,
             })
-        jdump(envelope("quran-svg/page-words", {
+        jdump(envelope("quran-svg-elements/page-words", {
             "page": r["page"], "view_box": r["view_box"],
             "box_space": "viewBox units of pages/%03d.svg" % r["page"],
             "count": len(words), "words": words}),
@@ -325,7 +325,7 @@ def _divisions_schema(base, env_props, env_req, aid):
             "type": "object", "required": [key, "ayah_key", "page"],
             "properties": props}}
 
-    return dict(base, title="quran-svg/divisions", type="object",
+    return dict(base, title="quran-svg-elements/divisions", type="object",
                 required=env_req + ["juz", "hizb", "nisf", "rubu_al_hizb"],
                 properties=dict(
                     env_props, description={"type": "string"},
@@ -359,7 +359,7 @@ def build_schemas(out):
     word_key = {"type": "string", "pattern": r"^\d+:\d+:\d+$"}
 
     schemas = {
-        "pages.schema.json": dict(base, title="quran-svg/pages", type="object",
+        "pages.schema.json": dict(base, title="quran-svg-elements/pages", type="object",
             required=env_req + ["count", "pages"], properties=dict(env_props,
                 count={"type": "integer"},
                 description={"type": "string"},
@@ -383,7 +383,7 @@ def build_schemas(out):
                         "last_ayah": {"type": ["string", "null"]},
                         "divisions": {"type": "object"}}}})),
 
-        "surahs.schema.json": dict(base, title="quran-svg/surahs",
+        "surahs.schema.json": dict(base, title="quran-svg-elements/surahs",
             type="object", required=env_req + ["count", "surahs"],
             properties=dict(env_props, count={"type": "integer"},
                 surahs={"type": "array", "minItems": 114, "maxItems": 114,
@@ -409,7 +409,7 @@ def build_schemas(out):
         "divisions.schema.json": _divisions_schema(base, env_props, env_req,
                                                    aid),
 
-        "words.schema.json": dict(base, title="quran-svg/words", type="object",
+        "words.schema.json": dict(base, title="quran-svg-elements/words", type="object",
             required=env_req + ["count", "fields", "rows"],
             properties=dict(env_props, count={"type": "integer"},
                 description={"type": "string"},
@@ -428,7 +428,7 @@ def build_schemas(out):
                                     {"type": "integer"},
                                     {"type": "string"}, {"type": "string"}]}})),
 
-        "page-words.schema.json": dict(base, title="quran-svg/page-words",
+        "page-words.schema.json": dict(base, title="quran-svg-elements/page-words",
             type="object",
             required=env_req + ["page", "view_box", "count", "words"],
             properties=dict(env_props,
@@ -451,7 +451,7 @@ def build_schemas(out):
                                 "maxItems": 4,
                                 "items": {"type": "number"}}}}})),
 
-        "version.schema.json": dict(base, title="quran-svg/version",
+        "version.schema.json": dict(base, title="quran-svg-elements/version",
             type="object",
             required=["schema", "schema_version", "edition", "profile",
                       "build_date", "counts"],
@@ -859,7 +859,7 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     art_commit, art_dirty = git_commit(ROOT)
     pipe_commit, pipe_dirty = git_commit(REPO)
     version = {
-        "schema": "quran-svg/version",
+        "schema": "quran-svg-elements/version",
         "schema_version": SCHEMA_VERSION,
         "edition": EDITION_ID,
         "print": manifest.get("print"),
