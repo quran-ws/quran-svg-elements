@@ -99,8 +99,7 @@ units, i.e. **1.6% of a ring's width**. `--tol 0.05` would take even those.
 
 ## What changed on disk
 
-**2,879 SVG files**, in the artwork clone
-`/home/abdullah/Dev/github.com/quranpedia/quran-svg` (branch `main`, on top of
+**2,879 SVG files**, in the artwork repository (branch `main`, on top of
 `1b427fab`):
 
 | mushaf | files changed (of 722) |
