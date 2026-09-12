@@ -160,7 +160,7 @@ const doc = new DOMParser()
 // the text of ayah 2:6, in reading order
 [...doc.querySelectorAll('g.word')]
   .filter(w => w.dataset.wordKey.startsWith('2:6:'))
-  .map(w => w.dataset.rasm_uthmani).join(' ');
+  .map(w => w.dataset.rasmUthmani).join(' ');
 // => "إِنَّ ٱلَّذِينَ كَفَرُوا۟ سَوَآءٌ عَلَيْهِمْ …"
 
 // highlight the whole ayah (NOTE: several fragments — one per printed line)
@@ -178,6 +178,9 @@ const fold = s => s.normalize('NFKC')
   .replace(/[\u0649\u0626]/gu, '\u064A')
   .replace(/\u0624/gu, '\u0648').replace(/\u0629/gu, '\u0647');
 const q = fold('الذين');
+// `data-search` exists in the DEV profile only — it is dropped from the
+// published bundle (see the profile table in §2). Against a released bundle,
+// read `search` from index/by-page/NNN.json instead; §6.1 has that form.
 [...doc.querySelectorAll('g.word')].filter(w => fold(w.dataset.search) === q);
 ```
 
@@ -194,7 +197,7 @@ A real fragment of `pages/003.svg`, `d=` values trimmed, dev profile:
 
  <g transform="matrix(1.3333 0 0 -1.3333 -55 640)">        <!-- page frame; y is FLIPPED -->
 
-  <g id="ayah_markers" class="ayah_marks">               <!-- all medallions, one layer -->
+  <g id="ayah_markers" class="ayah_markers">               <!-- all medallions, one layer -->
    <g class="ayah-mark" id="mk-2-16" data-ayah-key="2:16">
     <g transform="translate(45.272 87.116) scale(0.011 -0.011)">
      <path data-kind="ayah_mark_ornament" d="m1248,4q…" fill="#231f20"/></g>
@@ -254,7 +257,7 @@ A real fragment of `pages/003.svg`, `d=` values trimmed, dev profile:
 ```
 svg
 ├ g[transform=matrix …]              page frame
-│ ├ g#ayah_marks
+│ ├ g#ayah_markers
 │ │ └ g.ayah-mark[id][data-ayah-key]
 │ │   ├ g[transform] > path[data-kind=ayah_mark_ornament]
 │ │   └ g[transform] > path[data-kind=ayah_number]
@@ -365,7 +368,7 @@ They use a second, legacy attribute vocabulary from the upstream artwork:
   meet and read `…19:58 words · sajdah-mark 19:58 · division-mark 19:59 · 19:59
   words…`. A sign whose ayah has no ink in the same source-path wrapper is
   left where it was; there are none in this build.
-- **The `#ayah_marks` layer is NOT in reading order.** Every medallion lives
+- **The `#ayah_markers` layer is NOT in reading order.** Every medallion lives
   in one ornament layer near the top of the document, in *descending* ayah
   order — it is the artwork's own layer and is untouched. Reach a marker from
   its ayah through `data-mark` / `id="mk-S-A"` (§7), never by document
@@ -438,6 +441,9 @@ written:
 
 ```js
 const fold = s => s.replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
+// DEV profile only: `data-search` is not in the published bundle (§2).
+// For a released bundle, search the `search` column of index/words.json, or
+// the `search` field of index/by-page/NNN.json.
 const hits = [...doc.querySelectorAll('g.word')]
   .filter(w => fold(w.dataset.search).includes(fold(query)));
 ```
@@ -505,7 +511,7 @@ path tagged `data-duplicate="1"` (§9.2).
 |---|---:|---|---|
 | `data-kind` | every ink path | `mark` · `body` · `ayah_mark_ornament` (6,248: 6,236 rings + 12 `data-duplicate` copies on p1–2) · `ayah_number` 6,236 · `header_ink` · `ornament` · `page_number` 2 · `running_head` 2 | Present on **every** path except the dev-only `ayahPolygon`. The four `page_number` / `running_head` paths are p17's page furniture, drawn by the artwork **entirely outside the viewBox** (y 583.7..588.2 on a 550-tall page, and y -62.2..-7.1), kept so no ink is ever silently dropped — §10.5. `body` = letter ink. |
 | `data-mark` | 436,843 | 35 names, §8 | Attribute occurrences. The **logical** mark count is 436,627 — a mark drawn as more than one path is one mark. On every `data-kind="mark"` path but **one**, which is unnamed (p1 `e34`). |
-| `data-mark-family` | 393,970 | **token list** — `diacritic` 280,333 · `dots` 105,270 · `tanwin` 8,554 · `waqf` 4,272 · `sifr` 4,054 · `sajdah` 30 · `reading_sign` 11 | **Space-separated, like `class` — match with `~=`, not `=`.** See below. Only on marks that have a family. **Derivable from `mark-taxonomy.v2.json`** — prefer the registry, which also covers `small_noon` (§10.5). |
+| `data-mark-family` | 393,970 | **token list** — `diacritic` 280,333 · `dots` 105,270 · `tanwin` 8,554 · `waqf` 4,272 · `sifr` 4,054 · `sajdah` 30 · `reading_sign` 11 | **Space-separated, like `class` — match with `~=`, not `=`.** See below. Only on marks that have a family. **Derivable from `schema/mark-taxonomy.json`** — prefer the registry, which also covers `small_noon` (§10.5). |
 | `data-element-id` | 598,407 | `e1`, `e2`, … | **Not stable across builds. Never key on it.** Unique within a page. Only on word/standalone ink — never on marker, header or polygon paths. |
 | `data-sig` | 598,392 | 16 hex | Outline shape signature used by the review loop. **Not an identity** — §8.5. |
 | `data-form` | 8,506 | `staggered` 6,598 · `stacked` 1,908 | Only on the `tanwin` family: how the pair of strokes is drawn. 48 of the 8,554 tanwin paths have none. |
@@ -642,7 +648,7 @@ Every fragment says so, and the fragments are linked to the medallion:
 <!-- page 3, line 2 -->
 <g class="ayah-fragment" data-ayah-key="2:6" data-ayah-mark="mk-2-6" data-fragment="2" data-ayah-fragments="2">…</g>
 
-<!-- page 3, in #ayah_marks -->
+<!-- page 3, in #ayah_markers -->
 <g class="ayah-mark" id="mk-2-6" data-ayah-key="2:6">…</g>
 ```
 
@@ -687,8 +693,9 @@ pages** (§11), if you loaded the right page you will always find all N.
 
 ## 8. The mark taxonomy — 35 emitted names
 
-The registry is `.cache/schema/mark-taxonomy.v2.json` (schema `mark-taxonomy`,
-version 2.0). It declares **36** names: **35 active**, 1 reserved-inactive
+The registry ships in the bundle as `schema/mark-taxonomy.json` (schema
+`mark-taxonomy`, version 2.0). In the pipeline's working tree the same file is
+built at `.cache/schema/mark-taxonomy.v2.json`; consumers want the bundled copy. It declares **36** names: **35 active**, 1 reserved-inactive
 (`waqf_mamnu`, §8.6). Of the 35 active, **34 are actually emitted**; `waqf` is
 a legacy fallback name with **0** occurrences. `tools/audit_taxonomy.py` gates
 this and reports `35 mark names`, counting the registry's active set.
@@ -1173,7 +1180,7 @@ A strict consumer must special-case these:
   p37, p38, p126 ×2, p146, p159, p342, p362, p431 ×2, p460, p485, p556, p567,
   p577.
 - **4 paths on p17 have no `data-kind` at all** — page ornaments outside both
-  `#content` and `#ayah_marks`, passed through from the artwork untouched.
+  `#content` and `#ayah_markers`, passed through from the artwork untouched.
   p17 is the only page with them.
 - **`small_noon` is the only orthographic sign with no `data-mark-family`.**
   `[data-mark-family~="reading_sign"]` also silently drops it — it is not a
@@ -1244,9 +1251,9 @@ frag.dataset.ayahFragments === String(
 
 // ---- the plain text of a printed line ----
 [...doc.querySelectorAll('g.line[data-line="7"] g.word')]
-  .map(w => w.dataset.rasm_uthmani).join(' ');
+  .map(w => w.dataset.rasmUthmani).join(' ');
 
-// ---- search this page ----
+// ---- search this page (DEV profile: data-search is not in the bundle, §2) ----
 const fold = s => s.replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه');
 [...doc.querySelectorAll('g.word')]
   .filter(w => fold(w.dataset.search).includes(fold('الرحمن')))
@@ -1279,16 +1286,15 @@ doc.querySelectorAll(`path[data-pair="${p.dataset.pair}"]`);   // exactly two
 
 ```python
 # ---- which page is 2:255 on?  (companion index) ----
-idx = json.load(open("index/index.json"))
+idx = json.load(open("index/pages.json"))
 def num(aid): s, a = aid.split(":"); return (int(s), int(a))
-page = next(p["page"] for p in idx["page_index"]
+page = next(p["page"] for p in idx["pages"]
             if num(p["first_ayah"]) <= (2, 255) <= num(p["last_ayah"]))
 
 # ---- where is a word on the page? ----
-wb    = json.load(open("index/wordboxes.json"))
-cols  = wb["fields"]                      # read the columns, never assume them
-boxes = wb["pages"]["42"]
-box   = next(b for b in boxes if b[cols.index("word_key")] == "2:255:3")
+# Boxes are per page, in pages/NNN.svg viewBox units — see `box_space`.
+pg   = json.load(open("index/by-page/%03d.json" % page))
+box  = next(w["box"] for w in pg["words"] if w["word_key"] == "2:255:3")
 ```
 
 ---
