@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Validate a built bundle, and report its real sizes.
 
-    python3 tools/verify_bundle.py dist/quran-svg-hafs-kfgqpc
-    python3 tools/verify_bundle.py dist/quran-svg-hafs-kfgqpc --sizes
+    python3 tools/verify_bundle.py dist/quran-svg-elements-hafs-kfgqpc
+    python3 tools/verify_bundle.py dist/quran-svg-elements-hafs-kfgqpc --sizes
     python3 tools/verify_bundle.py --compare A B        # byte-identical?
 
 The checks, in order, each one a hard failure:
