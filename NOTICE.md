@@ -74,6 +74,7 @@ what it is and find its corrections. That is a request, not a condition.
 | the glyph outlines drawn in `pages/` | the King Fahd Glorious Qurʾān Printing Complex's artwork |
 | the Qurʾānic text and the muṣḥaf's vocalisation | KFGQPC, read from their published packages |
 | KFGQPC fonts, where referenced | KFGQPC, as received |
+| the DigitalKhatt layout databases in `.cache/digitalkhatt/` | DigitalKhatt, obtained as a QUL export |
 
 These remain subject to the rights, licences and conditions of their owners. We
 acquired no right in them by decomposing, labelling, correcting, organising,
@@ -83,6 +84,21 @@ yourself before redistributing.
 
 `pages/` therefore carries **both**: their ink, and our structure over it. The
 licence covers the second, not the first.
+
+### The DigitalKhatt layout databases
+
+`.cache/digitalkhatt/digital-khatt-v2.db` and `digital-khatt-15-lines.db` are
+**build inputs, not product**. The pipeline reads them to place words and to
+budget marks, because they model the KFGQPC V2 1421H print exactly; nothing in
+`pages/` or `index/` is a copy of them. They are checked in so that a build is
+reproducible without re-fetching, which is the only reason they are here.
+
+They are not ours. They came from the Quranic Universal Library as the
+*Mushaf layouts* (id 21) and *Digital Khatt V2 word-by-word* resources, and the
+work is DigitalKhatt's. We make no claim about what their terms permit and
+grant no right in them: if you intend to redistribute these two files, or a
+work derived from them rather than from our structure, establish your own
+position with DigitalKhatt and with QUL first.
 
 ## Names, logos and marks
 

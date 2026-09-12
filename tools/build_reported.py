@@ -1,5 +1,6 @@
 import json, io, html, os, sys
-SRC = "/home/abdullah/Dev/github.com/AbdullahObaid/quran-svg-pipeline/docs/defects/reported.json"
+# Point QSVG_REPORTED at the pipeline's docs/defects/reported.json.
+SRC = os.environ.get("QSVG_REPORTED", "docs/defects/reported.json")
 d = json.load(io.open(SRC, encoding="utf-8"))
 items = d["items"]
 ORDER = ["diagnosed, not fixed", "partly fixed", "mostly fixed", "fixed", "answered"]
