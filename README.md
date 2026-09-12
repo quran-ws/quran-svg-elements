@@ -17,7 +17,6 @@ Use it when your application needs interaction at word or mark level, such as re
 
 | | |
 |---|---|
-| **Package** | `@quran-ws/svg-elements` · `1.0.0` |
 | **Words · marks** | 77,432 · 436,398 |
 | **Split so far** | Hafs (KFGQPC) |
 | **Licence** | CC BY 4.0 (the work) · KFGQPC terms (the artwork) |
