@@ -96,7 +96,17 @@ def load_hand_cuts():
     kaf is an arm plus a bowl and the lam a stem plus a foot, four pieces for two
     letters): [[x, y, k], …], one entry per piece, x/y the piece's centre in page units
     and k the letter it belongs to. Pieces are matched to entries by nearest centre, so
-    the assignment survives any change in how pieces are ordered."""
+    the assignment survives any change in how pieces are ordered.
+
+    `regions` are freehand loops: {path, letter}. Where no straight line can part two
+    letters -- the kaf's arm and the alef interleave on ضاحكا -- he draws round the ink
+    that IS one letter, and the pixels inside the loop are that letter outright.
+
+    The key is the run's text, and a run's text is not for ever: when the word build
+    stops filing the alef in the group before it, وَٱنْحَرْ's run انحر becomes نحر and
+    every drawing keyed to the old name would rot. So the text is only the first way in
+    -- `drawing_for` falls back to where the ink actually is, which no rebuild can change.
+    """
     out = {}
     if not os.path.exists(HAND_CUTS_PATH):
         return out
@@ -105,9 +115,64 @@ def load_hand_cuts():
         if not line:
             continue
         e = json.loads(line)
-        out[(e["page"], e["wid"], e["text"])] = ([[tuple(p) for p in c] for c in e["cuts"]],
-                                                 e.get("assign"))
+        out.setdefault((e["page"], e["wid"]), []).append(
+            (e["text"],
+             [[tuple(p) for p in c] for c in e.get("cuts", [])],
+             e.get("assign"),
+             [{"path": [tuple(q) for q in r["path"]], "letter": int(r["letter"])}
+              for r in e.get("regions", [])]))
     return out
+
+
+def drawing_for(recs, text, polys, used, named=()):
+    """The drawing meant for this run: by name, or failing that by where it was drawn.
+
+    A cut's MIDPOINT lies on the stroke it parts and a loop encloses ink, so each line of
+    a drawing places itself in one run. That is a fact about the artwork, so it survives a
+    change in how the word build names or groups its runs -- and it survives a run being
+    SPLIT, which whole-record matching did not: p240's `اسه` and p531's `تكذبا` became two
+    runs each after the ligature-grouping fix, and their drawings were dropped whole.
+    Endpoints are no guide, because a cut is drawn past the ink on purpose (p240's
+    overshoots by 1.8u).
+
+    `named` holds the texts of every run in the word, so a drawing that some OTHER run
+    will claim by name is off limits here: neighbouring runs sit a unit or two apart and
+    a padded bbox reaches into the next one, which is how p227's `ين` drawing was taken
+    by `لخسر` and lost (measured 2026-09-13, the only such theft in 280 drawings).
+
+    The geometry path returns no `assign`: those letter indices count from the run the
+    drawing was made on, and a split run renumbers them.
+    """
+    for i, (t, cuts, assign, regions) in enumerate(recs):
+        if t == text and used.get(i) != "all":
+            used[i] = "all"
+            return cuts, assign, regions
+    x0, y0, x1, y1 = L.bbox(polys)
+    pad = 1.0
+
+    def inside(px, py):
+        return x0 - pad <= px <= x1 + pad and y0 - pad <= py <= y1 + pad
+
+    gcuts, gregions = [], []
+    for i, (t, cuts, assign, regions) in enumerate(recs):
+        if used.get(i) == "all" or t in named:
+            continue
+        u = used.setdefault(i, set())
+        for j, c in enumerate(cuts):
+            if ("c", j) in u:
+                continue
+            if inside((c[0][0] + c[1][0]) / 2.0, (c[0][1] + c[1][1]) / 2.0):
+                gcuts.append(c)
+                u.add(("c", j))
+        for j, r in enumerate(regions):
+            if ("r", j) in u:
+                continue
+            if all(inside(px, py) for px, py in r["path"]):
+                gregions.append(r)
+                u.add(("r", j))
+    if not gcuts and not gregions:
+        return None
+    return gcuts, None, gregions
 
 
 CONFIRMED_PATH = os.path.join(L.ROOT, "docs", "defects", "letters_confirmed.jsonl")
@@ -120,6 +185,11 @@ def load_confirmations():
     is where it belongs. It costs a click instead of two drawn lines, so the drawing page
     now opens on the split as it stands and asks for a verdict -- most cuts are already
     right, and redrawing a right one spends the only scarce thing here.
+
+    The value is the split that was confirmed, as one path list per letter, or True for
+    the older records that kept none. A confirmation with no split is only as good as the
+    build it was given for: three of the first 117 stopped being exact labels when the
+    run they named lost a letter in a later build.
     """
     out = {}
     if not os.path.exists(CONFIRMED_PATH):
@@ -129,9 +199,9 @@ def load_confirmations():
         if not line:
             continue
         e = json.loads(line)
-        if e.get("verdict") != "right":
+        if e.get("verdict") != "right" or e.get("superseded"):
             continue
-        out[(e["page"], e["wid"], e.get("text", ""))] = True
+        out[(e["page"], e["wid"], e.get("text", ""))] = e.get("model") or True
     return out
 
 
@@ -172,9 +242,21 @@ def build_letter_masks(page, wid, idx, frame, ink):
     return out
 
 
-def confirmed_mask(page, wid, lig_text, idx, frame, ink, n):
-    """The letters build's own split of this run, as a single-bit mask per pixel."""
-    masks = build_letter_masks(page, wid, idx, frame, ink)
+def masks_from_model(model, frame, ink):
+    """One mask per letter from the path lists a confirmation kept."""
+    out = []
+    for ds in model:
+        polys = [poly for d in (ds or []) for poly in L.flatten(d)]
+        m = (raster_on_canvas(polys, frame) & ink) if polys else None
+        out.append(m if m is not None and m.any() else None)
+    return out
+
+
+def confirmed_mask(page, wid, lig_text, idx, frame, ink, n, model=None):
+    """The split that was confirmed, as a single-bit mask per pixel -- the one the record
+    kept, or failing that the letters build's own."""
+    masks = masks_from_model(model, frame, ink) if isinstance(model, list) else \
+        build_letter_masks(page, wid, idx, frame, ink)
     if masks is None or sum(1 for m in masks if m is not None) != n:
         return None                      # the build does not hold every letter: not exact
     mask = np.zeros((H, W), dtype=np.uint16)
@@ -252,6 +334,40 @@ def apply_trims(mask, ink, frame, trims, idx, n):
 
 
 NOJOIN = set("اأإآٱدذرزوؤءةى")          # letters that never join the letter after them
+RULE_PART = os.environ.get("QSVG_RULEPART", "1") != "0"
+
+
+def rule_partition(ink, chars, n):
+    """The partition the joining rules prove, or None.
+
+    A letter in NOJOIN never joins the one after it, so a run holding b such boundaries
+    is drawn in b+1 pieces. Where the ink IS in exactly b+1 pieces, which letters each
+    piece may hold is settled -- no model, no drawing, no layer. Measured over the whole
+    mushaf (tools/audit_nojoin_contours.py): of 2,032 such boundaries the build already
+    splits 567, this settles 181 more, and 546 the print fuses anyway, so those still
+    need a drawn line. Over pages 1-120 it makes 99,859 ambiguous pixels single-letter
+    and contradicts the tajweed layers on 0.47% of pixels, which is seam width; a
+    contradicted pixel is left as it was rather than emptied.
+    """
+    breaks = [i for i, ch in enumerate(chars[:-1]) if ch in NOJOIN]
+    if not breaks:
+        return None
+    lab, nc = ndimage.label(ink, structure=np.ones((3, 3), dtype=bool))
+    if nc != len(breaks) + 1:
+        return None
+    groups, start = [], 0
+    for i in breaks:
+        groups.append((start, i))
+        start = i + 1
+    groups.append((start, n - 1))
+    order = sorted(range(1, nc + 1), key=lambda c: -int(np.nonzero(lab == c)[1].max()))
+    out = []
+    for c, (a, b) in zip(order, groups):
+        bits = 0
+        for k in range(a, b + 1):
+            bits |= 1 << k
+        out.append((lab == c, bits))
+    return out
 
 
 def order_pieces(pieces, lab, cuts, frame, ink):
@@ -299,7 +415,7 @@ def order_pieces(pieces, lab, cuts, frame, ink):
 
 
 def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None,
-                     model_masks=None):
+                     model_masks=None, regions=None):
     """Exact labels from drawn cut lines: paint the lines (extended 1u past their ends
     over the canvas), take the ink components, and number them right→left. Returns the
     mask or None when the lines do not give exactly n pieces."""
@@ -329,7 +445,9 @@ def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None,
         if sizes[c] < 12:
             continue
         wc = int(np.bincount(whole[lab == c]).argmax())
-        (pieces if wc in touched else extras).append(c)
+        # with no line drawn nothing is "touched": the run's own contours ARE the pieces,
+        # which is what a drawing carrying only loops has to carve out of
+        (pieces if (not cuts or wc in touched) else extras).append(c)
     if len(pieces) < n and letters:
         # after a letter that never joins left (و then ة, ر then ا) the next letter is a
         # contour of its own that no line needs to touch; the text says how many such
@@ -368,29 +486,96 @@ def drawn_cut_labels(polys, cuts, n, frame, ink, letters=None, assign=None,
                 pieces.append(nxt)
                 nxt += 1
         sizes = np.bincount(lab.ravel())
+    # A loop is a piece, not an afterthought. Carving it here, before any letter is
+    # named, is what the drawing page does, so the pieces the page showed and the pieces
+    # named here are the same ones -- and its letter comes from the loop itself rather
+    # than from the nearest clicked centre. Applied at the end instead, p488 أَلَآ was
+    # refused: both model-split pieces fell nearest the loop's own centre, the alef was
+    # left holding nothing, and a good drawing was thrown away.
+    region_letter = {}
+    for r in (regions or []):
+        k = r["letter"]
+        if not 0 <= k < n:
+            continue
+        inside = ink & loop_on_canvas(r["path"], frame) & np.isin(lab, pieces)
+        if not inside.any():
+            continue
+        nxt = int(lab.max()) + 1
+        lab[inside] = nxt
+        pieces.append(nxt)
+        region_letter[nxt] = k
+    if region_letter:
+        pieces = [c for c in pieces if (lab == c).any()]
+        sizes = np.bincount(lab.ravel())
+    letter_of = None
     if assign:
         # Each piece takes the letter of the nearest named centre, so the list of clicks
         # need not be as long as the list of pieces -- it was checked for equal length,
         # and subdividing a piece by the build (above) then made every clicked run fail.
         # What must hold is that every letter ends up with ink, and that is checked below.
+        #
+        # A loop carries its own letter, and where the page recorded one deliberately that
+        # beats a nearest-centre guess (p488 أَلَآ). But the page writes 0 on a loop it has
+        # no answer for, so on a three-letter run both loops can claim the first letter and
+        # the rest are left empty: p588 كلا, where his three clicks say ك, ل, ا and both
+        # loops said ك. Neither source is right on its own, so try the loops' letters first
+        # and the clicks alone second, and take the naming under which every letter holds
+        # ink. That is the property the label has to have; which source supplied it is not
+        # something a drawing needs to say twice.
+        def _named(use_regions):
+            out, got = {}, set()
+            for c in pieces:
+                ys, xs = np.nonzero(lab == c)
+                cx, cy = x0 + xs.mean() / z, y0 + ys.mean() / z
+                k = (region_letter[c] if use_regions and c in region_letter
+                     else min(assign, key=lambda a: (a[0] - cx) ** 2 + (a[1] - cy) ** 2)[2])
+                if not 0 <= int(k) < n:
+                    return None, None
+                out[c] = int(k)
+                got.add(int(k))
+            return out, got
+
+        letter_of, seen = _named(True)
+        if letter_of is None or len(seen) != n:
+            alt, alt_seen = _named(False)
+            if alt is not None and len(alt_seen) == n:
+                letter_of, seen = alt, alt_seen
+        if letter_of is None:
+            return None
+    elif len(pieces) != n:
+        # One line can leave a letter in two pieces: on p240 رَّأْسِهِۦ the run اسه is a
+        # single fused contour, his one line parted ه from اس, and the build's split then
+        # divided BOTH sides, putting the س on either side of his line -- 4 pieces for 3
+        # letters, and the drawing was thrown away with "does not give 3 pieces". A piece
+        # per letter was never the requirement. What must hold is that no piece crosses a
+        # drawn line and that every letter holds ink; which letter a piece is, the build
+        # already knows. So ask it, instead of asking him for a line he has drawn.
+        if not model_masks:
+            return None
         letter_of, seen = {}, set()
         for c in pieces:
-            ys, xs = np.nonzero(lab == c)
-            cx, cy = x0 + xs.mean() / z, y0 + ys.mean() / z
-            k = min(assign, key=lambda a: (a[0] - cx) ** 2 + (a[1] - cy) ** 2)[2]
-            if not 0 <= int(k) < n:
-                return None
-            letter_of[c] = int(k)
-            seen.add(int(k))
+            if c in region_letter:
+                letter_of[c] = region_letter[c]
+                seen.add(region_letter[c])
+                continue
+            cm = lab == c
+            best, bv = None, 0
+            for k, mk in enumerate(model_masks):
+                v = int((cm & mk).sum()) if mk is not None else 0
+                if v > bv:
+                    bv, best = v, k
+            if best is None:
+                return None                      # a piece the build has no letter for
+            letter_of[c] = best
+            seen.add(best)
+    if letter_of is not None:
         if len(seen) != n:
             return None                          # every letter must hold some ink
-    elif len(pieces) != n:
-        return None
     pieces = order_pieces(pieces, lab, cuts, frame, ink)
     mask = np.zeros((H, W), dtype=np.uint16)
     span = {}
     for k, c in enumerate(pieces):
-        bit = letter_of[c] if assign else k
+        bit = letter_of[c] if letter_of is not None else k
         mask[lab == c] = 1 << bit
         xs = np.nonzero(lab == c)[1]
         lo, hi = xs.min(), xs.max()
@@ -429,7 +614,7 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None, trims=Non
         letters = [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]
         mm = build_letter_masks(page, word["wid"], idx, frame, ink)
         mask = drawn_cut_labels(polys, drawn[0], n, frame, ink, letters, drawn[1],
-                                model_masks=mm)
+                                model_masks=mm, regions=drawn[2] if len(drawn) > 2 else None)
         if mask is not None:
             if trims:
                 apply_trims(mask, ink, frame, trims, idx, n)
@@ -437,7 +622,8 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None, trims=Non
                     "exact_px": int(ink.sum()), "ink_px": int(ink.sum()), "wid": word["wid"],
                     "text": lig["text"], "letters": [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]}
     if confirmed:
-        cm = confirmed_mask(page, word["wid"], lig["text"], idx, frame, ink, n)
+        cm = confirmed_mask(page, word["wid"], lig["text"], idx, frame, ink, n,
+                            model=confirmed)
         if cm is not None:
             if trims:
                 apply_trims(cm, ink, frame, trims, idx, n)
@@ -478,6 +664,14 @@ def run_sample(word, lig, idx, run_rec, font, pair, scale, drawn=None, trims=Non
             mask[comp] = bits
     else:
         mask[ink] = (1 << n) - 1
+    chars = [L.letters_of(word["uthmani"])[i]["ch"] for i in idx]
+    rp = rule_partition(ink, chars, n) if RULE_PART and len(chars) == n else None
+    for pm, bits in (rp or []):
+        cur = mask[pm]
+        new = cur & np.uint16(bits)
+        keep = new == 0
+        new[keep] = cur[keep]                # a contradiction leaves the pixel as it was
+        mask[pm] = new
     trimmed = apply_trims(mask, ink, frame, trims, idx, n) if trims else 0
     exact = int(((mask & (mask - 1)) == 0).sum() - (mask == 0).sum())
     return {"ink": ink, "mask": mask, "n": n, "frame": frame, "known": len(known),
@@ -491,18 +685,29 @@ def build_page(page):
     if not os.path.exists(cuts_path):
         return None
     rec = json.load(open(cuts_path, encoding="utf-8"))
+    if rec.get("model"):
+        # The tajweed layer is the teacher: `resolve_layers` reads it off cuts whose src is
+        # "tajweed", and a MODEL-mode record has none -- every cut in it says src "model".
+        # Building labels from one trains the model on its own output and silently drops the
+        # teacher: measured 2026-09-13, runs with a resolved layer went 36,390 -> 439 and
+        # nothing in the output said why. So refuse, and name the fix.
+        raise SystemExit("%s was built by a model (%s). Labels come from the tajweed/DK cut "
+                         "records: rebuild them with `python3 tools/build_letter_cuts.py 1 604` "
+                         "and no QSVG_LETTERS_TAG, or unset the tag you are running with."
+                         % (cuts_path, rec["model"]))
     words, _ = L.read_words(page)
     font = T.PageFont(page) if os.path.exists(os.path.join(T.FONTS, "p%d.ttf" % page)) else None
     scale = rec.get("scale", T.DEFAULT_SCALE)
     samples = []
     drawn_all = load_hand_cuts()
+    drawn_used = {}
     trims_all = load_shape_trims()
     confirmed_all = load_confirmations()
     for w in words:
         wrec = rec["words"].get(w["wid"])
         if not wrec:
             continue
-        if (wrec.get("flags") and not any(k[:2] == (page, w["wid"]) for k in drawn_all)
+        if (wrec.get("flags") and (page, w["wid"]) not in drawn_all
                 and (page, w["wid"]) not in trims_all):
             continue                      # no tajweed registration; a drawing needs none
         reg = wrec.get("reg")
@@ -516,11 +721,20 @@ def build_page(page):
         if runs is None:
             continue
         by_letters = {tuple(r["letters"]): r for r in wrec["runs"]}
+        run_texts = {lig["text"] for lig, _ in runs}
         for lig, idx in runs:
             if len(idx) < 2:
                 continue
             run_rec = by_letters.get(tuple(idx), {})
-            drawn = drawn_all.get((page, w["wid"], lig["text"]))
+            recs = drawn_all.get((page, w["wid"]))
+            drawn = None
+            if recs:
+                rp = [poly for p in lig["paths"] if p["kind"] == "body" and p["d"]
+                      for poly in L.flatten(p["d"])]
+                if rp:
+                    drawn = drawing_for(recs, lig["text"], rp,
+                                        drawn_used.setdefault((page, w["wid"]), {}),
+                                        named=run_texts)
             trims = [t for t in trims_all.get((page, w["wid"]), []) if t["index"] in idx]
             ok = confirmed_all.get((page, w["wid"], lig["text"]))
             try:

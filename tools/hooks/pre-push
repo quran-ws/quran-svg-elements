@@ -1,0 +1,22 @@
+#!/bin/sh
+# Refuse to push this clone's branches to the public repo.
+#
+# This clone is the lab notebook: 695 of its paths are deliberately not public (the
+# drawings, the review data, the sweeps, the scratchpad), and its history starts from a
+# different root than the public repo's. The only way material should leave here is
+# `python3 tools/publish.py`, which copies an allowlisted subset into a worktree. That
+# script sets PUBLISH_OK, so this hook lets it through and stops everything else.
+#
+# Install:  ln -sf ../../tools/hooks/pre-push .git/hooks/pre-push
+[ -n "$PUBLISH_OK" ] && exit 0
+url="$2"
+case "$url" in
+  *quran-svg-elements*|*quran-svg-pipeline*)
+    echo "pre-push: refusing to push this clone directly to the public repo ($url)." >&2
+    echo "  This branch holds material that must not be published." >&2
+    echo "  Publish with:  python3 tools/publish.py            # dry run" >&2
+    echo "                 python3 tools/publish.py -m '...' --push" >&2
+    echo "  To push somewhere private, use that remote's name (the hook only guards the public one)." >&2
+    exit 1 ;;
+esac
+exit 0

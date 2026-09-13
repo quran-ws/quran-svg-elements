@@ -1,0 +1,15 @@
+# Paths that may go to the PUBLIC repo even though they are not there yet.
+#
+# A path already tracked on the public branch is publishable without being listed here --
+# that is what "already public" means. This file is only for ADDING something new, so a
+# new directory in this clone is invisible to publishing until someone writes it down.
+# One line per addition, reviewed like code.
+
+# the three audit/gate tools written for the letter work (tools/ is public)
+tools/audit_nojoin_contours.py
+tools/freeze_confirmations.py
+tools/gate_letter_model.py
+tools/publish.py
+publish.allow
+publish.deny
+tools/hooks/pre-push

@@ -148,7 +148,16 @@ threshold for a joint pair), never code.
 The rule-based placement above is superseded by a model trained on the hand cuts
 (spec: `docs/superpowers/specs/2026-09-05-learned-letter-labels-design.md`).
 
+The teacher is `.cache/letters/cuts` — the **untagged** tajweed/DK build. `resolve_layers`
+reads the layer off cuts whose `src` is `tajweed`, and a MODEL-mode record has none, so
+building labels under `QSVG_LETTERS_TAG=model` trains the model on its own output and drops
+the teacher without a word: measured 2026-09-13, runs with a resolved layer went 36,390 to
+439. `build_page` now refuses a cut record that names a model. Rebuild the teacher first
+whenever the word decomposition changes — stale records lose their run and resolve nothing
+(rebuilding it on the corrected grouping took the resolved-layer count 31,845 → 36,390).
+
 ```bash
+python3 tools/build_letter_cuts.py 1 604 --jobs 32          # the teacher: tajweed + DK, NO tag
 python3 tools/build_letter_labels.py 1 604 --jobs 32        # samples from the hand layers (partial labels)
 python3 tools/train_letter_model.py --epochs 3 --batch 48 --quick --out .cache/letters/model_full.pt
 python3 tools/eval_letter_model.py --model .cache/letters/model_full.pt      # held-out report
@@ -520,3 +529,154 @@ fails the cut instead of being grown to its expected size. That is a change in
 `letter without ink`), not another training run. `model_ft5` stays the build; no further
 fine-tuning should be attempted until the cutter tolerates a starved letter.
 
+### The seventh fine-tune, on a materially different label set (2026-09-09)
+
+`model_ft10`, three epochs from `model_ft5`, lr 5e-4, the drawn set at ~8% of the loss
+(191 drawn + 73 trimmed + 102 confirmed runs in the epoch). Different from the six that
+failed before it in three ways: the exact Bézier splitter and the starved-letter repair
+had landed, the label set had grown to 279 drawings and 114 confirmations, and the
+joining-rule partition had made ~100k ambiguous pixels single-letter.
+
+Both models measured on the SAME labels and the SAME word build (`tools/gate_letter_model.py`):
+
+| measure | ft5 (kept) | ft10 |
+|---|---|---|
+| held-out exact-pixel | 0.9259 | **0.9264** |
+| agreement with the drawn labels (20 held-out runs) | 0.9126 | **0.9142** |
+| agreement with the confirmed labels (12 runs) | 0.8968 | **0.9103** |
+| joint error median / within 1u | **0.50u / 76.5%** | 0.51u / 75.9% |
+| hard cut failures, pages 1-60 | **5** of 15,541 | 7 of 15,541 |
+
+**Not adopted, but for a different reason than the six before it.** Those were clearly
+worse at the gate -- 129 failures against 174 and 158. This one is a wash: every measure
+moves by less than its own noise, and 5 failures against 7 out of 15,541 runs is not a
+difference (the two failing sets barely overlap -- 5 runs appear, 3 disappear). There is
+no case to switch, so `model_ft5` stays the build.
+
+What that says is worth more than the checkpoint. The label set grew by 113 human
+answers and gained a proof-grade partition, and the held-out pixel metric moved by
+0.0005. **The labels are no longer the binding constraint**, which is what the previous
+five rejections suggested and this one settles. The two remaining "letter without ink"
+failures are the family the starved-letter repair was written for and does not yet reach.
+
+### The cutter stops dropping runs, and starts seeing overlaps (2026-09-13)
+
+Three changes to the cutter, one to the label build, all measured mushaf-wide with
+`model_ft5` under separate build tags (`QSVG_LETTERS_TAG`), 158,182 runs each time.
+
+**1. A letter with no ink takes some.** `repair_starved` asks the donor to be over the
+size its letter draws elsewhere before it gives anything. That is the right question when
+the starved letter has a sliver and the run will still cut; it is the wrong question when
+the letter has NOTHING, because then the cutter raises `letter without ink` and the whole
+run is dropped — a letter drawn at half its usual size is a smaller error than a letter
+not drawn at all. So `_force_starved` runs after it and takes unconditionally for the
+empty, and for a sliver only from a donor that stays realisable after giving. Both stages
+need it: the label map and, separately, the main contour the cut is actually made on
+(`letter_model.feed_starved_masks`, called from `build_letter_cuts._feed_empty_masks`).
+`QSVG_LETTERS_FORCE=0` reverts.
+
+Four rules were measured on the way and the two thresholds are both empty-band choices:
+"empty" is under 8 px, the take is never under 0.6 u² of the label grid (ten times the
+cutter's 0.05 u² refusal — the first version turned five `letter without ink` runs into
+five `empty piece` runs), and a sliver's donor must be over its own expected size **or**
+at least three times the take floor. Without that last clause p35 `خير` fed the خ out of
+the ي, which had 95 px against an expected 570, and the ي became the unrealisable one.
+
+**2. A chord that cannot separate its letters is worse than no chord.** The strip is
+carved out of every letter's envelope and handed back by half-plane, so where the line
+does not separate, part of the run is covered by nobody. That was 17 of the 26
+`pieces do not reproduce the run` runs, every one a `لا` or `كا` where the alef and the
+lam/kaf interleave and no straight line parts them. The mask staircase always tiles the
+run, so `cut_run_masks` now retries without the chords, and then with a nearest-ink
+partition of the whole frame instead of a one-pixel envelope — the envelope is a hair
+narrower than the outline wherever the stroke tapers below a pixel, which is the ك arm's
+hairline tip. `QSVG_CUT_RETRY=0` reverts.
+
+**3. Two pieces covering the same ink is refused.** The union test cannot see an overlap
+and neither can the area test below half a percent, so the raster path now rasters the
+pieces into a count and refuses a double-cover of 6 px or more, the same morphological
+opening the reproduce test uses. This is a new **detector**, and it found that the chorded
+split had been double-covering ink on **1,228 runs** all along — one of them, p591
+`86:11:1`, large enough that `audit_letters` called it a proof failure; the rest below its
+threshold. The retry chain in (2) fixes all but 15 of them.
+
+Measured with every detector present, so both columns are counted the same way:
+
+| runs the cutter could not realise | before | after |
+|---|---|---|
+| pieces overlap | 1,228 | **15** |
+| letter without ink | 33 | **0** |
+| pieces do not reproduce the run | 26 | **5** |
+| empty piece | 5 | **0** |
+| area not conserved | 4 | **0** |
+| **total** | **1,296** | **20** |
+
+No run fails that did not fail before. Against the older build read with the older
+detectors the same number is 68 → 20. The five left are `كا`/`كلا`/`لتكا`/`عملو`, still
+the interleaving family.
+
+At the gate (`QSVG_LETTERS_TAG=model`, emit + `audit_letters 1 604`):
+
+| | before | after |
+|---|---|---|
+| proof failures | 22 | **20** |
+| gate: ink | 2 pages | **0** |
+| gate: pixels | 20 pages | 20 pages |
+| gate: count | 0 | 0 |
+| runs emitted uncut | 456 | **431** |
+| letters emitted | 323,187 | **323,289** |
+| shape flags | 686 | **567** |
+
+**4. A drawing survives its run being split.** `build_letter_labels.drawing_for` matched a
+whole record to a whole run, which loses the drawing when the word build later parts that
+run — p240's `اسه` and p531's `تكذبا` became two runs each after the ligature-grouping
+fix. It now places each drawn LINE by its own midpoint, because a cut's midpoint lies on
+the stroke it parts while its endpoints are drawn past the ink on purpose (p240's
+overshoots by 1.8u); and a drawing that another run will claim by name is off limits to
+the geometry path, which is how p227's `ين` drawing was taken by `لخسر`. With 70 redrawn
+or new records from Abdullah (280 in total), **every drawing and every confirmation
+becomes an exact label again: 280/280 and 114/114.**
+
+### `model_ft11` adopted — the first fine-tune since ft5 to win (2026-09-13)
+
+Three epochs from `model_ft5`, lr 5e-4, `--frac 0.35` — **ft10's recipe exactly**, so the
+only thing that changed is the labels. What changed in them:
+
+- 285 drawings and 154 usable confirmations against ft10's 191 and 102: **473 exact runs in
+  the epoch against 366**, from Abdullah's session on the six most-guessed pairs.
+- the teacher rebuilt on the corrected word grouping: runs with a resolved tajweed layer
+  31,845 → 36,390. The 5 September records were stale wherever the ligature-grouping fix
+  changed a word's runs, and a stale record resolves nothing.
+- the cutter's own repairs (starved letters, the no-chord retry, the overlap refusal).
+
+Both models measured on the SAME labels and the same code, because ft5's published figures
+were taken on a different label set:
+
+| measure | ft5 | ft11 |
+|---|---|---|
+| runs the cutter cannot realise, all 604 pages | 20 | **8** |
+| agreement with the drawn labels (20 held out) | 0.9303 | **0.9349** |
+| agreement with the confirmed labels (17) | 0.9215 | **0.9270** |
+| joint error median / within 1u | 0.50u / 77.1% | **0.49u / 77.9%** |
+| hand-cut joints with no predicted boundary | 2 | **1** |
+| held-out exact-pixel accuracy | **0.9283** | 0.9257 |
+| proof failures (emit + audit_letters, 604 pages) | 20 | **15** |
+| gate: ink / pixels / count | 0 / 20 / 0 | **0 / 15 / 0** |
+| runs emitted uncut | 431 | **427** |
+| letters emitted | 323,289 | **323,297** |
+| shape flags | 567 | **564** |
+
+**Adopted.** It loses one measure, held-out exact-pixel, by 0.0026 — and that one is
+dominated by the tajweed teacher, while the three it wins are agreement with the human
+labels. A model moving toward the drawings and a hair away from the teacher is the trade
+this project wants, and the decisive measure is not in dispute: 20 runs the cutter cannot
+realise become 8, 18 fixed against 6 new (all six the overlap class, which the cutter
+refuses rather than ships).
+
+That also settles the question ft10 left open. ft10 was a wash because the label set had
+grown but the *teacher* had not: 113 more human answers moved held-out pixel accuracy by
+0.0005. This time the human answers grew by 107 exact runs AND the teacher was re-resolved
+over 4,545 more runs, and the gate moved by more than half.
+
+`.cache/letters/model.pt` is now a copy of `model_ft11.pt`, so the default path is the
+adopted build.

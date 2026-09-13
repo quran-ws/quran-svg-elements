@@ -79,20 +79,82 @@ def form_codes(n):
     return out
 
 
-def make_input(ink, n, codes=None):
+_GRID = {}
+_FORMS = {}
+
+
+def make_input(ink, n, codes=None, shift=0):
     """ink: (B, H, W) bool; n: (B,); codes: (B, K) letter ids (None → zeros) →
     (B, CIN, H, W) float: ink, x, y, n/K, and per position its letter id/40 and form/4
-    broadcast over the canvas."""
+    broadcast over the canvas.
+
+    `shift` rolls the input along the canvas's x axis, the training jitter. Of the CIN
+    channels only the ink and the x coordinate vary along x at all -- the other 22 are
+    constant across the row -- so rolling them here costs two planes instead of the whole
+    (B, 24, H, W) block, and gives the same tensor `torch.roll` would. The coordinate grids
+    and the form codes are cached: they are the same every batch.
+    """
     B = ink.shape[0]
-    ys = torch.linspace(0, 1, H).view(1, 1, H, 1).expand(B, 1, H, W)
-    xs = torch.linspace(0, 1, W).view(1, 1, 1, W).expand(B, 1, H, W)
+    if "ys" not in _GRID:
+        _GRID["ys"] = torch.linspace(0, 1, H).view(1, 1, H, 1).expand(1, 1, H, W).contiguous()
+        _GRID["xs"] = torch.linspace(0, 1, W).view(1, 1, 1, W).expand(1, 1, H, W).contiguous()
+    ys = _GRID["ys"].expand(B, 1, H, W)
+    xs = _GRID["xs"]
+    if shift:
+        ink = torch.roll(ink, shift, dims=2)
+        xs = torch.roll(xs, shift, dims=3)
+    xs = xs.expand(B, 1, H, W)
     nn_ = (n.float() / K).view(B, 1, 1, 1).expand(B, 1, H, W)
     if codes is None:
         codes = torch.zeros(B, K, dtype=torch.long)
-    forms = torch.stack([form_codes(int(v)) for v in n])
+    forms = torch.stack([_FORMS.setdefault(int(v), form_codes(int(v))) for v in n])
     cond = torch.cat([codes.float() / 40.0, forms.float() / 4.0], 1)          # (B, 2K)
     cond = cond.view(B, 2 * K, 1, 1).expand(B, 2 * K, H, W)
     return torch.cat([ink.float().unsqueeze(1), xs, ys, nn_, cond], 1)
+
+
+_BITS = torch.arange(K).view(1, K, 1, 1)
+
+
+def set_loss_batch(logits, mask):
+    """`set_loss` per sample, in one pass: (B,) losses instead of B calls.
+
+    The training step weights each sample, so it used to call `set_loss` on one sample at a
+    time -- B autograd subgraphs and B log_softmax kernels over a 96x256 canvas for a batch
+    of 32. Reducing over pixels per sample instead gives the same numbers (max difference
+    2.4e-07, float32 rounding) for a quarter less time.
+    """
+    logp = F.log_softmax(logits, 1)
+    bits = ((mask.unsqueeze(1) >> _BITS.to(mask.device)) & 1).bool()
+    lse = torch.logsumexp(logp.masked_fill(~bits, -1e9), 1)                 # (B, H, W)
+    valid = mask > 0
+    return -(lse * valid).sum(dim=(1, 2)) / valid.sum(dim=(1, 2)).clamp(min=1)
+
+
+def physical_cores():
+    """Cores, not hyperthreads: oversubscribing them costs 2.9x on this box.
+
+    Measured 2026-09-13 on the i9-13900 (24 cores, 32 threads), one training step of batch
+    32: 24 threads 27.5 ms/sample, 32 threads 80.0 ms/sample, 16 threads 33.2. The training
+    script asked for `os.cpu_count()`, so every run so far paid that 2.9x.
+    """
+    try:
+        seen, cur = set(), {}
+        for line in open("/proc/cpuinfo"):
+            if ":" in line:
+                k, v = (x.strip() for x in line.split(":", 1))
+                cur[k] = v
+            elif cur:
+                if "core id" in cur:
+                    seen.add((cur.get("physical id", "0"), cur["core id"]))
+                cur = {}
+        if cur.get("core id"):
+            seen.add((cur.get("physical id", "0"), cur["core id"]))
+        if seen:
+            return len(seen)
+    except OSError:
+        pass
+    return os.cpu_count() or 1
 
 
 def set_loss(logits, mask):
@@ -131,7 +193,9 @@ def load_pages(pages, need_known=False):
     if not inks:
         return None
     codes = torch.stack([letter_codes(m.get("letters", [])) for m in metas])
-    return (torch.from_numpy(np.stack(inks)), torch.from_numpy(np.stack(masks).astype(np.int64)),
+    # int16 holds the K=10 bitmask and keeps the whole mushaf's labels in RAM: as int64
+    # the 90,004 runs want 17.7 GB, which this machine does not have
+    return (torch.from_numpy(np.stack(inks)), torch.from_numpy(np.stack(masks).astype(np.int16)),
             torch.tensor(ns, dtype=torch.int64), metas, codes)
 
 
@@ -161,6 +225,10 @@ def load_model(path=MODEL_PATH):
 
 
 STARVE = os.environ.get("QSVG_LETTERS_STARVE", "balance")  # balance | off
+# The balanced repair only moves ink a donor can spare. A letter left with NOTHING has no
+# such luxury: the alternative is not a smaller share, it is the whole run dropped. So a
+# second pass takes for the empty letters unconditionally.
+FORCE_STARVE = os.environ.get("QSVG_LETTERS_FORCE", "1") != "0"
 MIN_SHARE = float(os.environ.get("QSVG_LETTERS_MINSHARE", "0.02"))
 _SIZES = None
 
@@ -196,7 +264,7 @@ def expected_areas(letters, n):
     return [v if v > 0 else med for v in out]
 
 
-def repair_starved(labels, ink, n, letters=None, min_share=MIN_SHARE):
+def repair_starved(labels, ink, n, letters=None, min_share=MIN_SHARE, z=8):
     """A letter the model left with (almost) no ink has not lost it — a neighbour is
     holding it. Measured over the shipped build: of 533 runs the cutter could not
     realise, 452 have a letter under 2% of the run's ink, and rendering them shows the
@@ -258,7 +326,97 @@ def repair_starved(labels, ink, n, letters=None, min_share=MIN_SHARE):
                 moved = True
             if not moved:
                 break
+        if FORCE_STARVE:
+            _force_starved(labels, n, share, total, exp, z)
         return labels
+
+
+def _force_starved(labels, n, share, total, exp, z=8):
+    """Every letter ends with ink, whatever the accounting says.
+
+    The balanced pass above asks the donor to be over the size its letter draws elsewhere
+    before it gives anything. That is the right question when the starved letter has a
+    sliver and the run will still cut; it is the wrong question when the letter has NOTHING,
+    because then the cutter raises "letter without ink" and the whole run is dropped -- a
+    letter drawn at half its usual size is a smaller error than a letter not drawn at all.
+
+    So for a letter still empty: take from whichever neighbour has more ink, as much as the
+    expected areas ask for (never more than half the donor, never less than 4 px), cut
+    along the reading direction from the end the starved letter reads on -- the same
+    geometry as the balanced pass, which is what a joint looks like and leaves the donor in
+    one piece.
+    """
+    # A handful of pixels is not a piece: the cutter refuses a piece under 0.05 u2 as an
+    # "empty piece", and the first version of this pass turned five "letter without ink"
+    # runs into exactly that. So the take is never smaller than 0.6 u2 of the label grid,
+    # ten times the threshold, unless half the donor is all there is.
+    floor = max(4, int(0.6 * z * z))
+    cols = np.arange(labels.shape[1])[None, :]
+    for _ in range(n):
+        counts = [int((labels == k).sum()) for k in range(n)]
+        # Two ways to be unrealisable, and both need the pass. A letter with nothing at
+        # all, obviously; and a letter whose sliver hugs the boundary so closely that the
+        # piece it yields is under the cutter's 0.05u2 -- a pixel count alone cannot see
+        # that, so anything under the take floor counts, PROVIDED it is also far under
+        # the size that letter draws elsewhere. Without that second half the pass fires
+        # on letters that are simply small (a ر, a ء) and breaks them: p35 خير.
+        empty = [k for k in range(n)
+                 if counts[k] < 8 or (counts[k] < floor
+                                      and counts[k] < 0.5 * share[k] * total)]
+        if not empty:
+            return
+        moved = False
+        for k in empty:
+            # Who may give. A letter with NOTHING is a lost run, so it takes from the
+            # best neighbour whatever that neighbour's size. A letter that merely has a
+            # sliver is not worth breaking a second letter for, so its donor must be
+            # over the size its own letter draws elsewhere -- without that, p35 خير
+            # fed the خ out of the ي, which had 95 px against an expected 570, and the
+            # ي became the unrealisable one.
+            cands = [d for d in (k - 1, k + 1) if 0 <= d < n and counts[d] >= 2 * floor]
+            if counts[k] >= 8:
+                # or simply big enough that giving still leaves it realisable: the four
+                # سليم-family runs probe4 fixed have a donor holding two letters' worth
+                cands = [d for d in cands
+                         if counts[d] > share[d] * total or counts[d] >= 3 * floor]
+            if not cands:
+                continue
+            d = max(cands, key=lambda d: counts[d])
+            sel = labels == d
+            npx = int(sel.sum())
+            want = share[k] / max(share[k] + share[d], 1e-9) * npx
+            take = int(min(max(floor, round(want)), npx // 2))
+            xs = np.sort(np.nonzero(sel)[1])
+            cut = xs[take - 1] if d == k - 1 else xs[npx - take]
+            grab = sel & ((cols <= cut) if d == k - 1 else (cols >= cut))
+            if not grab.any():
+                continue
+            labels[grab] = k
+            moved = True
+        if not moved:
+            return
+
+
+def feed_starved_masks(masks, chars, z=8):
+    """`_force_starved`'s rule, applied to a list of disjoint masks instead of a label map.
+
+    The cut is made on the MAIN contour alone, and a letter can hold pixels only somewhere
+    else -- which is what "anchor-forced" already says about it. The anchor gives the letter
+    a point; this gives it ink, so the cutter has something to cut. One rule, one place: the
+    two callers differ only in how they carry ownership.
+    """
+    m = len(masks)
+    if m < 2:
+        return
+    lab = np.full(masks[0].shape, -1, np.int16)
+    for i, mk in enumerate(masks):
+        lab[mk] = i
+    exp = expected_areas(list(chars), m)
+    total = max(1, int((lab >= 0).sum()))
+    ssum = float(sum(exp)) or 1.0
+    _force_starved(lab, m, [v / ssum for v in exp], total, exp, z)
+    for i in range(m):
+        masks[i] = lab == i
 
 
 def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0, letters=None):
@@ -302,7 +460,7 @@ def label_run_with_model(model, run_polys, n, z_out=8, pad=2.0, letters=None):
             labels[missing] = labels[ir[missing], ic[missing]]
     labels = clean_labels(labels, ink, n)          # resampling leaves specks at the joints
     labels = np.where(ink, labels, -1)
-    labels = repair_starved(labels, ink, n, letters)
+    labels = repair_starved(labels, ink, n, letters, z=z_out)
     labels = clean_labels(labels, ink, n)          # keep every letter one region
     labels = np.where(ink, labels, -1)
     masks = [labels == k for k in range(n)]

@@ -1,6 +1,6 @@
 # Letter splitting — where it stands
 
-State of play on the `feat/letter-splitting` branch, 2026-09-08. `docs/LETTERS.md` is the
+State of play on the `feat/letter-splitting` branch, 2026-09-13. `docs/LETTERS.md` is the
 method: how a run is cut, what the gate proves, and a dated log of every measurement.
 This file is the short answer to *where are we, what worked, what did not, and what next*.
 
@@ -19,15 +19,31 @@ proven against the word build it comes from.
 | runs left uncut (`data-unsplit`) | 10,165 (11.3%) | **109 (0.12%)** |
 | letters emitted | 285,741 | **322,758** |
 | gate: count (letters vs the text) | 0 | **0** |
-| gate: ink (pieces reproduce their contour, no overlap) | 0 | 6 pages |
+| gate: ink (pieces reproduce their contour, no overlap) | 0 | **0** |
 | gate: pixels (raster vs the word build) | 35 pages | 18 pages |
 | joint error vs the tajweed hand cuts, held out | 1.06u | **0.50u** (76.9% within 1u) |
 
-Proof failures 24, all of them the boolean library's seam and sliver class. The two
-priors that rank work rather than block it: shape 956 (islands and ragged cuts), size
-4,641 (letters far from the area that letter takes elsewhere).
+Proof failures **15** (2026-09-13 with `model_ft11`; 20 with ft5, was 24), all of them the boolean library's seam and
+sliver class — the `ink` row is now 0 on every page. The two priors that rank work rather
+than block it: shape 567, size 4,251 (letters far from the area that letter takes
+elsewhere).
 
-The model is `.cache/letters/model_ft5.pt`. Build with
+**Runs the cutter cannot realise: 8 of 158,182 (2026-09-13 with `model_ft11`; 20 with ft5,
+against 1,296 before the cutter fixes, counted the same way).** Three fixes, each with its own switch and each measured mushaf-wide: a letter left
+with no ink takes some from its neighbour at both stages (`QSVG_LETTERS_FORCE`), a chord
+that cannot separate its letters is dropped in favour of the mask staircase and then a
+nearest-ink partition (`QSVG_CUT_RETRY`), and two pieces covering the same ink is refused
+outright — a new detector, which found the chorded split had been double-covering ink on
+1,228 runs unnoticed. Full table and reasoning in `docs/LETTERS.md`. The five left are all
+`ك`/`ل` + `ا`, where the two letters interleave and no straight line parts them.
+
+The model is `.cache/letters/model_ft11.pt` (2026-09-13), the first fine-tune since ft5 to
+win: runs the cutter cannot realise 20 → **8**, agreement with the drawn and confirmed
+labels both up, and one measure lost — held-out exact-pixel, by 0.0026, which is the
+teacher's metric rather than the human one. Seven fine-tunes before it failed or washed
+out; what was different was not the recipe (ft10's exactly) but the labels: 473 exact runs
+in the epoch against 366, and the tajweed teacher re-resolved over 36,390 runs against
+31,845 after rebuilding it on the corrected word grouping. Build with
 `QSVG_LETTERS_TAG=model` → `.cache/letters/cuts-model`, `.cache/letters-svg-model`,
 `.cache/letters/audit-model`.
 
@@ -45,6 +61,22 @@ containment probe is deciding a knife edge, and it fell the wrong way 13 times. 
 now resolves the side by exact ray casting on the drawn points, and records the answer in
 the trim as `select`, so nothing downstream re-derives it. The five that still resolve
 `out` are marked `needs_confirm` in `letter_trims_review.html`.
+
+**A drawn line, a click, or a free loop.** Three ways to state a letter's ink, and the
+page takes all three. A line cuts across a joint. A click (✓) confirms the split as it
+stands — as exact a label as a drawing, for the price of one click. Where no straight
+line can part two letters at all — on ضاحكا the kaf's arm and the alef interleave, and
+Abdullah said so: *"the line here is impossible to use to draw, i need free select"* —
+a dragged **loop** gives the ink inside it to one letter outright. The loop is the last
+word: it overrides the lines and the build, but unlike a shape trim it does not deny the
+letter the rest of the run, because it is drawn to rescue ink, not to bound a whole letter.
+
+**A confirmation now carries the split it confirmed.** Keyed to nothing but the run, it
+rots the moment the build moves: three of the first 117 (p28 شهر, p173 شهد, p408 بما)
+had already stopped being exact labels because their run lost a letter in a later build.
+The page writes the confirmed paths into the record and `tools/freeze_confirmations.py`
+backfilled the other 114, so a rebuild can no longer take a confirmation away. The three
+that rotted are in `docs/defects/letters_label_redo.html` to be answered again.
 
 Abdullah has drawn **166 words** by hand (`docs/defects/letters_hand_cuts.jsonl`), all
 of them accepted into the training labels. They cover the letter pairs the tajweed
@@ -278,9 +310,14 @@ switch reverts it.
 
 `tools/pairs_worklist.py` ranks every letter pair in the mushaf by joints still guessed —
 neither taught by a tajweed layer nor by a drawing — and names the calligraphy plate that
-draws that join (`docs/KHATT-REFERENCES.md`, `docs/khatt_plates.json`). Measured over the
-rebuilt labels: 657 pairs, 164,429 joints, **78% still guessed**, and 190 pairs with
-nothing taught at all, worst being بم 389, عذ 323, هذ 271, فم 228.
+draws that join (`docs/KHATT-REFERENCES.md`, `docs/khatt_plates.json`). Re-measured
+2026-09-13 over 280 drawings: 547 pairs, 162,416 joints, **78% still guessed**, and 88
+pairs with nothing taught at all — down from 190, and the worst of those is now حل at 102
+joints against بم's 389 before, so the untaught pairs are a long tail rather than a
+family. What is left at the top is the opposite problem: the pairs with the most guessed
+joints are the ones drawn thousands of times, لا 4,346, هم 3,934, لم 3,013, ين 2,994,
+من 2,976, عل 2,903 — and لا is also the whole remaining cut-failure family, so it is where
+a drawn loop buys the most.
 
 ## The bottleneck, and what to do next
 
@@ -347,5 +384,5 @@ What is left, in order:
 | the gate | `tools/audit_letters.py` |
 | drawing page, review sheets | `tools/build_letters_label_page.py`, `tools/build_letters_page.py` |
 | the drawings themselves | `docs/defects/letters_hand_cuts.jsonl` |
-| checkpoints | `.cache/letters/model_*.pt` (`model_ft5.pt` is the build) |
+| checkpoints | `.cache/letters/model_*.pt` (`model_ft11.pt` is the build, and `model.pt` is a copy of it) |
 | unit tests | `python3 -m unittest tools.tests.test_letters` (28 tests) |

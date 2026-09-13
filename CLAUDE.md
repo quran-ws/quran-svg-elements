@@ -442,6 +442,34 @@ Both +1 versus the session baseline; neither is explained.
 
 ---
 
+## Public and private: how anything leaves this clone
+
+`origin` is the **PUBLIC** repo, `quran-ws/quran-svg-elements`. This clone is the lab
+notebook, and 695 of its paths are deliberately not public: `docs/defects/` (every drawing,
+verdict, reported defect and review note), `scratchpad/`, the sweeps, the caches. Its
+history also starts from a **different root** than the public repo's — the public history
+was rewritten to strip exactly this material, and going from a local commit to the matching
+public one is 308,209 deletions and zero insertions. The two histories share no ancestor and
+cannot be merged. That is not a problem to fix: one is how the work was done, the other is
+what the work produced.
+
+So **never `git push` this branch.** A pre-push hook refuses it
+(`ln -sf ../../tools/hooks/pre-push .git/hooks/pre-push` to reinstall). Publish with:
+
+```bash
+python3 tools/publish.py                                  # dry run: says exactly what would go
+python3 tools/publish.py -m "message"                     # commit it in .cache/publish
+python3 tools/publish.py -m "message" --push              # and push
+```
+
+It copies an **allowlisted** subset onto the public branch. A path already tracked there may
+be updated — that needs no list. A path that is not there yet is published only if
+`publish.allow` names it, so a new directory in this clone is invisible to publishing until
+someone writes it down; a denylist would have leaked the first time one appeared.
+`publish.deny` overrides both, for what must never leave even when a sibling is public (the
+fonts, the backups). Symlinks are published as symlinks — 604 of `tools/texts/qc/*.json`
+point into the gitignored word cache, and following them would publish the cache itself.
+
 ## Ground rules
 
 - Never hand-type Quranic text. Word text comes only from the verified cached

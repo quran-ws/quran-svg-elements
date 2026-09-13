@@ -292,7 +292,8 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
         rec["flags"].append("no-main-letters")
         return rec
     if MODEL is not None:
-        return _model_cuts(rec, main, main_polys, rp, labels, meta, anchors_, on_main, joints, bodies, n)
+        return _model_cuts(rec, main, main_polys, rp, labels, meta, anchors_, on_main, joints,
+                           bodies, n, [letters[i]["ch"] for i in idx])
     # --- hand cuts, each mapped to the joint its midpoint sits on
     cuts = {}
     if pair is not None and font is not None:
@@ -409,7 +410,19 @@ def cut_run_record(word, lig, idx, letters, lg, font, pair, scale, word_tree):
     return rec
 
 
-def _model_cuts(rec, main, main_polys, rp, labels, meta, anchors_, on_main, joints, bodies, n):
+def _feed_empty_masks(masks, on_main, chars, z):
+    """A letter on the main contour with no pixel of it: take some from its neighbour.
+
+    `repair_starved` does this over the whole run; this repeats it on the main contour
+    alone, because that is what the cut is made on and a letter can own ink only elsewhere.
+    The rule itself lives in `letter_model.feed_starved_masks`.
+    """
+    from tools import letter_model as LM
+    LM.feed_starved_masks(masks, [chars[k] if k < len(chars) else "" for k in on_main], z)
+
+
+def _model_cuts(rec, main, main_polys, rp, labels, meta, anchors_, on_main, joints, bodies, n,
+                chars=()):
     """MODEL mode: the label map is the ownership; chords only straighten boundaries."""
     ordered = []
     for i, i2 in joints:
@@ -425,6 +438,9 @@ def _model_cuts(rec, main, main_polys, rp, labels, meta, anchors_, on_main, join
     main_mask = np.zeros(meta["shape"], dtype=bool)
     main_mask[:mm.shape[0], :mm.shape[1]] = mm[:meta["shape"][0], :meta["shape"][1]]
     masks = [m & main_mask for m in masks]
+    from tools import letter_model as _LM
+    if _LM.FORCE_STARVE:
+        _feed_empty_masks(masks, on_main, chars, meta["z"])
     try:
         pieces = L.cut_run_masks(main["d"], masks, [c["polys"] for c in ordered], (x0, y0, z))
     except L.CutError as e:

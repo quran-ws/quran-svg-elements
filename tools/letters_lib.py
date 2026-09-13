@@ -989,6 +989,8 @@ def cut_run_masks_exact(d, masks, chords, frame, anchors=None, tol=1e-4):
 
 
 EXACT_CUT = os.environ.get("QSVG_EXACT_CUT", "1") != "0"
+# The last-resort attempts below, for an A/B against the build that had neither.
+CUT_RETRY = os.environ.get("QSVG_CUT_RETRY", "1") != "0"
 
 
 def cut_run_masks(d, masks, chords, frame, tol=0.005, anchors=None):
@@ -1006,12 +1008,42 @@ def cut_run_masks(d, masks, chords, frame, tol=0.005, anchors=None):
     letter's one-pixel envelope, and inside each painted chord strip with the chord's
     half-plane on the letter's side. Where no chord exists the boundary is the pixel
     staircase itself. Checks: no empty piece, areas conserve, pieces reproduce the run."""
-    from scipy import ndimage
     if EXACT_CUT:
         try:
             return cut_run_masks_exact(d, masks, chords, frame, anchors=anchors)
         except CutError:
             pass
+    try:
+        return _cut_run_raster(d, masks, chords, frame, tol, anchors)
+    except CutError as first:
+        # A chord that cannot separate its letters makes the split WORSE than no chord at
+        # all: the strip is carved out of every letter's envelope and handed back by
+        # half-plane, so where the line does not separate, part of the run is covered by
+        # nobody. On 2026-09-13 that was 17 of the 26 runs the cutter could not realise --
+        # every one a `لا` or `كا`, where the alef and the lam/kaf interleave and no
+        # straight line parts them -- and 9 more with a ك or ل joint. The mask staircase
+        # always tiles the run, so retry without the chords: a rougher boundary, in the
+        # place where the smooth one is a fiction, beats dropping the run.
+        if not CUT_RETRY:
+            raise
+        nochord = [[] for _ in chords]
+        for kw in ({}, {"voronoi": True}) if any(chords) else ({"voronoi": True},):
+            try:
+                return _cut_run_raster(d, masks, nochord, frame, tol, anchors, **kw)
+            except CutError:
+                continue
+        raise first
+
+
+def _cut_run_raster(d, masks, chords, frame, tol=0.005, anchors=None, voronoi=False):
+    """`voronoi`: give every pixel of the frame to the letter whose ink is nearest, instead
+    of growing each letter's ink by one pixel. The envelope is a hair narrower than the
+    outline wherever the stroke tapers below a pixel, so a sliver of the run belongs to
+    nobody and the reproduce check refuses -- the ك arm's hairline tip, 12 of the 15 runs
+    left on 2026-09-13. A nearest-ink partition tiles the plane, so the pieces tile the
+    run by construction and the only question left is which letter a hair belongs to.
+    """
+    from scipy import ndimage
     x0, y0, z = frame
     run = to_path(d)
     run.simplify()
@@ -1040,6 +1072,11 @@ def cut_run_masks(d, masks, chords, frame, tol=0.005, anchors=None):
     for k in range(n):
         if not letter_mask[k].any():
             raise CutError("letter without ink", piece=k)
+    own_full = None
+    if voronoi:
+        have = own >= 0
+        _, (ir, ic) = ndimage.distance_transform_edt(~have, return_indices=True)
+        own_full = own[ir, ic]
     strips = [[_paint(pl, x0, y0, z, W, H) for pl in (chords[j] if j < len(chords) else [])] for j in range(n - 1)]
     lines = [np.any(st, axis=0) if st else np.zeros((H, W), dtype=bool) for st in strips]
     LR = np.any(lines, axis=0) if lines else np.zeros((H, W), dtype=bool)
@@ -1075,10 +1112,13 @@ def cut_run_masks(d, masks, chords, frame, tol=0.005, anchors=None):
                 strip_parts.append((k, strip, pl, side_pt))
     pieces = []
     for k in range(n):
-        env = ndimage.binary_dilation(letter_mask[k], structure=_FOUR, iterations=1)
-        for j in range(n):
-            if j != k:
-                env &= ~letter_mask[j]
+        if voronoi:
+            env = own_full == k
+        else:
+            env = ndimage.binary_dilation(letter_mask[k], structure=_FOUR, iterations=1)
+            for j in range(n):
+                if j != k:
+                    env &= ~letter_mask[j]
         region = _mask_path(env & ~LR, x0, y0, z)
         for owner, strip, pl, side_pt in strip_parts:
             if owner != k:
@@ -1100,12 +1140,24 @@ def cut_run_masks(d, masks, chords, frame, tol=0.005, anchors=None):
     fr = (bx0 - 1, by0 - 1, bx1 - bx0 + 2, by1 - by0 + 2)
     ref_m = raster(polys, *fr, zz)
     uni = np.zeros(ref_m.shape, dtype=bool)
+    cover = np.zeros(ref_m.shape, dtype=np.uint8)
     for p in pieces:
         m = raster(flatten(path_d(p, prec=6)), *fr, zz)
         hh, ww = min(m.shape[0], uni.shape[0]), min(m.shape[1], uni.shape[1])
         uni[:hh, :ww] |= m[:hh, :ww]
+        cover[:hh, :ww] += m[:hh, :ww]
     k2 = np.ones((2, 2), dtype=bool)
     blob = ndimage.binary_opening(uni & ~ref_m, structure=k2) | ndimage.binary_opening(ref_m & ~uni, structure=k2)
     if int(blob.sum()) >= 6:
         raise CutError("pieces do not reproduce the run", blob=int(blob.sum()))
+    # Two pieces covering the same ink is the other half of "reproduce": the union test
+    # cannot see it, and neither can the area test below a half percent. The pieces are
+    # differenced against each other above, so an overlap means the boolean library left a
+    # sliver on a coincident edge -- which it does exactly where the regions abut along a
+    # pixel staircase. Same opening as above, so refit noise does not count: p591 86:11:1
+    # was one 42 px overlap, and it is a proof failure in `audit_letters`, so the cutter
+    # has to refuse it here rather than ship it.
+    dbl = ndimage.binary_opening(cover >= 2, structure=k2)
+    if int(dbl.sum()) >= 6:
+        raise CutError("pieces overlap", px=int(dbl.sum()))
     return [path_d(p) for p in pieces]

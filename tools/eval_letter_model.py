@@ -59,6 +59,18 @@ def main():
     truth[single] = torch.log2(mask[single].float()).round().long()
     acc = float((pred[single] == truth[single]).float().mean())
     print("held-out runs %d  exact-pixel accuracy %.4f" % (len(n), acc))
+    # Agreement with the labels a person gave. The tajweed layers cover the pairs they
+    # cover; these are the ones nothing else can answer, so a model that improves on the
+    # layers while drifting from the drawings has moved the wrong way.
+    for what in ("drawn", "confirmed"):
+        rows = [i for i, m in enumerate(meta) if m.get(what)]
+        if not rows:
+            continue
+        sel = torch.zeros_like(single)
+        sel[torch.tensor(rows)] = single[torch.tensor(rows)]
+        if sel.any():
+            print("   of which %-9s %3d runs  agreement %.4f"
+                  % (what, len(rows), float((pred[sel] == truth[sel]).float().mean())))
     # per joint: hand boundary vs predicted boundary
     per_pair = defaultdict(list)
     for i in range(len(n)):

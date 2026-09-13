@@ -148,6 +148,14 @@ def _model_pieces(main, bodies, idx, cuts, on_main, letters=None):
     main_mask = np.zeros(meta["shape"], dtype=bool)
     main_mask[:mm.shape[0], :mm.shape[1]] = mm[:meta["shape"][0], :meta["shape"][1]]
     masks = [meta["masks"][k] & main_mask for k in on_main]
+    # The same repair `build_letter_cuts._model_cuts` makes: a letter whose ink lies only
+    # off the main contour has none to cut here, and the run would be dropped for "letter
+    # without ink". The emitter recomputes the label map itself, so it needs the repair
+    # itself -- without it 31 runs the cut build realises were emitted uncut, and the two
+    # stages disagreed about what the cutter can do (measured 2026-09-13).
+    if LM.FORCE_STARVE:
+        LM.feed_starved_masks(masks, [(letters or [])[k] if letters and k < len(letters) else ""
+                                      for k in on_main], meta["z"])
     from tools import dk_lib as D
     anch = D.anchors(labels, meta, n=len(idx))
     return L.cut_run_masks(main["d"], masks, [c.get("polys", []) for c in cuts], (x0, y0, z),

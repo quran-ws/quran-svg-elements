@@ -127,7 +127,9 @@ function splitRun(g, cuts) {
     if (C.sizes[c] < MINPX) continue;
     let wc = 0;
     for (let i = 0; i < W * H; i++) if (C.lab[i] === c) { wc = whole.lab[i]; break; }
-    (touched.has(wc) ? pieces : extras).push(c);
+    // with no lines drawn nothing is "touched": the run's own contours ARE the pieces,
+    // which is what a card carrying only loops needs to carve out of
+    ((!cuts.length || touched.has(wc)) ? pieces : extras).push(c);
   }
   // a contour no line touches is its own letter only after one that never joins left
   if (pieces.length < n) {
@@ -187,7 +189,22 @@ function centroid(lab, W, H, k) {
   for (let i = 0; i < W * H; i++) if (lab[i] === k) { n++; sx += i % W; sy += (i / W) | 0; }
   return {n, x: sx / Math.max(n, 1), y: sy / Math.max(n, 1)};
 }
-function tile(r, g, k, letterIdx) {
+// The rules alone settle some boundaries: a letter in NOJOIN never joins the one after
+// it, so the run is drawn in one more piece than it has such boundaries -- and when the
+// ink IS in exactly that many pieces, the partition is proved, with no model and no
+// drawing. Measured over the mushaf (tools/audit_nojoin_contours.py): 567 of these
+// boundaries the build already splits, 181 more only this settles, and 546 the print
+// fuses anyway, so a line is still needed there. Never ask for one that is free.
+function ruleGroups(letters) {
+  const out = [];
+  let start = 0;
+  for (let i = 0; i < letters.length; i++) {
+    if (i < letters.length - 1 && NOJOIN.has(letters[i])) { out.push([start, i]); start = i + 1; }
+  }
+  out.push([start, letters.length - 1]);
+  return out;
+}
+function tile(r, g, k, letterIdx, text) {
   const b = bboxOf(r.lab.map(v => v + 1), r.W, r.H, k + 1);
   if (!b.n) return null;
   const w = b.x1 - b.x0 + 3, h = b.y1 - b.y0 + 3, s = 2;
@@ -210,7 +227,7 @@ function tile(r, g, k, letterIdx) {
   cell.appendChild(cv);
   const lb = document.createElement('div');
   lb.className = 'plab';
-  lb.textContent = g.letters[letterIdx] || '?';
+  lb.textContent = text || g.letters[letterIdx] || '?';
   lb.style.color = col;
   cell.appendChild(lb);
   return cell;
@@ -228,9 +245,13 @@ function render(card) {
   const held = new Set(assign);
   const missing = [];
   for (let i = 0; i < r.n; i++) if (!held.has(i)) missing.push(g.letters[i]);
-  if (!missing.length && r.k === r.n) {
+  // a loop always adds a piece, and its letter was named when it was drawn, so extra
+  // pieces that are all loops are the intended answer, not something to check
+  const loops = r.forced ? Object.keys(r.forced).length : 0;
+  if (!missing.length && r.k - loops <= r.n) {
     status.className = 'status ok';
-    status.textContent = '✓ ' + r.n + ' letters, ' + r.k + ' pieces';
+    status.textContent = '✓ ' + r.n + ' letters, ' + r.k + ' pieces'
+      + (loops ? ' (' + loops + ' from a loop)' : '');
   } else if (!missing.length) {
     status.className = 'status warn';           // more pieces than letters: check each one
     status.textContent = '⚠ ' + r.k + ' pieces for ' + r.n + ' letters — check the letter under each piece, click to change';
@@ -275,6 +296,30 @@ function currentTile(g, k) {
   cell.appendChild(lb);
   return cell;
 }
+// Where the build has no split at all, the rules can still part the run: show what they
+// prove and ask only for the joints left inside a piece.
+function ruleSplit(card, g) {
+  if ((g.model || []).some(m => m && m.length)) return false;
+  const groups = ruleGroups(g.letters);
+  if (groups.length < 2) return false;
+  const r = splitRun(g, []);
+  if (r.k !== groups.length) return false;
+  const box = card.querySelector('.pieces'), status = card.querySelector('.status');
+  box.textContent = '';
+  let asked = 0;
+  for (let k = 0; k < r.k; k++) {
+    const [a, b] = groups[k];
+    const cell = tile(r, g, k, a, g.letters.slice(a, b + 1).join(''));
+    if (cell) box.appendChild(cell);
+    if (b > a) asked++;
+  }
+  status.className = 'status' + (asked ? ' warn' : ' ok');
+  status.textContent = asked
+    ? (groups.length - 1) + ' of ' + (g.letters.length - 1) + ' joints are proved by the '
+      + 'rules \u2014 draw a line only inside a piece that still holds more than one letter'
+    : '\u2713 ' + g.letters.length + ' letters, parted by the rules \u2014 is it right?';
+  return true;
+}
 function showCurrent(card, g) {
   const box = card.querySelector('.pieces'), status = card.querySelector('.status');
   box.textContent = '';
@@ -294,17 +339,19 @@ function showCurrent(card, g) {
 }
 function preview(card) {
   const g = JSON.parse(card.querySelector('.rundata').textContent);
-  const cuts = [...card.querySelectorAll('.cutlist span')].map(s => JSON.parse(s.dataset.cut));
+  const cuts = [...card.querySelectorAll('.cutlist span[data-cut]')].map(s => JSON.parse(s.dataset.cut));
+  const regions = [...card.querySelectorAll('.cutlist span[data-region]')].map(s => JSON.parse(s.dataset.region));
   const status = card.querySelector('.status');
-  if (!cuts.length) {
-    showCurrent(card, g);
+  if (!cuts.length && !regions.length) {
+    if (!ruleSplit(card, g)) showCurrent(card, g);
     card._assign = null;
     return;
   }
-  let r = splitRun(g, cuts);
+  let r = cuts.length ? splitRun(g, cuts) : splitRun(g, []);
   r = subdivideByModel(g, r);
+  r = applyRegions(g, r, regions);
   card._r = r; card._g = g;
-  const sig = JSON.stringify(cuts);
+  const sig = JSON.stringify([cuts, regions]);
   if (!card._assign || card._sig !== sig || card._assign.length !== r.k) {
     card._assign = seedAssign(g, r);
     card._sig = sig;
@@ -359,6 +406,31 @@ function subdivideByModel(g, r) {
   if (next === r.k) return r;
   return Object.assign({}, r, {lab: lab, k: next});
 }
+// A loop takes the ink inside it out of whatever pieces held it and makes it one piece
+// of the letter named on the loop. It is the same statement as a shape trim: these pixels
+// are this letter. Where a line cannot part two letters, this can.
+function applyRegions(g, r, regions) {
+  if (!regions || !regions.length) return r;
+  const lab = Int32Array.from(r.lab);
+  let next = r.k;
+  const forced = {};
+  for (const reg of regions) {
+    const ctx = newCtx(g, r.W, r.H);
+    ctx.fillStyle = '#000';
+    ctx.beginPath();
+    ctx.moveTo(reg.path[0][0], reg.path[0][1]);
+    for (const p of reg.path.slice(1)) ctx.lineTo(p[0], p[1]);
+    ctx.closePath(); ctx.fill();
+    const m = maskOf(ctx, r.W, r.H);
+    let any = false;
+    for (let j = 0; j < lab.length; j++) if (m[j] && lab[j] >= 0) { lab[j] = next; any = true; }
+    if (!any) continue;
+    forced[next] = reg.letter;
+    next++;
+  }
+  if (next === r.k) return r;
+  return Object.assign({}, r, {lab: lab, k: next, forced: forced});
+}
 function seedAssign(g, r) {
   // each piece starts on the letter whose model ink it covers most; a piece the model
   // has nothing for falls back to its place in reading order
@@ -403,11 +475,33 @@ function seedAssign(g, r) {
   // order; and if a letter still ends with no piece while there are pieces enough to go
   // round, the model's opinion is worth less than reading order, so drop it.
   for (let k = 1; k < r.k; k++) if (out[k] < out[k - 1]) out[k] = out[k - 1];
+  if (r.forced) for (const k in r.forced) out[k] = r.forced[k];
+  // A loop says what one letter is; on لا, drawing round the alef is the whole answer,
+  // because the rest of the run can only be the lam. So whatever a loop does not claim
+  // goes to the letters no loop claimed, in reading order -- one loop for two letters,
+  // not two loops. (Abdullah, 2026-09-09: "for لا i should select one part and the rest
+  // is the second letter".)
+  if (r.forced) {
+    const claimed = new Set(Object.values(r.forced));
+    const want = [];
+    for (let i = 0; i < r.n; i++) if (!claimed.has(i)) want.push(i);
+    const free = [];
+    for (let k = 0; k < r.k; k++) if (!(k in r.forced)) free.push(k);
+    if (want.length && free.length >= want.length) {
+      const cx = free.map(k => centroid(r.lab, r.W, r.H, k).x);
+      const order = free.map((k, j) => j).sort((a, b) => cx[b] - cx[a]);   // right to left
+      order.forEach((j, i) => {
+        out[free[j]] = want[Math.min(want.length - 1,
+                                     Math.floor(i * want.length / free.length))];
+      });
+    }
+  }
   const held = new Set(out);
   let missing = false;
   for (let i = 0; i < r.n; i++) if (!held.has(i)) missing = true;
   if (missing && r.k >= r.n) {
     for (let k = 0; k < r.k; k++) out[k] = Math.min(k, r.n - 1);
+    if (r.forced) for (const k in r.forced) out[k] = r.forced[k];
   }
   return out;
 }
@@ -520,6 +614,48 @@ def pair_coverage(pairs):
     return {pr: (allp.get(pr, 0), cov.get(pr, 0), drawn.get(pr, 0)) for pr in pairs}
 
 
+PIECE_NORMS = None
+NOJOIN_PY = set("اأإآٱدذرزوؤءةى")
+
+
+def _norms():
+    global PIECE_NORMS
+    if PIECE_NORMS is None:
+        f = os.path.join(L.ROOT, "docs", "letter_piece_norms.json")
+        PIECE_NORMS = ({tuple(k.split("|")): v for k, v in
+                        json.load(open(f, encoding="utf-8"))["norms"].items()}
+                       if os.path.exists(f) else {})
+    return PIECE_NORMS
+
+
+def foreign_ink(ds, letters):
+    """Does this run hold more pieces of ink than its letters can be drawn with?
+
+    The joining rules fix the count: one piece, plus one for every letter that never
+    joins the next, plus the letters normally drawn in two (only the final and isolated
+    kaf, measured -- docs/letter_piece_norms.json). More than that means the group holds
+    ink that is not its letters. Abdullah found it on ٱلْأَرْضِ, where the لا group also
+    holds the whole ر, and a drawing on such a run would teach the model that the ر is
+    part of the alef. Measured over pages 1-120: 97 runs of 17,702.
+    """
+    import numpy as np
+    from scipy import ndimage
+    polys = [q for d in ds for q in L.flatten(d)]
+    if not polys or len(letters) < 2:
+        return False
+    nm = _norms()
+    allowed = 1 + sum(1 for ch in letters[:-1] if ch in NOJOIN_PY)
+    for i, ch in enumerate(letters):
+        prev = i > 0 and letters[i - 1] not in NOJOIN_PY
+        nxt = i < len(letters) - 1 and ch not in NOJOIN_PY
+        form = ("medial" if prev and nxt else "first" if nxt else "last" if prev else "only")
+        allowed += nm.get((ch, form), 1) - 1
+    x0, y0, x1, y1 = L.bbox(polys)
+    m = L.raster(polys, x0 - 0.3, y0 - 0.3, x1 - x0 + 0.6, y1 - y0 + 0.6, 16)
+    _, nc = ndimage.label(m, structure=np.ones((3, 3), dtype=bool))
+    return nc > allowed
+
+
 def collect(pairs, per, seed, words=()):
     """`words` are (page, wid) asked for by name; they come first, marked "redo"."""
     rnd = random.Random(seed)
@@ -563,13 +699,17 @@ def main():
     cards = []
     cache = {}
     last = None
+    skipped = 0
     for pr, page, wid, ri, text, eids, lidx in items:
         if a.rank and pr != last:
             if pr == "redo":
-                cards.append('<h2 class="sec">Redo</h2>')
+                cards.append('<h2 class="sec">Redo'
+                             '<button class="sec-copy" onclick="copySection(this)">Copy this pair</button></h2>')
             else:
                 n, c, d = stats[pr]
-                cards.append('<h2 class="sec"><span class="ar">%s</span> — %d joints in the mushaf, %d cut by the tajweed layers, %d drawn</h2>'
+                cards.append('<h2 class="sec"><span class="ar">%s</span> — %d joints in the mushaf, '
+                             '%d cut by the tajweed layers, %d drawn'
+                             '<button class="sec-copy" onclick="copySection(this)">Copy this pair</button></h2>'
                              % (pr, n, c, d))
             last = pr
         if page not in cache:
@@ -593,6 +733,9 @@ def main():
             geom["letters"] = [wl[i]["ch"] for i in lidx]
         except Exception:
             geom["letters"] = list(text)
+        if pr != "redo" and foreign_ink(geom.get("ds", []), geom["letters"]):
+            skipped += 1
+            continue                    # the group holds ink that is not its letters
         geom["model"] = model_letters(cache[page][1].get(wid), lidx)
         cards.append('<div class="card" data-page="%d" data-wid="%s" data-run="%d" data-text="%s">%s'
                      '<script type="application/json" class="rundata">%s</script>'
@@ -612,6 +755,8 @@ def main():
             "svg.art{max-width:100%;height:auto;cursor:crosshair;background:#fff}"
             ".ar{font-size:22px;direction:rtl}.meta{font-size:13px;margin-top:4px}.cutlist span{margin-right:8px;font-size:12px}"
             ".cutlist button{font-size:11px}button.copy{position:fixed;top:10px;right:10px;padding:8px 14px}"
+            "button.copy2{position:fixed;top:10px;right:118px;padding:8px 14px;opacity:.75}"
+            "button.sec-copy{margin-inline-start:12px;font-size:11px;padding:2px 8px;vertical-align:middle}"
             "h2.sec{grid-column:1/-1;margin:18px 0 4px;font-size:18px;border-bottom:1px solid #ccc}"
             ".split{margin-top:6px;border-top:1px dashed #ddd;padding-top:6px}"
             ".pieces{display:flex;direction:rtl;gap:10px;align-items:flex-end;overflow-x:auto;padding-bottom:2px}"
@@ -623,7 +768,8 @@ def main():
             ".card.ok{border-color:#2a7;background:#f6fffa}.card.bad{border-color:#b00;background:#fff7f7}"
             "#tally{position:fixed;top:10px;right:150px;background:#fff;border:1px solid #ccc;"
             "border-radius:6px;padding:8px 12px;font-size:13px;z-index:9}</style>"
-            "<button class=copy onclick='copyAll()'>Copy</button><div id=tally></div>"
+            "<button class=copy onclick='copyNew()'>Copy new</button>"
+            "<button class=copy2 onclick='copyAll()'>Copy all</button><div id=tally></div>"
             "<h1>Draw the letter cuts</h1><p><b>Each card opens on the split as it stands, "
             "letter by letter.</b> Most are already right, so say so with \u2713 and move on \u2014 "
             "a confirmation is as good a label as a drawing, and costs a click instead of two "
@@ -633,24 +779,91 @@ def main():
             "<code>docs/defects/letters_hand_cuts.jsonl</code>. Under each word the pieces your lines make are "
             "shown one letter at a time, in reading order, exactly as the label builder cuts them. Where no line can give one "
             "piece per letter — the medial \u0643+\u0644 ligature, where the kaf is an arm plus a bowl and the lam a stem plus a foot — "
-            "cut the strokes apart and then <b>click a piece to give it to the next letter</b>.</p>"
+            "cut the strokes apart and then <b>click a piece to give it to the next letter</b>. "
+            "Where a straight line cannot part two letters at all \u2014 on \u0636\u0627\u062d\u0643\u0627 "
+            "the kaf\u2019s arm and the alef interleave \u2014 <b>drag a free loop round the ink that is one "
+            "letter</b> instead of clicking: everything inside it becomes that letter, and the bold "
+            "letter beside <i>loop</i> in the list cycles on click.</p>"
             "<div class=grid>" + "".join(cards) + "</div>"
             "<script>" + SPLIT_JS +
-            "document.querySelectorAll('svg.art').forEach(svg=>{let pending=null;"
-            "svg.addEventListener('click',e=>{const r=svg.getBoundingClientRect();const vb=svg.viewBox.baseVal;"
-            "const sx=(e.clientX-r.left)/r.width*vb.width, sy=(e.clientY-r.top)/r.height*vb.height;"
-            "if(!pending){pending=[sx,sy];return;}const a=pending;pending=null;"
+            # Some letters cannot be parted by a straight line: on ضاحكا the kaf's arm
+            # and the alef interleave, and no chord separates them. So the artwork also
+            # takes a freehand LOOP -- drag instead of clicking -- and the ink inside it
+            # is given to one letter outright. Click twice for a line, drag for a loop.
+            "function svgPt(svg,e){const r=svg.getBoundingClientRect(),vb=svg.viewBox.baseVal;"
+            "return[(e.clientX-r.left)/r.width*vb.width,(e.clientY-r.top)/r.height*vb.height];}"
+            # A cut and a loop are made the same way whether a hand drew them just now or
+            # they are being put back after a reload, so both go through one function.
+            "function addCut(svg,a,b){const card=svg.closest('.card');"
+            "const x0=+svg.dataset.x0,y1=+svg.dataset.y1;"
             "const ln=document.createElementNS('http://www.w3.org/2000/svg','line');"
-            "ln.setAttribute('x1',a[0]);ln.setAttribute('y1',a[1]);ln.setAttribute('x2',sx);ln.setAttribute('y2',sy);"
-            "ln.setAttribute('stroke','#e00');ln.setAttribute('stroke-width','0.35');svg.querySelector('.lines').appendChild(ln);"
-            "const card=svg.closest('.card');const x0=+svg.dataset.x0,y1=+svg.dataset.y1;"
-            "const cut=[[x0+a[0],y1-a[1]],[x0+sx,y1-sy]];"
-            "const item=document.createElement('span');item.textContent='cut';const b=document.createElement('button');b.textContent='✕';"
-            "b.onclick=()=>{ln.remove();item.remove();update(card)};item.appendChild(b);item.dataset.cut=JSON.stringify(cut);"
-            "card.querySelector('.cutlist').appendChild(item);update(card);});});"
-            "function update(card){const n=card.querySelectorAll('.cutlist span').length;"
-            "card.querySelector('.count').textContent=n+' cuts';try{preview(card)}catch(e){"
-            "card.querySelector('.status').textContent='preview failed: '+e.message}}"
+            "ln.setAttribute('x1',a[0]);ln.setAttribute('y1',a[1]);"
+            "ln.setAttribute('x2',b[0]);ln.setAttribute('y2',b[1]);"
+            "ln.setAttribute('stroke','#e00');ln.setAttribute('stroke-width','0.35');"
+            "svg.querySelector('.lines').appendChild(ln);"
+            "const cut=[[x0+a[0],y1-a[1]],[x0+b[0],y1-b[1]]];"
+            "const item=document.createElement('span');item.textContent='cut';"
+            "const bt=document.createElement('button');bt.textContent='\u2715';"
+            "bt.onclick=()=>{ln.remove();item.remove();update(card)};item.appendChild(bt);"
+            "item.dataset.cut=JSON.stringify(cut);"
+            "card.querySelector('.cutlist').appendChild(item);update(card);}"
+            "function addRegion(svg,pts,k0){const card=svg.closest('.card');"
+            "const x0=+svg.dataset.x0,y1=+svg.dataset.y1;"
+            "const pl=document.createElementNS('http://www.w3.org/2000/svg','polygon');"
+            "pl.setAttribute('points',pts.map(p=>p[0]+','+p[1]).join(' '));"
+            "pl.setAttribute('fill','rgba(0,120,220,.18)');pl.setAttribute('stroke','#07c');"
+            "pl.setAttribute('stroke-width','0.25');svg.querySelector('.lines').appendChild(pl);"
+            "const g=JSON.parse(card.querySelector('.rundata').textContent);"
+            "const item=document.createElement('span');item.className='region';"
+            "const lab=document.createElement('b');let k=k0||0;lab.textContent=g.letters[k];"
+            "lab.style.cursor='pointer';lab.title='click to give this region the next letter';"
+            "lab.onclick=()=>{k=(k+1)%g.letters.length;lab.textContent=g.letters[k];"
+            "item.dataset.region=JSON.stringify({path:pts.map(p=>[x0+p[0],y1-p[1]]),letter:k});"
+            "update(card);};"
+            "item.appendChild(document.createTextNode('loop '));item.appendChild(lab);"
+            "const b=document.createElement('button');b.textContent='\u2715';"
+            "b.onclick=()=>{pl.remove();item.remove();update(card)};item.appendChild(b);"
+            "item.dataset.region=JSON.stringify({path:pts.map(p=>[x0+p[0],y1-p[1]]),letter:k});"
+            "card.querySelector('.cutlist').appendChild(item);update(card);}"
+            "document.querySelectorAll('svg.art').forEach(svg=>{let pending=null;"
+            "let down=null,path=null,drag=false,ghost=null;"
+            "svg.addEventListener('mousedown',e=>{down=svgPt(svg,e);path=[down];drag=false;});"
+            "svg.addEventListener('mousemove',e=>{if(!down)return;const p=svgPt(svg,e);"
+            "const q=path[path.length-1];"
+            "if((p[0]-q[0])**2+(p[1]-q[1])**2<0.09)return;path.push(p);"
+            "if(!drag&&((p[0]-down[0])**2+(p[1]-down[1])**2)>0.6){drag=true;"
+            "ghost=document.createElementNS('http://www.w3.org/2000/svg','polyline');"
+            "ghost.setAttribute('fill','none');ghost.setAttribute('stroke','#07c');"
+            "ghost.setAttribute('stroke-width','0.25');svg.querySelector('.lines').appendChild(ghost);}"
+            "if(drag)ghost.setAttribute('points',path.map(p=>p[0]+','+p[1]).join(' '));});"
+            "svg.addEventListener('mouseup',e=>{const wasDrag=drag,pts=path;down=null;drag=false;"
+            "if(ghost){ghost.remove();ghost=null;}"
+            "if(wasDrag&&pts&&pts.length>4){addRegion(svg,pts);return;}"
+            "const [sx,sy]=svgPt(svg,e);"
+            "if(!pending){pending=[sx,sy];return;}const a=pending;pending=null;"
+            "addCut(svg,a,[sx,sy]);});});"
+            "function update(card){const n=card.querySelectorAll('.cutlist span[data-cut]').length;"
+            "const m=card.querySelectorAll('.cutlist span[data-region]').length;"
+            "card.querySelector('.count').textContent=n+' cuts'+(m?', '+m+' loops':'');"
+            "try{preview(card)}catch(e){"
+            "card.querySelector('.status').textContent='preview failed: '+e.message}"
+            "saveWork();}"
+            # Lines and loops used to live only in the page: a reload, a crash or a
+            # rebuilt sheet threw an evening's drawing away. They are kept now, in the
+            # same place the verdicts are.
+            "const WORK='letters_work_'+location.pathname.split('/').pop();"
+            "function saveWork(){try{const o={};document.querySelectorAll('.card').forEach(c=>{"
+            "const cuts=[...c.querySelectorAll('.cutlist span[data-cut]')].map(s=>JSON.parse(s.dataset.cut));"
+            "const rg=[...c.querySelectorAll('.cutlist span[data-region]')].map(s=>JSON.parse(s.dataset.region));"
+            "if(cuts.length||rg.length)o[keyOf(c)]={cuts:cuts,regions:rg}});"
+            "localStorage.setItem(WORK,JSON.stringify(o))}catch(e){}}"
+            "function restoreWork(){let o={};try{o=JSON.parse(localStorage.getItem(WORK)||'{}')}"
+            "catch(e){return}"
+            "document.querySelectorAll('.card').forEach(c=>{const w=o[keyOf(c)];if(!w)return;"
+            "const svg=c.querySelector('svg'),x0=+svg.dataset.x0,y1=+svg.dataset.y1;"
+            "(w.cuts||[]).forEach(cu=>addCut(svg,[cu[0][0]-x0,y1-cu[0][1]],"
+            "[cu[1][0]-x0,y1-cu[1][1]]));"
+            "(w.regions||[]).forEach(r=>addRegion(svg,r.path.map(q=>[q[0]-x0,y1-q[1]]),r.letter));});}"
             "document.querySelectorAll('.card').forEach(c=>{try{preview(c)}catch(e){}});"
             "function verdict(btn,v){const c=btn.closest('.card');"
             "c.dataset.verdict=(c.dataset.verdict===v?'':v);"
@@ -671,22 +884,56 @@ def main():
             "document.querySelectorAll('.card').forEach(c=>{"
             "const v=o[c.dataset.page+'|'+c.dataset.wid+'|'+c.dataset.run];"
             "if(v){c.dataset.verdict=v;c.classList.add(v);}});}catch(e){}"
+            "restoreWork();"
             "document.querySelectorAll('.card').forEach(c=>preview(c));tally();})();"
-            "function copyAll(){const out=[];document.querySelectorAll('.card').forEach(c=>{"
-            "const cuts=[...c.querySelectorAll('.cutlist span')].map(s=>JSON.parse(s.dataset.cut));"
+            "function recOf(c){"
+            "const cuts=[...c.querySelectorAll('.cutlist span[data-cut]')].map(s=>JSON.parse(s.dataset.cut));"
+            "const regions=[...c.querySelectorAll('.cutlist span[data-region]')].map(s=>JSON.parse(s.dataset.region));"
             "const v=c.dataset.verdict||'';"
-            "if(!cuts.length&&!v)return;"
+            "if(!cuts.length&&!regions.length&&!v)return null;"
             "const o={page:+c.dataset.page,wid:c.dataset.wid,run:+c.dataset.run,text:c.dataset.text};"
-            "if(cuts.length){o.cuts=cuts;const as=assignOf(c);if(as)o.assign=as;}"
+            "if(cuts.length)o.cuts=cuts;"
+            "if(regions.length)o.regions=regions;"
+            "if(cuts.length||regions.length){const as=assignOf(c);if(as)o.assign=as;}"
             "if(v)o.verdict=(v==='ok'?'right':'wrong');"
-            "out.push(o)});"
-            "navigator.clipboard.writeText(out.map(o=>JSON.stringify(o)).join('\\n'));"
-            "alert(out.length+' words copied');}"
+            # A confirmation says THIS split is right, so it has to carry the split it
+            # confirmed. Keyed to the build instead, it rots the moment the build moves:
+            # three of the 117 already stopped being exact labels because the run they
+            # were given for no longer holds every letter.
+            "if(v==='ok'&&!cuts.length&&!regions.length){"
+            "const g=JSON.parse(c.querySelector('.rundata').textContent);"
+            "if(g.model&&g.model.some(m=>m&&m.length))o.model=g.model;}"
+            "return o;}"
+            # Copying the whole sheet every time is unusable once the sheet is long:
+            # Abdullah pasted 80 answers to get at the last five. Every section heading
+            # carries its own Copy, and the top bar copies only what changed since the
+            # last copy, so a batch is sent once.
+            "const DONE='letters_copied_'+location.pathname.split('/').pop();"
+            "function copied(){try{return JSON.parse(localStorage.getItem(DONE)||'{}')}"
+            "catch(e){return {}}}"
+            "function keyOf(c){return c.dataset.page+'|'+c.dataset.wid+'|'+c.dataset.run;}"
+            "function copyCards(cards,what){const out=[],seen=copied();"
+            "cards.forEach(c=>{const o=recOf(c);if(o)out.push([c,o])});"
+            "if(!out.length){alert('nothing to copy'+(what?' in '+what:''));return;}"
+            "navigator.clipboard.writeText(out.map(([c,o])=>JSON.stringify(o)).join('\\n'));"
+            "out.forEach(([c,o])=>{seen[keyOf(c)]=JSON.stringify(o)});"
+            "try{localStorage.setItem(DONE,JSON.stringify(seen))}catch(e){}"
+            "alert(out.length+' words copied'+(what?' \u2014 '+what:''));tally();}"
+            "function copyAll(){copyCards([...document.querySelectorAll('.card')],'the whole sheet');}"
+            "function copyNew(){const seen=copied();"
+            "copyCards([...document.querySelectorAll('.card')].filter(c=>{"
+            "const o=recOf(c);return o&&seen[keyOf(c)]!==JSON.stringify(o)}),'new since the last copy');}"
+            "function copySection(btn){const h=btn.closest('h2');const cards=[];"
+            "let el=h.nextElementSibling;"
+            "while(el&&el.tagName!=='H2'){if(el.classList.contains('card'))cards.push(el);"
+            "el=el.nextElementSibling;}"
+            "copyCards(cards,h.textContent.replace(/Copy$/,'').trim());}"
             "</script>")
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:
         f.write(page)
-    print("%s: %d cards" % (a.out, len(cards)))
+    print("%s: %d cards (%d runs left out: the group holds ink that is not its letters)"
+          % (a.out, sum(1 for c in cards if c.startswith("<div")), skipped))
 
 
 if __name__ == "__main__":

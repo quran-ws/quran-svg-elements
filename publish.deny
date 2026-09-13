@@ -1,0 +1,23 @@
+# Never published, even when a sibling is, and even when already on the public branch.
+# Checked last, so it overrides both the "already public" rule and publish.allow.
+
+# the lab notebook: every drawing, verdict, reported defect and review note
+docs/defects/
+# scratch: benches, probes, one-off scripts
+scratchpad/
+# the human-confirmed review data beyond the curated files already public
+.cache/review/*.bak*
+# sweeps, caches and derived builds
+.cache/sweeps/
+.cache/letters/
+.cache/words/
+.cache/words-svg/
+.cache/publish/
+# fonts we do not redistribute (the public history was rewritten to remove this one)
+*.ttf
+*.otf
+# backups and stray captures
+*.bak
+*.bak-*
+*.png
+__pycache__/

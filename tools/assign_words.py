@@ -1780,6 +1780,12 @@ def segment_word(uthmani):
     return segs
 
 
+PIECEBUDGET = os.environ.get("QSVG_PIECEBUDGET", "1") != "0"
+# Large enough that no width argument can buy an extra piece, finite so a word whose ink
+# really does have a spare piece still aligns instead of collapsing into one group.
+PIECEPEN = float(os.environ.get("QSVG_PIECEPEN", "3.0"))
+
+
 def align_segs_atoms(atoms, segs, alpha=None):
     """Monotone alignment of drawn bodies to expected ligatures, both right-to-left.
 
@@ -1794,6 +1800,19 @@ def align_segs_atoms(atoms, segs, alpha=None):
     if not n or not m:
         return [(atoms, segs)] if atoms or segs else [], float("inf")
     lens = [letter_width(s["text"]) for s in segs]
+    # How many pieces of ink a segment may be drawn in. A segment IS a joined run, so it
+    # is one stroke -- except a final or isolated kaf, which is a bowl plus its separate
+    # arm 1,857 times of 1,893 (docs/letter_piece_norms.json, measured over the mushaf).
+    # Without this the width prior alone decides, and it hands a segment its neighbour's
+    # letter whenever the neighbour's own atom is wide: وَٱنْحَرْ files the alef in the و
+    # group and leaves the group named انحر drawing only نحر, ٱلْأَرْضِ files the whole ر
+    # in the لا group. Abdullah found both by eye -- "you are asking for more letters than
+    # the contour has". 168 groups over pages 1-30 were over this budget.
+    budget = [1 + sum(1 for i, ch in enumerate(t["text"])
+                      if ch == "ك" and (i == len(t["text"]) - 1))
+              for t in segs]
+    bodyat = [1 if any(e.get("kind") == "body" for e in a.get("els", ())) else 0
+              for a in atoms]
     if alpha is None:                     # scale from the word itself; a caller that
         span_total = atoms[0]["x2"] - atoms[-1]["x1"]  # compares words must pass the
         alpha = span_total / sum(lens)                 # line's absolute per-letter width
@@ -1815,6 +1834,12 @@ def align_segs_atoms(atoms, segs, alpha=None):
                     if dp[pi][pj] == INF:
                         continue
                     c = dp[pi][pj] + abs(span(pi, i) - alpha * sum(lens[pj:j]))
+                    if i - pi > 1:
+                        # more pieces of ink than these segments can be drawn in: the
+                        # extra piece is a neighbour's letter, not this one's
+                        extra = sum(bodyat[pi:i]) - sum(budget[pj:j])
+                        if extra > 0 and PIECEBUDGET:
+                            c += PIECEPEN * mean_seg * extra
                     if j - pj > 1:
                         # Merging expected segments means the art joined across a
                         # non-joining boundary — possible (a وا swash) but rare, and

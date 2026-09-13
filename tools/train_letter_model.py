@@ -46,11 +46,17 @@ def main():
     ap.add_argument("--frac", type=float, default=1.0,
                     help="each epoch sees every drawn run plus this fraction of the others (short fine-tunes)")
     ap.add_argument("--drawn-weight", type=float, default=10.0, help="loss weight of a hand-drawn run")
+    ap.add_argument("--threads", type=int, default=0,
+                    help="torch threads; 0 = physical cores (hyperthreads cost 2.9x here)")
+    ap.add_argument("--compile", action="store_true",
+                    help="torch.compile the net (worth ~6%%, pays a minute of warm-up)")
     ap.add_argument("--drawn-min-letters", type=int, default=0,
                     help="drop hand-drawn runs shorter than this from the epoch (they are the ones "
                          "over-represented in the drawn set against the mushaf)")
     a = ap.parse_args()
-    torch.set_num_threads(os.cpu_count())          # all cores: Abdullah wants the machine saturated
+    # Cores, not hyperthreads. `os.cpu_count()` is 32 on this box and the convolutions run
+    # 2.9x slower at 32 threads than at 24 -- see `letter_model.physical_cores`.
+    torch.set_num_threads(a.threads or M.physical_cores())
     pages = list(range(a.pages[0], a.pages[1] + 1))
     tr = M.load_pages([p for p in pages if not held_out(p)], need_known=a.quick)
     te = M.load_pages([p for p in pages if held_out(p)], need_known=True)
@@ -92,6 +98,12 @@ def main():
     model = M.UNet()
     if a.init:
         model.load_state_dict(torch.load(a.init, map_location="cpu", weights_only=True))
+    # oneDNN wants NHWC for a convnet: 1.5x on this box, and the weights are unchanged, so
+    # a checkpoint saved from here loads anywhere. (bfloat16 autocast was measured too and
+    # is 2.6x SLOWER -- this CPU has AVX-VNNI but no AMX, so bf16 convolutions emulate.)
+    model = model.to(memory_format=torch.channels_last)
+    if a.compile:
+        model = torch.compile(model)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=1e-4)
     steps = a.epochs * ((per_epoch + a.batch - 1) // a.batch)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=a.lr, total_steps=steps)
@@ -107,23 +119,20 @@ def main():
         t0, tot, cnt = time.time(), 0.0, 0
         for i in range(0, len(perm), a.batch):
             idx = perm[i:i + a.batch]
-            x = M.make_input(ink[idx], n[idx], codes[idx])
             # random horizontal jitter (the canvas is right-aligned; shift a little)
             shift = int(torch.randint(-6, 1, (1,)))
-            if shift:
-                x = torch.roll(x, shift, dims=3)
-                mk = torch.roll(mask[idx], shift, dims=2)
-            else:
-                mk = mask[idx]
+            x = M.make_input(ink[idx], n[idx], codes[idx], shift=shift)
+            x = x.contiguous(memory_format=torch.channels_last)
+            mk = torch.roll(mask[idx], shift, dims=2) if shift else mask[idx]
             logits = model(x)
             # per-sample weight: loss over pixels of each sample, weighted
-            losses = torch.stack([M.set_loss(logits[j:j + 1], mk[j:j + 1]) for j in range(len(idx))])
+            losses = M.set_loss_batch(logits, mk)
             loss = (losses * weight[idx]).sum() / weight[idx].sum()
             opt.zero_grad()
             loss.backward()
             opt.step()
             sched.step()
-            tot += float(loss) * len(idx)
+            tot += float(loss.detach()) * len(idx)
             cnt += len(idx)
             if (i // a.batch) % 200 == 0:
                 print("  epoch %d  %d/%d  loss %.4f  %.0fs" % (epoch, i, len(perm), tot / max(1, cnt), time.time() - t0), flush=True)
