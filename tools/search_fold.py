@@ -11,9 +11,9 @@ silently misses every word whose letter forms the user typed differently. That
 is 4,385 of the 14,897 distinct keys, 29% of them.
 
 So: `match_fold` is applied to BOTH sides at match time, `loose_key` is a
-flagged fallback, and `search_variants` is for sources with no imlai spelling.
-The implementations here are character-for-character the same specification as
-quran-text (JavaScript, Python) and quran-engine (Rust).
+flagged fallback, and `search_variants` is for sources with no rasm_imlai
+spelling. The implementations here are character-for-character the same
+specification as quran-text (JavaScript, Python) and quran-engine (Rust).
 """
 
 import unicodedata
@@ -41,8 +41,8 @@ def search_key(text):
     """The stored key: letters only, nothing folded.
 
     Identical to `quran_meta.rasm`, and pinned to it by the conformance test.
-    Feed it `rasm_imlai`, never `rasm_uthmani` — the uthmani writes long vowels
-    as combining marks, so stripping it deletes them outright.
+    Feed it `rasm_imlai`, never `rasm_uthmani` — the rasm_uthmani writes long
+    vowels as combining marks, so stripping it deletes them outright.
     """
     return " ".join(_strip(unicodedata.normalize("NFC", text)).split())
 
@@ -68,12 +68,12 @@ def loose_key(text):
 
 def search_variants(text):
     """Every spelling a word might reasonably be typed as, for sources with no
-    imlai spelling. Not needed for this repository's own `search` field, which
-    has one; here for parity with quran-text and quran-engine.
+    rasm_imlai spelling. Not needed for this repository's own `search` field,
+    which has one; here for parity with quran-text and quran-engine.
     """
     out = []
-    for dagger in (text, text.replace("ٰ", "ا")):
-        base = match_fold(dagger)
+    for spelling in (text, text.replace("ٰ", "ا")):
+        base = match_fold(spelling)
         for cand in (base, base.replace("ء", ""), base.replace("ء", "ي")):
             if cand and cand not in out:
                 out.append(cand)
