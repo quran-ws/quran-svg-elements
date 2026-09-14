@@ -2976,12 +2976,12 @@
         return Promise.reject(new Error(`no "${style}" in ${this.baseUrl}`));
 
       const p = (async () => {
-        const out = { style, baseUrl: this.baseUrl, riwaya: null,
+        const out = { style, baseUrl: this.baseUrl, riwayah: null,
                       licence: this.licence(style), palette: [], parts: [] };
         for (const key in ORNAMENT_TYPES) {
           const rec = this.record(key, style);
           if (!rec || !rec.variants || !rec.variants.color) continue;
-          out.riwaya = out.riwaya || rec.riwaya || null;
+          out.riwayah = out.riwayah || rec.riwayah || null;
           const asset = readOrnament(await this._text(rec.variants.color), rec);
           asset.record = rec;
           out[key] = asset;

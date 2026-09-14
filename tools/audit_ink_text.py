@@ -95,8 +95,9 @@ WS = quran_ws()
 # ever counts them; the ink names each sign. Split the bucket, or every waqf in
 # the mushaf reads as a disagreement. The mapping is not chosen — it is what the
 # artefact itself pairs, one-to-one over all 604 pages: U+06DA->2081 mustawi,
-# U+06D6->1649 wasl_awla, U+06D7->511 waqf_awla, U+06D8->21 lazim, U+06DB->6
-# muanaqah, with no code point ever pairing to two names (U+06DC excepted, which
+# U+06D6->1649 waqf_jaiz_wasl_awla, U+06D7->511 waqf_jaiz_waqf_awla,
+    # U+06D8->21 madd_lazim, U+06DB->6
+# waqf_al_muanaqah, with no code point ever pairing to two names (U+06DC excepted, which
 # is the documented saktah/seen_al_qiraah split TEXT_WANT already records).
 WAQF = {
     "\u06da": "waqf_jaiz_mustawi_al_tarafayn",
@@ -105,9 +106,9 @@ WAQF = {
     "\u06d8": "waqf_lazim",
 }
 
-# U+0622 (alef with madda above) is one code point carrying a letter AND a
+# U+0622 (alef with maddah above) is one code point carrying a letter AND a
 # maddah; rasm_uthmani decomposes it as U+0627 U+0653 and quran-ws v3.0 does
-# not. Without this, every alef-madda in the mushaf reads as a maddah the text
+# not. Without this, every alef-maddah in the mushaf reads as a maddah the text
 # forgot — 2,934 phantom words, the single largest class against quran-ws.
 PRECOMPOSED = {"\u0622": "maddah"}
 
@@ -139,32 +140,32 @@ for name, cps in TEXT_WANT.items():
 # no word pairs a code point two ways (U+0652 <-> U+06DF 2774, U+0657 <->
 # U+08F0 1933, U+065E <-> U+08F1 1298, U+0656 <-> U+08F2 1133).
 QPC_AS = {
-    "\u0652": "rounded_zero",       # uthmani U+06DF; qpc reserves U+06E1 for sukun
-    "\u0657": "tanwin_al_fath",     # uthmani U+08F0, the open tanwin
-    "\u065e": "tanwin_al_damm",     # uthmani U+08F1
-    "\u0656": "tanwin_al_kasr",     # uthmani U+08F2
+    "\u0652": "rounded_zero",       # rasm_uthmani U+06DF; qpc reserves U+06E1 for sukun
+    "\u0657": "tanwin_al_fath",     # rasm_uthmani U+08F0, the open tanwin
+    "\u065e": "tanwin_al_damm",     # rasm_uthmani U+08F1
+    "\u0656": "tanwin_al_kasr",     # rasm_uthmani U+08F2
 }
 CP_QPC = dict(CP)
 for ch, name in QPC_AS.items():
     CP_QPC[ch] = {name}
 
 # U+0653 is not one mark. Shaped by the print's own font it draws EITHER a
-# wavy madda (alone, or on a bare alef: آ) OR, absorbed into the لأ ligature,
+# wavy maddah (alone, or on a bare alef: آ) OR, absorbed into the لأ ligature,
 # a straight slash indistinguishable from a fathah — which is what the print
 # draws and what this pipeline labels `fathah`. Measured over the 277 sites
 # where the two readings disagreed: 277/277 absorb into a ligature, and the
-# only two words that ALSO yield a standalone madda glyph (18:5:7, 33:5:2) are
+# only two words that ALSO yield a standalone maddah glyph (18:5:7, 33:5:2) are
 # the two carrying a second, agreed maddah in بَآئِ. So the name depends on the
 # shaping context, not on the code point, and a flat table gets it wrong 277
 # times. Abdullah's reading of the ink; confirmed with HarfBuzz against
 # UthmanicHafs v3.0.
-# lam + (optional fathah) + alef-hamza + madda. HarfBuzz shapes this whole run
+# lam + (optional fathah) + alef-hamzah + maddah. HarfBuzz shapes this whole run
 # into ONE ligature glyph in UthmanicHafs (578/579/580), and that glyph draws
-# the madda as a straight slash — the fathah shape the print uses and this
+# the maddah as a straight slash — the fathah shape the print uses and this
 # pipeline labels `fathah`. Outside the ligature the SAME U+0653 draws as the
-# wavy madda (أٓ alone, آ, بَآئِ all do). So the mark's name depends on the
+# wavy maddah (أٓ alone, آ, بَآئِ all do). So the mark's name depends on the
 # shaping context, not the code point.
-LAM_ALEF_HAMZA = re.compile(
+LAM_ALEF_HAMZAH = re.compile(
     "\u0644[\u064b-\u0655\u0670\u06e1\u08f0-\u08f2]*\u0623\u0653")
 
 # the ink families this audit judges; letter dots are not spelled by the text
@@ -260,7 +261,7 @@ def page_rows(path):
             # v2.0 and v3.0 share the KFGQPC alphabet; only rasm_uthmani differs
             table = CP if src == "data-rasm-uthmani" else CP_QPC
             want = flatten(text_marks(t, table))
-            n = len(LAM_ALEF_HAMZA.findall(t))
+            n = len(LAM_ALEF_HAMZAH.findall(t))
             if n:
                 want["maddah"] = want.get("maddah", 0) - n
                 if want["maddah"] <= 0:

@@ -42,7 +42,7 @@ def font_coverage(texts):
     exactly where the interesting marks are. So it is measured, not assumed, and
     what it measures is not trivia: UthmanicHafs v3.0 covers rasm_uthmani and
     the v2.0 text completely, but has NO GLYPH for U+0622, the precomposed
-    alef-madda that quran-ws's own text is written with (confirmed against
+    alef-maddah that quran-ws's own text is written with (confirmed against
     fontTools; the V22 face lacks it too, and also the open tanwin U+08F0-08F2
     that rasm_uthmani uses 6,643 times). A face built for this print cannot
     draw that code point, which is itself an argument about which encoding the

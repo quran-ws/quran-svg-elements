@@ -43,8 +43,8 @@ _KEEP = set(range(0x0621, 0x064B)) | {0x0671, 0x0672, 0x0673, 0x0675,
 # The two sources spell the same LETTERS differently, and comparing the raw
 # code points reports thousands of differences that are not differences:
 #   فِى   0641 0649   vs  فِي   0641 064A   — final alef maqsura against yaa
-#   ٱلْـَٔاخِرِ  ..0640 0627..  vs  ٱلۡأٓخِرِ  ..0623..  — a tatweel+alef hamza seat
-#                                                       against hamza-on-alef
+#   ٱلْـَٔاخِرِ  ..0640 0627..  vs  ٱلۡأٓخِرِ  ..0623..  — a tatweel+alef hamzah seat
+#                                                       against hamzah-on-alef
 # Folding them leaves the real disagreements: Abdullah, 2026-09-09, "not 5%,
 # its 2-3 cases in mushaf" — لوما against لو ما, and ال ياسين as two words,
 # which are exactly the sites the segmentation plan already names.

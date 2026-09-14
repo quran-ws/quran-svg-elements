@@ -84,7 +84,7 @@ def classify(ours, lib):
     if pts <= {"0649", "064A"}:
         return "yaa", "final ى (U+0649) against ي (U+064A)"
     if pts <= {"0622", "0627", "0653", "0623", "0625", "0640", "0654"}:
-        return "hamza", "hamza seat and madda written differently"
+        return "hamzah", "hamzah seat and maddah written differently"
     return "other", "something else"
 
 
@@ -146,7 +146,7 @@ def main():
         cards = []
         for e in c["ex"]:
             three = []
-            for name, t, note in (("ours · quran.com uthmani", e["ours"], ""),
+            for name, t, note in (("ours · quran.com text_uthmani", e["ours"], ""),
                                   ("quran-ws/quran-text", e["lib"], ""),
                                   ("MushafDatabase", e["ref"], "")):
                 if t is None:
@@ -164,7 +164,7 @@ def main():
             '<p class="lab">%s</p><div class="cards">%s</div>'
             '<div class="ask"><label>which spelling is the print\'s? '
             '<select><option value="">—</option>'
-            '<option>ours (quran.com uthmani)</option>'
+            '<option>ours (quran.com text_uthmani)</option>'
             '<option>quran-ws/quran-text</option>'
             '<option>MushafDatabase</option>'
             '<option>they are equivalent — encoding only</option>'
