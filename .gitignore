@@ -56,3 +56,6 @@ MushafDatabase-Ligature-Based-SVG/
 # section can be developed against the full 8-mushaf set. The demo ships only
 # the one-mushaf fallback that build.py vendors into docs/demo/data/ornaments/.
 docs/demo/ornaments
+
+# derived: per-page flag files from tools/audit_marks.py
+.cache/marks_pages/
