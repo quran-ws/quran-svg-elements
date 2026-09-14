@@ -45,6 +45,12 @@ jobs:
         with:
           python-version: '3.11'
 
+      # The pipeline and the audits are pure stdlib. add_line_structure.py is
+      # not: it refreshes each page's .svg.br alongside the .svg, and without
+      # brotli it does all the work and then dies on the last step.
+      - name: brotli, for the artwork's .svg.br siblings
+        run: pip install --quiet brotli
+
       # The word cache is 604 files of quran.com API responses. It is
       # gitignored as derived, and re-fetching it on every run would hammer a
       # third party for data that never changes.
