@@ -63,8 +63,16 @@ try {
   eq('1.8 page 1 word count', p1.wordCount, 29);
   eq('1.9 page 1: one marker group per ayah, every one with data-ayah-key',
      [p1.ayahMarkGroups().length, p1.ayahMarks().length], [7, 7]);
-  eq('1.9b page 1: each marker holds the ring, one tagged copy of it, and the numeral',
-     p1.ayahMarks().map(m => [!!m.ring, m.ringCopies.length, !!m.numeral]).every(x => x[0] && x[1] === 1 && x[2]), true);
+  /* The opening spread used to draw every ornament TWICE — p1 had 14 ornament
+     groups for 7 markers — and the copy rode inside its marker tagged
+     data-duplicate, because collapsing it darkened the anti-aliased rim by up
+     to 57/255. quran-svg v1.1.1 replaced every medallion and builds one
+     ornament per numeral, so there is no copy left to tag: measured over all
+     604 pages, ornaments == markers everywhere and no page emits
+     data-duplicate. The ringCopies machinery stays (1.9c, 21.47) so a copy
+     would still be found if the artwork ever draws one again. */
+  eq('1.9b page 1: each marker holds the ring and the numeral, and no copy',
+     p1.ayahMarks().map(m => [!!m.ring, m.ringCopies.length, !!m.numeral]).every(x => x[0] && x[1] === 0 && x[2]), true);
   eq('1.9c page 42: no ring copies outside the opening spread',
      p42.ayahMarks().every(m => m.ringCopies.length === 0), true);
 
@@ -457,8 +465,9 @@ try {
   const hm = p42.hideAyahMarks();
   eq('9.7 markers hidden', p42.ayahMarks().every(m => m.el.style.display === 'none'), true);
   hm.remove();
-  /* pages 1-2: no id-less groups any more; the doubled ring is INSIDE the group
-     and must be styled with the ring, or the copy shows through in the old ink */
+  /* pages 1-2: no id-less groups any more. Any ring copy rides INSIDE the
+     marker group and must be styled with the ring, or it would show through;
+     since v1.1.1 the artwork draws no copy, and this still holds vacuously. */
   show(p1);
   const st1 = p1.styleAyahMarks({ ring: '#0a0' });
   const idless = [...p1.ayahMarkGroups()].filter(g => !g.dataset.ayahKey);
@@ -1131,7 +1140,7 @@ try {
       hh.remove();
     }
 
-    /* ---- pages 1-2: every group has an ayah; the doubled ring is INSIDE it ---- */
+    /* ---- pages 1-2: every group has an ayah; any ring copy rides INSIDE it ---- */
     {
       const p = await load(1);
       eq('21.45 page 1: no marker group without data-ayah-key (every one closes an ayah)',
@@ -1139,8 +1148,10 @@ try {
       const before = p.ayahMarks().map(m => m.el.innerHTML);
       const hh = M.setAyahMark(p, out);
       eq('21.46 all seven medallions were swapped', hh.count, 7);
-      eq('21.47 the doubled ring is hidden with the ring it copies',
-         p.ayahMarks().every(m => m.ringCopies.length === 1 && m.ringCopies[0].getAttribute('display') === 'none'), true);
+      /* Nothing to hide since v1.1.1: the opening spread no longer doubles its
+         ornament (see 1.9b). The swap must still leave no copy behind. */
+      eq('21.47 the swapped medallion leaves no ring copy on the opening spread',
+         p.ayahMarks().every(m => m.ringCopies.every(c => c.getAttribute('display') === 'none')), true);
       hh.remove();
       eq('21.48 remove() restores the group exactly', p.ayahMarks().map(m => m.el.innerHTML), before);
       const h2 = M.setAyahMark(p, out, { decorative: true });
