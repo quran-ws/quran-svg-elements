@@ -1,0 +1,131 @@
+# Does every word hold the marks its text spells? Asked of all 604 pages.
+#
+# terminology.yml is the gate that needs nothing but this repository. This one
+# needs the page artwork — 494 MB of hafs/kfqc from quranpedia/quran-svg, pinned
+# at b91d39e1 — so it was left as a local command for a long time, and that is
+# exactly how p540 shipped broken in v1.0.1: `tools/audit_marks.py` flags that
+# page in three places, and nobody ran it. A gate that lives only in a README is
+# not a gate.
+#
+# The artwork and the quran.com word cache are both restored from the Actions
+# cache, so only the first run pays for them. Budget roughly 35 minutes cold and
+# 25 warm; the audit itself is the bulk of it, not the download.
+name: mushaf audit
+
+on:
+  pull_request:
+    paths:
+      - 'tools/**'
+      - '.cache/**'
+      - '.github/workflows/mushaf-audit.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/**'
+      - '.cache/**'
+  workflow_dispatch:
+    inputs:
+      pages:
+        description: 'Page range, e.g. "1 604" or "540 540"'
+        default: '1 604'
+
+env:
+  # quranpedia/quran-svg, the commit CLAUDE.md pins the decomposition to
+  ARTWORK_COMMIT: b91d39e1065b57bdda3e94aca8ecf3575e50e1e6
+  ARTWORK: ${{ github.workspace }}/../artwork
+
+jobs:
+  marks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # The pipeline and the audits are pure stdlib. add_line_structure.py is
+      # not: it refreshes each page's .svg.br alongside the .svg, and without
+      # brotli it does all the work and then dies on the last step.
+      - name: brotli, for the artwork's .svg.br siblings
+        run: pip install --quiet brotli
+
+      # The word cache is 604 files of quran.com API responses. It is
+      # gitignored as derived, and re-fetching it on every run would hammer a
+      # third party for data that never changes.
+      - name: Restore the quran.com word cache
+        uses: actions/cache@v4
+        with:
+          path: .cache/words
+          key: words-v1
+
+      # Keyed on the artwork commit AND on add_line_structure.py, because the
+      # cached tree carries that script's in-place per-line rewrite — a new
+      # version of the script means a different tree.
+      - name: Restore the prepared artwork
+        id: artwork-cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.ARTWORK }}
+          key: artwork-${{ env.ARTWORK_COMMIT }}-${{ hashFiles('tools/add_line_structure.py', 'tools/svg_lines.py') }}
+
+      - name: Fetch the artwork and add the per-line structure
+        if: steps.artwork-cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          # Only hafs/kfqc is decomposed here; the other four mushafs are a
+          # different print and would quadruple the download for nothing.
+          git clone --filter=blob:none --no-checkout --depth 1 \
+            https://github.com/quranpedia/quran-svg.git "$ARTWORK"
+          cd "$ARTWORK"
+          git sparse-checkout init --cone
+          git sparse-checkout set mushafs/hafs/kfqc
+          git fetch --depth 1 origin "$ARTWORK_COMMIT"
+          git checkout "$ARTWORK_COMMIT"
+          ln -sfn "$GITHUB_WORKSPACE/tools" tools
+          ln -sfn "$GITHUB_WORKSPACE/.cache" .cache
+          python3 tools/add_line_structure.py --mushaf hafs/kfqc --jobs 4
+
+      - name: Relink the working set into the cached artwork
+        run: |
+          set -euo pipefail
+          cd "$ARTWORK"
+          ln -sfn "$GITHUB_WORKSPACE/tools" tools
+          ln -sfn "$GITHUB_WORKSPACE/.cache" .cache
+
+      # The gate proper. Exits non-zero on any flagged word and prints the word
+      # key, its text, and the family that disagreed.
+      - name: Every word holds the marks its text spells
+        env:
+          QSVG_ROOT: ${{ env.ARTWORK }}
+        run: |
+          rm -rf .cache/marks_pages
+          python3 tools/audit_marks.py ${{ github.event.inputs.pages || '1 604' }} --jobs 4
+
+      # Cheap next to the count audit, and it is the detector that named p540's
+      # stray stroke first: a slash drawn clear above or below its word's band.
+      - name: No slash mark named against its drawn position
+        env:
+          QSVG_ROOT: ${{ env.ARTWORK }}
+        run: |
+          python3 tools/audit_slashpos.py ${{ github.event.inputs.pages || '1 604' }} 4 \
+            /tmp/slashpos.json | tee /tmp/slashpos.txt
+          grep -q "words flagged 0 on 0 pages" /tmp/slashpos.txt
+
+      - name: The emitted words ARE the release's words
+        env:
+          QSVG_ROOT: ${{ env.ARTWORK }}
+        run: |
+          python3 tools/audit_segmentation.py | tee /tmp/seg.txt
+          grep -qE '^count +0'    /tmp/seg.txt
+          grep -qE '^skeleton +0' /tmp/seg.txt
+
+      - name: Keep the flag files when something failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: marks-flags
+          path: |
+            .cache/marks_pages
+            /tmp/slashpos.json

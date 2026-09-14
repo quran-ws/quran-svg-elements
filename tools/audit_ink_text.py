@@ -21,7 +21,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(ROOT, "scratchpad"))
+sys.path.insert(0, os.path.join(ROOT, "tools"))
 from audit_marks import TEXT_WANT  # the one code-point table, not a second copy
 
 PAGES = os.path.join(ROOT, ".cache", "words-svg", "hafs-kfqc")

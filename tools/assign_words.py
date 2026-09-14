@@ -8923,6 +8923,113 @@ def assign_page(edition, page_no, cache_dir):
     # all of its marks look orphaned — its letters sit at the far end of the line — and
     # they get handed to whatever happens to lie under them. On p526 that turned one flag
     # into five. A misplaced word is a line defect and belongs to the line audits.
+    # An OPEN tanwin's two strokes, cut into two different words.
+    #
+    # The stacked tanwins sit one directly above the other and survive any word
+    # cut; the OPEN ones (U+08F0-08F2, idgham/ikhfa) are staggered by up to 7.7
+    # units — see the |dx| distribution measured over all 8,516 pairs at the top
+    # of this file — and at a word boundary that stagger is enough to drop the
+    # lower stroke into the next word. p540 57:22:12 `كِتَٰبࣲ` is the founding
+    # case: its lower stroke was cut into 57:23:1 `لِّكَيْلَا`, the first word of
+    # the NEXT AYAH, |dx| 3.6 and |dy| 3.9 apart.
+    #
+    # Nothing downstream could rescue it. compose_tanwin()'s _weld_pairs runs
+    # per atom, so it never sees two strokes in two words; and the neighbour
+    # transfer and the cross-line repair both skip the slash families on
+    # purpose, because a LONE stroke's name is derived from position and
+    # carrying one across a boundary re-opens that decision for both words.
+    # That reasoning does not hold here. Both strokes arrive already labelled
+    # from their own shape — the open tanwin is its own glyph, not a stroke
+    # named later — so this pass moves ink whose name is settled, and it names
+    # nothing. The lone strokes are only demoted to kasrah/fathah LATER, by the
+    # slash-renaming pass, which is why the defect reads as a naming bug.
+    #
+    # Two signals agree before anything moves, the standard the neighbour
+    # transfer already holds to:
+    #   ink  -- two same-family tanwin strokes, each ALONE in its word, on the
+    #           same or an adjacent line, |dx| inside that family's measured
+    #           open band and |dy| inside the envelope _weld_pairs accepts (7.0).
+    #   text -- exactly ONE of the two words spells that tanwin. That word owns
+    #           both strokes. Where both spell it, or neither does, the text
+    #           names no owner and the pass declines.
+    if os.environ.get("QSVG_OPENTAN", "1") != "0":
+        # (code points, top of the measured open |dx| band) per family
+        _OT_FAM = {"tanwin_al_fath": ("\u064b\u08f0", 5.4),
+                   "tanwin_al_kasr": ("\u064d\u08f2", 7.7),
+                   "tanwin_al_damm": ("\u064c\u08f1", 3.9)}
+        _ot_recs = []
+        for _wo, _ato in assignment:
+            if not _wo:
+                continue
+            _oe = [e for a in _ato for e in a["els"]]
+            _ob = [e for e in _oe if e["kind"] == "body"]
+            if not _ob:
+                continue
+            _ol = [e.get("line") for e in _ob if e.get("line")]
+            _ot_recs.append({"w": _wo, "at": _ato, "els": _oe,
+                             "ln": max(set(_ol), key=_ol.count) if _ol else 0})
+        _ot_spent = set()
+        for _fam, (_chs, _omax) in _OT_FAM.items():
+            _lone = []
+            for _r in _ot_recs:
+                _g = [e for e in _r["els"]
+                      if e.get("mark") == _fam and not e.get("mkpart")]
+                if len(_g) == 1:
+                    _lone.append((_r, _g[0]))
+            for _i, (_ra, _ea) in enumerate(_lone):
+                for _rb, _eb in _lone[_i + 1:]:
+                    # ADJACENT lines, not the same line. The founding case is
+                    # exactly a line boundary: 57:22:12 closes line 11 and
+                    # 57:23:1 opens line 12, so a same-line test finds nothing.
+                    # Proximity is the proof here, not the line tag — the two
+                    # strokes are within 7.7u horizontally and 7.0u vertically,
+                    # which is one glyph's worth of ink, and on p540 every other
+                    # candidate pair is 36u to 230u away.
+                    if _ra is _rb or abs(_ra["ln"] - _rb["ln"]) > 1:
+                        continue
+                    if id(_ea) in _ot_spent or id(_eb) in _ot_spent:
+                        continue
+                    _dx = abs((_ea["x1"] + _ea["x2"]) - (_eb["x1"] + _eb["x2"])) / 2
+                    _dy = abs((_ea["y1"] + _ea["y2"]) - (_eb["y1"] + _eb["y2"])) / 2
+                    if not (_TAN_STAG[_fam] <= _dx <= _omax and _dy <= 7.0):
+                        continue
+                    _wa = sum(_ra["w"]["rasm_uthmani"].count(c) for c in _chs)
+                    _wb = sum(_rb["w"]["rasm_uthmani"].count(c) for c in _chs)
+                    if (_wa > 0) == (_wb > 0):
+                        continue
+                    if _wa:
+                        _dst, _keep, _src, _move = _ra, _ea, _rb, _eb
+                    else:
+                        _dst, _keep, _src, _move = _rb, _eb, _ra, _ea
+                    # Land it in the ligature the twin is already in, never at
+                    # at[0]: the mark has to be drawn over the letters it sits on.
+                    _mat = next((_a for _a in _dst["at"] if _keep in _a["els"]), None)
+                    if _mat is None:
+                        continue
+                    for _a in _src["at"]:
+                        if _move in _a["els"]:
+                            _a["els"].remove(_move)
+                            break
+                    _src["els"].remove(_move)
+                    _mat["els"].append(_move)
+                    _dst["els"].append(_move)
+                    # weld, exactly as _weld_pairs does: the top stroke is the
+                    # master and the other becomes its part, so the pair emits
+                    # as the ONE path the print draws
+                    _mas, _prt = sorted((_keep, _move),
+                                        key=lambda e: e["y1"] + e["y2"])
+                    _prt["mkpart"] = True
+                    _mas.setdefault("mkmembers", []).append(_prt)
+                    _ot_spent.add(id(_keep))
+                    _ot_spent.add(id(_move))
+                    if os.environ.get("QSVG_OTDBG"):
+                        print("OPENTAN %s: %s -> %s  |dx|=%.2f |dy|=%.2f" % (
+                            _fam,
+                            "%s:%s:%s" % (_src["w"]["surah"], _src["w"]["ayah"],
+                                          _src["w"]["pos"]),
+                            "%s:%s:%s" % (_dst["w"]["surah"], _dst["w"]["ayah"],
+                                          _dst["w"]["pos"]), _dx, _dy))
+
     if os.environ.get("QSVG_ORPHAN", "1") == "1":
         _GRP = {"fathah": "slash", "kasrah": "slash",
                 "tanwin_al_fath": "slash", "tanwin_al_kasr": "slash",
