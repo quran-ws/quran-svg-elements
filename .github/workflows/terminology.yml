@@ -1,7 +1,7 @@
 # The one gate that needs nothing but this repository.
 #
 # bench, the audits and the library suite all need the page artwork — 487 MB
-# from quranpedia/quran-svg, pinned at b91d39e1 — so they stay local commands
+# from quranpedia/quran-svg, pinned at v1.1.1 (3ff27b46) — so they stay local commands
 # (CLAUDE.md, "Run these before believing anything"). The terminology audit
 # reads only the working set, so it can run on every push, and it is the gate
 # most easily broken by an ordinary edit: one new `verse` or `fatha` in a
