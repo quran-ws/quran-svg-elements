@@ -49,10 +49,10 @@ def test_both_sides_must_be_folded():
     assert search_fold.match_fold(stored) == search_fold.match_fold(typed)
 
 
-def test_dagger_alif_stays_stripped():
+def test_omitted_alif_stays_stripped():
     # ٱلرَّحۡمَٰنِ keys as الرحمن, not الرحمان. quran-text used to do the opposite.
-    uthmani = VECTORS[0]["input"]
-    assert search_fold.match_fold(uthmani) == "الرحمن"
+    rasm_uthmani = VECTORS[0]["input"]
+    assert search_fold.match_fold(rasm_uthmani) == "الرحمن"
 
 
 if __name__ == "__main__":
