@@ -10,8 +10,17 @@ or reference disagrees with the ink, the 1441H print is what the ink IS; judge
 sources against it, not it against sources (the waqf and iqlab notation
 differences in this file all trace to that edition).
 
-**Start here:** `docs/PROCESS.md` is the working loop. This file is the state
-of play and the things that will waste your time if you do not know them.
+**Start here:** this file. It is the state of play, the working loop, and the
+things that will waste your time if you do not know them; "Run these before
+believing anything" below is the loop itself.
+
+`docs/PROCESS.md` and `docs/defects/` are NOT in this repository and are not
+published. They are the working material of a defect hunt that is now closed,
+and every figure in them describes a build several fixes old — PROCESS.md still
+opens with "762 flagged words, 216 of 604 pages clean, SCORE 77". They are
+preserved in `origin/archive/pre-rewrite` and can be restored into a working
+tree from there when the history matters; `.gitignore` keeps them from being
+published again. The generators that write them ARE tracked.
 
 ---
 
@@ -174,8 +183,10 @@ is 0, and no bench case fails. The pinned "before" build is
 `tools/_pipeline_baseline.py` — keep it, every comparison is against it.
 
 After anything touching the artwork or the line cut, also run
-`tools/audit_split.py` (must stay 0), `tools/audit_lines.py`, and
-`tools/verify_render.py` (largest single-pixel alpha change must not grow).
+`tools/verify_render.py` (largest single-pixel alpha change must not grow), and
+the reader library's 357 assertions — an artwork bump can retire a property the
+tests protect without failing any ink-level gate, which is how quran-svg v1.1.1
+dropping the opening spread's duplicate ornament got through 604 clean pages.
 
 ---
 
@@ -183,12 +194,11 @@ After anything touching the artwork or the line cut, also run
 
 | tool | sees | blind to |
 |---|---|---|
-| `scratchpad/audit_marks.py` | mark counts vs the text, dots, ligature surplus, reading order | anything that leaves counts balanced |
+| `tools/audit_marks.py` | mark counts vs the text, dots, ligature surplus, reading order | anything that leaves counts balanced |
 | `tools/audit_intervals.py` | a mark sitting in another word's exclusive territory | defects where the body partition is wrong |
 | `tools/audit_width.py` | a word the wrong SIZE for its share of the line | a word that swaps one letter for another |
 | `tools/audit_crossline.py` | ink held by a word but drawn in another line's territory | — |
 | `tools/audit_reference.py` | disagreement with an outside decomposition | words the two sources split differently (~12%) |
-| `tools/audit_lines.py` | a contour tagged to a line it is not drawn in | — |
 | `tools/audit_marksize.py` | a mark the wrong SIZE for what it is called, both tails | a mark of the right size in the wrong place |
 | `tools/audit_strayink.py` | a mark a line's width from its own word, horizontally | anything within 40u |
 | `tools/audit_crossband.py` | a mark drawn in another line's band | anything within 10u of the band |
@@ -202,8 +212,11 @@ After anything touching the artwork or the line cut, also run
 | `tools/audit_segmentation.py` | that the emitted words ARE the word-by-word-translation release's — count per ayah and letters per word, all 6,236 ayahs, so `data-word-key`'s third number IS the release's word number (`--svg` asks it of the artefact) | which of two spellings is right; anything that is not a boundary |
 | `tools/audit_export.py` | the export SHAPE a consumer's converter measured (2026-09-04): one marker per ayah with id, viewBox `0 0 345 550` everywhere, `data-kind` on every path, no `<path transform>`, three-decimal movetos, production word groups carrying `data-word-key` + `data-rasm-uthmani` only. Six properties, every page, production profile | anything about the ink itself |
 
-`tools/audit_split.py` is named above in older notes but **does not exist in the repo**.
-`audit_lines.py` and `verify_render.py` do.
+`tools/audit_split.py` and `tools/audit_lines.py` are named in older notes but
+**neither exists**, here or in `origin/archive/pre-rewrite` — a line named in a
+gate list that cannot run is worse than no line, because it reads as a check
+someone performed. `tools/verify_render.py` does exist and is the one to run
+after anything touching the artwork or the line cut.
 
 **The trap that cost the most:** for most of the session every gate counted
 marks per word. A word can lose a letter, or shrink to 19% of its width, with

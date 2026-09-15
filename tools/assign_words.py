@@ -2922,6 +2922,23 @@ def rewrite(page, assignment):
                                 # and purge EVERY reference after the walk:
                                 # removing from a list mid-iteration skips
                                 # entries and silently un-merges other signs.
+                                # Keep the record. Absorbing a member folds
+                                # its contours into the master and drops it
+                                # from mkmembers, but the piece is still PART
+                                # of this mark — and two audit_marktype rules
+                                # ask exactly that question: R4 exempts a
+                                # stroke-tanwin whose twin is welded
+                                # (`any(x[4] == fam for x in m["mem"])`) and R8
+                                # counts a dot cluster's blobs as the master's
+                                # plus its members'. With the members gone they
+                                # read every pair as a half-pair and every
+                                # three_dots as two dots: 6,169 + 3,610 flags,
+                                # 99.8% of that audit's output, against the 4
+                                # and 4 its own rules doc recorded when it was
+                                # written. The welded pieces are listed here so
+                                # a reader can still see what this one mark is
+                                # made of.
+                                e.setdefault("mkabsorbed", []).append(m)
                                 m["_absorbed"] = True
                                 if m.get("path") != e.get("path"):
                                     # its source path may now hold no element

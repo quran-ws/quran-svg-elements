@@ -59,3 +59,21 @@ docs/demo/ornaments
 
 # derived: per-page flag files from tools/audit_marks.py
 .cache/marks_pages/
+
+# Defect working material: sweeps, flag dumps, review sheets and the eye
+# reports behind them. It is the record of a hunt that is now closed — the
+# figures inside describe builds three fixes old (PROCESS.md still reads
+# "762 flagged words, 216 pages clean, SCORE 77"; the marktype rules doc still
+# counts small_meem 1,462 where the iqlab rework leaves 609). Publishing stale
+# defect data invites someone to act on it. Every file is preserved in
+# origin/archive/pre-rewrite and can be restored into a working tree from there;
+# the generators that write these files ARE tracked.
+docs/defects/
+docs/PROCESS.md
+.DS_Store
+
+# A label-review session log from 2026-08: 467 before/after lines written in
+# the pre-rename vocabulary (fatha, kasra, shadda, two-dots). Nothing reads it,
+# and the decisions it records were folded into .cache/marks/labels.json long
+# ago. Kept out of the published tree; recoverable from git history.
+.cache/review/face_changes.jsonl
