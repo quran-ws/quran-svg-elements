@@ -25,6 +25,23 @@ Use it when your application needs interaction at word or mark level, such as re
 gh release download v1.0.0 -R quran-ws/quran-svg-elements
 ```
 
+## On the CDN
+
+Releases are mirrored to `cdn.quran.ws` under immutable, versioned URLs, so an
+application can fetch one page over HTTPS without downloading the whole release:
+
+```
+https://cdn.quran.ws/svg/elements/v1.1.1/manifest.json
+https://cdn.quran.ws/svg/elements/v1.1.1/pages/001.svg
+https://cdn.quran.ws/svg/elements/v1.1.1/index/by-page/001.json
+```
+
+A folder is written once and never rewritten, so every file is served
+`Cache-Control: immutable`. `manifest.json` lists each file with its size and
+sha256. `https://cdn.quran.ws/svg/elements/latest.json` names the current version.
+
+The CDN mirrors the GitHub release, which remains the canonical artifact.
+
 ## Where the documentation is
 
 Everything about using it lives on the site. This repository is the source.
