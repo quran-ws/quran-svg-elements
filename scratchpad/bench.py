@@ -64,6 +64,27 @@ CASES = {
     (3, (2, 14, 5)): ("qaaluu 2:14:5 span<=33", lambda e: span(e) <= 33),
     (3, (2, 14, 4)): ("aamanuu span>=25", lambda e: span(e) >= 25),
     (3, (2, 16, 3)): ("ishtarawu span>=38", lambda e: span(e) >= 38),
+    # A welded mark's recorded extent must cover the ink it absorbed. The
+    # DOTMERGE pass folds a member's contours into its master and then purges
+    # the member from every atom (assign_words.py:2880), so a box still
+    # describing the master's own contours alone deletes that ink from the
+    # geometry every later reader sees — audit_intervals, audit_strayink,
+    # audit_crossband and audit_marksize all read this box, and it is what
+    # audit_marktype's R8 counts blobs from.
+    #
+    # ث/ش draw three dots as a two-dot row plus one apex dot. The row alone is
+    # 2.71 high and the full cluster 5.33, with nothing in between, so the
+    # height alone says whether the apex dot is inside the box.
+    (3, (2, 7, 9)): ("ghishaawa's three_dots box holds all three dots",
+        lambda e: [x["y2"] - x["y1"] > 4.0 for x in e
+                   if x.get("mark") == "three_dots" and not x.get("mkpart")]
+        == [True]),
+    # the same defect on a welded stroke PAIR: one kasrah stroke is 3.12 high,
+    # the open tanwin_al_kasr of بِخَيْرࣲ is 6.51.
+    (17, (2, 106, 8)): ("bikhayrin's tanwin_al_kasr box holds both strokes",
+        lambda e: [x["y2"] - x["y1"] > 5.0 for x in e
+                   if x.get("mark") == "tanwin_al_kasr" and not x.get("mkpart")]
+        == [True]),
     (1, (1, 1, 1)): ("bismi p1 span>=18", lambda e: span(e) >= 18),
     (1, (1, 7, 5)): ("ghayri p1 span>=10", lambda e: span(e) >= 10),
     # the letter meem must stay letter ink, not the iqlab sign (p307 cascade)

@@ -2878,6 +2878,41 @@ def rewrite(page, assignment):
                                         _shifted.append(_n6)
                                     _mc = _shifted
                                 e["contours"] = list(e["contours"]) + _mc
+                                # The recorded extent must follow the ink. The
+                                # member is purged from every atom below, so a
+                                # box still describing the master's own
+                                # contours alone erases the absorbed ink from
+                                # the geometry every later reader sees. This is
+                                # not a dot-family problem — EVERY welded sign
+                                # recorded one piece of itself (heights, p3/p7/
+                                # p17, before -> after):
+                                #
+                                #   three_dots        2.71 -> 5.33  apex dot
+                                #   tanwin_al_damm    6.04 -> 8.67
+                                #   tanwin_al_kasr    3.12 -> 6.51  one stroke
+                                #   tanwin_al_fath    2.59 -> 3.63  of the pair
+                                #   waqf_al_muanaqah  2.14 -> 4.65
+                                #
+                                # so a tanwin pair measured as one stroke and a
+                                # three-dot cluster as a two-dot row (4.55 wide
+                                # either way — width cannot tell them apart).
+                                # audit_intervals, audit_strayink,
+                                # audit_crossband and audit_marksize all read
+                                # this box, and audit_marktype's R8 counts dot
+                                # blobs from it. Same union as page_elements(),
+                                # in the master's frame: the shifted member
+                                # contours above are already expressed in it.
+                                _Mb = page.paths[e["path"]]["M"]
+                                _bxs, _bys = [], []
+                                for _cb in e["contours"]:
+                                    _sb = _cb["sp"]
+                                    _u1, _v1, _u2, _v2 = transform_box(
+                                        _Mb, _sb["xmin"], _sb["ymin"],
+                                        _sb["xmax"], _sb["ymax"])
+                                    _bxs += [_u1, _u2]
+                                    _bys += [_v1, _v2]
+                                e["x1"], e["x2"] = min(_bxs), max(_bxs)
+                                e["y1"], e["y2"] = min(_bys), max(_bys)
                                 # A member can be listed by an atom of a
                                 # DIFFERENT word as well as its own (p17:
                                 # خَيْرࣲ's tanwin_al_kasr half was also in
