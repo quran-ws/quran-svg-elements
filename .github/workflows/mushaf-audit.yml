@@ -2,7 +2,7 @@
 #
 # terminology.yml is the gate that needs nothing but this repository. This one
 # needs the page artwork — 494 MB of hafs/kfqc from quranpedia/quran-svg, pinned
-# at b91d39e1 — so it was left as a local command for a long time, and that is
+# at v1.1.1 (3ff27b46) — so it was left as a local command for a long time, and that is
 # exactly how p540 shipped broken in v1.0.1: `tools/audit_marks.py` flags that
 # page in three places, and nobody ran it. A gate that lives only in a README is
 # not a gate.
@@ -31,7 +31,7 @@ on:
 
 env:
   # quranpedia/quran-svg, the commit CLAUDE.md pins the decomposition to
-  ARTWORK_COMMIT: b91d39e1065b57bdda3e94aca8ecf3575e50e1e6
+  ARTWORK_COMMIT: 3ff27b46cecb0c0519d77531d9c868a579d1f623
   ARTWORK: ${{ github.workspace }}/../artwork
 
 jobs:

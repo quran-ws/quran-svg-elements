@@ -4354,6 +4354,18 @@ def tag_ayah_marks(svg, polys_json, anchors=None):
                 label[idx] = key
                 used.add(key)
 
+    # Since quran-svg v1.1.1 the artwork gives each marker its OWN parent,
+    # `<g class="ayah-mark">`, holding the ornament group and the numeral group
+    # as siblings. That is the node we used to insert ourselves. Annotate it
+    # instead of nesting a second one inside it: our main consumer dispatches on
+    # (tag, class) with exact matching —
+    #     ("g", "ayah-mark") => decoration(...)
+    #     ("g", _)           => generic walk
+    # (quran-engine, qvp-convert/src/svg2qvp.rs) — so two nested `ayah-mark`
+    # nodes would make it consume the OUTER one as the decoration and never see
+    # the real one. Older artwork has no such parent; there we still wrap.
+    _wrapped = len(re.findall(r'<g class="ayah-mark"(?=[\s>])', block)) >= len(pairs) \
+        and len(pairs) > 0
     out = []
     pos = 0
     for idx, (orn, dig) in enumerate(pairs):
@@ -4369,23 +4381,79 @@ def tag_ayah_marks(svg, polys_json, anchors=None):
         # 2026-08-29: link, do not nest).
         ident = ((' id="mk-%d-%d" data-ayah-key="%d:%d"' % (su, ay, su, ay))
                  if su else "")
-        out.append(block[pos:orn.start()])
-        piece = orn.group(0).replace(
-            "<path ", '<path data-kind="ayah_mark_ornament" ', 1)
+        _lead = block[pos:orn.start()]
+        if _wrapped and ident:
+            # annotate the wrapper immediately before this ornament
+            _k = _lead.rfind('<g class="ayah-mark"')
+            if _k >= 0:
+                _e = _lead.index(">", _k)
+                _lead = _lead[:_e] + ident + _lead[_e:]
+        out.append(_lead)
+        piece = _lift_path_transform(orn.group(0).replace(
+            "<path ", '<path data-kind="ayah_mark_ornament" ', 1))
         if dig is not None:
             # between ornament and numeral sits the artwork's second copy of
             # the ornament on p1/p2 (see _dup above), and nothing elsewhere
-            piece += block[orn.end():dig.start()].replace(
-                "<path ", '<path data-kind="ayah_mark_ornament" '
-                          'data-duplicate="1" ')
-            piece += dig.group(0).replace(
-                "<path ", '<path data-kind="ayah_number" ', 1)
+            piece += _lift_path_transform(
+                block[orn.end():dig.start()].replace(
+                    "<path ", '<path data-kind="ayah_mark_ornament" '
+                              'data-duplicate="1" '))
+            piece += _lift_path_transform(dig.group(0).replace(
+                "<path ", '<path data-kind="ayah_number" ', 1))
             pos = dig.end()
         else:
             pos = orn.end()
-        out.append('<g class="ayah-mark"%s>%s</g>' % (ident, piece))
+        out.append(piece if _wrapped
+                   else '<g class="ayah-mark"%s>%s</g>' % (ident, piece))
     out.append(block[pos:])
     return svg[:i] + "".join(out) + svg[j:]
+
+
+def _lift_path_transform(frag):
+    """Move a `<path>`'s transform onto the group that already wraps it.
+
+    `transform` takes a LIST applied left to right, so appending the path's
+    matrix to its parent group's transform places the ink identically to
+    leaving it on the path. No coordinate is touched and no element is added,
+    so this is pixel-free by construction rather than by measurement.
+
+    It exists because the export contract a consumer's converter measured says
+    no <path> carries a transform (tools/audit_export.py, `xforms`), and the
+    artwork started carrying them: at b91d39e1 the ayah_markers block had 0 of
+    20 paths transformed; at v1.1.0, which redrew every medallion, 7 of 14 do —
+    matrix(0.95233582 0 0 -1.00936986 -738.53642519 498.12402740). The matrix
+    is upstream's own placement of the redrawn ornament, not our reframing, and
+    the emitter passes marker ink through verbatim, so without this the
+    artefact grew 6,236 <path transform> attributes, one per ayah.
+
+    Appending rather than WRAPPING is deliberate: a wrapping <g> also clears
+    `xforms`, but it adds a nesting level, and audit_export's `markers` check
+    reads the marker body with `<g class="ayah-mark">(.*?)</g>\s*</g>` — the
+    extra depth took that count from 0 to 11,868. Measured over the markers
+    block, every innermost group holds exactly ONE path and already carries a
+    transform of its own (22 of 22 on p324), so there is always a group to
+    append to and never a sibling to disturb.
+    """
+    m = re.search(r"<path\b[^>]*>", frag)
+    if m is None:
+        return frag
+    tag = m.group(0)
+    a = re.search(r'\s+transform="([^"]*)"', tag)
+    if not a:
+        return frag
+    frag = frag[:m.start()] + tag[:a.start()] + tag[a.end():] + frag[m.end():]
+    g = re.match(r"<g\b[^>]*>", frag)
+    if g is None:
+        # no group to carry it (not seen in this artwork) — keep it on the path
+        return frag[:m.start()] + tag + frag[m.start() + len(tag) - len(a.group(0)):]
+    gt = re.search(r'\s+transform="([^"]*)"', g.group(0))
+    if gt:
+        merged = '%s transform="%s %s"%s' % (
+            g.group(0)[:gt.start()].rstrip(), gt.group(1), a.group(1),
+            g.group(0)[gt.end():])
+    else:
+        merged = '%s transform="%s">' % (g.group(0)[:-1].rstrip(), a.group(1))
+    return merged + frag[g.end():]
 
 
 def _num(v):
