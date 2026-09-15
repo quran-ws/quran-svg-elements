@@ -170,6 +170,36 @@ CASES = {
         == ["fathah", "kasrah", "kasrah"]),
 }
 
+# PAGE cases, judged on the emitted SVG rather than on one word's elements.
+# Some facts are not about a word at all: a surah opening's two header lines
+# are wordless ink, so no (page, word-key) case can reach them.
+#
+# Each one asserts that neither header group holds ink drawn in the other's
+# band — the p77 defect Abdullah caught by eye (the basmalah carrying the
+# rightmost four contours of النساء's title), and its two siblings that the
+# mushaf-wide sweep then named. The check IS tools/audit_headerbands.py, so
+# the bench and the CI gate can never drift apart.
+_PAGE_FAILS = []
+
+
+def _no_header_theft(svg):
+    sys.path.insert(0, ROOT + "/tools")
+    from audit_headerbands import audit_svg
+    r = audit_svg(svg)
+    return r is not None and not r["flags"]
+
+
+PAGE_CASES = {
+    77: ("p77 basmalah holds none of An-Nisa's title ink", _no_header_theft),
+    282: ("p282 basmalah holds none of Al-Isra's title ink", _no_header_theft),
+    # A control, and it must be a page that HAS both bands: p283 was the
+    # first choice and it has no surah opening at all, so the check returned
+    # "nothing to examine" and the case failed on a clean build. A case that
+    # fails where there is nothing to test is measuring its own harness.
+    2: ("p2 headers clean (control: Al-Baqarah's opening)", _no_header_theft),
+    428: ("p428 basmalah holds none of Saba's title ink", _no_header_theft),
+}
+
 def budget_mismatches(words):
     bad = 0
     for w, at in words:
@@ -189,12 +219,28 @@ def budget_mismatches(words):
             bad += 1
     return bad
 
+# Page cases run in their own loop, deliberately OUTSIDE the aggregate above:
+# SCORE sums width and budget terms over the pages it builds, so folding new
+# pages into that loop moves the number for reasons that have nothing to do
+# with the change under test (adding these four took 135 to 234). The history
+# in CLAUDE.md is only worth keeping if the pages it was measured over stay
+# put.
+for _pg, (_name, _fn) in sorted(PAGE_CASES.items()):
+    try:
+        _svg = aw.assign_page("hafs/kfqc", _pg, ROOT + "/.cache/words")[1]
+        _ok = _fn(_svg)
+    except Exception:
+        _ok = False
+    print("%-4s %s" % ("PASS" if _ok else "FAIL", _name))
+    if not _ok:
+        _PAGE_FAILS.append(_name)
+
 # the pipeline's own keying of the advance table, not the raw file: the raw
 # one is keyed pre-segmentation, so any ayah the boundary plan splits or fuses
 # would pair a word with its neighbour's advance and manufacture width flags
 # (6 of them on p262 once 15:7 was fused).
 q = aw.qcf_widths()
-case_fail, mism, nwords, tot, nw, badw, pixfail = [], 0, 0, 0.0, 0, 0, 0
+case_fail, mism, nwords, tot, nw, badw, pixfail = list(_PAGE_FAILS), 0, 0, 0.0, 0, 0, 0
 for pg in (1, 2, 3, 7, 17, 90, 133, 143, 200, 202, 205, 222, 249, 262, 273, 307, 453, 454, 540, 582, 583, 586, 590, 591, 600):
     try:
         _, svg, report, cov = aw.assign_page("hafs/kfqc", pg, ROOT + "/.cache/words")

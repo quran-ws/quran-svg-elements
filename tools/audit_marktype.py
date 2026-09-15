@@ -118,7 +118,8 @@ def collect(pg):
                 continue
             mem = [[round(m["x1"], 1), round(m["y1"], 1), round(m["x2"], 1),
                     round(m["y2"], 1), m.get("mark") or ""]
-                   for m in (e.get("mkmembers") or [])]
+                   for m in ((e.get("mkmembers") or [])
+                             + (e.get("mkabsorbed") or []))]
             rec["m"].append({"f": e.get("mark") or e["kind"],
                              "x1": round(e["x1"], 1), "y1": round(e["y1"], 1),
                              "x2": round(e["x2"], 1), "y2": round(e["y2"], 1),
@@ -520,8 +521,33 @@ def run_rules(pages, dirty, noissue, dist_only=False):
             for m in masters:
                 if m["f"] not in DOTV:
                     continue
-                n = blobs(m["x2"] - m["x1"]) + sum(
-                    blobs(x[2] - x[0]) for x in m["mem"] if x[4] in DOTV)
+                # HOW MANY DOTS ARE DRAWN — read from the cluster's own box,
+                # both axes, never from width alone.
+                #
+                # Arabic draws three dots as a TRIANGLE: two on a row and the
+                # third above. A three-dot cluster is therefore a two-dot row
+                # WIDE, and width cannot tell the two apart — measured over all
+                # 604 pages the ranges do not merely overlap, they invert:
+                #
+                #     two_dots    n=38,120   w 3.60-6.27   h 2.16-3.38
+                #     three_dots  n= 3,538   w 4.26-4.90   h 4.77-5.96
+                #     dot         n=63,611   w 1.66-2.58   h 1.67-2.56
+                #
+                # A two_dots can be WIDER than a three_dots. Counting blobs as
+                # width/2.38 gives 2 for both, which is arithmetically right and
+                # the wrong question. Height separates them with nothing at all
+                # between 3.38 and 4.77, and width separates a lone dot from a
+                # pair with nothing between 2.58 and 3.60 — two empty bands over
+                # 105,269 clusters, thresholds placed INSIDE them.
+                #
+                # Reading the master's box alone is correct since the welded
+                # extent fix: the box covers every contour the cluster absorbed.
+                # Adding the members' widths on top double-counts wherever an
+                # absorbed piece sits BESIDE its master — measured, that put
+                # two_dots flags at 501 against 73.
+                _w = m["x2"] - m["x1"]
+                _h = m["y2"] - m["y1"]
+                n = 1 if _w < 3.0 else (2 if _h < 4.0 else 3)
                 if n == DOTV[m["f"]]:
                     continue
                 gap = w["dots_budget"] - dot_have   # +ve: word under budget

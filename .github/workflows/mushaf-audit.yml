@@ -113,6 +113,18 @@ jobs:
             /tmp/slashpos.json | tee /tmp/slashpos.txt
           grep -q "words flagged 0 on 0 pages" /tmp/slashpos.txt
 
+      # Cheap and page-local: only the 116 pages the DK layout DB declares a
+      # header line on are built, not all 604. It is a gate rather than a
+      # report because the defect it names is invisible to every other audit
+      # here — the ink stays on the page, in the right place, under the wrong
+      # banner, so counts, pixels and segmentation are all clean.
+      - name: No header group holds the other header line's ink
+        env:
+          QSVG_ROOT: ${{ env.ARTWORK }}
+        run: |
+          python3 tools/audit_headerbands.py ${{ github.event.inputs.pages || '1 604' }} \
+            --build --jobs 4 --json /tmp/headerbands.json
+
       - name: The emitted words ARE the release's words
         env:
           QSVG_ROOT: ${{ env.ARTWORK }}
@@ -129,3 +141,4 @@ jobs:
           path: |
             .cache/marks_pages
             /tmp/slashpos.json
+            /tmp/headerbands.json

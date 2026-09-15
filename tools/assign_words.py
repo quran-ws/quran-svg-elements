@@ -2544,6 +2544,78 @@ def rewrite(page, assignment):
                             e["kind"] = "ornament"
                             e.pop("mkpart", None)
 
+    if hdr_art and os.environ.get("QSVG_HDRBAND", "1") == "1":
+        # A surah opening draws TWO header lines — the ornamented name and the
+        # basmalah below it — and the line cut can hand one line's ink to the
+        # other. Both lines are header lines, so HDRGUARD below never sees it:
+        # that guard only evicts a WORD's ink from a header line.
+        #
+        # Each header line's ink is one tight horizontal band, so the ink says
+        # which line it belongs to and nothing else is needed. Cluster a line's
+        # elements on y, take the band of the cluster holding the most drawn
+        # area as the line's own band, and re-tag any element outside it that
+        # is drawn inside ANOTHER header line's band. An element in no band is
+        # left alone — this pass only ever moves ink to a band it demonstrably
+        # sits in.
+        #
+        # Measured over all 604 pages (tools/audit_headerbands.py): 8 contours
+        # on 3 pages, all one direction — the basmalah holding the rightmost
+        # ink of the surah name above it (p77 surah 4, four contours 11.0-25.8
+        # below its own band; p282 surah 17, three; p428 surah 34, one). The
+        # clustering gap is 6.0, and it sits in an empty band rather than at
+        # its edge: every flagged contour clears its own band by 11u or more,
+        # and over the 96 emitted header pages NOT ONE element lands outside
+        # both bands (the audit's `stray` count is 0), so there is no
+        # population near the threshold for it to cut through.
+        _hb_els = {}
+        for word, atoms in assignment:
+            if word:
+                continue
+            for a in atoms:
+                for e in a["els"]:
+                    ln = e.get("line")
+                    if ln in hdr_art:
+                        _hb_els.setdefault(ln, []).append(e)
+
+        def _hb_band(els):
+            order = sorted(els, key=lambda e: e["y1"])
+            groups, cur = [], [order[0]]
+            for e in order[1:]:
+                if e["y1"] - max(c["y2"] for c in cur) > 6.0:
+                    groups.append(cur)
+                    cur = []
+                cur.append(e)
+            groups.append(cur)
+            best = max(groups, key=lambda g: sum(
+                (c["x2"] - c["x1"]) * (c["y2"] - c["y1"]) for c in g))
+            return min(c["y1"] for c in best), max(c["y2"] for c in best)
+
+        _hb_bands = {ln: _hb_band(els) for ln, els in _hb_els.items() if els}
+        for ln, els in _hb_els.items():
+            lo, hi = _hb_bands[ln]
+            for e in els:
+                mid = (e["y1"] + e["y2"]) / 2.0
+                if lo <= mid <= hi:
+                    continue
+                for ln2, (olo, ohi) in _hb_bands.items():
+                    if ln2 != ln and olo <= mid <= ohi:
+                        e["line"] = ln2
+                        # ...and it is no longer part of any welded sign on
+                        # the line it just left. A weld says "one mark drawn
+                        # in pieces"; two different header LINES are two
+                        # different marks by construction, and leaving the
+                        # link in place lets the emission-time merge pull the
+                        # piece straight back into the old line's group
+                        # (which is what kept p77's four contours inside the
+                        # basmalah after the tag was corrected).
+                        for _m3 in _hb_els.get(ln, ()):
+                            _mem3 = _m3.get("mkmembers")
+                            if _mem3 and any(x is e for x in _mem3):
+                                _m3["mkmembers"] = [x for x in _mem3
+                                                    if x is not e]
+                                e.pop("mkpart", None)
+                        break
+
     if hdr_art and os.environ.get("QSVG_HDRGUARD", "1") == "1":
         # Exception, p349-measured: a last-line word's own suffix mark (ـهُۥ's
         # ۥ, a maddah) genuinely dips into the header band and the line cut
@@ -2922,6 +2994,23 @@ def rewrite(page, assignment):
                                 # and purge EVERY reference after the walk:
                                 # removing from a list mid-iteration skips
                                 # entries and silently un-merges other signs.
+                                # Keep the record. Absorbing a member folds
+                                # its contours into the master and drops it
+                                # from mkmembers, but the piece is still PART
+                                # of this mark — and two audit_marktype rules
+                                # ask exactly that question: R4 exempts a
+                                # stroke-tanwin whose twin is welded
+                                # (`any(x[4] == fam for x in m["mem"])`) and R8
+                                # counts a dot cluster's blobs as the master's
+                                # plus its members'. With the members gone they
+                                # read every pair as a half-pair and every
+                                # three_dots as two dots: 6,169 + 3,610 flags,
+                                # 99.8% of that audit's output, against the 4
+                                # and 4 its own rules doc recorded when it was
+                                # written. The welded pieces are listed here so
+                                # a reader can still see what this one mark is
+                                # made of.
+                                e.setdefault("mkabsorbed", []).append(m)
                                 m["_absorbed"] = True
                                 if m.get("path") != e.get("path"):
                                     # its source path may now hold no element

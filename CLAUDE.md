@@ -10,8 +10,17 @@ or reference disagrees with the ink, the 1441H print is what the ink IS; judge
 sources against it, not it against sources (the waqf and iqlab notation
 differences in this file all trace to that edition).
 
-**Start here:** `docs/PROCESS.md` is the working loop. This file is the state
-of play and the things that will waste your time if you do not know them.
+**Start here:** this file. It is the state of play, the working loop, and the
+things that will waste your time if you do not know them; "Run these before
+believing anything" below is the loop itself.
+
+`docs/PROCESS.md` and `docs/defects/` are NOT in this repository and are not
+published. They are the working material of a defect hunt that is now closed,
+and every figure in them describes a build several fixes old — PROCESS.md still
+opens with "762 flagged words, 216 of 604 pages clean, SCORE 77". They are
+preserved in `origin/archive/pre-rewrite` and can be restored into a working
+tree from there when the history matters; `.gitignore` keeps them from being
+published again. The generators that write them ARE tracked.
 
 ---
 
@@ -159,6 +168,8 @@ python3 scratchpad/cmp_full.py <sweep-dir>  # against the pinned baseline
 python3 tools/audit_segmentation.py         # ~30 s. Word boundaries vs the word-by-word-translation release;
                                             #   count/skeleton/ids must all be 0.
 python3 tools/audit_export.py 1 604         # ~1 min. Export shape; every count must be 0.
+python3 tools/audit_headerbands.py 1 604    # seconds. Header groups; FLAGS must be 0.
+                                            #   --build renders the 116 header pages itself.
 python3 tools/audit_pixels.py 1 604 32      # ~10 min. FAILURES must be 0 after anything touching rewrite().
 ```
 
@@ -174,21 +185,61 @@ is 0, and no bench case fails. The pinned "before" build is
 `tools/_pipeline_baseline.py` — keep it, every comparison is against it.
 
 After anything touching the artwork or the line cut, also run
-`tools/audit_split.py` (must stay 0), `tools/audit_lines.py`, and
-`tools/verify_render.py` (largest single-pixel alpha change must not grow).
+`tools/verify_render.py` (largest single-pixel alpha change must not grow), and
+the reader library's 357 assertions — an artwork bump can retire a property the
+tests protect without failing any ink-level gate, which is how quran-svg v1.1.1
+dropping the opening spread's duplicate ornament got through 604 clean pages.
 
 ---
+
+### The basmalah was holding the surah name's ink — 3 pages, fixed 2026-09-15
+
+Abdullah caught it by eye on p77: four contours of النساء's title, the
+rightmost ink of the banner, filed under the `<g class="basmalah">` below it.
+`tools/audit_headerbands.py` then named the whole family — **8 contours on 3
+pages (p77 surah 4, p282 surah 17, p428 surah 34), all one direction**, the
+basmalah taking from the name above it, never the reverse. Every flagged
+contour clears its own band by 11u or more and none is in neither band, so
+there is no grey zone to tune against.
+
+Fixed at cause in `rewrite()` under `QSVG_HDRBAND` (default on, `=0` for A/B),
+and it took TWO changes, which is the part worth remembering:
+
+1. **Re-tag from the ink.** A wordless header element outside its own header
+   line's band but inside another header line's band is re-tagged to that line.
+   It only ever sees wordless ink already tagged to a header line, and it needs
+   two bands to move between — so Tawbah (a banner with no basmalah) and every
+   non-opening page are untouched by construction, and no word can lose ink.
+2. **Detach it from the weld it just left.** Those four contours were listed as
+   `mkmembers` of a basmalah-line mark, so the emission-time merge pulled them
+   straight back and the first version of the fix changed nothing in the
+   output. Two different header LINES are two different marks by construction.
+
+Proven by a full A/B — two 604-page builds, `QSVG_HDRBAND=0` and `=1`:
+**exactly 3 pages differ**, 601 byte-identical; 4 changed lines per page, all
+inside header groups; contour multisets identical (nothing added or removed);
+`audit_pixels` clean on all three; `audit_export` 0 on every count; and the
+per-page `.report.json` byte-identical, so the word/mark assignment did not
+move at all — only which banner the ink is filed under.
+
+Guarded two ways. `bench.py` grew a `PAGE_CASES` table (p77/p282/p428, with p2
+as a control) — the existing cases are keyed `(page, word-key)` and header ink
+is WORDLESS, so no existing case could ever have reached this defect. The cases
+run in their own loop, outside the aggregate: folding pages into the scored
+loop moved SCORE 135 -> 234 for reasons unrelated to the change. With the fix
+all four pass at SCORE 135; with `QSVG_HDRBAND=0` the three fail and the
+control still passes. The audit is also a CI gate in `mushaf-audit.yml`
+(`--build --jobs 4`), exiting non-zero on any flag.
 
 ## The audits, and what each one can and cannot see
 
 | tool | sees | blind to |
 |---|---|---|
-| `scratchpad/audit_marks.py` | mark counts vs the text, dots, ligature surplus, reading order | anything that leaves counts balanced |
+| `tools/audit_marks.py` | mark counts vs the text, dots, ligature surplus, reading order | anything that leaves counts balanced |
 | `tools/audit_intervals.py` | a mark sitting in another word's exclusive territory | defects where the body partition is wrong |
 | `tools/audit_width.py` | a word the wrong SIZE for its share of the line | a word that swaps one letter for another |
 | `tools/audit_crossline.py` | ink held by a word but drawn in another line's territory | — |
 | `tools/audit_reference.py` | disagreement with an outside decomposition | words the two sources split differently (~12%) |
-| `tools/audit_lines.py` | a contour tagged to a line it is not drawn in | — |
 | `tools/audit_marksize.py` | a mark the wrong SIZE for what it is called, both tails | a mark of the right size in the wrong place |
 | `tools/audit_strayink.py` | a mark a line's width from its own word, horizontally | anything within 40u |
 | `tools/audit_crossband.py` | a mark drawn in another line's band | anything within 10u of the band |
@@ -200,10 +251,14 @@ After anything touching the artwork or the line cut, also run
 | `tools/audit_ink_text.py` | whether each word's EMITTED text describes the ink in that same word group — `data-rasm-uthmani`, `data-qpc` and quran-ws, all 77,432 words and 331,129 mark elements. Prints its coverage before its result and REFUSES a range with a missing page | anything both the text and the labels get wrong the same way |
 | `tools/audit_pixels.py` | ink added/removed (contour conservation) or moved (raster vs artwork), all 604 pages | AA seams under 10 px; semantic mis-labels |
 | `tools/audit_segmentation.py` | that the emitted words ARE the word-by-word-translation release's — count per ayah and letters per word, all 6,236 ayahs, so `data-word-key`'s third number IS the release's word number (`--svg` asks it of the artefact) | which of two spellings is right; anything that is not a boundary |
+| `tools/audit_headerbands.py` | a surah opening's two header groups holding each other's ink: each header line's ink is one tight band, so an element outside its own group's band but inside the other's is misfiled. `--build` renders just the 116 DK-declared header pages, which is how CI runs it | pages with only one header group (Tawbah, and every non-opening page); anything inside the correct band |
 | `tools/audit_export.py` | the export SHAPE a consumer's converter measured (2026-09-04): one marker per ayah with id, viewBox `0 0 345 550` everywhere, `data-kind` on every path, no `<path transform>`, three-decimal movetos, production word groups carrying `data-word-key` + `data-rasm-uthmani` only. Six properties, every page, production profile | anything about the ink itself |
 
-`tools/audit_split.py` is named above in older notes but **does not exist in the repo**.
-`audit_lines.py` and `verify_render.py` do.
+`tools/audit_split.py` and `tools/audit_lines.py` are named in older notes but
+**neither exists**, here or in `origin/archive/pre-rewrite` — a line named in a
+gate list that cannot run is worse than no line, because it reads as a check
+someone performed. `tools/verify_render.py` does exist and is the one to run
+after anything touching the artwork or the line cut.
 
 **The trap that cost the most:** for most of the session every gate counted
 marks per word. A word can lose a letter, or shrink to 19% of its width, with
