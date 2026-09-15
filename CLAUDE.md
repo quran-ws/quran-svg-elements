@@ -168,6 +168,8 @@ python3 scratchpad/cmp_full.py <sweep-dir>  # against the pinned baseline
 python3 tools/audit_segmentation.py         # ~30 s. Word boundaries vs the word-by-word-translation release;
                                             #   count/skeleton/ids must all be 0.
 python3 tools/audit_export.py 1 604         # ~1 min. Export shape; every count must be 0.
+python3 tools/audit_headerbands.py 1 604    # seconds. Header groups; FLAGS must be 0.
+                                            #   --build renders the 116 header pages itself.
 python3 tools/audit_pixels.py 1 604 32      # ~10 min. FAILURES must be 0 after anything touching rewrite().
 ```
 
@@ -190,6 +192,45 @@ dropping the opening spread's duplicate ornament got through 604 clean pages.
 
 ---
 
+### The basmalah was holding the surah name's ink — 3 pages, fixed 2026-09-15
+
+Abdullah caught it by eye on p77: four contours of النساء's title, the
+rightmost ink of the banner, filed under the `<g class="basmalah">` below it.
+`tools/audit_headerbands.py` then named the whole family — **8 contours on 3
+pages (p77 surah 4, p282 surah 17, p428 surah 34), all one direction**, the
+basmalah taking from the name above it, never the reverse. Every flagged
+contour clears its own band by 11u or more and none is in neither band, so
+there is no grey zone to tune against.
+
+Fixed at cause in `rewrite()` under `QSVG_HDRBAND` (default on, `=0` for A/B),
+and it took TWO changes, which is the part worth remembering:
+
+1. **Re-tag from the ink.** A wordless header element outside its own header
+   line's band but inside another header line's band is re-tagged to that line.
+   It only ever sees wordless ink already tagged to a header line, and it needs
+   two bands to move between — so Tawbah (a banner with no basmalah) and every
+   non-opening page are untouched by construction, and no word can lose ink.
+2. **Detach it from the weld it just left.** Those four contours were listed as
+   `mkmembers` of a basmalah-line mark, so the emission-time merge pulled them
+   straight back and the first version of the fix changed nothing in the
+   output. Two different header LINES are two different marks by construction.
+
+Proven by a full A/B — two 604-page builds, `QSVG_HDRBAND=0` and `=1`:
+**exactly 3 pages differ**, 601 byte-identical; 4 changed lines per page, all
+inside header groups; contour multisets identical (nothing added or removed);
+`audit_pixels` clean on all three; `audit_export` 0 on every count; and the
+per-page `.report.json` byte-identical, so the word/mark assignment did not
+move at all — only which banner the ink is filed under.
+
+Guarded two ways. `bench.py` grew a `PAGE_CASES` table (p77/p282/p428, with p2
+as a control) — the existing cases are keyed `(page, word-key)` and header ink
+is WORDLESS, so no existing case could ever have reached this defect. The cases
+run in their own loop, outside the aggregate: folding pages into the scored
+loop moved SCORE 135 -> 234 for reasons unrelated to the change. With the fix
+all four pass at SCORE 135; with `QSVG_HDRBAND=0` the three fail and the
+control still passes. The audit is also a CI gate in `mushaf-audit.yml`
+(`--build --jobs 4`), exiting non-zero on any flag.
+
 ## The audits, and what each one can and cannot see
 
 | tool | sees | blind to |
@@ -210,6 +251,7 @@ dropping the opening spread's duplicate ornament got through 604 clean pages.
 | `tools/audit_ink_text.py` | whether each word's EMITTED text describes the ink in that same word group — `data-rasm-uthmani`, `data-qpc` and quran-ws, all 77,432 words and 331,129 mark elements. Prints its coverage before its result and REFUSES a range with a missing page | anything both the text and the labels get wrong the same way |
 | `tools/audit_pixels.py` | ink added/removed (contour conservation) or moved (raster vs artwork), all 604 pages | AA seams under 10 px; semantic mis-labels |
 | `tools/audit_segmentation.py` | that the emitted words ARE the word-by-word-translation release's — count per ayah and letters per word, all 6,236 ayahs, so `data-word-key`'s third number IS the release's word number (`--svg` asks it of the artefact) | which of two spellings is right; anything that is not a boundary |
+| `tools/audit_headerbands.py` | a surah opening's two header groups holding each other's ink: each header line's ink is one tight band, so an element outside its own group's band but inside the other's is misfiled. `--build` renders just the 116 DK-declared header pages, which is how CI runs it | pages with only one header group (Tawbah, and every non-opening page); anything inside the correct band |
 | `tools/audit_export.py` | the export SHAPE a consumer's converter measured (2026-09-04): one marker per ayah with id, viewBox `0 0 345 550` everywhere, `data-kind` on every path, no `<path transform>`, three-decimal movetos, production word groups carrying `data-word-key` + `data-rasm-uthmani` only. Six properties, every page, production profile | anything about the ink itself |
 
 `tools/audit_split.py` and `tools/audit_lines.py` are named in older notes but
