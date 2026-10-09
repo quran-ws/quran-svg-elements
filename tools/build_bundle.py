@@ -40,7 +40,6 @@ import textwrap
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import bundle_extract                                          # noqa: E402
-import emit_pages                                              # noqa: E402
 
 try:
     import brotli
@@ -111,9 +110,9 @@ def rbox(b):
 def git_commit(repo):
     """(commit, dirty) for `repo`, or (None, None) if it is not a git repo.
 
-    `dirty` matters: the artwork worktree carries add_line_structure.py's
-    in-place rewrite of every page, so it is dirty by design and the commit
-    alone does not identify what was built from.
+    `dirty` matters: the artwork worktree carries the in-place line structure
+    and native page/surah frames, so it is dirty by design and the commit alone does
+    not identify what was built from.
     """
     def run(*args):
         return subprocess.run(["git", "-C", repo, *args], capture_output=True,
@@ -149,6 +148,56 @@ def write_brotli(src, dest, quality=11):
         fh.write(brotli.compress(raw, quality=quality))
 
 
+def canonical_files(bundle):
+    """Sorted `(relative path, full path)` pairs for the canonical, uncompressed bundle."""
+    files = []
+    for dirpath, dirnames, filenames in os.walk(bundle):
+        dirnames.sort()
+        for filename in sorted(filenames):
+            full = os.path.join(dirpath, filename)
+            rel = os.path.relpath(full, bundle)
+            if rel != "CHECKSUMS.txt" and not full.endswith((".br", ".gz")):
+                files.append((rel, full))
+    return sorted(files)
+
+
+def write_archive(bundle, out_root):
+    """Write the canonical-only archive with a checksum file for that exact subset."""
+    files = canonical_files(bundle)
+    checksums = "".join("%s  %s\n" % (sha256_file(full), rel) for rel, full in files).encode()
+    entries = files + [("CHECKSUMS.txt", None)]
+    entries.sort()
+
+    raw = io.BytesIO()
+    with tarfile.open(fileobj=raw, mode="w") as tf:
+        for rel, full in entries:
+            arcname = os.path.join(BUNDLE_NAME, rel)
+            if full is None:
+                data = io.BytesIO(checksums)
+                info = tarfile.TarInfo(arcname)
+                info.size = len(checksums)
+            else:
+                data = open(full, "rb")
+                info = tf.gettarinfo(full, arcname=arcname)
+            info.mtime = 0
+            info.uid = info.gid = 0
+            info.uname = info.gname = ""
+            info.mode = 0o644
+            with data:
+                tf.addfile(info, data)
+
+    compressed = io.BytesIO()
+    with gzip.GzipFile(fileobj=compressed, mode="wb", compresslevel=9, mtime=0) as output:
+        output.write(raw.getvalue())
+    os.makedirs(out_root, exist_ok=True)
+    archive = os.path.join(out_root, BUNDLE_NAME + ".tar.gz")
+    with open(archive, "wb") as output:
+        output.write(compressed.getvalue())
+    with open(archive + ".sha256", "w") as output:
+        output.write("%s  %s\n" % (sha256_file(archive), os.path.basename(archive)))
+    return archive
+
+
 def _compress_one(job):
     path, do_gz, do_br, quality = job
     if do_gz:
@@ -173,6 +222,7 @@ def build_indexes(out, recs, manifest):
         pages.append({
             "page": r["page"],
             "view_box": r["view_box"],
+            "content_view_box": r["content_view_box"],
             "lines": len(r["lines"]),
             "words": len(r["words"]),
             "marks": r["marks"],
@@ -311,6 +361,7 @@ def build_indexes(out, recs, manifest):
             })
         jdump(envelope("quran-svg-elements/page-words", {
             "page": r["page"], "view_box": r["view_box"],
+            "content_view_box": r["content_view_box"],
             "box_space": "viewBox units of pages/%03d.svg" % r["page"],
             "count": len(words), "words": words}),
             os.path.join(by_page, "%03d.json" % r["page"]))
@@ -378,6 +429,7 @@ def build_schemas(out):
                         "page": {"type": "integer", "minimum": 1,
                                  "maximum": 604},
                         "view_box": {"type": "string"},
+                        "content_view_box": {"type": "string"},
                         "lines": {"type": "integer"},
                         "words": {"type": "integer"},
                         "marks": {"type": "integer"},
@@ -441,6 +493,7 @@ def build_schemas(out):
             properties=dict(env_props,
                 page={"type": "integer", "minimum": 1, "maximum": 604},
                 view_box={"type": "string"},
+                content_view_box={"type": "string"},
                 box_space={"type": "string"},
                 count={"type": "integer"},
                 words={"type": "array", "items": {"type": "object",
@@ -599,11 +652,11 @@ sha256sum -c CHECKSUMS.txt        # from the bundle root
 ## Coordinates
 
 Word boxes in `index/by-page/NNN.json` are **viewBox units of that page's SVG**
-— the page frame and the line frame are already applied, so a box can be drawn
-straight onto the rendered page as an overlay. They are exact outline extents
+— the root page transform and the line transform are already applied, so a box can be
+drawn straight onto the rendered page as an overlay. They are exact outline extents
 (Bezier extrema solved for, not control-point hulls), rounded to {box_dp}
-decimal places. `view_box` in the same file is the page's own `viewBox`
-attribute, which differs on pages 1–2 (FORMAT.md §5.1).
+decimal places. `view_box` is the visual paper box, including the native frame;
+`content_view_box` is the stable Quran content canvas (FORMAT.md §5.1).
 
 In a browser the boxes are redundant — `getBBox()` gives the same answer. They
 are here for the cases where there is no browser: server-side cropping and
@@ -629,8 +682,8 @@ ARCHIVE_SECTION = """\
 
 `{bundle}.tar.gz` sits **beside** this directory, with its own `.sha256`. It
 holds the raw bundle — every file you see here except the `.br` and `.gz`
-copies, which a bulk downloader does not need. One request instead of
-{file_count}.
+copies, which a bulk downloader does not need. Its `CHECKSUMS.txt` covers that
+exact canonical subset. One request instead of {file_count}.
 
 ```sh
 tar xzf {bundle}.tar.gz
@@ -824,13 +877,30 @@ def check_cache_inputs(root):
                                for rel, why in missing)))
 
 
+def check_native_frames(root):
+    import prepare_page_frames
+    import prepare_surah_ornaments
+    try:
+        prepare_page_frames.check_prepared_artwork(root)
+        prepare_surah_ornaments.check_prepared_artwork(root)
+    except ValueError as error:
+        raise SystemExit(
+            f"{error}\n\nRun add_line_structure.py, prepare_page_frames.py, then "
+            "prepare_surah_ornaments.py before building a release."
+        ) from error
+
+
 def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
           brotli_pages=True, archive=True, lib=None, reuse_pages=False,
           quiet=False):
+    import emit_pages
+    import prepare_page_frames
+    import prepare_surah_ornaments
     if brotli is None and brotli_pages:
         raise SystemExit("brotli module not installed; --no-brotli to skip")
 
     check_cache_inputs(ROOT)
+    check_native_frames(ROOT)
 
     bundle = os.path.join(out_root, BUNDLE_NAME)
     if os.path.isdir(bundle):
@@ -850,6 +920,15 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     for p in range(1, 605):
         shutil.copyfile(os.path.join(stage, "%03d.svg" % p),
                         os.path.join(bundle, "pages", "%03d.svg" % p))
+    try:
+        prepare_page_frames.check_emitted_page_frames(
+            os.path.join(bundle, "pages"), ROOT
+        )
+        prepare_surah_ornaments.check_emitted_surah_frames(
+            os.path.join(bundle, "pages"), ROOT
+        )
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
 
     # ---- 2. read the pages back (they are the authority) --------------
     say("2/7 reading %d pages for the index…" % 604)
@@ -927,8 +1006,8 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
                               .strftime("%Y-%m-%d"),
         "artwork_commit": art_commit,
         "artwork_dirty": art_dirty,
-        "artwork_note": "the artwork worktree carries add_line_structure.py's "
-                        "in-place per-line rewrite, so it is dirty by design",
+        "artwork_note": "the artwork worktree carries derived line structure and "
+                        "native page and surah frames, so it is dirty by design",
         "pipeline_commit": pipe_commit,
         "pipeline_dirty": pipe_dirty,
         "counts": {
@@ -948,8 +1027,10 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     def sz(rel):
         return human(os.path.getsize(os.path.join(bundle, rel)))
 
-    nfiles = 2 + sum(1 for _dp, _dn, fn in os.walk(bundle) for f in fn
-                     if not f.endswith((".br", ".gz")))   # +README/+CHECKSUMS
+    # README, LICENSE, NOTICE and CHECKSUMS are written after this point. A set
+    # keeps the count exact if this stage is ever resumed over an existing tree.
+    canonical = {rel for rel, _full in canonical_files(bundle)}
+    nfiles = len(canonical | {"README.md", "LICENSE", "NOTICE.md", "CHECKSUMS.txt"})
     archive_section = "" if not archive else ARCHIVE_SECTION.format(
         bundle=BUNDLE_NAME, file_count="{:,}".format(nfiles))
     lib_row = ("| `lib/` | the JavaScript helper library |\n"
@@ -992,39 +1073,9 @@ def build(out_root, *, profile="production", jobs=32, gzip_pages=True,
     arc = None
     if archive:
         say("    archive…")
-        arc = os.path.join(out_root, BUNDLE_NAME + ".tar.gz")
-        members = []
-        for dirpath, dirnames, filenames in os.walk(bundle):
-            dirnames.sort()
-            for f in sorted(filenames):
-                full = os.path.join(dirpath, f)
-                # the archive carries the RAW bundle only; a bulk downloader
-                # decompresses once and does not need per-file .br/.gz copies
-                if full.endswith((".br", ".gz")):
-                    continue
-                members.append(full)
-        members.sort()
-        buf = io.BytesIO()
-        with tarfile.open(fileobj=buf, mode="w") as tf:
-            for full in members:
-                ti = tf.gettarinfo(full,
-                                   arcname=os.path.join(
-                                       BUNDLE_NAME,
-                                       os.path.relpath(full, bundle)))
-                ti.mtime = 0
-                ti.uid = ti.gid = 0
-                ti.uname = ti.gname = ""
-                ti.mode = 0o644
-                with open(full, "rb") as fh:
-                    tf.addfile(ti, fh)
-        gz = io.BytesIO()
-        with gzip.GzipFile(fileobj=gz, mode="wb", compresslevel=9,
-                           mtime=0) as g:
-            g.write(buf.getvalue())
-        with open(arc, "wb") as fh:
-            fh.write(gz.getvalue())
-        with open(arc + ".sha256", "w", encoding="utf-8") as fh:
-            fh.write("%s  %s\n" % (sha256_file(arc), os.path.basename(arc)))
+        # A bulk downloader does not need the transport-compressed siblings. The
+        # archive's CHECKSUMS.txt is regenerated for exactly the canonical files it carries.
+        arc = write_archive(bundle, out_root)
 
     say("\nbundle: %s" % bundle)
     if arc:

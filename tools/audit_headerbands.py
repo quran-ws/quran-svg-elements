@@ -4,9 +4,10 @@
 A page that opens a surah draws two header lines: the ornamented surah name and
 the basmalah below it. The emitter files each line's ink under
 `<g class="surah-name">` / `<g class="basmalah">` from the DK layout DB's
-line_type. Each of those groups is ONE compound path, so a mis-cut inside the
-artwork's line assignment moves whole CONTOURS between the two — as on p77,
-where four contours of the surah name's ink (y 42.8-57.6) are filed under the
+line_type. A surah-name group may also carry a full-width native frame, which is not
+part of the title band and is ignored here. A mis-cut inside the title ink moves whole
+CONTOURS between the two groups — as on p77, where four contours of the surah name's
+ink (y 42.8-57.6) are filed under the
 basmalah, whose own ink stops at y 31.8.
 
 The test needs no reference and no eye:
@@ -66,8 +67,12 @@ def group_paths(svg, cls):
         sid = re.search(r'data-sid="(\d+)"', m.group(1))
         sid = sid.group(1) if sid else "?"
         boxes = out.setdefault(sid, [])
-        for d in re.findall(r'\sd="([^"]+)"', m.group(2)):
-            boxes.extend(path_bbox(c) for c in contours(d))
+        for path in re.findall(r'<path\b[^>]*/>', m.group(2)):
+            if 'data-kind="header_ink"' not in path:
+                continue
+            d = re.search(r'\sd="([^"]+)"', path)
+            if d:
+                boxes.extend(path_bbox(c) for c in contours(d.group(1)))
     return out
 
 

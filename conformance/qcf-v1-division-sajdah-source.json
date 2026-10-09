@@ -1,0 +1,4433 @@
+{
+  "counts": {
+    "division_starts": 240,
+    "mapped_sajdah_source_glyphs": 14,
+    "printed_rubu_al_hizb": 199,
+    "restored_sajdah_source_glyphs": 1,
+    "sajdah_marks": 15,
+    "unprinted_rubu_al_hizb": 41
+  },
+  "divisions": [
+    {
+      "ayah_key": "1:1",
+      "line": 2,
+      "page": 1,
+      "rubu_al_hizb": 1,
+      "source_glyph": null,
+      "word_key": "1:1:1"
+    },
+    {
+      "ayah_key": "2:26",
+      "line": 5,
+      "page": 5,
+      "rubu_al_hizb": 2,
+      "source_glyph": {
+        "box": [
+          1725,
+          875,
+          1816,
+          983
+        ],
+        "codepoint": "U+FB79",
+        "glyph_id": 685,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:26:1"
+    },
+    {
+      "ayah_key": "2:44",
+      "line": 9,
+      "page": 7,
+      "rubu_al_hizb": 3,
+      "source_glyph": {
+        "box": [
+          752,
+          1694,
+          868,
+          1803
+        ],
+        "codepoint": "U+FBA3",
+        "glyph_id": 1055,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:44:1"
+    },
+    {
+      "ayah_key": "2:60",
+      "line": 5,
+      "page": 9,
+      "rubu_al_hizb": 4,
+      "source_glyph": {
+        "box": [
+          752,
+          862,
+          862,
+          972
+        ],
+        "codepoint": "U+FB7A",
+        "glyph_id": 1325,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:60:1"
+    },
+    {
+      "ayah_key": "2:75",
+      "line": 11,
+      "page": 11,
+      "rubu_al_hizb": 5,
+      "source_glyph": {
+        "box": [
+          1577,
+          2083,
+          1677,
+          2193
+        ],
+        "codepoint": "U+FBE2",
+        "glyph_id": 1715,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:75:1"
+    },
+    {
+      "ayah_key": "2:92",
+      "line": 10,
+      "page": 14,
+      "rubu_al_hizb": 6,
+      "source_glyph": {
+        "box": [
+          1212,
+          1878,
+          1315,
+          1986
+        ],
+        "codepoint": "U+FBAB",
+        "glyph_id": 2158,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:92:1"
+    },
+    {
+      "ayah_key": "2:106",
+      "line": 1,
+      "page": 17,
+      "rubu_al_hizb": 7,
+      "source_glyph": {
+        "box": [
+          1761,
+          99,
+          1870,
+          204
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 2524,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:106:1"
+    },
+    {
+      "ayah_key": "2:124",
+      "line": 8,
+      "page": 19,
+      "rubu_al_hizb": 8,
+      "source_glyph": {
+        "box": [
+          939,
+          1496,
+          1048,
+          1601
+        ],
+        "codepoint": "U+FBA4",
+        "glyph_id": 2948,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:124:1"
+    },
+    {
+      "ayah_key": "2:142",
+      "line": 1,
+      "page": 22,
+      "rubu_al_hizb": 9,
+      "source_glyph": {
+        "box": [
+          1720,
+          77,
+          1820,
+          184
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 3378,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:142:1"
+    },
+    {
+      "ayah_key": "2:158",
+      "line": 6,
+      "page": 24,
+      "rubu_al_hizb": 10,
+      "source_glyph": {
+        "box": [
+          1078,
+          1098,
+          1193,
+          1205
+        ],
+        "codepoint": "U+FB84",
+        "glyph_id": 3751,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:158:1"
+    },
+    {
+      "ayah_key": "2:177",
+      "line": 1,
+      "page": 27,
+      "rubu_al_hizb": 11,
+      "source_glyph": {
+        "box": [
+          1743,
+          79,
+          1839,
+          187
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 4192,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:177:1"
+    },
+    {
+      "ayah_key": "2:189",
+      "line": 10,
+      "page": 29,
+      "rubu_al_hizb": 12,
+      "source_glyph": {
+        "box": [
+          459,
+          1884,
+          566,
+          1992
+        ],
+        "codepoint": "U+FBAD",
+        "glyph_id": 4596,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:189:1"
+    },
+    {
+      "ayah_key": "2:203",
+      "line": 1,
+      "page": 32,
+      "rubu_al_hizb": 13,
+      "source_glyph": {
+        "box": [
+          1706,
+          62,
+          1815,
+          169
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 4998,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:203:1"
+    },
+    {
+      "ayah_key": "2:219",
+      "line": 12,
+      "page": 34,
+      "rubu_al_hizb": 14,
+      "source_glyph": {
+        "box": [
+          873,
+          2297,
+          984,
+          2404
+        ],
+        "codepoint": "U+FBE2",
+        "glyph_id": 5439,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:219:1"
+    },
+    {
+      "ayah_key": "2:233",
+      "line": 9,
+      "page": 37,
+      "rubu_al_hizb": 15,
+      "source_glyph": {
+        "box": [
+          943,
+          1685,
+          1056,
+          1793
+        ],
+        "codepoint": "U+FBA9",
+        "glyph_id": 5923,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:233:1"
+    },
+    {
+      "ayah_key": "2:243",
+      "line": 9,
+      "page": 39,
+      "rubu_al_hizb": 16,
+      "source_glyph": {
+        "box": [
+          397,
+          1680,
+          517,
+          1788
+        ],
+        "codepoint": "U+FB99",
+        "glyph_id": 6248,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:243:1"
+    },
+    {
+      "ayah_key": "2:253",
+      "line": 1,
+      "page": 42,
+      "rubu_al_hizb": 17,
+      "source_glyph": {
+        "box": [
+          1724,
+          100,
+          1831,
+          207
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 6615,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:253:1"
+    },
+    {
+      "ayah_key": "2:263",
+      "line": 10,
+      "page": 44,
+      "rubu_al_hizb": 18,
+      "source_glyph": {
+        "box": [
+          1539,
+          1910,
+          1648,
+          2015
+        ],
+        "codepoint": "U+FBD3",
+        "glyph_id": 7062,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:263:1"
+    },
+    {
+      "ayah_key": "2:272",
+      "line": 5,
+      "page": 46,
+      "rubu_al_hizb": 19,
+      "source_glyph": {
+        "box": [
+          804,
+          874,
+          918,
+          982
+        ],
+        "codepoint": "U+FB7A",
+        "glyph_id": 7324,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:272:1"
+    },
+    {
+      "ayah_key": "2:283",
+      "line": 1,
+      "page": 49,
+      "rubu_al_hizb": 20,
+      "source_glyph": {
+        "box": [
+          1708,
+          102,
+          1814,
+          209
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 7751,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "2:283:1"
+    },
+    {
+      "ayah_key": "3:15",
+      "line": 12,
+      "page": 51,
+      "rubu_al_hizb": 21,
+      "source_glyph": {
+        "box": [
+          236,
+          2283,
+          357,
+          2390
+        ],
+        "codepoint": "U+FBDC",
+        "glyph_id": 8199,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:15:1"
+    },
+    {
+      "ayah_key": "3:33",
+      "line": 6,
+      "page": 54,
+      "rubu_al_hizb": 22,
+      "source_glyph": {
+        "box": [
+          1312,
+          1087,
+          1418,
+          1194
+        ],
+        "codepoint": "U+FB8B",
+        "glyph_id": 8627,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:33:1"
+    },
+    {
+      "ayah_key": "3:52",
+      "line": 13,
+      "page": 56,
+      "rubu_al_hizb": 23,
+      "source_glyph": {
+        "box": [
+          841,
+          2480,
+          969,
+          2588
+        ],
+        "codepoint": "U+FBEB",
+        "glyph_id": 9032,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:52:1"
+    },
+    {
+      "ayah_key": "3:75",
+      "line": 8,
+      "page": 59,
+      "rubu_al_hizb": 24,
+      "source_glyph": {
+        "box": [
+          1273,
+          1470,
+          1388,
+          1578
+        ],
+        "codepoint": "U+FB9B",
+        "glyph_id": 9462,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:75:1"
+    },
+    {
+      "ayah_key": "3:93",
+      "line": 2,
+      "page": 62,
+      "rubu_al_hizb": 25,
+      "source_glyph": {
+        "box": [
+          1023,
+          276,
+          1122,
+          381
+        ],
+        "codepoint": "U+FB62",
+        "glyph_id": 9875,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:93:1"
+    },
+    {
+      "ayah_key": "3:113",
+      "line": 10,
+      "page": 64,
+      "rubu_al_hizb": 26,
+      "source_glyph": {
+        "box": [
+          482,
+          1889,
+          585,
+          1995
+        ],
+        "codepoint": "U+FBAB",
+        "glyph_id": 10282,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:113:1"
+    },
+    {
+      "ayah_key": "3:133",
+      "line": 1,
+      "page": 67,
+      "rubu_al_hizb": 27,
+      "source_glyph": {
+        "box": [
+          1707,
+          60,
+          1812,
+          167
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 10664,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:133:1"
+    },
+    {
+      "ayah_key": "3:153",
+      "line": 12,
+      "page": 69,
+      "rubu_al_hizb": 28,
+      "source_glyph": {
+        "box": [
+          1551,
+          2294,
+          1655,
+          2402
+        ],
+        "codepoint": "U+FBAA",
+        "glyph_id": 11059,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:153:1"
+    },
+    {
+      "ayah_key": "3:171",
+      "line": 11,
+      "page": 72,
+      "rubu_al_hizb": 29,
+      "source_glyph": {
+        "box": [
+          1735,
+          2077,
+          1826,
+          2183
+        ],
+        "codepoint": "U+FBD8",
+        "glyph_id": 11561,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:171:1"
+    },
+    {
+      "ayah_key": "3:186",
+      "line": 12,
+      "page": 74,
+      "rubu_al_hizb": 30,
+      "source_glyph": {
+        "box": [
+          997,
+          2284,
+          1113,
+          2392
+        ],
+        "codepoint": "U+FBDA",
+        "glyph_id": 11908,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "3:186:1"
+    },
+    {
+      "ayah_key": "4:1",
+      "line": 2,
+      "page": 77,
+      "rubu_al_hizb": 31,
+      "source_glyph": null,
+      "word_key": "4:1:1"
+    },
+    {
+      "ayah_key": "4:12",
+      "line": 1,
+      "page": 79,
+      "rubu_al_hizb": 32,
+      "source_glyph": {
+        "box": [
+          1700,
+          73,
+          1803,
+          180
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 12593,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:12:1"
+    },
+    {
+      "ayah_key": "4:24",
+      "line": 1,
+      "page": 82,
+      "rubu_al_hizb": 33,
+      "source_glyph": {
+        "box": [
+          1712,
+          91,
+          1804,
+          197
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 13009,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:24:1"
+    },
+    {
+      "ayah_key": "4:36",
+      "line": 9,
+      "page": 84,
+      "rubu_al_hizb": 34,
+      "source_glyph": {
+        "box": [
+          1539,
+          1667,
+          1653,
+          1773
+        ],
+        "codepoint": "U+FB96",
+        "glyph_id": 13373,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:36:1"
+    },
+    {
+      "ayah_key": "4:58",
+      "line": 10,
+      "page": 87,
+      "rubu_al_hizb": 35,
+      "source_glyph": {
+        "box": [
+          189,
+          1898,
+          298,
+          2004
+        ],
+        "codepoint": "U+FBD8",
+        "glyph_id": 13876,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:58:1"
+    },
+    {
+      "ayah_key": "4:74",
+      "line": 13,
+      "page": 89,
+      "rubu_al_hizb": 36,
+      "source_glyph": {
+        "box": [
+          1101,
+          2479,
+          1220,
+          2586
+        ],
+        "codepoint": "U+FBE7",
+        "glyph_id": 14211,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:74:1"
+    },
+    {
+      "ayah_key": "4:88",
+      "line": 2,
+      "page": 92,
+      "rubu_al_hizb": 37,
+      "source_glyph": {
+        "box": [
+          744,
+          282,
+          866,
+          388
+        ],
+        "codepoint": "U+FB65",
+        "glyph_id": 14630,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:88:1"
+    },
+    {
+      "ayah_key": "4:100",
+      "line": 11,
+      "page": 94,
+      "rubu_al_hizb": 38,
+      "source_glyph": {
+        "box": [
+          1740,
+          2086,
+          1831,
+          2193
+        ],
+        "codepoint": "U+FBDA",
+        "glyph_id": 15023,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:100:1"
+    },
+    {
+      "ayah_key": "4:114",
+      "line": 1,
+      "page": 97,
+      "rubu_al_hizb": 39,
+      "source_glyph": {
+        "box": [
+          1717,
+          68,
+          1809,
+          175
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 15410,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:114:1"
+    },
+    {
+      "ayah_key": "4:135",
+      "line": 1,
+      "page": 100,
+      "rubu_al_hizb": 40,
+      "source_glyph": {
+        "box": [
+          1742,
+          78,
+          1837,
+          183
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 15881,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:135:1"
+    },
+    {
+      "ayah_key": "4:148",
+      "line": 1,
+      "page": 102,
+      "rubu_al_hizb": 41,
+      "source_glyph": {
+        "box": [
+          1739,
+          91,
+          1828,
+          198
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 16206,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:148:1"
+    },
+    {
+      "ayah_key": "4:163",
+      "line": 1,
+      "page": 104,
+      "rubu_al_hizb": 42,
+      "source_glyph": {
+        "box": [
+          1743,
+          71,
+          1833,
+          177
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 16538,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "4:163:1"
+    },
+    {
+      "ayah_key": "5:1",
+      "line": 8,
+      "page": 106,
+      "rubu_al_hizb": 43,
+      "source_glyph": null,
+      "word_key": "5:1:1"
+    },
+    {
+      "ayah_key": "5:12",
+      "line": 5,
+      "page": 109,
+      "rubu_al_hizb": 44,
+      "source_glyph": {
+        "box": [
+          1080,
+          870,
+          1200,
+          976
+        ],
+        "codepoint": "U+FB73",
+        "glyph_id": 17356,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "5:12:1"
+    },
+    {
+      "ayah_key": "5:27",
+      "line": 6,
+      "page": 112,
+      "rubu_al_hizb": 45,
+      "source_glyph": {
+        "box": [
+          1561,
+          1093,
+          1676,
+          1198
+        ],
+        "codepoint": "U+FB84",
+        "glyph_id": 17807,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "5:27:1"
+    },
+    {
+      "ayah_key": "5:41",
+      "line": 7,
+      "page": 114,
+      "rubu_al_hizb": 46,
+      "source_glyph": {
+        "box": [
+          625,
+          1290,
+          752,
+          1397
+        ],
+        "codepoint": "U+FB93",
+        "glyph_id": 18137,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "5:41:1"
+    },
+    {
+      "ayah_key": "5:51",
+      "line": 1,
+      "page": 117,
+      "rubu_al_hizb": 47,
+      "source_glyph": {
+        "box": [
+          1745,
+          83,
+          1835,
+          190
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 18541,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "5:51:1"
+    },
+    {
+      "ayah_key": "5:67",
+      "line": 5,
+      "page": 119,
+      "rubu_al_hizb": 48,
+      "source_glyph": {
+        "box": [
+          1101,
+          876,
+          1215,
+          983
+        ],
+        "codepoint": "U+FB79",
+        "glyph_id": 18947,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "5:67:1"
+    },
+    {
+      "ayah_key": "5:82",
+      "line": 12,
+      "page": 121,
+      "rubu_al_hizb": 49,
+      "source_glyph": {
+        "box": [
+          1562,
+          2272,
+          1667,
+          2380
+        ],
+        "codepoint": "U+FBAD",
+        "glyph_id": 19317,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "5:82:1"
+    },
+    {
+      "ayah_key": "5:97",
+      "line": 3,
+      "page": 124,
+      "rubu_al_hizb": 50,
+      "source_glyph": {
+        "box": [
+          1198,
+          495,
+          1315,
+          603
+        ],
+        "codepoint": "U+FB68",
+        "glyph_id": 19725,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "5:97:1"
+    },
+    {
+      "ayah_key": "5:109",
+      "line": 1,
+      "page": 126,
+      "rubu_al_hizb": 51,
+      "source_glyph": {
+        "box": [
+          1730,
+          94,
+          1821,
+          201
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 20042,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "5:109:1"
+    },
+    {
+      "ayah_key": "6:13",
+      "line": 8,
+      "page": 129,
+      "rubu_al_hizb": 52,
+      "source_glyph": {
+        "box": [
+          1579,
+          1476,
+          1679,
+          1583
+        ],
+        "codepoint": "U+FB92",
+        "glyph_id": 20612,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "6:13:1"
+    },
+    {
+      "ayah_key": "6:36",
+      "line": 1,
+      "page": 132,
+      "rubu_al_hizb": 53,
+      "source_glyph": {
+        "box": [
+          1706,
+          93,
+          1807,
+          199
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 21099,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "6:36:1"
+    },
+    {
+      "ayah_key": "6:59",
+      "line": 13,
+      "page": 134,
+      "rubu_al_hizb": 54,
+      "source_glyph": {
+        "box": [
+          1736,
+          2485,
+          1835,
+          2592
+        ],
+        "codepoint": "U+FBEB",
+        "glyph_id": 21562,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "6:59:1"
+    },
+    {
+      "ayah_key": "6:74",
+      "line": 1,
+      "page": 137,
+      "rubu_al_hizb": 55,
+      "source_glyph": {
+        "box": [
+          1745,
+          94,
+          1836,
+          201
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 21947,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "6:74:1"
+    },
+    {
+      "ayah_key": "6:95",
+      "line": 1,
+      "page": 140,
+      "rubu_al_hizb": 56,
+      "source_glyph": {
+        "box": [
+          1756,
+          80,
+          1846,
+          187
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 22449,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "6:95:1"
+    },
+    {
+      "ayah_key": "6:111",
+      "line": 1,
+      "page": 142,
+      "rubu_al_hizb": 57,
+      "source_glyph": {
+        "box": [
+          1718,
+          82,
+          1810,
+          190
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 22793,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "6:111:1"
+    },
+    {
+      "ayah_key": "6:127",
+      "line": 5,
+      "page": 144,
+      "rubu_al_hizb": 58,
+      "source_glyph": {
+        "box": [
+          863,
+          883,
+          974,
+          990
+        ],
+        "codepoint": "U+FB7B",
+        "glyph_id": 23159,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "6:127:1"
+    },
+    {
+      "ayah_key": "6:141",
+      "line": 9,
+      "page": 146,
+      "rubu_al_hizb": 59,
+      "source_glyph": {
+        "box": [
+          471,
+          1688,
+          587,
+          1794
+        ],
+        "codepoint": "U+FB9D",
+        "glyph_id": 23488,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "6:141:1"
+    },
+    {
+      "ayah_key": "6:151",
+      "line": 10,
+      "page": 148,
+      "rubu_al_hizb": 60,
+      "source_glyph": {
+        "box": [
+          219,
+          1890,
+          325,
+          1997
+        ],
+        "codepoint": "U+FBB0",
+        "glyph_id": 23815,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "6:151:1"
+    },
+    {
+      "ayah_key": "7:1",
+      "line": 3,
+      "page": 151,
+      "rubu_al_hizb": 61,
+      "source_glyph": null,
+      "word_key": "7:1:1"
+    },
+    {
+      "ayah_key": "7:31",
+      "line": 1,
+      "page": 154,
+      "rubu_al_hizb": 62,
+      "source_glyph": {
+        "box": [
+          1729,
+          58,
+          1821,
+          166
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 24719,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:31:1"
+    },
+    {
+      "ayah_key": "7:47",
+      "line": 6,
+      "page": 156,
+      "rubu_al_hizb": 63,
+      "source_glyph": {
+        "box": [
+          863,
+          1083,
+          972,
+          1190
+        ],
+        "codepoint": "U+FB91",
+        "glyph_id": 25135,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:47:1"
+    },
+    {
+      "ayah_key": "7:65",
+      "line": 11,
+      "page": 158,
+      "rubu_al_hizb": 64,
+      "source_glyph": {
+        "box": [
+          529,
+          2101,
+          639,
+          2207
+        ],
+        "codepoint": "U+FBDA",
+        "glyph_id": 25507,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:65:1"
+    },
+    {
+      "ayah_key": "7:88",
+      "line": 1,
+      "page": 162,
+      "rubu_al_hizb": 65,
+      "source_glyph": {
+        "box": [
+          1742,
+          76,
+          1833,
+          185
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 26005,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:88:1"
+    },
+    {
+      "ayah_key": "7:117",
+      "line": 13,
+      "page": 164,
+      "rubu_al_hizb": 66,
+      "source_glyph": {
+        "box": [
+          1769,
+          2493,
+          1863,
+          2600
+        ],
+        "codepoint": "U+FBEA",
+        "glyph_id": 26449,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:117:1"
+    },
+    {
+      "ayah_key": "7:142",
+      "line": 8,
+      "page": 167,
+      "rubu_al_hizb": 67,
+      "source_glyph": {
+        "box": [
+          989,
+          1462,
+          1104,
+          1568
+        ],
+        "codepoint": "U+FB95",
+        "glyph_id": 26868,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:142:1"
+    },
+    {
+      "ayah_key": "7:156",
+      "line": 1,
+      "page": 170,
+      "rubu_al_hizb": 68,
+      "source_glyph": {
+        "box": [
+          1733,
+          60,
+          1825,
+          167
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 27273,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:156:1"
+    },
+    {
+      "ayah_key": "7:171",
+      "line": 1,
+      "page": 173,
+      "rubu_al_hizb": 69,
+      "source_glyph": {
+        "box": [
+          1750,
+          69,
+          1835,
+          176
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 27712,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:171:1"
+    },
+    {
+      "ayah_key": "7:189",
+      "line": 3,
+      "page": 175,
+      "rubu_al_hizb": 70,
+      "source_glyph": {
+        "box": [
+          649,
+          481,
+          774,
+          589
+        ],
+        "codepoint": "U+FB70",
+        "glyph_id": 28088,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:189:1"
+    },
+    {
+      "ayah_key": "8:1",
+      "line": 3,
+      "page": 177,
+      "rubu_al_hizb": 71,
+      "source_glyph": null,
+      "word_key": "8:1:1"
+    },
+    {
+      "ayah_key": "8:22",
+      "line": 9,
+      "page": 179,
+      "rubu_al_hizb": 72,
+      "source_glyph": {
+        "box": [
+          1230,
+          1688,
+          1339,
+          1794
+        ],
+        "codepoint": "U+FBA1",
+        "glyph_id": 28752,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "8:22:1"
+    },
+    {
+      "ayah_key": "8:41",
+      "line": 1,
+      "page": 182,
+      "rubu_al_hizb": 73,
+      "source_glyph": {
+        "box": [
+          1724,
+          61,
+          1815,
+          168
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 29126,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "8:41:1"
+    },
+    {
+      "ayah_key": "8:61",
+      "line": 14,
+      "page": 184,
+      "rubu_al_hizb": 74,
+      "source_glyph": {
+        "box": [
+          446,
+          2672,
+          565,
+          2779
+        ],
+        "codepoint": "U+FBFB",
+        "glyph_id": 29567,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "8:61:1"
+    },
+    {
+      "ayah_key": "9:1",
+      "line": 2,
+      "page": 187,
+      "rubu_al_hizb": 75,
+      "source_glyph": null,
+      "word_key": "9:1:1"
+    },
+    {
+      "ayah_key": "9:19",
+      "line": 11,
+      "page": 189,
+      "rubu_al_hizb": 76,
+      "source_glyph": {
+        "box": [
+          497,
+          2069,
+          623,
+          2176
+        ],
+        "codepoint": "U+FBD3",
+        "glyph_id": 30327,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "9:19:1"
+    },
+    {
+      "ayah_key": "9:34",
+      "line": 4,
+      "page": 192,
+      "rubu_al_hizb": 77,
+      "source_glyph": {
+        "box": [
+          460,
+          667,
+          573,
+          773
+        ],
+        "codepoint": "U+FB70",
+        "glyph_id": 30703,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "9:34:1"
+    },
+    {
+      "ayah_key": "9:46",
+      "line": 11,
+      "page": 194,
+      "rubu_al_hizb": 78,
+      "source_glyph": {
+        "box": [
+          815,
+          2066,
+          923,
+          2172
+        ],
+        "codepoint": "U+FBA8",
+        "glyph_id": 31046,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "9:46:1"
+    },
+    {
+      "ayah_key": "9:60",
+      "line": 9,
+      "page": 196,
+      "rubu_al_hizb": 79,
+      "source_glyph": {
+        "box": [
+          590,
+          1679,
+          708,
+          1785
+        ],
+        "codepoint": "U+FBA0",
+        "glyph_id": 31324,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "9:60:1"
+    },
+    {
+      "ayah_key": "9:75",
+      "line": 7,
+      "page": 199,
+      "rubu_al_hizb": 80,
+      "source_glyph": {
+        "box": [
+          985,
+          1270,
+          1114,
+          1377
+        ],
+        "codepoint": "U+FB92",
+        "glyph_id": 31737,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "9:75:1"
+    },
+    {
+      "ayah_key": "9:93",
+      "line": 13,
+      "page": 201,
+      "rubu_al_hizb": 81,
+      "source_glyph": {
+        "box": [
+          704,
+          2482,
+          819,
+          2590
+        ],
+        "codepoint": "U+FBE6",
+        "glyph_id": 32110,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "9:93:1"
+    },
+    {
+      "ayah_key": "9:111",
+      "line": 11,
+      "page": 204,
+      "rubu_al_hizb": 82,
+      "source_glyph": {
+        "box": [
+          1729,
+          2096,
+          1819,
+          2203
+        ],
+        "codepoint": "U+FBD6",
+        "glyph_id": 32560,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "9:111:1"
+    },
+    {
+      "ayah_key": "9:122",
+      "line": 13,
+      "page": 206,
+      "rubu_al_hizb": 83,
+      "source_glyph": {
+        "box": [
+          1295,
+          2484,
+          1407,
+          2591
+        ],
+        "codepoint": "U+FBE6",
+        "glyph_id": 32884,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "9:122:1"
+    },
+    {
+      "ayah_key": "10:11",
+      "line": 7,
+      "page": 209,
+      "rubu_al_hizb": 84,
+      "source_glyph": {
+        "box": [
+          1028,
+          1273,
+          1151,
+          1381
+        ],
+        "codepoint": "U+FB89",
+        "glyph_id": 33279,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "10:11:1"
+    },
+    {
+      "ayah_key": "10:26",
+      "line": 1,
+      "page": 212,
+      "rubu_al_hizb": 85,
+      "source_glyph": {
+        "box": [
+          1727,
+          92,
+          1816,
+          197
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 33713,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "10:26:1"
+    },
+    {
+      "ayah_key": "10:53",
+      "line": 14,
+      "page": 214,
+      "rubu_al_hizb": 86,
+      "source_glyph": {
+        "box": [
+          503,
+          2689,
+          614,
+          2796
+        ],
+        "codepoint": "U+FC08",
+        "glyph_id": 34234,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "10:53:1"
+    },
+    {
+      "ayah_key": "10:71",
+      "line": 1,
+      "page": 217,
+      "rubu_al_hizb": 87,
+      "source_glyph": {
+        "box": [
+          1733,
+          69,
+          1822,
+          176
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 34606,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "10:71:1"
+    },
+    {
+      "ayah_key": "10:90",
+      "line": 2,
+      "page": 219,
+      "rubu_al_hizb": 88,
+      "source_glyph": {
+        "box": [
+          1001,
+          276,
+          1103,
+          383
+        ],
+        "codepoint": "U+FB5D",
+        "glyph_id": 34952,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "10:90:1"
+    },
+    {
+      "ayah_key": "11:6",
+      "line": 1,
+      "page": 222,
+      "rubu_al_hizb": 89,
+      "source_glyph": {
+        "box": [
+          1745,
+          76,
+          1835,
+          184
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 35438,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "11:6:1"
+    },
+    {
+      "ayah_key": "11:24",
+      "line": 7,
+      "page": 224,
+      "rubu_al_hizb": 90,
+      "source_glyph": {
+        "box": [
+          975,
+          1272,
+          1102,
+          1378
+        ],
+        "codepoint": "U+FB8E",
+        "glyph_id": 35828,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "11:24:1"
+    },
+    {
+      "ayah_key": "11:41",
+      "line": 6,
+      "page": 226,
+      "rubu_al_hizb": 91,
+      "source_glyph": {
+        "box": [
+          517,
+          1089,
+          617,
+          1196
+        ],
+        "codepoint": "U+FB8D",
+        "glyph_id": 36169,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "11:41:1"
+    },
+    {
+      "ayah_key": "11:61",
+      "line": 11,
+      "page": 228,
+      "rubu_al_hizb": 92,
+      "source_glyph": {
+        "box": [
+          1016,
+          2086,
+          1124,
+          2193
+        ],
+        "codepoint": "U+FBEB",
+        "glyph_id": 36578,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "11:61:1"
+    },
+    {
+      "ayah_key": "11:84",
+      "line": 3,
+      "page": 231,
+      "rubu_al_hizb": 93,
+      "source_glyph": {
+        "box": [
+          609,
+          471,
+          713,
+          578
+        ],
+        "codepoint": "U+FB68",
+        "glyph_id": 37021,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "11:84:1"
+    },
+    {
+      "ayah_key": "11:108",
+      "line": 14,
+      "page": 233,
+      "rubu_al_hizb": 94,
+      "source_glyph": {
+        "box": [
+          1556,
+          2708,
+          1673,
+          2814
+        ],
+        "codepoint": "U+FBFB",
+        "glyph_id": 37457,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "11:108:1"
+    },
+    {
+      "ayah_key": "12:7",
+      "line": 5,
+      "page": 236,
+      "rubu_al_hizb": 95,
+      "source_glyph": {
+        "box": [
+          921,
+          906,
+          1038,
+          1012
+        ],
+        "codepoint": "U+FB7D",
+        "glyph_id": 37848,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "12:7:1"
+    },
+    {
+      "ayah_key": "12:30",
+      "line": 14,
+      "page": 238,
+      "rubu_al_hizb": 96,
+      "source_glyph": {
+        "box": [
+          1544,
+          2690,
+          1666,
+          2795
+        ],
+        "codepoint": "U+FBF9",
+        "glyph_id": 38259,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "12:30:1"
+    },
+    {
+      "ayah_key": "12:53",
+      "line": 1,
+      "page": 242,
+      "rubu_al_hizb": 97,
+      "source_glyph": {
+        "box": [
+          1736,
+          77,
+          1827,
+          185
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 38805,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "12:53:1"
+    },
+    {
+      "ayah_key": "12:77",
+      "line": 11,
+      "page": 244,
+      "rubu_al_hizb": 98,
+      "source_glyph": {
+        "box": [
+          660,
+          2078,
+          767,
+          2185
+        ],
+        "codepoint": "U+FBDC",
+        "glyph_id": 39253,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "12:77:1"
+    },
+    {
+      "ayah_key": "12:101",
+      "line": 10,
+      "page": 247,
+      "rubu_al_hizb": 99,
+      "source_glyph": {
+        "box": [
+          256,
+          1907,
+          377,
+          2013
+        ],
+        "codepoint": "U+FBDE",
+        "glyph_id": 39744,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "12:101:1"
+    },
+    {
+      "ayah_key": "13:5",
+      "line": 13,
+      "page": 249,
+      "rubu_al_hizb": 100,
+      "source_glyph": {
+        "box": [
+          1753,
+          2478,
+          1843,
+          2585
+        ],
+        "codepoint": "U+FBDC",
+        "glyph_id": 40076,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "13:5:1"
+    },
+    {
+      "ayah_key": "13:19",
+      "line": 1,
+      "page": 252,
+      "rubu_al_hizb": 101,
+      "source_glyph": {
+        "box": [
+          1749,
+          87,
+          1840,
+          194
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 40475,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "13:19:1"
+    },
+    {
+      "ayah_key": "13:35",
+      "line": 1,
+      "page": 254,
+      "rubu_al_hizb": 102,
+      "source_glyph": {
+        "box": [
+          1747,
+          96,
+          1837,
+          202
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 40841,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "13:35:1"
+    },
+    {
+      "ayah_key": "14:10",
+      "line": 11,
+      "page": 256,
+      "rubu_al_hizb": 103,
+      "source_glyph": {
+        "box": [
+          341,
+          2083,
+          462,
+          2189
+        ],
+        "codepoint": "U+FBB1",
+        "glyph_id": 41246,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "14:10:1"
+    },
+    {
+      "ayah_key": "14:28",
+      "line": 6,
+      "page": 259,
+      "rubu_al_hizb": 104,
+      "source_glyph": {
+        "box": [
+          1196,
+          1087,
+          1313,
+          1195
+        ],
+        "codepoint": "U+FB82",
+        "glyph_id": 41664,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "14:28:1"
+    },
+    {
+      "ayah_key": "15:1",
+      "line": 3,
+      "page": 262,
+      "rubu_al_hizb": 105,
+      "source_glyph": null,
+      "word_key": "15:1:1"
+    },
+    {
+      "ayah_key": "15:49",
+      "line": 14,
+      "page": 264,
+      "rubu_al_hizb": 106,
+      "source_glyph": {
+        "box": [
+          1746,
+          2691,
+          1854,
+          2797
+        ],
+        "codepoint": "U+FBF3",
+        "glyph_id": 42521,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "15:49:1"
+    },
+    {
+      "ayah_key": "16:1",
+      "line": 9,
+      "page": 267,
+      "rubu_al_hizb": 107,
+      "source_glyph": null,
+      "word_key": "16:1:1"
+    },
+    {
+      "ayah_key": "16:30",
+      "line": 6,
+      "page": 270,
+      "rubu_al_hizb": 108,
+      "source_glyph": {
+        "box": [
+          307,
+          1088,
+          415,
+          1186
+        ],
+        "codepoint": "U+FB88",
+        "glyph_id": 43370,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "16:30:1"
+    },
+    {
+      "ayah_key": "16:51",
+      "line": 11,
+      "page": 272,
+      "rubu_al_hizb": 109,
+      "source_glyph": {
+        "box": [
+          907,
+          2089,
+          1019,
+          2196
+        ],
+        "codepoint": "U+FBDD",
+        "glyph_id": 43756,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "16:51:1"
+    },
+    {
+      "ayah_key": "16:75",
+      "line": 3,
+      "page": 275,
+      "rubu_al_hizb": 110,
+      "source_glyph": {
+        "box": [
+          764,
+          475,
+          880,
+          582
+        ],
+        "codepoint": "U+FB6D",
+        "glyph_id": 44210,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "16:75:1"
+    },
+    {
+      "ayah_key": "16:90",
+      "line": 5,
+      "page": 277,
+      "rubu_al_hizb": 111,
+      "source_glyph": {
+        "box": [
+          728,
+          883,
+          836,
+          989
+        ],
+        "codepoint": "U+FB7A",
+        "glyph_id": 44535,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "16:90:1"
+    },
+    {
+      "ayah_key": "16:111",
+      "line": 1,
+      "page": 280,
+      "rubu_al_hizb": 112,
+      "source_glyph": {
+        "box": [
+          1717,
+          88,
+          1826,
+          194
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 44941,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "16:111:1"
+    },
+    {
+      "ayah_key": "17:1",
+      "line": 3,
+      "page": 282,
+      "rubu_al_hizb": 113,
+      "source_glyph": null,
+      "word_key": "17:1:1"
+    },
+    {
+      "ayah_key": "17:23",
+      "line": 8,
+      "page": 284,
+      "rubu_al_hizb": 114,
+      "source_glyph": {
+        "box": [
+          1736,
+          1485,
+          1847,
+          1592
+        ],
+        "codepoint": "U+FB96",
+        "glyph_id": 45634,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "17:23:1"
+    },
+    {
+      "ayah_key": "17:50",
+      "line": 1,
+      "page": 287,
+      "rubu_al_hizb": 115,
+      "source_glyph": {
+        "box": [
+          1758,
+          65,
+          1847,
+          171
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 46088,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "17:50:1"
+    },
+    {
+      "ayah_key": "17:70",
+      "line": 6,
+      "page": 289,
+      "rubu_al_hizb": 116,
+      "source_glyph": {
+        "box": [
+          984,
+          1105,
+          1096,
+          1211
+        ],
+        "codepoint": "U+FB8E",
+        "glyph_id": 46477,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "17:70:1"
+    },
+    {
+      "ayah_key": "17:99",
+      "line": 5,
+      "page": 292,
+      "rubu_al_hizb": 117,
+      "source_glyph": {
+        "box": [
+          571,
+          879,
+          683,
+          986
+        ],
+        "codepoint": "U+FB80",
+        "glyph_id": 46966,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "17:99:1"
+    },
+    {
+      "ayah_key": "18:17",
+      "line": 3,
+      "page": 295,
+      "rubu_al_hizb": 118,
+      "source_glyph": {
+        "box": [
+          1562,
+          475,
+          1679,
+          583
+        ],
+        "codepoint": "U+FB65",
+        "glyph_id": 47432,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "18:17:1"
+    },
+    {
+      "ayah_key": "18:32",
+      "line": 11,
+      "page": 297,
+      "rubu_al_hizb": 119,
+      "source_glyph": {
+        "box": [
+          307,
+          2098,
+          417,
+          2203
+        ],
+        "codepoint": "U+FBDF",
+        "glyph_id": 47847,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "18:32:1"
+    },
+    {
+      "ayah_key": "18:51",
+      "line": 11,
+      "page": 299,
+      "rubu_al_hizb": 120,
+      "source_glyph": {
+        "box": [
+          939,
+          2091,
+          1057,
+          2196
+        ],
+        "codepoint": "U+FBDA",
+        "glyph_id": 48192,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "18:51:1"
+    },
+    {
+      "ayah_key": "18:75",
+      "line": 1,
+      "page": 302,
+      "rubu_al_hizb": 121,
+      "source_glyph": {
+        "box": [
+          1738,
+          82,
+          1825,
+          189
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 48592,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "18:75:1"
+    },
+    {
+      "ayah_key": "18:99",
+      "line": 2,
+      "page": 304,
+      "rubu_al_hizb": 122,
+      "source_glyph": {
+        "box": [
+          1450,
+          299,
+          1545,
+          406
+        ],
+        "codepoint": "U+FB63",
+        "glyph_id": 48974,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "18:99:1"
+    },
+    {
+      "ayah_key": "19:22",
+      "line": 11,
+      "page": 306,
+      "rubu_al_hizb": 123,
+      "source_glyph": {
+        "box": [
+          769,
+          2107,
+          876,
+          2214
+        ],
+        "codepoint": "U+FBDC",
+        "glyph_id": 49389,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "19:22:1"
+    },
+    {
+      "ayah_key": "19:59",
+      "line": 8,
+      "page": 309,
+      "rubu_al_hizb": 124,
+      "source_glyph": {
+        "box": [
+          543,
+          1506,
+          648,
+          1610
+        ],
+        "codepoint": "U+FBA6",
+        "glyph_id": 49889,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "19:59:1"
+    },
+    {
+      "ayah_key": "20:1",
+      "line": 7,
+      "page": 312,
+      "rubu_al_hizb": 125,
+      "source_glyph": null,
+      "word_key": "20:1:1"
+    },
+    {
+      "ayah_key": "20:55",
+      "line": 4,
+      "page": 315,
+      "rubu_al_hizb": 126,
+      "source_glyph": {
+        "box": [
+          219,
+          691,
+          312,
+          798
+        ],
+        "codepoint": "U+FB7D",
+        "glyph_id": 50876,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "20:55:1"
+    },
+    {
+      "ayah_key": "20:83",
+      "line": 8,
+      "page": 317,
+      "rubu_al_hizb": 127,
+      "source_glyph": {
+        "box": [
+          661,
+          1479,
+          765,
+          1586
+        ],
+        "codepoint": "U+FB9F",
+        "glyph_id": 51264,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "20:83:1"
+    },
+    {
+      "ayah_key": "20:111",
+      "line": 12,
+      "page": 319,
+      "rubu_al_hizb": 128,
+      "source_glyph": {
+        "box": [
+          1423,
+          2295,
+          1528,
+          2401
+        ],
+        "codepoint": "U+FBEB",
+        "glyph_id": 51645,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "20:111:1"
+    },
+    {
+      "ayah_key": "21:1",
+      "line": 3,
+      "page": 322,
+      "rubu_al_hizb": 129,
+      "source_glyph": null,
+      "word_key": "21:1:1"
+    },
+    {
+      "ayah_key": "21:29",
+      "line": 6,
+      "page": 324,
+      "rubu_al_hizb": 130,
+      "source_glyph": {
+        "box": [
+          1590,
+          1090,
+          1699,
+          1195
+        ],
+        "codepoint": "U+FB83",
+        "glyph_id": 52402,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "21:29:1"
+    },
+    {
+      "ayah_key": "21:51",
+      "line": 9,
+      "page": 326,
+      "rubu_al_hizb": 131,
+      "source_glyph": {
+        "box": [
+          1305,
+          1699,
+          1414,
+          1804
+        ],
+        "codepoint": "U+FB9C",
+        "glyph_id": 52738,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "21:51:1"
+    },
+    {
+      "ayah_key": "21:83",
+      "line": 2,
+      "page": 329,
+      "rubu_al_hizb": 132,
+      "source_glyph": {
+        "box": [
+          483,
+          274,
+          588,
+          380
+        ],
+        "codepoint": "U+FB5F",
+        "glyph_id": 53133,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "21:83:1"
+    },
+    {
+      "ayah_key": "22:1",
+      "line": 2,
+      "page": 332,
+      "rubu_al_hizb": 133,
+      "source_glyph": null,
+      "word_key": "22:1:1"
+    },
+    {
+      "ayah_key": "22:19",
+      "line": 8,
+      "page": 334,
+      "rubu_al_hizb": 134,
+      "source_glyph": {
+        "box": [
+          863,
+          1491,
+          978,
+          1598
+        ],
+        "codepoint": "U+FB9D",
+        "glyph_id": 53953,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "22:19:1"
+    },
+    {
+      "ayah_key": "22:38",
+      "line": 14,
+      "page": 336,
+      "rubu_al_hizb": 135,
+      "source_glyph": {
+        "box": [
+          329,
+          2689,
+          452,
+          2796
+        ],
+        "codepoint": "U+FBFC",
+        "glyph_id": 54319,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "22:38:1"
+    },
+    {
+      "ayah_key": "22:60",
+      "line": 7,
+      "page": 339,
+      "rubu_al_hizb": 136,
+      "source_glyph": {
+        "box": [
+          911,
+          1301,
+          1038,
+          1408
+        ],
+        "codepoint": "U+FB85",
+        "glyph_id": 54716,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "22:60:1"
+    },
+    {
+      "ayah_key": "23:1",
+      "line": 2,
+      "page": 342,
+      "rubu_al_hizb": 137,
+      "source_glyph": null,
+      "word_key": "23:1:1"
+    },
+    {
+      "ayah_key": "23:36",
+      "line": 10,
+      "page": 344,
+      "rubu_al_hizb": 138,
+      "source_glyph": {
+        "box": [
+          1568,
+          1885,
+          1673,
+          1992
+        ],
+        "codepoint": "U+FBD6",
+        "glyph_id": 55554,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "23:36:1"
+    },
+    {
+      "ayah_key": "23:75",
+      "line": 1,
+      "page": 347,
+      "rubu_al_hizb": 139,
+      "source_glyph": {
+        "box": [
+          1756,
+          75,
+          1845,
+          182
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 55974,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "23:75:1"
+    },
+    {
+      "ayah_key": "24:1",
+      "line": 2,
+      "page": 350,
+      "rubu_al_hizb": 140,
+      "source_glyph": null,
+      "word_key": "24:1:1"
+    },
+    {
+      "ayah_key": "24:21",
+      "line": 1,
+      "page": 352,
+      "rubu_al_hizb": 141,
+      "source_glyph": {
+        "box": [
+          1731,
+          76,
+          1820,
+          182
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 56814,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "24:21:1"
+    },
+    {
+      "ayah_key": "24:35",
+      "line": 9,
+      "page": 354,
+      "rubu_al_hizb": 142,
+      "source_glyph": {
+        "box": [
+          715,
+          1696,
+          833,
+          1802
+        ],
+        "codepoint": "U+FBA8",
+        "glyph_id": 57224,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "24:35:1"
+    },
+    {
+      "ayah_key": "24:53",
+      "line": 14,
+      "page": 356,
+      "rubu_al_hizb": 143,
+      "source_glyph": {
+        "box": [
+          1561,
+          2702,
+          1665,
+          2810
+        ],
+        "codepoint": "U+FC04",
+        "glyph_id": 57644,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "24:53:1"
+    },
+    {
+      "ayah_key": "25:1",
+      "line": 13,
+      "page": 359,
+      "rubu_al_hizb": 144,
+      "source_glyph": null,
+      "word_key": "25:1:1"
+    },
+    {
+      "ayah_key": "25:21",
+      "line": 1,
+      "page": 362,
+      "rubu_al_hizb": 145,
+      "source_glyph": {
+        "box": [
+          1735,
+          80,
+          1825,
+          187
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 58440,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "25:21:1"
+    },
+    {
+      "ayah_key": "25:53",
+      "line": 11,
+      "page": 364,
+      "rubu_al_hizb": 146,
+      "source_glyph": {
+        "box": [
+          579,
+          2090,
+          688,
+          2196
+        ],
+        "codepoint": "U+FBDB",
+        "glyph_id": 58854,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "25:53:1"
+    },
+    {
+      "ayah_key": "26:1",
+      "line": 2,
+      "page": 367,
+      "rubu_al_hizb": 147,
+      "source_glyph": null,
+      "word_key": "26:1:1"
+    },
+    {
+      "ayah_key": "26:52",
+      "line": 11,
+      "page": 369,
+      "rubu_al_hizb": 148,
+      "source_glyph": {
+        "box": [
+          1178,
+          2083,
+          1284,
+          2188
+        ],
+        "codepoint": "U+FBE3",
+        "glyph_id": 59677,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "26:52:1"
+    },
+    {
+      "ayah_key": "26:111",
+      "line": 15,
+      "page": 371,
+      "rubu_al_hizb": 149,
+      "source_glyph": {
+        "box": [
+          1280,
+          2889,
+          1401,
+          2996
+        ],
+        "codepoint": "U+FC17",
+        "glyph_id": 60072,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "26:111:1"
+    },
+    {
+      "ayah_key": "26:181",
+      "line": 13,
+      "page": 374,
+      "rubu_al_hizb": 150,
+      "source_glyph": {
+        "box": [
+          516,
+          2496,
+          616,
+          2603
+        ],
+        "codepoint": "U+FC03",
+        "glyph_id": 60595,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "26:181:1"
+    },
+    {
+      "ayah_key": "27:1",
+      "line": 2,
+      "page": 377,
+      "rubu_al_hizb": 151,
+      "source_glyph": null,
+      "word_key": "27:1:1"
+    },
+    {
+      "ayah_key": "27:27",
+      "line": 6,
+      "page": 379,
+      "rubu_al_hizb": 152,
+      "source_glyph": {
+        "box": [
+          447,
+          1085,
+          548,
+          1190
+        ],
+        "codepoint": "U+FB88",
+        "glyph_id": 61346,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "27:27:1"
+    },
+    {
+      "ayah_key": "27:56",
+      "line": 1,
+      "page": 382,
+      "rubu_al_hizb": 153,
+      "source_glyph": {
+        "box": [
+          1727,
+          78,
+          1817,
+          184
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 61796,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "27:56:1"
+    },
+    {
+      "ayah_key": "27:82",
+      "line": 5,
+      "page": 384,
+      "rubu_al_hizb": 154,
+      "source_glyph": {
+        "box": [
+          235,
+          876,
+          337,
+          981
+        ],
+        "codepoint": "U+FB85",
+        "glyph_id": 62184,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "27:82:1"
+    },
+    {
+      "ayah_key": "28:12",
+      "line": 12,
+      "page": 386,
+      "rubu_al_hizb": 155,
+      "source_glyph": {
+        "box": [
+          1556,
+          2283,
+          1665,
+          2389
+        ],
+        "codepoint": "U+FBDA",
+        "glyph_id": 62558,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "28:12:1"
+    },
+    {
+      "ayah_key": "28:29",
+      "line": 1,
+      "page": 389,
+      "rubu_al_hizb": 156,
+      "source_glyph": {
+        "box": [
+          1728,
+          71,
+          1819,
+          178
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 62955,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "28:29:1"
+    },
+    {
+      "ayah_key": "28:51",
+      "line": 1,
+      "page": 392,
+      "rubu_al_hizb": 157,
+      "source_glyph": {
+        "box": [
+          1731,
+          81,
+          1822,
+          186
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 63420,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "28:51:1"
+    },
+    {
+      "ayah_key": "28:76",
+      "line": 10,
+      "page": 394,
+      "rubu_al_hizb": 158,
+      "source_glyph": {
+        "box": [
+          1233,
+          1878,
+          1335,
+          1985
+        ],
+        "codepoint": "U+FBA6",
+        "glyph_id": 63834,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "28:76:1"
+    },
+    {
+      "ayah_key": "29:1",
+      "line": 10,
+      "page": 396,
+      "rubu_al_hizb": 159,
+      "source_glyph": null,
+      "word_key": "29:1:1"
+    },
+    {
+      "ayah_key": "29:26",
+      "line": 6,
+      "page": 399,
+      "rubu_al_hizb": 160,
+      "source_glyph": {
+        "box": [
+          689,
+          1077,
+          811,
+          1183
+        ],
+        "codepoint": "U+FB84",
+        "glyph_id": 64608,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "29:26:1"
+    },
+    {
+      "ayah_key": "29:46",
+      "line": 1,
+      "page": 402,
+      "rubu_al_hizb": 161,
+      "source_glyph": {
+        "box": [
+          1719,
+          84,
+          1821,
+          190
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 64993,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "29:46:1"
+    },
+    {
+      "ayah_key": "30:1",
+      "line": 12,
+      "page": 404,
+      "rubu_al_hizb": 162,
+      "source_glyph": null,
+      "word_key": "30:1:1"
+    },
+    {
+      "ayah_key": "30:31",
+      "line": 13,
+      "page": 407,
+      "rubu_al_hizb": 163,
+      "source_glyph": {
+        "box": [
+          1236,
+          2492,
+          1350,
+          2599
+        ],
+        "codepoint": "U+FBEE",
+        "glyph_id": 65885,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "30:31:1"
+    },
+    {
+      "ayah_key": "30:54",
+      "line": 4,
+      "page": 410,
+      "rubu_al_hizb": 164,
+      "source_glyph": {
+        "box": [
+          638,
+          678,
+          748,
+          785
+        ],
+        "codepoint": "U+FB77",
+        "glyph_id": 66310,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "30:54:1"
+    },
+    {
+      "ayah_key": "31:22",
+      "line": 5,
+      "page": 413,
+      "rubu_al_hizb": 165,
+      "source_glyph": {
+        "box": [
+          462,
+          882,
+          574,
+          987
+        ],
+        "codepoint": "U+FB88",
+        "glyph_id": 66828,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "31:22:1"
+    },
+    {
+      "ayah_key": "32:11",
+      "line": 14,
+      "page": 415,
+      "rubu_al_hizb": 166,
+      "source_glyph": {
+        "box": [
+          482,
+          2664,
+          590,
+          2769
+        ],
+        "codepoint": "U+FBFB",
+        "glyph_id": 67259,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "32:11:1"
+    },
+    {
+      "ayah_key": "33:1",
+      "line": 2,
+      "page": 418,
+      "rubu_al_hizb": 167,
+      "source_glyph": null,
+      "word_key": "33:1:1"
+    },
+    {
+      "ayah_key": "33:18",
+      "line": 4,
+      "page": 420,
+      "rubu_al_hizb": 168,
+      "source_glyph": {
+        "box": [
+          1116,
+          679,
+          1237,
+          784
+        ],
+        "codepoint": "U+FB7B",
+        "glyph_id": 67947,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "33:18:1"
+    },
+    {
+      "ayah_key": "33:31",
+      "line": 1,
+      "page": 422,
+      "rubu_al_hizb": 169,
+      "source_glyph": {
+        "box": [
+          1732,
+          91,
+          1822,
+          198
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 68239,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "33:31:1"
+    },
+    {
+      "ayah_key": "33:51",
+      "line": 1,
+      "page": 425,
+      "rubu_al_hizb": 170,
+      "source_glyph": {
+        "box": [
+          1734,
+          87,
+          1825,
+          195
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 68698,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "33:51:1"
+    },
+    {
+      "ayah_key": "33:60",
+      "line": 11,
+      "page": 426,
+      "rubu_al_hizb": 171,
+      "source_glyph": {
+        "box": [
+          988,
+          2081,
+          1100,
+          2187
+        ],
+        "codepoint": "U+FBD6",
+        "glyph_id": 68970,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "33:60:1"
+    },
+    {
+      "ayah_key": "34:10",
+      "line": 5,
+      "page": 429,
+      "rubu_al_hizb": 172,
+      "source_glyph": {
+        "box": [
+          902,
+          894,
+          1022,
+          1001
+        ],
+        "codepoint": "U+FB83",
+        "glyph_id": 69389,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "34:10:1"
+    },
+    {
+      "ayah_key": "34:24",
+      "line": 3,
+      "page": 431,
+      "rubu_al_hizb": 173,
+      "source_glyph": {
+        "box": [
+          1579,
+          494,
+          1693,
+          600
+        ],
+        "codepoint": "U+FB6B",
+        "glyph_id": 69713,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "34:24:1"
+    },
+    {
+      "ayah_key": "34:46",
+      "line": 11,
+      "page": 433,
+      "rubu_al_hizb": 174,
+      "source_glyph": {
+        "box": [
+          1014,
+          2092,
+          1126,
+          2197
+        ],
+        "codepoint": "U+FBE1",
+        "glyph_id": 70129,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "34:46:1"
+    },
+    {
+      "ayah_key": "35:15",
+      "line": 10,
+      "page": 436,
+      "rubu_al_hizb": 175,
+      "source_glyph": {
+        "box": [
+          1568,
+          1883,
+          1667,
+          1987
+        ],
+        "codepoint": "U+FBA4",
+        "glyph_id": 70643,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "35:15:1"
+    },
+    {
+      "ayah_key": "35:41",
+      "line": 6,
+      "page": 439,
+      "rubu_al_hizb": 176,
+      "source_glyph": {
+        "box": [
+          864,
+          1107,
+          969,
+          1212
+        ],
+        "codepoint": "U+FB90",
+        "glyph_id": 71111,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "35:41:1"
+    },
+    {
+      "ayah_key": "36:28",
+      "line": 1,
+      "page": 442,
+      "rubu_al_hizb": 177,
+      "source_glyph": {
+        "box": [
+          1741,
+          77,
+          1830,
+          182
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 71539,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "36:28:1"
+    },
+    {
+      "ayah_key": "36:60",
+      "line": 4,
+      "page": 444,
+      "rubu_al_hizb": 178,
+      "source_glyph": {
+        "box": [
+          1143,
+          674,
+          1254,
+          778
+        ],
+        "codepoint": "U+FB73",
+        "glyph_id": 71908,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "36:60:1"
+    },
+    {
+      "ayah_key": "37:22",
+      "line": 14,
+      "page": 446,
+      "rubu_al_hizb": 179,
+      "source_glyph": {
+        "box": [
+          1776,
+          2664,
+          1865,
+          2767
+        ],
+        "codepoint": "U+FBF5",
+        "glyph_id": 72321,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "37:22:1"
+    },
+    {
+      "ayah_key": "37:83",
+      "line": 3,
+      "page": 449,
+      "rubu_al_hizb": 180,
+      "source_glyph": {
+        "box": [
+          371,
+          473,
+          476,
+          579
+        ],
+        "codepoint": "U+FB6F",
+        "glyph_id": 72734,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "37:83:1"
+    },
+    {
+      "ayah_key": "37:145",
+      "line": 10,
+      "page": 451,
+      "rubu_al_hizb": 181,
+      "source_glyph": {
+        "box": [
+          1756,
+          1881,
+          1844,
+          1986
+        ],
+        "codepoint": "U+FBAD",
+        "glyph_id": 73124,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "37:145:1"
+    },
+    {
+      "ayah_key": "38:21",
+      "line": 4,
+      "page": 454,
+      "rubu_al_hizb": 182,
+      "source_glyph": {
+        "box": [
+          1101,
+          693,
+          1208,
+          798
+        ],
+        "codepoint": "U+FB74",
+        "glyph_id": 73574,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "38:21:1"
+    },
+    {
+      "ayah_key": "38:52",
+      "line": 9,
+      "page": 456,
+      "rubu_al_hizb": 183,
+      "source_glyph": {
+        "box": [
+          1755,
+          1683,
+          1842,
+          1787
+        ],
+        "codepoint": "U+FBA3",
+        "glyph_id": 73979,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "38:52:1"
+    },
+    {
+      "ayah_key": "39:8",
+      "line": 8,
+      "page": 459,
+      "rubu_al_hizb": 184,
+      "source_glyph": {
+        "box": [
+          1725,
+          1487,
+          1815,
+          1592
+        ],
+        "codepoint": "U+FB9F",
+        "glyph_id": 74496,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "39:8:1"
+    },
+    {
+      "ayah_key": "39:32",
+      "line": 1,
+      "page": 462,
+      "rubu_al_hizb": 185,
+      "source_glyph": {
+        "box": [
+          1739,
+          82,
+          1829,
+          187
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 74961,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "39:32:1"
+    },
+    {
+      "ayah_key": "39:53",
+      "line": 9,
+      "page": 464,
+      "rubu_al_hizb": 186,
+      "source_glyph": {
+        "box": [
+          1730,
+          1678,
+          1820,
+          1784
+        ],
+        "codepoint": "U+FBA3",
+        "glyph_id": 75364,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "39:53:1"
+    },
+    {
+      "ayah_key": "40:1",
+      "line": 5,
+      "page": 467,
+      "rubu_al_hizb": 187,
+      "source_glyph": null,
+      "word_key": "40:1:1"
+    },
+    {
+      "ayah_key": "40:21",
+      "line": 6,
+      "page": 469,
+      "rubu_al_hizb": 188,
+      "source_glyph": {
+        "box": [
+          521,
+          1095,
+          620,
+          1200
+        ],
+        "codepoint": "U+FB8B",
+        "glyph_id": 76110,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "40:21:1"
+    },
+    {
+      "ayah_key": "40:41",
+      "line": 1,
+      "page": 472,
+      "rubu_al_hizb": 189,
+      "source_glyph": {
+        "box": [
+          1736,
+          65,
+          1826,
+          171
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 76540,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "40:41:1"
+    },
+    {
+      "ayah_key": "40:66",
+      "line": 13,
+      "page": 474,
+      "rubu_al_hizb": 190,
+      "source_glyph": {
+        "box": [
+          226,
+          2495,
+          326,
+          2600
+        ],
+        "codepoint": "U+FBE1",
+        "glyph_id": 76948,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "40:66:1"
+    },
+    {
+      "ayah_key": "41:9",
+      "line": 11,
+      "page": 477,
+      "rubu_al_hizb": 191,
+      "source_glyph": {
+        "box": [
+          1085,
+          2078,
+          1184,
+          2184
+        ],
+        "codepoint": "U+FB9F",
+        "glyph_id": 77386,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "41:9:1"
+    },
+    {
+      "ayah_key": "41:25",
+      "line": 7,
+      "page": 479,
+      "rubu_al_hizb": 192,
+      "source_glyph": {
+        "box": [
+          577,
+          1302,
+          699,
+          1409
+        ],
+        "codepoint": "U+FB91",
+        "glyph_id": 77682,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "41:25:1"
+    },
+    {
+      "ayah_key": "41:47",
+      "line": 1,
+      "page": 482,
+      "rubu_al_hizb": 193,
+      "source_glyph": {
+        "box": [
+          1733,
+          85,
+          1838,
+          190
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 78121,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "41:47:1"
+    },
+    {
+      "ayah_key": "42:13",
+      "line": 5,
+      "page": 484,
+      "rubu_al_hizb": 194,
+      "source_glyph": {
+        "box": [
+          1753,
+          870,
+          1845,
+          977
+        ],
+        "codepoint": "U+FB79",
+        "glyph_id": 78494,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "42:13:1"
+    },
+    {
+      "ayah_key": "42:27",
+      "line": 8,
+      "page": 486,
+      "rubu_al_hizb": 195,
+      "source_glyph": {
+        "box": [
+          718,
+          1492,
+          830,
+          1598
+        ],
+        "codepoint": "U+FBA7",
+        "glyph_id": 78877,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "42:27:1"
+    },
+    {
+      "ayah_key": "42:51",
+      "line": 13,
+      "page": 488,
+      "rubu_al_hizb": 196,
+      "source_glyph": {
+        "box": [
+          351,
+          2504,
+          466,
+          2612
+        ],
+        "codepoint": "U+FBF8",
+        "glyph_id": 79289,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "42:51:1"
+    },
+    {
+      "ayah_key": "43:24",
+      "line": 3,
+      "page": 491,
+      "rubu_al_hizb": 197,
+      "source_glyph": {
+        "box": [
+          1734,
+          481,
+          1837,
+          588
+        ],
+        "codepoint": "U+FB67",
+        "glyph_id": 79655,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "43:24:1"
+    },
+    {
+      "ayah_key": "43:57",
+      "line": 11,
+      "page": 493,
+      "rubu_al_hizb": 198,
+      "source_glyph": {
+        "box": [
+          756,
+          2093,
+          874,
+          2199
+        ],
+        "codepoint": "U+FBD5",
+        "glyph_id": 80057,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "43:57:1"
+    },
+    {
+      "ayah_key": "44:17",
+      "line": 14,
+      "page": 496,
+      "rubu_al_hizb": 199,
+      "source_glyph": {
+        "box": [
+          1576,
+          2682,
+          1676,
+          2788
+        ],
+        "codepoint": "U+FBE7",
+        "glyph_id": 80559,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "44:17:1"
+    },
+    {
+      "ayah_key": "45:12",
+      "line": 13,
+      "page": 499,
+      "rubu_al_hizb": 200,
+      "source_glyph": {
+        "box": [
+          1728,
+          2461,
+          1818,
+          2567
+        ],
+        "codepoint": "U+FBF4",
+        "glyph_id": 81043,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "45:12:1"
+    },
+    {
+      "ayah_key": "46:1",
+      "line": 9,
+      "page": 502,
+      "rubu_al_hizb": 201,
+      "source_glyph": null,
+      "word_key": "46:1:1"
+    },
+    {
+      "ayah_key": "46:21",
+      "line": 1,
+      "page": 505,
+      "rubu_al_hizb": 202,
+      "source_glyph": {
+        "box": [
+          1722,
+          77,
+          1820,
+          183
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 81961,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "46:21:1"
+    },
+    {
+      "ayah_key": "47:10",
+      "line": 13,
+      "page": 507,
+      "rubu_al_hizb": 203,
+      "source_glyph": {
+        "box": [
+          1116,
+          2474,
+          1218,
+          2580
+        ],
+        "codepoint": "U+FBEF",
+        "glyph_id": 82428,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "47:10:1"
+    },
+    {
+      "ayah_key": "47:33",
+      "line": 6,
+      "page": 510,
+      "rubu_al_hizb": 204,
+      "source_glyph": {
+        "box": [
+          1727,
+          1084,
+          1819,
+          1191
+        ],
+        "codepoint": "U+FB7F",
+        "glyph_id": 82860,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "47:33:1"
+    },
+    {
+      "ayah_key": "48:18",
+      "line": 6,
+      "page": 513,
+      "rubu_al_hizb": 205,
+      "source_glyph": {
+        "box": [
+          740,
+          1088,
+          845,
+          1193
+        ],
+        "codepoint": "U+FB8E",
+        "glyph_id": 83338,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "48:18:1"
+    },
+    {
+      "ayah_key": "49:1",
+      "line": 9,
+      "page": 515,
+      "rubu_al_hizb": 206,
+      "source_glyph": null,
+      "word_key": "49:1:1"
+    },
+    {
+      "ayah_key": "49:14",
+      "line": 6,
+      "page": 517,
+      "rubu_al_hizb": 207,
+      "source_glyph": {
+        "box": [
+          1296,
+          1097,
+          1393,
+          1203
+        ],
+        "codepoint": "U+FB8C",
+        "glyph_id": 83987,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "49:14:1"
+    },
+    {
+      "ayah_key": "50:27",
+      "line": 9,
+      "page": 519,
+      "rubu_al_hizb": 208,
+      "source_glyph": {
+        "box": [
+          770,
+          1702,
+          869,
+          1806
+        ],
+        "codepoint": "U+FBD9",
+        "glyph_id": 84368,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "50:27:1"
+    },
+    {
+      "ayah_key": "51:31",
+      "line": 1,
+      "page": 522,
+      "rubu_al_hizb": 209,
+      "source_glyph": {
+        "box": [
+          1758,
+          84,
+          1849,
+          191
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 84791,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "51:31:1"
+    },
+    {
+      "ayah_key": "52:24",
+      "line": 9,
+      "page": 524,
+      "rubu_al_hizb": 210,
+      "source_glyph": {
+        "box": [
+          711,
+          1687,
+          811,
+          1791
+        ],
+        "codepoint": "U+FBA9",
+        "glyph_id": 85217,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "52:24:1"
+    },
+    {
+      "ayah_key": "53:26",
+      "line": 14,
+      "page": 526,
+      "rubu_al_hizb": 211,
+      "source_glyph": {
+        "box": [
+          1133,
+          2663,
+          1243,
+          2769
+        ],
+        "codepoint": "U+FC05",
+        "glyph_id": 85620,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "53:26:1"
+    },
+    {
+      "ayah_key": "54:9",
+      "line": 2,
+      "page": 529,
+      "rubu_al_hizb": 212,
+      "source_glyph": {
+        "box": [
+          262,
+          278,
+          362,
+          384
+        ],
+        "codepoint": "U+FB64",
+        "glyph_id": 86020,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "54:9:1"
+    },
+    {
+      "ayah_key": "55:1",
+      "line": 7,
+      "page": 531,
+      "rubu_al_hizb": 213,
+      "source_glyph": null,
+      "word_key": "55:1:1"
+    },
+    {
+      "ayah_key": "56:1",
+      "line": 9,
+      "page": 534,
+      "rubu_al_hizb": 214,
+      "source_glyph": null,
+      "word_key": "56:1:1"
+    },
+    {
+      "ayah_key": "56:75",
+      "line": 14,
+      "page": 536,
+      "rubu_al_hizb": 215,
+      "source_glyph": {
+        "box": [
+          544,
+          2694,
+          656,
+          2799
+        ],
+        "codepoint": "U+FBFB",
+        "glyph_id": 87263,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "56:75:1"
+    },
+    {
+      "ayah_key": "57:16",
+      "line": 10,
+      "page": 539,
+      "rubu_al_hizb": 216,
+      "source_glyph": {
+        "box": [
+          1557,
+          1875,
+          1654,
+          1981
+        ],
+        "codepoint": "U+FBAE",
+        "glyph_id": 87729,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "57:16:1"
+    },
+    {
+      "ayah_key": "58:1",
+      "line": 3,
+      "page": 542,
+      "rubu_al_hizb": 217,
+      "source_glyph": null,
+      "word_key": "58:1:1"
+    },
+    {
+      "ayah_key": "58:14",
+      "line": 5,
+      "page": 544,
+      "rubu_al_hizb": 218,
+      "source_glyph": {
+        "box": [
+          727,
+          878,
+          826,
+          983
+        ],
+        "codepoint": "U+FB85",
+        "glyph_id": 88512,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "58:14:1"
+    },
+    {
+      "ayah_key": "59:11",
+      "line": 3,
+      "page": 547,
+      "rubu_al_hizb": 219,
+      "source_glyph": {
+        "box": [
+          372,
+          478,
+          478,
+          584
+        ],
+        "codepoint": "U+FB69",
+        "glyph_id": 88984,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "59:11:1"
+    },
+    {
+      "ayah_key": "60:7",
+      "line": 2,
+      "page": 550,
+      "rubu_al_hizb": 220,
+      "source_glyph": {
+        "box": [
+          644,
+          276,
+          748,
+          382
+        ],
+        "codepoint": "U+FB66",
+        "glyph_id": 89457,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "60:7:1"
+    },
+    {
+      "ayah_key": "62:1",
+      "line": 3,
+      "page": 553,
+      "rubu_al_hizb": 221,
+      "source_glyph": null,
+      "word_key": "62:1:1"
+    },
+    {
+      "ayah_key": "63:4",
+      "line": 13,
+      "page": 554,
+      "rubu_al_hizb": 222,
+      "source_glyph": {
+        "box": [
+          1089,
+          2487,
+          1193,
+          2593
+        ],
+        "codepoint": "U+FBDE",
+        "glyph_id": 90222,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "63:4:1"
+    },
+    {
+      "ayah_key": "65:1",
+      "line": 2,
+      "page": 558,
+      "rubu_al_hizb": 223,
+      "source_glyph": null,
+      "word_key": "65:1:1"
+    },
+    {
+      "ayah_key": "66:1",
+      "line": 3,
+      "page": 560,
+      "rubu_al_hizb": 224,
+      "source_glyph": null,
+      "word_key": "66:1:1"
+    },
+    {
+      "ayah_key": "67:1",
+      "line": 3,
+      "page": 562,
+      "rubu_al_hizb": 225,
+      "source_glyph": null,
+      "word_key": "67:1:1"
+    },
+    {
+      "ayah_key": "68:1",
+      "line": 8,
+      "page": 564,
+      "rubu_al_hizb": 226,
+      "source_glyph": null,
+      "word_key": "68:1:1"
+    },
+    {
+      "ayah_key": "69:1",
+      "line": 11,
+      "page": 566,
+      "rubu_al_hizb": 227,
+      "source_glyph": null,
+      "word_key": "69:1:1"
+    },
+    {
+      "ayah_key": "70:19",
+      "line": 4,
+      "page": 569,
+      "rubu_al_hizb": 228,
+      "source_glyph": {
+        "box": [
+          750,
+          679,
+          857,
+          787
+        ],
+        "codepoint": "U+FB7A",
+        "glyph_id": 92649,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "70:19:1"
+    },
+    {
+      "ayah_key": "72:1",
+      "line": 3,
+      "page": 572,
+      "rubu_al_hizb": 229,
+      "source_glyph": null,
+      "word_key": "72:1:1"
+    },
+    {
+      "ayah_key": "73:20",
+      "line": 1,
+      "page": 575,
+      "rubu_al_hizb": 230,
+      "source_glyph": {
+        "box": [
+          1759,
+          69,
+          1865,
+          177
+        ],
+        "codepoint": "U+FB51",
+        "glyph_id": 93637,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "73:20:1"
+    },
+    {
+      "ayah_key": "75:1",
+      "line": 8,
+      "page": 577,
+      "rubu_al_hizb": 231,
+      "source_glyph": null,
+      "word_key": "75:1:1"
+    },
+    {
+      "ayah_key": "76:19",
+      "line": 10,
+      "page": 579,
+      "rubu_al_hizb": 232,
+      "source_glyph": {
+        "box": [
+          1588,
+          1874,
+          1688,
+          1982
+        ],
+        "codepoint": "U+FBDA",
+        "glyph_id": 94468,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "76:19:1"
+    },
+    {
+      "ayah_key": "78:1",
+      "line": 3,
+      "page": 582,
+      "rubu_al_hizb": 233,
+      "source_glyph": null,
+      "word_key": "78:1:1"
+    },
+    {
+      "ayah_key": "80:1",
+      "line": 2,
+      "page": 585,
+      "rubu_al_hizb": 234,
+      "source_glyph": null,
+      "word_key": "80:1:1"
+    },
+    {
+      "ayah_key": "82:1",
+      "line": 2,
+      "page": 587,
+      "rubu_al_hizb": 235,
+      "source_glyph": null,
+      "word_key": "82:1:1"
+    },
+    {
+      "ayah_key": "84:1",
+      "line": 4,
+      "page": 589,
+      "rubu_al_hizb": 236,
+      "source_glyph": null,
+      "word_key": "84:1:1"
+    },
+    {
+      "ayah_key": "87:1",
+      "line": 10,
+      "page": 591,
+      "rubu_al_hizb": 237,
+      "source_glyph": null,
+      "word_key": "87:1:1"
+    },
+    {
+      "ayah_key": "90:1",
+      "line": 6,
+      "page": 594,
+      "rubu_al_hizb": 238,
+      "source_glyph": null,
+      "word_key": "90:1:1"
+    },
+    {
+      "ayah_key": "94:1",
+      "line": 13,
+      "page": 596,
+      "rubu_al_hizb": 239,
+      "source_glyph": null,
+      "word_key": "94:1:1"
+    },
+    {
+      "ayah_key": "100:9",
+      "line": 15,
+      "page": 599,
+      "rubu_al_hizb": 240,
+      "source_glyph": {
+        "box": [
+          1186,
+          2883,
+          1293,
+          2990
+        ],
+        "codepoint": "U+FBD6",
+        "glyph_id": 97631,
+        "index": 0,
+        "word_glyph_count": 2
+      },
+      "word_key": "100:9:1"
+    }
+  ],
+  "edition": "hafs-qcf-v1",
+  "sajdahs": [
+    {
+      "anchor_line": 15,
+      "ayah_key": "7:206",
+      "line": 15,
+      "page": 176,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          276,
+          2885,
+          359,
+          3000
+        ],
+        "codepoint": "U+FBFE",
+        "glyph_id": 28368,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "7:206:11"
+    },
+    {
+      "anchor_line": 4,
+      "ayah_key": "13:15",
+      "line": 4,
+      "page": 251,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          827,
+          673,
+          920,
+          787
+        ],
+        "codepoint": "U+FB7A",
+        "glyph_id": 40328,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "13:15:11"
+    },
+    {
+      "anchor_line": 11,
+      "ayah_key": "16:50",
+      "line": 11,
+      "page": 272,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          1172,
+          2071,
+          1254,
+          2186
+        ],
+        "codepoint": "U+FBDB",
+        "glyph_id": 43754,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "16:50:7"
+    },
+    {
+      "anchor_line": 6,
+      "ayah_key": "17:109",
+      "line": 6,
+      "page": 293,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          1532,
+          1082,
+          1629,
+          1196
+        ],
+        "codepoint": "U+FB88",
+        "glyph_id": 47139,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "17:109:5"
+    },
+    {
+      "anchor_line": 8,
+      "ayah_key": "19:58",
+      "line": 8,
+      "page": 309,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          812,
+          1471,
+          894,
+          1582
+        ],
+        "codepoint": "U+FBA4",
+        "glyph_id": 49887,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "19:58:29"
+    },
+    {
+      "anchor_line": 8,
+      "ayah_key": "22:18",
+      "line": 8,
+      "page": 334,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          1145,
+          1472,
+          1229,
+          1587
+        ],
+        "codepoint": "U+FB9B",
+        "glyph_id": 53951,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "22:18:37"
+    },
+    {
+      "anchor_line": 9,
+      "ayah_key": "22:77",
+      "line": 9,
+      "page": 341,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          280,
+          1667,
+          364,
+          1782
+        ],
+        "codepoint": "U+FBA0",
+        "glyph_id": 55066,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "22:77:11"
+    },
+    {
+      "anchor_line": 7,
+      "ayah_key": "25:60",
+      "line": 7,
+      "page": 365,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          863,
+          1266,
+          946,
+          1380
+        ],
+        "codepoint": "U+FB95",
+        "glyph_id": 58985,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "25:60:13"
+    },
+    {
+      "anchor_line": 6,
+      "ayah_key": "27:26",
+      "line": 6,
+      "page": 379,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          712,
+          1064,
+          795,
+          1179
+        ],
+        "codepoint": "U+FB86",
+        "glyph_id": 61344,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "27:26:8"
+    },
+    {
+      "anchor_line": 8,
+      "ayah_key": "32:15",
+      "line": 8,
+      "page": 416,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          862,
+          1456,
+          942,
+          1569
+        ],
+        "codepoint": "U+FB92",
+        "glyph_id": 67353,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "32:15:15"
+    },
+    {
+      "anchor_line": 11,
+      "ayah_key": "38:24",
+      "line": 12,
+      "page": 454,
+      "source": "restored-semantic-source",
+      "source_glyph": {
+        "box": [
+          1740,
+          2269,
+          1821,
+          2382
+        ],
+        "codepoint": "U+FBEA",
+        "glyph_id": 73659,
+        "index": null,
+        "word_glyph_count": 1
+      },
+      "word_key": "38:24:32"
+    },
+    {
+      "anchor_line": 15,
+      "ayah_key": "41:38",
+      "line": 15,
+      "page": 480,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          286,
+          2877,
+          368,
+          2989
+        ],
+        "codepoint": "U+FBF8",
+        "glyph_id": 77917,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "41:38:12"
+    },
+    {
+      "anchor_line": 8,
+      "ayah_key": "53:62",
+      "line": 8,
+      "page": 528,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          239,
+          1473,
+          322,
+          1588
+        ],
+        "codepoint": "U+FBAA",
+        "glyph_id": 85937,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "53:62:3"
+    },
+    {
+      "anchor_line": 13,
+      "ayah_key": "84:21",
+      "line": 13,
+      "page": 589,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          995,
+          2478,
+          1076,
+          2592
+        ],
+        "codepoint": "U+FBE8",
+        "glyph_id": 96155,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "84:21:6"
+    },
+    {
+      "anchor_line": 15,
+      "ayah_key": "96:19",
+      "line": 15,
+      "page": 597,
+      "source": "mapped-word",
+      "source_glyph": {
+        "box": [
+          276,
+          2876,
+          355,
+          2990
+        ],
+        "codepoint": "U+FBF6",
+        "glyph_id": 97380,
+        "index": 1,
+        "word_glyph_count": 2
+      },
+      "word_key": "96:19:5"
+    }
+  ],
+  "schema": "quran-svg-elements/qcf-v1-division-sajdah-source",
+  "schema_version": 1,
+  "source": {
+    "division_starts_sha256": "15e017bcabc0cf13c46b3f257f4a8d57c26c7a78c53ade5a861f2ff18a929008",
+    "map_page_files_sha256": "a638424efc78591b6be01fbf4cc2a3879bb78ffd76d671f8f071f31cda9eb7dd",
+    "page_font_tree_sha256": "e6aab956443dabc50f6b5eadd3e52bf66d3271fb23e746997c18d57722e45bfb",
+    "semantic_manifest_sha256": "f28f2ecae30ecbb67f56f80a7bb5e187b1ea4e347afcec2c83e82d506c61f82a",
+    "semantic_page_files_sha256": "f865679ed7f4dd2082ad8543f45b6b4c9ae07323afb80509b7de6617a7d703ba"
+  }
+}

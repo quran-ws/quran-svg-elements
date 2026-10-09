@@ -962,6 +962,19 @@ def _word_dktext(s0, a0, pos):
 # Elements with page-space geometry, grouped by line
 # ---------------------------------------------------------------------------
 
+_SURAH_ORNAMENT_ATTR = 'data-surah-ornament="1"'
+_SURAH_ORNAMENT_PATH = re.compile(
+    r'<path\b(?=[^>]*\bdata-kind="ornament")'
+    r'(?=[^>]*\bdata-surah-ornament="1")'
+    r'(?=[^>]*\bdata-surah="(?P<surah>\d+)")[^>]*/>',
+    re.DOTALL,
+)
+_PAGE_FRAME_PATH = re.compile(
+    r'<path\b(?=[^>]*\bdata-kind="ornament")'
+    r'(?=[^>]*\bdata-page-frame="(?P<variant>[^"]+)")[^>]*/>',
+    re.DOTALL,
+)
+
 def line_of(chain):
     for tag in chain:
         m = re.search(r'data-line="(\d+)"', tag)
@@ -976,16 +989,19 @@ def page_elements(page):
     Ink wholly outside the viewBox is invisible (the renderer clips to it); the
     ornate opening spreads carry off-canvas leftovers that must never join words.
     """
-    vb = re.search(r'viewBox="([\d.eE+-]+)[,\s]+([\d.eE+-]+)[ ,\s]+([\d.eE+-]+)'
-                   r'[ ,\s]+([\d.eE+-]+)"', page.svg)
-    if vb:
-        vx, vy, vw, vh = (float(g) for g in vb.groups())
+    if page.viewbox:
+        vx, vy, vw, vh = page.viewbox
         vlim = (vx, vy, vx + vw, vy + vh)
     else:
         vlim = None
     out = []
     for pi, p in enumerate(page.paths):
         if "ayahPolygon" in p["text"]:
+            continue
+        if _SURAH_ORNAMENT_ATTR in p["text"]:
+            if 'data-kind="ornament"' not in p["text"] or not re.search(
+                    r'\bdata-surah="\d+"', p["text"]):
+                raise ValueError("a prepared surah ornament needs kind and surah ownership")
             continue
         ln = line_of(p["chain"])
         for el in group_elements(p["d"]):
@@ -4552,7 +4568,7 @@ def _lift_path_transform(frag):
 
     Appending rather than WRAPPING is deliberate: a wrapping <g> also clears
     `xforms`, but it adds a nesting level, and audit_export's `markers` check
-    reads the marker body with `<g class="ayah-mark">(.*?)</g>\s*</g>` — the
+    reads the marker body with `<g class="ayah-mark">(.*?)</g>\\s*</g>` — the
     extra depth took that count from 0 to 11,868. Measured over the markers
     block, every innermost group holds exactly ONE path and already carries a
     transform of its own (22 of 22 on p324), so there is always a group to
@@ -4625,24 +4641,31 @@ def tag_page_furniture(svg, page):
 
 
 def normalize_frame(svg, page):
-    """Emit every page under viewBox="0 0 W H".
+    """Move the opening spread's logical content box to origin 0,0.
 
-    The artwork draws the opening spread under an offset viewBox (p1, p2:
-    "-53.3109 -198.4777 345 550") and every other page under "0 0 345 550".
-    The offset is folded into the page frame's translation, so the page
-    renders pixel-identically and raw path coordinates do not change — only
-    the numbers that live in viewBox space move with it: the root matrix, the
-    marker centres (`ayah:x`/`ayah:y`), and, in the dev profile, the ayah
-    polygons, which are siblings of the page frame in plain viewBox units and
-    are wrapped in one translate. The pipeline's own inputs (lines table,
-    polygons, overrides) stay in the artwork's frame; this is an output
-    convention and page.frame_offset is the single number behind it."""
+    The visual viewBox may be larger because it includes the native outer frame.
+    `data-content-view-box` keeps the Quran-content coordinate contract separate:
+    this folds the opening pages' source offset into the root matrix and every
+    viewBox-space number while translating both boxes by the same amount. Raw path
+    coordinates do not change. The pipeline's own inputs (line tables, polygons and
+    overrides) remain in the artwork's original content frame."""
     dx, dy = page.frame_offset
     if not (dx or dy):
         return svg
     vb = page.viewbox
-    svg = re.sub(r'viewBox="[^"]*"',
-                 'viewBox="0 0 %s %s"' % (_num(vb[2]), _num(vb[3])), svg, count=1)
+    visual = page.visual_viewbox or vb
+    visual = [visual[0] + dx, visual[1] + dy, visual[2], visual[3]]
+    svg = re.sub(
+        r'viewBox="[^"]*"',
+        'viewBox="%s"' % " ".join(_num(value) for value in visual),
+        svg, count=1,
+    )
+    if 'data-content-view-box="' in svg:
+        svg = re.sub(
+            r'data-content-view-box="[^"]*"',
+            'data-content-view-box="0 0 %s %s"' % (_num(vb[2]), _num(vb[3])),
+            svg, count=1,
+        )
 
     def _root(mo):
         a, b, c, d, e_, f_ = [float(v) for v in mo.group(1).replace(",", " ").split()]
@@ -4721,6 +4744,60 @@ def _stamp_identity(svg, edition, page_no):
     if ' data-mushaf="' in svg:
         return svg
     return re.sub(r'(<svg\b)', lambda mo: mo.group(1) + attrs, svg, count=1)
+
+
+
+def attach_page_frame(svg):
+    """Wrap the prepared frame as the page's first semantic decoration.
+
+    Preparation puts one source-verified path directly under the root page transform,
+    before every printed element. Word decomposition leaves it untouched; emission
+    removes the private variant marker and adds only the semantic wrapper.
+    """
+    matches = list(_PAGE_FRAME_PATH.finditer(svg))
+    if not matches:
+        return svg
+    if len(matches) != 1:
+        raise ValueError("page has %d prepared page frames" % len(matches))
+    match = matches[0]
+    path = re.sub(r'\sdata-page-frame(?:-box)?="[^"]+"', "", match.group(0))
+    return svg[:match.start()] + '<g class="page-frame">' + path + '</g>' + svg[match.end():]
+
+def attach_surah_ornaments(svg):
+    """Move prepared native frames, unchanged, into their one title group.
+
+    The preparation step records explicit surah ownership. Word decomposition leaves these
+    compound paths untouched; after the normal rewrite has built `g.surah-name`, this removes
+    each temporary path and prepends it to exactly that surah's title group. Missing or
+    duplicate ownership is an error rather than a geometry-based guess.
+    """
+    frames = {}
+    for match in _SURAH_ORNAMENT_PATH.finditer(svg):
+        surah = int(match.group("surah"))
+        if surah in frames:
+            raise ValueError("surah %d has more than one native ornament" % surah)
+        frames[surah] = re.sub(
+            r'\sdata-(?:surah-ornament|surah)="[^"]+"',
+            "",
+            match.group(0),
+        )
+    if not frames:
+        return svg
+    svg = _SURAH_ORNAMENT_PATH.sub("", svg)
+    for surah, path in frames.items():
+        group = re.compile(r'<g class="surah-name" data-sid="%d"[^>]*>' % surah)
+        matches = list(group.finditer(svg))
+        if len(matches) != 1:
+            raise ValueError("surah %d has %d emitted title groups" % (surah, len(matches)))
+        at = matches[0].end()
+        end = svg.find("</g>", at)
+        if end < 0:
+            raise ValueError("surah %d title group is not closed" % surah)
+        kinds = re.findall(r'<path\b[^>]*\bdata-kind="([^"]+)"', svg[at:end])
+        if kinds != ["header_ink"]:
+            raise ValueError("surah %d title paths are %r, expected one header_ink" % (surah, kinds))
+        svg = svg[:at] + path + svg[at:]
+    return svg
 
 
 def assign_page(edition, page_no, cache_dir):
@@ -13881,7 +13958,7 @@ def assign_page(edition, page_no, cache_dir):
                                (min(e["y1"] for e in _bA)
                                 + max(e["y2"] for e in _bA)) / 2.0)
 
-    out_svg = rewrite(page, assignment)
+    out_svg = attach_page_frame(attach_surah_ornaments(rewrite(page, assignment)))
     polys_all = json.load(open(polys_path)) if os.path.exists(polys_path) else []
     out_svg = tag_ayah_marks(
         out_svg, polys_all,

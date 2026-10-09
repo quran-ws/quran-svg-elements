@@ -1,0 +1,118 @@
+{
+  "schema": "quran-svg-elements/qcf-v1-vector-source",
+  "schema_version": 1,
+  "edition": "hafs-qcf-v1",
+  "inputs": {
+    "map_page_files_sha256": "a638424efc78591b6be01fbf4cc2a3879bb78ffd76d671f8f071f31cda9eb7dd",
+    "map_source_manifest_sha256": "1a87276ac95e8532c41095293d32a0d0405fc54b1ee7c5f22d20dbfb83348c9e",
+    "page_font_tree_sha256": "e6aab956443dabc50f6b5eadd3e52bf66d3271fb23e746997c18d57722e45bfb",
+    "header_asset_summary_sha256": "dfdc12b23223dc232472d016791b6c437481fff67a701fca56464cd21789750a",
+    "header_asset_files_sha256": "6ee13f0313444a9a76c10cf8d269fe2f5c8fa7343f3eb316c80c97af849f8c00",
+    "chapters_metadata_sha256": "1bbce0be176ec8cb24fcd2e014320320ecc47832e9eb4ec1e9af6b0c21c0d37c",
+    "surah_names_sha256": "ceb575fd7b16c2deb15acfbf9ab69566c8adddd06f94b45d44d724b08657df64",
+    "waqf_source_glyphs_sha256": "fec9e579e22ca355010d650bf84264744225afc9db737ba2bab78f7eead9eb8e",
+    "division_sajdah_source_sha256": "a70fd546abce8fb4608683cc2497148f3bca9a3411d2970a4cc6e5b692c23e2b"
+  },
+  "output": {
+    "source_width": 1920,
+    "source_height": 3106,
+    "page_width": 345,
+    "em_pixels": 121,
+    "path_kind": "other",
+    "page_em_pixels": {
+      "270": 113.25
+    },
+    "body_advance_maximum_rsb_em": -0.25,
+    "body_advance_minimum_advantage_em": 0.125,
+    "body_advance_blend": 0.5,
+    "body_visible_ink_minimum_advantage_em": 1.75,
+    "body_visible_ink_source_width_ratio": [
+      0.95,
+      1.05
+    ]
+  },
+  "calibration": {
+    "reference": "quran-ios Hafs 1405 1920-pixel page images",
+    "pages": [
+      3,
+      27,
+      35,
+      48,
+      117,
+      177,
+      187,
+      254,
+      262,
+      270,
+      416,
+      451,
+      565,
+      589
+    ],
+    "decision": "Use one undistorted 121-pixel em for V1 body glyphs by default; page 270 uses 113.25 for its complete body. For an ordinary one-glyph printed unit, move the outline halfway from painted-bounds placement toward the font advance cell only when its QCF right side bearing is at most -0.25 em and the mapped box width agrees with the advance width by at least 0.125 em more than it agrees with the painted width; otherwise retain painted-bounds placement. Place the official complete QPC V4 Surah header at 1630 source pixels and the QCF4 U+F8DD basmalah at 750 source pixels, both centered at x=956 and 10 source pixels below the independently measured V1 line center. The header geometry is the nearest tested global placement with zero body-ink collisions across all 226 instances."
+  },
+  "deferred": [
+    {
+      "key": "page-furniture",
+      "decision": "qpc-old owns printed page numbers, page starts, and ayah-mark positions. Ayah-marker outlines are horizontally centred by their ink-bearing contours; move-only font positioning contours do not move visible ink. This vector slice does not draw page-number decoration; page frames and running heads are intentionally out of scope."
+    },
+    {
+      "key": "fine-path-taxonomy",
+      "decision": "Emit complete body glyph outlines as data-kind=other. Independently boxed waqf source glyphs, division rosettes, and source-owned sajdah marks are qualified standalone marks; body, dot, vowel, and fused-waqf contour ownership remains deferred."
+    },
+    {
+      "key": "cross-edition-layout-comparison",
+      "decision": "Word joining such as بعدما / بعد ما and line-wrap differences against another mushaf are audit evidence, not normalization work for this source-faithful stage."
+    }
+  ],
+  "print_year_hijri": 1405,
+  "header_placement": {
+    "source": "1405h-scan-calibrated-complete-v4-assets",
+    "qualification": "mechanically-qualified",
+    "path_kind": "header_ink",
+    "line_grid": {
+      "first_line_center": 126.42083333333333,
+      "line_step": 200.91607142857143
+    },
+    "center_x": 956,
+    "surah_name": {
+      "target_width": 1630,
+      "center_y_offset": 10
+    },
+    "basmalah": {
+      "target_width": 750,
+      "center_y_offset": 10
+    },
+    "evidence": {
+      "reference_scan_tree_sha256": "bdb03b21c77ac6bdcc02d449fa9a8e892c29be8e44fcef83a82f2bf386e29d55",
+      "clearance_search_sha256": "1d9bd50e1250189e47b186b3fcdb543633d857703baa545fa012d992e86bd9fa",
+      "comparison_pages_sha256": "91a61a71116b6f6888c5174982c4b8a84132b0a9cae8536199802f3c86aa5be3",
+      "qualified_pages_sha256": "411d244d4e47bb4853951663777bd2f95c2ec92737c5a44dfd33628cc174fe6e",
+      "qualified_index_sha256": "27f787fa512a3bac09630b8fca2dc687b8377af5c2b99a5d06d0df24b27007f6",
+      "header_pages": 116,
+      "header_instances": 226,
+      "body_overlap_pages": 0,
+      "body_overlap_pixels": 0,
+      "mean_precision_10px": 0.8055166241861168,
+      "mean_recall_10px": 0.6001440799370987,
+      "mean_distance": 7.458298899816532,
+      "rejected_body_overlap_pages": 73,
+      "rejected_body_overlap_pixels": 17743,
+      "rejected_mean_precision_10px": 0.7173651568964705,
+      "rejected_mean_recall_10px": 0.5505085334137249,
+      "rejected_mean_distance": 11.307908880801179,
+      "audited_pages_sha256": "745ccfe17e0b9e1b84fddcc1f26f70861375036fa3c4b3c9f03b6ca8572dbee8",
+      "comparison_report_sha256": "a0bbf961b4c862f680560226b9a3dbaeac76374b47d740add5377186ac6a56c2",
+      "mechanical_audit_report_sha256": "e56b3a2b07ac11f83abcb8e07f0c7d21af78212a24a6d5e3c5d3d6c54923379b"
+    }
+  },
+  "waqf": {
+    "source": "canonical rasm sign plus pinned semantic-aware source-glyph ownership",
+    "qualification": "source-glyph-qualified",
+    "path_kind": "mark",
+    "mark_family": "waqf",
+    "text_signs": 4272,
+    "separate_source_glyphs": 4221,
+    "fused_source_glyphs": 51
+  }
+}

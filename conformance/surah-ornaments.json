@@ -1,0 +1,1230 @@
+{
+  "schema": "surah-ornaments",
+  "schema_version": "1.0.0",
+  "edition": "hafs-kfgqpc",
+  "source": {
+    "archive": "1441-AI-hafs.zip",
+    "archive_bytes": 466430736,
+    "archive_sha256": "280c5d71ca16aaeeb3a343be1b92c76fa6df71d0671e202c026fde12402d9eef",
+    "base_url": "https://cdn.quran.ws/KFGQPC/resources/dm/1441-ai-hafs/1441%20%D9%85%D8%B5%D8%AD%D9%81%20%D8%AD%D9%81%D8%B5-%D8%A5%D9%84%D9%8A%D8%B3%D8%AA%D8%B1%D9%8A%D8%AA%D9%88%D8%B1/",
+    "filename": "{page:03d}___Hafs39__DM.ai"
+  },
+  "pages": [
+    {
+      "page": 50,
+      "bytes": 1346390,
+      "crc32": "45bf41c4",
+      "sha256": "33f4d9c586fa386eb1e454b400a36d5194b1931f25dc22e029b4762627ac0bae",
+      "headers": [
+        {
+          "surah": 3,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 77,
+      "bytes": 1574404,
+      "crc32": "568eab89",
+      "sha256": "4fe30f257f0cbd0b3e18d95783f96becb37e3e96b8f4c6e3cb1fe1acf95bda7f",
+      "headers": [
+        {
+          "surah": 4,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 106,
+      "bytes": 1302195,
+      "crc32": "4353dc43",
+      "sha256": "fcc87a6fc89787ed4a4f65b67a439aca0a6c11fc8b20185f0ed44a98a2e8943e",
+      "headers": [
+        {
+          "surah": 5,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "page": 128,
+      "bytes": 1239626,
+      "crc32": "313e3edc",
+      "sha256": "5578d3df8e5afdf9946fa10e4c31d983c3abcdc23bf651352a2fbd9063c02582",
+      "headers": [
+        {
+          "surah": 6,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 151,
+      "bytes": 1287607,
+      "crc32": "91944342",
+      "sha256": "30d121ae51a185ff937e6d78849373f42f88f7f034c822f2e69e4aadbd44cd9d",
+      "headers": [
+        {
+          "surah": 7,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 177,
+      "bytes": 1260501,
+      "crc32": "da6dd66b",
+      "sha256": "010bb50568b0e9242a2e0c7c6687a699eb9334517f7b9ef1d4fd4adfefdee06e",
+      "headers": [
+        {
+          "surah": 8,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 187,
+      "bytes": 1443611,
+      "crc32": "44ac9270",
+      "sha256": "4d6ad720b12883b2465188ee799ad6dfd07c6438193b37a30680bcc4c7f0458e",
+      "headers": [
+        {
+          "surah": 9,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 208,
+      "bytes": 1338169,
+      "crc32": "1272fb9c",
+      "sha256": "6c77aa72d8e09a47f9fa844c1c06f7db6a6feae196de9777b2d5b0d2294079c9",
+      "headers": [
+        {
+          "surah": 10,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 221,
+      "bytes": 1273092,
+      "crc32": "115cd4a1",
+      "sha256": "3ca7b32c97b8b1df6161b16c5e6e515b67277b6b144ec4dc88139d727c3bbc2e",
+      "headers": [
+        {
+          "surah": 11,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "page": 235,
+      "bytes": 1265334,
+      "crc32": "9b24108a",
+      "sha256": "899107197be363ff9a0876849f8bd8a1918194e7c5b1842d3c8c47f8af2ee898",
+      "headers": [
+        {
+          "surah": 12,
+          "line": 9
+        }
+      ]
+    },
+    {
+      "page": 249,
+      "bytes": 1289764,
+      "crc32": "8deced10",
+      "sha256": "34e3b812d326b6a51504909289a7c31abdbed3ed1f36c0a2eda51ecae0d7fa4b",
+      "headers": [
+        {
+          "surah": 13,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 255,
+      "bytes": 1090226,
+      "crc32": "272a3894",
+      "sha256": "8f65902fe9336b5ef7572413c9784d97ee10ef29f76eb5833f321b07916f14af",
+      "headers": [
+        {
+          "surah": 14,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "page": 262,
+      "bytes": 1295971,
+      "crc32": "68e3876f",
+      "sha256": "884b0e27b29c6a5d0f035f2373a4f1fb2847f8f77809f1c265ed7642a1db630c",
+      "headers": [
+        {
+          "surah": 15,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 267,
+      "bytes": 1223437,
+      "crc32": "691eeac8",
+      "sha256": "a1ea2aa857056189aef01e0ebe2009776a5b9af430388660ec97514a4eca398f",
+      "headers": [
+        {
+          "surah": 16,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "page": 282,
+      "bytes": 1266348,
+      "crc32": "a9e5e291",
+      "sha256": "b0b65b396564c9a6752a5ec9be870d40da1a46b3f52b120e186b0603d2274220",
+      "headers": [
+        {
+          "surah": 17,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 293,
+      "bytes": 902214,
+      "crc32": "1a58391d",
+      "sha256": "74a708f8dee8561634cfc8dc02600994ec96be826ef79ddc6eeaee5e14401aa7",
+      "headers": [
+        {
+          "surah": 18,
+          "line": 10
+        }
+      ]
+    },
+    {
+      "page": 305,
+      "bytes": 1117299,
+      "crc32": "8a6ab1e5",
+      "sha256": "17b13445777e58e018b540b9305bc06da1ffe55ea58f13d27dd69f5d776c0d64",
+      "headers": [
+        {
+          "surah": 19,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 312,
+      "bytes": 1191225,
+      "crc32": "b5d98b3c",
+      "sha256": "7c3c204038642060a861f0aad97e683a5c0672e09ef9e0fe0085272e8fbfa3fd",
+      "headers": [
+        {
+          "surah": 20,
+          "line": 5
+        }
+      ]
+    },
+    {
+      "page": 322,
+      "bytes": 1290520,
+      "crc32": "07394507",
+      "sha256": "df7cdec6f2c6493c04ecf2c2a77871c6614d09b86ef6558be6d3e11ba8733630",
+      "headers": [
+        {
+          "surah": 21,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 332,
+      "bytes": 1295128,
+      "crc32": "25cb61a7",
+      "sha256": "d28009f3bcf5b01824de5dd7ad5bbe31a713dfd7d8fcdf8afffbd28d40443010",
+      "headers": [
+        {
+          "surah": 22,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 342,
+      "bytes": 1342226,
+      "crc32": "288f426c",
+      "sha256": "684c491fb9864d7ba70676e8c3e41475e19c741adf178a20790eb947a0e8fdd6",
+      "headers": [
+        {
+          "surah": 23,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 350,
+      "bytes": 1581471,
+      "crc32": "07c59a19",
+      "sha256": "7e5c38aff9eea72d3b2127ee71cedcdf558bb3cf74818690b6ddf84beebce6f5",
+      "headers": [
+        {
+          "surah": 24,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 359,
+      "bytes": 1297991,
+      "crc32": "c5158e0c",
+      "sha256": "742dcc06ea3925fba9d9735da2285ea27ef4a7966e11339dcfd8cdac51d886e9",
+      "headers": [
+        {
+          "surah": 25,
+          "line": 11
+        }
+      ]
+    },
+    {
+      "page": 367,
+      "bytes": 1459851,
+      "crc32": "7d144cb6",
+      "sha256": "4f0fd48435c17a4742f408e52945642522197c5a5c7fe3cb60797e47c9552ecf",
+      "headers": [
+        {
+          "surah": 26,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 377,
+      "bytes": 942669,
+      "crc32": "a84ecb0a",
+      "sha256": "310f15d221649a5d2d2109045569c096a446cc3be8f7404813330123c46e8e9d",
+      "headers": [
+        {
+          "surah": 27,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 385,
+      "bytes": 1223441,
+      "crc32": "bdd4daae",
+      "sha256": "a356b81b5062bb5df78ba1cd090533483f5fb782560282e2beaf8032e4055200",
+      "headers": [
+        {
+          "surah": 28,
+          "line": 8
+        }
+      ]
+    },
+    {
+      "page": 396,
+      "bytes": 1243149,
+      "crc32": "0d07b348",
+      "sha256": "3f9abdbafae89d48cf5f75384cc6f267a27018364b7873dc4a87ebcf721d44eb",
+      "headers": [
+        {
+          "surah": 29,
+          "line": 8
+        }
+      ]
+    },
+    {
+      "page": 404,
+      "bytes": 1196498,
+      "crc32": "94973902",
+      "sha256": "65d641b6a2746ffef6818729094bb7da92ea400d4f37a4a853c5412222e87091",
+      "headers": [
+        {
+          "surah": 30,
+          "line": 10
+        }
+      ]
+    },
+    {
+      "page": 411,
+      "bytes": 1236413,
+      "crc32": "4ca3a775",
+      "sha256": "fa667eb4c312339a920d746f611f3bd24e887294a4c99649bca8fc3334db5f0d",
+      "headers": [
+        {
+          "surah": 31,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 415,
+      "bytes": 1363281,
+      "crc32": "10b176fd",
+      "sha256": "986ac937483bb306ff7216e6b798f03a5f9facaf694e304a55311312e0b82eab",
+      "headers": [
+        {
+          "surah": 32,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 418,
+      "bytes": 1314240,
+      "crc32": "dced23bf",
+      "sha256": "6b6d92775fdff69d98657c85df7c204e42502a8716fffafcdbb00073cd19cf78",
+      "headers": [
+        {
+          "surah": 33,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 428,
+      "bytes": 1201516,
+      "crc32": "03d8196b",
+      "sha256": "e61d284778ed7d9587032f1bdd0e7c29191a44bec16fa659bd6e0c8b085df403",
+      "headers": [
+        {
+          "surah": 34,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 434,
+      "bytes": 1271392,
+      "crc32": "9725b26e",
+      "sha256": "9146f9a6e1fc60f04f950bd322730b518e5417633b2c1a09fb7487c7f5147f34",
+      "headers": [
+        {
+          "surah": 35,
+          "line": 8
+        }
+      ]
+    },
+    {
+      "page": 440,
+      "bytes": 1176233,
+      "crc32": "fda87461",
+      "sha256": "aa311e0da6d91e53274b8240379c504b5ca70cb1d4fbb18aa09dadc6e58e4916",
+      "headers": [
+        {
+          "surah": 36,
+          "line": 4
+        }
+      ]
+    },
+    {
+      "page": 446,
+      "bytes": 1504138,
+      "crc32": "2b6a34e9",
+      "sha256": "5b16fd535d0736a522f88c399c4755df5f5b5e1dd16365326f5bc056b9efccfd",
+      "headers": [
+        {
+          "surah": 37,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 453,
+      "bytes": 1425048,
+      "crc32": "5c69d3ad",
+      "sha256": "4c8cc909b9627da473ce989d303fd7e1b5df5b7d728a5cefd0a8680eaada7940",
+      "headers": [
+        {
+          "surah": 38,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 458,
+      "bytes": 1260877,
+      "crc32": "604f7f59",
+      "sha256": "ddf3a3eef10906db01dbcd18497173cb285f2230a0d30543f70347507b637a00",
+      "headers": [
+        {
+          "surah": 39,
+          "line": 4
+        }
+      ]
+    },
+    {
+      "page": 467,
+      "bytes": 1259087,
+      "crc32": "7d0bfedc",
+      "sha256": "d3358134412394b14f65099e1af1ce847373cfb454b96a11ba3c4787e31b74d2",
+      "headers": [
+        {
+          "surah": 40,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "page": 477,
+      "bytes": 1341846,
+      "crc32": "62b015c0",
+      "sha256": "110d2f40f6ee656f236ff07589dab44338462476bf4298cff7cc6bfd5335ffe8",
+      "headers": [
+        {
+          "surah": 41,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 483,
+      "bytes": 1327094,
+      "crc32": "e8d5428c",
+      "sha256": "36c749a22dc300ffc85ec209facbc837476032a069d4dcceb72fb27e171a0b0a",
+      "headers": [
+        {
+          "surah": 42,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 489,
+      "bytes": 1162902,
+      "crc32": "2d177cf7",
+      "sha256": "a25cdae8bef7b76476943d9c0c9d494ca910b0f3892bd09501a8db6f647f732f",
+      "headers": [
+        {
+          "surah": 43,
+          "line": 5
+        }
+      ]
+    },
+    {
+      "page": 496,
+      "bytes": 1318152,
+      "crc32": "767c92cb",
+      "sha256": "ef31c642853078622a9de80e648cd01a43f385b65b65210ef124020e6413568e",
+      "headers": [
+        {
+          "surah": 44,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 499,
+      "bytes": 1561427,
+      "crc32": "6681dad6",
+      "sha256": "5f1abefe699b393f865eeae4f74429d95016f67e99cdccecc25311617eccc287",
+      "headers": [
+        {
+          "surah": 45,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 502,
+      "bytes": 1315521,
+      "crc32": "9e23c069",
+      "sha256": "8993ac8e8804346fb392b72b553e6fe324f126978b3041223b8e6a6222904329",
+      "headers": [
+        {
+          "surah": 46,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "page": 507,
+      "bytes": 1579323,
+      "crc32": "7bdc388a",
+      "sha256": "45a34808e6578b7ae47fbd6bfd60a9f8af1cad6c650a2b9455a5d3a1b5568a03",
+      "headers": [
+        {
+          "surah": 47,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 511,
+      "bytes": 1259650,
+      "crc32": "305adfcd",
+      "sha256": "d199087b42ac97f80b7d309d46107db728734cb968cb12d23ad120678d1df735",
+      "headers": [
+        {
+          "surah": 48,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 515,
+      "bytes": 1339662,
+      "crc32": "d305b3f8",
+      "sha256": "792fe5a20dde3b40bd2f0c65a2903b8d54ba9fc62a40a898e30bcd4fe0724f45",
+      "headers": [
+        {
+          "surah": 49,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "page": 518,
+      "bytes": 1285557,
+      "crc32": "caecc8ce",
+      "sha256": "680ba381aa88acf32b5325cafaa1cf12012b931010213a83e8acfbe1a6f680c4",
+      "headers": [
+        {
+          "surah": 50,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 520,
+      "bytes": 1197423,
+      "crc32": "5b4f8858",
+      "sha256": "e4236f3a120c1debc464354dc7c8a62086f76c94e8fefcce92c052731d8dc385",
+      "headers": [
+        {
+          "surah": 51,
+          "line": 12
+        }
+      ]
+    },
+    {
+      "page": 523,
+      "bytes": 1230138,
+      "crc32": "205bbefd",
+      "sha256": "ee7fb06c0a69bf28444f8d797f6a412dc4566618d2a007d0097d47d20c90b2c5",
+      "headers": [
+        {
+          "surah": 52,
+          "line": 8
+        }
+      ]
+    },
+    {
+      "page": 526,
+      "bytes": 1444277,
+      "crc32": "77a14a7c",
+      "sha256": "2857c6f3e8ff102852355f3c22f83fb9a07cac000b718587d8123700a3a65e1e",
+      "headers": [
+        {
+          "surah": 53,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 528,
+      "bytes": 1302738,
+      "crc32": "56d3e489",
+      "sha256": "0b3bc5356b4d3bb8b1a1959a97e173a84065bdbf3d5a8dbebda8ecedcbde2e03",
+      "headers": [
+        {
+          "surah": 54,
+          "line": 10
+        }
+      ]
+    },
+    {
+      "page": 531,
+      "bytes": 1227344,
+      "crc32": "25d59eb7",
+      "sha256": "78ec02c8b19e3d1327cb6d86317d42a4cbf3f951de9781842c3600935a875356",
+      "headers": [
+        {
+          "surah": 55,
+          "line": 5
+        }
+      ]
+    },
+    {
+      "page": 534,
+      "bytes": 1207472,
+      "crc32": "2ce606d0",
+      "sha256": "e0254bda2f5cf4d685eeacfd24a0579f1969aa4c984967287d164041b4ec97dc",
+      "headers": [
+        {
+          "surah": 56,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "page": 537,
+      "bytes": 1272351,
+      "crc32": "05be4b45",
+      "sha256": "64c05c1873cf3f1d270444288c3b50c0f1462db8f17f2a91234e6a34b8ba445c",
+      "headers": [
+        {
+          "surah": 57,
+          "line": 11
+        }
+      ]
+    },
+    {
+      "page": 542,
+      "bytes": 1359908,
+      "crc32": "1cfbacae",
+      "sha256": "237d7a6d01b0df8d2688ec40defcfd3e9da7313ecc9491b1adfce4bb0a91c4de",
+      "headers": [
+        {
+          "surah": 58,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 545,
+      "bytes": 1261867,
+      "crc32": "d1bfc61e",
+      "sha256": "1d94e2fda2c394f8f5d5eb28e7d0b641a324c0da6dd1490fd277c7b3a25c4164",
+      "headers": [
+        {
+          "surah": 59,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "page": 549,
+      "bytes": 1527440,
+      "crc32": "9fd65c0d",
+      "sha256": "3f2dc873a852938e326ace6f4059be4d33276f3dd50e4093ad80fb6a85a34846",
+      "headers": [
+        {
+          "surah": 60,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 551,
+      "bytes": 1266468,
+      "crc32": "3d91e389",
+      "sha256": "bb6459834a29d6678416a2bafe4afe891e776bb2e5f34a58a53032f7f0ede1aa",
+      "headers": [
+        {
+          "surah": 61,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "page": 553,
+      "bytes": 1344668,
+      "crc32": "b64545ad",
+      "sha256": "5d569c8f02bbcc16d417d421456973a27fec5dd522328bcef031749414c68dca",
+      "headers": [
+        {
+          "surah": 62,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 554,
+      "bytes": 1401408,
+      "crc32": "cd041183",
+      "sha256": "9bd85d02da880e957a0fca8d2922cedeeb1110e7936db9fff1f56eea33c8ff18",
+      "headers": [
+        {
+          "surah": 63,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "page": 556,
+      "bytes": 1500870,
+      "crc32": "b8dce636",
+      "sha256": "afae5232cc25016ceeb6cfbcda2d97e39a703ddca8137a88d44cb701a6ef15af",
+      "headers": [
+        {
+          "surah": 64,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 558,
+      "bytes": 1466254,
+      "crc32": "074356bb",
+      "sha256": "3d6dad1426f0b5ce07a8ac3fa4f94118b568d3ee9276369a664f2ae252a83340",
+      "headers": [
+        {
+          "surah": 65,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 560,
+      "bytes": 1413961,
+      "crc32": "df54d1ee",
+      "sha256": "a38060f6bb602e076f04a7832c9882374949df0ed5bcabae0978d8a94cdf835c",
+      "headers": [
+        {
+          "surah": 66,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 562,
+      "bytes": 1401186,
+      "crc32": "3eafc54e",
+      "sha256": "de9c7aafe0e3cf1d8ae603ede468a0002e1340ff83929d8d84e7d6cc97d80654",
+      "headers": [
+        {
+          "surah": 67,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 564,
+      "bytes": 1293920,
+      "crc32": "873b8eb2",
+      "sha256": "561513a1772dcec9bbfb4d80aad3dd683f2bd68a912787faa78db61aeb807a45",
+      "headers": [
+        {
+          "surah": 68,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "page": 566,
+      "bytes": 1379467,
+      "crc32": "c8adb3de",
+      "sha256": "29ec9f5f9d5dd99add19cb2c93d08546dc7e44b4aa50b321d6c34f3047b2669f",
+      "headers": [
+        {
+          "surah": 69,
+          "line": 10
+        }
+      ]
+    },
+    {
+      "page": 568,
+      "bytes": 1270198,
+      "crc32": "2f421f8a",
+      "sha256": "a4fc6d3ce9cbcf527a3c744e52b1e4c64e6aed1ae1e40d49208f376811da56f0",
+      "headers": [
+        {
+          "surah": 70,
+          "line": 9
+        }
+      ]
+    },
+    {
+      "page": 570,
+      "bytes": 1330187,
+      "crc32": "75bd135b",
+      "sha256": "fb47d7d43450ee2da7af2115d392f4292daa237744f3de721d172a3eaad2b5b9",
+      "headers": [
+        {
+          "surah": 71,
+          "line": 5
+        }
+      ]
+    },
+    {
+      "page": 572,
+      "bytes": 1341509,
+      "crc32": "6175b559",
+      "sha256": "dacd35db1145265789990371b096a170fd40b38ad375132eca9590145169fda6",
+      "headers": [
+        {
+          "surah": 72,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 574,
+      "bytes": 1376026,
+      "crc32": "4f42634d",
+      "sha256": "a139638127aeea80dc108e6e1cad1ab639bf0e29bf4a1135e121517beeb886a7",
+      "headers": [
+        {
+          "surah": 73,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 575,
+      "bytes": 1428305,
+      "crc32": "df434495",
+      "sha256": "17e17ae21f64fa9ac8d58bc6018b101a8167dabd5529ffb6b4d081c6998f2d82",
+      "headers": [
+        {
+          "surah": 74,
+          "line": 8
+        }
+      ]
+    },
+    {
+      "page": 577,
+      "bytes": 1463776,
+      "crc32": "1ff710cc",
+      "sha256": "6739d56f0afbeddfad7f8d4abfea7151ce4f746b89f4c18ab9cf884def326a6d",
+      "headers": [
+        {
+          "surah": 75,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "page": 578,
+      "bytes": 1408806,
+      "crc32": "86970955",
+      "sha256": "d071be6e912ee85ae96a2f80e273a5d11a9a381506c1c95c6c9fb94beefa106f",
+      "headers": [
+        {
+          "surah": 76,
+          "line": 10
+        }
+      ]
+    },
+    {
+      "page": 580,
+      "bytes": 1310788,
+      "crc32": "11c2a0d6",
+      "sha256": "255e932c3a166a61c57002f4fef77704d4d4a4c179ff61ae50441a7fbe900a71",
+      "headers": [
+        {
+          "surah": 77,
+          "line": 7
+        }
+      ]
+    },
+    {
+      "page": 582,
+      "bytes": 1304930,
+      "crc32": "2ed48c26",
+      "sha256": "6fa56548155bed23fa98ee2f3e80417006d0455791c8bec23e7c9b369e0675fe",
+      "headers": [
+        {
+          "surah": 78,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 583,
+      "bytes": 1372727,
+      "crc32": "c27335bf",
+      "sha256": "db075219cef0020231656bae86353c1e86a765038c13beab8a5e006b34026edc",
+      "headers": [
+        {
+          "surah": 79,
+          "line": 8
+        }
+      ]
+    },
+    {
+      "page": 585,
+      "bytes": 1487369,
+      "crc32": "c537e3d3",
+      "sha256": "7e7a247fbe1febe7ab5b66f1642245133572a32bdf3c4baccb4e2f066bad2024",
+      "headers": [
+        {
+          "surah": 80,
+          "line": 1
+        }
+      ]
+    },
+    {
+      "page": 586,
+      "bytes": 1316867,
+      "crc32": "096542e2",
+      "sha256": "2e94d577e2d382e9b68718a6c032cb34ecc6636df545335c2d08cd484f8b9394",
+      "headers": [
+        {
+          "surah": 81,
+          "line": 2
+        }
+      ]
+    },
+    {
+      "page": 587,
+      "bytes": 1211032,
+      "crc32": "444c62bc",
+      "sha256": "60c4e0b16aa362912f68b64ed648e24ad7503cb571560e74a85724f2f4b04e63",
+      "headers": [
+        {
+          "surah": 82,
+          "line": 1
+        },
+        {
+          "surah": 83,
+          "line": 12
+        }
+      ]
+    },
+    {
+      "page": 589,
+      "bytes": 1322859,
+      "crc32": "21fbe1c5",
+      "sha256": "58099efd9d45ec45b4c629cac467e514ae32d456dbfc6d5d6ed223148d7a659c",
+      "headers": [
+        {
+          "surah": 84,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "page": 590,
+      "bytes": 1351466,
+      "crc32": "829b43ae",
+      "sha256": "230f764a3fc9341f0a4d4a52399437a8f382f3924a5ab6da834d6e4c0de8ba2c",
+      "headers": [
+        {
+          "surah": 85,
+          "line": 2
+        }
+      ]
+    },
+    {
+      "page": 591,
+      "bytes": 1214001,
+      "crc32": "a0e92752",
+      "sha256": "2cb656ac37fff5a693be70f6770cf0c5da2c1f69e28b52c78ee4bfbc9ca704cb",
+      "headers": [
+        {
+          "surah": 86,
+          "line": 1
+        },
+        {
+          "surah": 87,
+          "line": 10
+        }
+      ]
+    },
+    {
+      "page": 592,
+      "bytes": 1262611,
+      "crc32": "3fcc2e5e",
+      "sha256": "b2c77339df34ae92fa73b40167550a807b53c91de2a8f976dbe047e2ce7fb65b",
+      "headers": [
+        {
+          "surah": 88,
+          "line": 5
+        }
+      ]
+    },
+    {
+      "page": 593,
+      "bytes": 1243038,
+      "crc32": "b9e07073",
+      "sha256": "8b6df930e6b33d011eac0dd213125b0c37e3ae95750b75d88d248a0489653995",
+      "headers": [
+        {
+          "surah": 89,
+          "line": 3
+        }
+      ]
+    },
+    {
+      "page": 594,
+      "bytes": 1250992,
+      "crc32": "540c6c51",
+      "sha256": "4b0f051f7610a6c010b9c227d9b8c4f57fe6753fee3bb5efcbbfbbca6c42ea5d",
+      "headers": [
+        {
+          "surah": 90,
+          "line": 6
+        }
+      ]
+    },
+    {
+      "page": 595,
+      "bytes": 1165215,
+      "crc32": "6019d295",
+      "sha256": "e7cfdab756d25b88810e517c92622bf61b93bc3a98995d507ea9c15cd184c71b",
+      "headers": [
+        {
+          "surah": 91,
+          "line": 2
+        },
+        {
+          "surah": 92,
+          "line": 11
+        }
+      ]
+    },
+    {
+      "page": 596,
+      "bytes": 1156457,
+      "crc32": "034858bd",
+      "sha256": "f5fa8e5a635866a1ae29c8ff798d5303ca1f1efdf8e9469b1a88f19950d2f9f2",
+      "headers": [
+        {
+          "surah": 93,
+          "line": 6
+        },
+        {
+          "surah": 94,
+          "line": 13
+        }
+      ]
+    },
+    {
+      "page": 597,
+      "bytes": 1176132,
+      "crc32": "4b28bc84",
+      "sha256": "da1cce8720cfe154acd0c80f941f626f090c0894f87a4c79195a6ff231304731",
+      "headers": [
+        {
+          "surah": 95,
+          "line": 3
+        },
+        {
+          "surah": 96,
+          "line": 9
+        }
+      ]
+    },
+    {
+      "page": 598,
+      "bytes": 1226552,
+      "crc32": "d445ded0",
+      "sha256": "c19d38157eed053a263064f56499504346c18b91bb3ce4226173de94b3b15a53",
+      "headers": [
+        {
+          "surah": 97,
+          "line": 4
+        },
+        {
+          "surah": 98,
+          "line": 9
+        }
+      ]
+    },
+    {
+      "page": 599,
+      "bytes": 1166451,
+      "crc32": "fb7b7bac",
+      "sha256": "93c86f63d1c7b7d69ff427bf3288af5ca15fe486bca1d3179754f52ff2e7ecfb",
+      "headers": [
+        {
+          "surah": 99,
+          "line": 6
+        },
+        {
+          "surah": 100,
+          "line": 12
+        }
+      ]
+    },
+    {
+      "page": 600,
+      "bytes": 1183556,
+      "crc32": "1331d6e8",
+      "sha256": "2a38b28575b7ef7bcdc81cdfe011372d4b6eb4de3b2b05ab9098c910e6ef8d30",
+      "headers": [
+        {
+          "surah": 101,
+          "line": 4
+        },
+        {
+          "surah": 102,
+          "line": 11
+        }
+      ]
+    },
+    {
+      "page": 601,
+      "bytes": 982373,
+      "crc32": "0280172e",
+      "sha256": "157a7d5a13cb39d701170196f1903e9d3dbffdfdc9e78bc0349b5c83ce903af5",
+      "headers": [
+        {
+          "surah": 103,
+          "line": 1
+        },
+        {
+          "surah": 104,
+          "line": 5
+        },
+        {
+          "surah": 105,
+          "line": 11
+        }
+      ]
+    },
+    {
+      "page": 602,
+      "bytes": 885218,
+      "crc32": "77ed3138",
+      "sha256": "deb40b6370dfaaadbcec471618347de8cc24b051f97823eabf17ed440b8ddec0",
+      "headers": [
+        {
+          "surah": 106,
+          "line": 1
+        },
+        {
+          "surah": 107,
+          "line": 6
+        },
+        {
+          "surah": 108,
+          "line": 12
+        }
+      ]
+    },
+    {
+      "page": 603,
+      "bytes": 881657,
+      "crc32": "9e487646",
+      "sha256": "3228078865bf5121c03dd97d82c2dedc91c64127a363148cd3d61dcec626454d",
+      "headers": [
+        {
+          "surah": 109,
+          "line": 1
+        },
+        {
+          "surah": 110,
+          "line": 6
+        },
+        {
+          "surah": 111,
+          "line": 11
+        }
+      ]
+    },
+    {
+      "page": 604,
+      "bytes": 790241,
+      "crc32": "24daa713",
+      "sha256": "511a9b427240a56777d2d5ddae71ed4af31be5e6fa80a9be3b7cea807ce22437",
+      "headers": [
+        {
+          "surah": 112,
+          "line": 1
+        },
+        {
+          "surah": 113,
+          "line": 5
+        },
+        {
+          "surah": 114,
+          "line": 10
+        }
+      ]
+    }
+  ]
+}

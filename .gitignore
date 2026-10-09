@@ -4,6 +4,8 @@ __pycache__/
 # generated: word cache, decomposed SVGs, sweep results
 .cache/words/
 .cache/words-svg/
+.cache/surah-ornaments/
+.cache/page-frames/
 .cache/sweeps/
 
 # bench scratch renders
@@ -77,3 +79,6 @@ docs/PROCESS.md
 # and the decisions it records were folded into .cache/marks/labels.json long
 # ago. Kept out of the published tree; recoverable from git history.
 .cache/review/face_changes.jsonl
+
+# generated QCF V1 source snapshots and mappings
+.cache/qcf-v1/

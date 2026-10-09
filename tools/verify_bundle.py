@@ -29,6 +29,7 @@ import json
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
 
 try:
     import brotli
@@ -414,10 +415,22 @@ def check_profile(bundle, sample):
                        open(os.path.join(bundle, "pages/%03d.svg" % p),
                             encoding="utf-8").read())]
     check("no <path> carries a transform (translations are baked)", not xf, str(xf[:5]))
-    vb = [p for p in sample
-          if 'viewBox="0 0 345 550"' not in open(
-              os.path.join(bundle, "pages/%03d.svg" % p), encoding="utf-8").read()]
-    check("every page uses viewBox 0 0 345 550", not vb, str(vb[:5]))
+    vb = []
+    for p in sample:
+        text = open(os.path.join(bundle, "pages/%03d.svg" % p), encoding="utf-8").read()
+        root = ET.fromstring(text)
+        try:
+            visual = [float(value) for value in root.get("viewBox", "").split()]
+            content = [float(value) for value in root.get("data-content-view-box", "").split()]
+        except ValueError:
+            vb.append(p)
+            continue
+        if (len(visual) != 4 or content != [0.0, 0.0, 345.0, 550.0]
+                or visual[0] > 0.0 or visual[1] > 0.0
+                or visual[0] + visual[2] < 345.0
+                or visual[1] + visual[3] < 550.0):
+            vb.append(p)
+    check("every visual viewBox contains content box 0 0 345 550", not vb, str(vb[:5]))
 
 
 # -------------------------------------------------------------------- sizes

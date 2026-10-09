@@ -11,8 +11,8 @@ must hold on EVERY page of the production profile:
               every ornament twice; the copy rides inside the same marker as
               data-duplicate="1" (collapsing it darkens the rim — pixel
               identity forbids it) and is not counted as a second ornament.
-    viewbox   viewBox="0 0 345 550" on every page (p1/p2 in the artwork use
-              an offset viewBox that the emitter folds into the page frame)
+    viewbox   data-content-view-box="0 0 345 550" on every page; the visual
+              viewBox contains it and may grow to reveal the native outer frame
     kinds     every <path> carries data-kind
     xforms    no <path> carries a transform (a cross-path translation is baked
               into the absolute moveto instead)
@@ -23,6 +23,9 @@ must hold on EVERY page of the production profile:
               other text forms live in the bundle's index/by-page/NNN.json
     word_key  every word group carries data-word-key, surah:ayah:word — the
               only word key there is (docs/HAFS-JSON-SOURCE.md)
+    headers   every surah-name group has exactly one header_ink path and at most one
+              ornament path, which precedes the title ink in paint order
+    frame     exactly one first-painted page-frame group with one even-odd ornament path
 
     python3 tools/audit_export.py [first [last]] [--jobs N]
 
@@ -34,13 +37,14 @@ import json
 import os
 import re
 import sys
+import xml.etree.ElementTree as ET
 from collections import Counter
 from multiprocessing import Pool
 
 ROOT = os.environ.get("QSVG_ROOT") or os.path.dirname(
     os.path.dirname(os.path.abspath(__file__)))
 TOOLS = os.path.dirname(os.path.abspath(__file__))
-BODY_VIEWBOX = "0 0 345 550"
+CONTENT_VIEWBOX = "0 0 345 550"
 NUM = r"[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?"
 TEXT_FORMS = ("data-rasm-imlai", "data-qpc", "data-rasm", "data-search")
 
@@ -63,10 +67,38 @@ def check_svg(svg):
         if m:
             seen[m.groups()] += 1
     bad["markers"] += sum(v - 1 for v in seen.values() if v > 1)
-    # -- viewbox
-    vb = re.search(r'viewBox="([^"]*)"', svg)
-    if not vb or vb.group(1) != BODY_VIEWBOX:
+    # -- visual/content boxes and native page frame
+    try:
+        root = ET.fromstring(svg)
+        visual = [float(value) for value in root.get("viewBox", "").split()]
+        content = [float(value) for value in root.get("data-content-view-box", "").split()]
+        content_text = " ".join(root.get("data-content-view-box", "").split())
+        if len(visual) != 4 or len(content) != 4 or content_text != CONTENT_VIEWBOX:
+            bad["viewbox"] += 1
+        elif (visual[0] > content[0] or visual[1] > content[1]
+              or visual[0] + visual[2] < content[0] + content[2]
+              or visual[1] + visual[3] < content[1] + content[3]):
+            bad["viewbox"] += 1
+
+        frames = [node for node in root.iter()
+                  if node.tag.rsplit("}", 1)[-1] == "g" and node.get("class") == "page-frame"]
+        if len(frames) != 1:
+            bad["frame"] += 1
+        else:
+            frame = frames[0]
+            paths = [node for node in frame if node.tag.rsplit("}", 1)[-1] == "path"]
+            if (len(paths) != 1 or paths[0].get("data-kind") != "ornament"
+                    or paths[0].get("fill-rule") != "evenodd"
+                    or paths[0].get("data-page-frame") is not None
+                    or paths[0].get("data-page-frame-box") is not None):
+                bad["frame"] += 1
+            parents = {child: parent for parent in root.iter() for child in parent}
+            parent = parents.get(frame)
+            if parent is None or list(parent).index(frame) != 0:
+                bad["frame"] += 1
+    except (ET.ParseError, TypeError, ValueError):
         bad["viewbox"] += 1
+        bad["frame"] += 1
     # -- kinds / xforms
     for p in re.findall(r"<path\b[^>]*>", svg):
         if "data-kind=" not in p:
@@ -81,6 +113,13 @@ def check_svg(svg):
                     continue
                 if "." in v and len(v.split(".")[1]) > 3:
                     bad["noise"] += 1
+    # -- surah header parts
+    for body in re.findall(r'<g class="surah-name"[^>]*>(.*?)</g>', svg, re.S):
+        kinds = re.findall(r'<path\b[^>]*data-kind="([^"]+)"', body)
+        if kinds.count("header_ink") != 1 or kinds.count("ornament") > 1:
+            bad["headers"] += 1
+        if "ornament" in kinds and kinds.index("ornament") > kinds.index("header_ink"):
+            bad["headers"] += 1
     # -- textattrs
     for g in re.findall(r'<g class="word"[^>]*>', svg):
         bad["textattrs"] += sum(1 for a in TEXT_FORMS if a + '="' in g)
@@ -117,7 +156,7 @@ def main():
         json.dump(res, open(a.json, "w"), indent=1)
     print("TOTAL pages=%d %s" % (len(pages), " ".join(
         "%s=%d" % (k, tot.get(k, 0)) for k in
-        ("markers", "viewbox", "kinds", "xforms", "noise", "textattrs", "word_key"))))
+        ("markers", "viewbox", "frame", "kinds", "xforms", "noise", "textattrs", "word_key", "headers"))))
     return 1 if sum(tot.values()) else 0
 
 

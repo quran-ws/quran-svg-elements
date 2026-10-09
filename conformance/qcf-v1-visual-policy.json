@@ -1,0 +1,23 @@
+{
+  "high_width": 1920,
+  "reading_width": 690,
+  "low_alpha": 24,
+  "solid_alpha": 160,
+  "pair_prefilter_page_units": 1.25,
+  "solid_overlap_pixels": 0,
+  "soft_overlap_pixels": 3,
+  "high_clearance_pixels": 2.0,
+  "reading_clearance_pixels": 1.0,
+  "minimum_ink_ratio": 0.58,
+  "maximum_ink_ratio": 1.65,
+  "component_loss": 2,
+  "maximum_hq_vertical_scale_ratio": 1.08,
+  "line_center_drift_page_units": 1.5,
+  "line_reference_floor": 0.84,
+  "line_reference_regression": 0.045,
+  "word_reference_floor": 0.68,
+  "word_reference_regression": 0.08,
+  "reference_tolerance_pixels": 2,
+  "reference_registration_pixels": 2,
+  "cross_renderer_floor": 0.995
+}

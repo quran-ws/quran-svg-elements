@@ -51,7 +51,9 @@ def text_forms(page, cache_dir=None):
                             "rasm": quran_meta.rasm(w["rasm_uthmani"]),
                             "rasm_imlai": w["rasm_imlai"],
                             "search": quran_meta.rasm(w["rasm_imlai"]),
-                            "qpc": w.get("qpc") or None}
+                            # The public source spelling, not the mark-budget
+                            # normalization used only while classifying ink.
+                            "qpc": w.get("qpc_text") or w.get("qpc") or None}
     return out
 
 
@@ -98,6 +100,7 @@ def read_page(path, page):
     """
     root = ET.parse(path).getroot()
     view_box = root.get("viewBox")
+    content_view_box = root.get("data-content-view-box") or view_box
 
     words = []          # in document order == reading order (FORMAT §5.4)
     lines_seen = []
@@ -212,6 +215,7 @@ def read_page(path, page):
     return {
         "page": page,
         "view_box": view_box,
+        "content_view_box": content_view_box,
         "lines": sorted(set(lines_seen)),
         "words": words,
         "marks": marks,

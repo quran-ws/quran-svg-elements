@@ -252,7 +252,7 @@ control still passes. The audit is also a CI gate in `mushaf-audit.yml`
 | `tools/audit_pixels.py` | ink added/removed (contour conservation) or moved (raster vs artwork), all 604 pages | AA seams under 10 px; semantic mis-labels |
 | `tools/audit_segmentation.py` | that the emitted words ARE the word-by-word-translation release's — count per ayah and letters per word, all 6,236 ayahs, so `data-word-key`'s third number IS the release's word number (`--svg` asks it of the artefact) | which of two spellings is right; anything that is not a boundary |
 | `tools/audit_headerbands.py` | a surah opening's two header groups holding each other's ink: each header line's ink is one tight band, so an element outside its own group's band but inside the other's is misfiled. `--build` renders just the 116 DK-declared header pages, which is how CI runs it | pages with only one header group (Tawbah, and every non-opening page); anything inside the correct band |
-| `tools/audit_export.py` | the export SHAPE a consumer's converter measured (2026-09-04): one marker per ayah with id, viewBox `0 0 345 550` everywhere, `data-kind` on every path, no `<path transform>`, three-decimal movetos, production word groups carrying `data-word-key` + `data-rasm-uthmani` only. Six properties, every page, production profile | anything about the ink itself |
+| `tools/audit_export.py` | the export SHAPE a consumer's converter relies on: one marker per ayah with id, one first-painted page frame, stable content box `0 0 345 550` inside the visual paper box, `data-kind` on every path, no `<path transform>`, three-decimal movetos, production word groups carrying `data-word-key` + `data-rasm-uthmani` only. Every page, production profile | anything about the ink itself |
 
 `tools/audit_split.py` and `tools/audit_lines.py` are named in older notes but
 **neither exists**, here or in `origin/archive/pre-rewrite` — a line named in a
@@ -747,7 +747,17 @@ mkdir -p .cache && cp -R /tmp/ws/.cache/* .cache/
 
 # 3. add the per-line structure to the artwork (idempotent, ~3 min)
 python3 tools/add_line_structure.py --mushaf hafs/kfqc --jobs 3
-python3 tools/verify_render.py hafs/kfqc     # expect 146 byte-identical, max alpha change 17/255
+python3 tools/verify_render.py hafs/kfqc     # pure regrouping: expect 146 byte-identical
+
+# 3b. restore the native page frame to all 604 pages AFTER line assignment
+uv run tools/prepare_page_frames.py --root "$PWD" --jobs 8
+# The manifest maps ten exact source outlines across the corpus: two opening frames
+# and eight ordinary variants (the latter differ by at most 0.00101 source units).
+
+# 3c. restore the 112 compact surah cartouches (surahs 3–114)
+uv run tools/prepare_surah_ornaments.py --root "$PWD" --jobs 8
+# The tracked manifest pins 96 official 1441H AI pages by size, CRC32 and SHA-256.
+# Pages 1–2 use the integrated page-frame artwork instead of a separate cartouche.
 
 # 4. the word cache comes from quran.com on first use and then persists
 python3 scratchpad/bench.py                  # expect SCORE 77, FAILURES none, pixelfail 0

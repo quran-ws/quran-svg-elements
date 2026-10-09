@@ -16,12 +16,48 @@ on:
   pull_request:
     paths:
       - 'tools/**'
+      - 'conformance/test_page_frames.py'
+      - 'conformance/test_qcf_v1_map.py'
+      - 'conformance/test_qcf_v1_svg.py'
+      - 'conformance/test_qcf_v1_division_sajdah.py'
+      - 'conformance/test_qcf_v1_waqf_source.py'
+      - 'conformance/qcf-v1-waqf-source-glyphs.json'
+      - 'conformance/test_qcf_v1_v4_headers.py'
+      - 'conformance/test_qcf_v1_hq_word_overlay.py'
+      - 'conformance/qcf-v1-hq-word-source.json'
+      - 'conformance/qcf-v1-vector-source.json'
+      - 'conformance/qcf-v1-division-sajdah-source.json'
+      - 'tools/build_qcf_v1_svg.py'
+      - 'conformance/qcf-v1-source.json'
+      - 'docs/QCF-V1.md'
+      - 'conformance/test_surah_ornaments.py'
+      - 'conformance/test_page121_ownership.py'
+      - 'conformance/page-frames.json'
+      - 'conformance/surah-ornaments.json'
       - '.cache/**'
       - '.github/workflows/mushaf-audit.yml'
   push:
     branches: [main]
     paths:
       - 'tools/**'
+      - 'conformance/test_page_frames.py'
+      - 'conformance/test_qcf_v1_map.py'
+      - 'conformance/test_qcf_v1_svg.py'
+      - 'conformance/test_qcf_v1_division_sajdah.py'
+      - 'conformance/test_qcf_v1_waqf_source.py'
+      - 'conformance/qcf-v1-waqf-source-glyphs.json'
+      - 'conformance/test_qcf_v1_v4_headers.py'
+      - 'conformance/test_qcf_v1_hq_word_overlay.py'
+      - 'conformance/qcf-v1-hq-word-source.json'
+      - 'conformance/qcf-v1-vector-source.json'
+      - 'conformance/qcf-v1-division-sajdah-source.json'
+      - 'tools/build_qcf_v1_svg.py'
+      - 'conformance/qcf-v1-source.json'
+      - 'docs/QCF-V1.md'
+      - 'conformance/test_surah_ornaments.py'
+      - 'conformance/test_page121_ownership.py'
+      - 'conformance/page-frames.json'
+      - 'conformance/surah-ornaments.json'
       - '.cache/**'
   workflow_dispatch:
     inputs:
@@ -43,13 +79,28 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
-      # The pipeline and the audits are pure stdlib. add_line_structure.py is
-      # not: it refreshes each page's .svg.br alongside the .svg, and without
-      # brotli it does all the work and then dies on the last step.
-      - name: brotli, for the artwork's .svg.br siblings
-        run: pip install --quiet brotli
+      # Line preparation needs brotli. Native frames use MuPDF to read the official
+      # AI pages, then FontTools pens plus Skia path boolean operations.
+      - name: Artwork geometry dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends mupdf-tools
+          pip install --quiet \
+            brotli fonttools skia-pathops \
+            numpy==2.3.4 pillow==12.0.0 scipy==1.16.2
+
+      - name: Mushaf preparation contracts
+        run: |
+          python conformance/test_qcf_v1_map.py
+          python conformance/test_qcf_v1_svg.py
+          python conformance/test_qcf_v1_division_sajdah.py
+          python conformance/test_qcf_v1_waqf_source.py
+          python conformance/test_qcf_v1_v4_headers.py
+          python conformance/test_qcf_v1_hq_word_overlay.py
+          python3 conformance/test_page_frames.py
+          python3 conformance/test_surah_ornaments.py
 
       # The word cache is 604 files of quran.com API responses. It is
       # gitignored as derived, and re-fetching it on every run would hammer a
@@ -60,17 +111,30 @@ jobs:
           path: .cache/words
           key: words-v1
 
-      # Keyed on the artwork commit AND on add_line_structure.py, because the
-      # cached tree carries that script's in-place per-line rewrite — a new
-      # version of the script means a different tree.
+      # The cached tree carries both derived line structure and native frames. Any
+      # change to either preparation stage or to the pinned source manifest invalidates it.
       - name: Restore the prepared artwork
         id: artwork-cache
         uses: actions/cache@v4
         with:
           path: ${{ env.ARTWORK }}
-          key: artwork-${{ env.ARTWORK_COMMIT }}-${{ hashFiles('tools/add_line_structure.py', 'tools/svg_lines.py') }}
+          key: artwork-${{ env.ARTWORK_COMMIT }}-${{ hashFiles('tools/add_line_structure.py', 'tools/svg_lines.py', 'tools/add_surah_ornaments.py', 'tools/prepare_page_frames.py', 'tools/prepare_surah_ornaments.py', 'conformance/page-frames.json', 'conformance/surah-ornaments.json') }}
 
-      - name: Fetch the artwork and add the per-line structure
+      - name: Restore the official page-frame sources
+        if: steps.artwork-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v4
+        with:
+          path: .cache/page-frames
+          key: page-frame-sources-${{ hashFiles('conformance/page-frames.json') }}
+
+      - name: Restore the official surah-frame sources
+        if: steps.artwork-cache.outputs.cache-hit != 'true'
+        uses: actions/cache@v4
+        with:
+          path: .cache/surah-ornaments
+          key: surah-ornament-sources-${{ hashFiles('conformance/surah-ornaments.json') }}
+
+      - name: Fetch and prepare the artwork
         if: steps.artwork-cache.outputs.cache-hit != 'true'
         run: |
           set -euo pipefail
@@ -86,6 +150,8 @@ jobs:
           ln -sfn "$GITHUB_WORKSPACE/tools" tools
           ln -sfn "$GITHUB_WORKSPACE/.cache" .cache
           python3 tools/add_line_structure.py --mushaf hafs/kfqc --jobs 4
+          python3 tools/prepare_page_frames.py --root "$ARTWORK" --jobs 8
+          python3 tools/prepare_surah_ornaments.py --root "$ARTWORK" --jobs 8
 
       - name: Relink the working set into the cached artwork
         run: |
@@ -93,6 +159,28 @@ jobs:
           cd "$ARTWORK"
           ln -sfn "$GITHUB_WORKSPACE/tools" tools
           ln -sfn "$GITHUB_WORKSPACE/.cache" .cache
+
+      - name: Every native frame has its manifest owner
+        env:
+          QSVG_ROOT: ${{ env.ARTWORK }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import sys
+
+          sys.path.insert(0, "tools")
+          from prepare_page_frames import check_prepared_artwork as check_page_frames
+          from prepare_surah_ornaments import check_prepared_artwork as check_surah_frames
+
+          check_page_frames(os.environ["QSVG_ROOT"])
+          check_surah_frames(os.environ["QSVG_ROOT"])
+          PY
+
+      - name: Page 121 keeps the 5:83 word boundary
+        env:
+          QSVG_ROOT: ${{ env.ARTWORK }}
+          QSVG_PROFILE: production
+        run: python3 conformance/test_page121_ownership.py
 
       # The gate proper. Exits non-zero on any flagged word and prints the word
       # key, its text, and the family that disagreed.

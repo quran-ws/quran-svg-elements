@@ -1,0 +1,123 @@
+{
+  "schema": "page-frames",
+  "schema_version": "1.0.0",
+  "edition": "hafs-kfgqpc",
+  "source": {
+    "archive": "1441-AI-hafs.zip",
+    "archive_bytes": 466430736,
+    "archive_sha256": "280c5d71ca16aaeeb3a343be1b92c76fa6df71d0671e202c026fde12402d9eef",
+    "base_url": "https://cdn.quran.ws/KFGQPC/resources/dm/1441-ai-hafs/1441%20%D9%85%D8%B5%D8%AD%D9%81%20%D8%AD%D9%81%D8%B5-%D8%A5%D9%84%D9%8A%D8%B3%D8%AA%D8%B1%D9%8A%D8%AA%D9%88%D8%B1/",
+    "filename": "{page:03d}___Hafs39__DM.ai"
+  },
+  "corpus_audit": {
+    "pages": 604,
+    "ordinary_variants": 8,
+    "max_variant_coordinate_delta": 0.001007080078125
+  },
+  "defaults": {
+    "odd": "odd-main",
+    "even": "even-main"
+  },
+  "overrides": {
+    "1": "opening-1",
+    "2": "opening-2",
+    "9": "odd-9-27",
+    "17": "odd-17",
+    "27": "odd-9-27",
+    "140": "even-140-family",
+    "155": "odd-155-family",
+    "165": "odd-155-family",
+    "190": "even-140-family",
+    "200": "even-140-family",
+    "234": "even-140-family",
+    "285": "odd-155-family",
+    "290": "even-140-family",
+    "291": "odd-155-family",
+    "452": "even-452",
+    "562": "even-140-family",
+    "594": "even-140-family",
+    "603": "odd-603"
+  },
+  "variants": {
+    "opening-1": {
+      "role": "opening",
+      "source_page": 1,
+      "bytes": 393966,
+      "crc32": "59bb6b92",
+      "sha256": "78aa4f5dcfab4fcf4b4b8fa8814990233320bca72520dc0982f92034cdaaf58f",
+      "frame_sha256": "43518b8fbb249962f22ba68c481fd0ed549a54dd11a8597d032660e6e05f02f0"
+    },
+    "opening-2": {
+      "role": "opening",
+      "source_page": 2,
+      "bytes": 469559,
+      "crc32": "275faaf1",
+      "sha256": "c48ba58f26f34e964dde19a2c49a53dbb9c380fc66d063e23e9f8e9da8544450",
+      "frame_sha256": "af68dcd8c118970390585de2c4a5cb0611c45f7af019ba968571e59818892ac2"
+    },
+    "odd-main": {
+      "role": "odd",
+      "source_page": 3,
+      "bytes": 1214516,
+      "crc32": "906d18b3",
+      "sha256": "375b1fc9284e724029d9da86dcb3779f4e6afdec9ca117dba9cb58a2d9575182",
+      "frame_sha256": "c628b6e6d049f1cc25c5d4fca0d575605a4a04a1db4c3061e87cea40b7f21647"
+    },
+    "even-main": {
+      "role": "even",
+      "source_page": 4,
+      "bytes": 1229489,
+      "crc32": "c42bbd13",
+      "sha256": "c883936e3fc9a617d9492e9e11659177063de600a7501837f5f76a36b32f93ef",
+      "frame_sha256": "de383220ed5fc63bf116244f101226c4d30f57d75c50482c613394bc4134a2ed"
+    },
+    "odd-9-27": {
+      "role": "odd",
+      "source_page": 9,
+      "bytes": 1303807,
+      "crc32": "0ad0da3f",
+      "sha256": "311127d40249e8d0de3b04f1d41da51e542abc2fb0b9c2b9ff485a22e41f591f",
+      "frame_sha256": "2b3f466b3ae891558b9c4e135289e9738553e2bc9f47328aeb606e40787c2f11"
+    },
+    "odd-17": {
+      "role": "odd",
+      "source_page": 17,
+      "bytes": 1202633,
+      "crc32": "f7cb5c65",
+      "sha256": "888fc2750f60030aae17e02cf3e3e678bc174b73212f65b9360a847a508db444",
+      "frame_sha256": "11e601774d0a623c87b0f458b8e265174a55c0cfc0cb87ba4e6d4937685f7932"
+    },
+    "even-140-family": {
+      "role": "even",
+      "source_page": 140,
+      "bytes": 886050,
+      "crc32": "4eefa0d2",
+      "sha256": "6e6cd1fbb14397fd8a69454c34307410f666f02794312b2e46f915d3d72e5b6a",
+      "frame_sha256": "f36d5f9e7c2999d3a758e2a67b600bcd42cfbc0699a532ec311fc2688509889e"
+    },
+    "odd-155-family": {
+      "role": "odd",
+      "source_page": 155,
+      "bytes": 1354615,
+      "crc32": "74ecbf3c",
+      "sha256": "833b341b0f4254dc629cbac5bb4feef38b6e8f6d5ca979ef4e96c9029f71b31e",
+      "frame_sha256": "15f493fcec74963ef0e4d2274efb39c2a2ca3d1dc7d8f851596aaa4a0c33dedc"
+    },
+    "even-452": {
+      "role": "even",
+      "source_page": 452,
+      "bytes": 1340491,
+      "crc32": "929354a4",
+      "sha256": "dc15a579eb7dc3ad15a11919efb5c8f7ac8c3b7e19da41011e35a31aacb57c79",
+      "frame_sha256": "9e9d4434f6479180bd6d5b2f46d89ac3a0bd243056abb6ba87753ca77fa89123"
+    },
+    "odd-603": {
+      "role": "odd",
+      "source_page": 603,
+      "bytes": 881657,
+      "crc32": "9e487646",
+      "sha256": "3228078865bf5121c03dd97d82c2dedc91c64127a363148cd3d61dcec626454d",
+      "frame_sha256": "09654e71aa52b63378997beb5f24ddf549c7108ce9518c9c8ecc78e13346751e"
+    }
+  }
+}

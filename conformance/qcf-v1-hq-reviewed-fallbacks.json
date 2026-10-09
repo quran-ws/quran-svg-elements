@@ -1,0 +1,455 @@
+{
+  "schema": "quran-svg-elements/qcf-v1-hq-reviewed-fallbacks",
+  "schema_version": 2,
+  "edition": "hafs-qcf-v1",
+  "print_year_hijri": 1405,
+  "qualification": "complete-corpus-visual-audit-reviewed",
+  "source_candidate_tree_sha256": "bba389e5fe0a533acd8c0a00698a4d8671b697ff362754fb19d884bd51a46636",
+  "base_pages_sha256": "91a61a71116b6f6888c5174982c4b8a84132b0a9cae8536199802f3c86aa5be3",
+  "evidence": {
+    "visual_policy_sha256": "ca6c05b9247c872a48a25348f76f5f839bbb51261881552ff78bce390659d237",
+    "visual_review_sha256": "6ac2658da4c2f6f3933f18b7095ab2ce343ae9f119cd3a0c3de59befc8f5b655",
+    "baseline_report_sha256": "11365a188a71f0c3753845218df662ba1bc724cdbce8b0fdd4c5c36584f969a7",
+    "pair_ablation_report_sha256": "ee8d482c952232352c5964bc3fcb47670d0f98dcf745d3b096d809d6b66ac77d",
+    "sparse_variant_report_sha256": "bbc54bab5041f004c1a9102a21c31a7bf8f8ef9d256311c856011876ee381b88",
+    "sparse_variant_scan_sha256": "55b2bc12d3b29e45d06f889aeb7d6c4c65746fbcdc26390b10a11450a7428fd1",
+    "newly_eligible_after_base_sha256": "d6f37b52e8128ea4bd4071d02c7bd096d2302a594b5103f3596cbe12512d2088",
+    "vertical_stretch_decision_sha256": "02a894516573331962def9fc4373afb1edb4367ca8cba1f47e056e1cd8e7c866"
+  },
+  "words": [
+    {
+      "page": 3,
+      "word_key": "2:15:2",
+      "text": "يَسْتَهْزِئُ",
+      "source_class": "direct",
+      "source_path_sha256": "da91e4191b26e5d6fce1acd6129a3eacf29289396de80a764434ef8fb95f79df"
+    },
+    {
+      "page": 13,
+      "word_key": "2:85:9",
+      "text": "مِّن",
+      "source_class": "direct",
+      "source_path_sha256": "d2bf55fc68c93d4af90a135dd2c80d8256317739860d14a1a0489f6896cc54d7"
+    },
+    {
+      "page": 16,
+      "word_key": "2:102:52",
+      "text": "وَيَتَعَلَّمُونَ",
+      "source_class": "direct",
+      "source_path_sha256": "17304c4b63966b06c0e4a57154036d2b53ff4606662f7ce0d182a345124ac34c"
+    },
+    {
+      "page": 19,
+      "word_key": "2:126:30",
+      "text": "ٱلْمَصِيرُ",
+      "source_class": "direct",
+      "source_path_sha256": "e0ead2c78e53cf12d9e7bed2cf33139843fc78d4476fa589c6239a3024d8e78f"
+    },
+    {
+      "page": 22,
+      "word_key": "2:145:28",
+      "text": "ٱلْعِلْمِ",
+      "source_class": "direct",
+      "source_path_sha256": "31071e1e10b1ba024eebf3e4d113c67508a7aa8f52ae9969d69266a9982beeda"
+    },
+    {
+      "page": 28,
+      "word_key": "2:184:29",
+      "text": "لَّكُمْ",
+      "source_class": "direct",
+      "source_path_sha256": "ec7d12e5aee2ca5d2ac2895bffd2bf525e50de95d3bcae84befc060779b75bc3"
+    },
+    {
+      "page": 30,
+      "word_key": "2:195:9",
+      "text": "ٱلتَّهْلُكَةِ",
+      "source_class": "direct",
+      "source_path_sha256": "29fa81027550118a284acc6a4b2d90be618a34f6eff7d5aa20a6cef989e4d38c"
+    },
+    {
+      "page": 30,
+      "word_key": "2:196:40",
+      "text": "ٱلْحَجِّ",
+      "source_class": "direct",
+      "source_path_sha256": "288c65c34ca35248ae4d0d24107022245cd9076512cd539ca65b327c7dfc02e9"
+    },
+    {
+      "page": 38,
+      "word_key": "2:236:23",
+      "text": "حَقًّا",
+      "source_class": "direct",
+      "source_path_sha256": "6566b11f1367f77068dc4a83fb0180e54d3d6caad2dfb14c941203d36828e2d3"
+    },
+    {
+      "page": 59,
+      "word_key": "3:77:7",
+      "text": "ثَمَنࣰا",
+      "source_class": "direct",
+      "source_path_sha256": "3ade024b766548c5ef306b7615ab308f0003bde991fea10709d1fef5e5cf7f48"
+    },
+    {
+      "page": 62,
+      "word_key": "3:98:3",
+      "text": "ٱلْكِتَٰبِ",
+      "source_class": "direct",
+      "source_path_sha256": "afd67c6aa1989d3611a12166c64c602e1210f12eb516052c46b1512aeccdb0f0"
+    },
+    {
+      "page": 65,
+      "word_key": "3:117:18",
+      "text": "وَمَا",
+      "source_class": "direct",
+      "source_path_sha256": "a42c938ad3859ba414709134f56909781775f041f9467f2c03c4f3ceb0f7d5db"
+    },
+    {
+      "page": 66,
+      "word_key": "3:123:8",
+      "text": "ٱللَّهَ",
+      "source_class": "direct",
+      "source_path_sha256": "5226b14d80a97751ecdbbd909fadbe1edf496d41d7c9f6d0d607c1b3bcc158ee"
+    },
+    {
+      "page": 75,
+      "word_key": "3:189:5",
+      "text": "وَٱللَّهُ",
+      "source_class": "direct",
+      "source_path_sha256": "7c98e8e575095593055e587f8afc51c6cdfb3afe04026856dd38e34dce3cef59"
+    },
+    {
+      "page": 91,
+      "word_key": "4:82:4",
+      "text": "وَلَوْ",
+      "source_class": "direct",
+      "source_path_sha256": "a247a2809bb41b6262dc5f98ca0d88d45597c07742d1172d0860cee3d06ea4f1"
+    },
+    {
+      "page": 93,
+      "word_key": "4:92:21",
+      "text": "أَن",
+      "source_class": "direct",
+      "source_path_sha256": "45fa5073cf12e4cfd5318f200db01c3cf8907f34bcd1271316befba33639104d"
+    },
+    {
+      "page": 113,
+      "word_key": "5:34:9",
+      "text": "فَٱعْلَمُوٓا۟",
+      "source_class": "direct",
+      "source_path_sha256": "c2cec9585592a5b6f43e7eea159e53e8126a5f44cca04a32e5629d3f4bb96e9f"
+    },
+    {
+      "page": 128,
+      "word_key": "6:3:6",
+      "text": "ٱلْأَرْضِ",
+      "source_class": "direct",
+      "source_path_sha256": "bb8fe5a258bff2a28848c8aa103e59f71c82297f4e3bf5760591b50073100da1"
+    },
+    {
+      "page": 128,
+      "word_key": "6:5:5",
+      "text": "جَآءَهُمْ",
+      "source_class": "direct",
+      "source_path_sha256": "0dada53585fe50127c707f446a97b99d469db45568a21c7de3e883f46817b916"
+    },
+    {
+      "page": 134,
+      "word_key": "6:57:18",
+      "text": "يَقُصُّ",
+      "source_class": "direct",
+      "source_path_sha256": "bb8837bbdd23d17f858e1f5cff7a3eab1d35bee2020fdc68537ce6679454acdd"
+    },
+    {
+      "page": 141,
+      "word_key": "6:109:10",
+      "text": "قُلْ",
+      "source_class": "direct",
+      "source_path_sha256": "02ebf157e038e8f6176fa0d0ded66485a3012323d0c0ce46ccdce59db789e37e"
+    },
+    {
+      "page": 174,
+      "word_key": "7:179:8",
+      "text": "لَهُمْ",
+      "source_class": "direct",
+      "source_path_sha256": "bf041b27eee5c161290caca1a1d3f43587f95bb72ee69bf4a0ba4c0a316b6db7"
+    },
+    {
+      "page": 174,
+      "word_key": "7:186:4",
+      "text": "فَلَا",
+      "source_class": "direct",
+      "source_path_sha256": "913a3085655d96a256f9d465fadd63aefa68c4defaff96e2512ac5f27fee6b9f"
+    },
+    {
+      "page": 175,
+      "word_key": "7:188:27",
+      "text": "لِّقَوْمࣲ",
+      "source_class": "direct",
+      "source_path_sha256": "5238f40f243bec6c45a57a7db409ab7bad68d1b9c382ec27a9a7537ab1d89e50"
+    },
+    {
+      "page": 194,
+      "word_key": "9:43:4",
+      "text": "لِمَ",
+      "source_class": "direct",
+      "source_path_sha256": "d76590ca8dfa201e5eec7ba7eeb03b3c9ca2ccda70ebef36a8b8b89ba30910a3"
+    },
+    {
+      "page": 225,
+      "word_key": "11:31:27",
+      "text": "أَنفُسِهِمْ",
+      "source_class": "direct",
+      "source_path_sha256": "246e9e8300250e0a09d9afa4894d1bfaf58ece9193e5eb9650ab8f158cbbd083"
+    },
+    {
+      "page": 237,
+      "word_key": "12:21:13",
+      "text": "نَتَّخِذَهُۥ",
+      "source_class": "direct",
+      "source_path_sha256": "f9bddb6aec8f3cb1218ca9d6a730c7a9520655b3711b05a1e8febed86cea32be"
+    },
+    {
+      "page": 240,
+      "word_key": "12:40:17",
+      "text": "ٱلْحُكْمُ",
+      "source_class": "direct",
+      "source_path_sha256": "f0d5aaf7e2220d258d0a18fd754a9d58b605140d988d9dfabd84eb8b0098a949"
+    },
+    {
+      "page": 243,
+      "word_key": "12:65:8",
+      "text": "قَالُوا۟",
+      "source_class": "direct",
+      "source_path_sha256": "b1ed4c6a264154dc909844a7b05517634a011872919f1298e80762e8c9e96110"
+    },
+    {
+      "page": 267,
+      "word_key": "16:2:17",
+      "text": "أَنَا۠",
+      "source_class": "direct",
+      "source_path_sha256": "d6fcbd41dca024547f9753bbf2b8d9796d97520a1aa048c74480222d90937507"
+    },
+    {
+      "page": 272,
+      "word_key": "16:49:2",
+      "text": "يَسْجُدُ",
+      "source_class": "direct",
+      "source_path_sha256": "445f9adf69ca05e2e63f1f9c4c3e2df20d8637e1a58c2e5eccdcd65e426ce148"
+    },
+    {
+      "page": 277,
+      "word_key": "16:92:25",
+      "text": "وَلَيُبَيِّنَنَّ",
+      "source_class": "direct",
+      "source_path_sha256": "a5848fbbbd59dc23d7aaa7ef3b207a65a4f2e2ad3bfe2535e7fe41ded13a470b"
+    },
+    {
+      "page": 281,
+      "word_key": "16:119:4",
+      "text": "لِلَّذِينَ",
+      "source_class": "direct",
+      "source_path_sha256": "afd106d23aa8a8675484f49b286acf41d0e8ce9f208863b7a2a053dd1a2d8787"
+    },
+    {
+      "page": 289,
+      "word_key": "17:69:16",
+      "text": "ثُمَّ",
+      "source_class": "direct",
+      "source_path_sha256": "b4e4092d297854eb007e648f8e30d595eb05c171da9209b9b08f2272b180f042"
+    },
+    {
+      "page": 309,
+      "word_key": "19:58:28",
+      "text": "سُجَّدࣰا",
+      "source_class": "direct",
+      "source_path_sha256": "8c8f3683316ca697ff07209cb771b39a083d7965c5f8943c48f096186d036ca8"
+    },
+    {
+      "page": 334,
+      "word_key": "22:16:4",
+      "text": "بَيِّنَٰتࣲ",
+      "source_class": "direct",
+      "source_path_sha256": "3903cd2cb514030fdca0218d4b05d8d48fc64b1df1cfac72b64cf57a7e54cc9a"
+    },
+    {
+      "page": 334,
+      "word_key": "22:18:5",
+      "text": "يَسْجُدُ",
+      "source_class": "pdf-recovered",
+      "source_path_sha256": "b1a8c09b28ff2b0104e2d6993148ced2840d38c09a3dec975c900d078068ba0c"
+    },
+    {
+      "page": 334,
+      "word_key": "22:18:6",
+      "text": "لَهُۥ",
+      "source_class": "pdf-recovered",
+      "source_path_sha256": "09b9deaae3e92de53c47b1541862c6e12e2c6a8641e1e9cc699d75854f9224f7"
+    },
+    {
+      "page": 338,
+      "word_key": "22:52:25",
+      "text": "وَٱللَّهُ",
+      "source_class": "direct",
+      "source_path_sha256": "783ef06e26e922c8fd8154e99849c946a779ca6613d91c37f1e9985eb02f8dca"
+    },
+    {
+      "page": 340,
+      "word_key": "22:72:23",
+      "text": "ٱلنَّارُ",
+      "source_class": "direct",
+      "source_path_sha256": "858d778e963c7158202a6bee15e56a3e1b5f11eb3d7a8c4001fef271ca869504"
+    },
+    {
+      "page": 358,
+      "word_key": "24:61:62",
+      "text": "عَلَىٰٓ",
+      "source_class": "direct",
+      "source_path_sha256": "e4525069ae8fbe81434a187ffa480b6316b6e6e65088578ea0339077edbf5a8a"
+    },
+    {
+      "page": 371,
+      "word_key": "26:100:3",
+      "text": "مِن",
+      "source_class": "direct",
+      "source_path_sha256": "8abc3883ee8513b0ff49f7e1f68e396ce33abd71bc8e4c2283a0a867e382a401"
+    },
+    {
+      "page": 375,
+      "word_key": "26:199:4",
+      "text": "كَانُوا۟",
+      "source_class": "direct",
+      "source_path_sha256": "725f41749716abf268b032e18ea586a7b5694db7c76e3a6b8e319db9a587b9f3"
+    },
+    {
+      "page": 392,
+      "word_key": "28:58:15",
+      "text": "وَكُنَّا",
+      "source_class": "direct",
+      "source_path_sha256": "0226334cf1368c4c3b3553851f537248cfc4dacdc7a99409d75f45aa11f109ba"
+    },
+    {
+      "page": 406,
+      "word_key": "30:19:9",
+      "text": "وَيُحْىِ",
+      "source_class": "pdf-recovered",
+      "source_path_sha256": "6b7fdf5e9717fd135df1a23771f755f3d81ab52cdc337d126c7dd97ed9d0416e"
+    },
+    {
+      "page": 409,
+      "word_key": "30:44:5",
+      "text": "وَمَنْ",
+      "source_class": "direct",
+      "source_path_sha256": "09a13fc82401490bf8f3bceaafd231d96930a806c5b66691c987ecd12ce33a9c"
+    },
+    {
+      "page": 414,
+      "word_key": "31:30:5",
+      "text": "ٱلْحَقُّ",
+      "source_class": "direct",
+      "source_path_sha256": "0a4a97bde8eb12eb7bf445fc464bbcb048035787cb70ade87c3c3c4caea7d41d"
+    },
+    {
+      "page": 418,
+      "word_key": "33:4:20",
+      "text": "ذَٰلِكُمْ",
+      "source_class": "direct",
+      "source_path_sha256": "94f318af54a56c5ce4bb71f708d1a8e70481e7c986139156c05f38c5be5f2e24"
+    },
+    {
+      "page": 420,
+      "word_key": "33:21:14",
+      "text": "ٱلْـَٔاخِرَ",
+      "source_class": "direct",
+      "source_path_sha256": "dac88ba8bbf815ffebc446c0b41ecb9563618ee7f7e2c9a521476bdcd4f09f20"
+    },
+    {
+      "page": 454,
+      "word_key": "38:24:30",
+      "text": "وَخَرَّ",
+      "source_class": "direct",
+      "source_path_sha256": "8a9ccc137a7bde35a377559ea429328b0409ff2f669f6756a37fab7af3c1df56"
+    },
+    {
+      "page": 466,
+      "word_key": "39:71:29",
+      "text": "وَلَٰكِنْ",
+      "source_class": "direct",
+      "source_path_sha256": "e3f1ced3dd05d793f2c8958d61a4a3e56de0e1544fe34de1292ff5b7f14dbf3f"
+    },
+    {
+      "page": 476,
+      "word_key": "40:82:12",
+      "text": "كَانُوٓا۟",
+      "source_class": "pdf-recovered",
+      "source_path_sha256": "786338b8088281aef3b5e395539c6b6732187b642be8aa797953e448351b83e5"
+    },
+    {
+      "page": 486,
+      "word_key": "42:31:6",
+      "text": "وَمَا",
+      "source_class": "direct",
+      "source_path_sha256": "070b1962e557fbcfaf82605270e419cb53784dde81423a300ac422a2a0601944"
+    },
+    {
+      "page": 502,
+      "word_key": "45:33:10",
+      "text": "بِهِۦ",
+      "source_class": "direct",
+      "source_path_sha256": "0438e62f8b8910bbc4ce80d104dca00a217add224f1481267313131715e84716"
+    },
+    {
+      "page": 509,
+      "word_key": "47:26:13",
+      "text": "وَٱللَّهُ",
+      "source_class": "pdf-recovered",
+      "source_path_sha256": "5899790a8b46595f6330d05ea9ba4ec9ba3386bc0124fc4b11599b066d3c577d"
+    },
+    {
+      "page": 528,
+      "word_key": "53:62:2",
+      "text": "لِلَّهِ",
+      "source_class": "direct",
+      "source_path_sha256": "af09dc057f10655e88a88998dada54a0c6173c428b4fbaa0c4bcb7123f971772"
+    },
+    {
+      "page": 538,
+      "word_key": "57:4:28",
+      "text": "وَهُوَ",
+      "source_class": "direct",
+      "source_path_sha256": "b80c16f00383e374e8028fc1db3e6a8cfd31362cf594b758a249f5832f1b1e79"
+    },
+    {
+      "page": 551,
+      "word_key": "60:12:30",
+      "text": "مَعْرُوفࣲ",
+      "source_class": "direct",
+      "source_path_sha256": "a4daca97241750c22c02e83b8b357dc25f6ec7fc704a5ab95441aaa591fe2fa9"
+    },
+    {
+      "page": 565,
+      "word_key": "68:39:8",
+      "text": "ٱلْقِيَٰمَةِ",
+      "source_class": "direct",
+      "source_path_sha256": "34d37ceb359d73cf781291704fb549cb3ad904ab82e2d052f8a7cfedefa4c0c0"
+    },
+    {
+      "page": 577,
+      "word_key": "75:5:4",
+      "text": "لِيَفْجُرَ",
+      "source_class": "direct",
+      "source_path_sha256": "4c337dd23656b56dfb9179e51e27d45b64e9be48ab4d8d68475d7380f8e37605"
+    },
+    {
+      "page": 589,
+      "word_key": "84:21:5",
+      "text": "لَا",
+      "source_class": "direct",
+      "source_path_sha256": "3fc8e625fd01ce09cc4b248d60b877325705aa1ad97b207b96e66cf5a2932671"
+    },
+    {
+      "page": 590,
+      "word_key": "85:9:6",
+      "text": "وَٱللَّهُ",
+      "source_class": "direct",
+      "source_path_sha256": "806e5e4f270fa7c91d5b51bb982c2055f528f5d1a5d63ccd38c9a48bb3b51ab3"
+    }
+  ]
+}

@@ -4,6 +4,11 @@
 
 **في فقرة واحدة:** ما قمنا بعمله هو تحويل ملف الـ SVG الأصلي لكل صفحة من رسمٍ واحد كبير إلى عناصر مستقلة، ثم إعادة تجميع هذه العناصر على مستوى الكلمات (كل كلمة موسومة بسورة:آية:كلمة مع نصّها الموثَّق) وعلى مستوى الرموز — فكل فتحة وكسرة وضمة وشدّة وسكون ونقطة ومدّة وعلامة وقف وغيرها لها اسمها الخاص. لا يُعاد رسم أي شيء: تبقى الصفحات الـ604 مطابقة للأصل بكسلًا بكسل، لكنها تصبح مقروءة آليًا حتى مستوى العلامة الواحدة، بتغطية موثَّقة 100% للعلامات ومراجعةٍ بشرية عبر منصة مخصصة.
 
+The semantic page also keeps the print's native outer frame as one first-painted
+`g.page-frame`. It is page furniture, separate from words, lines and surah headings; the
+visual `viewBox` includes it while `data-content-view-box="0 0 345 550"` preserves the stable
+Quran-content coordinate space.
+
 ---
 
 ## English

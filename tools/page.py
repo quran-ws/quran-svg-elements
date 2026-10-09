@@ -35,7 +35,12 @@ class Page:
         self.name = os.path.basename(path)
         self.svg = svg if svg is not None else open(path, encoding="utf-8").read()
         vb = re.search(r'viewBox="([^"]*)"', self.svg)
-        self.viewbox = [float(x) for x in vb.group(1).split()] if vb else None
+        self.visual_viewbox = [float(x) for x in vb.group(1).split()] if vb else None
+        content_vb = re.search(r'data-content-view-box="([^"]*)"', self.svg)
+        self.viewbox = (
+            [float(x) for x in content_vb.group(1).split()]
+            if content_vb else self.visual_viewbox
+        )
         # The opening spread (p1, p2) is drawn under viewBox="-53.3109 -198.4777
         # 345 550" while every other page uses "0 0 345 550". Nothing inside the
         # pipeline cares — the artwork's lines table, polygons, overrides and

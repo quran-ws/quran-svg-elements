@@ -15,7 +15,8 @@ than describing an ideal that does not exist.
 > statement below says which one it applies to when they differ.
 >
 > Changes since the 2026-08-30 revision (see `FORMAT-CHANGES.md`): every page
-> now uses `viewBox="0 0 345 550"` (§5.1); no `<path>` carries a `transform`
+> keeps its Quran content in `data-content-view-box="0 0 345 550"`, while the
+> visual `viewBox` may grow to reveal the native outer frame (§5.1); no `<path>` carries a `transform`
 > (§5.2); every `<path>` carries `data-kind` (§6.5); the opening spread's
 > doubled ornaments are inside their ayah's marker with correct ids (§9.2);
 > absolute movetos are written to three decimals; the word and ayah keys are
@@ -193,9 +194,14 @@ A real fragment of `pages/003.svg`, `d=` values trimmed, dev profile:
 ```xml
 <?xml version='1.0' encoding='UTF-8'?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:ayah="https://quranpedia.net"
-     version="1.1" viewBox="0 0 345 550" xml:space="preserve">
+     version="1.1" viewBox="-26.361 -25.075 390.963 600.718"
+     data-content-view-box="0 0 345 550" xml:space="preserve">
 
- <g transform="matrix(1.3333 0 0 -1.3333 -55 640)">        <!-- page frame; y is FLIPPED -->
+ <g transform="matrix(1.3333 0 0 -1.3333 -55 640)">        <!-- page-space transform; y is FLIPPED -->
+
+  <g class="page-frame">
+   <path data-kind="ornament" fill="#231f20" fill-rule="evenodd" d="M…"/>
+  </g>
 
   <g id="ayah_markers" class="ayah_markers">               <!-- all medallions, one layer -->
    <g class="ayah-mark" id="mk-2-16" data-ayah-key="2:16">
@@ -239,6 +245,7 @@ A real fragment of `pages/003.svg`, `d=` values trimmed, dev profile:
 
 | group | count (corpus) | meaning |
 |---|---:|---|
+| `<g class="page-frame">` | 604 | the print's native outer frame, first in paint order. Its one even-odd `ornament` path is page furniture, not a line or title. |
 | `<g id="ayah_markers">` | 604 | **all** ayah medallions of the page, in one layer, outside `#content`. |
 | `<g class="ayah-mark" id="mk-s-a">` | 6,236 | one medallion: an ornament ring path + a numeral path, one per ayah, every one with `id` + `data-ayah-key`. On pages 1–2 the artwork draws the ring twice; the copy is inside the same group as `data-duplicate="1"` (§9.2). |
 | `<g id="content">` | 604 | all page text. |
@@ -246,7 +253,7 @@ A real fragment of `pages/003.svg`, `d=` values trimmed, dev profile:
 | `<g class="ayah-fragment" data-ayah-key="s:a">` | 13,489 | **one line's run of one ayah.** An ayah on three lines has three of these. Never treat one as "the ayah" — §7. |
 | `<g class="word" data-word-key="s:a:w">` | 77,433 | **one word. Globally unique. This is the anchor of the format.** |
 | `<g class="ligature" data-text="…">` | 156,707 | a joined run of letters, as a rendering unit. **Dev profile only.** See §10.3 for its limits. |
-| `<g class="surah-name" data-sid="N">` | 114 | the surah-name banner. One per surah, all 114 present. |
+| `<g class="surah-name" data-sid="N">` | 114 | the surah heading. Pages 1–2 contain title ink only inside the integrated opening frame; surahs 3–114 contain one cartouche `ornament` followed by `header_ink`. |
 | `<g class="basmalah" data-sid="N">` | 112 | the basmalah banner. Absent only for **surah 1** (its basmalah IS ayah 1:1) and **surah 9** (which has none). |
 | `<g class="sajdah-mark" data-mark="sajdah" data-ayah-key>` | 17 | the sajdah sign (۩) and its overline. 15 sites; two are split into two groups — §9.5. |
 | `<g class="division-mark" data-mark="hizb" …>` | 199 | a rubʿ / hizb / juz rosette (۞). 199 drawn for 240 boundaries — §9.6. |
@@ -255,8 +262,9 @@ A real fragment of `pages/003.svg`, `d=` values trimmed, dev profile:
 ### Nesting rules
 
 ```
-svg
-├ g[transform=matrix …]              page frame
+svg[data-content-view-box]
+├ g[transform=matrix …]              page-space transform
+│ ├ g.page-frame                     → path[data-kind=ornament] (first-painted)
 │ ├ g#ayah_markers
 │ │ └ g.ayah-mark[id][data-ayah-key]
 │ │   ├ g[transform] > path[data-kind=ayah_mark_ornament]
@@ -268,10 +276,11 @@ svg
 │       │ └ g.word[data-word-key]
 │       │   └ g.ligature[data-text]  (dev profile only)
 │       │     └ path[data-kind]
-│       ├ g.surah-name | g.basmalah  → path[data-kind=header_ink] only
+│       ├ g.surah-name               → [ornament,] header_ink
+│       ├ g.basmalah                → path[data-kind=header_ink]
 │       ├ g.sajdah-mark              → path[data-mark=sajdah_mark|sajdah_line]
 │       └ g.division-mark                → path[data-mark=hizb]
-└ path.ayahPolygon                   siblings of the page frame, at the end (dev only)
+└ path.ayahPolygon                   sibling of the transformed page group, at the end (dev only)
 ```
 
 `g.word` is always inside `g.ayah-fragment`, which is always inside a line frame inside
@@ -282,26 +291,35 @@ svg
 
 ## 5. Coordinates, frames and reading order
 
-### 5.1 The page frame
+### 5.1 The visual box, content box and page transform
 
-| | pages 3–604 | pages 1–2 |
-|---|---|---|
-| `viewBox` | `0 0 345 550` | `0 0 345 550` |
-| page frame | `matrix(1.3333 0 0 -1.3333 -55 640)` on odd pages (301), `… -115 640)` on even (301) | `matrix(1.3333 0 0 -1.3333 -82.6891 680.4777)` |
-| `<g class="line">` | 15 | 8 |
+The root has two boxes with deliberately different jobs:
 
-**Every page uses the same viewBox** since 2026-09-04. The artwork draws the
-opening spread under `-53.3109 -198.4777 345 550`; the emitter folds that offset
-into the page frame's translation (and into `ayah:x` / `ayah:y`), which renders
-pixel-identically and leaves raw path coordinates untouched. Word boxes in
-`index/by-page/001.json` and `002.json` are in the normalised frame.
+| | odd pages 3–603 | even pages 4–604 | pages 1–2 |
+|---|---|---|---|
+| visual `viewBox` | `-26.361 -25.075 390.963 600.718` | `-24.379 -25.075 390.963 600.718` | `0 0 345 550` |
+| `data-content-view-box` | `0 0 345 550` | `0 0 345 550` | `0 0 345 550` |
+| page transform | `matrix(1.3333 0 0 -1.3333 -55 640)` | `matrix(1.3333 0 0 -1.3333 -115 640)` | `matrix(1.3333 0 0 -1.3333 -82.6891 680.4777)` |
+| `<g class="line">` | 15 | 15 | 8 |
 
-**The y scale is negative.** Inside the page frame, y increases *upward*.
-Screen y = `640 − 1.3333 · y` on a normal page. A consumer computing positions
-must apply the matrix; raw path coordinates are not viewBox coordinates.
+The **visual box** contains the native outer frame and is the rectangle a renderer displays.
+The **content box** remains the stable Quran-page coordinate contract used by words, line
+assignment and the indexes. On ordinary pages the frame projects beyond that 345 × 550
+content rectangle, so collapsing the two boxes would clip real artwork.
 
-The odd/even split means the same raw x is 60 units apart on recto and verso.
-**Never compare raw coordinates across pages.**
+Pages 1–2 begin in the artwork at `-53.3109 -198.4777 345 550`. The emitter folds that
+content offset into the page transform, marker centres and dev-only polygons, then translates
+both root boxes together. Raw path coordinates remain untouched. Word boxes in
+`index/by-page/001.json` and `002.json` are therefore in the same normalised content frame as
+every other page.
+
+**The y scale is negative.** Inside the page-space transform, y increases *upward*.
+Screen y = `640 − 1.3333 · y` on an ordinary page. A consumer computing positions must
+apply the matrix; raw path coordinates are not root-viewBox coordinates.
+
+The odd/even split means the same raw x is 60 units apart on recto and verso. **Never compare
+raw coordinates across pages.** The tracked page-frame manifest also preserves six rare
+sub-millipoint source variants rather than silently replacing them with the dominant outline.
 
 ### 5.2 The line frame
 
@@ -309,7 +327,7 @@ Each `<g class="line">` has exactly one child `<g transform="translate(x y)">`.
 On **600 of 604 pages every line shares the same translate**, so it looks
 redundant — but on **pages 1, 2, 17 and 144** the lines differ (2, 2, 15 and 15
 distinct translates respectively). Always compose
-`page frame × line frame`; never hoist the translate out.
+`page transform × line translate`; never hoist the translate out.
 
 ```
 (x_view, y_view) = PAGE_MATRIX ∘ LINE_TRANSLATE applied to (x_path, y_path)
@@ -330,8 +348,8 @@ written.
 
 ### 5.3 The `ayahPolygon` layer is in a different frame (dev profile only)
 
-The 6,236 `<path class="ayahPolygon">` are **siblings of the page frame**, not
-children of it. Their coordinates are plain, unflipped viewBox units. They also
+The 6,236 `<path class="ayahPolygon">` are **siblings of the transformed page group**, not
+children of it. Their coordinates are plain, unflipped content-box units. They also
 come last in document order, so they sit on top and swallow pointer events —
 set `pointer-events: none` on them, or remove them before calling `getBBox()`.
 The production profile does not have them, which is one reason to prefer it.
@@ -509,7 +527,7 @@ path tagged `data-duplicate="1"` (§9.2).
 
 | attribute | count | values | notes |
 |---|---:|---|---|
-| `data-kind` | every ink path | `mark` · `body` · `ayah_mark_ornament` (6,248: 6,236 rings + 12 `data-duplicate` copies on p1–2) · `ayah_number` 6,236 · `header_ink` · `ornament` · `page_number` 2 · `running_head` 2 | Present on **every** path except the dev-only `ayahPolygon`. The four `page_number` / `running_head` paths are p17's page furniture, drawn by the artwork **entirely outside the viewBox** (y 583.7..588.2 on a 550-tall page, and y -62.2..-7.1), kept so no ink is ever silently dropped — §10.5. `body` = letter ink. |
+| `data-kind` | every ink path | `mark` · `body` · `ayah_mark_ornament` (6,248: 6,236 rings + 12 `data-duplicate` copies on p1–2) · `ayah_number` 6,236 · `header_ink` · `ornament` (604 page frames + 112 surah cartouches) · `page_number` 2 · `running_head` 2 | Present on **every** path except the dev-only `ayahPolygon`. Page frames and surah cartouches share the visual path kind but have different semantic parents. The four `page_number` / `running_head` paths are p17's additional sheet furniture — §10.5. `body` = letter ink. |
 | `data-mark` | 436,843 | 35 names, §8 | Attribute occurrences. The **logical** mark count is 436,627 — a mark drawn as more than one path is one mark. On every `data-kind="mark"` path but **one**, which is unnamed (p1 `e34`). |
 | `data-mark-family` | 393,970 | **token list** — `diacritic` 280,333 · `dots` 105,270 · `tanwin` 8,554 · `waqf` 4,272 · `sifr` 4,054 · `sajdah` 30 · `reading_sign` 11 | **Space-separated, like `class` — match with `~=`, not `=`.** See below. Only on marks that have a family. **Derivable from `schema/mark-taxonomy.json`** — prefer the registry, which also covers `small_noon` (§10.5). |
 | `data-element-id` | 598,407 | `e1`, `e2`, … | **Not stable across builds. Never key on it.** Unique within a page. Only on word/standalone ink — never on marker, header or polygon paths. |
@@ -604,6 +622,9 @@ Three of these are easy to misread:
 
 226 = 114 surah-name groups + 112 basmalah groups; the basmalah group repeats
 its surah's metadata. **These attributes appear only on a surah's first page.**
+
+The direct path contract is exact: surahs 1–2 contain `[header_ink]`; surahs 3–114 contain
+`[ornament, header_ink]` in paint order. The outer page frame is never a child of this group.
 To know the surah of an arbitrary page, read the surah number out of any
 `data-word-key`, or use the companion `index.json`.
 
@@ -881,8 +902,10 @@ At 52:37 `data-rasm-uthmani` writes U+06E3 (seen below) but `data-qpc` writes U+
 
 ### 9.2 Pages 1 and 2 are the opening spread
 
-A different page matrix (the artwork's offset viewBox, folded in — §5.1),
-**8 lines instead of 15**, per-line translates, and the medallion scale is
+Each page carries its complete three-contour opening composition as `g.page-frame`; the
+surah heading itself contains title ink only, with no second cartouche. A different page
+transform (the artwork's offset content box, folded in — §5.1), **8 lines instead of 15**,
+per-line translates, and the medallion scale is
 `0.0075` instead of `0.011`. The artwork also **draws every ayah ornament
 twice**, byte-identical and in place (7 pairs on p1, 5 on p2, nowhere else).
 Earlier revisions of this document called the copies "decorative rosettes with
@@ -1281,7 +1304,7 @@ doc.querySelectorAll(`path[data-pair="${p.dataset.pair}"]`);   // exactly two
 // 1. (dev profile) remove path.ayahPolygon first — different frame, sits on top
 // 2. drop every g.word whose data-word-key is not in the ayah
 // 3. drop the now-empty g.ayah-fragment / g.line wrappers
-// 4. getBBox() on #content, pad, write it back as the viewBox
+// 4. getBBox() on #content, pad, write that as the crop viewBox; do not include g.page-frame
 ```
 
 ```python
@@ -1292,7 +1315,7 @@ page = next(p["page"] for p in idx["pages"]
             if num(p["first_ayah"]) <= (2, 255) <= num(p["last_ayah"]))
 
 # ---- where is a word on the page? ----
-# Boxes are per page, in pages/NNN.svg viewBox units — see `box_space`.
+# Boxes use the logical content box, not the larger visual viewBox — see `box_space`.
 pg   = json.load(open("index/by-page/%03d.json" % page))
 box  = next(w["box"] for w in pg["words"] if w["word_key"] == "2:255:3")
 ```
@@ -1317,6 +1340,7 @@ box  = next(w["box"] for w in pg["words"] if w["word_key"] == "2:255:3")
 | `header_ink` paths | 5,670 (2,300 surah-name + 3,370 basmalah) |
 | distinct `data-mark` values | 34 on paths (+`sajdah` group-level); registry declares 36, 35 active |
 | ayah medallions | 6,248 groups, 6,236 with `id` + `data-ayah-key` |
+| native page-frame groups | 604, each with one even-odd ornament path |
 | surah-name / basmalah groups | 114 / 112 (basmalah absent for surahs 1 and 9) |
 | named marks belonging to no word | 229, all `data-standalone="1"` (199 hizb + 30 sajdah) |
 | hizb rosettes / rubʿ boundaries | 199 / 240 (all 240 carry `data-rubu-al-hizb-start`) |

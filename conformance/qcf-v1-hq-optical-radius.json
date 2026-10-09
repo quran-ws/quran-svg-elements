@@ -1,0 +1,3650 @@
+{
+  "schema": "quran-svg-elements/qcf-v1-optical-radius-calibration",
+  "schema_version": 1,
+  "edition": "hafs-qcf-v1",
+  "print_year_hijri": 1405,
+  "calibration_input": {
+    "qualification": "source-qualified full target-box fit before optical copies",
+    "pages_sha256": "bb2d5a24899e57dd0eaf99279149301561e572b95095755b29b63c27324c9c1b",
+    "source_records_sha256": "0d2ccef842bbbf6d8dab0f9bcd7e1d02c016d826ebce24ce2981786f7cfc5a24"
+  },
+  "reference": {
+    "qualification": "verified QCF fallback page geometry",
+    "pages_sha256": "91a61a71116b6f6888c5174982c4b8a84132b0a9cae8536199802f3c86aa5be3",
+    "render_width": 1920,
+    "threshold": 190
+  },
+  "method": "For each page, render the verified QCF fallback and the full-target-fit HQ corpus; shrink each HQ centre path by the tested radius, draw centre plus four cardinal copies, and select the 0.01-page-unit radius with the smallest whole-page ink-count difference. Ties select the smaller radius.",
+  "radius": {
+    "units": "QVP page units",
+    "probe": 0.12,
+    "maximum": 0.24,
+    "step": 0.01
+  },
+  "pages": [
+    {
+      "page": 1,
+      "radius": 0.0,
+      "reference_ink": 222656,
+      "candidate_ink": 222656
+    },
+    {
+      "page": 2,
+      "radius": 0.0,
+      "reference_ink": 251733,
+      "candidate_ink": 251733
+    },
+    {
+      "page": 3,
+      "radius": 0.18,
+      "reference_ink": 596017,
+      "candidate_ink": 596860
+    },
+    {
+      "page": 4,
+      "radius": 0.17,
+      "reference_ink": 631890,
+      "candidate_ink": 633682
+    },
+    {
+      "page": 5,
+      "radius": 0.2,
+      "reference_ink": 622347,
+      "candidate_ink": 620314
+    },
+    {
+      "page": 6,
+      "radius": 0.01,
+      "reference_ink": 568115,
+      "candidate_ink": 583931
+    },
+    {
+      "page": 7,
+      "radius": 0.12,
+      "reference_ink": 647651,
+      "candidate_ink": 645121
+    },
+    {
+      "page": 8,
+      "radius": 0.05,
+      "reference_ink": 602040,
+      "candidate_ink": 603141
+    },
+    {
+      "page": 9,
+      "radius": 0.09,
+      "reference_ink": 571649,
+      "candidate_ink": 570762
+    },
+    {
+      "page": 10,
+      "radius": 0.15,
+      "reference_ink": 630576,
+      "candidate_ink": 632219
+    },
+    {
+      "page": 11,
+      "radius": 0.09,
+      "reference_ink": 605316,
+      "candidate_ink": 606389
+    },
+    {
+      "page": 12,
+      "radius": 0.14,
+      "reference_ink": 594077,
+      "candidate_ink": 593292
+    },
+    {
+      "page": 13,
+      "radius": 0.03,
+      "reference_ink": 572252,
+      "candidate_ink": 575113
+    },
+    {
+      "page": 14,
+      "radius": 0.13,
+      "reference_ink": 576235,
+      "candidate_ink": 577573
+    },
+    {
+      "page": 15,
+      "radius": 0.15,
+      "reference_ink": 570064,
+      "candidate_ink": 571442
+    },
+    {
+      "page": 16,
+      "radius": 0.1,
+      "reference_ink": 567694,
+      "candidate_ink": 566402
+    },
+    {
+      "page": 17,
+      "radius": 0.1,
+      "reference_ink": 585616,
+      "candidate_ink": 585302
+    },
+    {
+      "page": 18,
+      "radius": 0.08,
+      "reference_ink": 596822,
+      "candidate_ink": 595021
+    },
+    {
+      "page": 19,
+      "radius": 0.13,
+      "reference_ink": 604775,
+      "candidate_ink": 604364
+    },
+    {
+      "page": 20,
+      "radius": 0.12,
+      "reference_ink": 586714,
+      "candidate_ink": 587000
+    },
+    {
+      "page": 21,
+      "radius": 0.02,
+      "reference_ink": 548507,
+      "candidate_ink": 552066
+    },
+    {
+      "page": 22,
+      "radius": 0.1,
+      "reference_ink": 584433,
+      "candidate_ink": 585467
+    },
+    {
+      "page": 23,
+      "radius": 0.14,
+      "reference_ink": 607919,
+      "candidate_ink": 608913
+    },
+    {
+      "page": 24,
+      "radius": 0.13,
+      "reference_ink": 626595,
+      "candidate_ink": 624057
+    },
+    {
+      "page": 25,
+      "radius": 0.08,
+      "reference_ink": 590787,
+      "candidate_ink": 593183
+    },
+    {
+      "page": 26,
+      "radius": 0.06,
+      "reference_ink": 553085,
+      "candidate_ink": 551422
+    },
+    {
+      "page": 27,
+      "radius": 0.13,
+      "reference_ink": 614956,
+      "candidate_ink": 615355
+    },
+    {
+      "page": 28,
+      "radius": 0.09,
+      "reference_ink": 568928,
+      "candidate_ink": 567205
+    },
+    {
+      "page": 29,
+      "radius": 0.09,
+      "reference_ink": 606095,
+      "candidate_ink": 606773
+    },
+    {
+      "page": 30,
+      "radius": 0.01,
+      "reference_ink": 582980,
+      "candidate_ink": 593700
+    },
+    {
+      "page": 31,
+      "radius": 0.04,
+      "reference_ink": 544393,
+      "candidate_ink": 543694
+    },
+    {
+      "page": 32,
+      "radius": 0.06,
+      "reference_ink": 548955,
+      "candidate_ink": 546959
+    },
+    {
+      "page": 33,
+      "radius": 0.08,
+      "reference_ink": 603197,
+      "candidate_ink": 603955
+    },
+    {
+      "page": 34,
+      "radius": 0.09,
+      "reference_ink": 603746,
+      "candidate_ink": 604124
+    },
+    {
+      "page": 35,
+      "radius": 0.13,
+      "reference_ink": 631530,
+      "candidate_ink": 633947
+    },
+    {
+      "page": 36,
+      "radius": 0.15,
+      "reference_ink": 671643,
+      "candidate_ink": 669838
+    },
+    {
+      "page": 37,
+      "radius": 0.09,
+      "reference_ink": 654738,
+      "candidate_ink": 656549
+    },
+    {
+      "page": 38,
+      "radius": 0.09,
+      "reference_ink": 618971,
+      "candidate_ink": 617997
+    },
+    {
+      "page": 39,
+      "radius": 0.06,
+      "reference_ink": 583018,
+      "candidate_ink": 584220
+    },
+    {
+      "page": 40,
+      "radius": 0.07,
+      "reference_ink": 561294,
+      "candidate_ink": 559651
+    },
+    {
+      "page": 41,
+      "radius": 0.1,
+      "reference_ink": 573614,
+      "candidate_ink": 572156
+    },
+    {
+      "page": 42,
+      "radius": 0.09,
+      "reference_ink": 584345,
+      "candidate_ink": 585858
+    },
+    {
+      "page": 43,
+      "radius": 0.06,
+      "reference_ink": 580113,
+      "candidate_ink": 578986
+    },
+    {
+      "page": 44,
+      "radius": 0.0,
+      "reference_ink": 539486,
+      "candidate_ink": 541823
+    },
+    {
+      "page": 45,
+      "radius": 0.05,
+      "reference_ink": 602192,
+      "candidate_ink": 602112
+    },
+    {
+      "page": 46,
+      "radius": 0.1,
+      "reference_ink": 586623,
+      "candidate_ink": 587924
+    },
+    {
+      "page": 47,
+      "radius": 0.06,
+      "reference_ink": 575818,
+      "candidate_ink": 577444
+    },
+    {
+      "page": 48,
+      "radius": 0.12,
+      "reference_ink": 623195,
+      "candidate_ink": 623469
+    },
+    {
+      "page": 49,
+      "radius": 0.15,
+      "reference_ink": 599898,
+      "candidate_ink": 600412
+    },
+    {
+      "page": 50,
+      "radius": 0.07,
+      "reference_ink": 660124,
+      "candidate_ink": 660706
+    },
+    {
+      "page": 51,
+      "radius": 0.11,
+      "reference_ink": 585232,
+      "candidate_ink": 585911
+    },
+    {
+      "page": 52,
+      "radius": 0.09,
+      "reference_ink": 549074,
+      "candidate_ink": 548194
+    },
+    {
+      "page": 53,
+      "radius": 0.17,
+      "reference_ink": 614688,
+      "candidate_ink": 614574
+    },
+    {
+      "page": 54,
+      "radius": 0.1,
+      "reference_ink": 612997,
+      "candidate_ink": 613178
+    },
+    {
+      "page": 55,
+      "radius": 0.17,
+      "reference_ink": 592124,
+      "candidate_ink": 590954
+    },
+    {
+      "page": 56,
+      "radius": 0.18,
+      "reference_ink": 630367,
+      "candidate_ink": 629424
+    },
+    {
+      "page": 57,
+      "radius": 0.14,
+      "reference_ink": 606134,
+      "candidate_ink": 604182
+    },
+    {
+      "page": 58,
+      "radius": 0.14,
+      "reference_ink": 622835,
+      "candidate_ink": 623166
+    },
+    {
+      "page": 59,
+      "radius": 0.09,
+      "reference_ink": 604654,
+      "candidate_ink": 607008
+    },
+    {
+      "page": 60,
+      "radius": 0.08,
+      "reference_ink": 593183,
+      "candidate_ink": 594879
+    },
+    {
+      "page": 61,
+      "radius": 0.03,
+      "reference_ink": 589700,
+      "candidate_ink": 590473
+    },
+    {
+      "page": 62,
+      "radius": 0.0,
+      "reference_ink": 597281,
+      "candidate_ink": 585339
+    },
+    {
+      "page": 63,
+      "radius": 0.1,
+      "reference_ink": 642139,
+      "candidate_ink": 641627
+    },
+    {
+      "page": 64,
+      "radius": 0.11,
+      "reference_ink": 623426,
+      "candidate_ink": 622892
+    },
+    {
+      "page": 65,
+      "radius": 0.1,
+      "reference_ink": 646467,
+      "candidate_ink": 647672
+    },
+    {
+      "page": 66,
+      "radius": 0.18,
+      "reference_ink": 656846,
+      "candidate_ink": 657485
+    },
+    {
+      "page": 67,
+      "radius": 0.16,
+      "reference_ink": 658081,
+      "candidate_ink": 658149
+    },
+    {
+      "page": 68,
+      "radius": 0.1,
+      "reference_ink": 601399,
+      "candidate_ink": 600004
+    },
+    {
+      "page": 69,
+      "radius": 0.08,
+      "reference_ink": 588592,
+      "candidate_ink": 587464
+    },
+    {
+      "page": 70,
+      "radius": 0.13,
+      "reference_ink": 641979,
+      "candidate_ink": 644449
+    },
+    {
+      "page": 71,
+      "radius": 0.08,
+      "reference_ink": 651351,
+      "candidate_ink": 649659
+    },
+    {
+      "page": 72,
+      "radius": 0.18,
+      "reference_ink": 651591,
+      "candidate_ink": 653437
+    },
+    {
+      "page": 73,
+      "radius": 0.13,
+      "reference_ink": 661940,
+      "candidate_ink": 661067
+    },
+    {
+      "page": 74,
+      "radius": 0.1,
+      "reference_ink": 612811,
+      "candidate_ink": 613526
+    },
+    {
+      "page": 75,
+      "radius": 0.19,
+      "reference_ink": 618683,
+      "candidate_ink": 620959
+    },
+    {
+      "page": 76,
+      "radius": 0.18,
+      "reference_ink": 674338,
+      "candidate_ink": 674729
+    },
+    {
+      "page": 77,
+      "radius": 0.08,
+      "reference_ink": 634091,
+      "candidate_ink": 634790
+    },
+    {
+      "page": 78,
+      "radius": 0.07,
+      "reference_ink": 606467,
+      "candidate_ink": 607035
+    },
+    {
+      "page": 79,
+      "radius": 0.1,
+      "reference_ink": 567825,
+      "candidate_ink": 569416
+    },
+    {
+      "page": 80,
+      "radius": 0.09,
+      "reference_ink": 577205,
+      "candidate_ink": 578801
+    },
+    {
+      "page": 81,
+      "radius": 0.12,
+      "reference_ink": 574342,
+      "candidate_ink": 575181
+    },
+    {
+      "page": 82,
+      "radius": 0.0,
+      "reference_ink": 558207,
+      "candidate_ink": 554412
+    },
+    {
+      "page": 83,
+      "radius": 0.14,
+      "reference_ink": 559561,
+      "candidate_ink": 558822
+    },
+    {
+      "page": 84,
+      "radius": 0.01,
+      "reference_ink": 554554,
+      "candidate_ink": 564806
+    },
+    {
+      "page": 85,
+      "radius": 0.0,
+      "reference_ink": 563900,
+      "candidate_ink": 563068
+    },
+    {
+      "page": 86,
+      "radius": 0.07,
+      "reference_ink": 617254,
+      "candidate_ink": 617578
+    },
+    {
+      "page": 87,
+      "radius": 0.02,
+      "reference_ink": 599077,
+      "candidate_ink": 606524
+    },
+    {
+      "page": 88,
+      "radius": 0.04,
+      "reference_ink": 568274,
+      "candidate_ink": 568600
+    },
+    {
+      "page": 89,
+      "radius": 0.01,
+      "reference_ink": 576022,
+      "candidate_ink": 585015
+    },
+    {
+      "page": 90,
+      "radius": 0.07,
+      "reference_ink": 649439,
+      "candidate_ink": 647732
+    },
+    {
+      "page": 91,
+      "radius": 0.05,
+      "reference_ink": 599115,
+      "candidate_ink": 598376
+    },
+    {
+      "page": 92,
+      "radius": 0.03,
+      "reference_ink": 601386,
+      "candidate_ink": 602690
+    },
+    {
+      "page": 93,
+      "radius": 0.01,
+      "reference_ink": 571984,
+      "candidate_ink": 584108
+    },
+    {
+      "page": 94,
+      "radius": 0.03,
+      "reference_ink": 622065,
+      "candidate_ink": 626261
+    },
+    {
+      "page": 95,
+      "radius": 0.03,
+      "reference_ink": 596928,
+      "candidate_ink": 597166
+    },
+    {
+      "page": 96,
+      "radius": 0.08,
+      "reference_ink": 570345,
+      "candidate_ink": 568655
+    },
+    {
+      "page": 97,
+      "radius": 0.14,
+      "reference_ink": 599096,
+      "candidate_ink": 599425
+    },
+    {
+      "page": 98,
+      "radius": 0.05,
+      "reference_ink": 575363,
+      "candidate_ink": 575314
+    },
+    {
+      "page": 99,
+      "radius": 0.09,
+      "reference_ink": 600896,
+      "candidate_ink": 602919
+    },
+    {
+      "page": 100,
+      "radius": 0.07,
+      "reference_ink": 625475,
+      "candidate_ink": 625832
+    },
+    {
+      "page": 101,
+      "radius": 0.03,
+      "reference_ink": 596716,
+      "candidate_ink": 599192
+    },
+    {
+      "page": 102,
+      "radius": 0.0,
+      "reference_ink": 562576,
+      "candidate_ink": 569589
+    },
+    {
+      "page": 103,
+      "radius": 0.01,
+      "reference_ink": 602383,
+      "candidate_ink": 613357
+    },
+    {
+      "page": 104,
+      "radius": 0.01,
+      "reference_ink": 581508,
+      "candidate_ink": 587452
+    },
+    {
+      "page": 105,
+      "radius": 0.0,
+      "reference_ink": 543169,
+      "candidate_ink": 540317
+    },
+    {
+      "page": 106,
+      "radius": 0.01,
+      "reference_ink": 674050,
+      "candidate_ink": 680632
+    },
+    {
+      "page": 107,
+      "radius": 0.02,
+      "reference_ink": 603297,
+      "candidate_ink": 611770
+    },
+    {
+      "page": 108,
+      "radius": 0.03,
+      "reference_ink": 571155,
+      "candidate_ink": 572696
+    },
+    {
+      "page": 109,
+      "radius": 0.0,
+      "reference_ink": 527275,
+      "candidate_ink": 517645
+    },
+    {
+      "page": 110,
+      "radius": 0.02,
+      "reference_ink": 531563,
+      "candidate_ink": 534497
+    },
+    {
+      "page": 111,
+      "radius": 0.05,
+      "reference_ink": 603564,
+      "candidate_ink": 604606
+    },
+    {
+      "page": 112,
+      "radius": 0.09,
+      "reference_ink": 583782,
+      "candidate_ink": 582832
+    },
+    {
+      "page": 113,
+      "radius": 0.0,
+      "reference_ink": 544650,
+      "candidate_ink": 532652
+    },
+    {
+      "page": 114,
+      "radius": 0.1,
+      "reference_ink": 604486,
+      "candidate_ink": 603748
+    },
+    {
+      "page": 115,
+      "radius": 0.15,
+      "reference_ink": 577936,
+      "candidate_ink": 578888
+    },
+    {
+      "page": 116,
+      "radius": 0.13,
+      "reference_ink": 587959,
+      "candidate_ink": 586130
+    },
+    {
+      "page": 117,
+      "radius": 0.0,
+      "reference_ink": 595216,
+      "candidate_ink": 584047
+    },
+    {
+      "page": 118,
+      "radius": 0.09,
+      "reference_ink": 605514,
+      "candidate_ink": 604014
+    },
+    {
+      "page": 119,
+      "radius": 0.09,
+      "reference_ink": 618634,
+      "candidate_ink": 618586
+    },
+    {
+      "page": 120,
+      "radius": 0.02,
+      "reference_ink": 553604,
+      "candidate_ink": 557534
+    },
+    {
+      "page": 121,
+      "radius": 0.04,
+      "reference_ink": 539164,
+      "candidate_ink": 538387
+    },
+    {
+      "page": 122,
+      "radius": 0.07,
+      "reference_ink": 614753,
+      "candidate_ink": 612989
+    },
+    {
+      "page": 123,
+      "radius": 0.02,
+      "reference_ink": 599530,
+      "candidate_ink": 604516
+    },
+    {
+      "page": 124,
+      "radius": 0.07,
+      "reference_ink": 609823,
+      "candidate_ink": 610603
+    },
+    {
+      "page": 125,
+      "radius": 0.09,
+      "reference_ink": 608029,
+      "candidate_ink": 607968
+    },
+    {
+      "page": 126,
+      "radius": 0.08,
+      "reference_ink": 560991,
+      "candidate_ink": 560751
+    },
+    {
+      "page": 127,
+      "radius": 0.13,
+      "reference_ink": 625911,
+      "candidate_ink": 625093
+    },
+    {
+      "page": 128,
+      "radius": 0.05,
+      "reference_ink": 626244,
+      "candidate_ink": 624691
+    },
+    {
+      "page": 129,
+      "radius": 0.03,
+      "reference_ink": 556707,
+      "candidate_ink": 556738
+    },
+    {
+      "page": 130,
+      "radius": 0.05,
+      "reference_ink": 633355,
+      "candidate_ink": 631881
+    },
+    {
+      "page": 131,
+      "radius": 0.09,
+      "reference_ink": 617928,
+      "candidate_ink": 620250
+    },
+    {
+      "page": 132,
+      "radius": 0.09,
+      "reference_ink": 621150,
+      "candidate_ink": 620251
+    },
+    {
+      "page": 133,
+      "radius": 0.0,
+      "reference_ink": 573677,
+      "candidate_ink": 567291
+    },
+    {
+      "page": 134,
+      "radius": 0.06,
+      "reference_ink": 599352,
+      "candidate_ink": 598898
+    },
+    {
+      "page": 135,
+      "radius": 0.07,
+      "reference_ink": 633644,
+      "candidate_ink": 631018
+    },
+    {
+      "page": 136,
+      "radius": 0.02,
+      "reference_ink": 579059,
+      "candidate_ink": 585712
+    },
+    {
+      "page": 137,
+      "radius": 0.12,
+      "reference_ink": 607621,
+      "candidate_ink": 606580
+    },
+    {
+      "page": 138,
+      "radius": 0.15,
+      "reference_ink": 617707,
+      "candidate_ink": 615844
+    },
+    {
+      "page": 139,
+      "radius": 0.1,
+      "reference_ink": 641027,
+      "candidate_ink": 639466
+    },
+    {
+      "page": 140,
+      "radius": 0.12,
+      "reference_ink": 626439,
+      "candidate_ink": 628740
+    },
+    {
+      "page": 141,
+      "radius": 0.04,
+      "reference_ink": 632226,
+      "candidate_ink": 630609
+    },
+    {
+      "page": 142,
+      "radius": 0.08,
+      "reference_ink": 649503,
+      "candidate_ink": 650650
+    },
+    {
+      "page": 143,
+      "radius": 0.07,
+      "reference_ink": 600552,
+      "candidate_ink": 599430
+    },
+    {
+      "page": 144,
+      "radius": 0.12,
+      "reference_ink": 637087,
+      "candidate_ink": 637528
+    },
+    {
+      "page": 145,
+      "radius": 0.14,
+      "reference_ink": 592819,
+      "candidate_ink": 592455
+    },
+    {
+      "page": 146,
+      "radius": 0.13,
+      "reference_ink": 620507,
+      "candidate_ink": 618392
+    },
+    {
+      "page": 147,
+      "radius": 0.14,
+      "reference_ink": 587610,
+      "candidate_ink": 585838
+    },
+    {
+      "page": 148,
+      "radius": 0.11,
+      "reference_ink": 586078,
+      "candidate_ink": 586340
+    },
+    {
+      "page": 149,
+      "radius": 0.13,
+      "reference_ink": 603679,
+      "candidate_ink": 602090
+    },
+    {
+      "page": 150,
+      "radius": 0.1,
+      "reference_ink": 637776,
+      "candidate_ink": 637217
+    },
+    {
+      "page": 151,
+      "radius": 0.16,
+      "reference_ink": 655326,
+      "candidate_ink": 657141
+    },
+    {
+      "page": 152,
+      "radius": 0.17,
+      "reference_ink": 617369,
+      "candidate_ink": 615722
+    },
+    {
+      "page": 153,
+      "radius": 0.13,
+      "reference_ink": 640283,
+      "candidate_ink": 638991
+    },
+    {
+      "page": 154,
+      "radius": 0.16,
+      "reference_ink": 668638,
+      "candidate_ink": 671130
+    },
+    {
+      "page": 155,
+      "radius": 0.13,
+      "reference_ink": 620336,
+      "candidate_ink": 620528
+    },
+    {
+      "page": 156,
+      "radius": 0.16,
+      "reference_ink": 591056,
+      "candidate_ink": 592592
+    },
+    {
+      "page": 157,
+      "radius": 0.13,
+      "reference_ink": 605917,
+      "candidate_ink": 607656
+    },
+    {
+      "page": 158,
+      "radius": 0.1,
+      "reference_ink": 619444,
+      "candidate_ink": 621021
+    },
+    {
+      "page": 159,
+      "radius": 0.11,
+      "reference_ink": 588832,
+      "candidate_ink": 587849
+    },
+    {
+      "page": 160,
+      "radius": 0.14,
+      "reference_ink": 590855,
+      "candidate_ink": 590654
+    },
+    {
+      "page": 161,
+      "radius": 0.18,
+      "reference_ink": 626023,
+      "candidate_ink": 624388
+    },
+    {
+      "page": 162,
+      "radius": 0.14,
+      "reference_ink": 660164,
+      "candidate_ink": 661195
+    },
+    {
+      "page": 163,
+      "radius": 0.16,
+      "reference_ink": 620067,
+      "candidate_ink": 619573
+    },
+    {
+      "page": 164,
+      "radius": 0.17,
+      "reference_ink": 619215,
+      "candidate_ink": 617002
+    },
+    {
+      "page": 165,
+      "radius": 0.16,
+      "reference_ink": 603383,
+      "candidate_ink": 605615
+    },
+    {
+      "page": 166,
+      "radius": 0.11,
+      "reference_ink": 565503,
+      "candidate_ink": 567084
+    },
+    {
+      "page": 167,
+      "radius": 0.12,
+      "reference_ink": 593538,
+      "candidate_ink": 592797
+    },
+    {
+      "page": 168,
+      "radius": 0.13,
+      "reference_ink": 570462,
+      "candidate_ink": 569204
+    },
+    {
+      "page": 169,
+      "radius": 0.11,
+      "reference_ink": 615767,
+      "candidate_ink": 615450
+    },
+    {
+      "page": 170,
+      "radius": 0.14,
+      "reference_ink": 618740,
+      "candidate_ink": 616974
+    },
+    {
+      "page": 171,
+      "radius": 0.07,
+      "reference_ink": 567683,
+      "candidate_ink": 566990
+    },
+    {
+      "page": 172,
+      "radius": 0.12,
+      "reference_ink": 598218,
+      "candidate_ink": 596615
+    },
+    {
+      "page": 173,
+      "radius": 0.07,
+      "reference_ink": 617112,
+      "candidate_ink": 617302
+    },
+    {
+      "page": 174,
+      "radius": 0.11,
+      "reference_ink": 642748,
+      "candidate_ink": 642009
+    },
+    {
+      "page": 175,
+      "radius": 0.08,
+      "reference_ink": 606609,
+      "candidate_ink": 607427
+    },
+    {
+      "page": 176,
+      "radius": 0.05,
+      "reference_ink": 614398,
+      "candidate_ink": 615742
+    },
+    {
+      "page": 177,
+      "radius": 0.13,
+      "reference_ink": 671613,
+      "candidate_ink": 671093
+    },
+    {
+      "page": 178,
+      "radius": 0.0,
+      "reference_ink": 580543,
+      "candidate_ink": 575230
+    },
+    {
+      "page": 179,
+      "radius": 0.05,
+      "reference_ink": 581357,
+      "candidate_ink": 579316
+    },
+    {
+      "page": 180,
+      "radius": 0.1,
+      "reference_ink": 588298,
+      "candidate_ink": 588312
+    },
+    {
+      "page": 181,
+      "radius": 0.0,
+      "reference_ink": 560661,
+      "candidate_ink": 554818
+    },
+    {
+      "page": 182,
+      "radius": 0.08,
+      "reference_ink": 587243,
+      "candidate_ink": 585543
+    },
+    {
+      "page": 183,
+      "radius": 0.13,
+      "reference_ink": 572239,
+      "candidate_ink": 571938
+    },
+    {
+      "page": 184,
+      "radius": 0.09,
+      "reference_ink": 576329,
+      "candidate_ink": 575622
+    },
+    {
+      "page": 185,
+      "radius": 0.1,
+      "reference_ink": 593850,
+      "candidate_ink": 594425
+    },
+    {
+      "page": 186,
+      "radius": 0.08,
+      "reference_ink": 624607,
+      "candidate_ink": 624509
+    },
+    {
+      "page": 187,
+      "radius": 0.1,
+      "reference_ink": 670817,
+      "candidate_ink": 671044
+    },
+    {
+      "page": 188,
+      "radius": 0.08,
+      "reference_ink": 582058,
+      "candidate_ink": 580142
+    },
+    {
+      "page": 189,
+      "radius": 0.0,
+      "reference_ink": 578952,
+      "candidate_ink": 570388
+    },
+    {
+      "page": 190,
+      "radius": 0.0,
+      "reference_ink": 556046,
+      "candidate_ink": 564156
+    },
+    {
+      "page": 191,
+      "radius": 0.06,
+      "reference_ink": 550941,
+      "candidate_ink": 550042
+    },
+    {
+      "page": 192,
+      "radius": 0.07,
+      "reference_ink": 563840,
+      "candidate_ink": 563799
+    },
+    {
+      "page": 193,
+      "radius": 0.05,
+      "reference_ink": 579690,
+      "candidate_ink": 578931
+    },
+    {
+      "page": 194,
+      "radius": 0.08,
+      "reference_ink": 587244,
+      "candidate_ink": 587735
+    },
+    {
+      "page": 195,
+      "radius": 0.01,
+      "reference_ink": 561641,
+      "candidate_ink": 568181
+    },
+    {
+      "page": 196,
+      "radius": 0.0,
+      "reference_ink": 583184,
+      "candidate_ink": 571441
+    },
+    {
+      "page": 197,
+      "radius": 0.02,
+      "reference_ink": 558440,
+      "candidate_ink": 560639
+    },
+    {
+      "page": 198,
+      "radius": 0.0,
+      "reference_ink": 574400,
+      "candidate_ink": 565899
+    },
+    {
+      "page": 199,
+      "radius": 0.04,
+      "reference_ink": 574748,
+      "candidate_ink": 574796
+    },
+    {
+      "page": 200,
+      "radius": 0.06,
+      "reference_ink": 582785,
+      "candidate_ink": 583977
+    },
+    {
+      "page": 201,
+      "radius": 0.11,
+      "reference_ink": 603754,
+      "candidate_ink": 604909
+    },
+    {
+      "page": 202,
+      "radius": 0.12,
+      "reference_ink": 604709,
+      "candidate_ink": 603012
+    },
+    {
+      "page": 203,
+      "radius": 0.07,
+      "reference_ink": 556158,
+      "candidate_ink": 553794
+    },
+    {
+      "page": 204,
+      "radius": 0.01,
+      "reference_ink": 553294,
+      "candidate_ink": 563609
+    },
+    {
+      "page": 205,
+      "radius": 0.0,
+      "reference_ink": 513777,
+      "candidate_ink": 523924
+    },
+    {
+      "page": 206,
+      "radius": 0.0,
+      "reference_ink": 590591,
+      "candidate_ink": 583133
+    },
+    {
+      "page": 207,
+      "radius": 0.0,
+      "reference_ink": 616070,
+      "candidate_ink": 619867
+    },
+    {
+      "page": 208,
+      "radius": 0.06,
+      "reference_ink": 525820,
+      "candidate_ink": 526913
+    },
+    {
+      "page": 209,
+      "radius": 0.0,
+      "reference_ink": 601535,
+      "candidate_ink": 591079
+    },
+    {
+      "page": 210,
+      "radius": 0.0,
+      "reference_ink": 574094,
+      "candidate_ink": 563038
+    },
+    {
+      "page": 211,
+      "radius": 0.0,
+      "reference_ink": 551924,
+      "candidate_ink": 558355
+    },
+    {
+      "page": 212,
+      "radius": 0.0,
+      "reference_ink": 588485,
+      "candidate_ink": 599203
+    },
+    {
+      "page": 213,
+      "radius": 0.03,
+      "reference_ink": 615697,
+      "candidate_ink": 616681
+    },
+    {
+      "page": 214,
+      "radius": 0.03,
+      "reference_ink": 599473,
+      "candidate_ink": 602684
+    },
+    {
+      "page": 215,
+      "radius": 0.08,
+      "reference_ink": 571785,
+      "candidate_ink": 571937
+    },
+    {
+      "page": 216,
+      "radius": 0.09,
+      "reference_ink": 563636,
+      "candidate_ink": 563715
+    },
+    {
+      "page": 217,
+      "radius": 0.06,
+      "reference_ink": 605443,
+      "candidate_ink": 607467
+    },
+    {
+      "page": 218,
+      "radius": 0.05,
+      "reference_ink": 584413,
+      "candidate_ink": 583228
+    },
+    {
+      "page": 219,
+      "radius": 0.11,
+      "reference_ink": 550719,
+      "candidate_ink": 552328
+    },
+    {
+      "page": 220,
+      "radius": 0.01,
+      "reference_ink": 556975,
+      "candidate_ink": 566565
+    },
+    {
+      "page": 221,
+      "radius": 0.07,
+      "reference_ink": 643680,
+      "candidate_ink": 643635
+    },
+    {
+      "page": 222,
+      "radius": 0.04,
+      "reference_ink": 546285,
+      "candidate_ink": 545862
+    },
+    {
+      "page": 223,
+      "radius": 0.05,
+      "reference_ink": 558016,
+      "candidate_ink": 558556
+    },
+    {
+      "page": 224,
+      "radius": 0.0,
+      "reference_ink": 573043,
+      "candidate_ink": 567863
+    },
+    {
+      "page": 225,
+      "radius": 0.1,
+      "reference_ink": 602951,
+      "candidate_ink": 602689
+    },
+    {
+      "page": 226,
+      "radius": 0.07,
+      "reference_ink": 593537,
+      "candidate_ink": 592810
+    },
+    {
+      "page": 227,
+      "radius": 0.05,
+      "reference_ink": 555965,
+      "candidate_ink": 555342
+    },
+    {
+      "page": 228,
+      "radius": 0.1,
+      "reference_ink": 587860,
+      "candidate_ink": 586634
+    },
+    {
+      "page": 229,
+      "radius": 0.06,
+      "reference_ink": 540386,
+      "candidate_ink": 539805
+    },
+    {
+      "page": 230,
+      "radius": 0.01,
+      "reference_ink": 558328,
+      "candidate_ink": 571738
+    },
+    {
+      "page": 231,
+      "radius": 0.04,
+      "reference_ink": 537784,
+      "candidate_ink": 536466
+    },
+    {
+      "page": 232,
+      "radius": 0.03,
+      "reference_ink": 545384,
+      "candidate_ink": 548297
+    },
+    {
+      "page": 233,
+      "radius": 0.05,
+      "reference_ink": 565989,
+      "candidate_ink": 567076
+    },
+    {
+      "page": 234,
+      "radius": 0.0,
+      "reference_ink": 579369,
+      "candidate_ink": 576355
+    },
+    {
+      "page": 235,
+      "radius": 0.0,
+      "reference_ink": 595497,
+      "candidate_ink": 585695
+    },
+    {
+      "page": 236,
+      "radius": 0.0,
+      "reference_ink": 561392,
+      "candidate_ink": 562274
+    },
+    {
+      "page": 237,
+      "radius": 0.0,
+      "reference_ink": 530593,
+      "candidate_ink": 526479
+    },
+    {
+      "page": 238,
+      "radius": 0.1,
+      "reference_ink": 584703,
+      "candidate_ink": 582778
+    },
+    {
+      "page": 239,
+      "radius": 0.13,
+      "reference_ink": 614860,
+      "candidate_ink": 615632
+    },
+    {
+      "page": 240,
+      "radius": 0.09,
+      "reference_ink": 579067,
+      "candidate_ink": 578071
+    },
+    {
+      "page": 241,
+      "radius": 0.11,
+      "reference_ink": 637984,
+      "candidate_ink": 638683
+    },
+    {
+      "page": 242,
+      "radius": 0.13,
+      "reference_ink": 633195,
+      "candidate_ink": 633814
+    },
+    {
+      "page": 243,
+      "radius": 0.11,
+      "reference_ink": 594845,
+      "candidate_ink": 594572
+    },
+    {
+      "page": 244,
+      "radius": 0.07,
+      "reference_ink": 544541,
+      "candidate_ink": 544579
+    },
+    {
+      "page": 245,
+      "radius": 0.07,
+      "reference_ink": 567741,
+      "candidate_ink": 566123
+    },
+    {
+      "page": 246,
+      "radius": 0.07,
+      "reference_ink": 567541,
+      "candidate_ink": 566963
+    },
+    {
+      "page": 247,
+      "radius": 0.02,
+      "reference_ink": 573968,
+      "candidate_ink": 578955
+    },
+    {
+      "page": 248,
+      "radius": 0.12,
+      "reference_ink": 592849,
+      "candidate_ink": 595160
+    },
+    {
+      "page": 249,
+      "radius": 0.12,
+      "reference_ink": 682025,
+      "candidate_ink": 681606
+    },
+    {
+      "page": 250,
+      "radius": 0.16,
+      "reference_ink": 612384,
+      "candidate_ink": 613338
+    },
+    {
+      "page": 251,
+      "radius": 0.14,
+      "reference_ink": 607478,
+      "candidate_ink": 608285
+    },
+    {
+      "page": 252,
+      "radius": 0.1,
+      "reference_ink": 627844,
+      "candidate_ink": 627713
+    },
+    {
+      "page": 253,
+      "radius": 0.14,
+      "reference_ink": 630676,
+      "candidate_ink": 631812
+    },
+    {
+      "page": 254,
+      "radius": 0.11,
+      "reference_ink": 609641,
+      "candidate_ink": 611336
+    },
+    {
+      "page": 255,
+      "radius": 0.1,
+      "reference_ink": 608650,
+      "candidate_ink": 609525
+    },
+    {
+      "page": 256,
+      "radius": 0.09,
+      "reference_ink": 583804,
+      "candidate_ink": 584918
+    },
+    {
+      "page": 257,
+      "radius": 0.2,
+      "reference_ink": 639525,
+      "candidate_ink": 641467
+    },
+    {
+      "page": 258,
+      "radius": 0.15,
+      "reference_ink": 620749,
+      "candidate_ink": 619284
+    },
+    {
+      "page": 259,
+      "radius": 0.08,
+      "reference_ink": 593886,
+      "candidate_ink": 594979
+    },
+    {
+      "page": 260,
+      "radius": 0.12,
+      "reference_ink": 604491,
+      "candidate_ink": 604218
+    },
+    {
+      "page": 261,
+      "radius": 0.14,
+      "reference_ink": 607974,
+      "candidate_ink": 609398
+    },
+    {
+      "page": 262,
+      "radius": 0.07,
+      "reference_ink": 646669,
+      "candidate_ink": 644553
+    },
+    {
+      "page": 263,
+      "radius": 0.09,
+      "reference_ink": 597863,
+      "candidate_ink": 596233
+    },
+    {
+      "page": 264,
+      "radius": 0.08,
+      "reference_ink": 566866,
+      "candidate_ink": 565386
+    },
+    {
+      "page": 265,
+      "radius": 0.14,
+      "reference_ink": 632405,
+      "candidate_ink": 634764
+    },
+    {
+      "page": 266,
+      "radius": 0.13,
+      "reference_ink": 628354,
+      "candidate_ink": 627070
+    },
+    {
+      "page": 267,
+      "radius": 0.11,
+      "reference_ink": 654276,
+      "candidate_ink": 656059
+    },
+    {
+      "page": 268,
+      "radius": 0.16,
+      "reference_ink": 593238,
+      "candidate_ink": 592080
+    },
+    {
+      "page": 269,
+      "radius": 0.12,
+      "reference_ink": 581867,
+      "candidate_ink": 583843
+    },
+    {
+      "page": 270,
+      "radius": 0.05,
+      "reference_ink": 529083,
+      "candidate_ink": 527805
+    },
+    {
+      "page": 271,
+      "radius": 0.14,
+      "reference_ink": 605653,
+      "candidate_ink": 603783
+    },
+    {
+      "page": 272,
+      "radius": 0.09,
+      "reference_ink": 625902,
+      "candidate_ink": 626044
+    },
+    {
+      "page": 273,
+      "radius": 0.09,
+      "reference_ink": 606228,
+      "candidate_ink": 607464
+    },
+    {
+      "page": 274,
+      "radius": 0.05,
+      "reference_ink": 574969,
+      "candidate_ink": 573478
+    },
+    {
+      "page": 275,
+      "radius": 0.07,
+      "reference_ink": 581072,
+      "candidate_ink": 582170
+    },
+    {
+      "page": 276,
+      "radius": 0.05,
+      "reference_ink": 597421,
+      "candidate_ink": 595579
+    },
+    {
+      "page": 277,
+      "radius": 0.07,
+      "reference_ink": 558586,
+      "candidate_ink": 557484
+    },
+    {
+      "page": 278,
+      "radius": 0.06,
+      "reference_ink": 552152,
+      "candidate_ink": 550180
+    },
+    {
+      "page": 279,
+      "radius": 0.08,
+      "reference_ink": 551587,
+      "candidate_ink": 550269
+    },
+    {
+      "page": 280,
+      "radius": 0.07,
+      "reference_ink": 585041,
+      "candidate_ink": 585914
+    },
+    {
+      "page": 281,
+      "radius": 0.04,
+      "reference_ink": 550031,
+      "candidate_ink": 551028
+    },
+    {
+      "page": 282,
+      "radius": 0.06,
+      "reference_ink": 610240,
+      "candidate_ink": 612031
+    },
+    {
+      "page": 283,
+      "radius": 0.05,
+      "reference_ink": 570278,
+      "candidate_ink": 570435
+    },
+    {
+      "page": 284,
+      "radius": 0.11,
+      "reference_ink": 612141,
+      "candidate_ink": 613093
+    },
+    {
+      "page": 285,
+      "radius": 0.09,
+      "reference_ink": 599138,
+      "candidate_ink": 597248
+    },
+    {
+      "page": 286,
+      "radius": 0.05,
+      "reference_ink": 590715,
+      "candidate_ink": 591920
+    },
+    {
+      "page": 287,
+      "radius": 0.13,
+      "reference_ink": 623760,
+      "candidate_ink": 625935
+    },
+    {
+      "page": 288,
+      "radius": 0.02,
+      "reference_ink": 542562,
+      "candidate_ink": 548603
+    },
+    {
+      "page": 289,
+      "radius": 0.06,
+      "reference_ink": 555230,
+      "candidate_ink": 554911
+    },
+    {
+      "page": 290,
+      "radius": 0.06,
+      "reference_ink": 551924,
+      "candidate_ink": 550266
+    },
+    {
+      "page": 291,
+      "radius": 0.05,
+      "reference_ink": 558333,
+      "candidate_ink": 557582
+    },
+    {
+      "page": 292,
+      "radius": 0.08,
+      "reference_ink": 595245,
+      "candidate_ink": 594909
+    },
+    {
+      "page": 293,
+      "radius": 0.06,
+      "reference_ink": 634340,
+      "candidate_ink": 632529
+    },
+    {
+      "page": 294,
+      "radius": 0.09,
+      "reference_ink": 592096,
+      "candidate_ink": 592793
+    },
+    {
+      "page": 295,
+      "radius": 0.08,
+      "reference_ink": 565282,
+      "candidate_ink": 564593
+    },
+    {
+      "page": 296,
+      "radius": 0.02,
+      "reference_ink": 549633,
+      "candidate_ink": 556256
+    },
+    {
+      "page": 297,
+      "radius": 0.06,
+      "reference_ink": 589364,
+      "candidate_ink": 589411
+    },
+    {
+      "page": 298,
+      "radius": 0.07,
+      "reference_ink": 591083,
+      "candidate_ink": 592342
+    },
+    {
+      "page": 299,
+      "radius": 0.01,
+      "reference_ink": 549497,
+      "candidate_ink": 557995
+    },
+    {
+      "page": 300,
+      "radius": 0.02,
+      "reference_ink": 567382,
+      "candidate_ink": 571286
+    },
+    {
+      "page": 301,
+      "radius": 0.11,
+      "reference_ink": 599147,
+      "candidate_ink": 601618
+    },
+    {
+      "page": 302,
+      "radius": 0.11,
+      "reference_ink": 608991,
+      "candidate_ink": 609681
+    },
+    {
+      "page": 303,
+      "radius": 0.01,
+      "reference_ink": 547163,
+      "candidate_ink": 558600
+    },
+    {
+      "page": 304,
+      "radius": 0.0,
+      "reference_ink": 554275,
+      "candidate_ink": 560227
+    },
+    {
+      "page": 305,
+      "radius": 0.0,
+      "reference_ink": 587056,
+      "candidate_ink": 575003
+    },
+    {
+      "page": 306,
+      "radius": 0.04,
+      "reference_ink": 534185,
+      "candidate_ink": 533726
+    },
+    {
+      "page": 307,
+      "radius": 0.07,
+      "reference_ink": 546514,
+      "candidate_ink": 546846
+    },
+    {
+      "page": 308,
+      "radius": 0.0,
+      "reference_ink": 538269,
+      "candidate_ink": 537606
+    },
+    {
+      "page": 309,
+      "radius": 0.0,
+      "reference_ink": 557750,
+      "candidate_ink": 547395
+    },
+    {
+      "page": 310,
+      "radius": 0.0,
+      "reference_ink": 562522,
+      "candidate_ink": 550016
+    },
+    {
+      "page": 311,
+      "radius": 0.0,
+      "reference_ink": 557720,
+      "candidate_ink": 552999
+    },
+    {
+      "page": 312,
+      "radius": 0.0,
+      "reference_ink": 609005,
+      "candidate_ink": 598890
+    },
+    {
+      "page": 313,
+      "radius": 0.09,
+      "reference_ink": 588329,
+      "candidate_ink": 588877
+    },
+    {
+      "page": 314,
+      "radius": 0.02,
+      "reference_ink": 597006,
+      "candidate_ink": 605444
+    },
+    {
+      "page": 315,
+      "radius": 0.02,
+      "reference_ink": 590302,
+      "candidate_ink": 597876
+    },
+    {
+      "page": 316,
+      "radius": 0.0,
+      "reference_ink": 522953,
+      "candidate_ink": 534752
+    },
+    {
+      "page": 317,
+      "radius": 0.15,
+      "reference_ink": 641481,
+      "candidate_ink": 644149
+    },
+    {
+      "page": 318,
+      "radius": 0.11,
+      "reference_ink": 618498,
+      "candidate_ink": 617371
+    },
+    {
+      "page": 319,
+      "radius": 0.13,
+      "reference_ink": 623755,
+      "candidate_ink": 622385
+    },
+    {
+      "page": 320,
+      "radius": 0.14,
+      "reference_ink": 620039,
+      "candidate_ink": 619418
+    },
+    {
+      "page": 321,
+      "radius": 0.16,
+      "reference_ink": 642780,
+      "candidate_ink": 642755
+    },
+    {
+      "page": 322,
+      "radius": 0.17,
+      "reference_ink": 677947,
+      "candidate_ink": 678588
+    },
+    {
+      "page": 323,
+      "radius": 0.1,
+      "reference_ink": 624450,
+      "candidate_ink": 625129
+    },
+    {
+      "page": 324,
+      "radius": 0.11,
+      "reference_ink": 596361,
+      "candidate_ink": 596507
+    },
+    {
+      "page": 325,
+      "radius": 0.15,
+      "reference_ink": 604856,
+      "candidate_ink": 605020
+    },
+    {
+      "page": 326,
+      "radius": 0.19,
+      "reference_ink": 666925,
+      "candidate_ink": 667972
+    },
+    {
+      "page": 327,
+      "radius": 0.18,
+      "reference_ink": 638639,
+      "candidate_ink": 636682
+    },
+    {
+      "page": 328,
+      "radius": 0.12,
+      "reference_ink": 611215,
+      "candidate_ink": 612476
+    },
+    {
+      "page": 329,
+      "radius": 0.18,
+      "reference_ink": 610669,
+      "candidate_ink": 609081
+    },
+    {
+      "page": 330,
+      "radius": 0.16,
+      "reference_ink": 620377,
+      "candidate_ink": 620597
+    },
+    {
+      "page": 331,
+      "radius": 0.1,
+      "reference_ink": 677871,
+      "candidate_ink": 675884
+    },
+    {
+      "page": 332,
+      "radius": 0.14,
+      "reference_ink": 606080,
+      "candidate_ink": 604070
+    },
+    {
+      "page": 333,
+      "radius": 0.19,
+      "reference_ink": 664197,
+      "candidate_ink": 665204
+    },
+    {
+      "page": 334,
+      "radius": 0.14,
+      "reference_ink": 638597,
+      "candidate_ink": 637090
+    },
+    {
+      "page": 335,
+      "radius": 0.18,
+      "reference_ink": 639921,
+      "candidate_ink": 641744
+    },
+    {
+      "page": 336,
+      "radius": 0.13,
+      "reference_ink": 667463,
+      "candidate_ink": 666187
+    },
+    {
+      "page": 337,
+      "radius": 0.19,
+      "reference_ink": 655298,
+      "candidate_ink": 655664
+    },
+    {
+      "page": 338,
+      "radius": 0.16,
+      "reference_ink": 675061,
+      "candidate_ink": 677732
+    },
+    {
+      "page": 339,
+      "radius": 0.15,
+      "reference_ink": 639596,
+      "candidate_ink": 639697
+    },
+    {
+      "page": 340,
+      "radius": 0.15,
+      "reference_ink": 642073,
+      "candidate_ink": 643702
+    },
+    {
+      "page": 341,
+      "radius": 0.17,
+      "reference_ink": 743084,
+      "candidate_ink": 743698
+    },
+    {
+      "page": 342,
+      "radius": 0.11,
+      "reference_ink": 635011,
+      "candidate_ink": 633613
+    },
+    {
+      "page": 343,
+      "radius": 0.14,
+      "reference_ink": 700095,
+      "candidate_ink": 701783
+    },
+    {
+      "page": 344,
+      "radius": 0.13,
+      "reference_ink": 670447,
+      "candidate_ink": 669073
+    },
+    {
+      "page": 345,
+      "radius": 0.16,
+      "reference_ink": 678160,
+      "candidate_ink": 680275
+    },
+    {
+      "page": 346,
+      "radius": 0.16,
+      "reference_ink": 691953,
+      "candidate_ink": 690142
+    },
+    {
+      "page": 347,
+      "radius": 0.15,
+      "reference_ink": 660616,
+      "candidate_ink": 658381
+    },
+    {
+      "page": 348,
+      "radius": 0.15,
+      "reference_ink": 657175,
+      "candidate_ink": 656816
+    },
+    {
+      "page": 349,
+      "radius": 0.16,
+      "reference_ink": 741704,
+      "candidate_ink": 739829
+    },
+    {
+      "page": 350,
+      "radius": 0.13,
+      "reference_ink": 633313,
+      "candidate_ink": 631345
+    },
+    {
+      "page": 351,
+      "radius": 0.13,
+      "reference_ink": 675464,
+      "candidate_ink": 673341
+    },
+    {
+      "page": 352,
+      "radius": 0.17,
+      "reference_ink": 643776,
+      "candidate_ink": 641906
+    },
+    {
+      "page": 353,
+      "radius": 0.2,
+      "reference_ink": 682388,
+      "candidate_ink": 684053
+    },
+    {
+      "page": 354,
+      "radius": 0.19,
+      "reference_ink": 703942,
+      "candidate_ink": 701893
+    },
+    {
+      "page": 355,
+      "radius": 0.2,
+      "reference_ink": 681687,
+      "candidate_ink": 680514
+    },
+    {
+      "page": 356,
+      "radius": 0.18,
+      "reference_ink": 682473,
+      "candidate_ink": 684314
+    },
+    {
+      "page": 357,
+      "radius": 0.19,
+      "reference_ink": 692077,
+      "candidate_ink": 692323
+    },
+    {
+      "page": 358,
+      "radius": 0.13,
+      "reference_ink": 585153,
+      "candidate_ink": 585740
+    },
+    {
+      "page": 359,
+      "radius": 0.21,
+      "reference_ink": 697706,
+      "candidate_ink": 697713
+    },
+    {
+      "page": 360,
+      "radius": 0.1,
+      "reference_ink": 602534,
+      "candidate_ink": 603454
+    },
+    {
+      "page": 361,
+      "radius": 0.12,
+      "reference_ink": 593551,
+      "candidate_ink": 593071
+    },
+    {
+      "page": 362,
+      "radius": 0.14,
+      "reference_ink": 620236,
+      "candidate_ink": 620835
+    },
+    {
+      "page": 363,
+      "radius": 0.12,
+      "reference_ink": 592904,
+      "candidate_ink": 594525
+    },
+    {
+      "page": 364,
+      "radius": 0.12,
+      "reference_ink": 624292,
+      "candidate_ink": 623273
+    },
+    {
+      "page": 365,
+      "radius": 0.11,
+      "reference_ink": 591741,
+      "candidate_ink": 591150
+    },
+    {
+      "page": 366,
+      "radius": 0.07,
+      "reference_ink": 635614,
+      "candidate_ink": 636004
+    },
+    {
+      "page": 367,
+      "radius": 0.0,
+      "reference_ink": 554883,
+      "candidate_ink": 541119
+    },
+    {
+      "page": 368,
+      "radius": 0.07,
+      "reference_ink": 579495,
+      "candidate_ink": 581190
+    },
+    {
+      "page": 369,
+      "radius": 0.02,
+      "reference_ink": 605016,
+      "candidate_ink": 608489
+    },
+    {
+      "page": 370,
+      "radius": 0.0,
+      "reference_ink": 564143,
+      "candidate_ink": 553236
+    },
+    {
+      "page": 371,
+      "radius": 0.06,
+      "reference_ink": 634740,
+      "candidate_ink": 636271
+    },
+    {
+      "page": 372,
+      "radius": 0.06,
+      "reference_ink": 613907,
+      "candidate_ink": 615842
+    },
+    {
+      "page": 373,
+      "radius": 0.03,
+      "reference_ink": 609172,
+      "candidate_ink": 610470
+    },
+    {
+      "page": 374,
+      "radius": 0.08,
+      "reference_ink": 653083,
+      "candidate_ink": 651616
+    },
+    {
+      "page": 375,
+      "radius": 0.13,
+      "reference_ink": 637434,
+      "candidate_ink": 638096
+    },
+    {
+      "page": 376,
+      "radius": 0.12,
+      "reference_ink": 684954,
+      "candidate_ink": 686329
+    },
+    {
+      "page": 377,
+      "radius": 0.09,
+      "reference_ink": 588558,
+      "candidate_ink": 587229
+    },
+    {
+      "page": 378,
+      "radius": 0.13,
+      "reference_ink": 597459,
+      "candidate_ink": 599842
+    },
+    {
+      "page": 379,
+      "radius": 0.13,
+      "reference_ink": 624809,
+      "candidate_ink": 626896
+    },
+    {
+      "page": 380,
+      "radius": 0.13,
+      "reference_ink": 604073,
+      "candidate_ink": 604153
+    },
+    {
+      "page": 381,
+      "radius": 0.09,
+      "reference_ink": 576990,
+      "candidate_ink": 574810
+    },
+    {
+      "page": 382,
+      "radius": 0.1,
+      "reference_ink": 572899,
+      "candidate_ink": 573803
+    },
+    {
+      "page": 383,
+      "radius": 0.09,
+      "reference_ink": 603169,
+      "candidate_ink": 604470
+    },
+    {
+      "page": 384,
+      "radius": 0.1,
+      "reference_ink": 606640,
+      "candidate_ink": 609172
+    },
+    {
+      "page": 385,
+      "radius": 0.05,
+      "reference_ink": 633834,
+      "candidate_ink": 632178
+    },
+    {
+      "page": 386,
+      "radius": 0.09,
+      "reference_ink": 582636,
+      "candidate_ink": 584302
+    },
+    {
+      "page": 387,
+      "radius": 0.11,
+      "reference_ink": 593313,
+      "candidate_ink": 591451
+    },
+    {
+      "page": 388,
+      "radius": 0.09,
+      "reference_ink": 563455,
+      "candidate_ink": 564894
+    },
+    {
+      "page": 389,
+      "radius": 0.11,
+      "reference_ink": 573292,
+      "candidate_ink": 575654
+    },
+    {
+      "page": 390,
+      "radius": 0.08,
+      "reference_ink": 567153,
+      "candidate_ink": 565223
+    },
+    {
+      "page": 391,
+      "radius": 0.07,
+      "reference_ink": 575628,
+      "candidate_ink": 574979
+    },
+    {
+      "page": 392,
+      "radius": 0.07,
+      "reference_ink": 583866,
+      "candidate_ink": 585145
+    },
+    {
+      "page": 393,
+      "radius": 0.0,
+      "reference_ink": 558045,
+      "candidate_ink": 547662
+    },
+    {
+      "page": 394,
+      "radius": 0.0,
+      "reference_ink": 515329,
+      "candidate_ink": 532887
+    },
+    {
+      "page": 395,
+      "radius": 0.02,
+      "reference_ink": 566423,
+      "candidate_ink": 572824
+    },
+    {
+      "page": 396,
+      "radius": 0.0,
+      "reference_ink": 592629,
+      "candidate_ink": 591427
+    },
+    {
+      "page": 397,
+      "radius": 0.05,
+      "reference_ink": 547497,
+      "candidate_ink": 548917
+    },
+    {
+      "page": 398,
+      "radius": 0.03,
+      "reference_ink": 561545,
+      "candidate_ink": 560871
+    },
+    {
+      "page": 399,
+      "radius": 0.07,
+      "reference_ink": 563942,
+      "candidate_ink": 563605
+    },
+    {
+      "page": 400,
+      "radius": 0.06,
+      "reference_ink": 536880,
+      "candidate_ink": 535271
+    },
+    {
+      "page": 401,
+      "radius": 0.14,
+      "reference_ink": 577097,
+      "candidate_ink": 578332
+    },
+    {
+      "page": 402,
+      "radius": 0.01,
+      "reference_ink": 527070,
+      "candidate_ink": 533474
+    },
+    {
+      "page": 403,
+      "radius": 0.07,
+      "reference_ink": 589069,
+      "candidate_ink": 586555
+    },
+    {
+      "page": 404,
+      "radius": 0.04,
+      "reference_ink": 608763,
+      "candidate_ink": 608053
+    },
+    {
+      "page": 405,
+      "radius": 0.07,
+      "reference_ink": 570615,
+      "candidate_ink": 571150
+    },
+    {
+      "page": 406,
+      "radius": 0.03,
+      "reference_ink": 529524,
+      "candidate_ink": 530500
+    },
+    {
+      "page": 407,
+      "radius": 0.12,
+      "reference_ink": 571518,
+      "candidate_ink": 570575
+    },
+    {
+      "page": 408,
+      "radius": 0.08,
+      "reference_ink": 600492,
+      "candidate_ink": 599889
+    },
+    {
+      "page": 409,
+      "radius": 0.03,
+      "reference_ink": 546516,
+      "candidate_ink": 547948
+    },
+    {
+      "page": 410,
+      "radius": 0.02,
+      "reference_ink": 555408,
+      "candidate_ink": 560866
+    },
+    {
+      "page": 411,
+      "radius": 0.07,
+      "reference_ink": 620469,
+      "candidate_ink": 620604
+    },
+    {
+      "page": 412,
+      "radius": 0.06,
+      "reference_ink": 565952,
+      "candidate_ink": 564578
+    },
+    {
+      "page": 413,
+      "radius": 0.04,
+      "reference_ink": 568308,
+      "candidate_ink": 567021
+    },
+    {
+      "page": 414,
+      "radius": 0.05,
+      "reference_ink": 684555,
+      "candidate_ink": 682757
+    },
+    {
+      "page": 415,
+      "radius": 0.1,
+      "reference_ink": 590275,
+      "candidate_ink": 589036
+    },
+    {
+      "page": 416,
+      "radius": 0.14,
+      "reference_ink": 613786,
+      "candidate_ink": 615051
+    },
+    {
+      "page": 417,
+      "radius": 0.07,
+      "reference_ink": 649453,
+      "candidate_ink": 651353
+    },
+    {
+      "page": 418,
+      "radius": 0.03,
+      "reference_ink": 583428,
+      "candidate_ink": 583796
+    },
+    {
+      "page": 419,
+      "radius": 0.17,
+      "reference_ink": 679249,
+      "candidate_ink": 679762
+    },
+    {
+      "page": 420,
+      "radius": 0.16,
+      "reference_ink": 672078,
+      "candidate_ink": 673794
+    },
+    {
+      "page": 421,
+      "radius": 0.13,
+      "reference_ink": 624003,
+      "candidate_ink": 625689
+    },
+    {
+      "page": 422,
+      "radius": 0.16,
+      "reference_ink": 630597,
+      "candidate_ink": 630832
+    },
+    {
+      "page": 423,
+      "radius": 0.13,
+      "reference_ink": 638218,
+      "candidate_ink": 638006
+    },
+    {
+      "page": 424,
+      "radius": 0.15,
+      "reference_ink": 610352,
+      "candidate_ink": 610249
+    },
+    {
+      "page": 425,
+      "radius": 0.09,
+      "reference_ink": 579968,
+      "candidate_ink": 578365
+    },
+    {
+      "page": 426,
+      "radius": 0.11,
+      "reference_ink": 638435,
+      "candidate_ink": 640218
+    },
+    {
+      "page": 427,
+      "radius": 0.11,
+      "reference_ink": 621171,
+      "candidate_ink": 621512
+    },
+    {
+      "page": 428,
+      "radius": 0.15,
+      "reference_ink": 664293,
+      "candidate_ink": 666218
+    },
+    {
+      "page": 429,
+      "radius": 0.11,
+      "reference_ink": 606691,
+      "candidate_ink": 606866
+    },
+    {
+      "page": 430,
+      "radius": 0.0,
+      "reference_ink": 593661,
+      "candidate_ink": 581003
+    },
+    {
+      "page": 431,
+      "radius": 0.0,
+      "reference_ink": 553034,
+      "candidate_ink": 541818
+    },
+    {
+      "page": 432,
+      "radius": 0.1,
+      "reference_ink": 593267,
+      "candidate_ink": 594561
+    },
+    {
+      "page": 433,
+      "radius": 0.08,
+      "reference_ink": 623579,
+      "candidate_ink": 622282
+    },
+    {
+      "page": 434,
+      "radius": 0.07,
+      "reference_ink": 645571,
+      "candidate_ink": 644758
+    },
+    {
+      "page": 435,
+      "radius": 0.11,
+      "reference_ink": 623904,
+      "candidate_ink": 622310
+    },
+    {
+      "page": 436,
+      "radius": 0.0,
+      "reference_ink": 571028,
+      "candidate_ink": 563591
+    },
+    {
+      "page": 437,
+      "radius": 0.06,
+      "reference_ink": 595247,
+      "candidate_ink": 593686
+    },
+    {
+      "page": 438,
+      "radius": 0.01,
+      "reference_ink": 580621,
+      "candidate_ink": 587723
+    },
+    {
+      "page": 439,
+      "radius": 0.03,
+      "reference_ink": 572127,
+      "candidate_ink": 573223
+    },
+    {
+      "page": 440,
+      "radius": 0.12,
+      "reference_ink": 632207,
+      "candidate_ink": 631334
+    },
+    {
+      "page": 441,
+      "radius": 0.07,
+      "reference_ink": 583868,
+      "candidate_ink": 584760
+    },
+    {
+      "page": 442,
+      "radius": 0.07,
+      "reference_ink": 590032,
+      "candidate_ink": 589932
+    },
+    {
+      "page": 443,
+      "radius": 0.07,
+      "reference_ink": 595200,
+      "candidate_ink": 595338
+    },
+    {
+      "page": 444,
+      "radius": 0.01,
+      "reference_ink": 561874,
+      "candidate_ink": 572198
+    },
+    {
+      "page": 445,
+      "radius": 0.07,
+      "reference_ink": 651352,
+      "candidate_ink": 651540
+    },
+    {
+      "page": 446,
+      "radius": 0.01,
+      "reference_ink": 568451,
+      "candidate_ink": 581007
+    },
+    {
+      "page": 447,
+      "radius": 0.0,
+      "reference_ink": 578855,
+      "candidate_ink": 566546
+    },
+    {
+      "page": 448,
+      "radius": 0.09,
+      "reference_ink": 579839,
+      "candidate_ink": 582507
+    },
+    {
+      "page": 449,
+      "radius": 0.07,
+      "reference_ink": 589465,
+      "candidate_ink": 587647
+    },
+    {
+      "page": 450,
+      "radius": 0.05,
+      "reference_ink": 564981,
+      "candidate_ink": 564366
+    },
+    {
+      "page": 451,
+      "radius": 0.11,
+      "reference_ink": 598018,
+      "candidate_ink": 600254
+    },
+    {
+      "page": 452,
+      "radius": 0.09,
+      "reference_ink": 659279,
+      "candidate_ink": 660549
+    },
+    {
+      "page": 453,
+      "radius": 0.09,
+      "reference_ink": 570281,
+      "candidate_ink": 570275
+    },
+    {
+      "page": 454,
+      "radius": 0.09,
+      "reference_ink": 569686,
+      "candidate_ink": 570648
+    },
+    {
+      "page": 455,
+      "radius": 0.11,
+      "reference_ink": 588377,
+      "candidate_ink": 591118
+    },
+    {
+      "page": 456,
+      "radius": 0.09,
+      "reference_ink": 567800,
+      "candidate_ink": 570059
+    },
+    {
+      "page": 457,
+      "radius": 0.12,
+      "reference_ink": 610056,
+      "candidate_ink": 611755
+    },
+    {
+      "page": 458,
+      "radius": 0.12,
+      "reference_ink": 646594,
+      "candidate_ink": 647570
+    },
+    {
+      "page": 459,
+      "radius": 0.08,
+      "reference_ink": 586702,
+      "candidate_ink": 584989
+    },
+    {
+      "page": 460,
+      "radius": 0.06,
+      "reference_ink": 590768,
+      "candidate_ink": 588987
+    },
+    {
+      "page": 461,
+      "radius": 0.05,
+      "reference_ink": 565804,
+      "candidate_ink": 567280
+    },
+    {
+      "page": 462,
+      "radius": 0.07,
+      "reference_ink": 587590,
+      "candidate_ink": 586714
+    },
+    {
+      "page": 463,
+      "radius": 0.07,
+      "reference_ink": 570412,
+      "candidate_ink": 571791
+    },
+    {
+      "page": 464,
+      "radius": 0.07,
+      "reference_ink": 596102,
+      "candidate_ink": 593793
+    },
+    {
+      "page": 465,
+      "radius": 0.04,
+      "reference_ink": 559193,
+      "candidate_ink": 559955
+    },
+    {
+      "page": 466,
+      "radius": 0.02,
+      "reference_ink": 564557,
+      "candidate_ink": 570256
+    },
+    {
+      "page": 467,
+      "radius": 0.0,
+      "reference_ink": 643358,
+      "candidate_ink": 631824
+    },
+    {
+      "page": 468,
+      "radius": 0.04,
+      "reference_ink": 584042,
+      "candidate_ink": 584862
+    },
+    {
+      "page": 469,
+      "radius": 0.08,
+      "reference_ink": 573622,
+      "candidate_ink": 573822
+    },
+    {
+      "page": 470,
+      "radius": 0.07,
+      "reference_ink": 598685,
+      "candidate_ink": 597882
+    },
+    {
+      "page": 471,
+      "radius": 0.07,
+      "reference_ink": 576660,
+      "candidate_ink": 575981
+    },
+    {
+      "page": 472,
+      "radius": 0.08,
+      "reference_ink": 577945,
+      "candidate_ink": 576936
+    },
+    {
+      "page": 473,
+      "radius": 0.05,
+      "reference_ink": 556909,
+      "candidate_ink": 556865
+    },
+    {
+      "page": 474,
+      "radius": 0.0,
+      "reference_ink": 557117,
+      "candidate_ink": 551334
+    },
+    {
+      "page": 475,
+      "radius": 0.06,
+      "reference_ink": 606346,
+      "candidate_ink": 607317
+    },
+    {
+      "page": 476,
+      "radius": 0.03,
+      "reference_ink": 579408,
+      "candidate_ink": 580191
+    },
+    {
+      "page": 477,
+      "radius": 0.08,
+      "reference_ink": 670394,
+      "candidate_ink": 669408
+    },
+    {
+      "page": 478,
+      "radius": 0.05,
+      "reference_ink": 604440,
+      "candidate_ink": 603975
+    },
+    {
+      "page": 479,
+      "radius": 0.06,
+      "reference_ink": 612084,
+      "candidate_ink": 610522
+    },
+    {
+      "page": 480,
+      "radius": 0.03,
+      "reference_ink": 598162,
+      "candidate_ink": 597476
+    },
+    {
+      "page": 481,
+      "radius": 0.12,
+      "reference_ink": 596887,
+      "candidate_ink": 597265
+    },
+    {
+      "page": 482,
+      "radius": 0.08,
+      "reference_ink": 574211,
+      "candidate_ink": 575871
+    },
+    {
+      "page": 483,
+      "radius": 0.11,
+      "reference_ink": 657791,
+      "candidate_ink": 658397
+    },
+    {
+      "page": 484,
+      "radius": 0.11,
+      "reference_ink": 589377,
+      "candidate_ink": 587251
+    },
+    {
+      "page": 485,
+      "radius": 0.07,
+      "reference_ink": 546698,
+      "candidate_ink": 546076
+    },
+    {
+      "page": 486,
+      "radius": 0.1,
+      "reference_ink": 570734,
+      "candidate_ink": 570461
+    },
+    {
+      "page": 487,
+      "radius": 0.14,
+      "reference_ink": 655460,
+      "candidate_ink": 654009
+    },
+    {
+      "page": 488,
+      "radius": 0.24,
+      "reference_ink": 676315,
+      "candidate_ink": 674238
+    },
+    {
+      "page": 489,
+      "radius": 0.11,
+      "reference_ink": 634840,
+      "candidate_ink": 632834
+    },
+    {
+      "page": 490,
+      "radius": 0.14,
+      "reference_ink": 588989,
+      "candidate_ink": 588307
+    },
+    {
+      "page": 491,
+      "radius": 0.09,
+      "reference_ink": 634003,
+      "candidate_ink": 632096
+    },
+    {
+      "page": 492,
+      "radius": 0.16,
+      "reference_ink": 631694,
+      "candidate_ink": 634447
+    },
+    {
+      "page": 493,
+      "radius": 0.12,
+      "reference_ink": 609035,
+      "candidate_ink": 607824
+    },
+    {
+      "page": 494,
+      "radius": 0.12,
+      "reference_ink": 637680,
+      "candidate_ink": 637937
+    },
+    {
+      "page": 495,
+      "radius": 0.16,
+      "reference_ink": 631168,
+      "candidate_ink": 629561
+    },
+    {
+      "page": 496,
+      "radius": 0.19,
+      "reference_ink": 668382,
+      "candidate_ink": 669166
+    },
+    {
+      "page": 497,
+      "radius": 0.16,
+      "reference_ink": 638816,
+      "candidate_ink": 636709
+    },
+    {
+      "page": 498,
+      "radius": 0.16,
+      "reference_ink": 657718,
+      "candidate_ink": 655650
+    },
+    {
+      "page": 499,
+      "radius": 0.18,
+      "reference_ink": 597993,
+      "candidate_ink": 597288
+    },
+    {
+      "page": 500,
+      "radius": 0.14,
+      "reference_ink": 615337,
+      "candidate_ink": 615276
+    },
+    {
+      "page": 501,
+      "radius": 0.16,
+      "reference_ink": 627558,
+      "candidate_ink": 627238
+    },
+    {
+      "page": 502,
+      "radius": 0.15,
+      "reference_ink": 649609,
+      "candidate_ink": 651108
+    },
+    {
+      "page": 503,
+      "radius": 0.16,
+      "reference_ink": 627434,
+      "candidate_ink": 626187
+    },
+    {
+      "page": 504,
+      "radius": 0.13,
+      "reference_ink": 671821,
+      "candidate_ink": 670972
+    },
+    {
+      "page": 505,
+      "radius": 0.13,
+      "reference_ink": 628055,
+      "candidate_ink": 626141
+    },
+    {
+      "page": 506,
+      "radius": 0.11,
+      "reference_ink": 708829,
+      "candidate_ink": 709176
+    },
+    {
+      "page": 507,
+      "radius": 0.2,
+      "reference_ink": 664389,
+      "candidate_ink": 666760
+    },
+    {
+      "page": 508,
+      "radius": 0.22,
+      "reference_ink": 699080,
+      "candidate_ink": 701054
+    },
+    {
+      "page": 509,
+      "radius": 0.19,
+      "reference_ink": 634280,
+      "candidate_ink": 633796
+    },
+    {
+      "page": 510,
+      "radius": 0.12,
+      "reference_ink": 658306,
+      "candidate_ink": 660006
+    },
+    {
+      "page": 511,
+      "radius": 0.13,
+      "reference_ink": 660495,
+      "candidate_ink": 661387
+    },
+    {
+      "page": 512,
+      "radius": 0.15,
+      "reference_ink": 631034,
+      "candidate_ink": 631879
+    },
+    {
+      "page": 513,
+      "radius": 0.14,
+      "reference_ink": 620896,
+      "candidate_ink": 620226
+    },
+    {
+      "page": 514,
+      "radius": 0.13,
+      "reference_ink": 611274,
+      "candidate_ink": 609816
+    },
+    {
+      "page": 515,
+      "radius": 0.14,
+      "reference_ink": 677438,
+      "candidate_ink": 677510
+    },
+    {
+      "page": 516,
+      "radius": 0.14,
+      "reference_ink": 652199,
+      "candidate_ink": 651050
+    },
+    {
+      "page": 517,
+      "radius": 0.12,
+      "reference_ink": 616287,
+      "candidate_ink": 614348
+    },
+    {
+      "page": 518,
+      "radius": 0.09,
+      "reference_ink": 636392,
+      "candidate_ink": 634893
+    },
+    {
+      "page": 519,
+      "radius": 0.14,
+      "reference_ink": 617006,
+      "candidate_ink": 617737
+    },
+    {
+      "page": 520,
+      "radius": 0.09,
+      "reference_ink": 604730,
+      "candidate_ink": 606085
+    },
+    {
+      "page": 521,
+      "radius": 0.1,
+      "reference_ink": 609857,
+      "candidate_ink": 610113
+    },
+    {
+      "page": 522,
+      "radius": 0.09,
+      "reference_ink": 632817,
+      "candidate_ink": 630215
+    },
+    {
+      "page": 523,
+      "radius": 0.08,
+      "reference_ink": 636170,
+      "candidate_ink": 637164
+    },
+    {
+      "page": 524,
+      "radius": 0.11,
+      "reference_ink": 607772,
+      "candidate_ink": 608272
+    },
+    {
+      "page": 525,
+      "radius": 0.17,
+      "reference_ink": 681482,
+      "candidate_ink": 683439
+    },
+    {
+      "page": 526,
+      "radius": 0.07,
+      "reference_ink": 613622,
+      "candidate_ink": 611923
+    },
+    {
+      "page": 527,
+      "radius": 0.16,
+      "reference_ink": 650621,
+      "candidate_ink": 650154
+    },
+    {
+      "page": 528,
+      "radius": 0.08,
+      "reference_ink": 697877,
+      "candidate_ink": 697094
+    },
+    {
+      "page": 529,
+      "radius": 0.13,
+      "reference_ink": 630071,
+      "candidate_ink": 628919
+    },
+    {
+      "page": 530,
+      "radius": 0.02,
+      "reference_ink": 613590,
+      "candidate_ink": 619623
+    },
+    {
+      "page": 531,
+      "radius": 0.05,
+      "reference_ink": 637693,
+      "candidate_ink": 636811
+    },
+    {
+      "page": 532,
+      "radius": 0.05,
+      "reference_ink": 593274,
+      "candidate_ink": 591677
+    },
+    {
+      "page": 533,
+      "radius": 0.1,
+      "reference_ink": 591370,
+      "candidate_ink": 591697
+    },
+    {
+      "page": 534,
+      "radius": 0.08,
+      "reference_ink": 672146,
+      "candidate_ink": 671243
+    },
+    {
+      "page": 535,
+      "radius": 0.13,
+      "reference_ink": 600942,
+      "candidate_ink": 599024
+    },
+    {
+      "page": 536,
+      "radius": 0.16,
+      "reference_ink": 642714,
+      "candidate_ink": 640311
+    },
+    {
+      "page": 537,
+      "radius": 0.12,
+      "reference_ink": 680133,
+      "candidate_ink": 678422
+    },
+    {
+      "page": 538,
+      "radius": 0.06,
+      "reference_ink": 608895,
+      "candidate_ink": 610090
+    },
+    {
+      "page": 539,
+      "radius": 0.09,
+      "reference_ink": 613539,
+      "candidate_ink": 616064
+    },
+    {
+      "page": 540,
+      "radius": 0.03,
+      "reference_ink": 605089,
+      "candidate_ink": 607386
+    },
+    {
+      "page": 541,
+      "radius": 0.13,
+      "reference_ink": 589791,
+      "candidate_ink": 587693
+    },
+    {
+      "page": 542,
+      "radius": 0.05,
+      "reference_ink": 637230,
+      "candidate_ink": 637610
+    },
+    {
+      "page": 543,
+      "radius": 0.12,
+      "reference_ink": 590572,
+      "candidate_ink": 591736
+    },
+    {
+      "page": 544,
+      "radius": 0.03,
+      "reference_ink": 623285,
+      "candidate_ink": 623086
+    },
+    {
+      "page": 545,
+      "radius": 0.07,
+      "reference_ink": 636517,
+      "candidate_ink": 637110
+    },
+    {
+      "page": 546,
+      "radius": 0.03,
+      "reference_ink": 605306,
+      "candidate_ink": 607798
+    },
+    {
+      "page": 547,
+      "radius": 0.09,
+      "reference_ink": 592630,
+      "candidate_ink": 593036
+    },
+    {
+      "page": 548,
+      "radius": 0.07,
+      "reference_ink": 652010,
+      "candidate_ink": 651226
+    },
+    {
+      "page": 549,
+      "radius": 0.0,
+      "reference_ink": 569717,
+      "candidate_ink": 567378
+    },
+    {
+      "page": 550,
+      "radius": 0.03,
+      "reference_ink": 646430,
+      "candidate_ink": 647077
+    },
+    {
+      "page": 551,
+      "radius": 0.08,
+      "reference_ink": 664846,
+      "candidate_ink": 666167
+    },
+    {
+      "page": 552,
+      "radius": 0.11,
+      "reference_ink": 657602,
+      "candidate_ink": 656032
+    },
+    {
+      "page": 553,
+      "radius": 0.09,
+      "reference_ink": 649309,
+      "candidate_ink": 648880
+    },
+    {
+      "page": 554,
+      "radius": 0.03,
+      "reference_ink": 694245,
+      "candidate_ink": 693937
+    },
+    {
+      "page": 555,
+      "radius": 0.15,
+      "reference_ink": 715775,
+      "candidate_ink": 715945
+    },
+    {
+      "page": 556,
+      "radius": 0.13,
+      "reference_ink": 628444,
+      "candidate_ink": 626922
+    },
+    {
+      "page": 557,
+      "radius": 0.1,
+      "reference_ink": 663551,
+      "candidate_ink": 664751
+    },
+    {
+      "page": 558,
+      "radius": 0.12,
+      "reference_ink": 618878,
+      "candidate_ink": 617399
+    },
+    {
+      "page": 559,
+      "radius": 0.18,
+      "reference_ink": 678200,
+      "candidate_ink": 677566
+    },
+    {
+      "page": 560,
+      "radius": 0.13,
+      "reference_ink": 698035,
+      "candidate_ink": 698996
+    },
+    {
+      "page": 561,
+      "radius": 0.11,
+      "reference_ink": 598018,
+      "candidate_ink": 598297
+    },
+    {
+      "page": 562,
+      "radius": 0.11,
+      "reference_ink": 703618,
+      "candidate_ink": 705081
+    },
+    {
+      "page": 563,
+      "radius": 0.08,
+      "reference_ink": 623323,
+      "candidate_ink": 625601
+    },
+    {
+      "page": 564,
+      "radius": 0.02,
+      "reference_ink": 618281,
+      "candidate_ink": 621910
+    },
+    {
+      "page": 565,
+      "radius": 0.05,
+      "reference_ink": 645427,
+      "candidate_ink": 643723
+    },
+    {
+      "page": 566,
+      "radius": 0.09,
+      "reference_ink": 671216,
+      "candidate_ink": 671294
+    },
+    {
+      "page": 567,
+      "radius": 0.0,
+      "reference_ink": 565504,
+      "candidate_ink": 562345
+    },
+    {
+      "page": 568,
+      "radius": 0.12,
+      "reference_ink": 666604,
+      "candidate_ink": 667029
+    },
+    {
+      "page": 569,
+      "radius": 0.08,
+      "reference_ink": 618275,
+      "candidate_ink": 617217
+    },
+    {
+      "page": 570,
+      "radius": 0.12,
+      "reference_ink": 655027,
+      "candidate_ink": 653162
+    },
+    {
+      "page": 571,
+      "radius": 0.1,
+      "reference_ink": 619562,
+      "candidate_ink": 617214
+    },
+    {
+      "page": 572,
+      "radius": 0.11,
+      "reference_ink": 646861,
+      "candidate_ink": 646157
+    },
+    {
+      "page": 573,
+      "radius": 0.2,
+      "reference_ink": 639899,
+      "candidate_ink": 641842
+    },
+    {
+      "page": 574,
+      "radius": 0.1,
+      "reference_ink": 678287,
+      "candidate_ink": 676812
+    },
+    {
+      "page": 575,
+      "radius": 0.12,
+      "reference_ink": 664601,
+      "candidate_ink": 666016
+    },
+    {
+      "page": 576,
+      "radius": 0.08,
+      "reference_ink": 615412,
+      "candidate_ink": 616776
+    },
+    {
+      "page": 577,
+      "radius": 0.16,
+      "reference_ink": 676381,
+      "candidate_ink": 678612
+    },
+    {
+      "page": 578,
+      "radius": 0.11,
+      "reference_ink": 676588,
+      "candidate_ink": 675038
+    },
+    {
+      "page": 579,
+      "radius": 0.14,
+      "reference_ink": 632134,
+      "candidate_ink": 633534
+    },
+    {
+      "page": 580,
+      "radius": 0.11,
+      "reference_ink": 645769,
+      "candidate_ink": 645874
+    },
+    {
+      "page": 581,
+      "radius": 0.12,
+      "reference_ink": 645924,
+      "candidate_ink": 645940
+    },
+    {
+      "page": 582,
+      "radius": 0.01,
+      "reference_ink": 616516,
+      "candidate_ink": 623375
+    },
+    {
+      "page": 583,
+      "radius": 0.0,
+      "reference_ink": 617669,
+      "candidate_ink": 605187
+    },
+    {
+      "page": 584,
+      "radius": 0.03,
+      "reference_ink": 681856,
+      "candidate_ink": 680965
+    },
+    {
+      "page": 585,
+      "radius": 0.0,
+      "reference_ink": 563344,
+      "candidate_ink": 556087
+    },
+    {
+      "page": 586,
+      "radius": 0.01,
+      "reference_ink": 710469,
+      "candidate_ink": 718578
+    },
+    {
+      "page": 587,
+      "radius": 0.03,
+      "reference_ink": 619965,
+      "candidate_ink": 620350
+    },
+    {
+      "page": 588,
+      "radius": 0.04,
+      "reference_ink": 614157,
+      "candidate_ink": 614013
+    },
+    {
+      "page": 589,
+      "radius": 0.07,
+      "reference_ink": 654431,
+      "candidate_ink": 653982
+    },
+    {
+      "page": 590,
+      "radius": 0.09,
+      "reference_ink": 758129,
+      "candidate_ink": 759081
+    },
+    {
+      "page": 591,
+      "radius": 0.09,
+      "reference_ink": 652356,
+      "candidate_ink": 652500
+    },
+    {
+      "page": 592,
+      "radius": 0.12,
+      "reference_ink": 674562,
+      "candidate_ink": 673451
+    },
+    {
+      "page": 593,
+      "radius": 0.03,
+      "reference_ink": 649337,
+      "candidate_ink": 648520
+    },
+    {
+      "page": 594,
+      "radius": 0.07,
+      "reference_ink": 735148,
+      "candidate_ink": 735125
+    },
+    {
+      "page": 595,
+      "radius": 0.11,
+      "reference_ink": 651993,
+      "candidate_ink": 653191
+    },
+    {
+      "page": 596,
+      "radius": 0.05,
+      "reference_ink": 690928,
+      "candidate_ink": 691492
+    },
+    {
+      "page": 597,
+      "radius": 0.04,
+      "reference_ink": 682648,
+      "candidate_ink": 683012
+    },
+    {
+      "page": 598,
+      "radius": 0.04,
+      "reference_ink": 692650,
+      "candidate_ink": 692348
+    },
+    {
+      "page": 599,
+      "radius": 0.11,
+      "reference_ink": 675194,
+      "candidate_ink": 674315
+    },
+    {
+      "page": 600,
+      "radius": 0.16,
+      "reference_ink": 693015,
+      "candidate_ink": 693208
+    },
+    {
+      "page": 601,
+      "radius": 0.06,
+      "reference_ink": 732862,
+      "candidate_ink": 733472
+    },
+    {
+      "page": 602,
+      "radius": 0.0,
+      "reference_ink": 680686,
+      "candidate_ink": 677324
+    },
+    {
+      "page": 603,
+      "radius": 0.07,
+      "reference_ink": 718375,
+      "candidate_ink": 718983
+    },
+    {
+      "page": 604,
+      "radius": 0.02,
+      "reference_ink": 657931,
+      "candidate_ink": 659661
+    }
+  ]
+}

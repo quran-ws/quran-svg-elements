@@ -1,11 +1,11 @@
-# The one gate that needs nothing but this repository.
+# Repository-only gates: no external artwork or private repositories needed.
 #
-# bench, the audits and the library suite all need the page artwork — 487 MB
-# from quranpedia/quran-svg, pinned at v1.1.1 (3ff27b46) — so they stay local commands
-# (CLAUDE.md, "Run these before believing anything"). The terminology audit
-# reads only the working set, so it can run on every push, and it is the gate
-# most easily broken by an ordinary edit: one new `verse` or `fatha` in a
-# variable name and the standard is no longer adopted.
+# bench, the artwork audits and the library suite need the 487 MB quran-svg
+# checkout pinned at v1.1.1 (3ff27b46), so they stay local commands (CLAUDE.md,
+# "Run these before believing anything"). The checks below use only this working
+# set and can run on every push. Terminology remains the one most easily broken
+# by an ordinary edit: one new `verse` or `fatha` in a variable name and the
+# standard is no longer adopted.
 name: terminology
 
 on:
@@ -27,6 +27,12 @@ jobs:
         # is private, a workflow cannot clone it, and a gate that cannot run is
         # not a gate. tools/terminology/README.md says how to refresh it.
         run: python3 tools/terminology/scripts/audit_terminology.py --strict
+
+      - name: Canonical archive verifies itself
+        run: python3 conformance/test_bundle_archive.py
+
+      - name: Public bundle text forms
+        run: python3 conformance/test_bundle_text_forms.py
 
       - name: Every Python file still parses
         run: |

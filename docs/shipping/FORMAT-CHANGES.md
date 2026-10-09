@@ -1,3 +1,13 @@
+# What changed — 2026-09-20
+
+| section | was | is | evidence |
+|---|---|---|---|
+| §4, §5.1, §6.5 | the native outer frame was absent; every root `viewBox` was `0 0 345 550` | all 604 pages emit one first-painted `g.page-frame`; `data-content-view-box="0 0 345 550"` remains the logical Quran coordinate contract while the visual `viewBox` expands where the frame projects beyond it | source-verified 604-page manifest; semantic preflight; raster identity |
+| §4, §6.7, §9.2 | pages 1–2 attached the whole opening composition to `g.surah-name` | the complete opening composition is page furniture; the title group carries only its `header_ink` | group contract and opening-page raster identity |
+| source preparation | ordinary frames appeared to be one odd/even pair | the official corpus has eight exact ordinary source paths, differing by at most 0.0010071 source units, plus two opening frames; every exact variant is preserved | full 604-file AI/PDF census and pinned source hashes |
+
+---
+
 # What changed in `FORMAT.md` — 2026-09-08
 
 Two decisions by Abdullah about how a word is named, and one about where its
