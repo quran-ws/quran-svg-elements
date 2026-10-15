@@ -1460,6 +1460,21 @@ def qcf_widths():
 _QCF_SUSPECT = [False]
 
 
+def _lsum(values):
+    """Sum floats left to right, one rounding per addition.
+
+    Python 3.12 made the built-in sum() of floats compensated (Neumaier), so it
+    no longer agrees with 3.11 in the last bit. Where two choices cost the same
+    to that bit, the interpreter decided between them: on p121 3.12 moved
+    5:83:4-6 across the line break. This is exactly what sum() computed up to
+    3.11, so every release built before stays reproducible on any interpreter.
+    """
+    total = 0
+    for value in values:
+        total = total + value
+    return total
+
+
 def letters(word):
     """Expected drawn width of a word: the QCF font's own advance when known
     (scaled to roughly page units), else the calibrated letter sum."""
@@ -4301,7 +4316,7 @@ def polygon_reflow(page_ayahs, ay_ranges, stream, use_qcf=False,
                 for j in range(k - 1, i):
                     if dp[j][k - 1] == INF:
                         continue
-                    c = dp[j][k - 1] + abs(_s * sum(lens[j:i]) - widths[k - 1])
+                    c = dp[j][k - 1] + abs(_s * _lsum(lens[j:i]) - widths[k - 1])
                     if c < dp[i][k]:
                         dp[i][k] = c
                         back[i][k] = j
