@@ -30,6 +30,11 @@ import pathops
 from fontTools.pens.transformPen import TransformPen
 from fontTools.svgLib.path import parse_path
 
+INKSCAPE_LABEL = "{http://www.inkscape.org/namespaces/inkscape}label"
+# Older MuPDF reports the body ink as black; 1.27 converts the source CMYK to the
+# artwork's own #231f20.
+TEXT_FILLS = {"black", "#000", "#000000", "#231f20"}
+
 IDENTITY = (1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
 PATH_RE = re.compile(
     r'<path\b(?=[^>]*\bdata-kind="ornament")'
@@ -150,7 +155,9 @@ def source_paths(svg):
 
     def walk(node, parent=IDENTITY, layer=None, fill="black", fill_rule="nonzero"):
         matrix = multiply(parent, parse_transform(node.get("transform")))
-        layer = node.get("data-name", layer)
+        # Older MuPDF names a PDF layer `data-name`; 1.27 writes Inkscape's
+        # `inkscape:label`. Read either, or the frame is never found.
+        layer = node.get("data-name") or node.get(INKSCAPE_LABEL) or layer
         fill = node.get("fill", fill)
         fill_rule = node.get("fill-rule", fill_rule)
         if node.tag.rsplit("}", 1)[-1] == "path":
@@ -180,9 +187,9 @@ def frame_paths(source_svg, expected):
         if source_layer == "quran text":
             if row["fill"] in {"#fff", "#ffffff", "white"}:
                 white.append(row["path"])
-            elif row["fill"] in {"black", "#000", "#000000"}:
+            elif row["fill"] in TEXT_FILLS:
                 text.append(row)
-        elif source_layer == "layer 1" and row["fill"] in {"black", "#000", "#000000"}:
+        elif source_layer == "layer 1" and row["fill"] in TEXT_FILLS:
             # Pages 545 and 598 are the only 1441H files whose body group lost the
             # `Quran Text` layer name. Each has exactly one `Layer 1` body path, and
             # prepared_page independently checks its transform against every target line.
