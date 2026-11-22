@@ -22,6 +22,18 @@ await page.waitForFunction(() => window.__RESULTS__?.done);
 const r = await page.evaluate(() => window.__RESULTS__);
 ```
 
+**Shipped pages and the letter layer.** The pages published since v1.1.0 are the
+production profile, which keeps four of the five text forms in `index/by-page/NNN.json`;
+add `&profile=production` and the loader attaches them. Add
+`&letters=<the letter bundle's pages/>` — the same release as `pages` — for section 24,
+the letter API and the word API compared across the two levels (pages 1, 3, 42, 552, 604;
+`&letterPages=1,3` to change). Without `letters` that section records one failure saying it
+was skipped.
+
+```
+http://127.0.0.1:8931/lib/test/?pages=/words/pages/&letters=/letters/pages/&profile=production
+```
+
 Add `&markers=<url>` — for example
 `https://quranpedia.github.io/ayah-marks/` — to additionally check a real marker
 set for conformance (§21.50-54). Without it the end-mark tests still run in full

@@ -20,6 +20,8 @@ let M, load;
 const q = new URLSearchParams(location.search);
 const PAGES = q.get('pages') || '../../../../.cache/words-svg/hafs-kfqc/';
 const ATLAS = q.get('atlas') || 'atlas.json';
+const PROFILE = q.get('profile') || 'dev';
+const LETTERS = q.get('letters') || null;   // the letter bundle's pages/, same build as PAGES
 
 const R = { pass: 0, fail: 0, tests: [], errors: [] };
 window.__RESULTS__ = R;
@@ -47,12 +49,15 @@ async function run() {
 try {
   const bust = (location.search.match(/v=(\d+)/) || [0, Date.now()])[1];
   M = await import('../mushaf.mjs?v=' + bust);
-  load = M.createLoader({ baseUrl: PAGES });
+  /* ?profile=production runs the suite on shipped (production) pages: the
+     loader then attaches each page's sidecar, which is where those pages keep
+     the four text forms a dev page carries inline. */
+  load = M.createLoader({ baseUrl: PAGES, words: PROFILE === 'production' ? true : null });
   /* ============================================ 1. loading and identity */
   const p42 = await load(42);
   ok('1.1 load returns a MushafPage', p42 instanceof M.MushafPage);
   eq('1.2 page 42 word count', p42.wordCount, 147);
-  eq('1.3 profile is dev (ligature layer present)', p42.profile, 'dev');
+  eq('1.3 profile read off the page (dev: ligature layer present)', p42.profile, PROFILE);
   eq('1.4 viewBox read off the file', p42.viewBox, { x: 0, y: 0, w: 345, h: 550 });
   eq('1.5 polygons dropped by the loader', p42.el.querySelectorAll('path.ayahPolygon').length, 0);
 
@@ -107,8 +112,9 @@ try {
      word group; rasm / rasm_imlai / search / qpc come from index/by-page/NNN.json */
   const sidecar = { words: p42.words().map(w => ({ wordKey: w.wordKey, ...w.text })) };
   prod.el.querySelectorAll('g.word').forEach(g => {
-    for (const k of ['rasm', 'rasm_imlai', 'search', 'qpc']) delete g.dataset[k];
+    for (const k of ['rasm', 'rasm_imlai', 'search', 'qpc']) delete g.dataset[M.datasetKey(k)];
   });
+  prod.attachWords([]);   // a clone of a production page carries its sidecar; start bare
   eq('1.18 a shipped production word has rasm_uthmani inline and the rest null',
      [prod.word('2:255:1').form('rasm_uthmani') !== null, prod.word('2:255:1').form('search'),
       prod.word('2:255:1').text.rasm],
@@ -1497,6 +1503,265 @@ try {
     ok('23.35 an unknown mushaf is an error naming the set, not an empty pane',
        !!rejected && rejected.includes('orn://'), rejected);
     show(p42);
+  }
+
+  /* ============================================ 24. the letter layer
+     Needs ?letters=<the letter bundle's pages/>, of the SAME build as ?pages=
+     (the word bundle), and runs only when given: the comparisons below are
+     between the two levels of one release. Every count and every text value
+     is read from the files and their sidecars — nothing is typed here. */
+  if (!LETTERS) {
+    ok('24.0 letter-layer section skipped: no ?letters=<letter pages/> given', false);
+  } else {
+    const loadL = M.createLoader({ baseUrl: LETTERS, words: true });
+    const loadW = M.createLoader({ baseUrl: PAGES, words: true });
+    const sideOf = async (base, n) =>
+      (await fetch(base + '../index/by-page/' + String(n).padStart(3, '0') + '.json')).json();
+
+    /* -- 24.1 a word page fails soft: empty / null / no-op, never a throw */
+    {
+      const pw = await loadW(3);
+      const w = pw.words()[0];
+      let threw = null, res = null;
+      try {
+        res = [pw.hasLetters, pw.decomposition, pw.letterCount, pw.letters().length,
+               w.letters().length, w.letter(0), w.letterAt(0), w.wordMarks().length,
+               pw.letter(w.wordKey, 0), pw.letterAt(w.wordKey, 0),
+               pw.letterHitTest(10, 10, { space: 'view' }),
+               pw.highlight({ wordKey: w.wordKey, letter: 0 }).count,
+               pw.band({ wordKey: w.wordKey, letter: 0 }).bands];
+      } catch (e) { threw = String(e); }
+      eq('24.1 word page: hasLetters false, every letter call empty or null, no throw',
+         [threw, res], [null, [false, 'word', 0, 0, 0, null, null, 0, null, null, null, 0, 0]]);
+      pw.clearBands();
+    }
+
+    /* -- 24.2 letter pages: several, page 1 and the densest page among them */
+    const LPAGES = (q.get('letterPages') || '1,3,42,552,604').split(',').map(Number);
+    for (const n of LPAGES) {
+      const pl = await loadL(n), pw = await loadW(n);
+      const side = await sideOf(LETTERS, n);
+      const tag = `p${n}`;
+      eq(`24.2 ${tag} identity read off the page`, [pl.decomposition, pl.hasLetters, pw.decomposition],
+         ['letter', true, 'word']);
+      eq(`24.3 ${tag} letter count = the sidecar's`, pl.letterCount, side.letters);
+      const perWord = pl.words().map(w => w.letters().length);
+      eq(`24.4 ${tag} letters per word = the sidecar's, word by word`,
+         perWord, side.words.map(r => r.letters));
+      eq(`24.5 ${tag} page.letters() is every letter`, pl.letters().length, side.letters);
+
+      const all = pl.letters();
+      const bad = all.filter((l, i) => !(l.body().length >= 1 && l.text.length >= 1 && l.at !== null));
+      eq(`24.6 ${tag} every letter has body ink, a text and a data-at`, bad.map(String), []);
+      const idxBad = pl.words().filter(w => w.letters().some((l, i) => l.index !== i)).map(String);
+      eq(`24.7 ${tag} indexes run 0..n-1 in each word`, idxBad, []);
+      const byIdx = all.filter(l => pl.letter(l.wordKey, l.index)?.el !== l.el).map(String);
+      eq(`24.8 ${tag} letter(wordKey, index) addresses each letter`, byIdx, []);
+      const byAt = all.filter(l => pl.letterAt(l.wordKey, l.at)?.el !== l.el).map(String);
+      eq(`24.9 ${tag} letterAt(wordKey, data-at) addresses each letter`, byAt, []);
+      /* a mark's own data-at addresses the letter that holds it */
+      const markMiss = [];
+      for (const l of all) for (const p of l.marks()) {
+        if (p.dataset.at == null) continue;
+        if (l.word.letterAt(Number(p.dataset.at))?.el !== l.el) markMiss.push(l.key + '@' + p.dataset.at);
+      }
+      eq(`24.10 ${tag} a mark's data-at finds the letter that holds it`, markMiss, []);
+      const qpcMiss = all.filter(l => l.qpc === null).map(String);
+      eq(`24.11 ${tag} every letter's qpc character is readable from the sidecar`, qpcMiss, []);
+      const ordered = all.filter(l => {
+        const a = l.marks().map(p => p.dataset.at).filter(v => v != null).map(Number);
+        return a.some((v, i) => i && v < a[i - 1]);
+      }).map(String);
+      eq(`24.12 ${tag} letter.marks() comes back in data-at order`, ordered, []);
+
+      /* the letters and the word-level marks hold every path of the word, once */
+      const cover = pl.words().filter(w => {
+        const inL = w.letters().flatMap(l => l.paths());
+        const all2 = new Set([...inL, ...w.wordMarks()]);
+        return all2.size !== w.paths().length || inL.length + w.wordMarks().length !== w.paths().length;
+      }).map(String);
+      eq(`24.13 ${tag} letters + word-level marks = the word's paths, each once`, cover, []);
+
+      /* the word API: the same answers on the word page and its letter version */
+      eq(`24.14 ${tag} same words, same order`, pl.words().map(String), pw.words().map(String));
+      /* One known difference between the two bundles of this release: where a
+         hizb rosette is drawn, the LETTER bundle puts it inside the ayah's first
+         word (its path[data-mark="hizb"] in the word group, and U+06DE plus a
+         space at the front of the word's text), while the WORD bundle keeps it
+         in its own g.division-mark and the text without it. Those words are
+         compared on everything else and listed in 24.15b, not hidden. */
+      const hizbWords = new Set(pl.words().filter(w => w.el.querySelector('path[data-mark="hizb"]')).map(String));
+      const noHizb = s => s == null ? s : s.replace(/^\u06DE[\s\u00A0]*/, '');
+      const forms = (p, w) => ['rasm_uthmani', 'qpc', 'rasm_imlai', 'rasm', 'search']
+        .map(f => hizbWords.has(w.wordKey) ? noHizb(w.form(f)) : w.form(f));
+      eq(`24.15 ${tag} same ayahs, lines, and every word's five text forms`,
+         [pl.ayahKeys(), pl.lineNumbers(), pl.words().map(w => [w.line, ...forms(pl, w)])],
+         [pw.ayahKeys(), pw.lineNumbers(), pw.words().map(w => [w.line, ...forms(pw, w)])]);
+      const hizbWordPage = [...pw.el.querySelectorAll('g.division-mark')].length;
+      ok(`24.15b ${tag} hizb rosette: its g.division-mark inside the word on the letter page, beside it on the word page (${hizbWords.size} word(s))`,
+         hizbWords.size === hizbWordPage &&
+         pl.divisionMarks().length === hizbWordPage &&
+         pl.divisionMarks().every(d => d.el.closest('g.word')) &&
+         pw.divisionMarks().every(d => !d.el.closest('g.word')) &&
+         [...hizbWords].every(k => /^\u06DE/.test(pl.word(k).form('rasm_uthmani')) && !/^\u06DE/.test(pw.word(k).form('rasm_uthmani'))),
+         { words: [...hizbWords], wordPageDivisionMarks: hizbWordPage });
+      eq(`24.16 ${tag} same marks through page.marks() (body-that-is-a-mark included)`,
+         [pl.marks().length, pl.marks({ family: 'dots' }).length, pl.marks({ name: 'omitted_alif' }).length],
+         [pw.marks().length, pw.marks({ family: 'dots' }).length, pw.marks({ name: 'omitted_alif' }).length]);
+      show(pw); const bw = pw.words().map(w => w.box());
+      show(pl); const bl = pl.words().map(w => w.box());
+      /* a cut piece may differ from the artwork by under 0.0125 units
+         (FORMAT §10.10); rounding to 0.05 is the tolerance asked for */
+      let worst = 0, worstKey = null;
+      bl.forEach((b, i) => {
+        if (hizbWords.has(pl.words()[i].wordKey)) return;   // 24.15b
+        const d = Math.max(Math.abs(b.x0 - bw[i].x0), Math.abs(b.x1 - bw[i].x1),
+                           Math.abs(b.y0 - bw[i].y0), Math.abs(b.y1 - bw[i].y1));
+        if (d > worst) { worst = d; worstKey = pl.words()[i].wordKey; }
+      });
+      ok(`24.17 ${tag} word boxes agree within 0.05 units (hizb words aside, 24.15b)`, worst <= 0.05, { worst: +worst.toFixed(4), worstKey });
+      show(pw);
+      const centres = bw.map(b => [(b.x0 + b.x1) / 2, (b.y0 + b.y1) / 2]);
+      const hw = centres.map(([x, y]) => pw.hitTest(x, y, { space: 'view' })?.wordKey);
+      show(pl);
+      const hl2 = centres.map(([x, y]) => pl.hitTest(x, y, { space: 'view' })?.wordKey);
+      eq(`24.18 ${tag} hitTest at every word centre: the same word on both pages`, hl2, hw);
+
+      /* hit-testing a letter: a point found on each letter's own body ink
+         must come back as that letter, exactly */
+      const sample = all.filter((_, i) => i % Math.max(1, Math.floor(all.length / 60)) === 0);
+      const probe = l => M.whileRendered(pl.el, () => {
+        const body = l.body(), b = l.box();
+        for (let iy = 1; iy < 12; iy++) for (let ix = 1; ix < 12; ix++) {
+          const x = b.x0 + (b.w * ix) / 12, y = b.y0 + (b.h * iy) / 12;
+          const vp = pl.el.createSVGPoint(); vp.x = x; vp.y = y;
+          const sp = vp.matrixTransform(pl.el.getScreenCTM());
+          if (body.some(p => p.isPointInFill(sp.matrixTransform(p.getScreenCTM().inverse())))) return [x, y];
+        }
+        return null;
+      });
+      const missHit = [], noPoint = [];
+      for (const l of sample) {
+        const pt = probe(l);
+        if (!pt) { noPoint.push(l.key); continue; }
+        const r = pl.letterHitTest(pt[0], pt[1], { space: 'view' });
+        if (!r || r.letter.el !== l.el || !r.exact) missHit.push([l.key, r && r.letter.key, r && r.exact]);
+      }
+      eq(`24.19 ${tag} letterHitTest on a letter's own ink returns it, exact (${sample.length} letters)`,
+         missHit, []);
+      ok(`24.20 ${tag} an ink point was found for nearly every sampled letter`,
+         noPoint.length <= Math.ceil(sample.length * 0.1), noPoint);
+      const off = bw.length ? pl.letterHitTest(bw[0].x1 + 0.3, (bw[0].y0 + bw[0].y1) / 2, { space: 'view' }) : null;
+      ok(`24.21 ${tag} a point just off the ink still names a letter of the nearest word, not exact`,
+         off && off.wordKey === pl.words()[0].wordKey && off.exact === false, off && [off.wordKey, off.index, off.exact]);
+
+      /* highlighting one letter paints that letter's paths and nothing else */
+      const L0 = all[Math.floor(all.length / 2)];
+      const h = pl.highlight(L0, { fill: '#15705d', className: 'mushaf-letter-hl' });
+      const painted = [...pl.el.querySelectorAll('path.mushaf-letter-hl')];
+      eq(`24.22 ${tag} highlight(letter) paints exactly its paths`,
+         [h.count, painted.length, painted.every(p => L0.el.contains(p))],
+         [L0.paths().length, L0.paths().length, true]);
+      h.remove();
+      eq(`24.23 ${tag} and remove() restores them`, pl.el.querySelectorAll('path.mushaf-letter-hl').length, 0);
+      const viaObj = pl.highlight({ wordKey: L0.wordKey, letter: L0.index }, { fill: null, className: 'x-hl' });
+      const viaAt = pl.highlight({ wordKey: L0.wordKey, at: L0.at }, { fill: null, className: 'y-hl' });
+      eq(`24.24 ${tag} {wordKey, letter} and {wordKey, at} name the same letter`,
+         [viaObj.count, viaAt.count], [L0.paths().length, L0.paths().length]);
+      viaObj.remove(); viaAt.remove();
+      const bd = pl.band(L0);
+      ok(`24.25 ${tag} band(letter) is one band, inside its word's`,
+         bd.bands === 1 && bd.boxes[0].x0 >= L0.word.box().x0 - 1.3 && bd.boxes[0].x1 <= L0.word.box().x1 + 1.3,
+         bd.boxes);
+      bd.remove();
+      /* a word target still paints the whole word, one level deeper */
+      const hw2 = pl.highlight(L0.word.wordKey, { fill: null, className: 'z-hl' });
+      eq(`24.26 ${tag} highlight(wordKey) on a letter page paints every path of the word`,
+         hw2.count, L0.word.paths().length);
+      hw2.remove();
+    }
+
+    /* -- 24.27 clicking a letter, both pointer paths */
+    {
+      const pl = show(await loadL(3));
+      const target = pl.letters()[7];
+      const pt = M.whileRendered(pl.el, () => {
+        const b = target.box();
+        for (let iy = 1; iy < 16; iy++) for (let ix = 1; ix < 16; ix++) {
+          const x = b.x0 + (b.w * ix) / 16, y = b.y0 + (b.h * iy) / 16;
+          const r = pl.letterHitTest(x, y, { space: 'view' });
+          if (r && r.exact && r.letter.el === target.el) return [x, y];
+        }
+        return null;
+      });
+      const m = pl.el.getScreenCTM();
+      const sp = pt && (() => { const v = pl.el.createSVGPoint(); v.x = pt[0]; v.y = pt[1]; return v.matrixTransform(m); })();
+      let got = null;
+      const tap = pl.onTap(r => { got = r; }, { level: 'letter' });
+      if (sp) pl.el.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: sp.x, clientY: sp.y }));
+      tap.remove();
+      eq('24.27 onTap({level: "letter"}) hands over the letter under the click',
+         got && got.letter ? got.letter.key : null, target.key);
+      let got2 = null;
+      const click = M.onWordClick(pl, r => { got2 = r; }, { level: 'letter' });
+      if (sp) (document.elementFromPoint(sp.x, sp.y) || pl.el)
+        .dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: sp.x, clientY: sp.y }));
+      click.remove();
+      eq('24.28 onWordClick(…, {level: "letter"}) through the hit layer: the same letter',
+         got2 && got2.letter ? got2.letter.key : null, target.key);
+      const pw = show(await loadW(3));
+      let got3 = 'unset';
+      const tw = pw.onTap(r => { got3 = r.letter; }, { level: 'letter' });
+      if (sp) pw.el.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: sp.x, clientY: sp.y }));
+      tw.remove();
+      eq('24.29 on a word page the same click gives the word and letter: null', got3, null);
+      show(p42);
+    }
+
+    /* -- 24.30 the loader reads the CDN layout off the manifests (stub fetch
+       maps the CDN folders onto the bundles served here; nothing leaves) */
+    {
+      const ROOT = 'https://cdn.example/svg/elements/';
+      const abs = u => new URL(u, location.href).href;
+      const files = {
+        [ROOT + 'latest.json']: { version: 'v9.0.0', manifest: ROOT + 'v9.0.0/manifest.json', updated: 'x' },
+        [ROOT + 'v9.0.0/manifest.json']: { version: 'v9.0.0', base: ROOT + 'v9.0.0/',
+          levels: { words: { base: ROOT + 'v9.0.0/words/', manifest: ROOT + 'v9.0.0/words/manifest.json' },
+                    letters: { base: ROOT + 'v9.0.0/letters/', manifest: ROOT + 'v9.0.0/letters/manifest.json' } } },
+        [ROOT + 'v1.0.0/manifest.json']: { version: 'v1.0.0', base: ROOT + 'v1.0.0/', files: [] }
+      };
+      const local = {
+        [ROOT + 'v9.0.0/words/']: abs(PAGES + '../'), [ROOT + 'v9.0.0/letters/']: abs(LETTERS + '../'),
+        [ROOT + 'v1.0.0/']: abs(PAGES + '../')
+      };
+      const seen = [];
+      const stub = async u => {
+        seen.push(u);
+        if (files[u]) return { ok: true, json: async () => files[u] };
+        for (const k in local) if (u.startsWith(k)) return fetch(local[k] + u.slice(k.length));
+        return { ok: false, status: 404 };
+      };
+      const rl = await M.resolveRelease({ root: ROOT, version: 'v9.0.0', level: 'letters', fetch: stub });
+      eq('24.30 a version with levels: letters resolve to {version}/letters/pages/',
+         [rl.layout, rl.pages, rl.levels], ['levels', ROOT + 'v9.0.0/letters/pages/', ['words', 'letters']]);
+      const rw = await M.resolveRelease({ root: ROOT, version: 'v1.0.0', fetch: stub });
+      eq('24.31 a version without levels: word pages directly under the version',
+         [rw.layout, rw.pages], ['flat', ROOT + 'v1.0.0/pages/']);
+      let e1 = null; try { await M.resolveRelease({ root: ROOT, version: 'v1.0.0', level: 'letters', fetch: stub }); } catch (e) { e1 = e.message; }
+      ok('24.32 letters from a word-only version is an error that says so', !!e1 && /word pages only/.test(e1), e1);
+      const rlat = await M.resolveRelease({ root: ROOT, version: 'latest', level: 'words', fetch: stub });
+      eq('24.33 latest.json is followed to its version', [rlat.version, rlat.pages], ['v9.0.0', ROOT + 'v9.0.0/words/pages/']);
+      const ldL = M.createLoader({ root: ROOT, version: 'latest', level: 'letters', words: true, fetch: stub });
+      const viaCdn = await ldL(3);
+      eq('24.34 createLoader({root, version, level}) loads a letter page with its sidecar',
+         [viaCdn.hasLetters, viaCdn.word('2:6:2')?.letters()[0]?.qpc != null,
+          seen.includes(ROOT + 'v9.0.0/letters/pages/003.svg'),
+          seen.includes(ROOT + 'v9.0.0/letters/index/by-page/003.json')],
+         [true, true, true, true]);
+      const ldW = M.createLoader({ root: ROOT, version: 'v1.0.0', fetch: stub });
+      eq('24.35 and the flat layout for an old version', [(await ldW(3)).hasLetters, (await ldW.release()).layout],
+         [false, 'flat']);
+    }
   }
 
   /* left up on purpose for the interactive drag / resize probes */

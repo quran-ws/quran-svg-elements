@@ -205,9 +205,95 @@ export class Word {
   }
   /** Bounding box in the page's own viewBox units. */
   box() { return boxInView(this._page.el, this.el); }
+  /** Every path of the word, at any depth: on a letter page the ink sits one
+   *  level down, inside `g.letter` (FORMAT §6.9), so never `g.word > path`. */
   paths() { return [...this.el.querySelectorAll('path')]; }
+
+  /* ---- the letter layer (letter pages only; FORMAT §6.9) ----
+   * On a word page every one of these fails soft: an empty list or null,
+   * never a throw. `page.hasLetters` says which kind of page you have. */
+
+  /** The word's letters in reading order (`data-index`). `[]` on a word page. */
+  letters() {
+    return [...this.el.querySelectorAll('g.letter')]
+      .map(e => new Letter(e, this))
+      .sort((a, b) => a.index - b.index);
+  }
+  /** Letter number `i` (0-based, `data-index`), or null. */
+  letter(i) {
+    const e = this.el.querySelector(`g.letter[data-index="${cssq(i)}"]`);
+    return e ? new Letter(e, this) : null;
+  }
+  /** The letter that draws code point `offset` of the word's `qpc` text:
+   *  the letter group whose `data-at` is `offset`, else the letter holding a
+   *  mark path with that `data-at`. null for a word-level mark (one that
+   *  belongs to no letter), an offset nothing draws, and on a word page. */
+  letterAt(offset) {
+    const v = cssq(offset);
+    let e = this.el.querySelector(`g.letter[data-at="${v}"]`);
+    if (!e) { const p = this.el.querySelector(`g.letter path[data-at="${v}"]`); e = p && p.closest('g.letter'); }
+    return e ? new Letter(e, this) : null;
+  }
+  /** Marks of the word that belong to no single letter — on a letter page,
+   *  the mark paths left as direct children of the word group. `[]` on a
+   *  word page, where no mark is a letter's. */
+  wordMarks() {
+    if (!this.el.querySelector('g.letter')) return [];
+    return [...this.el.querySelectorAll('path[data-mark]')].filter(p => !p.closest('g.letter'));
+  }
   toString() { return this.wordKey; }
 }
+
+/**
+ * One letter of a word: a `<g class="letter">` with its body ink and its own
+ * marks (FORMAT §6.9). Only letter pages have them. Addressed by word key +
+ * `index` (its place in the word's letter sequence) or by `at` (the code-point
+ * offset, in the word's `qpc` text, of the character it draws).
+ */
+export class Letter {
+  constructor(el, word) { this.el = el; this.word = word; this._page = word._page; }
+  get wordKey() { return this.word.wordKey; }
+  get ayahKey() { return this.word.ayahKey; }
+  get line()    { return this.word.line; }
+  /** 0-based place in the word, reading order. */
+  get index()   { return Number(this.el.dataset.index); }
+  /** The letter as the word's text writes it (`data-text`). */
+  get text()    { return this.el.dataset.text ?? ''; }
+  /** Code-point offset into the word's `qpc` form, or null if absent. */
+  get at()      { const v = this.el.dataset.at; return v == null || v === '' ? null : Number(v); }
+  /** The character at `at` in the word's `qpc` text — the KFGQPC code point
+   *  this ink draws. Needs the form: inline on a dev page, from the sidecar
+   *  on a production page (`page.attachWords`). null when either is missing. */
+  get qpc() {
+    const q = this.word.form('qpc'), at = this.at;
+    return q == null || at == null ? null : ([...q][at] ?? null);
+  }
+  /** `wordKey/index` — unique on the page, stable across builds of the same
+   *  segmentation. A label, not a key the files carry. */
+  get key()     { return this.wordKey + '/' + this.index; }
+  /** Every path of the letter: body first, then its marks as the file has them. */
+  paths()  { return [...this.el.querySelectorAll('path')]; }
+  /** The body ink (`data-kind="body"`): a whole contour, or a cut piece. */
+  body()   { return [...this.el.querySelectorAll('path[data-kind="body"]')]; }
+  /** Whether any body piece was cut from a joined contour (`data-cut="1"`). */
+  get isCut() { return !!this.el.querySelector('path[data-kind="body"][data-cut="1"]'); }
+  /**
+   * The letter's named marks, in text order (`data-at`; FORMAT §6.9 — the
+   * file's own order is the order the ink was found). Selected on
+   * `data-mark`, so the two kinds of body that are also a mark (the dagger
+   * alif drawn as a letter, the fused hamzah: `path[data-kind="body"][data-mark]`)
+   * are included, exactly as `page.marks()` includes them.
+   */
+  marks() {
+    return [...this.el.querySelectorAll('path[data-mark]')].sort((a, b) => atOf(a) - atOf(b));
+  }
+  /** The marks' `data-mark` names, in the same order. */
+  markNames() { return this.marks().map(p => p.dataset.mark); }
+  /** Bounding box in the page's viewBox units, marks included. */
+  box() { return boxInView(this._page.el, this.el); }
+  toString() { return this.key; }
+}
+const atOf = p => { const v = p.dataset.at; return v == null || v === '' ? Infinity : Number(v); };
 
 export class Ayah {
   constructor(ayahKey, fragments, page) { this.ayahKey = ayahKey; this.fragments = fragments; this._page = page; }
@@ -304,8 +390,15 @@ export class MushafPage {
     else if (Array.isArray(data.words)) recs = data.words;
     else if (data instanceof Map) recs = [...data.values()];
     else recs = Object.values(data);
+    /* The shipped sidecar spells the key `word_key` (index/by-page/NNN.json,
+     * every release from v1.1.0); `wordKey` is accepted for records a caller
+     * builds in JavaScript. Keying on `wordKey` alone attached nothing from
+     * the real file — every form stayed null and search() kept throwing. */
     const m = new Map();
-    for (const r of recs) if (r && r.wordKey) m.set(r.wordKey, r);
+    for (const r of recs) {
+      const k = r && (r.word_key ?? r.wordKey);
+      if (k) m.set(k, r);
+    }
     this._forms = m;
     return m.size;
   }
@@ -331,8 +424,32 @@ export class MushafPage {
 
   /* ---- identity ---- */
 
-  /** dev | production, by whether the ligature layer is present (FORMAT §2). */
-  get profile() { return this.el.querySelector('g.ligature') ? 'dev' : 'production'; }
+  /** dev | production, by whether the ligature layer is present (FORMAT §2).
+   *  A letter page has no ligature layer in either profile — the letter groups
+   *  replace it — so there the dev-only `data-element-id` decides. */
+  get profile() {
+    return this.el.querySelector('g.ligature, path[data-element-id]') ? 'dev' : 'production';
+  }
+
+  /** How deep this file goes, as the root says (`data-decomposition`, FORMAT
+   *  §6.6): `'word'`, `'letter'`, `'ayah'` — or, for a file without the
+   *  attribute, `'letter'` / `'word'` by what it holds, and null if neither. */
+  get decomposition() {
+    const d = this.el.getAttribute('data-decomposition');
+    if (d) return d;
+    if (this.el.querySelector('g.letter')) return 'letter';
+    return this.el.querySelector('g.word') ? 'word' : null;
+  }
+
+  /** Can this page address letters? True on a letter page (schema 2.0.0),
+   *  false on a word page, where every letter method returns [] or null.
+   *  Read off the file, never off a version string. */
+  get hasLetters() {
+    return this.el.getAttribute('data-decomposition') === 'letter' || !!this.el.querySelector('g.letter');
+  }
+
+  /** Letter groups on the page; 0 on a word page. */
+  get letterCount() { return this.el.querySelectorAll('g.word g.letter').length; }
 
   /** Read off the file. Pages 1-2 do not use 0 0 345 550. */
   get viewBox() {
@@ -382,6 +499,32 @@ export class MushafPage {
   word(wordKey) {
     const e = this.el.querySelector(`g.word[data-word-key="${cssq(wordKey)}"]`);
     return e ? new Word(e, this) : null;
+  }
+
+  /* ---- letters (letter pages; [] / null on a word page) ---- */
+
+  /** Every letter of a target — the same targets as `resolve()` — in reading
+   *  order, word by word. `[]` on a word page. */
+  letters(target = 'page') {
+    if (!this.hasLetters) return [];
+    return this.resolve(target).flatMap(w => w.letters());
+  }
+  /** One letter by word key and 0-based index. null if either is absent. */
+  letter(wordKey, index) {
+    const w = this.word(wordKey);
+    return w ? w.letter(index) : null;
+  }
+  /** One letter by word key and `qpc` code-point offset (`data-at`). */
+  letterAt(wordKey, offset) {
+    const w = this.word(wordKey);
+    return w ? w.letterAt(offset) : null;
+  }
+  /** The letter a `g.letter` element, or any node inside one, belongs to. */
+  letterOf(node) {
+    const el = node && (node.nodeType === 1 ? node : node.parentElement);
+    const g = el && el.closest ? el.closest('g.letter') : null;
+    const w = g && g.closest('g.word');
+    return g && w && this.el.contains(g) ? new Letter(g, new Word(w, this)) : null;
   }
 
   /** Ayah keys on this page, in reading order, deduplicated. */
@@ -513,14 +656,39 @@ export class MushafPage {
     }
     if (Array.isArray(target)) return target.flatMap(t => this.resolve(t));
     if (target instanceof Word) return [target];
+    if (target instanceof Letter) return [target.word];
     if (target instanceof Ayah) return target.words();
     if (target instanceof Line) return target.words();
     if (target && target.nodeType === 1) {
       if (target.classList.contains('word')) return [new Word(target, this)];
+      const up = target.closest && target.closest('g.word');
+      if (up && target.classList.contains('letter')) return [new Word(up, this)];
       return [...target.querySelectorAll('g.word')].map(e => new Word(e, this));
     }
     if (typeof target === 'object') return this.words(target);
     return [];
+  }
+
+  /**
+   * What highlight() and band() paint: letters where the target names
+   * letters — a Letter, a `g.letter` element, `{wordKey, letter: i}` or
+   * `{wordKey, at: n}`, or an array of them — otherwise the words of
+   * resolve(). Both kinds carry paths(), box() and line. A letter target on a
+   * word page resolves to nothing, so the paint is a no-op (count 0).
+   */
+  _inkUnits(target) {
+    if (Array.isArray(target)) return target.flatMap(t => this._inkUnits(t));
+    if (target instanceof Letter) return [target];
+    if (target && target.nodeType === 1 && target.classList.contains('letter')) {
+      const l = this.letterOf(target); return l ? [l] : [];
+    }
+    if (target && typeof target === 'object' && !(target instanceof Word) && target.wordKey != null &&
+        (target.letter != null || target.at != null)) {
+      const l = target.letter != null ? this.letter(target.wordKey, target.letter)
+                                      : this.letterAt(target.wordKey, target.at);
+      return l ? [l] : [];
+    }
+    return this.resolve(target);
   }
 
   /* ---- text ---- */
@@ -594,7 +762,7 @@ export class MushafPage {
   /** Recolour a target's ink. Returns a handle that restores the exact
    *  previous inline value. Mutates THIS page. */
   highlight(target, { className = null, fill = '#c0392b', opacity = null } = {}) {
-    const paths = this.resolve(target).flatMap(w => w.paths());
+    const paths = this._inkUnits(target).flatMap(w => w.paths());
     const prev = paths.map(p => [p, p.style.fill, p.style.opacity]);
     for (const p of paths) {
       if (className) p.classList.add(className);
@@ -668,7 +836,7 @@ export class MushafPage {
     className = 'mushaf-band', height = 'pitch', seam = 0.25
   } = {}) {
     const byLine = new Map();
-    for (const w of this.resolve(target)) {
+    for (const w of this._inkUnits(target)) {
       const b = w.box();                            // INK box: horizontal extent
       const c = byLine.get(w.line);
       byLine.set(w.line, c ? unionBox([c, b]) : b);
@@ -848,6 +1016,92 @@ export class MushafPage {
     }
   }
 
+  /**
+   * Which LETTER is at this point? null on a word page, and null when no word
+   * is within `maxDistance`.
+   *
+   * Two steps, the word first: the point goes through hitTest() — so the
+   * line, the gap bias and `maxDistance` mean exactly what they mean for
+   * words — or straight to `word` when the caller already knows it. Then,
+   * inside that word, the letter whose INK is under the point (the path's own
+   * fill, `isPointInFill`, so a mark sitting over its neighbour's box still
+   * answers for its own letter), else the letter whose box is nearest.
+   * Letter boxes overlap — a joined letter's box covers its neighbour's
+   * stroke — so a box test alone would answer wrongly on most joins.
+   *
+   * @returns {letter, word, wordKey, index, at, ayahKey, line, distance, exact}
+   *          `exact` is true only when the point is on the letter's ink;
+   *          `distance` is from the point to the letter's box, in viewBox units.
+   */
+  letterHitTest(x, y, { space = 'client', maxDistance = Infinity, gapBias = 0.6, word = null } = {}) {
+    if (!this.hasLetters) return null;
+    let px = x, py = y;
+    if (space === 'client') {
+      const p = this.clientToView(x, y);
+      if (!p) return null;
+      px = p.x; py = p.y;
+    }
+    let w = word;
+    if (w && !(w instanceof Word)) w = this.resolve(w)[0] || null;
+    /* Word boxes overlap where a word's tail runs under its neighbour, and
+     * hitTest() answers a point inside two boxes with the first. The INK
+     * decides: test the letters of every word whose box holds the point, the
+     * hitTest() word first, before falling back to boxes in that word. */
+    let candidates = [];
+    if (!w) {
+      const h = this.hitTest(px, py, { space: 'view', maxDistance, gapBias });
+      w = h && h.word;
+      if (!w) return null;
+      const cache = this._hitCache || (this._hitCache = new Map());
+      for (const o of this.words({ line: w.line })) {
+        if (o.wordKey === w.wordKey) continue;
+        let b = cache.get(o.wordKey);
+        if (!b) { b = o.box(); cache.set(o.wordKey, b); }
+        if (px >= b.x0 && px <= b.x1 && py >= b.y0 && py <= b.y1) candidates.push(o);
+      }
+    }
+    const letters = w.letters();
+    if (!letters.length) return null;
+    const inkLetters = letters.concat(candidates.flatMap(o => o.letters()));
+    const svg = this.el;
+
+    /* ink first: is the point inside one of this letter's filled paths? */
+    const inked = whileRendered(svg, () => {
+      const vp = svg.createSVGPoint(); vp.x = px; vp.y = py;
+      const toScreen = svg.getScreenCTM();
+      if (!toScreen) return null;
+      const sp = vp.matrixTransform(toScreen);
+      for (const l of inkLetters) {
+        for (const p of l.paths()) {
+          const m = p.getScreenCTM();
+          if (!m || typeof p.isPointInFill !== 'function') continue;
+          const lp = sp.matrixTransform(m.inverse());
+          if (p.isPointInFill(lp)) return l;
+        }
+      }
+      return null;
+    });
+    if (inked) return rec(inked, 0, true);
+
+    /* else the nearest letter box; the smaller box wins a tie, since a
+     * point inside two boxes is far likelier on the narrow letter */
+    let best = null;
+    for (const l of letters) {
+      const b = l.box();
+      const dx = px < b.x0 ? b.x0 - px : px > b.x1 ? px - b.x1 : 0;
+      const dy = py < b.y0 ? b.y0 - py : py > b.y1 ? py - b.y1 : 0;
+      const d = Math.hypot(dx, dy), area = b.w * b.h;
+      if (!best || d < best.d - 1e-9 || (Math.abs(d - best.d) <= 1e-9 && area < best.area)) best = { l, d, area };
+    }
+    if (!best || best.d > maxDistance) return null;
+    return rec(best.l, best.d, false);
+
+    function rec(l, distance, exact) {
+      return { letter: l, word: l.word, wordKey: l.wordKey, index: l.index, at: l.at,
+               ayahKey: l.ayahKey, line: l.line, distance, exact };
+    }
+  }
+
   /** Invalidate the cached geometry (after a layout change). */
   refreshGeometry() { this._hitCache = null; this._lineBands = null; }
 
@@ -879,6 +1133,12 @@ export class MushafPage {
       }
       if (!res) return;
       if (level === 'ayah') handler({ ...res, ayah: self.ayah(res.ayahKey) }, ev);
+      else if (level === 'letter') {
+        /* the word is settled above; the letter is the one under the point in
+         * it. On a word page there is none and the handler gets letter: null */
+        const lh = self.letterHitTest(ev.clientX, ev.clientY, { maxDistance, gapBias });
+        handler(letterResult(res, lh), ev);
+      }
       else handler(res, ev);
     };
     host.addEventListener(event, fn);
@@ -894,7 +1154,11 @@ export class MushafPage {
    */
   marks(sel = {}) {
     const names = (sel.name || sel.family || sel.category) ? markNames(sel) : null;
-    let list = [...this.el.querySelectorAll('path[data-kind="mark"]')];
+    /* `path[data-mark]`, not `path[data-kind="mark"]`: on a letter page the
+     * dagger alif drawn as a letter and the two fused hamzahs are a letter's
+     * BODY that is also a named mark (FORMAT §6.9). On every word page the
+     * two selectors pick the same paths (436,627 each over 604 pages). */
+    let list = [...this.el.querySelectorAll('path[data-mark]')];
     if (names) { const s = new Set(names); list = list.filter(p => s.has(p.dataset.mark)); }
     if (sel.wordKey) list = list.filter(p => p.closest('g.word')?.dataset.wordKey === sel.wordKey);
     if (sel.ayah) list = list.filter(p => p.closest('g.ayah-fragment')?.dataset.ayahKey === sel.ayah);
@@ -1084,6 +1348,17 @@ export class MushafPage {
   }
 }
 
+/** A word-level pointer result carried to letter level. The ink decides:
+ *  where the letter under the point belongs to the neighbouring word (a tail
+ *  drawn under the next word's box), the result names that word too, so
+ *  `word` and `letter` never disagree. No letter (a word page, or nothing
+ *  near): the word result as it was, with `letter: null`. */
+export function letterResult(res, lh) {
+  if (!lh) return { ...res, letter: null, letterHit: null };
+  return { ...res, word: lh.word, wordKey: lh.wordKey, ayahKey: lh.ayahKey, line: lh.line,
+           letter: lh.letter, letterHit: lh };
+}
+
 /* CSS attribute-selector value: the keys are [0-9:] so this is belt and
  * braces, but a caller can pass anything. */
 function cssq(v) { return String(v).replace(/["\\]/g, '\\$&'); }
@@ -1104,16 +1379,29 @@ function cssq(v) { return String(v).replace(/["\\]/g, '\\$&'); }
  */
 export function createLoader({
   baseUrl = 'pages/', pad = 3, ext = '.svg', fetch: f = null,
-  cache = true, stripPolygons = true, name = null, words = null
+  cache = true, stripPolygons = true, name = null, words = null,
+  root = null, version = null, level = 'words'
 } = {}) {
   const store = new Map();
   const fetcher = f || ((...a) => globalThis.fetch(...a));
-  const url = n => baseUrl + (name ? name(n) : String(n).padStart(pad, '0') + ext);
-  const wordsUrl = words === true ? (n => baseUrl + '../index/by-page/' + String(n).padStart(3, '0') + '.json')
+  /* With `version` (and `root`, the folder that holds the version folders),
+   * the page base is read off the published manifests, once, before the
+   * first page — see resolveRelease(). Without it, `baseUrl` is used as given. */
+  let release = null;
+  const ready = version
+    ? () => (release || (release = resolveRelease({ root, version, level, fetch: fetcher })
+        .catch(e => { release = null; throw e; })))
+    : () => Promise.resolve(null);
+  let base = baseUrl, indexBase = null;
+  const url = n => base + (name ? name(n) : String(n).padStart(pad, '0') + ext);
+  const wordsUrl = words === true
+    ? (n => (indexBase || base + '../index/') + 'by-page/' + String(n).padStart(3, '0') + '.json')
     : typeof words === 'string' ? (n => words + String(n).padStart(3, '0') + '.json')
     : typeof words === 'function' ? words : null;
 
-  return async function load(n) {
+  async function load(n) {
+    const rel = await ready();
+    if (rel) { base = rel.pages; indexBase = rel.index; }
     const key = String(n);
     if (cache && store.has(key)) return (await store.get(key)).clone();
     const p = (async () => {
@@ -1130,7 +1418,64 @@ export function createLoader({
     if (cache) store.set(key, p);
     try { return (await p).clone(); }
     catch (e) { store.delete(key); throw e; }
-  };
+  }
+  /** The release this loader reads — `{version, level, layout, base, pages,
+   *  index, manifest, levels}` — or null when it was given a plain baseUrl. */
+  load.release = () => ready();
+  return load;
 }
 
-export const version = '0.2.0';
+/**
+ * Where a published version's pages are, read off its manifests.
+ *
+ *   root      the folder that holds the version folders, e.g.
+ *             'https://cdn.quran.ws/svg/elements/'
+ *   version   'v1.1.2', 'v2.0.0', … or 'latest' (reads `root/latest.json`)
+ *   level     'words' (default) | 'letters'
+ *
+ * The version's `manifest.json` decides the layout, not the version number:
+ *   - it names `levels` → each level has its own folder:
+ *       {version}/words/pages/…, {version}/letters/pages/… (from v2.0.0);
+ *   - it does not → the version is word pages only, directly under its
+ *     folder: {version}/pages/… (every version up to v1.1.2).
+ * Asking a word-only version for `letters`, or naming a level the manifest
+ * does not list, is an error that names what the version does have: a loader
+ * that quietly served words when asked for letters would hide the mistake.
+ */
+export async function resolveRelease({ root, version = 'latest', level = 'words', fetch: f = null } = {}) {
+  if (!root) throw new Error('resolveRelease needs `root`, the folder that holds the version folders');
+  const fetcher = f || ((...a) => globalThis.fetch(...a));
+  const slash = s => (s.endsWith('/') ? s : s + '/');
+  const r = slash(String(root));
+  const getJson = async u => {
+    const res = await fetcher(u);
+    if (!res.ok) throw new Error(`HTTP ${res.status} for ${u}`);
+    return res.json();
+  };
+  let manifestUrl;
+  if (version === 'latest') {
+    const latest = await getJson(r + 'latest.json');
+    version = latest.version;
+    manifestUrl = latest.manifest || r + version + '/manifest.json';
+  } else {
+    manifestUrl = r + version + '/manifest.json';
+  }
+  const manifest = await getJson(manifestUrl);
+  const versionBase = slash(manifest.base || manifestUrl.replace(/manifest\.json$/, ''));
+  if (manifest.levels && typeof manifest.levels === 'object') {
+    const have = Object.keys(manifest.levels);
+    const lv = manifest.levels[level];
+    if (!lv) throw new Error(`${version} has no '${level}' level; it has: ${have.join(', ')}`);
+    const base = slash(lv.base || versionBase + level + '/');
+    return { version, level, layout: 'levels', base, pages: base + 'pages/', index: base + 'index/',
+             manifest: lv.manifest || base + 'manifest.json', levels: have };
+  }
+  if (level !== 'words') {
+    throw new Error(`${version} has word pages only (no 'levels' in its manifest); ` +
+                    `'${level}' needs a version that publishes levels`);
+  }
+  return { version, level: 'words', layout: 'flat', base: versionBase, pages: versionBase + 'pages/',
+           index: versionBase + 'index/', manifest: manifestUrl, levels: ['words'] };
+}
+
+export const version = '0.3.0';

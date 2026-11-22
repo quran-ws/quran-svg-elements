@@ -25,7 +25,7 @@
  * page.hitTest(), which is pure geometry and touches no DOM.
  */
 
-import { datasetKey } from './core.mjs';
+import { datasetKey, letterResult } from './core.mjs';
 
 const CSS_ID = 'mushaf-overlay-css';
 const OVERLAY_CSS = `
@@ -295,14 +295,24 @@ function pointerBinding(page, handler, {
   let lastWordKey = null;
 
   const fn = ev => {
-    const res = hl.wordAt(ev.clientX, ev.clientY, { maxDistance, gapBias });
+    let res = hl.wordAt(ev.clientX, ev.clientY, { maxDistance, gapBias });
+    if (res && level === 'letter') {
+      /* the letter is the one whose ink is under the point (page.letterHitTest);
+       * when that ink belongs to the neighbouring word, the result names that
+       * word (letterResult). On a word page there is no letter: letter is
+       * null and the word result fires as at word level. */
+      const lh = page.letterHitTest(ev.clientX, ev.clientY, { maxDistance, gapBias });
+      res = letterResult(res, lh);
+    }
     if (!res) {
       if (leaveHandler && lastWordKey) { lastWordKey = null; leaveHandler(ev); }
       return;
     }
     if (event === 'pointermove') {
-      if (res.wordKey === lastWordKey) return;
-      lastWordKey = res.wordKey;
+      /* at letter level, moving between two letters of one word is a change */
+      const k = level === 'letter' && res.letter ? res.letter.key : res.wordKey;
+      if (k === lastWordKey) return;
+      lastWordKey = k;
     }
     handler(level === 'ayah' ? { ...res, ayah: page.ayah(res.ayahKey) } : res, ev);
   };

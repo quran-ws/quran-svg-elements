@@ -2,28 +2,57 @@
 
 <img src=".github/banner.svg" alt="Quran SVG Elements — Pages & Assets, Beta" width="820">
 
-**Fully decomposed Mushaf pages where words, marks, and other page elements can be addressed programmatically.**
+**Fully decomposed Mushaf pages where words, letters, marks, and other page elements can be addressed programmatically.**
 
 <a href="https://quran.ws/blocks/quran-svg-elements"><img alt="See it work" src="https://img.shields.io/badge/See_it_work-15705D?style=for-the-badge&labelColor=102F29"></a>
 <a href="https://quran.ws/docs/reference/quran-svg-elements"><img alt="Documentation" src="https://img.shields.io/badge/Documentation-102F29?style=for-the-badge&labelColor=102F29"></a>
 
 </div>
 
-Use it when your application needs interaction at word or mark level, such as recitation highlighting, learning tools, word-level audio, meanings, or linguistic data.
+Use it when your application needs interaction at word, letter or mark level, such as recitation highlighting, learning tools, word-level audio, meanings, or linguistic data.
 
-> صفحات مصحف مفصّلة إلى عناصر يمكن الوصول إليها برمجيًا، من الكلمات إلى العلامات الدقيقة داخل الصفحة.
+> صفحات مصحف مفصّلة إلى عناصر يمكن الوصول إليها برمجيًا، من الكلمات والحروف إلى العلامات الدقيقة داخل الصفحة.
 >
-> استخدمها عندما تحتاج التفاعل على مستوى الكلمة أو العلامة، مثل التظليل أثناء التلاوة، والتعليم، وربط الكلمات بالصوت أو المعاني أو البيانات اللغوية.
+> استخدمها عندما تحتاج التفاعل على مستوى الكلمة أو الحرف أو العلامة، مثل التظليل أثناء التلاوة، والتعليم، وربط الكلمات بالصوت أو المعاني أو البيانات اللغوية.
 
 | | |
 |---|---|
-| **Words · marks** | 77,432 · 436,398 |
-| **Split so far** | Hafs (KFGQPC) |
+| **Split into** | lines · ayahs · words · letters · marks |
+| **Split so far** | Hafs (KFGQPC), 604 pages |
 | **Licence** | CC BY 4.0 (the work) · KFGQPC terms (the artwork) |
 
+## Two bundles
+
+A release holds the same pages twice, from one build. Choose by what your
+application addresses.
+
+| | archive | what it holds |
+|---|---|---|
+| **Words** | `quran-svg-elements-hafs-kfgqpc-words.tar.gz` | every word as one group, with its marks. The page shape of v1.1.2 with one attribute added (`data-w`). |
+| **Letters** | `quran-svg-elements-hafs-kfgqpc-letters.tar.gz` | the same pages with every word divided into its letters: one `<g class="letter">` per letter, holding its own ink and its own marks. |
+
 ```sh
-gh release download v1.0.0 -R quran-ws/quran-svg-elements
+gh release download v2.0.0 -R quran-ws/quran-svg-elements -p '*-words.tar.gz*'
+gh release download v2.0.0 -R quran-ws/quran-svg-elements -p '*-letters.tar.gz*'
 ```
+
+Both bundles draw the same ink: the letter pages are checked against the word
+pages for ink lost, added or shared between two letters. In the letter bundle a
+word's paths sit inside its letter groups, so select them with `g.word path`,
+not `g.word > path`. The format is specified in `schema/FORMAT.md` inside each
+bundle.
+
+The division into letters comes from DigitalKhatt's
+[medinamushafanalyzer](https://github.com/DigitalKhatt/medinamushafanalyzer)
+(MIT licence), joined onto these words. See `NOTICE.md`.
+
+## Thanks
+
+With gratitude to **Dr. Amine Anane** of [DigitalKhatt](https://digitalkhatt.org).
+His [medinamushafanalyzer](https://github.com/DigitalKhatt/medinamushafanalyzer)
+is what enabled us to provide the letter segmentation.
+
+> جزاه الله خير الجزاء، وجعل هذا العمل في ميزان حسناته.
 
 ## On the CDN
 
@@ -31,10 +60,16 @@ Releases are mirrored to `cdn.quran.ws` under immutable, versioned URLs, so an
 application can fetch one page over HTTPS without downloading the whole release:
 
 ```
-https://cdn.quran.ws/svg/elements/v1.1.1/manifest.json
-https://cdn.quran.ws/svg/elements/v1.1.1/pages/001.svg
-https://cdn.quran.ws/svg/elements/v1.1.1/index/by-page/001.json
+https://cdn.quran.ws/svg/elements/v2.0.0/manifest.json
+https://cdn.quran.ws/svg/elements/v2.0.0/words/manifest.json
+https://cdn.quran.ws/svg/elements/v2.0.0/words/pages/001.svg
+https://cdn.quran.ws/svg/elements/v2.0.0/words/index/by-page/001.json
+https://cdn.quran.ws/svg/elements/v2.0.0/letters/pages/001.svg
 ```
+
+From v2.0.0 a version folder holds one folder per level, `words/` and
+`letters/`. Versions up to v1.1.2 are word pages directly under the version
+folder.
 
 A folder is written once and never rewritten, so every file is served
 `Cache-Control: immutable`. `manifest.json` lists each file with its size and

@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release tag to publish (e.g. v1.1.1)'
+        description: 'Release tag to publish (e.g. v2.0.0)'
         required: true
 
 jobs:
@@ -38,17 +38,24 @@ jobs:
           VERSION: ${{ inputs.version || github.event.release.tag_name }}
         run: |
           base="https://cdn.quran.ws/svg/elements/$VERSION"
-          curl -fsS "$base/manifest.json" -o /tmp/m.json
+          curl -fsS "$base/manifest.json" -o /tmp/v.json
 
-          # a page: CORS must be present, and the bytes must match the manifest digest.
+          # a page of each level: CORS must be present, and the bytes must match the manifest digest.
           # The Origin header is required — R2 only emits the CORS headers in response to one.
-          curl -fsS --compressed -H 'Origin: https://example.com' -o /tmp/p.svg -D /tmp/h "$base/pages/001.svg"
-          grep -qi '^access-control-allow-origin' /tmp/h || { echo "no CORS header"; exit 1; }
-          want=$(jq -r '.files[]|select(.name=="pages/001.svg")|.sha256' /tmp/m.json)
-          got=$(sha256sum /tmp/p.svg | cut -d' ' -f1)
-          [ "$want" = "$got" ] || { echo "pages/001.svg digest mismatch"; exit 1; }
+          n=0
+          for level in $(jq -r '.levels|keys[]' /tmp/v.json); do
+            curl -fsS "$base/$level/manifest.json" -o /tmp/m.json
+            [ "$(jq -r .level /tmp/m.json)" = "$level" ] || { echo "$level manifest names another level"; exit 1; }
+            curl -fsS --compressed -H 'Origin: https://example.com' -o /tmp/p.svg -D /tmp/h "$base/$level/pages/001.svg"
+            grep -qi '^access-control-allow-origin' /tmp/h || { echo "no CORS header"; exit 1; }
+            want=$(jq -r '.files[]|select(.name=="pages/001.svg")|.sha256' /tmp/m.json)
+            got=$(sha256sum /tmp/p.svg | cut -d' ' -f1)
+            [ "$want" = "$got" ] || { echo "$level/pages/001.svg digest mismatch"; exit 1; }
+            n=$((n + $(jq '.files|length' /tmp/m.json)))
+          done
+          [ "$(jq -r '.levels|keys|join(" ")' /tmp/v.json)" = "letters words" ] || { echo "expected the levels words and letters"; exit 1; }
 
           got=$(curl -fsS "https://cdn.quran.ws/svg/elements/latest.json" | jq -r .version)
           [ "$got" = "$VERSION" ] || { echo "latest.json names '$got', expected '$VERSION'"; exit 1; }
 
-          echo "$(jq '.files|length' /tmp/m.json) objects, digest and latest all ok"
+          echo "$n objects, digest and latest all ok"

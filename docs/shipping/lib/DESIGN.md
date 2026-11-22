@@ -49,7 +49,7 @@ like `rasm_uthmani` names the attribute `data-rasm-uthmani`, whose key is
 
 ```
 core.mjs        MushafPage — load, identity, metadata, text, search,
-                highlight, hit-test, marks, theme, markers, crop
+                highlight, hit-test, marks, theme, markers, crop, letters
 layout.mjs      line gap, fit-to-viewport
 selection.mjs   the transparent text layer (drag-select + copy)
 memorize.mjs    masking / progressive reveal
@@ -186,6 +186,46 @@ fragments across several lines.
   gaps wrong systematically, always in the same direction.
 - `page.onTap(handler, {level:'word'|'ayah', halo, maxDistance})` — one delegated listener,
   returns a disposer. Gap-aware: handler is called with the word the user *meant*.
+
+### Letters — one level deeper, and only where the file has them
+
+The letter bundle (schema 2.0.0, FORMAT §6.9) puts one `g.letter` per letter inside every
+word, each with its body ink and its own marks. Four decisions:
+
+- **The page says which level it is; a version never does.** `page.hasLetters` reads
+  `data-decomposition="letter"` or the presence of `g.letter`. A version number would be
+  wrong the day a word bundle and a letter bundle ship under one version — which is what
+  v2.0.0 does.
+- **The word API does not change, it reaches one level deeper.** Nothing selected `g.word >
+  path`; everything already walked `g.word path`, so words, boxes, highlights, crops,
+  masks and the hit layer read a letter page unchanged. The one selector that did change
+  is `page.marks()`: `path[data-kind="mark"]` became `path[data-mark]`, because on a letter
+  page the dagger alif drawn as a letter and the two fused hamzahs are a *body* that is also
+  a named mark. On every word page the two selectors pick the same 436,627 paths. The suite
+  proves the rest by running the word API on both levels of one page and comparing.
+- **Fail soft on a word page.** `word.letters()` is `[]`, `letter()` / `letterAt()` /
+  `letterHitTest()` are `null`, a letter highlight paints nothing (`count: 0`). A reader that
+  offers letters on letter pages and words elsewhere needs one `if (page.hasLetters)`, not a
+  `try`.
+- **A letter is found by its ink, not its box.** Joined letters' boxes overlap on nearly
+  every join, and a word's tail runs under its neighbour's box, so `letterHitTest` asks
+  `isPointInFill` of the letter paths of every word whose box holds the point before it
+  falls back to the nearest box. Where the ink belongs to the neighbouring word, the
+  pointer result names that word too.
+
+The letter is addressed by word key plus `data-index` (its place in the word) or plus
+`data-at` (its code-point offset in the word's `qpc` text, which is also how a mark points
+at its character). `letter.key` (`wordKey/index`) is a label for the caller's maps; the
+files carry no letter key and the library does not pretend one is stable across
+segmentations.
+
+### Loading a published version
+
+`createLoader({root, version, level})` reads the version's `manifest.json` once: with
+`levels`, the pages of a level are under `{version}/{level}/`; without, the version is word
+pages directly under its folder (every release up to v1.1.2). That decision is the
+manifest's, not a version comparison, so a v1.x patch or a v3 with a third level needs no
+code. Asking a word-only version for letters throws, naming what it has.
 
 ### Marks
 
@@ -415,8 +455,10 @@ Five decisions worth the words:
   README, no API.
 - **Anything keyed on `data-element-id` / `data-sig`.** Explicitly not stable, explicitly not an
   identity.
-- **A word-level polygon or letter API.** There is no letter segmentation and the ligature
-  layer is not one (FORMAT §10.3); an API implying otherwise would be a lie.
+- **A word-level polygon API.** The ligature layer is not a letter segmentation (FORMAT
+  §10.3). The letter API this list once refused here exists now because the letter bundle
+  (schema 2.0.0) does segment — see *Letters* above — and it addresses only what those
+  files carry: no letter on a word page, no letter built from ligatures.
 - **A built-in translation store.** The demo's gloss join is `data-word-key` → your JSON. The
   library has no opinion about whose translation it is, and shipping one would be a
   licensing question, not a technical one.
