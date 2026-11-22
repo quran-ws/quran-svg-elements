@@ -18,6 +18,11 @@
 #   svg/elements/v2.0.0/letters/pages/001.svg
 #
 # (Versions up to v1.1.2 were word pages only, directly under the version folder.)
+# A reader that still builds the old path under a v2+ version is redirected to the word pages
+# by two Redirect Rules on the quran.ws zone in Cloudflare (not in this repository):
+#   /svg/elements/<v2+>/pages/*  ->  /svg/elements/<v>/words/pages/*
+#   /svg/elements/<v2+>/index/*  ->  /svg/elements/<v>/words/index/*
+# They skip v0.* and v1.*, and any path that already contains /words/ or /letters/.
 #
 # Pages go up one object each, because a reader wants page 42 and not 108 MB. They are stored
 # raw: a Compression Rule on cdn.quran.ws negotiates zstd, brotli or gzip per client, which
