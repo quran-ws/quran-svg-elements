@@ -16,6 +16,7 @@ Everything in this bundle that this project authored:
 | | |
 |---|---|
 | the decomposition of each page into ayah, word, ligature and labelled mark | `pages/` — the structure and every `data-` attribute |
+| in the letter bundle, the assignment of every letter's ink and marks to its letter | `pages/` — the `<g class="letter">` groups; where the cuts come from is stated below |
 | the derived indexes | `index/` — words, per-page sidecars, divisions, surahs, pages, mark taxonomy |
 | the schemas and the format specification | `schema/` |
 | provenance and integrity | `VERSION.json`, `CHECKSUMS.txt` |
@@ -99,6 +100,23 @@ work is DigitalKhatt's. We make no claim about what their terms permit and
 grant no right in them: if you intend to redistribute these two files, or a
 work derived from them rather than from our structure, establish your own
 position with DigitalKhatt and with QUL first.
+
+### The letter layer and the DigitalKhatt analyzer
+
+In the letter bundle, the place where a joined stroke is divided between two
+letters is **not our measurement**. It is the output of
+[DigitalKhatt/medinamushafanalyzer](https://github.com/DigitalKhatt/medinamushafanalyzer)
+at commit `056191f`, the work of DigitalKhatt (Amine Anane), published under
+the MIT licence, Copyright (c) 2023-2026 Digitalkhatt, and used here with the
+author's agreement. We ran the analyzer and joined its letters onto this
+project's words, text and marks. The join, and what it adds where the analyzer
+left ink undivided or unplaced, is ours and is listed in `schema/FORMAT.md`
+§6.9. The credit for the letter division is theirs:
+
+    Letter division by DigitalKhatt medinamushafanalyzer (commit 056191f),
+    MIT licence. https://github.com/DigitalKhatt/medinamushafanalyzer
+
+If you republish the letter bundle, please carry that line next to ours.
 
 ## Names, logos and marks
 

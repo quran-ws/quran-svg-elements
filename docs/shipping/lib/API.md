@@ -50,17 +50,44 @@ two callers can never disturb each other.
 | `fetch` | `globalThis.fetch` | inject your own |
 | `cache` | `true` | |
 | `stripPolygons` | `true` | drop the dev-only `path.ayahPolygon` layer (§5.3 of FORMAT: different frame, sits on top, swallows pointer events) |
-| `words` | `null` | also fetch and attach the page's text sidecar `index/by-page/NNN.json` (FORMAT §6.1). `true` → `baseUrl + '../index/by-page/'`; a string → that base; a function → `n => url`. A production page has only `data-rasm-uthmani` inline, so `search()` and the other four forms need this. A sidecar that fails to fetch throws. |
+| `words` | `null` | also fetch and attach the page's text sidecar `index/by-page/NNN.json` (FORMAT §6.1). `true` → `baseUrl + '../index/by-page/'` (or the release's `index/by-page/` with `version`); a string → that base; a function → `n => url`. A production page has only `data-rasm-uthmani` inline, so `search()` and the other four forms need this. A sidecar that fails to fetch throws. |
+| `root` | – | with `version`: the folder that holds the version folders, e.g. `'https://cdn.quran.ws/svg/elements/'` |
+| `version` | – | `'v1.1.2'`, `'v2.0.0'`, … or `'latest'`. When given, the page base is read off the published manifests ([`resolveRelease`](#resolvereleaseroot-version-level-fetch--promiserelease)) and `baseUrl` is ignored |
+| `level` | `'words'` | `'words'` \| `'letters'`, with `version` |
 
 ```js
 const load = createLoader({ baseUrl: '/quran/pages/', words: true });
 const page = await load(42);            // page.search() works: the sidecar is attached
+
+// the published layout, from the manifests
+const loadL = createLoader({ root: 'https://cdn.quran.ws/svg/elements/', version: 'latest',
+                             level: 'letters', words: true });
+(await loadL(42)).hasLetters;           // true once the version publishes letters
+await loadL.release();                  // {version, level, layout, base, pages, index, manifest, levels}
 ```
+
+`load.release()` → the resolved release record, or `null` for a plain `baseUrl` loader.
+
+### `resolveRelease({root, version, level, fetch})` → `Promise<Release>`
+
+Where a published version keeps a level's pages. **The version's own `manifest.json`
+decides, not the version number:**
+
+| the manifest | layout | pages are at |
+|---|---|---|
+| names `levels` (v2.0.0 on) | `'levels'` | `levels[level].base + 'pages/'` — `{v}/words/pages/…`, `{v}/letters/pages/…` |
+| has no `levels` (up to v1.1.2) | `'flat'` | `{v}/pages/…` — word pages only |
+
+`version: 'latest'` reads `root/latest.json` (`{version, manifest, updated}`) and follows
+its `manifest`. Returns `{version, level, layout, base, pages, index, manifest, levels}`.
+**Throws** — naming what the version does have — for `letters` on a word-only version, or
+for a level the manifest does not list: serving words when letters were asked for would
+hide the mistake.
 
 ### `page.attachWords(sidecar)` → `number`
 
 Attach `index/by-page/NNN.json` by hand (the object, its `words` array, or a
-wordKey-keyed object / `Map`). Returns the record count. Carried by `clone()`. After
+wordKey-keyed object / `Map`). Records are keyed by `word_key`, as the shipped sidecar spells it, or `wordKey`. Returns the record count. Carried by `clone()`. After
 this, `word.form()`, `word.text`, `page.text()` and `page.search()` read the four
 derived forms from it; an inline attribute (dev profile) always wins.
 
@@ -96,7 +123,20 @@ The `<svg>` element.
 The page number, if one was supplied. `null` for a wrapped element.
 
 ### `page.profile` → `'dev' | 'production'`
-Detected by whether `g.ligature` is present. The files do not announce it.
+Detected by whether `g.ligature` is present — or, on a letter page, which has no ligature
+layer in either profile, the dev-only `data-element-id`. The files do not announce it.
+
+### `page.decomposition` → `'word' | 'letter' | 'ayah' | null`
+How deep the file goes, from the root's `data-decomposition` (FORMAT §6.6). A file without
+the attribute answers by what it holds.
+
+### `page.hasLetters` → `boolean`
+`true` on a letter page (schema 2.0.0: `data-decomposition="letter"`, or any `g.letter`).
+**Read off the page, never off a version string.** Check it before offering letter-level
+interaction; every [letter method](#letters) is safe to call either way.
+
+### `page.letterCount` → `number`
+Letter groups on the page. `0` on a word page.
 
 ### `page.viewBox` → `{x, y, w, h}`
 **Read off the file.** Never assume `0 0 345 550` — pages 1 and 2 are
@@ -206,8 +246,105 @@ lines that hold no words), `box()`.
 
 ### `page.wordCount`
 
+### `word.paths()` → `Element[]`
+Every path of the word **at any depth**. On a letter page a word's ink is one level down,
+inside its `g.letter` groups, so `g.word > path` finds only its word-level marks there —
+select `g.word path`, or call this.
+
 ### `page.resolve(target)` → `Word[]`
 The resolver every other method uses. Useful for building your own helpers.
+
+---
+
+## Letters
+
+*Letter pages only (the letter bundle, schema 2.0.0 — FORMAT §6.9, limits in §10.10).*
+**On a word page every call here fails soft** — a list comes back `[]`, a lookup `null`,
+a paint has `count: 0` — and nothing throws. Use [`page.hasLetters`](#pagehasletters--boolean)
+to decide what to offer.
+
+```js
+const page = await createLoader({ baseUrl: 'letters/pages/', words: true })(3);
+const w = page.word('2:6:2');
+w.letters().map(l => [l.index, l.text, l.at, l.qpc, l.markNames()]);
+page.highlight(w.letter(1), { fill: '#15705d' });          // one letter, its marks with it
+page.onTap(r => console.log(r.letter?.key, r.letter?.text), { level: 'letter' });
+```
+
+### `word.letters()` → `Letter[]`
+The word's letters in reading order (`data-index`). `[]` on a word page.
+
+### `word.letter(index)` · `page.letter(wordKey, index)` → `Letter | null`
+One letter by its 0-based place in the word.
+
+### `word.letterAt(offset)` · `page.letterAt(wordKey, offset)` → `Letter | null`
+The letter that draws code point `offset` of the word's `qpc` text: the group whose
+`data-at` is `offset`, else the letter holding a mark path with that `data-at` (a mark's
+`data-at` is its own character). `null` for a word-level mark and for an offset nothing
+draws.
+
+### `word.wordMarks()` → `Element[]`
+The word's marks that belong to **no single letter** — on a letter page the mark paths
+left as direct children of the word group (and, in this release, the hizb rosette's
+`g.division-mark`, which the letter bundle puts inside the ayah's first word). `[]` on a
+word page.
+
+### `page.letters(target)` → `Letter[]`
+Every letter of any [`target`](#pageresolvetarget), word by word.
+
+### `page.letterOf(node)` → `Letter | null`
+The letter a `g.letter` element, or any node inside one, belongs to.
+
+### `Letter`
+
+| | |
+|---|---|
+| `el` | the `<g class="letter">` |
+| `word` | its `Word`; also `wordKey`, `ayahKey`, `line` |
+| `index` | `data-index`, 0-based, reading order |
+| `text` | `data-text`: the letter as the word's text writes it |
+| `at` | `data-at`: the code-point offset into the word's `qpc` form (`null` if absent) |
+| `qpc` | the character at `at` in the word's `qpc` text — needs the sidecar on a production page; `null` without it |
+| `key` | `'wordKey/index'`, unique on the page. A label; the files carry no such key |
+| `paths()` | every path: body, then marks as the file has them |
+| `body()` | the `data-kind="body"` paths — a whole contour, or a piece cut from one |
+| `isCut` | whether a body piece carries `data-cut="1"` |
+| `marks()` | the letter's named marks (`path[data-mark]`) **in `data-at` order** — the file's order is the order the ink was found. Includes a body that is also a mark (the dagger alif drawn as a letter, the two fused hamzahs) |
+| `markNames()` | their `data-mark` names, same order |
+| `box()` | bounding box in viewBox units, marks included |
+
+### `page.letterHitTest(x, y, {space, maxDistance, gapBias, word})` → result | `null`
+
+Which letter is at this point. The word first — through [`hitTest`](#pagehittestx-y-options--word-wordkey-ayahkey-line-distance-exact--null),
+so `space`, `maxDistance` and `gapBias` mean what they mean there, or `word` when you
+already know it — then **the letter whose ink is under the point** (`isPointInFill` on its
+paths, checked in every word whose box holds the point, because word boxes overlap where a
+tail runs under the next word), else the nearest letter box in that word. Letter boxes
+overlap on almost every join, so a box test alone would be wrong.
+
+Returns `{letter, word, wordKey, index, at, ayahKey, line, distance, exact}`; `exact` is
+true only on the ink. `null` on a word page or when no word is within `maxDistance`.
+
+### Highlighting a letter
+
+`page.highlight(target)` and `page.band(target)` take letters too: a `Letter`, a
+`g.letter` element, `{wordKey, letter: i}`, `{wordKey, at: n}`, or an array. The letter's
+marks are inside its group, so they come with it. A letter target on a word page resolves
+to nothing (`count: 0`).
+
+```js
+const h = page.highlight({ wordKey: '2:6:2', letter: 1 }, { fill: '#15705d' });
+h.remove();
+```
+
+### Pointing at letters
+
+`page.onTap(handler, {level: 'letter'})`, and `onWordHover` / `onWordClick` with
+`{level: 'letter'}`, add `letter` (a `Letter` or `null`) and `letterHit` (the
+`letterHitTest` result) to the result. Where the ink under the point belongs to the
+neighbouring word, `word` / `wordKey` name that word, so the two never disagree
+(`letterResult(res, hit)` does the carrying). On a word page `letter` is `null` and the
+word result fires as at word level. Hover fires once per letter entered.
 
 ---
 
@@ -376,6 +513,11 @@ registry**, to `data-mark` names — never through the `data-mark-family` attrib
 which does not match `FORMAT.md` in the current build (see [Traps](#traps)).
 
 ### `page.marks(selector)` → `Element[]`
+
+Selects `path[data-mark]`. On a word page that is exactly the `data-kind="mark"` paths; on
+a letter page it also takes the letter bodies that are named marks (FORMAT §6.9), so the
+count is the same on both levels of a release.
+
 `{name, family, category, wordKey, ayah, line}`. `name` may be a string or an array.
 
 Families: `dots`, `waqf`, `tanwin`, `sifr`, `sajdah`, `reading_sign`, plus the
@@ -1120,6 +1262,25 @@ conformance: every marker cuts into at least one layer, every command is absolut
 
 Measured, not asserted loosely: the layer's ink boxes sit on the ink to **0.005 px**
 across 147 words, and to **0.002 px** after a resize.
+
+**The letter layer (§24).** Run with `?letters=<letter pages/>` beside `?pages=<word
+pages/>` of the **same release**, and `?profile=production` for shipped pages. On pages 1, 3,
+42, 552 (the densest letter page, 717 letters) and 604 (`?letterPages=` to change them):
+letter counts against the sidecar, word by word; every letter addressable by index and by
+`data-at`, and every mark's `data-at` finding the letter that holds it; letters plus
+word-level marks holding every path of the word exactly once; a point on each sampled
+letter's own ink hit-testing back to it, `exact`; one letter highlighted, banded and
+restored; a click through `onTap` and through the hit layer naming the letter. And the
+word API on the two levels of one page: the same words, ayahs, lines and five text forms,
+the same `marks()` counts, word boxes within 0.05 units, and the same word under every
+word centre. A word page answering every letter call with empty / null and no throw; the
+loader resolving both CDN layouts from stub manifests.
+
+The comparison found one real difference between the two bundles of v2.0.0, and the
+suite states it rather than hiding it (24.15b): where a hizb rosette is drawn, the letter
+bundle puts its `g.division-mark` **inside** the ayah's first word and writes U+06DE and a
+no-break space at the front of that word's text forms; the word bundle keeps the rosette
+beside the word and the text without the sign. 199 words corpus-wide.
 
 **Not covered:** the OS clipboard handoff. The headless environment has no system
 clipboard (a plain two-textarea control fails identically), so the tests assert the

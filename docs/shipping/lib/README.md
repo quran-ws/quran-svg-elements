@@ -37,6 +37,31 @@ Without modules, use the `<script>` build — same API on one global:
 </script>
 ```
 
+### Words or letters
+
+From v2.0.0 every page is published at two levels: **word** pages, and **letter** pages
+where each word also holds one `<g class="letter">` per letter (FORMAT §6.9). The same
+code reads both. Pick the level when you load, and ask the page what it is:
+
+```js
+import { createLoader } from './lib/mushaf.mjs';
+const load = createLoader({ root: 'https://cdn.quran.ws/svg/elements/', version: 'latest',
+                            level: 'letters', words: true });   // reads the version's manifest
+const page = await load(3);
+if (page.hasLetters) {
+  const l = page.word('2:6:2').letter(1);          // or page.letterAt('2:6:2', offset)
+  page.highlight(l);                               // the letter and its marks
+  page.onTap(r => console.log(r.letter?.text, r.letter?.markNames()), { level: 'letter' });
+}
+```
+
+The level comes from the page (`data-decomposition`, or `g.letter` present), never from a
+version number, and the loader reads the folder layout off the version's `manifest.json`
+(`levels` from v2.0.0; word pages directly under the version up to v1.1.2). On a word
+page every letter call returns `[]` or `null`. One thing changes for code that walks the
+DOM itself: a letter page's ink is one level deeper, so select `g.word path`, never
+`g.word > path`.
+
 ## What is in here
 
 | file | |
@@ -115,6 +140,8 @@ works without it.
 ## Tested
 
 357 assertions in a real browser (Chromium via Playwright) against real pages —
-1, 42, 48, 176, 582, 604 — plus a genuine mouse drag, Ctrl+C, hover, a click in a
+1, 42, 48, 176, 582, 604 — and, given the letter pages of the same release, 140 more on
+the letter layer and on the word API agreeing across the two levels (pages 1, 3, 42, 552,
+604) — plus a genuine mouse drag, Ctrl+C, hover, a click in a
 6.96 px gap, and a window resize. Zero console errors. See the final section of
 [`API.md`](API.md#testing) for what is and is not covered.

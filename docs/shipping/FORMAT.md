@@ -1,18 +1,37 @@
 # Format specification — Quran page SVGs, Hafs / KFGQPC Madani
 
-Edition id `hafs-kfgqpc` · 604 pages · 77,433 words · 6,236 ayahs · 114 surahs.
-(77,433, not the usual 77,432: the print writes 37:130 as two words, `إِلْ` and
-`يَاسِينَ` — `docs/MAQTU-MAWSUL.md`. Older counts of 77,432 in this document
-are that one word short.)
+Edition id `hafs-kfgqpc` · 604 pages · 77,432 words · 6,236 ayahs · 114 surahs.
+(37:130 is four words: the print writes `إِلْ` and `يَاسِينَ` apart —
+`docs/MAQTU-MAWSUL.md`. The count of 77,432 includes that.)
 Artwork: the **KFGQPC Madani mushaf, V4 1441H print**.
 
 This document ships with the files. Everything in it was verified against the
-real build; every count is a measurement over all 604 emitted pages, not an
-estimate. Where the files are inconsistent, this document says so (§10) rather
+real build. Where the files are inconsistent, this document says so (§10) rather
 than describing an ideal that does not exist.
 
-> **Status.** Build of **2026-09-04**. Two profiles exist (§2); every
-> statement below says which one it applies to when they differ.
+> **Status.** Build of **2026-11-22**, release **2.0.0**. It is published as
+> **two bundles, side by side**: the **word bundle** (schema 1.0.0), whose pages
+> are what this document described until now, and the **letter bundle**
+> (schema 2.0.0), whose pages also divide every word into its letters
+> (§6.9). A page says which it is in `data-decomposition` on its root (§6.6):
+> `word` or `letter`. Two profiles exist (§2); every statement below says
+> which bundle or profile it applies to when they differ.
+>
+> **New in this build.** The letter bundle: inside every `<g class="word">`
+> one `<g class="letter">` per letter, with `data-index`, `data-text` and
+> `data-at`, holding the letter's own ink and marks; cut outlines carry
+> `data-cut="1"` (§6.5, §6.9, limits in §10.10). The division of joined
+> strokes into letters is the output of **DigitalKhatt's
+> medinamushafanalyzer** (commit `056191f`, MIT), joined onto this project's
+> words; `NOTICE.md` carries the credit. It is a **breaking** change for a
+> reader that selects `g.word > path`, which is why it is a separate bundle
+> with a new major version. In **both** bundles: every word group carries
+> `data-w` again (§6.1), and the word source is the quran-text release (§6.1).
+> Corrected: `data-element-id` and `data-sig` are **dev-profile only**; the
+> production pages carry neither (§6.5).
+>
+> This document carries no build counts; the counts of a release are in its
+> release notes.
 >
 > Changes since the 2026-08-30 revision (see `FORMAT-CHANGES.md`): every page
 > now uses `viewBox="0 0 345 550"` (§5.1); no `<path>` carries a `transform`
@@ -21,13 +40,14 @@ than describing an ideal that does not exist.
 > absolute movetos are written to three decimals; the word and ayah keys are
 > spelled out as `data-word-key` and `data-ayah-key` (they were `data-word-key` /
 > `data-aid`), and `data-word-key` is now the ONLY word key — the cross-mushaf
-> `data-w` is gone (§6.1); and **the production profile carries
-> `data-word-key` and `data-rasm-uthmani` only** on a word group — the other four
+> `data-w` was withdrawn (it is back from release 2.0.0, §6.1); and **the
+> production profile carries `data-word-key`, `data-w` and `data-rasm-uthmani`
+> only** on a word group — the other four
 > text forms ship once, in `index/by-page/NNN.json` (§6.1).
 >
 > Changes in the 2026-08-30 revision: `data-search` added; ayah fragments and
 > medallions linked by `id` / `data-mark`; medallion labels rebound by
-> position; 58 misfiled words returned to their printed line; the four missing
+> position; misfiled words returned to their printed line; the missing
 > surah banners restored; the production profile introduced.
 
 ---
@@ -37,8 +57,8 @@ than describing an ideal that does not exist.
 Each file is one printed page of the mushaf, as **vector outlines**, with the
 ink semantically decomposed:
 
-- every **word** is exactly one `<g class="word">` — 77,433 groups, 77,433
-  distinct `data-word-key`, **no duplicates anywhere in the corpus**;
+- every **word** is exactly one `<g class="word">` — one group per word,
+  every `data-word-key` distinct, **no duplicates anywhere in the corpus**;
 - every **letter shape** is a `<path data-kind="body">`;
 - every **diacritic and sign** is a `<path data-kind="mark" data-mark="…">`
   drawn from a closed vocabulary of 35 emitted names (§8).
@@ -52,9 +72,10 @@ decomposition regroups ink, it never moves or redraws it.
   text selection and copy of the Quranic text **do not work**. Search goes
   through `data-search` on the word groups (§6.1), or through a companion
   index built from them.
-- **There is no letter-level decomposition.** The `<g class="ligature">`
-  grouping is a *rendering run*, not a spelling. It is not a reliable letter
-  segmentation — see §10.3 — and it is not in the production profile at all.
+- **The word bundle has no letter-level decomposition.** The letter bundle
+  does (§6.9). In either, the dev profile's `<g class="ligature">` grouping is
+  a *rendering run*, not a spelling. It is not a letter segmentation — see
+  §10.3 — and it is not in the production profile at all.
 - **No audio, no translation, no tafsir, no word timings.**
 
 ---
@@ -69,18 +90,16 @@ are, so **tell them apart by whether `<g class="ligature">` is present**.
 |---|---|---|
 | `<g class="word">` per word | 1 | 1 |
 | marks as their own `<path data-mark>` | yes | yes |
-| `<g class="ligature">` inside a word | **yes** — 156,707 groups | **dropped** |
-| `<path class="ayahPolygon">` | **yes** — 6,236 | **dropped** |
+| `<g class="ligature">` inside a word | **yes** | **dropped** |
+| `<path class="ayahPolygon">` | **yes** — one per ayah | **dropped** |
 | `data-rasm`, `data-rasm-imlai`, `data-search`, `data-qpc` on a word | **yes** | **dropped** — read them from `index/by-page/NNN.json` (§6.1) |
-| `data-element-id`, `data-sig`, `data-mark-family` | yes | yes |
+| `data-mark-family` | yes | yes |
+| `data-element-id`, `data-sig` | yes | **dropped** |
 | everything else in this document | identical | identical |
 
-**The two render identically.** Measured on page 3: 758,232 bytes dev vs
-744,103 bytes production, with all 127 words, all 698 marks and all 988 ink
-paths present in both, and a raster diff of the two showing no difference.
-Corpus-wide the production profile is 449.3 MiB raw / 109.8 MiB gzip / 69.6 MiB
-brotli, against 456.7 / 111.0 / 70.2 MiB for dev — **1.6% smaller raw, 0.9%
-smaller brotli.** Size is not the reason for the split; semantics is.
+**The two render identically.** Measured on page 3: all words, all marks and
+all ink paths are present in both, and a raster diff of the two shows no
+difference. Size is not the reason for the split; semantics is.
 
 ```js
 // which profile is this file?
@@ -91,12 +110,12 @@ const isDev = doc.querySelector('g.ligature') !== null;
 
 **The ligature layer.** It is a dev instrument: an empty `<g class="ligature">`
 is how a stolen letter is detected. It is *not* a spelling of the word (§10.3),
-so a consumer that treats it as one gets 156 words wrong. The word's text of
+so a consumer that treats it as one gets words wrong. The word's text of
 record is `data-rasm-uthmani` on the `<g class="word">`, present in both profiles.
 
 **The four derived text forms.** `data-rasm`, `data-rasm-imlai`, `data-search` and
 `data-qpc` are a text index, not geometry: they never vary per instance, and
-repeating them on all 77,432 word groups cost about 3% of every page. In
+repeating them on every word group made every page larger. In
 production they ship once, in `index/by-page/NNN.json` (every word, all five
 forms, line and box) and `index/words.json` (the search key). The dev profile
 keeps them inline because it is the review instrument.
@@ -106,9 +125,8 @@ click-detection worked before there were word elements. Word level supersedes
 both, **and is exact where the polygon is not**: the polygon is a rectangular
 band cut on a straight vertical line, while the real boundary between two ayahs
 that share a printed line is jagged — letters interleave and marks overhang.
-Measured over six sample pages, **8 of 6,243 elements (0.13%, about one in 750)
-have ink sitting inside a *neighbouring* ayah's polygon**, e.g. on page 3 a
-22.1 × 1.0 unit piece of ayah 2:8 lies inside 2:9's polygon. Highlighting from
+**Elements can have ink sitting inside a *neighbouring* ayah's polygon**: on
+page 3 a 22.1 × 1.0 unit piece of ayah 2:8 lies inside 2:9's polygon. Highlighting from
 polygons paints part of the wrong ayah or misses ink of its own. Highlighting
 from words cannot: **the ayah's ink *is* its words.**
 
@@ -237,20 +255,21 @@ A real fragment of `pages/003.svg`, `d=` values trimmed, dev profile:
 
 ### The groups, and what each one means
 
-| group | count (corpus) | meaning |
-|---|---:|---|
-| `<g id="ayah_markers">` | 604 | **all** ayah medallions of the page, in one layer, outside `#content`. |
-| `<g class="ayah-mark" id="mk-s-a">` | 6,236 | one medallion: an ornament ring path + a numeral path, one per ayah, every one with `id` + `data-ayah-key`. On pages 1–2 the artwork draws the ring twice; the copy is inside the same group as `data-duplicate="1"` (§9.2). |
-| `<g id="content">` | 604 | all page text. |
-| `<g class="line" data-line="N">` | 9,046 | one printed line. `N` is 1..15 (1..8 on pages 1–2). Its single child `<g transform="translate(…)">` carries the line's frame. **8,820 hold words; the other 226 are the header lines** (114 surah-name + 112 basmalah). |
-| `<g class="ayah-fragment" data-ayah-key="s:a">` | 13,489 | **one line's run of one ayah.** An ayah on three lines has three of these. Never treat one as "the ayah" — §7. |
-| `<g class="word" data-word-key="s:a:w">` | 77,433 | **one word. Globally unique. This is the anchor of the format.** |
-| `<g class="ligature" data-text="…">` | 156,707 | a joined run of letters, as a rendering unit. **Dev profile only.** See §10.3 for its limits. |
-| `<g class="surah-name" data-sid="N">` | 114 | the surah-name banner. One per surah, all 114 present. |
-| `<g class="basmalah" data-sid="N">` | 112 | the basmalah banner. Absent only for **surah 1** (its basmalah IS ayah 1:1) and **surah 9** (which has none). |
-| `<g class="sajdah-mark" data-mark="sajdah" data-ayah-key>` | 17 | the sajdah sign (۩) and its overline. 15 sites; two are split into two groups — §9.5. |
-| `<g class="division-mark" data-mark="hizb" …>` | 199 | a rubʿ / hizb / juz rosette (۞). 199 drawn for 240 boundaries — §9.6. |
-| `<path class="ayahPolygon">` | 6,236 | invisible legacy hit region per ayah, from the upstream artwork. **Dev profile only**, and **outside the page frame** — §5.3. Do not build on it; see §2. |
+| group | meaning |
+|---|---|
+| `<g id="ayah_markers">` | **all** ayah medallions of the page, in one layer, outside `#content`. |
+| `<g class="ayah-mark" id="mk-s-a">` | one medallion: an ornament ring path + a numeral path, one per ayah, every one with `id` + `data-ayah-key`. |
+| `<g id="content">` | all page text. |
+| `<g class="line" data-line="N">` | one printed line. `N` is 1..15 (1..8 on pages 1–2). Its single child `<g transform="translate(…)">` carries the line's frame. **A line holds words or is a header line** (surah-name or basmalah). |
+| `<g class="ayah-fragment" data-ayah-key="s:a">` | **one line's run of one ayah.** An ayah on three lines has three of these. Never treat one as "the ayah" — §7. |
+| `<g class="word" data-word-key="s:a:w">` | **one word. Globally unique. This is the anchor of the format.** |
+| `<g class="letter" data-index data-text data-at>` | **one letter** of a word, with its own body ink and marks. **Letter bundle only** — §6.9. |
+| `<g class="ligature" data-text="…">` | a joined run of letters, as a rendering unit. **Dev profile only.** See §10.3 for its limits. |
+| `<g class="surah-name" data-sid="N">` | the surah-name banner. One per surah, all 114 present. |
+| `<g class="basmalah" data-sid="N">` | the basmalah banner. Absent only for **surah 1** (its basmalah IS ayah 1:1) and **surah 9** (which has none). |
+| `<g class="sajdah-mark" data-mark="sajdah" data-ayah-key>` | the sajdah sign (۩) and its overline, one group per site — §9.5. |
+| `<g class="division-mark" data-mark="hizb" …>` | a rubʿ / hizb / juz rosette (۞). 199 drawn for 240 boundaries — §9.6. |
+| `<path class="ayahPolygon">` | invisible legacy hit region per ayah, from the upstream artwork. **Dev profile only**, and **outside the page frame** — §5.3. Do not build on it; see §2. |
 
 ### Nesting rules
 
@@ -266,8 +285,11 @@ svg
 │     └ g[transform]                 line frame
 │       ├ g.ayah-fragment[data-ayah-key][data-ayah-mark][data-fragment][data-ayah-fragments]
 │       │ └ g.word[data-word-key]
-│       │   └ g.ligature[data-text]  (dev profile only)
-│       │     └ path[data-kind]
+│       │   ├ g.ligature[data-text]  (word bundle, dev profile only)
+│       │   │ └ path[data-kind]
+│       │   ├ g.letter[data-index]   (letter bundle only, §6.9)
+│       │   │ └ path[data-kind]      the letter's body, then its marks
+│       │   └ path[data-kind=mark]   (letter bundle: a mark of the word, not of one letter)
 │       ├ g.surah-name | g.basmalah  → path[data-kind=header_ink] only
 │       ├ g.sajdah-mark              → path[data-mark=sajdah_mark|sajdah_line]
 │       └ g.division-mark                → path[data-mark=hizb]
@@ -287,7 +309,7 @@ svg
 | | pages 3–604 | pages 1–2 |
 |---|---|---|
 | `viewBox` | `0 0 345 550` | `0 0 345 550` |
-| page frame | `matrix(1.3333 0 0 -1.3333 -55 640)` on odd pages (301), `… -115 640)` on even (301) | `matrix(1.3333 0 0 -1.3333 -82.6891 680.4777)` |
+| page frame | `matrix(1.3333 0 0 -1.3333 -55 640)` on odd pages, `… -115 640)` on even | `matrix(1.3333 0 0 -1.3333 -82.6891 680.4777)` |
 | `<g class="line">` | 15 | 8 |
 
 **Every page uses the same viewBox** since 2026-09-04. The artwork draws the
@@ -306,9 +328,9 @@ The odd/even split means the same raw x is 60 units apart on recto and verso.
 ### 5.2 The line frame
 
 Each `<g class="line">` has exactly one child `<g transform="translate(x y)">`.
-On **600 of 604 pages every line shares the same translate**, so it looks
-redundant — but on **pages 1, 2, 17 and 144** the lines differ (2, 2, 15 and 15
-distinct translates respectively). Always compose
+On every page except **1, 2, 17 and 144** every line shares the same
+translate, so it looks redundant — but on those four pages the lines differ.
+Always compose
 `page frame × line frame`; never hoist the translate out.
 
 ```
@@ -316,7 +338,7 @@ distinct translates respectively). Always compose
 ```
 
 `tools/bundle_geom.py` (exact Bezier extents) and `tools/bundle_extract.py`
-are the reference implementation. **No `<path>` carries a `transform`**: the 72
+are the reference implementation. **No `<path>` carries a `transform`**: the
 ink paths on p17 and p144 that used to (ink regrouped from another source
 path's frame) now have the translation baked into their absolute movetos,
 which a raster diff proves pixel-identical. In a browser, `getBBox()` on a
@@ -325,12 +347,11 @@ which a raster diff proves pixel-identical. In a browser, `getBBox()` on a
 
 Absolute movetos are written to at most three decimals: the artwork's relative
 segments have three, so a contour's start is a three-decimal number plus float
-noise (at most 7.3e-12 over all 1.86 M contour starts), and the noise is not
-written.
+noise, and the noise is not written.
 
 ### 5.3 The `ayahPolygon` layer is in a different frame (dev profile only)
 
-The 6,236 `<path class="ayahPolygon">` are **siblings of the page frame**, not
+The `<path class="ayahPolygon">` elements are **siblings of the page frame**, not
 children of it. Their coordinates are plain, unflipped viewBox units. They also
 come last in document order, so they sit on top and swallow pointer events —
 set `pointer-events: none` on them, or remove them before calling `getBBox()`.
@@ -348,23 +369,24 @@ They use a second, legacy attribute vocabulary from the upstream artwork:
 
 ### 5.4 Reading order
 
-- **Words within a line are in reading order.** Verified: on **8,820 of 8,820
-  lines that hold words** the `data-word-key` sequence is strictly ascending.
+- **Words within a line are in reading order.** Verified: on **every line
+  that holds words** the `data-word-key` sequence is strictly ascending.
   Document order is reading order — right to left — and you should rely on it
   rather than on geometry (bounding boxes overlap, because a mark may
   legitimately be drawn over the neighbouring word: see §9.9).
 - **Lines are in document order 1..15**, top to bottom.
 - **Across line boundaries the sequence is now unbroken on all 604 pages.**
   Concatenating a page's words line by line gives the mushaf's own word order
-  exactly. (Until 2026-08-30, 58 words on 52 pages were emitted inside the
-  wrong `<g class="line">`; they are not any more.)
+  exactly. (Until 2026-08-30, words could be emitted inside the wrong
+  `<g class="line">`; none are any more.)
 - **Standalone signs sit in reading order around their ayah** (changed
   2026-08-31 — before that they came out wherever the ink pass reached them,
-  and 197 of the 199 rosettes were emitted *after* words of their own ayah).
+  and rosettes were emitted *after* words of their own ayah).
   A `g.division-mark` opens a division, so it is emitted immediately **before** the
-  first element of the ayah named by its `data-ayah-key`; a `g.sajdah-mark` closes
+  first element of the ayah named by its `data-ayah-key` (in the letter bundle,
+  as the first child of that ayah's first word — §9.6); a `g.sajdah-mark` closes
   its ayah, so it is emitted immediately **after** that ayah's last element.
-  Verified: 199 of 199 rosettes and 17 of 17 sajdah groups. On p309 the two
+  Verified for every rosette and every sajdah group. On p309 the two
   meet and read `…19:58 words · sajdah-mark 19:58 · division-mark 19:59 · 19:59
   words…`. A sign whose ayah has no ink in the same source-path wrapper is
   left where it was; there are none in this build.
@@ -373,36 +395,37 @@ They use a second, legacy attribute vocabulary from the upstream artwork:
   order — it is the artwork's own layer and is untouched. Reach a marker from
   its ayah through `data-mark` / `id="mk-S-A"` (§7), never by document
   position.
-- **Paths within a word are NOT ordered right to left.** Measured: only 15,102
-  of 77,432 words (19.5%) have their paths in descending x. Do not infer mark
-  order from document order inside a word; use the path geometry. §10.7.
+- **Paths within a word are NOT ordered right to left.** Most words do not
+  have their paths in descending x. Do not infer mark order from document
+  order inside a word; use the path geometry. §10.7.
 
 ---
 
 ## 6. Attribute reference
 
-Counts are over all 604 pages of the current build, both profiles unless noted.
+Attributes are in both profiles unless noted.
 
 ### 6.1 On `<g class="word">` — the key and the text of record; four more forms in the sidecar
 
 ```xml
 <!-- production -->
-<g class="word" data-word-key="2:6:2" data-rasm-uthmani="ٱلَّذِينَ">
+<g class="word" data-word-key="2:6:2" data-w="67" data-rasm-uthmani="ٱلَّذِينَ">
 <!-- dev -->
-<g class="word" data-word-key="2:6:2" data-rasm-uthmani="ٱلَّذِينَ" data-rasm="ٱلذين"
+<g class="word" data-word-key="2:6:2" data-w="67" data-rasm-uthmani="ٱلَّذِينَ" data-rasm="ٱلذين"
    data-rasm-imlai="الَّذِينَ" data-search="الذين" data-qpc="ٱلَّذِينَ">
 ```
 
 | form | on the word group | in `index/by-page/NNN.json` | what it is | example (2:6:2) |
 |---|---|---|---|---|
 | `word_key` | `data-word-key`, both profiles | `word_key` | `surah:ayah:word`, 1-based, all three ordinals and Hafs-specific. **The key, and the only one.** Dense, in order, unique across the corpus. Word N of an ayah is word N of that ayah in the word-by-word-translation-translation release (`docs/HAFS-JSON-SOURCE.md`) | `2:6:2` |
+| `w` | `data-w`, both profiles | `w` | the word's number in the **quran-text** release, the same number in every riwayah it publishes. **Not a key of this format**: its space is 1–77,434 over 77,432 words (a number Hafs does not write is skipped, and `72:16:1` holds two), so never treat it as dense. Release 1.1.2 did not carry it; it is back from release 1.1.3, and is the only attribute added to the word pages. | `67` |
 | `rasm_uthmani` | `data-rasm-uthmani`, both profiles | `rasm_uthmani` | **the print's own text**, full diacritics | `ٱلَّذِينَ` |
 | `rasm` | `data-rasm`, dev only | `rasm` | skeleton of `rasm_uthmani` — the **ink** | `ٱلذين` |
 | `rasm_imlai` | `data-rasm-imlai`, dev only | `rasm_imlai` | modern spelling, **with** marks | `الَّذِينَ` |
 | `search` | `data-search`, dev only | `search` | skeleton of `rasm_imlai` — **the search key** | `الذين` |
 | `qpc` | `data-qpc`, dev only | `qpc` | the same text in KFGQPC codepoints | `ٱلَّذِينَ` |
 
-All 77,432 words have all five forms; in production the last four come from
+Every word has all five forms; in production the last four come from
 the sidecar, keyed by `word_key`, built from the same source and the same
 derivations as the dev attributes (`tools/bundle_extract.text_forms`). The
 bundle checker proves the sidecar's `rasm_uthmani` equals every page's
@@ -414,7 +437,10 @@ file. The shipping library reads inline first and the sidecar second
 
 - **Displaying the text of the page → `data-rasm-uthmani`.** It is the text of
   record, matching the ink. Composite source: quran.com `text_uthmani` +
-  KFGQPC waqf + DigitalKhatt at iqlab sites (§9.7).
+  KFGQPC waqf + DigitalKhatt at iqlab sites (§9.7). From release 2.0.0 the
+  **segmentation** into words, the mark budgets and the `qpc` form come from
+  the quran-text release: `qpc` is its own string for the word, the KFGQPC
+  UthmanicHafs v3 code points exactly as that release writes them.
 - **Matching text to the glyphs on the page → `data-rasm`.** It is the rasm_uthmani
   skeleton, so it says what shapes are actually drawn.
 - **A search box → `data-search`. Never `data-rasm`.** The rasm is the rasm_uthmani
@@ -428,10 +454,9 @@ file. The shipping library reads inline first and the sidecar second
   | p272 `16:48:10` | `ظِلَٰلُهُۥ` | `ظلله` | `ظلاله` |
   | p329 `21:88:7` | `نُـۨجِى` | `نجى` | `ننجي` |
 
-  Character-set proof over all 77,432 words: `data-rasm` uses **36** distinct
-  characters including 13,483 alef-hamzat-al-wasl (U+0671) and **no** alef-maddah
-  (U+0622); `data-search` uses **37**, no alef-hamzat-al-wasl at all, 1,511 alef-maddah,
-  and 43,542 plain alef against the rasm's 25,184.
+  Character-set proof over every word: `data-rasm` uses alef-hamzat-al-wasl
+  (U+0671) and **no** alef-maddah (U+0622); `data-search` uses **no**
+  alef-hamzat-al-wasl at all, and does use alef-maddah.
 
 **Nothing is folded in any of them.** This is deliberate. `ا أ إ آ ٱ` stay
 distinct, `ى` and `ي` stay distinct, `ة` and `ه` stay distinct — `data-search`
@@ -449,31 +474,30 @@ const hits = [...doc.querySelectorAll('g.word')]
 ```
 
 The six attributes **legitimately disagree** at iqlab sites and around tanwin
-(§9.7, §9.8). That is not corruption. Two further cautions: **367
-`data-search` values contain a space** (the vocative convention, `يَا أَيُّهَا` →
-`يا أيها`) and 4,933 `data-rasm-imlai` values do — see §9.4, and never tokenise on
+(§9.7, §9.8). That is not corruption. Two further cautions: **`data-search`
+values can contain a space** (the vocative convention, `يَا أَيُّهَا` →
+`يا أيها`), and so can `data-rasm-imlai` values — see §9.4, and never tokenise on
 whitespace.
 
 ### 6.2 On `<g class="ayah-fragment">`
 
-| attribute | count | format | notes |
-|---|---:|---|---|
-| `data-ayah-key` | 13,489 | `surah:ayah` | which ayah this fragment belongs to |
-| `data-mark` | 13,489 | `mk-<surah>-<ayah>` | the `id` of this ayah's medallion — §7 |
-| `data-fragment` | 13,489 | `1`..`N` | which fragment this is, in reading order |
-| `data-ayah-fragments` | 13,489 | `N` | how many fragments the ayah has on this page |
-| `data-juz-start` | 30 ayahs | `1`..`30` | this ayah begins that juz |
-| `data-hizb-start` | 60 ayahs | `1`..`60` | begins that hizb |
-| `data-nisf-start` | 60 ayahs | `1`..`60` | begins that half-hizb boundary, numbered 1..60 through the mushaf |
-| `data-rubu-al-hizb-start` | 240 ayahs | `1`..`240` | begins that rubʿ |
+| attribute | format | notes |
+|---|---|---|
+| `data-ayah-key` | `surah:ayah` | which ayah this fragment belongs to |
+| `data-mark` | `mk-<surah>-<ayah>` | the `id` of this ayah's medallion — §7 |
+| `data-fragment` | `1`..`N` | which fragment this is, in reading order |
+| `data-ayah-fragments` | `N` | how many fragments the ayah has on this page |
+| `data-juz-start` | `1`..`30` | this ayah begins that juz |
+| `data-hizb-start` | `1`..`60` | begins that hizb |
+| `data-nisf-start` | `1`..`60` | begins that half-hizb boundary, numbered 1..60 through the mushaf |
+| `data-rubu-al-hizb-start` | `1`..`240` | begins that rubʿ |
 
 Each appears **once**, on `data-fragment="1"` of the ayah that opens the division —
-so the attribute counts ARE the division counts: 30, 60, 60 and 240.
+so each attribute occurs exactly once per division it numbers.
 
-They used to be repeated on every fragment (72, 140, 168 and 669 instances),
-which made a consumer looping over `[data-rubu-al-hizb-start]` print the same rubʿ seven
+They used to be repeated on every fragment, which made a consumer looping over `[data-rubu-al-hizb-start]` print the same rubʿ seven
 times on p575, where 73:20 spans seven lines. A division opens once. An ayah
-never spans pages (6,236 ayahs, 6,236 page-ayah pairs), so part 1 is always on
+never spans pages, so part 1 is always on
 the page the division opens on.
 
 They are complete: all 30 juz, all 60 hizb, all 240 rubʿ boundaries are marked,
@@ -491,39 +515,40 @@ doc.querySelector('g.ayah-fragment[data-juz-start="30"]')?.dataset.ayahKey;   //
 
 ### 6.3 On `<g class="ayah-mark">`
 
-| attribute | count | format |
-|---|---:|---|
-| `id` | 6,236 | `mk-<surah>-<ayah>`. **Globally unique** — no ayah spans two pages (§11). |
-| `data-ayah-key` | 6,236 | `surah:ayah` |
+| attribute | format |
+|---|---|
+| `id` | `mk-<surah>-<ayah>`. **Globally unique** — no ayah spans two pages (§11). |
+| `data-ayah-key` | `surah:ayah` |
 
-Every marker group has both. On pages 1–2 the group holds a second ornament
-path tagged `data-duplicate="1"` (§9.2).
+Every marker group has both.
 
 ### 6.4 On `<g class="line">`
 
-| attribute | count | format |
-|---|---:|---|
-| `data-line` | 9,046 | `1`–`15` (`1`–`8` on pages 1–2). The printed line number, top to bottom. **Correct for all 77,432 words** since 2026-08-30. |
+| attribute | format |
+|---|---|
+| `data-line` | `1`–`15` (`1`–`8` on pages 1–2). The printed line number, top to bottom. **Correct for every word** since 2026-08-30. |
 
 ### 6.5 On `<path>`
 
-| attribute | count | values | notes |
-|---|---:|---|---|
-| `data-kind` | every ink path | `mark` · `body` · `ayah_mark_ornament` (6,248: 6,236 rings + 12 `data-duplicate` copies on p1–2) · `ayah_number` 6,236 · `header_ink` · `ornament` · `page_number` 2 · `running_head` 2 | Present on **every** path except the dev-only `ayahPolygon`. The four `page_number` / `running_head` paths are p17's page furniture, drawn by the artwork **entirely outside the viewBox** (y 583.7..588.2 on a 550-tall page, and y -62.2..-7.1), kept so no ink is ever silently dropped — §10.5. `body` = letter ink. |
-| `data-mark` | 436,843 | 35 names, §8 | Attribute occurrences. The **logical** mark count is 436,627 — a mark drawn as more than one path is one mark. On every `data-kind="mark"` path but **one**, which is unnamed (p1 `e34`). |
-| `data-mark-family` | 393,970 | **token list** — `diacritic` 280,333 · `dots` 105,270 · `tanwin` 8,554 · `waqf` 4,272 · `sifr` 4,054 · `sajdah` 30 · `reading_sign` 11 | **Space-separated, like `class` — match with `~=`, not `=`.** See below. Only on marks that have a family. **Derivable from `schema/mark-taxonomy.json`** — prefer the registry, which also covers `small_noon` (§10.5). |
-| `data-element-id` | 598,407 | `e1`, `e2`, … | **Not stable across builds. Never key on it.** Unique within a page. Only on word/standalone ink — never on marker, header or polygon paths. |
-| `data-sig` | 598,392 | 16 hex | Outline shape signature used by the review loop. **Not an identity** — §8.5. |
-| `data-form` | 8,506 | `staggered` 6,598 · `stacked` 1,908 | Only on the `tanwin` family: how the pair of strokes is drawn. 48 of the 8,554 tanwin paths have none. |
-| `data-iqlab` | 940 | `iq-<surah>-<ayah>-<word>` | Links a harakah to its small meem at an iqlab site. **Incomplete — §10.4.** |
-| `data-pair` | 6 | `mnq-<surah>-<ayah>-<n>` | Links the two halves of a muʿānaqah. Exactly 6 in the corpus (§9.3). |
-| `data-standalone` | 229 | `1` | Marks that belong to no word: 199 hizb + 30 sajdah. |
-| `data-ayah-key` | 229 | `surah:ayah` | On those same 229 standalone paths. |
-| `fill` / `fill-rule` | all ink | `#231f20` / `evenodd` | Every ink path in the mushaf is the same colour. |
+| attribute | values | notes |
+|---|---|---|
+| `data-kind` | `mark` · `body` · `ayah_mark_ornament` · `ayah_number` · `header_ink` · `page_number` · `running_head` | Present on **every** path except the dev-only `ayahPolygon`. The `page_number` / `running_head` paths are p17's page furniture, drawn by the artwork **entirely outside the viewBox** (y 583.7..588.2 on a 550-tall page, and y -62.2..-7.1), kept so no ink is ever silently dropped — §10.5. `body` = letter ink; in the letter bundle a joined outline is one path per letter. |
+| `data-mark` | 35 names, §8 | On every `data-kind="mark"` path. **Letter bundle: also on the `data-kind="body"` paths that keep their `data-mark`** — a stroke that is its letter's whole body (§6.9). The two together equal the word bundle's mark paths in number. |
+| `data-mark-family` | **token list** — `diacritic` · `dots` · `tanwin` · `waqf` · `sifr` · `sajdah` · `reading_sign` | **Space-separated, like `class` — match with `~=`, not `=`.** See below. Only on marks that have a family. **Derivable from `schema/mark-taxonomy.json`** — prefer the registry, which also covers `small_noon` (§10.5). |
+| `data-element-id` | `e1`, `e2`, … | On every word and standalone ink path. **Dev profile only.** Not stable across builds. Never key on it. Unique within a page. Only on word/standalone ink — never on marker, header or polygon paths. |
+| `data-sig` | 16 hex | On the same paths. **Dev profile only.** Outline shape signature used by the review loop. **Not an identity** — §8.5. |
+| `data-cut` | `1` | **Letter bundle only.** The outline is a **piece cut from one of the artwork's contours**, not a contour the designer drew. Its points are written at up to six decimals (§5.2's three-decimal rule is about the designer's numbers). §6.9. |
+| `data-at` | integer | **Letter bundle only**, on mark paths and on body paths that keep their `data-mark`: the code-point offset, in the word's `qpc` text, of the character this path draws (a dot points at its letter). Not every mark path carries one — §10.10. |
+| `data-form` | `staggered` · `stacked` | Only on the `tanwin` family: how the pair of strokes is drawn. |
+| `data-iqlab` | `iq-<surah>-<ayah>-<word>` | Links a harakah to its small meem at an iqlab site. **Incomplete — §10.4.** |
+| `data-pair` | `mnq-<surah>-<ayah>-<n>` | Links the two halves of a muʿānaqah (§9.3). |
+| `data-standalone` | `1` | Marks that belong to no word: the hizb rosettes and the sajdah paths. **Letter bundle: the sajdah paths only**; the hizb paths are there without the attribute. |
+| `data-ayah-key` | `surah:ayah` | On those same standalone paths. |
+| `fill` / `fill-rule` | `#231f20` / `evenodd` | On all ink. Every ink path in the mushaf is the same colour. |
 
-`data-element-id`, `data-sig` and `data-mark-family` are present in **both** profiles.
-`data-element-id` and `data-sig` exist for the review loop; a consumer should not key
-on either.
+`data-mark-family` is present in **both** profiles. `data-element-id` and
+`data-sig` exist for the review loop and are in the **dev profile only**: the
+production pages carry neither. (This paragraph used to say both profiles.)
 
 #### `data-mark-family` is a token list — use `~=`, never `=`
 
@@ -535,8 +560,7 @@ space-separated tokens exactly like `class`:
 [data-mark-family="diacritic"]  { }   /* WRONG — misses every tanwin */
 ```
 
-Only the three tanwin carry two tokens today (`"diacritic tanwin"`, 8,554
-paths). They are vowel marks *and* they are the tanwin, and both groupings are
+Only the three tanwin carry two tokens today (`"diacritic tanwin"`). They are vowel marks *and* they are the tanwin, and both groupings are
 real: hiding the diacritics must reach them, and §8.2 groups on them. Every
 other family is single-token, so `=` happens to work there — but it is the wrong
 habit and will break the next time a mark needs two families. Always `~=`.
@@ -554,7 +578,7 @@ self-describing:
      data-decomposition="word" data-page="42" …>
 ```
 
-Each appears exactly 604 times, once per page. Values come from the
+Each appears exactly once on every page. Values come from the
 `quranpedia/qiraahs-ayah-map` dataset; the full records — names, descriptions and
 the provenance of the numbering choice — belong in the bundle's `catalogue.json`
 rather than being repeated on every page.
@@ -593,17 +617,17 @@ Three of these are easy to misread:
    data-revelation-place="madinah" data-ayah-count="286">
 ```
 
-| attribute | count | example |
-|---|---:|---|
-| `data-sid` | 226 | `2` |
-| `data-surah-name-ar` | 226 | `البقرة` |
-| `data-surah-name-latin` | 226 | `Baqarah` |
-| `data-surah-name-en` | 226 | `The Cow` |
-| `data-revelation-place` | 226 | `makkah` / `madinah` |
-| `data-ayah-count` | 226 | `286` |
+| attribute | example |
+|---|---|
+| `data-sid` | `2` |
+| `data-surah-name-ar` | `البقرة` |
+| `data-surah-name-latin` | `Baqarah` |
+| `data-surah-name-en` | `The Cow` |
+| `data-revelation-place` | `makkah` / `madinah` |
+| `data-ayah-count` | `286` |
 
-226 = 114 surah-name groups + 112 basmalah groups; the basmalah group repeats
-its surah's metadata. **These attributes appear only on a surah's first page.**
+They are on every surah-name group and every basmalah group; the basmalah
+group repeats its surah's metadata. **These attributes appear only on a surah's first page.**
 To know the surah of an arbitrary page, read the surah number out of any
 `data-word-key`, or use the companion `index.json`.
 
@@ -616,18 +640,140 @@ To know the surah of an arbitrary page, read the surah number out of any
         data-standalone="1" data-ayah-key="2:75" d="…"/></g>
 ```
 
-| attribute | count | meaning |
-|---|---:|---|
-| `data-mark` | 199 | always `hizb` |
-| `data-ayah-key` | 199 | the ayah the rosette stands before |
-| `data-rubu-al-hizb` | 199 | rubʿ number, 1..240 |
-| `data-rubu-al-hizb-in-hizb` | 199 | 1..4 |
-| `data-nisf` | 199 | half of the hizb, 1 or 2 |
-| `data-hizb` | 199 | 1..60 |
-| `data-juz` | 199 | 1..30 |
+| attribute | meaning |
+|---|---|
+| `data-mark` | always `hizb` |
+| `data-ayah-key` | the ayah the rosette stands before |
+| `data-rubu-al-hizb` | rubʿ number, 1..240 |
+| `data-rubu-al-hizb-in-hizb` | 1..4 |
+| `data-nisf` | half of the hizb, 1 or 2 |
+| `data-hizb` | 1..60 |
+| `data-juz` | 1..30 |
 
 The `*-start` attributes are **not** here — they are on `<g class="ayah-fragment">`
 (§6.2), because 41 boundaries have no rosette.
+
+### 6.9 On `<g class="letter">` — the letter layer *(letter bundle, schema 2.0.0)*
+
+In the letter bundle every word group holds **one `<g class="letter">` per
+letter** of the word, in the order of its spelling. A letter group holds that
+letter's **body ink** — a whole contour of the artwork where the letter is drawn
+apart, or a **piece cut from a contour** (`data-cut="1"`) where it is joined to
+its neighbours — and **the letter's own marks**. A mark that belongs to the word
+and not to one letter stays a direct child of the word group.
+
+A real fragment of `pages/003.svg`, production profile, `d=` values trimmed:
+
+```xml
+<g class="word" data-word-key="2:6:2" data-w="67" data-rasm-uthmani="ٱلَّذِينَ">
+ <g class="letter" data-text="ٱ" data-index="0" data-at="0">
+   <path data-kind="body" d="M67.997 354.70…" fill="#231f20" fill-rule="evenodd"/>
+   <path data-at="0" data-kind="mark" data-mark="hamzat_al_wasl" d="M69.134 357.86…" …/></g>
+ <g class="letter" data-text="ل" data-index="1" data-at="1">
+   <path data-kind="body" d="M64.559986 355…" … data-cut="1"/>
+   <path data-at="3" data-kind="mark" data-mark="fathah" data-mark-family="diacritic" …/>
+   <path data-at="2" data-kind="mark" data-mark="shaddah" data-mark-family="diacritic" …/></g>
+ <g class="letter" data-text="ذ" data-index="2" data-at="4">
+   <path data-kind="body" d="M65.057958 344…" … data-cut="1"/>
+   <path data-at="5" data-kind="mark" data-mark="kasrah" data-mark-family="diacritic" …/>
+   <path data-at="4" data-kind="mark" data-mark="dot" data-mark-family="dots" …/></g>
+ <g class="letter" data-text="ي" data-index="3" data-at="6"> … </g>
+ <g class="letter" data-text="ن" data-index="4" data-at="7"> … </g>
+</g>
+```
+
+| attribute | on | values | meaning |
+|---|---|---|---|
+| `data-index` | every letter group | 0, 1, … | the letter's position in the word's letter sequence, in reading order. Unique within the word. |
+| `data-text` | every letter group | one character | the letter as the word's text writes it (`ٱ`, `ل`, the dagger alif `ٰ` where it is drawn as a letter). |
+| `data-at` | every letter group, and the paths inside it | integer | the code-point offset, in the word's `qpc` text (`index/by-page/NNN.json`), of the character this ink draws. On a mark path it is the mark's own character; a letter's dots point at the letter. |
+| `data-cut` | a body path | `1` | the outline is a piece cut from a contour of the artwork (§6.5). |
+| `data-mark` on a **body** path | a body path | `omitted_alif` · `hamzah` | the stroke is the letter's whole body and is also a named mark: the dagger alif drawn as a letter, and the two fused-hamzah sites (§9.0 (b), p324 `21:28:4` and p341 `22:76:4`). The word page has the same path, same `d`, as `data-kind="mark"`. Select these with `path[data-kind="body"][data-mark]`. |
+| `data-unsplit` | a letter group | `1` | reserved: the ink of several letters that could not be divided, in one group, with all their characters in `data-text` and all their offsets in `data-at`. **No group carries it in this build.** |
+
+**Paths inside a letter group are not in text order.** The body comes first;
+the marks follow in the order the ink was found (above, the fathah at offset 3
+is written before the shaddah at offset 2). Order them by `data-at`.
+
+**Index into `qpc` by code point.** Every character of the Hafs text is in the
+Basic Multilingual Plane, so `qpc[n]` is the `n`-th code point in JavaScript and
+in Python alike.
+
+#### Where the division comes from
+
+Which ink is on the page, which word holds it, what each mark is called, and
+the text are this project's, exactly as in the word bundle. **Where a joined
+stroke is divided between two letters, and which letter a mark belongs to, is
+the output of DigitalKhatt's `medinamushafanalyzer`** (commit `056191f`, MIT
+licence), run on the same vectors. `tools/join_dk_letters.py` matches every
+contour of the two by geometry and carries the analyzer's letters onto our
+words: a contour the analyzer does not cut is copied byte for byte into its
+letter, and a contour it cuts is replaced by its pieces.
+
+What follows is **not** the analyzer's; the join adds it:
+
+| what the join adds |
+|---|
+| ink of a cut contour that no piece covered, given to the letter piece it touches most (the reviewer's rule; §10.10) |
+| a run the analyzer left uncut, divided by a cut the reviewer picked by eye |
+| an analyzer cut the reviewer rejected, replaced by one he picked |
+| a mark the reviewer moved to another letter of its word |
+| a mark the analyzer gave to no letter of the word, given to the nearest letter of it |
+| one unplaced mark and one sign without ink in the same word, linked |
+| a contour under 0.05 square units that the analyzer drops, kept with the nearest letter |
+| a sign the analyzer names as a letter of its own, seated on a kashida already given to a letter: it is that letter's mark |
+| a letter with no body path takes the stroke stamped with its own character as its body (the dagger alif) |
+| the alif of the two fused-hamzah sites takes the hamzah outline as its body |
+| the maddah over a hamzah-alif is named `maddah` |
+
+The cuts the reviewer picked are recorded as data, per word, in
+`tools/data/dk_fills.json` of the pipeline; they were cut by this project's own
+earlier letter build. A kashida in the text that seats no mark is typography,
+not a letter, and has no group (`2:97:5`).
+
+#### What is proven about the ink
+
+Every letter group carries `data-at` and holds a body path; no body path of a
+word sits outside a letter group; no group is unsplit.
+
+- **The bundle build** proves every page against the word page of the same
+  build: the same words, the same ink outside the words, every uncut path
+  verbatim, every cut piece within 1/8 of a unit of the contour it came from
+  (`tools/bundle_letters.py`; `tools/verify_bundle.py --words-ref` repeats it).
+  Every page passes, with no exception list.
+- **Two ink checks**, written separately from the join and from each other,
+  compare each word's letter ink with its word ink. One works on polygons
+  (`tools/audit_letter_ink.py`: any strip 0.0125 units wide and 0.002 square
+  units or more that is lost, added, or held by two letters). One renders both
+  at 160 px per unit (`tools/audit_letter_raster.py`: any patch 3 px, 0.019
+  units, wide, and any path written twice). Over every word: **0 words lose
+  ink, 0 gain ink, 0 pairs of letters overlap.**
+
+So a letter page draws what its word page draws, to within a hairline at a cut
+(§10.10). A consumer counting `path[data-kind="mark"]` finds fewer on a
+letter page set than on the word pages; counting `path[data-mark]` finds the
+same number.
+
+**The index.** `index/pages.json` gives `letters` and `letters_unsplit` per
+page; `index/by-page/NNN.json` gives the same two at the top and `letters` on
+every word. `VERSION.json` carries the totals under `counts` and, under
+`letters`, the analyzer commit, the digest of its 604 input pages and the proof
+statement.
+
+```js
+// every letter of 2:6:2 with the KFGQPC character it draws
+const side = await (await fetch('index/by-page/003.json')).json();
+const qpc  = side.words.find(w => w.word_key === '2:6:2').qpc;
+[...doc.querySelectorAll('g.word[data-word-key="2:6:2"] > g.letter')]
+  .map(g => ({i: +g.dataset.index, text: g.dataset.text, qpc: qpc[+g.dataset.at]}));
+
+// highlight one letter: style the group, its marks come with it
+doc.querySelector('g.word[data-word-key="2:6:2"] > g.letter[data-index="1"]')
+   .classList.add('hl');
+
+// all the ink of a word, whichever bundle the page is from
+doc.querySelectorAll('g.word[data-word-key="2:6:2"] path');   // not `g.word > path`
+```
 
 ---
 
@@ -635,8 +781,7 @@ The `*-start` attributes are **not** here — they are on `<g class="ayah-fragme
 
 **The single most common mistake with this format.** An ayah is emitted once
 per printed LINE it occupies, so it is several sibling nodes and there is no
-single node that "is" the ayah. 6,236 ayahs are emitted as 13,489
-`<g class="ayah-fragment">` fragments; **4,455 ayahs have more than one**. The record is
+single node that "is" the ayah. The record is
 2:282 on p48, which fills all 15 lines of its page and so has 15 fragments
 (pages 17 and 144 go higher for a different reason — §10.5).
 
@@ -652,7 +797,7 @@ Every fragment says so, and the fragments are linked to the medallion:
 <g class="ayah-mark" id="mk-2-6" data-ayah-key="2:6">…</g>
 ```
 
-Verified corpus-wide: **all 13,489 fragments carry `data-mark`, every one
+Verified corpus-wide: **every fragment carries `data-mark`, every one
 resolves to a marker `id` on the same page, and every ayah's `data-fragment` values
 are exactly `1..data-ayah-fragments` in document order.**
 
@@ -684,8 +829,7 @@ ayah; it gives you fragment 1 of N.
 pages** (§11), if you loaded the right page you will always find all N.
 
 > **Version note.** Before 2026-08-30 the medallions carried the wrong ayah
-> label: 5,881 of 6,236 markers on 598 pages were mislabelled, effectively
-> reversed down the page. They are now bound by position and correct. If you
+> label, effectively reversed down the page. They are now bound by position and correct. If you
 > have an older bundle, the marker labels are not usable — check for `id="mk-…"`
 > on `<g class="ayah-mark">`; the fix and the link landed together.
 
@@ -696,41 +840,41 @@ pages** (§11), if you loaded the right page you will always find all N.
 The registry ships in the bundle as `schema/mark-taxonomy.json` (schema
 `mark-taxonomy`, version 2.0). In the pipeline's working tree the same file is
 built at `.cache/schema/mark-taxonomy.v2.json`; consumers want the bundled copy. It declares **36** names: **35 active**, 1 reserved-inactive
-(`waqf_mamnu`, §8.6). Of the 35 active, **34 are actually emitted**; `waqf` is
-a legacy fallback name with **0** occurrences. `tools/audit_taxonomy.py` gates
+(`waqf_mamnu`, §8.6). Of the 35 active, `waqf` is a legacy fallback name with
+**0** occurrences. `tools/audit_taxonomy.py` gates
 this and reports `35 mark names`, counting the registry's active set.
 
 Two further names appear only as **group-level** `data-mark`, never on a path:
-`sajdah` (17 groups) and `hizb` — `hizb` is also a path name (199).
+`sajdah` and `hizb` — `hizb` is also a path name.
 
 Codepoints below are what appears in `data-rasm-uthmani`. `family` is what the
 registry declares as `data-mark-family`; `category` is the registry's grouping.
 
 ### 8.1 Harakahs (vowels and their companions) — category `harakah`
 
-| `data-mark` | Arabic | codepoint | family | count |
-|---|---|---|---|---:|
-| `fathah` | فتحة | U+064E `َ` | — | 123,054 |
-| `kasrah` | كسرة | U+0650 `ِ` | — | 46,069 |
-| `dammah` | ضمة | U+064F `ُ` | — | 37,454 |
-| `sukun` | سكون | U+0652 `ْ`, U+06E1 `ۡ` | — | 37,148 |
-| `shaddah` | شدة | U+0651 `ّ` | — | 22,678 |
+| `data-mark` | Arabic | codepoint | family |
+|---|---|---|---|
+| `fathah` | فتحة | U+064E `َ` | — |
+| `kasrah` | كسرة | U+0650 `ِ` | — |
+| `dammah` | ضمة | U+064F `ُ` | — |
+| `sukun` | سكون | U+0652 `ْ`, U+06E1 `ۡ` | — |
+| `shaddah` | شدة | U+0651 `ّ` | — |
 
-### 8.2 Tanwin — `data-mark-family~="tanwin"`, `data-form` on all but 48
+### 8.2 Tanwin — `data-mark-family~="tanwin"`, `data-form` on most
 
-| `data-mark` | Arabic | codepoint | count |
-|---|---|---|---:|
-| `tanwin_al_fath` | تنوين فتح | U+064B `ً`, **U+08F0 `ࣰ`** | 3,635 |
-| `tanwin_al_kasr` | تنوين كسر | U+064D `ٍ`, **U+08F2 `ࣲ`** | 2,534 |
-| `tanwin_al_damm` | تنوين ضم | U+064C `ٌ`, **U+08F1 `ࣱ`** | 2,385 |
+| `data-mark` | Arabic | codepoint |
+|---|---|---|
+| `tanwin_al_fath` | تنوين فتح | U+064B `ً`, **U+08F0 `ࣰ`** |
+| `tanwin_al_kasr` | تنوين كسر | U+064D `ٍ`, **U+08F2 `ࣲ`** |
+| `tanwin_al_damm` | تنوين ضم | U+064C `ٌ`, **U+08F1 `ࣱ`** |
 
 ### 8.3 Letter dots — `data-mark-family="dots"`
 
-| `data-mark` | count | notes |
-|---|---:|---|
-| `dot` | 63,611 | one dot |
-| `two_dots` | 38,120 | drawn as one path |
-| `three_dots` | 3,538 | drawn as one path |
+| `data-mark` | notes |
+|---|---|
+| `dot` | one dot |
+| `two_dots` | drawn as one path |
+| `three_dots` | drawn as one path |
 
 Dots are the letters' own dots (nuqaṭ), not diacritics — but in this schema
 they are `data-kind="mark"`. A hamzah seat (`ئ ؤ أ إ`) is drawn **without** the
@@ -738,36 +882,36 @@ dots of its base letter.
 
 ### 8.4 Orthographic signs — category `orthographic`
 
-| `data-mark` | Arabic | codepoint | count | notes |
-|---|---|---|---:|---|
-| `hamzah` | همزة | U+0621 `ء` and the seats U+0623/0625/0624/0626, U+0654/0655 | 16,388 | **Identical ink to a letter_hamzah** — §8.7 |
-| `hamzat_al_wasl` | همزة وصل | U+0671 `ٱ` | 13,483 | |
-| `omitted_alif` | ألف خنجرية | U+0670 `ٰ` | 9,726 | |
-| `maddah` | مدة | U+0653 `ٓ`, U+06E4 `ۤ` | 5,376 | |
-| `small_waw` | واو صغيرة | U+06E5 `ۥ` | 1,257 | pronominal suffix — §9.10 |
-| `small_yaa` | ياء صغيرة | U+06E6 `ۦ`, U+06E7 `ۧ` | 995 | pronominal suffix — §9.10 |
-| `small_noon` | نون صغيرة | U+06E8 `ۨ` | **1** | 21:88 only — §9.1. **The only orthographic sign with no family** |
+| `data-mark` | Arabic | codepoint | notes |
+|---|---|---|---|
+| `hamzah` | همزة | U+0621 `ء` and the seats U+0623/0625/0624/0626, U+0654/0655 | **Identical ink to a letter_hamzah** — §8.7 |
+| `hamzat_al_wasl` | همزة وصل | U+0671 `ٱ` | |
+| `omitted_alif` | ألف خنجرية | U+0670 `ٰ` | |
+| `maddah` | مدة | U+0653 `ٓ`, U+06E4 `ۤ` | |
+| `small_waw` | واو صغيرة | U+06E5 `ۥ` | pronominal suffix — §9.10 |
+| `small_yaa` | ياء صغيرة | U+06E6 `ۦ`, U+06E7 `ۧ` | pronominal suffix — §9.10 |
+| `small_noon` | نون صغيرة | U+06E8 `ۨ` | 21:88 only — §9.1. **The only orthographic sign with no family** |
 
 ### 8.5 Dabt (recitation-aid signs) — category `dabt`
 
-| `data-mark` | Arabic | codepoint | family | count | notes |
-|---|---|---|---|---:|---|
-| `rounded_zero` | صفر مستدير | U+06DF `۟` | `sifr` | 3,988 | round zero: the letter is **not** pronounced, ever |
-| `rectangular_zero` | صفر مستطيل | U+06E0 `۠` | `sifr` | 66 | upright zero: not pronounced in waṣl, pronounced in waqf. **A different sign with different rules** |
-| `small_meem` | ميم الإقلاب | U+06E2 `ۢ` (high) ×510, U+06ED `ۭ` (low) ×99 | — | 609 | §9.7 |
+| `data-mark` | Arabic | codepoint | family | notes |
+|---|---|---|---|---|
+| `rounded_zero` | صفر مستدير | U+06DF `۟` | `sifr` | round zero: the letter is **not** pronounced, ever |
+| `rectangular_zero` | صفر مستطيل | U+06E0 `۠` | `sifr` | upright zero: not pronounced in waṣl, pronounced in waqf. **A different sign with different rules** |
+| `small_meem` | ميم الإقلاب | U+06E2 `ۢ` (high), U+06ED `ۭ` (low) | — | §9.7 |
 
 ### 8.6 Waqf (waqf) signs — `data-mark-family="waqf"`
 
 Verified empirically by pairing each word's waqf codepoint with its emitted
 mark name over all 604 pages.
 
-| `data-mark` | codepoint | conventional name | count |
-|---|---|---|---:|
-| `waqf_jaiz_mustawi_al_tarafayn` | U+06DA `ۚ` | جائز — pausing permitted | 2,083 |
-| `waqf_jaiz_wasl_awla` | U+06D6 `ۖ` | صلى — continuing is better | 1,651 |
-| `waqf_jaiz_waqf_awla` | U+06D7 `ۗ` | قلى — pausing is better | 511 |
-| `waqf_lazim` | U+06D8 `ۘ` | لازم — waqf obligatory | 21 |
-| `waqf_al_muanaqah` | U+06DB `ۛ` | معانقة — stop at one of a pair | 6 |
+| `data-mark` | codepoint | conventional name |
+|---|---|---|
+| `waqf_jaiz_mustawi_al_tarafayn` | U+06DA `ۚ` | جائز — pausing permitted |
+| `waqf_jaiz_wasl_awla` | U+06D6 `ۖ` | صلى — continuing is better |
+| `waqf_jaiz_waqf_awla` | U+06D7 `ۗ` | قلى — pausing is better |
+| `waqf_lazim` | U+06D8 `ۘ` | لازم — waqf obligatory |
+| `waqf_al_muanaqah` | U+06DB `ۛ` | معانقة — stop at one of a pair |
 
 **The names are the ACTION, not the letters of the sign.** U+06D6 (ۖ, "ṣalā")
 is emitted as `waqf_jaiz_wasl_awla`, and U+06D7 (ۗ, "qilā") as `waqf_jaiz_waqf_awla`. Map by this
@@ -783,21 +927,21 @@ with `active: false`.
 
 Each occurs at a handful of sites, named **by site, not by shape** (§9.1).
 
-| `data-mark` | Arabic | codepoint | count |
-|---|---|---|---:|
-| `saktah` | سكتة | U+06DC `ۜ` | 5 |
-| `seen_al_qiraah` | سين القراءة | U+06DC `ۜ`, U+06E3 `ۣ` | 3 |
-| `imalah` | إمالة | U+06EA `۪` | 1 |
-| `ishmam` | إشمام | U+06EC `۬` | 1 |
-| `tashil` | تسهيل | U+06EC `۬` | 1 |
+| `data-mark` | Arabic | codepoint |
+|---|---|---|
+| `saktah` | سكتة | U+06DC `ۜ` |
+| `seen_al_qiraah` | سين القراءة | U+06DC `ۜ`, U+06E3 `ۣ` |
+| `imalah` | إمالة | U+06EA `۪` |
+| `ishmam` | إشمام | U+06EC `۬` |
+| `tashil` | تسهيل | U+06EC `۬` |
 
 ### 8.8 Standalone signs — `data-standalone="1"`, category `standalone`
 
-| `data-mark` | Arabic | family | count |
-|---|---|---|---:|
-| `sajdah_mark` | ۩ | `sajdah` | 15 |
-| `sajdah_line` | the overline | `sajdah` | 15 |
-| `hizb` | ۞ | — | 199 |
+| `data-mark` | Arabic | family |
+|---|---|---|
+| `sajdah_mark` | ۩ | `sajdah` |
+| `sajdah_line` | the overline | `sajdah` |
+| `hizb` | ۞ | — |
 
 ---
 
@@ -814,7 +958,7 @@ stroke sits relative to the word's letters and from the word's spelling —
 nothing in the outline distinguishes them. Two consequences: a mis-owned mark
 always arrives wearing the **opposite** name (a stolen fathah hangs below its new
 holder's letters and is therefore called `kasrah`), and you cannot infer a name
-from a `data-sig` — 85 signatures serve both `fathah` and `kasrah`.
+from a `data-sig`: a signature can serve both `fathah` and `kasrah`.
 
 **(b) `hamzah` and a letter_hamzah are IDENTICAL ink.** `data-mark="hamzah"` is a
 diacritic; a hamzah that is a *letter* of the word is `data-kind="body"`. The ink
@@ -848,12 +992,11 @@ comes in **pairs** across two words: three pairs mushaf-wide = 6 emitted
 `waqf_al_muanaqah` paths. **Do not count six signs, and do not count three dots per
 sign.**
 
-**(e) A `data-sig` is not an identity.** It is the outline's shape. **98 of the
-2,152 signatures in the corpus serve more than one mark name.** The worst is
-`d2506e4f8b4e28e5` — a plain circle — which is `dot` 63,233 times, `two_dots`
-498 times, `three_dots` 38 times and `waqf_al_muanaqah` 3 times. Conversely one name has
-many: `fathah` has 131 signatures, `small_meem` 15. **A consumer should not use
-`data-sig`.**
+**(e) A `data-sig` is not an identity.** It is the outline's shape. **A
+signature can serve more than one mark name.** `d2506e4f8b4e28e5` — a plain
+circle — is `dot`, `two_dots`, `three_dots` and `waqf_al_muanaqah`. Conversely
+one name can have more than one signature, as `fathah` and `small_meem` do.
+**A consumer should not use `data-sig`.**
 
 ### 9.1 Once-in-the-mushaf signs — and one character meaning two things
 
@@ -883,17 +1026,14 @@ At 52:37 `data-rasm-uthmani` writes U+06E3 (seen below) but `data-qpc` writes U+
 
 A different page matrix (the artwork's offset viewBox, folded in — §5.1),
 **8 lines instead of 15**, per-line translates, and the medallion scale is
-`0.0075` instead of `0.011`. The artwork also **draws every ayah ornament
-twice**, byte-identical and in place (7 pairs on p1, 5 on p2, nowhere else).
-Earlier revisions of this document called the copies "decorative rosettes with
-no ayah"; they are duplicates, and they used to shift the marker ids by one.
-Each copy now sits inside its ayah's marker group as
-`<path data-kind="ayah_mark_ornament" data-duplicate="1">`, so
-`querySelectorAll('.ayah-mark')` returns 7 on the 7-ayah page and every
-group has its `id`. The copy is **not** removed: two identical fills are not
-the same ink at the edge — anti-aliased coverage composites twice and the rim
-darkens by up to 57/255, so dropping it would change the render (measured:
-3,264 px on p1). Drop `[data-duplicate]` yourself if you prefer a lighter rim.
+`0.0075` instead of `0.011`. Each ayah has one marker group with one ornament
+path, as on every other page: `querySelectorAll('.ayah-mark')` returns 7 on
+the 7-ayah page.
+
+The format document of release 1.1.2 described a second, identical ornament
+path in each of these groups, tagged `data-duplicate="1"`. The pages of this
+release, built on quran-svg v1.1.1, hold one ornament per ayah and no path
+carries `data-duplicate`.
 
 ### 9.3 Muʿānaqah — one sign, three dots, in pairs
 
@@ -915,7 +1055,7 @@ darkens by up to 57/255, so dropping it would change the render (measured:
 | `mnq-5-41-1` | 114 | `5:41:16` قُلُوبُهُمْۛ ↔ `5:41:19` هَادُوا۟ۛ (three words apart) |
 
 The partners are **not adjacent**. Join on `data-pair`, never on proximity, and
-never on the drawing — three of the six share the plain-`dot` signature (§9.0e).
+never on the drawing — they can share the plain-`dot` signature (§9.0e).
 
 ### 9.4 Word tokens containing a SPACE
 
@@ -937,14 +1077,14 @@ gives `الياسين`.
 
 Space census over all 604 pages:
 
-| attribute | tokens containing a space | what the spaces are |
-|---|---:|---|
-| `data-rasm-uthmani` | **1** | this word |
-| `data-rasm` | **1** | this word |
-| `data-qpc` | 209 | 199 the `۞ ` prefix, 9 a spaced trailing waqf sign, 1 this word |
-| `data-search` | **367** | 348 the rasm_imlai vocative convention (`يَٰٓأَيُّهَا` → `يا أيها`, `يَٰبَنِىٓ` → `يا بني`); 19 others — `ويا قوم`, `ها أنتم`, `سواء السبيل` (60:1:48), `نذير مبين` (71:2:6), `وأن لو` (72:16:1), and this word |
-| `data-rasm-imlai` | 4,933 | the same convention plus detached waqf signs (`رَيْبَ ۛ`) |
-| `data-text` (ligature) | 0 | |
+| attribute | what the spaces are |
+|---|---|
+| `data-rasm-uthmani` | this word only |
+| `data-rasm` | this word only |
+| `data-qpc` | the `۞ ` prefix, a spaced trailing waqf sign, this word |
+| `data-search` | the rasm_imlai vocative convention (`يَٰٓأَيُّهَا` → `يا أيها`, `يَٰبَنِىٓ` → `يا بني`); others — `ويا قوم`, `ها أنتم`, `سواء السبيل` (60:1:48), `نذير مبين` (71:2:6), `وأن لو` (72:16:1), and this word |
+| `data-rasm-imlai` | the same convention plus detached waqf signs (`رَيْبَ ۛ`) |
+| `data-text` (ligature) | none |
 
 **Never tokenise a page by splitting text on whitespace.** `data-word-key` is the
 only word key — one printed word can be two words in the modern spelling
@@ -953,7 +1093,7 @@ means a naive `data-search === query` fails for `يا أيها`; match on a
 normalised, space-stripped form if you want them to join. Related: `بَعْدَ مَا` (2:181 p27, 8:6 p177, 13:37 p254) is **two words** in this
 print's segmentation, not one spaced token.
 
-### 9.5 Sajdah — 15 places, 30 paths, 17 groups
+### 9.5 Sajdah — 15 places
 
 The sign (۩) and the overline belong together and are `data-standalone="1"` —
 they are **never** inside a word. The group is emitted immediately **after** the
@@ -973,8 +1113,9 @@ The 15 sites: p176 (7:206), p251 (13:15), p272 (16:50), p293 (17:109), p309
 (32:15), p454 (38:24), p480 (41:37 + 41:38), p528 (53:62), p589 (84:21), p598
 (96:19).
 
-**Two sites are split into two groups with different `data-ayah-key`** (p379, p480)
-— §10.6. **Count `data-mark="sajdah_mark"` (15), not the groups (17).**
+Every site is one group holding both the sign and its line. At the two sites
+that involve two ayahs (p379, p480) the group carries the later one, `27:26`
+and `41:38` — §10.6.
 
 Note the print draws the 96:19 sajdah on **p598**, not p597.
 
@@ -987,25 +1128,37 @@ where the banner marks the division instead. 41 of 41, no exceptions.
 **Use `data-rubu-al-hizb-start` / `data-hizb-start` / `data-juz-start` for divisions, and
 `g.division-mark` only when you want the drawn rosette.**
 
-The rubʿ character U+06DE `۞` **is in the word text but never in the word's
-ink**: 199 words carry it in `data-rasm-uthmani` / `data-qpc` / `data-rasm-imlai`, while
-the rosette is a standalone path in its own `<g class="division-mark">`, emitted
-immediately **before** the first element of that ayah (§5.4).
+Where the rosette sits, and whether the rubʿ character U+06DE `۞` is in the
+word text, **differs between the two bundles**:
+
+| | word bundle | letter bundle |
+|---|---|---|
+| the rosette group | a standalone `<g class="division-mark">`, emitted immediately **before** the first element of that ayah (§5.4); its path has `data-standalone="1"` | the **first child of the ayah's first word**; its path has `data-at="0"` and no `data-standalone` |
+| `۞` in the word's text | **absent** from every form | the display forms — `data-rasm-uthmani` on the page, `qpc`, `rasm_uthmani` and `rasm_imlai` in the index — begin with `۞` + U+00A0 NO-BREAK SPACE; `rasm` and `search` do not carry it |
+| the word's `box` in the index | the word's letters | the letters **and the rosette** |
 
 ```xml
-<g class="word" data-word-key="2:26:1" data-rasm-uthmani="۞إِنَّ" data-rasm="إن"
-   data-rasm-imlai="۞ إِنَّ" data-search="إن" data-qpc="۞ إِنَّ">…</g>
+<!-- letter bundle -->
+<g class="word" data-word-key="2:26:1" data-w="361" data-rasm-uthmani="۞ إِنَّ">
+  <g class="division-mark" data-mark="hizb" data-ayah-key="2:26" …>
+    <path data-at="0" data-kind="mark" data-mark="hizb" data-ayah-key="2:26" d="…"/></g>
+  <g class="letter" …>…</g>
+</g>
 ```
 
-**Strip U+06DE before matching word text** — or use `data-search`, which has
-already dropped it. Note the space is present in `data-qpc` / `data-rasm-imlai` and
-absent in `data-rasm-uthmani`.
+In the letter bundle the sign is a character of the word so that its ink links
+to a character like every other path: `data-at` of every letter of such a word
+counts from the start of the prefixed string. The form with the no-break space
+is how the King Fahd Complex's own word-by-word data prints the sign.
+
+**Compare word text across the two bundles with `rasm` or `search`**, or strip
+a leading `۞` and U+00A0 first. `data-word-key` and `data-w` are the same in
+both bundles.
 
 ### 9.7 Iqlab: ONE harakah + a small meem, not tanwin + meem
 
-This print writes a single vowel plus a small م. 609 sites: **510 high form
-(U+06E2 ۢ) and 99 low form (U+06ED ۭ)**; the low form is often fused into
-neighbouring ink.
+This print writes a single vowel plus a small م, in a **high form (U+06E2 ۢ)
+or a low form (U+06ED ۭ)**; the low form is often fused into neighbouring ink.
 
 ```xml
 <!-- p104, high form -->
@@ -1026,16 +1179,16 @@ Three consequences:
 1. **`data-rasm-uthmani` here is deliberately NOT quran.com's `text_uthmani`.** It
    writes `ُ` / `ِ` where quran.com writes `ٌ` / `ٍ`, matching `data-qpc` and the
    ink. `data-rasm-imlai` (and therefore `data-search`) still follows the tanwin
-   convention. **The attributes disagree on purpose at all 609 sites.**
+   convention. **The attributes disagree on purpose at every iqlab site.**
 2. **`data-mark="small_meem"` does not say which form it is.** Take it from the
    word text.
-3. `data-iqlab` pairs the harakah with the meem, but only at 335 of 605 sites —
+3. `data-iqlab` pairs the harakah with the meem, but not at every site —
    §10.4.
 
 ### 9.8 Open tanwin (U+08F0–U+08F2)
 
-`data-rasm-uthmani` uses the open forms: U+08F0 `ࣰ` ×2,901, U+08F1 `ࣱ` ×1,807,
-U+08F2 `ࣲ` ×1,935 (6,643 total). `data-qpc` uses the QPC forms instead
+`data-rasm-uthmani` uses the open forms: U+08F0 `ࣰ`, U+08F1 `ࣱ`,
+U+08F2 `ࣲ`. `data-qpc` uses the QPC forms instead
 (`سَنَةٗ` where rasm_uthmani has `سَنَةࣰ`); neither open form appears in `data-qpc`.
 
 **These are not mojibake and not a non-standard encoding — they are this
@@ -1098,15 +1251,14 @@ group, not on the alef. p11 `2:70:1`:
 
 ### 9.12 Header ink is not decomposed — and that is deliberate
 
-5,670 paths carry `data-kind="header_ink"`: **2,300 inside
-`<g class="surah-name">` and 3,370 inside `<g class="basmalah">`**. **None
-carries `data-mark`.** Banner ink is identified, never decomposed. A consumer
+Paths with `data-kind="header_ink"` sit **inside `<g class="surah-name">`
+and `<g class="basmalah">`**. **None carries `data-mark`.** Banner ink is identified, never decomposed. A consumer
 iterating words will not see it, and that is correct.
 
-Marks that belong to no word: **229, all of them legitimate**
-(`data-standalone="1"`: 199 hizb + 30 sajdah). Verified corpus-wide: **0 named
-marks are loose on a text line outside every group.** (Older bundles have 79, on
-pages 377, 418, 446 and 507, from the four missing surah banners; check
+Marks that belong to no word are **all legitimate** (`data-standalone="1"`:
+the hizb rosettes and the sajdah paths). Verified corpus-wide: **0 named
+marks are loose on a text line outside every group.** (Older bundles have such
+marks on pages 377, 418, 446 and 507, from the surah banners missing there; check
 `document.querySelectorAll('g.surah-name').length === 1` on those pages.)
 
 ### 9.13 One calligraphic stroke can be two contours
@@ -1120,9 +1272,10 @@ not piece count.**
 
 ## 10. Known limits and defects — stated honestly
 
-### 10.1 There are no `<text>` elements and no letter segmentation
+### 10.1 There are no `<text>` elements
 
-Restated because it is the limit people meet first. See §1 and §10.3.
+Restated because it is the limit people meet first. See §1. The word bundle
+has no letter segmentation either; the letter bundle is §6.9.
 
 ### 10.2 Reserved
 
@@ -1133,18 +1286,13 @@ links to its own. See §7.)*
 ### 10.3 The ligature layer is not a letter segmentation *(dev profile)*
 
 Comparing each word's concatenated `data-text` against its `data-rasm`
-(normalising hamzah seats, alef forms, `ى`/`ي` and `ة`/`ه`):
-
-| | words |
-|---|---:|
-| document order reproduces the rasm | 76,702 (99.06%) |
-| groups in a different order | 574 |
-| groups spell **fewer** letters than the rasm | **156** |
-| groups spell more letters than the rasm | **0** |
+(normalising hamzah seats, alef forms, `ى`/`ي` and `ة`/`ه`): in some words the
+groups come in a different order from the rasm, and in some they spell
+**fewer** letters than the rasm. In **no** word do they spell more.
 
 Examples: p15 `2:98:5` `وملئكته` emits one group `['و']`; p17 `2:110:2`
-`ٱلصلوة` emits `['ا','لصلو']` and the `ة` has no group at all. **37 groups hold
-zero `body` paths** (two of them legitimately — §9.0b).
+`ٱلصلوة` emits `['ا','لصلو']` and the `ة` has no group at all. **Some groups hold
+zero `body` paths** (legitimately at the two fused-hamzah sites — §9.0b).
 
 **Use `data-rasm-uthmani` / `data-rasm` on the word as the text of record.** Treat
 `data-text` as a hint about which letters a group's ink covers, never as a
@@ -1153,10 +1301,10 @@ dropped in the production profile.
 
 ### 10.4 `data-iqlab` is incomplete
 
-605 distinct ids over 940 paths. **335 sites** tag both the harakah and the meem;
-**270 sites** tag only the meem, so the vowel it belongs with is unfindable.
-**Four of the 609 meems carry no `data-iqlab` at all** (p45 `2:265:12`, p446
-`37:11:12`, p455 `38:42:4`, p577 `74:51:3`), and p577's is also the only
+At some sites both the harakah and the meem are tagged; **at others only the
+meem is**, so the vowel it belongs with is unfindable. **These meems carry no
+`data-iqlab` at all:** p45 `2:265:12`, p446 `37:11:12`, p455 `38:42:4`, p577
+`74:51:3`; and p577's is also the only
 `small_meem` in the corpus with no `data-sig`.
 
 ```js
@@ -1174,42 +1322,43 @@ const complete = [...byId.values()].filter(v => v.length === 2);   // harakah + 
 
 A strict consumer must special-case these:
 
-- **1 unnamed mark** — p1 `1:2:1` `ٱلْحَمْدُ`, `data-element-id="e34"`:
+- **An unnamed mark** — p1 `1:2:1` `ٱلْحَمْدُ`, `data-element-id="e34"`:
   `data-kind="mark"` with no `data-mark`.
-- **15 paths of 598,407 have no `data-sig`** (split or synthesised outlines):
+- **These paths have no `data-sig`** (split or synthesised outlines):
   p37, p38, p126 ×2, p146, p159, p342, p362, p431 ×2, p460, p485, p556, p567,
   p577.
-- **4 paths on p17 have no `data-kind` at all** — page ornaments outside both
+- **p17 has paths with no `data-kind` at all** — page ornaments outside both
   `#content` and `#ayah_markers`, passed through from the artwork untouched.
   p17 is the only page with them.
 - **`small_noon` is the only orthographic sign with no `data-mark-family`.**
   `[data-mark-family~="reading_sign"]` also silently drops it — it is not a
   reading sign in this registry.
 - **p7 is the only file declaring `xmlns:xlink`.**
-- **p17 and p144 emit one `<g class="ayah-fragment">` per WORD**, not per (ayah, line):
-  139 and 117 groups. All **216** "reopened" ayah groups in the corpus are on
-  these two pages, and their `data-ayah-fragments` values run as high as 35. §7's
+- **p17 and p144 emit one `<g class="ayah-fragment">` per WORD**, not per (ayah, line).
+  All "reopened" ayah groups in the corpus are on these two pages, and their
+  `data-ayah-fragments` values exceed the page's line count. §7's
   contract still holds there (parts are `1..N` and all link to the marker) —
   there are just far more of them than lines.
 
-### 10.6 Two sajdah groups are incomplete
+### 10.6 Two sajdah groups span two ayahs
 
-p379 emits the Naml sajdah as two sibling `sajdah-mark` groups, one holding
-only the line (`data-ayah-key="27:24"`) and one only the sign (`data-ayah-key="27:26"`).
-p480 does the same with `41:37` / `41:38`. Neither `data-ayah-key` on those four
-groups is reliably the sajdah ayah.
+The format document of release 1.1.2 described the sajdah on p379 as two
+groups, the line keyed `27:24` and the sign `27:26`, and the one on p480 the
+same way with `41:37` and `41:38`. In this release each is one `sajdah-mark`
+group, holding the sign and the line, with `data-ayah-key` `27:26` and
+`41:38`. A consumer that needs the ayah the line is drawn over must take it
+from the geometry.
 
 ### 10.7 Element order inside a word is not right-to-left
 
-Only 15,102 of 77,432 words (19.5%) have their paths in descending x. Word order
+Most words do not have their paths in descending x. Word order
 within a line is correct (§5.4); path order within a word is not normalised.
 Sort by geometry if you need it.
 
 ### 10.8 Words split differently from other decompositions
 
-About 9 word-level segmentation disagreements with MushafDatabase remain
-(p11, p262 `لَّوۡمَا`, p451). Word boundaries otherwise agree on **77,417 of
-77,422** words, and line placement on **99.994%**.
+Some word-level segmentation disagreements with MushafDatabase remain, for
+example p11, p262 `لَّوۡمَا` and p451.
 
 ### 10.9 The SVG is authoritative; the index is derived — with one exception
 
@@ -1220,6 +1369,41 @@ word group at all (§6.1) and come from the verified word cache, through the
 same derivations the dev profile uses inline. The checker proves the cache and
 every page agree on `rasm_uthmani`. Always read `words.json`'s own `fields` array
 rather than assuming a column order.
+
+### 10.10 The letter layer: what is and is not claimed *(letter bundle)*
+
+**No accuracy figure is quoted, because none was measured.** The ink checks of
+§6.9 prove that no ink is lost, added or shared. They say nothing about whether
+a joint falls where a calligrapher would put it. That is the analyzer's
+convention, published as it is: the reviewer accepted the division by eye, it
+was not scored against a hand-cut truth set, and where exactly a joint falls
+inside a connecting stroke is a convention of the tool, not a fact of the print.
+
+**Known limits, stated rather than fixed:**
+
+- **Slivers.** At some cuts the analyzer's pieces left a strip of the contour in
+  no letter. Each strip lies between two neighbouring letters and touches both
+  about equally (within 10% on every one), so which of the two takes it is close
+  to arbitrary. The rule gives it to the piece it touches most; a kashida that
+  only brushes it does not take it. No ink is lost either way. The reviewer has
+  judged one of them by eye.
+- **A hairline at a cut.** The pieces are the analyzer's re-drawing of our
+  outlines, so the edge of a cut letter can differ from the artwork by less
+  than 0.0125 units (a strip that wide is what the checks catch). For a
+  print-exact outline, use the word bundle.
+- **Seams.** Two pieces of one contour meet edge to edge. Rendered, the
+  anti-aliased pixels on the cut can be lighter than in the word page; the ink
+  is the same.
+- **Marks placed by the join, not by the analyzer:** by position, and by
+  count (§6.9). The reviewer checked the positional ones on a sheet; they are
+  listed per page in the build's notes, not in the bundle.
+- **Some mark paths carry no `data-at`.** The sajdah sign and its line are no
+  character of a word. The others could not be paired with a character of
+  `qpc` without a guess: p11 `2:72:4` (hamzah),
+  p282 `17:7:12` (maddah, small waw), p525 `52:37:7` (seen al-qiraah).
+- **Glyphs with no ink are a word-level matter.** Where a neighbouring word
+  holds a letter's ink in the word bundle, no letter group of the right word
+  can hold it either.
 
 ---
 
@@ -1304,26 +1488,17 @@ box  = next(w["box"] for w in pg["words"] if w["word_key"] == "2:255:3")
 | fact | value |
 |---|---|
 | pages | 604 (602 with 15 lines, 2 with 8) |
-| words / distinct `data-word-key` | 77,432 / 77,432 |
-| ayahs / `<g class="ayah-fragment">` fragments | 6,236 / 13,489 |
-| ayahs emitted as >1 fragment on their page | 4,455 |
-| **ayahs spanning two pages** | **0** — 6,236 ayahs, 6,236 (page, ayah) pairs. Every page begins and ends on an ayah boundary, so `mk-…` ids are globally unique. |
-| lines | 9,046 (8,820 with words, 226 header lines) |
+| words | 77,432; one `<g class="word">` per word, every `data-word-key` distinct |
+| ayahs | 6,236; one `<g class="ayah-fragment">` per line an ayah occupies |
+| **ayahs spanning two pages** | **0** — every page begins and ends on an ayah boundary, so `mk-…` ids are globally unique. |
+| lines | every line holds words or is a header line (surah-name or basmalah) |
 | words in the wrong `<g class="line">` | **0** |
-| ink paths (excluding `ayahPolygon`) | 616,565 |
-| paths incl. `ayahPolygon`, dev profile | 622,801 |
-| named marks | 436,627 |
-| letter (`body`) paths | 161,778 |
-| `header_ink` paths | 5,670 (2,300 surah-name + 3,370 basmalah) |
-| distinct `data-mark` values | 34 on paths (+`sajdah` group-level); registry declares 36, 35 active |
-| ayah medallions | 6,248 groups, 6,236 with `id` + `data-ayah-key` |
+| `header_ink` paths | one per header line |
+| `data-mark` vocabulary | registry declares 36, 35 active; `sajdah` is group-level only |
+| ayah medallions | one group per ayah, each with `id` + `data-ayah-key` |
 | surah-name / basmalah groups | 114 / 112 (basmalah absent for surahs 1 and 9) |
-| named marks belonging to no word | 229, all `data-standalone="1"` (199 hizb + 30 sajdah) |
-| hizb rosettes / rubʿ boundaries | 199 / 240 (all 240 carry `data-rubu-al-hizb-start`) |
-| sajdah signs / groups | 15 / 17 |
-| ligature groups (dev only) | 156,707 |
-| `ayahPolygon` paths (dev only) | 6,236 |
-| page size, dev — raw / gzip / brotli | 774.2 / 188.3 / 119.1 KiB average |
-| page size, production — raw / gzip / brotli | 761.7 / 186.2 / 118.0 KiB average |
-| corpus size, dev — raw / gzip / brotli | 456.7 / 111.0 / 70.2 MiB |
-| corpus size, production — raw / gzip / brotli | 449.3 / 109.8 / 69.6 MiB |
+| named marks belonging to no word | all `data-standalone="1"`: the hizb rosettes and sajdah paths in the word bundle, the sajdah paths in the letter bundle, where a rosette is its word's first child (§9.6) |
+| hizb rosettes / rubʿ boundaries | 199 / 240 (every boundary carries `data-rubu-al-hizb-start`) |
+| sajdah signs | 15, one group per site |
+| letter groups (letter bundle) | every one with `data-at` and a body path; 0 unsplit |
+| `ayahPolygon` paths (dev only) | one per ayah |
